@@ -1,7 +1,5 @@
 package org.csstudio.perspectives;
 
-import java.util.logging.Logger;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -14,11 +12,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class PerspectiveHandler extends AbstractHandler {
 
-    private Logger log = Logger.getLogger(PerspectiveHandler.class.getName());
-
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        log.config("PerspectiveHandler: execute");
+        Plugin.getLogger().config("PerspectiveHandler: execute");
         IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
         final PerspectiveLoader ps = ContextInjectionFactory.make(PerspectiveLoader.class, context);
         ps.loadPerspectives();

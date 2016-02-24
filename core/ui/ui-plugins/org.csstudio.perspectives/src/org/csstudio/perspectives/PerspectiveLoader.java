@@ -1,10 +1,8 @@
 package org.csstudio.perspectives;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -22,8 +20,6 @@ import org.eclipse.ui.PlatformUI;
 
 @SuppressWarnings("restriction")  // This class uses internal e4 API.
 public class PerspectiveLoader {
-
-    private static final Logger logger = Logger.getLogger(PerspectiveLoader.class.getCanonicalName());
 
     @Inject
     @Preference(nodePath = "org.eclipse.ui.workbench")
@@ -52,10 +48,10 @@ public class PerspectiveLoader {
                     // this preference change and import the perspective for us.
                     preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
                 } catch (IOException e) {
-                    logger.log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
+                    Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
                 }
             } else {
-                logger.warning(NLS.bind(Messages.PerspectiveLoader_fileNotUnderstood, uri));
+                Plugin.getLogger().warning(NLS.bind(Messages.PerspectiveLoader_fileNotUnderstood, uri));
             }
         }
     }

@@ -6,7 +6,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -27,8 +26,6 @@ import org.osgi.service.event.EventHandler;
 
 @SuppressWarnings("restriction")  // This class uses internal e4 API.
 public class PerspectiveSaver implements EventHandler {
-
-    private static final Logger logger = Logger.getLogger(PerspectiveSaver.class.getCanonicalName());
 
     public static final String PERSPECTIVE_PREFIX  = "perspective_";
 
@@ -58,14 +55,14 @@ public class PerspectiveSaver implements EventHandler {
     @PostConstruct
     public void init() {
         try {
-            logger.config("Initialising perspective saver.");
+            Plugin.getLogger().config("Initialising perspective saver.");
             URL dataUri = instanceLocation.getDataArea(Plugin.ID);
             dataDirectory = new File(dataUri.getFile());
             Files.createDirectories(dataDirectory.toPath());
             // Subscribe to perspective save events.
             broker.subscribe(UIEvents.UILifeCycle.PERSPECTIVE_SAVED, this);
         } catch (IOException e) {
-            logger.log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
+            Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
         }
     }
 
@@ -105,9 +102,9 @@ public class PerspectiveSaver implements EventHandler {
                 // perspective has been saved.
                 String perspAsString = perspectiveUtils.perspToString(clone);
                 preferences.put(clone.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
-                logger.config("Saved perspective to " + uri);
+                Plugin.getLogger().config("Saved perspective to " + uri);
             } catch (IOException e) {
-                logger.log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
+                Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
             }
         }
     }
