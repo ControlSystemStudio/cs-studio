@@ -102,7 +102,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         if (opiRuntimeDelegate != null)
         {
             opiRuntimeDelegate.dispose();
@@ -158,11 +159,13 @@ public class OPIView extends ViewPart implements IOPIRuntime
      * Retrieve memento persisted in MPlaceholder if present.
      * @return memento persisted in the placeholder.
      */
-    private IMemento findMementoFromPlaceholder() {
+    private IMemento findMementoFromPlaceholder()
+    {
         IMemento memento = null;
         MPlaceholder placeholder = findPlaceholder();
         if (placeholder != null) {
-            if (placeholder.getPersistedState().containsKey(TAG_MEMENTO)) {
+            if (placeholder.getPersistedState().containsKey(TAG_MEMENTO))
+            {
                 String mementoString = placeholder.getPersistedState().get(TAG_MEMENTO);
                 memento = loadMemento(mementoString);
             }
@@ -175,11 +178,15 @@ public class OPIView extends ViewPart implements IOPIRuntime
      * @param mementoString
      * @return
      */
-    private IMemento loadMemento(String mementoString) {
+    private IMemento loadMemento(String mementoString)
+    {
         StringReader reader = new StringReader(mementoString);
-        try {
+        try
+        {
             return XMLMemento.createReadRoot(reader);
-        } catch (WorkbenchException e) {
+        }
+        catch (WorkbenchException e)
+        {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to load memento", e);
             return null;
         }
@@ -240,8 +247,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void createPartControl(final Composite parent) {
-        if(SWT.getPlatform().startsWith("rap")){
+    public void createPartControl(final Composite parent)
+    {
+        if(SWT.getPlatform().startsWith("rap"))
+        {
             SingleSourceHelper.rapOPIViewCreatePartControl(this, parent);
             return;
         }
@@ -249,11 +258,15 @@ public class OPIView extends ViewPart implements IOPIRuntime
         createToolbarButtons();
     }
 
-    private Rectangle getBounds() {
+    private Rectangle getBounds()
+    {
         Rectangle bounds;
-        if(opiRuntimeDelegate.getDisplayModel() != null) {
+        if(opiRuntimeDelegate.getDisplayModel() != null)
+        {
             bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
-        } else {
+        }
+        else
+        {
             bounds = new Rectangle(0, 0, 800, 600);
         }
         return bounds;
@@ -266,16 +279,20 @@ public class OPIView extends ViewPart implements IOPIRuntime
      * If the model location has negative values or is (0, 0),
      * position within the parent window.
      */
-    public void positionFromModel() {
+    public void positionFromModel()
+    {
         Composite parent = getSite().getShell();
         final Rectangle bounds = getBounds();
         // Resize to that of model from OPI
         parent.getShell().setSize(bounds.width+45, bounds.height+65);
         // If OPI model specifies a location, honour it.  Otherwise
         // place within parent window.
-        if (bounds.x >= 0 && bounds.y > 1) {
+        if (bounds.x >= 0 && bounds.y > 1)
+        {
             parent.getShell().setLocation(bounds.x, bounds.y);
-        } else {
+        }
+        else
+        {
             org.eclipse.swt.graphics.Rectangle winSize = getSite()
                     .getWorkbenchWindow().getShell().getBounds();
             parent.getShell().setLocation(
@@ -286,7 +303,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
         }
     }
 
-    public void createToolbarButtons(){
+    public void createToolbarButtons()
+    {
         opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
         IActionBars bars = getViewSite().getActionBars();
         opiRuntimeToolBarDelegate.init(bars, getSite().getPage());
@@ -336,12 +354,14 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void saveState(IMemento memento) {
+    public void saveState(IMemento memento)
+    {
         super.saveState(memento);
         if(input == null)
             return;
         IPersistableElement persistable = input.getPersistable();
-        if (persistable != null) {
+        if (persistable != null)
+        {
             /*
              * Store IPersistable of the IEditorInput in a separate section
              * since it could potentially use a tag already used in the parent
@@ -364,12 +384,14 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void setFocus() {
+    public void setFocus()
+    {
         // NOP
     }
 
     @Override
-    public void setWorkbenchPartName(String name) {
+    public void setWorkbenchPartName(String name)
+    {
         setPartName(name);
         setTitleToolTip(getOPIInput().getToolTipText());
     }
@@ -386,23 +408,27 @@ public class OPIView extends ViewPart implements IOPIRuntime
         super.setTitleToolTip(tool_tip);
     }
 
-    public OPIRuntimeDelegate getOPIRuntimeDelegate() {
+    public OPIRuntimeDelegate getOPIRuntimeDelegate()
+    {
         return opiRuntimeDelegate;
     }
 
     @Override
-    public IEditorInput getOPIInput() {
+    public IEditorInput getOPIInput()
+    {
         return getOPIRuntimeDelegate().getEditorInput();
     }
 
     @Override
-    public DisplayModel getDisplayModel() {
+    public DisplayModel getDisplayModel()
+    {
         return getOPIRuntimeDelegate().getDisplayModel();
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(Class adapter)
+    {
         if (opiRuntimeDelegate == null)
             return super.getAdapter(adapter);
         Object obj = opiRuntimeDelegate.getAdapter(adapter);
@@ -413,11 +439,13 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     }
 
-    public static boolean isOpenFromPerspective() {
+    public static boolean isOpenFromPerspective()
+    {
         return openFromPerspective;
     }
 
-    public static void setOpenFromPerspective(boolean openFromPerspective) {
+    public static void setOpenFromPerspective(boolean openFromPerspective)
+    {
         OPIView.openFromPerspective = openFromPerspective;
     }
 
