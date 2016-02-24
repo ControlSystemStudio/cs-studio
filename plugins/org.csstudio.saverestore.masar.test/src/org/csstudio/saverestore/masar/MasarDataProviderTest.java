@@ -57,14 +57,14 @@ public class MasarDataProviderTest {
     private SaveSet branchSaveSet2 = new SaveSet(branch, Optional.of(branchBase1),
         new String[] { "first", "foo", "bar", "second.bms" }, "someId");
     private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000),
-        "another comment", "user");
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000), "another comment",
+        "user");
     private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
         "user");
-    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"),
-        Arrays.asList("rb1", "rb2"), Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
-        Timestamp.now(), null);
+    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
+        Arrays.asList("d1", "d2"), "description");
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
+        Arrays.asList(VDisconnectedData.INSTANCE), Timestamp.now(), null);
 
     @Before
     public void setUp() throws Exception {
@@ -77,8 +77,7 @@ public class MasarDataProviderTest {
         when(mc.getServices()).thenReturn(Arrays.asList(branch, demoBranch));
         when(mc.getSystemConfigs(branch)).thenReturn(Arrays.asList(branchBase1, branchBase2));
         when(mc.getSystemConfigs(demoBranch)).thenReturn(new ArrayList<>(0));
-        when(mc.getSaveSets(Optional.of(branchBase1), branch))
-            .thenReturn(Arrays.asList(branchSaveSet, branchSaveSet2));
+        when(mc.getSaveSets(Optional.of(branchBase1), branch)).thenReturn(Arrays.asList(branchSaveSet, branchSaveSet2));
         when(mc.getSnapshots(branchSaveSet)).thenReturn(Arrays.asList(branchSnapshot, branchSnapshot2));
         when(mc.loadSaveSetData(branchSaveSet)).thenReturn(bsd);
         when(mc.createService("someBranch")).thenReturn(someBranch);
@@ -146,7 +145,7 @@ public class MasarDataProviderTest {
         verify(notifier, only()).branchCreated(newBranch);
 
         try {
-            newBranch = dataProvider.createNewBranch(branch, "bla");
+            dataProvider.createNewBranch(branch, "bla");
             fail("Exception should happen");
         } catch (DataProviderException e) {
             assertNotNull(e.getMessage());
@@ -213,7 +212,7 @@ public class MasarDataProviderTest {
         assertEquals(0, snapshots.length);
 
         try {
-            snapshots = dataProvider.findSnapshots("bla", branch, Arrays.asList(criteria.get(2)), Optional.empty(),
+            dataProvider.findSnapshots("bla", branch, Arrays.asList(criteria.get(2)), Optional.empty(),
                 Optional.empty());
             fail("Exception should occur");
         } catch (DataProviderException e) {

@@ -163,7 +163,7 @@ public class GitManager {
      *
      * @return true if only local or false for remote only
      */
-    boolean isLocalOnly() {
+    synchronized boolean isLocalOnly() {
         return localOnly;
     }
 
@@ -1452,7 +1452,9 @@ public class GitManager {
         while (!file.equals(repositoryPath)) {
             File parent = file.getParentFile();
             File[] files = parent.listFiles();
-            if (files.length == 0) {
+            if (files == null) {
+                break;
+            } else if (files.length == 0) {
                 parent.delete();
                 file = parent;
             } else {

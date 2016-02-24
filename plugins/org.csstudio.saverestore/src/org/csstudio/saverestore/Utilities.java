@@ -269,13 +269,13 @@ public final class Utilities {
                 long v = Long.parseLong(indata);
                 return ValueFactory.newVLong(v, alarm, time, ValueFactory.displayNone());
             } catch (NumberFormatException e) {
-                //ignore
+                // ignore
             }
             try {
                 double v = Double.parseDouble(indata);
                 return ValueFactory.newVDouble(v, alarm, time, ValueFactory.displayNone());
             } catch (NumberFormatException e) {
-                //ignore
+                // ignore
             }
             return ValueFactory.newVString(indata, alarm, time);
         }
@@ -583,13 +583,15 @@ public final class Utilities {
      */
     @SuppressWarnings("unchecked")
     public static VTypeComparison valueToCompareString(VType value, VType baseValue, Optional<Threshold<?>> threshold) {
-        if (value == null && baseValue == null || value == VDisconnectedData.INSTANCE && baseValue == VDisconnectedData.INSTANCE) {
+        if (value == null && baseValue == null
+            || value == VDisconnectedData.INSTANCE && baseValue == VDisconnectedData.INSTANCE) {
             return new VTypeComparison(VDisconnectedData.INSTANCE.toString(), 0, true);
         } else if (value == null || baseValue == null) {
             return value == null ? new VTypeComparison(VDisconnectedData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
         } else if (value == VDisconnectedData.INSTANCE || baseValue == VDisconnectedData.INSTANCE) {
-            return value == VDisconnectedData.INSTANCE ? new VTypeComparison(VDisconnectedData.INSTANCE.toString(), -1, false)
+            return value == VDisconnectedData.INSTANCE
+                ? new VTypeComparison(VDisconnectedData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
         }
         if (value instanceof VNumber && baseValue instanceof VNumber) {
@@ -891,8 +893,6 @@ public final class Utilities {
         if (v1 == v2) {
             // this works for no data as well
             return true;
-        } else if (v1 == null && v2 == null) {
-            return true;
         } else if (v1 == null || v2 == null) {
             return false;
         }
@@ -986,8 +986,8 @@ public final class Utilities {
                     return false;
                 }
             }
-            List<String> l1 = ((VEnum) v1).getLabels();
-            List<String> l2 = ((VEnum) v2).getLabels();
+            List<String> l1 = ((VEnumArray) v1).getLabels();
+            List<String> l2 = ((VEnumArray) v2).getLabels();
             return l1.equals(l2);
         }
         // no support for MultiScalars (VMultiDouble, VMultiInt, VMultiString, VMultiEnum), VStatistics, VTable and

@@ -82,9 +82,9 @@ public class FileUtilitiesTest {
         SaveSetContent bsc = FileUtilities
             .readFromSaveSet(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         assertEquals("some description", bsc.getDescription());
-        assertArrayEquals(new String[] { "pv1", "pv2" }, bsc.getNames().toArray(new String[0]));
-        assertArrayEquals(new String[] { "rb1", "rb2" }, bsc.getReadbacks().toArray(new String[0]));
-        assertArrayEquals(new String[] { "d1", "Math.pow(x,3)" }, bsc.getDeltas().toArray(new String[0]));
+        assertArrayEquals(new String[] { "pv1", "pv2" }, bsc.getNames().toArray(new String[2]));
+        assertArrayEquals(new String[] { "rb1", "rb2" }, bsc.getReadbacks().toArray(new String[2]));
+        assertArrayEquals(new String[] { "d1", "Math.pow(x,3)" }, bsc.getDeltas().toArray(new String[2]));
     }
 
     /**
@@ -127,10 +127,10 @@ public class FileUtilitiesTest {
         SnapshotContent sc = FileUtilities
             .readFromSnapshot(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         assertEquals(time.getTimestamp().toDate(), sc.getDate());
-        assertArrayEquals(new String[] { "pv1", "pv2" }, sc.getNames().toArray(new String[0]));
-        assertArrayEquals(new String[] { "rb1", "rb2" }, sc.getReadbacks().toArray(new String[0]));
-        assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, sc.getDeltas().toArray(new String[0]));
-        assertArrayEquals(new Boolean[] { true, false }, sc.getSelected().toArray(new Boolean[0]));
+        assertArrayEquals(new String[] { "pv1", "pv2" }, sc.getNames().toArray(new String[2]));
+        assertArrayEquals(new String[] { "rb1", "rb2" }, sc.getReadbacks().toArray(new String[2]));
+        assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, sc.getDeltas().toArray(new String[2]));
+        assertArrayEquals(new Boolean[] { true, false }, sc.getSelected().toArray(new Boolean[2]));
 
         // compare values
         List<VType> data = sc.getData();

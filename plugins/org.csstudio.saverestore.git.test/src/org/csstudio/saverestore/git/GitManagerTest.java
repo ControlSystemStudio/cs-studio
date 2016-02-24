@@ -468,11 +468,11 @@ public class GitManagerTest {
         assertEquals(tagMessage, newSnapshot.getTagMessage().get());
 
         // remove tag
-        result = manager.tagSnapshot(original, "", "");
+        manager.tagSnapshot(original, "", "");
         snapshots = manager.getSnapshots(branchSaveSet, 1, Optional.empty());
         newSnapshot = snapshots.get(0);
-        assertFalse(original.getTagMessage().isPresent());
-        assertFalse(original.getTagName().isPresent());
+        assertFalse(newSnapshot.getTagMessage().isPresent());
+        assertFalse(newSnapshot.getTagName().isPresent());
     }
 
     @Test

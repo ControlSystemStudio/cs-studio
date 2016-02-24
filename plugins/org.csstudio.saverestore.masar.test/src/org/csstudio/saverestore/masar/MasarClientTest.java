@@ -475,7 +475,7 @@ public class MasarClientTest {
 
         snap = new Snapshot(set, new Date(), "blabla", "taz-mania");
         try {
-            snapshot = client.loadSnapshotData(snap);
+            client.loadSnapshotData(snap);
             fail("Exception should occur, because the event id parameter is missing");
         } catch (MasarException e) {
             assertNotNull(e.getMessage());
@@ -512,7 +512,7 @@ public class MasarClientTest {
         snap = new Snapshot(set, new Date(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
         snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Timestamp.now(), null);
         try {
-            snapshot = client.saveSnapshot(snapshot, "some comment");
+            client.saveSnapshot(snapshot, "some comment");
             fail("Service should send an error message");
         } catch (MasarException e) {
             assertEquals("Aw, the poor puddy tat! He fall down and go... BOOM!", e.getMessage());
@@ -521,7 +521,7 @@ public class MasarClientTest {
         snap = new Snapshot(set, new Date(), "blabla", "taz-mania");
         snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Timestamp.now(), null);
         try {
-            snapshot = client.saveSnapshot(snapshot, "some comment");
+            client.saveSnapshot(snapshot, "some comment");
             fail("Exception should occur, because snapshot id is missing");
         } catch (MasarException e) {
             assertNotNull(e.getMessage());

@@ -186,7 +186,7 @@ public class GitDataProviderTest {
         verify(notifier, only()).branchCreated(newBranch);
 
         try {
-            newBranch = dataProvider.createNewBranch(branch, "bla");
+            dataProvider.createNewBranch(branch, "bla");
             fail("Exception should happen");
         } catch (DataProviderException e) {
             assertNotNull(e.getMessage());
@@ -290,7 +290,7 @@ public class GitDataProviderTest {
         verify(notifier, only()).synchronised();
 
         try {
-            snap = dataProvider.tagSnapshot(branchSnapshot, Optional.of("name4"), Optional.of("message"));
+            dataProvider.tagSnapshot(branchSnapshot, Optional.of("name4"), Optional.of("message"));
             fail("Exception should happen");
         } catch (DataProviderException e) {
             assertNotNull(e.getMessage());
