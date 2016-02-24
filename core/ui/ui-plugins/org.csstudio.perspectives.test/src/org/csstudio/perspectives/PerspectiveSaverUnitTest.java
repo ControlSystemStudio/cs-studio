@@ -8,6 +8,7 @@
 package org.csstudio.perspectives;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,9 +20,12 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.services.events.IEventBroker;
+import org.eclipse.e4.ui.model.application.ui.MSnippetContainer;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
+import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -30,7 +34,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.osgi.service.event.Event;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,6 +44,9 @@ public class PerspectiveSaverUnitTest
 {
     @Mock
     private Location instanceLocation;
+
+    @Mock
+    private IEclipsePreferences preferences;
 
     @Mock
     private IEventBroker mockBroker;
@@ -50,21 +59,23 @@ public class PerspectiveSaverUnitTest
 
     @InjectMocks
     private PerspectiveSaver saver;
-    
+
     @Before
     public void setUp() {
         try {
             when(instanceLocation.getDataArea(any(String.class))).thenReturn(new URL("file://dummy"));
             saver.init();
+            doNothing().when(preferences).put(any(String.class), any(String.class));
+            when(mockModelService.cloneElement(any(MUIElement.class), any(MSnippetContainer.class))).thenAnswer(new Answer<MUIElement>() {
+                @Override
+                public MUIElement answer(InvocationOnMock invocation) {
+                    Object[] args = invocation.getArguments();
+                    return (MUIElement) args[0];
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void createPerspectiveSaver()
-    {
-        System.out.println("Saver " + saver);
     }
 
     @Test
@@ -87,15 +98,20 @@ public class PerspectiveSaverUnitTest
         when(mockPerspective.getLabel()).thenReturn("dummy");
         Event testEvent = createTestEvent(UIEvents.EventTags.ELEMENT, mockPerspective);
         saver.handleEvent(testEvent);
-        verify(mockModelService, never()).findElements(any(MUIElement.class), any(String.class), any(Class.class), any(List.class));
+        verify(mockModelService).findElements(mockPerspective, null, MPlaceholder.class, null);
     }
 
+    /**
+     * The Event object can't be mocked because its methods are final.
+     * @param key
+     * @param value
+     * @return dummy event object
+     */
     public Event createTestEvent(String key, Object value) {
-        Dictionary props = new Hashtable<String, Object>();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(key, value);
         Event e = new Event("mytopic", props);
         return e;
-        
     }
 
 }

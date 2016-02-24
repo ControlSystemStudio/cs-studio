@@ -32,9 +32,13 @@ public class PerspectiveUtils implements IPerspectiveUtils {
      * @param persp Perspective to convert.
      * @return XML string
      * @throws IOException
+     * @throws IllegalArgumentException if perspective is null
      */
     @Override
     public String perspToString(MPerspective persp) throws IOException {
+        if (persp == null) {
+            throw new IllegalArgumentException("Perspective may not be null");
+        }
         Resource resource = new E4XMIResourceFactory().createResource(null);
         resource.getContents().add((EObject) persp);
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
