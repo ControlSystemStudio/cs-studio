@@ -730,7 +730,8 @@ public class SnapshotViewerController {
                 sb.append('"').append(Utilities.valueToString(v)).append('"');
                 sb.append(',');
                 if (v instanceof Time) {
-                    sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
+//                    sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
+                    sb.append(((Time) v).getTimestamp());
                 }
                 if (showLiveReadback) {
                     sb.append(',').append(e.readbackNameProperty().get());
@@ -738,7 +739,8 @@ public class SnapshotViewerController {
                     sb.append(',').append('"').append(Utilities.valueToString(((VTypePair) pair).value)).append('"')
                         .append(',');
                     if (pair.value instanceof Time) {
-                        sb.append(Utilities.timestampToLittleEndianString(((Time) pair.value).getTimestamp(),true));
+//                        sb.append(Utilities.timestampToLittleEndianString(((Time) pair.value).getTimestamp(),true));
+                        sb.append(((Time) pair.value).getTimestamp());
                     }
                 }
                 pw.println(sb.toString());
