@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
-import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -46,9 +45,6 @@ public class ArchiveFetchJob extends Job
 
     /**to manage concurrency on postgresql*/
     private final boolean concurrency;
-
-    /** display UnknownChannelException */
-    private final boolean displayUnknowChannelException;
 
     /** Item for which to fetch samples */
     final private PVItem item;
@@ -143,11 +139,6 @@ public class ArchiveFetchJob extends Job
                         break;
                     value_iter.close();
                 }
-                catch (UnknownChannelException uce)
-                {
-                    if (!cancelled && displayUnknowChannelException)
-                        listener.archiveFetchFailed(ArchiveFetchJob.this, archive, uce);
-                }
                 catch (Exception ex)
                 {   // Tell listener unless it's the result of a 'cancel'?
                     if (! cancelled)
@@ -189,12 +180,22 @@ public class ArchiveFetchJob extends Job
     public ArchiveFetchJob(PVItem item, final Instant start,
             final Instant end, final ArchiveFetchJobListener listener)
     {
-        this(item, start, end, listener, false, true);
+        this(item, start, end, listener, false);
     }
 
+    /**
+     * Construct a new job.
+     *
+     * @param item the item for which the data are fetched
+     * @param start the lower time boundary for the historic data
+     * @param end the upper time boundary for the history data
+     * @param listener the listener notified when the job is complete or an error happens
+     * @param enableConcurrency a parameter forwarded to the reader
+     *
+     * @see ArchiveReader#enableConcurrency(boolean)
+     */
     protected ArchiveFetchJob(PVItem item, final Instant start,
-        final Instant end, final ArchiveFetchJobListener listener, boolean enableConcurrency,
-        boolean displayUnknownChannelException)
+        final Instant end, final ArchiveFetchJobListener listener, boolean enableConcurrency)
     {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
                 new Object[] { item.getName(), TimeHelper.format(start),
@@ -204,7 +205,6 @@ public class ArchiveFetchJob extends Job
         this.end = end;
         this.listener = listener;
         this.concurrency = enableConcurrency;
-        this.displayUnknowChannelException = displayUnknownChannelException;
     }
 
     /** @return PVItem for which this job was created */
