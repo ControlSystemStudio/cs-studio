@@ -11,11 +11,12 @@ import gov.bnl.channelfinder.api.Property;
 
 import java.util.Collection;
 
-import org.csstudio.utility.channelfinder.Activator;
+import org.csstudio.utility.channel.Activator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
 
 /**
  * @author Kunal Shroff
