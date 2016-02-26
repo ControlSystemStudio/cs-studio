@@ -118,10 +118,10 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                             text.getShell().setFocus();
                              break;
                         case NEXT:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
                             break;
                         case PREVIOUS:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
                             break;
                         case KEEP:
                         default:
