@@ -6,8 +6,8 @@ import junit.framework.TestCase;
 public class StateSetNode_Test extends TestCase {
     public void testStateNodeWithContentWithoutChildren() {
         final StateSetNode stateSetNode = new StateSetNode("AStateSet",
-                "state init {" + "  when (delay(0.1)) {"
-                        + "     printf(\"sncExample: Startup delay over\n\");"
+                "state init {" + "    when (delay(0.1)) {"
+                        + "    printf(\"sncExample: Startup delay over\n\");"
                         + " } state low" + "    }", 23, 42);
 
         Assert.assertEquals("AStateSet", stateSetNode.getSourceIdentifier());
@@ -17,8 +17,8 @@ public class StateSetNode_Test extends TestCase {
         Assert.assertEquals("state set", stateSetNode.getNodeTypeName());
         Assert.assertFalse(stateSetNode.hasChildren());
         Assert.assertTrue(stateSetNode.hasContent());
-        Assert.assertEquals("state init {" + "  when (delay(0.1)) {"
-                + "     printf(\"sncExample: Startup delay over\n\");" + "  } state low" + "    }",
+        Assert.assertEquals("state init {" + "    when (delay(0.1)) {"
+                + "    printf(\"sncExample: Startup delay over\n\");" + " } state low" + "    }",
                 stateSetNode.getContent());
         Assert.assertEquals("state set: AStateSet", stateSetNode.humanReadableRepresentation());
     }

@@ -33,17 +33,17 @@ public class SNLParser_Test extends TestCase {
             + "}%\n"
             + "ss ss1 {"
             + "    state init {"
-            + " when (delay(0.1)) {"
-            + "     printf(\"sncExample: Startup delay over\n\");"
-            + " } state low"
+            + "    when (delay(0.1)) {"
+            + "        printf(\"sncExample: Startup delay over\n\");"
+            + "    } state low"
             + "    }"
             + " /* Hallo Welt!*"
             + " ./. */"
             + "    state low {"
-            + "     when (v > 50.0) {"
-            + "         printf(\"sncExample: Changing to high\n\");"
+            + "        when (v > 50.0) {"
+            + "            printf(\"sncExample: Changing to high\n\");"
             + "/* +++"
-            + "*/       } state high"
+            + "*/        } state high"
             + "       "
             + "       when ( delay(1.0) )"
             + "       {"
@@ -51,10 +51,10 @@ public class SNLParser_Test extends TestCase {
             + "   }"
             + "    state high {"
             + "when (v <= 50.0) {"
-            + "     printf(\"sncExample: Changing to low\n\");"
-            + " } state low"
+            + "        printf(\"sncExample: Changing to low\n\");"
+            + "    } state low"
             + "        when ( delay(1.0) ) {"
-            + "       } state high"
+            + "        } state high"
             + "   }"
             + "}"
             + "option +r;\n"
@@ -73,17 +73,17 @@ public class SNLParser_Test extends TestCase {
             + "   "// 125-127
             + "ss ss1 {"// 128-135
             + "    state init {"// 136-151
-            + " when (delay(0.1)) {"// 152-171
-            + "     printf(\"sncExample: Startup delay over\n\");"// 172-218
-            + " } state low"// 219-230
+            + "    when (delay(0.1)) {"// 152-171
+            + "        printf(\"sncExample: Startup delay over\n\");"// 172-218
+            + "    } state low"// 219-230
             + "    }"// 231-235
             + "                "
             + "       "
             + "    state low {"
-            + "     when (v > 50.0) {"
-            + "         printf(\"sncExample: Changing to high\n\");"
+            + "        when (v > 50.0) {"
+            + "            printf(\"sncExample: Changing to high\n\");"
             + "      "
-            + "         } state high"
+            + "          } state high"
             + "       "
             + "       when ( delay(1.0) )"
             + "       {"
@@ -91,10 +91,10 @@ public class SNLParser_Test extends TestCase {
             + "   }"
             + "    state high {"
             + "when (v <= 50.0) {"
-            + "     printf(\"sncExample: Changing to low\n\");"
-            + " } state low"
+            + "        printf(\"sncExample: Changing to low\n\");"
+            + "    } state low"
             + "        when ( delay(1.0) ) {"
-            + "       } state high"
+            + "        } state high"
             + "   }"
             + "}"
             + "option +r;\n"
@@ -133,18 +133,18 @@ public class SNLParser_Test extends TestCase {
         Assert.assertEquals(127, stateSetNode.getStatementStartOffset());
         Assert.assertEquals("ss1", stateSetNode.getSourceIdentifier());
         Assert.assertTrue(stateSetNode.hasContent());
-        Assert.assertEquals("    state init {" + "  when (delay(0.1)) {"
-                + "     printf(\"sncExample: Startup delay over\n\");"
-                + " } state low" + "    }" + "                " + "       "
-                + "    state low {" + "     when (v > 50.0) {"
-                + "         printf(\"sncExample: Changing to high\n\");"
-                + "      " + "          } state high" + "       "
-                + "       when ( delay(1.0) )" + "       {"
+        Assert.assertEquals("    state init {" + "    when (delay(0.1)) {"
+                + "        printf(\"sncExample: Startup delay over\n\");"
+                + "    } state low" + "    }" + "                " + "       "
+                + "    state low {" + "        when (v > 50.0) {"
+                + "            printf(\"sncExample: Changing to high\n\");"
+                + "        " + "        } state high" + "      "
+                + "        when ( delay(1.0) )" + "       {"
                 + "       } state low" + "   }" + "    state high {"
                 + "when (v <= 50.0) {"
-                + "     printf(\"sncExample: Changing to low\n\");"
-                + " } state low" + "        when ( delay(1.0) ) {"
-                + "       } state high" + "   }", stateSetNode.getContent());
+                + "        printf(\"sncExample: Changing to low\n\");"
+                + "    } state low" + "        when ( delay(1.0) ) {"
+                + "        } state high" + "   }", stateSetNode.getContent());
         Assert.assertTrue(stateSetNode.hasChildren());
         final Node[] stateSetChildrenNodes = stateSetNode.getChildrenNodesAsArray();
         Assert.assertEquals(3, stateSetChildrenNodes.length);
@@ -152,10 +152,10 @@ public class SNLParser_Test extends TestCase {
         final int stateStatementStartOffset = stateSetChildrenNodes[0].getStatementStartOffset();
         Assert.assertEquals(139, stateStatementStartOffset);
         final int stateStatementEndOffset = stateSetChildrenNodes[0].getStatementEndOffset();
-        Assert.assertEquals(235, stateStatementEndOffset);
+        Assert.assertEquals(244, stateStatementEndOffset);
         Assert.assertEquals(
-                "state init {" + "  when (delay(0.1)) {" + "        printf(\"sncExample: Startup delay over\n\");"
-                        + " } state low" + "    }",
+                "state init {" + "    when (delay(0.1)) {" + "        printf(\"sncExample: Startup delay over\n\");"
+                        + "    } state low" + "    }",
                 this._clearSource.subSequence(stateStatementStartOffset, stateStatementEndOffset).toString());
 
         Assert.assertEquals("low", ((AbstractSNLNode) stateSetChildrenNodes[1]).getSourceIdentifier());
@@ -219,30 +219,30 @@ public class SNLParser_Test extends TestCase {
             + "assign v to \"{user}:aiExample\";" + "monitor v;" + "long l;"
             + "%{\n" + "   Embedded C\n" + "}%\n" + "ss ss1 {"
             + "    state init {" + "    when (delay(0.1)) {"
-            + "     printf(\"sncExample: Startup delay over\n\");"
-            + " } state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
-            + "    state low {" + "     when (v > 50.0) {"
-            + "         printf(\"sncExample: Changing to high\n\");" + "/* +++"
-            + "*/       } state high" + "       " + "       when ( delay(1.0) )"
+            + "        printf(\"sncExample: Startup delay over\n\");"
+            + "    } state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
+            + "    state low {" + "        when (v > 50.0) {"
+            + "            printf(\"sncExample: Changing to high\n\");" + "/* +++"
+            + "*/            } state high" + "       " + "       when ( delay(1.0) )"
             + "       {" + "       } state low" + "   }" + "    state high {"
             + "when (v <= 50.0) {"
-            + "     printf(\"sncExample: Changing to low\n\");"
-            + " } state low" + "        when ( delay(1.0) ) {"
+            + "        printf(\"sncExample: Changing to low\n\");"
+            + "    } state low" + "        when ( delay(1.0) ) {"
             + "       } state high" + "   }" + "}";
 
     private final String _clearSource2 = "program sncExample\n" + "double v;"
             + "assign v to \"{user}:aiExample\";" + "monitor v;" + "long l;"
             + "   " + "              " + "   " + "ss ss1 {"
             + "    state init {" + "    when (delay(0.1)) {"
-            + "     printf(\"sncExample: Startup delay over\n\");"
-            + " } state low" + "    }" + "                " + "       "
-            + "    state low {" + "     when (v > 50.0) {"
-            + "         printf(\"sncExample: Changing to high\n\");" + "      "
-            + "         } state high" + "       " + "       when ( delay(1.0) )"
+            + "        printf(\"sncExample: Startup delay over\n\");"
+            + "    } state low" + "    }" + "                " + "       "
+            + "    state low {" + "        when (v > 50.0) {"
+            + "            printf(\"sncExample: Changing to high\n\");" + "      "
+            + "              } state high" + "       " + "       when ( delay(1.0) )"
             + "       {" + "       } state low" + "   }" + "    state high {"
             + "when (v <= 50.0) {"
-            + "     printf(\"sncExample: Changing to low\n\");"
-            + " } state low" + "        when ( delay(1.0) ) {"
+            + "        printf(\"sncExample: Changing to low\n\");"
+            + "    } state low" + "        when ( delay(1.0) ) {"
             + "       } state high" + "   }" + "}";
 
     @Test
