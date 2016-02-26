@@ -293,20 +293,7 @@ public class XMLUtil {
 
             if(result instanceof AbstractContainerModel)
                 fillLinkingContainersSub((AbstractContainerModel)result, trace);
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    //Fix for ITER: widgets from one linking container might be connected to widgets in a
-                    //different linking container.
-                    //This allows the linking containers to be fully loaded/activated before
-                    //trying to connect any of its widgets to anywhere outside that linking container.
-                    try {
-                        fillConnections(element, displayModel);
-                    } catch (Exception e) {
-                        ConsoleService.getInstance().writeError(e.getMessage());
-                    }
-                }
-            });
+            setUpConnectors(element, displayModel);
 
             return result;
         } else {
@@ -649,5 +636,95 @@ public class XMLUtil {
     private static Element stringToXML(String xmlString) throws JDOMException, IOException {
         InputStream stream= new ByteArrayInputStream(xmlString.getBytes("UTF-8")); //$NON-NLS-1$
         return inputStreamToXML(stream);
+    }
+
+    /* ****************************************************************************
+     * ITER wants to have connectors between widgets belonging to different linking
+     * containers. Community deliberately does not want that:
+     * https://github.com/ControlSystemStudio/cs-studio/issues/912#issuecomment-99507657
+     * https://github.com/ControlSystemStudio/cs-studio/issues/912#issuecomment-118872204
+     *
+     * The hacks below and in the ITERLinkingContainerEditPart allow ITER having
+     * the connections without modifying any code in the community.
+     ******************************************************************************/
+
+    @SuppressWarnings("rawtypes")
+    private static void setConnectorPropertiesFromXML(Element element, AbstractWidgetModel model)
+        throws Exception {
+        if(model == null || element == null) return;
+
+        String versionOnFile = element.getAttributeValue(XMLATTR_VERSION);
+        model.setVersionOnFile(Version.parseVersion(versionOnFile));
+
+        if (element instanceof LineAwareElement) {
+            model.setLineNumber(((LineAwareElement) element).getLineNumber());
+        }
+
+        List children = element.getChildren();
+        Iterator iterator = children.iterator();
+        Set<String> propIdSet = model.getAllPropertyIDs();
+        while (iterator.hasNext()) {
+            Element subElement = (Element) iterator.next();
+            //handle property
+            if(propIdSet.contains(subElement.getName())){
+                String propId = subElement.getName();
+                try {
+                    model.setPropertyValue(propId,
+                            model.getProperty(propId).readValueFromXML(subElement));
+                } catch (Exception e) {
+                    if (e.getMessage().startsWith("Non exist widget PATH")) {
+                        throw e;
+                    } else {
+                        String errorMessage = "Failed to read the " + propId + " property for " + model.getName() +". " +
+                                "The default property value will be setted instead. \n" + e;
+                        //MessageDialog.openError(null, "OPI File format error", errorMessage + "\n" + e.getMessage());
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage, e);
+                        ConsoleService.getInstance().writeWarning(errorMessage);
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static void fillConnections(List<Element> failedConnectors, Element element, DisplayModel displayModel) {
+        if(element.getName().equals(XMLTAG_CONNECTION)) {
+            ConnectionModel result = new ConnectionModel(displayModel);
+            if (failedConnectors == null) {
+                setPropertiesFromXML(element, result);
+            } else {
+                try {
+                    setConnectorPropertiesFromXML(element, result);
+                } catch (Exception e) {
+                    failedConnectors.add(element);
+                }
+            }
+        } else if(element.getName().equals(XMLTAG_DISPLAY)){
+            List children = element.getChildren();
+            Iterator iterator = children.iterator();
+            while (iterator.hasNext()) {
+                Element subElement = (Element) iterator.next();
+                if(subElement.getName().equals(XMLTAG_CONNECTION))  {
+                    fillConnections(failedConnectors, subElement, displayModel);
+                }
+            }
+        }
+    }
+
+    private static void setUpConnectors(Element element, DisplayModel displayModel) {
+        final List<Element> failedConnectors = new ArrayList<>();
+        fillConnections(failedConnectors, element, displayModel);
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (Element e : failedConnectors) {
+                        fillConnections(null, e, displayModel);
+                    }
+                } catch (Exception e) {
+                    ConsoleService.getInstance().writeError(e.getMessage());
+                }
+            }
+        });
     }
 }
