@@ -9,16 +9,16 @@ import junit.framework.TestCase;
 public class FindWithRegExInStringExperiment_Test extends TestCase {
     private final String _source = "program sncExample;" + "double v;"
             + "assign v to \"{user}:aiExample\";" + "monitor v;" + "ss ss1 {"
-            + "    state init {" + "	when (delay(0.1)) {"
-            + "	    printf(\"sncExample: Startup delay over\n\");"
-            + "	} state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
-            + "    state low {" + "	    when (v > 50.0) {"
-            + "	        printf(\"sncExample: Changing to high\n\");" + "/* +++"
-            + "*/	    } state high" + "       " + "       when ( delay(1.0) )"
+            + "    state init {" + "    when (delay(0.1)) {"
+            + "     printf(\"sncExample: Startup delay over\n\");"
+            + " } state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
+            + "    state low {" + "     when (v > 50.0) {"
+            + "         printf(\"sncExample: Changing to high\n\");" + "/* +++"
+            + "*/       } state high" + "       " + "       when ( delay(1.0) )"
             + "       {" + "       } state low" + "   }" + "    state high {"
             + "when (v <= 50.0) {"
-            + "	    printf(\"sncExample: Changing to low\n\");"
-            + "	} state low" + "        when ( delay(1.0) ) {"
+            + "     printf(\"sncExample: Changing to low\n\");"
+            + " } state low" + "        when ( delay(1.0) ) {"
             + "       } state high" + "   }" + "}";
 
     public void testFindWithRegEx() {

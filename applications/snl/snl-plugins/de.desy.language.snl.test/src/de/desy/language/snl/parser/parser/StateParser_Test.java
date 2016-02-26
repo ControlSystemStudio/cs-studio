@@ -11,16 +11,16 @@ public class StateParser_Test {
     private final String _source = "/*HAllo*/\nprogram sncExample;"
             + "double v;" + "assign v to \"{user}:aiExample\";"
             + "monitor v;\n\n\n" + "long l;\n\n" + "%{\n" + "   Embedded C\n"
-            + "}%\n" + "ss ss1 {" + "    state init {" + "	when (delay(0.1)) {"
-            + "	    printf(\"sncExample: Startup delay over\n\");"
-            + "	} state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
-            + "    state low {" + "	    when (v > 50.0) {"
-            + "	        printf(\"sncExample: Changing to high\n\");" + "/* +++"
-            + "*/	    } state high" + "       " + "       when ( delay(1.0) )"
+            + "}%\n" + "ss ss1 {" + "    state init {" + "  when (delay(0.1)) {"
+            + "     printf(\"sncExample: Startup delay over\n\");"
+            + " } state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
+            + "    state low {" + "     when (v > 50.0) {"
+            + "         printf(\"sncExample: Changing to high\n\");" + "/* +++"
+            + "*/       } state high" + "       " + "       when ( delay(1.0) )"
             + "       {" + "       } state low" + "   }" + "    state high {"
             + "when (v <= 50.0) {"
-            + "	    printf(\"sncExample: Changing to low\n\");"
-            + "	} state low" + "        when ( delay(1.0) ) {"
+            + "     printf(\"sncExample: Changing to low\n\");"
+            + " } state low" + "        when ( delay(1.0) ) {"
             + "       } state high" + "   }" + "}";
 
     @Test
@@ -29,8 +29,8 @@ public class StateParser_Test {
 
         parser.findNext(this._source);
         Assert.assertTrue(parser.hasFoundElement());
-        Assert.assertEquals("state init {" + "	when (delay(0.1)) {"
-                + "	    printf(\"sncExample: Startup delay over\n\");" + "	} state low" + "    }",
+        Assert.assertEquals("state init {" + "  when (delay(0.1)) {"
+                + "     printf(\"sncExample: Startup delay over\n\");" + "  } state low" + "    }",
                 parser.getLastFoundStatement());
         final StateNode lastFoundAsNode = parser.getLastFoundAsNode();
         Assert.assertEquals(StateNode.class, lastFoundAsNode.getClass());

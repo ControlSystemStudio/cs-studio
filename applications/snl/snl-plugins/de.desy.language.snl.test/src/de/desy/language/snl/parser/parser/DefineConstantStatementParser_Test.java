@@ -16,7 +16,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
                                        "#define R_KEINER 0 // Reiniger nicht verlangt\n" +
                                        "#define DBG_D100 (DBG_D100_EIN|debugNextStep)\n" +
                                        "#define SET_MAN(pv) pv = PID_MANUELL; pvPut(pv); // Test Kommentar\n" +
-                                       "#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
+                                       "#define DBG_TTSTOP_EIN  FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
                                        "#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
                                        "// usw...\n";
 
@@ -92,7 +92,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
         parser.findNext(text, 127);
         Assert.assertTrue(parser.hasFoundElement());
 
-        Assert.assertEquals("#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert",
+        Assert.assertEquals("#define DBG_TTSTOP_EIN FALSE //TRUE=aktiviert   FALSE=deaktiviert",
                 parser.getLastFoundStatement());
         lastFoundAsNode = parser.getLastFoundAsNode();
         Assert.assertEquals("DBG_TTSTOP_EIN", lastFoundAsNode.getSourceIdentifier());
