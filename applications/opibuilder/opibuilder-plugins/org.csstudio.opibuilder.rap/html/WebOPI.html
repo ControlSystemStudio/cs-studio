@@ -62,11 +62,11 @@ then the first step would be installing Tomcat server.</p>
  <p>To reduce network traffic, you may enable http compression on your tomcat server:  edit conf/server.xml:
 
 <pre class = "example_code">
-	&#60;Connector port="8080" 
+    &#60;Connector port="8080" 
            ...
            compression="on"
            compressionMinSize="1024"
-	compressableMimeType="text/html,text/xml,text/plain,text/javascript,application/json"/>
+    compressableMimeType="text/html,text/xml,text/plain,text/javascript,application/json"/>
 </pre>
   <p>By enableing http compression, it can save network traffic up to 10 times!</p>
  <p> After WebOPI is properly configured, you can start Tomcat using 

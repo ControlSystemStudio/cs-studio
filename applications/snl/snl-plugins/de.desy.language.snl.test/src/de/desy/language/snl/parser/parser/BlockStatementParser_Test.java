@@ -12,16 +12,16 @@ public class BlockStatementParser_Test extends TestCase {
     private final String _source = "ss ABC { \n    state XY {\n        when () {\n         pvPut(X, 1);\n   }\n }\n}";
 
     private final String _source2 = "state init {\n"
-            + "		when (delay(0.1)) {\n"
-            + "			printf(\"sncExample: Startup delay over\");\n"
-            + "		} state low    \n" + "} /* Hallo Welt!* ./. */    \n"
-            + "state low {\n" + "	    when (v > 50.0) {\n"
-            + "	        printf(\"sncExample: Changing to high\");\n"
-            + "/* +++*/\n" + "	    }\n" + "state high {\n"
+            + "    when (delay(0.1)) {\n"
+            + "         printf(\"sncExample: Startup delay over\");\n"
+            + "    } state low    \n" + "} /* Hallo Welt!* ./. */    \n"
+            + "state low {\n" + "       when (v > 50.0) {\n"
+            + "         printf(\"sncExample: Changing to high\");\n"
+            + "/* +++*/\n" + "      }\n" + "state high {\n"
             + "     when ( delay(1.0) )       {\n" + "     } state low  \n"
-            + "}\n" + "state high {\n" + "		when (v <= 50.0) {\n"
-            + "	    	printf(\"sncExample: Changing to low\");\n"
-            + "		} state low\n" + "     when ( delay(1.0) ) {\n"
+            + "}\n" + "state high {\n" + "      when (v <= 50.0) {\n"
+            + "         printf(\"sncExample: Changing to low\");\n"
+            + "     } state low\n" + "     when ( delay(1.0) ) {\n"
             + "     } state high\n" + "}\n" + "}";
 
     @Test
@@ -52,19 +52,19 @@ public class BlockStatementParser_Test extends TestCase {
 
         parser.findNext(this._source2);
         Assert.assertTrue(parser.hasFoundElement());
-        Assert.assertEquals("{\n" + "		when (delay(0.1)) {\n"
-                + "			printf(\"sncExample: Startup delay over\");\n" + "		} state low    \n" + "}",
+        Assert.assertEquals("{\n" + "    when (delay(0.1)) {\n"
+                + "         printf(\"sncExample: Startup delay over\");\n" + "    } state low    \n" + "}",
                 parser.getLastFoundStatement());
         final BlockStatementNode lastFoundAsNode = parser.getLastFoundAsNode();
         Assert.assertEquals(BlockStatementNode.class, lastFoundAsNode.getClass());
         Assert.assertEquals("{}", lastFoundAsNode.getSourceIdentifier());
         Assert.assertTrue(lastFoundAsNode.hasOffsets());
         Assert.assertEquals(11, lastFoundAsNode.getStatementStartOffset());
-        Assert.assertEquals(98, lastFoundAsNode.getStatementEndOffset());
+        Assert.assertEquals(108, lastFoundAsNode.getStatementEndOffset());
         Assert.assertFalse(lastFoundAsNode.hasChildren());
         Assert.assertTrue(lastFoundAsNode.hasContent());
-        Assert.assertEquals("\n" + "		when (delay(0.1)) {\n"
-                + "			printf(\"sncExample: Startup delay over\");\n" + "		} state low    \n",
+        Assert.assertEquals("\n" + "    when (delay(0.1)) {\n"
+                + "         printf(\"sncExample: Startup delay over\");\n" + "    } state low    \n",
                 lastFoundAsNode.getContent());
 
         Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode.getStatementEndOffset());
