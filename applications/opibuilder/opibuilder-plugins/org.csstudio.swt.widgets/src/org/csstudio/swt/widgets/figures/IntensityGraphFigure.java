@@ -70,7 +70,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
      * @author Xihui Chen
      *
      */
-    public enum ColorDepth {
+    public static enum ColorDepth {
         BIT8("8 bit"), //No need to convert
         BIT16("16 bit"), //Convert by >>8
         BIT24("24 bit"), //Convert by >>16

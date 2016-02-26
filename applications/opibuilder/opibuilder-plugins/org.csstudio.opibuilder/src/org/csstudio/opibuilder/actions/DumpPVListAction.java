@@ -25,8 +25,6 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -35,11 +33,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 /**Dump all PVs in the OPI.
  * @author Xihui Chen
- * @author Boris Versic - open PVListDialog with new Shell as parent (fixes the dialog opening behind a fullscreen OPI on linux)
  *
  */
 public class DumpPVListAction implements IObjectActionDelegate {
@@ -55,11 +51,7 @@ public class DumpPVListAction implements IObjectActionDelegate {
             Object[] allRuntimePVNames = ((DisplayEditpart)o).getAllRuntimePVNames().toArray();
 
             Arrays.sort(allRuntimePVNames);
-
-            // Create a new parent shell for the dialog. This ensures that the dialog will be shown
-            // on top of a fullscreen OPI on linux (otherwise gtk puts it in the background).
-            final Shell shell = new Shell(targetPart.getSite().getShell().getDisplay(), SWT.NO_TRIM);
-            new PVListDialog(shell, allRuntimePVNames, true).open();
+            new PVListDialog(targetPart.getSite().getShell(), allRuntimePVNames).open();
         }
     }
 
@@ -87,7 +79,6 @@ public class DumpPVListAction implements IObjectActionDelegate {
 
         private Object[] allPVNames;
         private String pvsText;
-        private Shell parentShell = null;
 
         protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames) {
             super(parentShell);
@@ -103,24 +94,6 @@ public class DumpPVListAction implements IObjectActionDelegate {
             }
 
             pvsText = sb.toString();
-        }
-
-        protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames, boolean disposeParentShell) {
-            this(parentShell, allRuntimePVNames);
-            this.parentShell = parentShell;
-
-            parentShell.setSize(200, 20);
-            Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-            // center horizontally, but place it over the upper portion of the window
-            Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
-                                       windowBounds.y + 100 + parentShell.getBounds().y + parentShell.getBounds().height);
-            parentShell.setLocation(location);
-        }
-
-        @Override
-        public boolean close() {
-            if (this.parentShell != null) this.parentShell.dispose();
-            return super.close();
         }
 
         @Override

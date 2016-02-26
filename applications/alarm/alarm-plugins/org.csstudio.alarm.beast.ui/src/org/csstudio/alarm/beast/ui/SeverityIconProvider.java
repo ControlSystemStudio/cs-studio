@@ -83,7 +83,8 @@ public class SeverityIconProvider
      * @param awtImage
      * @return
      */
-    private static Image makeSWTImage(final Display display, final BufferedImage awtImage) {
+    private static Image makeSWTImage(final Display display, final BufferedImage awtImage)
+    {
         return new Image(display,AWT2SWTImageConverter.convertToSWT(awtImage));
     }
 
@@ -96,15 +97,15 @@ public class SeverityIconProvider
         for (int c = 0; c < severities.length; c++)
         {
             final Color c_col = new Color(
-                    severities[c].getRed(),
-                    severities[c].getGreen(),
-                    severities[c].getBlue());
+                severities[c].getRed(),
+                severities[c].getGreen(),
+                severities[c].getBlue());
             for (int s = 0; s < severities.length; s++)
             {
                 final Color s_col = new Color(
-                        severities[s].getRed(),
-                        severities[s].getGreen(),
-                        severities[s].getBlue());
+                    severities[s].getRed(),
+                    severities[s].getGreen(),
+                    severities[s].getBlue());
                 final BufferedImage awtImage = new BufferedImage(ICON_SIZE,ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
                 final Graphics g = awtImage.getGraphics();
                 ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

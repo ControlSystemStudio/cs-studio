@@ -1,10 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2010-2016 ITER Organization.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import java.net.URI;
@@ -18,6 +11,7 @@ import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
+import org.csstudio.opibuilder.runmode.OPIShell;
 import org.csstudio.opibuilder.runmode.OPIView;
 import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -42,6 +36,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -151,8 +146,10 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         action = actionRegistry.getAction(SendEMailAction.ID);
         if (action != null)
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
-                actionRegistry.getAction(ActionFactory.PRINT.getId()));
+        action = actionRegistry.getAction(ActionFactory.PRINT.getId());
+        if (action != null) {
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+        }
 
     }
 
@@ -232,5 +229,16 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
     protected void iOpenEditor(IWorkbenchPage page, IPath path)
             throws Exception {
         SingleSourcePlugin.getUIHelper().openEditor(page, path);
+    }
+
+
+    @Override
+    protected void iOpenOPIShell(IPath path, MacrosInput input) {
+        OPIShell.openOPIShell(path, input);
+    }
+
+    @Override
+    protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
+        return OPIShell.getOPIShellForShell(shell);
     }
 }

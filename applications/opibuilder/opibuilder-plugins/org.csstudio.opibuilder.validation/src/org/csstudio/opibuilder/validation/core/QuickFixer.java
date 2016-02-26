@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobFunction;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
@@ -67,16 +66,18 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
 
         /*
          * (non-Javadoc)
+         *
          * @see org.eclipse.ui.IMarkerResolution2#getDescription()
          */
         @Override
         public String getDescription() {
-            //not used anyway
+            // not used anyway
             return getLabel();
         }
 
         /*
          * (non-Javadoc)
+         *
          * @see org.eclipse.ui.IMarkerResolution2#getImage()
          */
         @Override
@@ -86,15 +87,17 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
 
         /*
          * (non-Javadoc)
+         *
          * @see org.eclipse.ui.IMarkerResolution#getLabel()
          */
         @Override
         public String getLabel() {
-          return "Change the value of the property to the expected value and save OPI. OPIs might be backed up during the process.";
+            return "Change the value of the property to the expected value and save OPI. OPIs might be backed up during the process.";
         }
 
         /*
          * (non-Javadoc)
+         *
          * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
          */
         @Override
@@ -104,7 +107,9 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
 
         /*
          * (non-Javadoc)
-         * @see org.eclipse.ui.views.markers.WorkbenchMarkerResolution#run(org.eclipse.core.resources.IMarker[], org.eclipse.core.runtime.IProgressMonitor)
+         *
+         * @see org.eclipse.ui.views.markers.WorkbenchMarkerResolution#run(org.eclipse.core.resources.IMarker[],
+         * org.eclipse.core.runtime.IProgressMonitor)
          */
         @Override
         public void run(final IMarker[] markers, final IProgressMonitor monitor) {
@@ -113,8 +118,8 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                 resources.add(m.getResource());
             }
             try {
-                if(!Utilities.shouldContinueIfFileOpen("quick fix",
-                        resources.toArray(new IResource[resources.size()]))) {
+                if (!Utilities.shouldContinueIfFileOpen("quick fix",
+                    resources.toArray(new IResource[resources.size()]))) {
                     monitor.setCanceled(true);
                     return;
                 }
@@ -132,60 +137,56 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                 doBackup = Activator.getInstance().isDoBackup();
             }
 
-            Job job = Job.create("OPI Validation Quick Fix", new IJobFunction() {
-
-                @Override
-                public IStatus run(IProgressMonitor monitor) {
-                    try {
-                        Map<IPath, List<ValidationFailure>> toFix = new HashMap<>();
-                        ValidationFailure f;
-                        List<ValidationFailure> list;
-                        //sort all failures by paths, so that each file is edited only once
-                        for (int i = 0; i < markers.length; i++) {
-                            f = (ValidationFailure)markers[i].getAttribute(Validator.ATTR_VALIDATION_FAILURE);
-                            list = toFix.get(f.getPath());
-                            if (list == null) {
-                                list = new ArrayList<>();
-                                toFix.put(f.getPath(), list);
-                            }
-                            list.add(f);
+            Job job = Job.create("OPI Validation Quick Fix", mmonitor -> {
+                try {
+                    Map<IPath, List<ValidationFailure>> toFix = new HashMap<>();
+                    ValidationFailure f;
+                    List<ValidationFailure> list;
+                    // sort all failures by paths, so that each file is edited only once
+                    for (int i = 0; i < markers.length; i++) {
+                        f = (ValidationFailure) markers[i].getAttribute(Validator.ATTR_VALIDATION_FAILURE);
+                        list = toFix.get(f.getPath());
+                        if (list == null) {
+                            list = new ArrayList<>();
+                            toFix.put(f.getPath(), list);
                         }
-                        monitor.beginTask("OPI Validation Quick Fix", toFix.size() + 3);
-                        monitor.worked(1);
-
-                        //if requested to do backup, copy all quick-fixed files to <file>~
-                        if (doBackup) {
-                            for (IPath path : toFix.keySet()) {
-                                IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                                File file = ifile.getLocation().toFile();
-                                String bck = file.getAbsolutePath();
-                                bck = bck + "~";
-                                File backup = new File(bck);
-                                Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                            }
-                        }
-                        monitor.worked(1);
-                        for (List<ValidationFailure> l : toFix.values()) {
-                            //one call per file
-                            SchemaFixer.fixOPIFailure(l.toArray(new ValidationFailure[l.size()]));
-                            monitor.worked(1);
-                        }
-                        for (IMarker m : markers) {
-                            //refresh all changed files
-                            m.getResource().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
-                        }
-                        //revalidated all changed files to get rid of the fixed validations
-                        revalidate(markers, monitor);
-                        monitor.done();
-                        return Status.OK_STATUS;
-                    } catch (CoreException | IOException e) {
-                        LOGGER.log(Level.WARNING, "Unexpected error trying to quick fix the OPIs.", e);
-                        Display.getDefault().asyncExec(() ->
-                            MessageDialog.openError(Display.getDefault().getActiveShell(), "Error Fixing OPI Problem",
-                                    "There was an unexpected error while trying to quick fix the OPI: " + e.getMessage()));
-                        return new Status(IStatus.ERROR,Activator.ID,
-                                "There was an unexpected error while trying to quick fix the OPIs.",e);
+                        list.add(f);
                     }
+                    mmonitor.beginTask("OPI Validation Quick Fix", toFix.size() + 3);
+                    mmonitor.worked(1);
+
+                    // if requested to do backup, copy all quick-fixed files to <file>~
+                    if (doBackup) {
+                        for (IPath path : toFix.keySet()) {
+                            IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                            File file = ifile.getLocation().toFile();
+                            String bck = file.getAbsolutePath();
+                            File backup = new File(bck + "~");
+                            Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    }
+                    mmonitor.worked(1);
+                    for (List<ValidationFailure> l : toFix.values()) {
+                        // one call per file
+                        SchemaFixer.fixOPIFailure(l.toArray(new ValidationFailure[l.size()]));
+                        mmonitor.worked(1);
+                    }
+                    for (IMarker m : markers) {
+                        // refresh all changed files
+                        m.getResource().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
+                    }
+                    // revalidated all changed files to get rid of the fixed validations
+                    revalidate(markers, mmonitor);
+                    mmonitor.done();
+                    return Status.OK_STATUS;
+                } catch (CoreException | IOException e) {
+                    LOGGER.log(Level.WARNING, "Unexpected error trying to quick fix the OPIs.", e);
+                    Display.getDefault()
+                        .asyncExec(() -> MessageDialog.openError(Display.getDefault().getActiveShell(),
+                            "Error Fixing OPI Problem",
+                            "There was an unexpected error while trying to quick fix the OPI: " + e.getMessage()));
+                    return new Status(IStatus.ERROR, Activator.ID,
+                        "There was an unexpected error while trying to quick fix the OPIs.", e);
                 }
             });
 
@@ -214,7 +215,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
             boolean isClearMarkers = Activator.getInstance().isClearMarkers();
             boolean isShowSummary = Activator.getInstance().isShowSummaryDialog();
             try {
-                //in case of revalidation after quick fix, do not clear the markers
+                // in case of revalidation after quick fix, do not clear the markers
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_CLEAR_MARKERS, false);
                 Activator.getInstance().getPreferenceStore().setValue(Activator.PREF_SHOW_SUMMARY, false);
                 ValidationRunner.validate(map, ValType.Manual, monitor, true);
@@ -226,19 +227,22 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
 
         /*
          * (non-Javadoc)
-         * @see org.eclipse.ui.views.markers.WorkbenchMarkerResolution#findOtherMarkers(org.eclipse.core.resources.IMarker[])
+         *
+         * @see
+         * org.eclipse.ui.views.markers.WorkbenchMarkerResolution#findOtherMarkers(org.eclipse.core.resources.IMarker[])
          */
         @Override
         public IMarker[] findOtherMarkers(IMarker[] markers) {
             List<IMarker> list = new ArrayList<>();
-            for (IMarker marker : markers) {
+            for (IMarker m : markers) {
                 try {
-                    if (marker == this.marker) continue;
-                    if (!Validator.MARKER_PROBLEM.equals(marker.getType())) continue;
-                    if (!((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) continue;
-                    list.add(marker);
+                    if (m == this.marker || !Validator.MARKER_PROBLEM.equals(m.getType())
+                        || !((ValidationFailure) m.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable()) {
+                        continue;
+                    }
+                    list.add(m);
                 } catch (CoreException e) {
-                    //ignore
+                    // ignore
                 }
             }
 
@@ -248,21 +252,23 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
      */
     @Override
     public IMarkerResolution[] getResolutions(IMarker marker) {
-        return new IMarkerResolution[]{new Resolution(marker)};
+        return new IMarkerResolution[] { new Resolution(marker) };
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)
      */
     @Override
     public boolean hasResolutions(IMarker marker) {
         try {
-            return ((ValidationFailure)marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable();
+            return ((ValidationFailure) marker.getAttribute(Validator.ATTR_VALIDATION_FAILURE)).isFixable();
         } catch (CoreException e) {
             return false;
         }

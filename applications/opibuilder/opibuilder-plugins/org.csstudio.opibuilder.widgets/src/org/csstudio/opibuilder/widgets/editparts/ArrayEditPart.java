@@ -151,16 +151,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         delegate.startPVs();
     }
 
-    @Override
-    public void performBeastBlink(final int blinkState) {
-        delegate.performBeastBlink(blinkState);
-    }
-
-    @Override
-    public void resetBeastBlink() {
-        delegate.resetBeastBlink();
-    }
-
     protected void initValueArray() {
         int length = getWidgetModel().getArrayLength();
         switch (getWidgetModel().getDataType()) {
@@ -226,7 +216,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
             if (pv != null) {
                 if (pvDataTypeListener == null)
                     pvDataTypeListener = new IPVListener.Stub() {
-                        @Override
                         public void valueChanged(IPV pv) {
                             VType value = pv.getValue();
                             if (value != null) {
@@ -476,7 +465,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     /**
      * @return A String array with all PV names from PV properties.
      */
-    @Override
     public String[] getAllPVNames() {
         return delegate.getAllPVNames();
     }
@@ -493,12 +481,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     /**
      * @return the control PV. null if no control PV on this widget.
      */
-    @Override
     public IPV getControlPV() {
         return delegate.getControlPV();
     }
 
-    @Override
     public DragTracker getDragTracker(Request request) {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             return new SelectEditPartTracker(this) {
@@ -548,7 +534,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
      * @return the PV corresponding to the <code>PV Name</code> property. null
      *         if PV Name is not configured for this widget.
      */
-    @Override
     public IPV getPV() {
         return delegate.getPV();
     }
@@ -561,7 +546,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
      * @return the corresponding pv for the pvPropId. null if the pv doesn't
      *         exist.
      */
-    @Override
     public IPV getPV(String pvPropId) {
         return delegate.getPV(pvPropId);
     }
@@ -569,7 +553,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     /**
      * @return the first PV name.
      */
-    @Override
     public String getPVName() {
         return delegate.getPVName();
     }
@@ -581,7 +564,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
      *            the property id of the PV. It is "pv_name" for the main PV.
      * @return the value of the PV.
      */
-    @Override
     public VType getPVValue(String pvPropId) {
         return delegate.getPVValue(pvPropId);
     }
@@ -628,7 +610,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 for (AbstractWidgetModel child : getWidgetModel().getAllChildren()) {
                     child.setEnabled((Boolean) newValue);
@@ -646,7 +627,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
 
                         if (value instanceof VNumberArray) {
-                            Object wrappedArray = VTypeHelper.getWrappedArray((value));
+                            Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
                             if(wrappedArray!=null)
                                 setValue(wrappedArray);
                             else
@@ -826,7 +807,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
      * @param pvPropId
      * @param value
      */
-    @Override
     public void setPVValue(String pvPropId, Object value) {
         delegate.setPVValue(pvPropId, value);
     }
@@ -983,7 +963,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         return r;
     }
 
-    @Override
     public void setControlEnabled(boolean enabled) {
         delegate.setControlEnabled(enabled);
     }

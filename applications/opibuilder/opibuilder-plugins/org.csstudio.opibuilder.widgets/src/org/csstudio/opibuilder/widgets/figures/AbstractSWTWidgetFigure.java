@@ -66,7 +66,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             this.control = control;
         }
 
-        @Override
         public void mouseEnter(MouseEvent e) {
             control.setToolTipText(editPart.getWidgetModel()
                     .getTooltip());
@@ -114,10 +113,10 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         //In RAP, FigureCanvas has an inner canvas wrapped, so everything should be on the inner canvas.
         if(OPIBuilderPlugin.isRAP()){
             Control[] children = composite.getChildren();
-            for(Control control : children){
-                if(control instanceof Canvas)
-                    composite = (Composite) control;
-            }
+             for(Control control : children){
+                 if(control instanceof Canvas)
+                     composite = (Composite) control;
+             }
         }
         this.parentEditPart = editpart.getParent();
         this.runmode = editpart.getExecutionMode() == ExecutionMode.RUN_MODE;
@@ -141,7 +140,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         // the widget should has the same relative position as its parent
         // container.
         ancestorListener = new AncestorListener.Stub() {
-            @Override
             public void ancestorMoved(org.eclipse.draw2d.IFigure arg0) {
                 relocateWidget();
                 updateWidgetVisibility();
@@ -150,7 +148,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         addAncestorListener(ancestorListener);
         addFigureListener(new FigureListener() {
 
-            @Override
             public void figureMoved(IFigure source) {
                 relocateWidget();
             }
@@ -159,7 +156,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         //hook swt widget with GEF
         composite.getDisplay().asyncExec(new Runnable() {
 
-            @Override
             public void run() {
 //                final Control swtWidget = getSWTWidget();
                 if (swtWidget == null || swtWidget.isDisposed() || !editpart.isActive()) {
@@ -356,13 +352,11 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             updateFlag = true;
             if (!isDirectlyOnDisplay()) {
                 updateManagerListener = new UpdateListener() {
-                    @Override
                     public void notifyPainting(Rectangle damage,
                             @SuppressWarnings("rawtypes") Map dirtyRegions) {
                         updateWidgetVisibility();
                     }
 
-                    @Override
                     public void notifyValidating() {
                     }
 
@@ -383,14 +377,13 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             getParent().translateToAbsolute(viewPortArea);
             translateToAbsolute(clientArea);
             isIntersectViewPort = viewPortArea.intersects(clientArea);
-            //            isIntersectViewPort = getParent().getParent().getClientArea()
-            //                    .intersects(getClientArea());
+//            isIntersectViewPort = getParent().getParent().getClientArea()
+//                    .intersects(getClientArea());
         }
 
         GUIRefreshThread.getInstance(runmode).addIgnorableTask(
                 new WidgetIgnorableUITask(this, new Runnable() {
 
-                    @Override
                     public void run() {
                         if(!getSWTWidget().isDisposed() && getParent() != null)
                             doRelocateWidget();
@@ -497,7 +490,6 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         Runnable task;
         if (wrapComposite != null) {
             task = new Runnable() {
-                @Override
                 public void run() {
                     if (!wrapComposite.isDisposed()) {
                         getSWTWidget().setMenu(null);
@@ -508,12 +500,11 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             };
         } else {
             task = new Runnable() {
-                @Override
                 public void run() {
                     if (!getSWTWidget().isDisposed()) {
                         getSWTWidget().setMenu(null);
                         getSWTWidget().dispose();
-                        //                        composite.update();
+//                        composite.update();
                     }
                 }
             };

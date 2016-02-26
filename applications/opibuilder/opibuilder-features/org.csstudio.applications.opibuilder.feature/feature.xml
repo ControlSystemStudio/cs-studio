@@ -38,12 +38,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.opibuilder.converter"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.csstudio.opibuilder.examples"
          download-size="0"
          install-size="0"
@@ -66,20 +60,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.swt.xygraph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.opibuilder.adl2boy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.adlParser"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -180,19 +160,11 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+  <plugin
          id="org.csstudio.opibuilder.validation"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.opibuilder.rcp.view"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
 </feature>

@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Text;
 public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
 
-    protected TextInputEditpart editpart;
-    protected TextInputModel model;
+    private TextInputEditpart editpart;
+    private TextInputModel model;
     protected Text text;
 
 
@@ -118,10 +118,10 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                             text.getShell().setFocus();
                              break;
                         case NEXT:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
                             break;
                         case PREVIOUS:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
                             break;
                         case KEEP:
                         default:

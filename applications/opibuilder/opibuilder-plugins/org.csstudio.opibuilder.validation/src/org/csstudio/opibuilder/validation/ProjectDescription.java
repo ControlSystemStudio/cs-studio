@@ -21,8 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * <code>ProjectDescription</code> is a JAXB root element for the .project file. It contains only those properties
- * that are requiured by the opivalidation (links and vairables).
+ * <code>ProjectDescription</code> is a JAXB root element for the .project file. It contains only those properties that
+ * are requiured by the opivalidation (links and vairables).
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -44,27 +44,31 @@ public class ProjectDescription {
         private int type;
         private String locationURI;
         private String location;
+
         /**
          * @return destination path name in workspace.
          */
         public String getName() {
             return name;
         }
+
         /**
          * @return 1 for file and 2 for folder
          */
         public int getType() {
             return type;
         }
+
         /**
-         * Returns the location as URI. If location URI is defined, location is not.
-         * The location URI might be unresolved yet (contains variables).
+         * Returns the location as URI. If location URI is defined, location is not. The location URI might be
+         * unresolved yet (contains variables).
          *
          * @return location as URI (if location URI is defined, location is not)
          */
         public String getLocationURI() {
             return locationURI;
         }
+
         /**
          * Set a new location URI.
          *
@@ -73,15 +77,17 @@ public class ProjectDescription {
         public void setLocationURI(String locationURI) {
             this.locationURI = locationURI;
         }
+
         /**
-         * Returns the location. If location is defined, location URI is not.
-         * The location might be unresolved yet (contains variables).
+         * Returns the location. If location is defined, location URI is not. The location might be unresolved yet
+         * (contains variables).
          *
          * @return location as string (if location is defined, location URI is not)
          */
         public String getLocation() {
             return location;
         }
+
         /**
          *
          * @param location
@@ -89,6 +95,7 @@ public class ProjectDescription {
         public void setLocation(String location) {
             this.location = location;
         }
+
         /**
          * Transforms the location or location uri to a file.
          *
@@ -117,12 +124,14 @@ public class ProjectDescription {
     public static final class Variable {
         private String name;
         private String value;
+
         /**
          * @return the name of the variable
          */
         public String getName() {
             return name;
         }
+
         /**
          * @return the value of the variable
          */

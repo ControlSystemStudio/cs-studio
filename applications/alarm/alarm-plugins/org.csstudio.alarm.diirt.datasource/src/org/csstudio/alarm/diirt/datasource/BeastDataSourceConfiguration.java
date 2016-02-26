@@ -18,7 +18,7 @@ import org.w3c.dom.Document;
 
 /**
  * Configuration for {@link BeastDataSource}
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -35,7 +35,7 @@ public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastD
 
             XPathFactory xpathFactory = XPathFactory.newInstance();
             XPath xPath = xpathFactory.newXPath();
-            
+
             String ver = xPath.evaluate("/beast/@version", document);
             if (!ver.equals("1")) {
                 throw new IllegalArgumentException("Unsupported version " + ver);

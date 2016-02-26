@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.ui.util.internal.localization.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
@@ -54,16 +52,9 @@ public class PerspectiveHelper
             final String current = page.getPerspective().getId();
             if (current.equals(id))
             {
-                // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
-                final Shell parentShell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
-                parentShell.setSize(20, 20);
-
-                boolean shouldReset = MessageDialog.openQuestion(parentShell,
+                if (MessageDialog.openQuestion(shell,
                         Messages.OpenPerspectiveReset,
-                        Messages.OpenPerspectiveResetQuestion);
-                parentShell.dispose();
-
-                if (shouldReset)
+                        Messages.OpenPerspectiveResetQuestion))
                     page.resetPerspective();
             }
             else

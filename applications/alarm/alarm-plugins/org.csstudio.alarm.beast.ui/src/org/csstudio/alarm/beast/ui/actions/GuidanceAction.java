@@ -10,8 +10,8 @@ package org.csstudio.alarm.beast.ui.actions;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
-import org.csstudio.ui.util.dialogs.InfoDialog;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that displays guidance.
@@ -42,6 +42,6 @@ public class GuidanceAction extends Action
     @Override
     public void run()
     {
-        InfoDialog.open(shell, getText(), guidance.getDetails());
+        MessageDialog.openInformation(shell, getText(), guidance.getDetails());
     }
 }

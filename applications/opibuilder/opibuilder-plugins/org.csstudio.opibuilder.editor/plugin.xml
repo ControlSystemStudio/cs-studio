@@ -299,4 +299,8 @@
             commandId="org.csstudio.opibuilder.commands.editopi">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="org.csstudio.opibuilder.editor.PerspectiveChecker"> </startup>
+   </extension>
 </plugin>

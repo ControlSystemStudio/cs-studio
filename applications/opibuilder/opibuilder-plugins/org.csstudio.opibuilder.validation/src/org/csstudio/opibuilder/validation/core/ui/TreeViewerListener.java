@@ -12,8 +12,8 @@ import org.eclipse.swt.events.TreeListener;
 
 /**
  *
- * <code>TreeViewerListener</code> is an intercepter listener, which blocks the events that
- * do not contain the MarkerCategory as the data item.
+ * <code>TreeViewerListener</code> is an intercepter listener, which blocks the events that do not contain the
+ * MarkerCategory as the data item.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -33,6 +33,7 @@ public class TreeViewerListener implements TreeListener {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.swt.events.TreeListener#treeCollapsed(org.eclipse.swt.events.TreeEvent)
      */
     @Override
@@ -44,6 +45,7 @@ public class TreeViewerListener implements TreeListener {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.swt.events.TreeListener#treeExpanded(org.eclipse.swt.events.TreeEvent)
      */
     @Override

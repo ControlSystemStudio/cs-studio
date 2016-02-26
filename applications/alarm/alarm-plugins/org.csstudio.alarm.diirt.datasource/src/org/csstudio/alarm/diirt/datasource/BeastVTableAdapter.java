@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.alarm.diirt.datasource;
 
@@ -41,28 +41,28 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
 
         keys.add("Name");
         values.add(message.getName());
-        
+
         keys.add("AlarmStatus");
         values.add(message.getAlarmStatus());
-        
+
         keys.add("CurrentStatus");
         values.add(message.getCurrentState());
-        
+
         keys.add("Active");
         values.add(String.valueOf(message.isActive()));
-        
+
         keys.add("Description");
         values.add(message.getDescription());
-        
+
         keys.add("Value");
         values.add(message.getValue());
-        
+
         keys.add("Enable");
         values.add(String.valueOf(message.getEnable()));
-        
+
         keys.add("Type");
         values.add(message.getType());
-        
+
         VTable table = newVTable(
                 column("Key", newVStringArray(keys, alarmNone(), timeNow())),
                 column("Value", newVStringArray(values, alarmNone(), timeNow())));

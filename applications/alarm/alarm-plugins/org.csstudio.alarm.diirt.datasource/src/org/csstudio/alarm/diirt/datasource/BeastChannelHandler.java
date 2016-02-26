@@ -43,11 +43,9 @@ public class BeastChannelHandler extends
 
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
-//        log.fine("write");
+        log.fine("write");
         try {
             if (newValue instanceof String) {
-            	log.info("Write requested, value = '" + newValue + "'");
-            	
                 switch ((String) newValue) {
                 case "ack":
                 case "ACK":
@@ -92,7 +90,7 @@ public class BeastChannelHandler extends
         datasource.add(getChannelName(), this);
         initialize();
     }
-    
+
     protected void reconnect() {
         log.fine("reconnect: " + getChannelName());
         initialize();

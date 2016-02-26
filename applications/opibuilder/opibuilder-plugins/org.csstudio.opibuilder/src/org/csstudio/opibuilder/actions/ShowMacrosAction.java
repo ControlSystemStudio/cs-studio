@@ -12,9 +12,9 @@ import java.util.Map;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
-import org.csstudio.ui.util.dialogs.InfoDialog;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**Show the predefined macros of the selected widget in console and message dialog.
  * @author Xihui Chen
- * @author Boris Versic - use InfoDialog (MessageDialog shows behind fullscreen window on Linux)
+ *
  */
 public class ShowMacrosAction implements IObjectActionDelegate {
 
@@ -43,11 +43,10 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         sb.append("\n");
         sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
-
-        InfoDialog.open(targetPart.getSite().getShell(), "Predefined Macros", sb.toString());
-        // changed to write the msg to console after dialog because otherwise the console shell is created
-        // right after the dialog displays, and this brings the (FullScreen only) OPI window to the foreground,
-        // leaving the dialog in the background
+        //show the dialog first, because on some linux systems the console print brings the workbench window to top,
+        //blocking entire CSS
+        MessageDialog.openInformation(targetPart.getSite().getShell(),
+                "Predefined Macros", sb.toString());
         ConsoleService.getInstance().writeInfo(sb.toString());
     }
 

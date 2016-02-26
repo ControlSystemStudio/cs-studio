@@ -9,8 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.ui,
  org.diirt.vtype
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ gov.bnl.channelfinder.api,
  org.diirt.datasource;version="3.0.1",
  org.diirt.service;version="3.0.1"

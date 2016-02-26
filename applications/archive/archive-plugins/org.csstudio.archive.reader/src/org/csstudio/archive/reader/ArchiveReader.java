@@ -177,9 +177,9 @@ public interface ArchiveReader extends Closeable
     public void close();
 
     /**
-     * Enable concurrency
+     * Enable concurrency if possible.
      * @param concurrency
      */
-    default void enabledConcurrency(boolean concurrency) {
+    default void enableConcurrency(boolean concurrency) {
     }
 }

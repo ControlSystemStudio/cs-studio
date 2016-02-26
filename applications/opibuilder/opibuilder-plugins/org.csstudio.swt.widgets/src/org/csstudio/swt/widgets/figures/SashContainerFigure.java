@@ -216,7 +216,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
      * @author Xihui Chen
      *
      */
-    public enum SashStyle {
+    public static enum SashStyle {
 
         /**
          * Invisible.

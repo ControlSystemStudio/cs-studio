@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.csstudio.alarm.diirt.datasource
 Bundle-SymbolicName: org.csstudio.alarm.diirt.datasource;singleton:=true
-Bundle-Version: 1.0.1.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/ds_beast.xml
 Bundle-ActivationPolicy: lazy

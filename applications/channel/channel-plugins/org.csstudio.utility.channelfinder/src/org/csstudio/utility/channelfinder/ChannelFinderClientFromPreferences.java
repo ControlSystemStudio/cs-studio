@@ -256,4 +256,10 @@ public class ChannelFinderClientFromPreferences implements ChannelFinderClient {
     client.close();
     }
 
+    @Override
+    public Collection<Channel> getAllChannels() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

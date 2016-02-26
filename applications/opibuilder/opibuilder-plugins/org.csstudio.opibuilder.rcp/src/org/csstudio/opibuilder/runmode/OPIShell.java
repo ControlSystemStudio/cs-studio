@@ -83,7 +83,7 @@ public final class OPIShell implements IOPIRuntime {
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
     // The active OPIshell, or null if no OPIShell is active
-    public static OPIShell activeShell = null;
+    private static OPIShell activeShell = null;
     // Cache of open OPI shells in order of opening.
     private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
     // The view against which the context menu is registered.
@@ -168,7 +168,9 @@ public final class OPIShell implements IOPIRuntime {
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                if (!icon.isDisposed()) icon.dispose();
+                if (!icon.isDisposed()) {
+                    icon.dispose();
+                }
             }
         });
         /*
@@ -180,6 +182,9 @@ public final class OPIShell implements IOPIRuntime {
          * default. Related to Eclipse bug 96700.
          */
         shell.setSize(displayModel.getSize().width + WINDOW_BORDER_X, displayModel.getSize().height + WINDOW_BORDER_Y);
+        if (!displayModel.getLocation().equals(DisplayModel.NULL_LOCATION)) {
+            shell.setLocation(displayModel.getLocation().getSWTPoint());
+        }
         shell.setVisible(true);
 
     }
@@ -263,11 +268,12 @@ public final class OPIShell implements IOPIRuntime {
      *************************************************************/
 
     /**
-     * This is the only way to create an OPIShell
+     * This is the only way to create an OPIShell.
+     * Logs an error and cleans up if path is null.
      */
     public static void openOPIShell(IPath path, MacrosInput macrosInput) {
         if (macrosInput == null) {
-            macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
+            macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
         }
         boolean alreadyOpen = false;
         for (OPIShell opiShell : openShells) {
@@ -336,6 +342,14 @@ public final class OPIShell implements IOPIRuntime {
      */
     public static Set<OPIShell> getAllShells() {
         return new LinkedHashSet<OPIShell>(openShells);
+    }
+
+    /**
+     * Return the active shell, which may be null
+     * @return the active OPIShell
+     */
+    public static OPIShell getActiveShell() {
+        return activeShell;
     }
 
     /**
@@ -422,20 +436,24 @@ public final class OPIShell implements IOPIRuntime {
     }
 
     /**
-     * Render a new OPI in the same shell.  The file path
-     * changes but the macros remain the same.  Is this correct?
+     * Render a new OPI in the same shell.
      */
     @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         try {
+            // The old OPIShell needs to be removed from the cache and the new one
+            // added afterwards, because they don't evaluate as equal.
+            openShells.remove(this);
             if (input instanceof IFileEditorInput) {
                 this.path = ((IFileEditorInput) input).getFile().getFullPath();
             } else if (input instanceof RunnerInput) {
                 this.path = ((RunnerInput) input).getPath();
+                this.macrosInput = ((RunnerInput) input).getMacrosInput();
             }
             displayModel = createDisplayModel();
             setTitle();
             resizeToContents();
+            openShells.add(this);
         } catch (Exception e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to replace OPIShell contents.", e);
         }
@@ -457,4 +475,7 @@ public final class OPIShell implements IOPIRuntime {
         return Objects.hash(OPIShell.class, macrosInput, path);
     }
 
+    public boolean isDisposed() {
+        return ((shell == null) || (shell.isDisposed()));
+    }
 }

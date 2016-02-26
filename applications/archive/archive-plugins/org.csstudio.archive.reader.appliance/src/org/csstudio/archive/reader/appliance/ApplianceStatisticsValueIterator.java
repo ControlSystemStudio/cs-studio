@@ -15,9 +15,8 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 
 /**
  *
- * <code>ApplianceStatisticsValueIterator</code> loads the statistical data for
- * the bins in the selected time range. The bins are defined by the selected time
- * range and the requested number of points.
+ * <code>ApplianceStatisticsValueIterator</code> loads the statistical data for the bins in the selected time range. The
+ * bins are defined by the selected time range and the requested number of points.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -34,8 +33,8 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
     private GenMsgIterator countStream;
 
     /**
-     * Constructs a new value iterator, which uses different calls to retrieve statistical data
-     * for each bin that matches the criteria.
+     * Constructs a new value iterator, which uses different calls to retrieve statistical data for each bin that
+     * matches the criteria.
      *
      * @param reader the reader that created this iterator
      * @param name the name of the PV
@@ -48,23 +47,25 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
      */
-    public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Timestamp start,
-            Timestamp end, int points, IteratorListener listener) throws ArchiverApplianceException, IOException {
+    public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+        int points, IteratorListener listener) throws ArchiverApplianceException, IOException {
         super(reader, name, start, end, points, listener);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.archive.reader.appliance.ApplianceMeanValueIterator#fetchDataInternal(java.lang.String)
      */
     @Override
     protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
         super.fetchDataInternal(pvName);
-        int interval = Math.max(1,(int)((end.getSec() - start.getSec()) / requestedPoints));
+        int interval = Math.max(1, (int) ((end.getSec() - start.getSec()) / requestedPoints));
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 
-        String std = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_STD).append(interval).append('(').append(pvName).append(')').toString();
+        String std = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_STD).append(interval).append('(')
+            .append(pvName).append(')').toString();
         DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
         stdStream = dataRetrieval.getDataForPV(std, sqlStartTimestamp, sqlEndTimestamp);
         if (stdStream != null) {
@@ -73,7 +74,8 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
             throw new ArchiverApplianceException("Could not fetch standard deviation data.");
         }
 
-        String min = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MIN).append(interval).append('(').append(pvName).append(')').toString();
+        String min = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MIN).append(interval).append('(')
+            .append(pvName).append(')').toString();
         dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
         minStream = dataRetrieval.getDataForPV(min, sqlStartTimestamp, sqlEndTimestamp);
         if (minStream != null) {
@@ -82,7 +84,8 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
             throw new ArchiverApplianceException("Could not fetch minimum data.");
         }
 
-        String max = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MAX).append(interval).append('(').append(pvName).append(')').toString();
+        String max = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_MAX).append(interval).append('(')
+            .append(pvName).append(')').toString();
         dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
         maxStream = dataRetrieval.getDataForPV(max, sqlStartTimestamp, sqlEndTimestamp);
         if (maxStream != null) {
@@ -91,7 +94,8 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
             throw new ArchiverApplianceException("Could not fetch maximum data.");
         }
 
-        String count = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_COUNT).append(interval).append('(').append(pvName).append(')').toString();
+        String count = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_COUNT).append(interval).append('(')
+            .append(pvName).append(')').toString();
         dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
         countStream = dataRetrieval.getDataForPV(count, sqlStartTimestamp, sqlEndTimestamp);
         if (countStream != null) {
@@ -101,14 +105,16 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.csstudio.archive.reader.ValueIterator#close()
      */
     @Override
     public void close() {
         try {
-            synchronized(this) {
-                if(stdStream != null) {
+            synchronized (this) {
+                if (stdStream != null) {
                     stdStream.close();
                 }
                 if (minStream != null) {
@@ -130,24 +136,24 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
     @Override
     public VType next() throws Exception {
         PayloadType type = mainStream.getPayLoadInfo().getType();
-        if (type == PayloadType.SCALAR_BYTE ||
-                type == PayloadType.SCALAR_DOUBLE ||
-                type == PayloadType.SCALAR_FLOAT ||
-                type == PayloadType.SCALAR_INT ||
-                type == PayloadType.SCALAR_SHORT) {
-            synchronized(this) {
-                if (closed) return null;
+        if (type == PayloadType.SCALAR_BYTE
+            || type == PayloadType.SCALAR_DOUBLE
+            || type == PayloadType.SCALAR_FLOAT
+            || type == PayloadType.SCALAR_INT
+            || type == PayloadType.SCALAR_SHORT) {
+            synchronized (this) {
+                if (closed)
+                    return null;
                 EpicsMessage meanResult = mainIterator.next();
-                return new ArchiveVStatistics(
-                        TimestampHelper.fromSQLTimestamp(meanResult.getTimestamp()),
-                        getSeverity(meanResult.getSeverity()),
-                        String.valueOf(meanResult.getStatus()),
-                        display,
-                        meanResult.getNumberValue().doubleValue(),
-                        minIterator.next().getNumberValue().doubleValue(),
-                        maxIterator.next().getNumberValue().doubleValue(),
-                        stdIterator.next().getNumberValue().doubleValue(),
-                        countIterator.next().getNumberValue().intValue());
+                return new ArchiveVStatistics(TimestampHelper.fromSQLTimestamp(meanResult.getTimestamp()),
+                    getSeverity(meanResult.getSeverity()),
+                    String.valueOf(meanResult.getStatus()),
+                    display,
+                    meanResult.getNumberValue().doubleValue(),
+                    minIterator.next().getNumberValue().doubleValue(),
+                    maxIterator.next().getNumberValue().doubleValue(),
+                    stdIterator.next().getNumberValue().doubleValue(),
+                    countIterator.next().getNumberValue().intValue());
             }
         }
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.alarm.diirt.datasource;
 
@@ -20,7 +20,7 @@ import org.diirt.datasource.ValueCache;
 public class BeastVBooleanAdapter extends BeastTypeAdapter {
 
     private static Logger log = Logger.getLogger(BeastVStringAdapter.class.getName());
-    
+
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
             return 1;
@@ -33,7 +33,7 @@ public class BeastVBooleanAdapter extends BeastTypeAdapter {
         log.info("VBoolean ADAPTER:" + message.toString());
             cache.writeValue(newVString(message.toString(), alarmNone(), timeNow()));
             return true;
-        
+
     }
 
 }

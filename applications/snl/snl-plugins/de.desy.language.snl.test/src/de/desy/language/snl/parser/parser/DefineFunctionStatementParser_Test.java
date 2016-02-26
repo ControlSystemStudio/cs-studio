@@ -10,14 +10,14 @@ import de.desy.language.snl.parser.nodes.DefineStatementNode;
 
 public class DefineFunctionStatementParser_Test extends TestCase {
 
-    private final static String text = 	"//...\n" +
-                                        "#define OK 1\n" +
-                                        "#define DBG_D100 (DBG_D100_EIN|debugNextStep)\n" +
-                                        "#define SET_MAN(pv) pv = PID_MANUELL; pvPut(pv); // Test Kommentar\n" +
-                                        "#define PV_SET_SYNC(pv, val) pv = val; pvPut (pv, SYNC);\n" +
-                                        "#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
-                                        "#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
-                                        "// usw...\n";
+    private final static String text = "//...\n" +
+                                       "#define OK 1\n" +
+                                       "#define DBG_D100 (DBG_D100_EIN|debugNextStep)\n" +
+                                       "#define SET_MAN(pv) pv = PID_MANUELL; pvPut(pv); // Test Kommentar\n" +
+                                       "#define PV_SET_SYNC(pv, val) pv = val; pvPut (pv, SYNC);\n" +
+                                       "#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
+                                       "#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
+                                       "// usw...\n";
 
     @Test
     public void testParser() {

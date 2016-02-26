@@ -100,7 +100,9 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.csstudio.archive.reader.ValueIterator#hasNext()
      */
     @Override
@@ -108,14 +110,17 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         return !closed && mainIterator != null && mainIterator.hasNext();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.csstudio.archive.reader.ValueIterator#next()
      */
     @Override
     public VType next() throws Exception {
         EpicsMessage message;
-        synchronized(this) {
-            if (closed) return null;
+        synchronized (this) {
+            if (closed)
+                return null;
             message = mainIterator.next();
         }
         return extractData(message);
@@ -225,7 +230,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     private FieldDescriptor getValDescriptor(EpicsMessage message) {
         Iterator<FieldDescriptor> it = message.getMessage().getAllFields().keySet().iterator();
         FieldDescriptor fd;
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             fd = it.next();
             if (fd.getName().equalsIgnoreCase(ApplianceArchiveReaderConstants.VAL)) {
                 return fd;
@@ -234,14 +239,16 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.csstudio.archive.reader.ValueIterator#close()
      */
     @Override
     public void close() {
         try {
-            synchronized(this) {
-                if(mainStream != null) {
+            synchronized (this) {
+                if (mainStream != null) {
                     mainStream.close();
                 }
                 closed = true;
@@ -276,18 +283,16 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         String hopr = headers.get(ApplianceArchiveReaderConstants.HOPR);
 
         return ValueFactory.newDisplay(
-                (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
-                (low != null) ? Double.parseDouble(low) : Double.NaN,
-                (lolo != null) ? Double.parseDouble(lolo) : Double.NaN,
-                (egu != null) ? egu : "",
-                (prec != null) ? NumberFormats.format((int)Math.round(Double.parseDouble(prec))) :
-                    NumberFormats.toStringFormat(),
-                (high != null) ? Double.parseDouble(high) : Double.NaN,
-                (hihi != null) ? Double.parseDouble(hihi) : Double.NaN,
-                (hopr != null) ? Double.parseDouble(hopr) : Double.NaN,
-                (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
-                (hopr != null) ? Double.parseDouble(hopr) : Double.NaN
-        );
+            (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
+            (low != null) ? Double.parseDouble(low) : Double.NaN,
+            (lolo != null) ? Double.parseDouble(lolo) : Double.NaN, (egu != null) ? egu : "",
+            (prec != null) ? NumberFormats.format((int) Math.round(Double.parseDouble(prec)))
+                : NumberFormats.toStringFormat(),
+            (high != null) ? Double.parseDouble(high) : Double.NaN,
+            (hihi != null) ? Double.parseDouble(hihi) : Double.NaN,
+            (hopr != null) ? Double.parseDouble(hopr) : Double.NaN,
+            (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
+            (hopr != null) ? Double.parseDouble(hopr) : Double.NaN);
     }
 
 
@@ -299,16 +304,16 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @return alarm severity
      */
     protected static AlarmSeverity getSeverity(int severity) {
-       if (severity == 0) {
-           return AlarmSeverity.NONE;
-       } else if (severity == 1) {
-           return AlarmSeverity.MINOR;
-       } else if (severity == 2) {
-           return AlarmSeverity.MAJOR;
-       } else if (severity == 3) {
-           return AlarmSeverity.INVALID;
-       } else {
-           return AlarmSeverity.UNDEFINED;
-       }
+        if (severity == 0) {
+            return AlarmSeverity.NONE;
+        } else if (severity == 1) {
+            return AlarmSeverity.MINOR;
+        } else if (severity == 2) {
+            return AlarmSeverity.MAJOR;
+        } else if (severity == 3) {
+            return AlarmSeverity.INVALID;
+        } else {
+            return AlarmSeverity.UNDEFINED;
+        }
     }
 }

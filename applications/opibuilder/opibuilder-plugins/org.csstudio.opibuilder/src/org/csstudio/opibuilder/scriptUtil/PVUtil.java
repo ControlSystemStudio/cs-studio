@@ -18,6 +18,17 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListNumber;
+import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimestampFormat;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,16 +36,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.util.array.ListInt;
-import org.diirt.util.array.ListNumber;
-import org.diirt.util.time.Timestamp;
-import org.diirt.util.time.TimestampFormat;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VDoubleArray;
-import org.diirt.vtype.VEnumArray;
-import org.diirt.vtype.VNumberArray;
-import org.diirt.vtype.VStringArray;
-import org.diirt.vtype.VType;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.
@@ -379,6 +380,22 @@ public class PVUtil{
      */
     public final static void writePV(String pvName, Object value){
         writePV(pvName, value, 10);
+    }
+
+    /**
+     * Get the list of Enum values 
+     * @param pv the PV.
+     * @return the list of values into a string array
+     */
+    public final static String[] getLabels(IPV pv) {
+
+        final VType value = checkPVValue(pv);
+
+        if (value instanceof VEnum) {
+            final List<String> labels = ((VEnum) value).getLabels();
+            return labels.toArray(new String[]{});
+        }
+        return new String[] { };
     }
 
 }

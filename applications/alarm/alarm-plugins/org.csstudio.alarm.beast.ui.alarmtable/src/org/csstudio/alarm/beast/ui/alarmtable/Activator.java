@@ -39,30 +39,4 @@ public class Activator extends AbstractUIPlugin
     {
         return plugin;
     }
-
-    /**
-     * Returns the list of regular expression filters used for filtering the list of PVs.
-     *
-     * @return the array of filters
-     */
-    public String[] getFilters() {
-        String[] filters = getDialogSettings().getArray("filters");
-        if (filters == null) {
-            filters = new String[0];
-        }
-        return filters;
-    }
-
-    /**
-     * Stores the given filters.
-     *
-     * @param filters the filters to store
-     */
-    public void setFilters(String[] filters) {
-        if (filters == null) {
-            filters = new String[0];
-        }
-        getDialogSettings().put("filters", filters);
-
-    }
 }

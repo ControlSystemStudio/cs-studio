@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.validation.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.IPath;
@@ -54,18 +55,17 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      * @param expected the expected value of the property (schema value)
      * @param actual the actual value of the property (validated opi value)
      * @param rule the rule, which was violated
-     * @param isCritical defines if the failure is critical or not (failure is critical when a RO rule is violated
-     *          using a non-predefined value)
+     * @param isCritical defines if the failure is critical or not (failure is critical when a RO rule is violated using
+     *            a non-predefined value)
      * @param isFixable true if the failure can be fixed automatically or false otherwise
      * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
-     *          when the {@link #getMessage()} is called
+     *            when the {@link #getMessage()} is called
      * @param lineNumber the line number at which the failure occurred
      * @param usingNonDefinedValue true if this failure is due to a font or color using one of the non defined values
      */
-    ValidationFailure(IPath path, String wuid, String widgetType, String widgetName,
-            String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
-            boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue,
-            Class<? extends AbstractWidgetModel> modelClass) {
+    ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property, Object expected,
+        Object actual, ValidationRule rule, boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber,
+        boolean usingNonDefinedValue, Class<? extends AbstractWidgetModel> modelClass) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -76,7 +76,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         this.path = path;
         this.rule = rule;
         this.isCritical = isCritical;
-        this.wuid = wuid == null ? "" : wuid; //old OPIs might not have the WUIDs
+        this.wuid = wuid == null ? "" : wuid; // old OPIs might not have the WUIDs
         this.isFixable = isFixable;
         this.forcedMessage = forcedMessage;
         this.lineNumber = lineNumber;
@@ -101,14 +101,14 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
             return forcedMessage;
         }
         if (usingNonDefinedValue) {
-            return new StringBuilder(property.length() + actual.length() + 40).append(property)
-                    .append(": '").append(actual).append("' is not one of the predefined values").toString();
+            return new StringBuilder(property.length() + actual.length() + 40).append(property).append(": '")
+                .append(actual).append("' is not one of the predefined values").toString();
         }
         if (rule == ValidationRule.RO) {
             if (expectedValue != null) {
-                return new StringBuilder(property.length() + expected.length() + actual.length() + 26)
-                    .append(property).append(": expected: '").append(expected).append("' but was: '")
-                    .append(actual).append('\'').toString();
+                return new StringBuilder(property.length() + expected.length() + actual.length() + 26).append(property)
+                    .append(": expected: '").append(expected).append("' but was: '").append(actual).append('\'')
+                    .toString();
             }
         } else if (rule == ValidationRule.WRITE) {
             if (expectedValue != null) {
@@ -117,7 +117,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         } else if (rule == ValidationRule.DEPRECATED) {
             return new StringBuilder(property.length() + 14).append(property).append(" is deprecated").toString();
         }
-        //should not happen
+        // should not happen
         return null;
     }
 
@@ -277,6 +277,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -287,16 +288,52 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
     @Override
     public int compareTo(ValidationFailure o) {
         int c = this.lineNumber - o.lineNumber;
-        if (c != 0) return c;
+        if (c != 0) {
+            return c;
+        }
         if (this.wuid != null) {
             c = this.wuid.compareTo(o.wuid);
         }
-        if (c != 0) return c;
+        if (c != 0) {
+            return c;
+        }
 
         if (this.widgetName != null) {
             c = this.widgetName.compareTo(o.widgetName);
         }
-        if (c != 0) return c;
+        if (c != 0) {
+            return c;
+        }
         return this.widgetType.compareTo(o.widgetType);
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(lineNumber, widgetName, widgetType, wuid);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj == null) {
+            return false;
+        } else if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ValidationFailure other = (ValidationFailure) obj;
+        return Objects.equals(lineNumber, other.lineNumber) && Objects.equals(widgetName, other.widgetName)
+            && Objects.equals(widgetType, other.widgetType) && Objects.equals(wuid, other.wuid);
+    }
+
 }
