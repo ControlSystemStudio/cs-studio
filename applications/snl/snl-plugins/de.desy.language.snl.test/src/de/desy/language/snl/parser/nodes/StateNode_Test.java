@@ -8,7 +8,7 @@ public class StateNode_Test extends TestCase {
         final StateNode stateNode = new StateNode(
                 "AState",
                 "when (v > 50.0) {\n"
-                        + "	        printf(\"sncExample: Changing to high\n\");\n"
+                        + "         printf(\"sncExample: Changing to high\n\");\n"
                         + "       when ( delay(1.0) )\n"
                         + "       {} state low\n", 23, 42);
         Assert.assertEquals("AState", stateNode.getSourceIdentifier());
@@ -19,7 +19,7 @@ public class StateNode_Test extends TestCase {
         Assert.assertFalse(stateNode.hasChildren());
         Assert.assertTrue(stateNode.hasContent());
         Assert.assertEquals("when (v > 50.0) {\n"
-                + "	        printf(\"sncExample: Changing to high\n\");\n"
+                + "         printf(\"sncExample: Changing to high\n\");\n"
                 + "       when ( delay(1.0) )\n" + "       {} state low\n",
                 stateNode.getContent());
         Assert.assertEquals("state AState", stateNode
@@ -30,12 +30,12 @@ public class StateNode_Test extends TestCase {
         final StateNode stateNode = new StateNode(
                 "AState",
                 "when (v > 50.0) {\n"
-                        + "	        printf(\"sncExample: Changing to high\n\");} state Next;\n"
+                        + "         printf(\"sncExample: Changing to high\n\");} state Next;\n"
                         + "       when ( delay(1.0) )\n"
                         + "       {} state low\n", 23, 151);
 
         final WhenNode whenNode1 = new WhenNode("v > 50.0",
-                "\n	        printf(\"sncExample: Changing to high\n\");",
+                "\n         printf(\"sncExample: Changing to high\n\");",
                 "Next", 0, 80);
         stateNode.addChild(whenNode1);
         final WhenNode whenNode2 = new WhenNode(" delay(1.0) ", "", "low", 89, 127);
@@ -54,7 +54,7 @@ public class StateNode_Test extends TestCase {
         Assert
             .assertEquals(
                     "when (v > 50.0) {\n"
-                            + "	        printf(\"sncExample: Changing to high\n\");} state Next;\n"
+                            + "         printf(\"sncExample: Changing to high\n\");} state Next;\n"
                             + "       when ( delay(1.0) )\n"
                             + "       {} state low\n", stateNode.getContent());
         Assert.assertEquals("state AState", stateNode.humanReadableRepresentation());
