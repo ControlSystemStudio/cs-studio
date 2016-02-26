@@ -75,7 +75,7 @@ public class MasarDataProvider implements DataProvider {
     public void initialise() throws DataProviderException {
         try {
             mc.initialise(Activator.getInstance().getServices(), connectionListener);
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Could not instantiate masar data provider.", e);
         }
     }
@@ -103,7 +103,7 @@ public class MasarDataProvider implements DataProvider {
                 n.synchronised();
             }
             return b;
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Could not initialise git repository.", e);
         }
     }
@@ -129,7 +129,7 @@ public class MasarDataProvider implements DataProvider {
         try {
             List<BaseLevel> bls = mc.getSystemConfigs(branch);
             return bls.toArray(new BaseLevel[bls.size()]);
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Could not load the systems list.", e);
         }
     }
@@ -145,7 +145,7 @@ public class MasarDataProvider implements DataProvider {
         try {
             List<SaveSet> sets = mc.getSaveSets(baseLevel, branch);
             return sets.toArray(new SaveSet[sets.size()]);
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Error loading the save set list.", e);
         }
     }
@@ -162,7 +162,7 @@ public class MasarDataProvider implements DataProvider {
         try {
             List<Snapshot> snapshots = mc.getSnapshots(set);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
-        } catch (MasarException | ParseException e) {
+        } catch (RuntimeException | MasarException | ParseException e) {
             throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
                 e);
         }
@@ -177,7 +177,7 @@ public class MasarDataProvider implements DataProvider {
     public SaveSetData getSaveSetContent(SaveSet set) throws DataProviderException {
         try {
             return mc.loadSaveSetData(set);
-        } catch (MasarException | ParseException e) {
+        } catch (RuntimeException | MasarException | ParseException e) {
             throw new DataProviderException("Error loading contents of a save set.", e);
         }
     }
@@ -192,7 +192,7 @@ public class MasarDataProvider implements DataProvider {
         Branch service = null;
         try {
             service = mc.createService(newServiceName);
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Error connecting to service '" + newServiceName + "'.", e);
         }
         for (CompletionNotifier n : getNotifiers()) {
@@ -213,7 +213,7 @@ public class MasarDataProvider implements DataProvider {
         } catch (MasarResponseException e) {
             throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString()
                 + "'.\nService responded with message: " + e.getMessage());
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString() + "'.", e);
         }
     }
@@ -253,7 +253,7 @@ public class MasarDataProvider implements DataProvider {
         } catch (MasarResponseException e) {
             throw new DataProviderException("Error saving a snapshot for '" + data.getSaveSet().getPathAsString()
             + "'.\nService responded with message: " + e.getMessage());
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException(
                 "Error saving snapshot for '" + data.getSaveSet().getPathAsString() + "'.", e);
         }
@@ -286,7 +286,7 @@ public class MasarDataProvider implements DataProvider {
     public VSnapshot getSnapshotContent(Snapshot snapshot) throws DataProviderException {
         try {
             return mc.loadSnapshotData(snapshot);
-        } catch (MasarException e) {
+        } catch (RuntimeException | MasarException e) {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
                 + snapshot.getSaveSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }

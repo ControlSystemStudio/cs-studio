@@ -6,9 +6,14 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -188,7 +193,25 @@ public class SaveRestoreService {
      */
     private ExecutorService getExecutor() {
         if (executor == null) {
-            executor = Executors.newSingleThreadExecutor();
+            executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>()){
+                @Override
+                protected void afterExecute(Runnable r, Throwable t) {
+                    if (r instanceof Future<?>) {
+                        if (((Future<?>)r).isDone()) {
+                            try {
+                                ((Future<?>)r).get(1, TimeUnit.MILLISECONDS);
+                            } catch (ExecutionException e) {
+                                t = e.getCause();
+                            } catch (CancellationException | InterruptedException | TimeoutException e) {
+                                //ignore
+                            }
+                        }
+                    }
+                    if (t != null) {
+                        LOGGER.log(Level.SEVERE, "Execution Error", t);
+                    }
+                }
+            };
         }
         return executor;
     }

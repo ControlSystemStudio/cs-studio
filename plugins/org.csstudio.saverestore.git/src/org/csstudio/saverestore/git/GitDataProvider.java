@@ -80,7 +80,7 @@ public class GitDataProvider implements DataProvider {
             File dest = Activator.getInstance().getDestination();
             grm.initialise(remote, dest);
             initialized = true;
-        } catch (GitAPIException e) {
+        } catch (RuntimeException | GitAPIException e) {
             throw new DataProviderException("Could not instantiate git data provider.", e);
         }
     }
@@ -107,7 +107,7 @@ public class GitDataProvider implements DataProvider {
                 n.synchronised();
             }
             return b;
-        } catch (GitAPIException e) {
+        } catch (RuntimeException | GitAPIException e) {
             throw new DataProviderException("Could not initialise git repository.", e);
         }
     }
@@ -147,7 +147,7 @@ public class GitDataProvider implements DataProvider {
         try {
             List<Branch> branches = grm.getBranches();
             return branches.toArray(new Branch[branches.size()]);
-        } catch (GitAPIException e) {
+        } catch (RuntimeException | GitAPIException e) {
             throw new DataProviderException("Error loading the branches list.", e);
         }
     }
@@ -163,7 +163,7 @@ public class GitDataProvider implements DataProvider {
         try {
             List<BaseLevel> bls = grm.getBaseLevels(branch);
             return bls.toArray(new BaseLevel[bls.size()]);
-        } catch (GitAPIException | IOException e) {
+        } catch (RuntimeException | GitAPIException | IOException e) {
             throw new DataProviderException("Could not read the base levels.", e);
         }
     }
@@ -199,7 +199,7 @@ public class GitDataProvider implements DataProvider {
             List<Snapshot> snapshots = grm.getSnapshots(set,
                 all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
                 e);
         }
@@ -215,7 +215,7 @@ public class GitDataProvider implements DataProvider {
         checkInitialised();
         try {
             return grm.loadSaveSetData(set, Optional.empty());
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException("Error loading the save set data for '" + set.getPathAsString() + "'.",
                 e);
         }
@@ -232,7 +232,7 @@ public class GitDataProvider implements DataProvider {
         Branch branch = null;
         try {
             branch = grm.createBranch(originalBranch, newBranchName);
-        } catch (GitAPIException | IOException e) {
+        } catch (RuntimeException | GitAPIException | IOException e) {
             throw new DataProviderException("Error creating branch '" + newBranchName + "'.", e);
         }
         for (CompletionNotifier n : getNotifiers()) {
@@ -253,7 +253,7 @@ public class GitDataProvider implements DataProvider {
         Result<SaveSetData> answer = null;
         try {
             answer = grm.saveSaveSet(set, comment);
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException(
                 "Error storing save set '" + set.getDescriptor().getPathAsString() + "'.", e);
         }
@@ -281,7 +281,7 @@ public class GitDataProvider implements DataProvider {
         Result<SaveSet> answer = null;
         try {
             answer = grm.deleteSaveSet(set, comment);
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException("Error deleting save set '" + set.getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
@@ -307,7 +307,7 @@ public class GitDataProvider implements DataProvider {
         Result<VSnapshot> answer = null;
         try {
             answer = grm.saveSnapshot(data, comment);
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException(
                 "Error saving snapshot set for '" + data.getSaveSet().getPathAsString() + "'.", e);
         }
@@ -336,7 +336,7 @@ public class GitDataProvider implements DataProvider {
         Result<Snapshot> answer = null;
         try {
             answer = grm.tagSnapshot(snapshot, tagName.orElse(null), tagMessage.orElse(null));
-        } catch (IOException | GitAPIException e) {
+        } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException("Error creating the tag for snapshot '" + snapshot.getDate() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
@@ -399,7 +399,7 @@ public class GitDataProvider implements DataProvider {
                 }
             }
             sort = size > 0 && list.size() != size;
-        } catch (GitAPIException | IOException e) {
+        } catch (RuntimeException | GitAPIException | IOException e) {
             throw new DataProviderException("Error search for snapshot that match the expression '" + expression
                 + "' using criteria '" + criteria.toString() + ".", e);
         }
@@ -425,7 +425,7 @@ public class GitDataProvider implements DataProvider {
         Result<Boolean> answer = null;
         try {
             answer = grm.importData(source, toBranch, toBaseLevel, type);
-        } catch (IOException | GitAPIException | ParseException e) {
+        } catch (RuntimeException | IOException | GitAPIException | ParseException e) {
             throw new DataProviderException("Error importing data from '" + source.getPathAsString() + "'.", e);
         }
 
@@ -452,7 +452,7 @@ public class GitDataProvider implements DataProvider {
         boolean sync = false;
         try {
             sync = grm.synchronise(Optional.empty());
-        } catch (GitAPIException e) {
+        } catch (RuntimeException | GitAPIException e) {
             throw new DataProviderException("Error synchronising local repository with remote.", e);
         }
         for (CompletionNotifier n : getNotifiers()) {
