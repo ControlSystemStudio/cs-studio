@@ -77,6 +77,7 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench)
     {
         // NOP

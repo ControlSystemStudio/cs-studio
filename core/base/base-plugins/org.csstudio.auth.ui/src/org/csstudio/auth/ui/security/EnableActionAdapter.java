@@ -8,6 +8,7 @@ public class EnableActionAdapter implements IActivationAdapter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void activate(final Object o, final boolean activate) {
         if (o instanceof IAction) {
             ((IAction)o).setEnabled(activate);

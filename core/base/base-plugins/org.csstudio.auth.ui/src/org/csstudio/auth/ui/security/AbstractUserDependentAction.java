@@ -252,6 +252,7 @@ public abstract class AbstractUserDependentAction extends Action implements
      * @param event
      *            the UserManagementEvent to handle
      */
+    @Override
     public final void handleUserManagementEvent(final UserManagementEvent event) {
         updateState();
     }

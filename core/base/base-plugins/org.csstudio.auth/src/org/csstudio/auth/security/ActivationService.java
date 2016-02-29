@@ -262,6 +262,7 @@ public final class ActivationService implements IUserManagementListener,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void handleUserManagementEvent(UserManagementEvent event) {
         this.doRefreshState();
     }
@@ -269,6 +270,7 @@ public final class ActivationService implements IUserManagementListener,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void handleRightsManagementEvent(RightsManagementEvent event) {
         this.doRefreshState();
     }
