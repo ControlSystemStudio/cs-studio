@@ -124,6 +124,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void init() {
         if (!initialized) {
             try {
@@ -138,6 +139,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final int getListenerCount() {
         return _weakListenerReferences.size();
     }
@@ -145,6 +147,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final ConnectionState getLatestConnectionState() {
         return _latestConnectionState;
     }
@@ -152,6 +155,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object getLatestValue() {
         return _latestValue;
     }
@@ -159,6 +163,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getLatestError() {
         return _latestError;
     }
@@ -276,6 +281,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IProcessVariableAddress getProcessVariableAddress() {
         return _processVariableAddress;
     }
@@ -283,6 +289,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public final ValueType getValueType() {
         return _valueType;
     }
@@ -319,6 +326,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      *{@inheritDoc}
      */
+    @Override
     public void forceDispose() {
         _weakListenerReferences.clear();
         dispose();
@@ -743,6 +751,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IProcessVariableAddress> getProcessVariableAdresses() {
         return Collections.singletonList(_processVariableAddress);
     }
@@ -750,6 +759,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public IProcessVariableAddress getPVAdress() {
         return _processVariableAddress;
     }
@@ -757,6 +767,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return _processVariableAddress.toString();
     }

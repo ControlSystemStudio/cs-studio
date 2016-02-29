@@ -49,6 +49,7 @@ public abstract class AbstractDataGenerator<E> implements Runnable {
         return _period;
     }
 
+    @Override
     public void run() {
         Object nextValue = generateNextValue();
         _localChannel.setValue(nextValue);

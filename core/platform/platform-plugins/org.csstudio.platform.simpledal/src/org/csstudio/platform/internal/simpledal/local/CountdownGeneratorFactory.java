@@ -32,6 +32,7 @@ public class CountdownGeneratorFactory implements IDataGeneratorFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractDataGenerator createGenerator(LocalChannel channel,
             int defaultPeriod, String[] options) {
         return new CountdownGenerator(channel, defaultPeriod, options);

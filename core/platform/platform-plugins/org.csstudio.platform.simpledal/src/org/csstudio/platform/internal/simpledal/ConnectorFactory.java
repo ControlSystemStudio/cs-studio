@@ -16,6 +16,7 @@ public class ConnectorFactory implements IConnectorFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractConnector createConnector(IProcessVariableAddress pv, ValueType valueType) {
         AbstractConnector connector = null;
 

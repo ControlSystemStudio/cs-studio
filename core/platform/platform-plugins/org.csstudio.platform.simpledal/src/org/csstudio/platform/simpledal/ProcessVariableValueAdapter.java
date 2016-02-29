@@ -37,6 +37,7 @@ public class ProcessVariableValueAdapter<E> implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void connectionStateChanged(ConnectionState connectionState) {
 
     }
@@ -44,6 +45,7 @@ public class ProcessVariableValueAdapter<E> implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void errorOccured(String error) {
 
     }
@@ -51,6 +53,7 @@ public class ProcessVariableValueAdapter<E> implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(E value, Timestamp timestamp) {
 
     }

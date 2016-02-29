@@ -37,6 +37,7 @@ class ObjectSequenceConverter implements IValueTypeConverter<Object[]> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] convert(Object value) {
         Object[] result = new Object[0];
         if (value != null) {
