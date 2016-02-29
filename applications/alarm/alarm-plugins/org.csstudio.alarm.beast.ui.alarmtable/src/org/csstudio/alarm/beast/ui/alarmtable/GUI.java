@@ -853,16 +853,19 @@ public class GUI extends Composite implements AlarmClientModelListener
     private void setErrorMessage(final String error)
     {
         final Table act_table = active_table_viewer.getTable();
-        if (!show_header || act_table.isDisposed())
+        if (act_table.isDisposed())
             return;
         if (error == null)
         {
             if (!have_error_message)
                 return; // msg already cleared, GUI already enabled
-            error_message.setText(""); //$NON-NLS-1$
-            error_message.setBackground(null);
-            error_message.setVisible(false);
-            error_message.getParent().layout();
+            if (show_header)
+            {
+                error_message.setText(""); //$NON-NLS-1$
+                error_message.setBackground(null);
+                error_message.setVisible(false);
+                error_message.getParent().layout();
+            }
             act_table.setEnabled(true);
             if (separate_tables)
                 acknowledged_table_viewer.getTable().setEnabled(true);
@@ -871,10 +874,13 @@ public class GUI extends Composite implements AlarmClientModelListener
         else
         {
             // Update the message
-            error_message.setText(error);
-            error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
-            error_message.setVisible(true);
-            error_message.getParent().layout();
+            if (show_header)
+            {
+                error_message.setText(error);
+                error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
+                error_message.setVisible(true);
+                error_message.getParent().layout();
+            }
             if (have_error_message)
                 return; // GUI already disabled
             act_table.setEnabled(false);
