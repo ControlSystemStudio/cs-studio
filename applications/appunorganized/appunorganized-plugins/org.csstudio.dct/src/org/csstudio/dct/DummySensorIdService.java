@@ -13,6 +13,7 @@ public final class DummySensorIdService implements ISensorIdService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getSensorId(String id, String field) {
         return "sensor_" + UUID.randomUUID() + id + field;
     }

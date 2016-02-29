@@ -30,6 +30,7 @@ public final class Choice implements IChoice, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -41,6 +42,7 @@ public final class Choice implements IChoice, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId() {
         return id;
     }

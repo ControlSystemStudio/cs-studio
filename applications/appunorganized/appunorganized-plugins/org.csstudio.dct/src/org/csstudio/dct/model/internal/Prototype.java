@@ -37,6 +37,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Parameter> getParameters() {
         return parameters;
     }
@@ -44,6 +45,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addParameter(Parameter parameter) {
         parameters.add(parameter);
     }
@@ -51,6 +53,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addParameter(int index, Parameter parameter) {
         parameters.add(index, parameter);
     }
@@ -58,6 +61,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeParameter(Parameter parameter) {
         parameters.remove(parameter);
     }
@@ -65,6 +69,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeParameter(int index) {
         parameters.remove(index);
     }
@@ -72,6 +77,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasParameter(String key) {
         boolean result = false;
         for (Parameter p : parameters) {
@@ -85,6 +91,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getParameterValues() {
         Map<String, String> result = new HashMap<String, String>();
 
@@ -98,6 +105,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean isInherited() {
         return false;
     }
@@ -105,6 +113,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void accept(IVisitor visitor) {
         visitor.visit(this);
 
@@ -153,6 +162,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getParameterValue(String key) {
         return getParameterValues().get(key);
     }
@@ -160,6 +170,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean hasParameterValue(String key) {
         return getParameterValues().get(key) != null;
     }
@@ -167,6 +178,7 @@ public final class Prototype extends AbstractContainer implements IPrototype {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setParameterValue(String key, String value) {
         for (Parameter p : parameters) {
             if (key.equals(p.getName())) {

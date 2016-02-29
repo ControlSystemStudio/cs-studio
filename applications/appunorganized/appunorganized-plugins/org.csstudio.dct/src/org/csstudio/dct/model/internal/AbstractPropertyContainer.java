@@ -36,6 +36,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addProperty(String key, String value) {
         properties.put(key, value);
     }
@@ -43,6 +44,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getProperty(String key) {
         return properties.get(key);
     }
@@ -50,6 +52,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeProperty(String key) {
         properties.remove(key);
     }
@@ -57,6 +60,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean hasProperty(String key) {
         return properties.containsKey(key);
     }
@@ -64,6 +68,7 @@ public abstract class AbstractPropertyContainer extends AbstractElement implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Map<String, String> getProperties() {
         return Collections.unmodifiableMap(properties);
     }

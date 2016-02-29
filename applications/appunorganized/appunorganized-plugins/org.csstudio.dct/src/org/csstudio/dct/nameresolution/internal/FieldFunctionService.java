@@ -56,6 +56,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String resolve(String source, Map<String, String> vars) throws AliasResolutionException {
         if (!StringUtil.hasLength(source)) {
             return source;
@@ -67,6 +68,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public Set<String> findRequiredVariables(final String source) {
         Set<String> result = new HashSet<String>();
 
@@ -203,6 +205,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String source, IRecord record, String fieldName) throws Exception {
         return findAndApplyFunctions(source, record, fieldName);
     }
@@ -326,6 +329,7 @@ public final class FieldFunctionService implements IFieldFunctionService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public List<FieldFunctionExtension> getFieldFunctionExtensions() {
         return lookupExtensions();
     }

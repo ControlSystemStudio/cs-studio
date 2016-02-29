@@ -42,6 +42,7 @@ public final class ProblemVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(final Project project) {
         if (!StringUtil.hasLength(project.getDbdPath())) {
             errors.add(new MarkableError(project.getId(), "No DBD file specified for project."));
@@ -51,6 +52,7 @@ public final class ProblemVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(final IFolder folder) {
         // FIXME: Fehlerermittlung ausprogrammieren
     }
@@ -58,6 +60,7 @@ public final class ProblemVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(final IPrototype prototype) {
         // FIXME: Fehlerermittlung ausprogrammieren
     }
@@ -65,6 +68,7 @@ public final class ProblemVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(final IInstance instance) {
         // FIXME: Fehlerermittlung ausprogrammieren
     }
@@ -72,6 +76,7 @@ public final class ProblemVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(final IRecord record) {
         // .. check name resolution
         final Set<String> missing = determineMissingAliases(AliasResolutionUtil.getNameFromHierarchy(record), record);

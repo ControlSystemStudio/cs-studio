@@ -42,6 +42,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getExtra() {
         return extra;
     }
@@ -59,6 +60,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getInitial() {
         return initial;
     }
@@ -76,6 +78,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getInterest() {
         return interest;
     }
@@ -93,6 +96,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public IMenuDefinition getMenu() {
         return menuDefinition;
     }
@@ -110,6 +114,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -121,6 +126,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getPrompt() {
         return prompt;
     }
@@ -138,6 +144,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public PromptGroup getPromptGroup() {
         return promptGroup;
     }
@@ -155,6 +162,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getSize() {
         return size;
     }
@@ -172,6 +180,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getSpecial() {
         return special;
     }
@@ -189,6 +198,7 @@ public final class FieldDefinition implements IFieldDefinition, Serializable {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getType() {
         return type;
     }

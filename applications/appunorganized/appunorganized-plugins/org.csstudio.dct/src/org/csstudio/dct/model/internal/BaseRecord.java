@@ -73,18 +73,21 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void addField(String name, String value) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void addProperty(String name, String value) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public IContainer getContainer() {
         return null;
     }
@@ -92,6 +95,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getField(String name) {
         return fields.get(name);
     }
@@ -99,6 +103,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public Map<String, String> getFields() {
         return fields;
     }
@@ -106,6 +111,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public Map<String, String> getDefaultFields() {
         return getFields();
     }
@@ -113,6 +119,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public Map<String, String> getFinalFields() {
         return getFields();
     }
@@ -120,6 +127,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, String> getFinalProperties() {
         return Collections.EMPTY_MAP;
@@ -135,6 +143,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getEpicsName() {
         return null;
     }
@@ -142,6 +151,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getEpicsNameFromHierarchy() {
         return null;
     }
@@ -149,6 +159,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setEpicsName(String epicsName) {
 
     }
@@ -156,6 +167,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public IRecord getParentRecord() {
         return null;
     }
@@ -163,6 +175,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, String> getProperties() {
         return Collections.EMPTY_MAP;
@@ -171,6 +184,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getProperty(String name) {
         throw null;
     }
@@ -178,6 +192,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getType() {
         return recordDefinition.getType();
     }
@@ -185,6 +200,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean isInherited() {
         return false;
     }
@@ -192,24 +208,28 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void removeField(String name) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void removeProperty(String name) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setContainer(IContainer container) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public UUID getId() {
         return null;
     }
@@ -217,6 +237,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getName() {
         return recordDefinition != null ? recordDefinition.getType() : "??";
     }
@@ -224,12 +245,14 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setName(String name) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDependentRecord(IRecord record) {
         assert record != null;
         assert record.getParentRecord() == this : "Record must inherit from here.";
@@ -239,6 +262,7 @@ public final class BaseRecord implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IRecord> getDependentRecords() {
         return inheritingRecords;
     }
@@ -246,6 +270,7 @@ public final class BaseRecord implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeDependentRecord(IRecord record) {
         assert record != null;
         assert record.getParentRecord() == this : "Record must inherit from here.";
@@ -255,6 +280,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public IRecordDefinition getRecordDefinition() {
         return recordDefinition;
     }
@@ -262,6 +288,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean hasProperty(String name) {
         return false;
     }
@@ -269,6 +296,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void accept(IVisitor visitor) {
 
     }
@@ -283,6 +311,7 @@ public final class BaseRecord implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean isAbstract() {
         return true;
     }
@@ -290,6 +319,7 @@ public final class BaseRecord implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Boolean getDisabled() {
         return false;
     }

@@ -25,6 +25,7 @@ public final class SearchVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(Project project) {
         doVisit(project);
     }
@@ -32,6 +33,7 @@ public final class SearchVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IFolder folder) {
         doVisit(folder);
     }
@@ -39,6 +41,7 @@ public final class SearchVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IPrototype prototype) {
         doVisit(prototype);
     }
@@ -46,6 +49,7 @@ public final class SearchVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IInstance instance) {
         doVisit(instance);
     }
@@ -53,6 +57,7 @@ public final class SearchVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
         doVisit(record);
     }

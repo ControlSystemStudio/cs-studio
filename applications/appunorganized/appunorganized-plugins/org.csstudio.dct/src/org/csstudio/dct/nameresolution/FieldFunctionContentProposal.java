@@ -19,18 +19,22 @@ public final class FieldFunctionContentProposal implements IContentProposal {
         this.cursorPosition = cursorPosition;
     }
 
+    @Override
     public String getContent() {
         return content;
     }
 
+    @Override
     public int getCursorPosition() {
         return cursorPosition;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
