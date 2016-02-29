@@ -35,6 +35,7 @@ public final class SwitchModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new SwitchModel();
     }
@@ -42,6 +43,7 @@ public final class SwitchModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class getWidgetModelType() {
         return SwitchModel.class;
     }

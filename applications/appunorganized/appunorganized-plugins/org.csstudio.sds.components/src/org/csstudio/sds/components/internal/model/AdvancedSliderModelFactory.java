@@ -37,6 +37,7 @@ public final class AdvancedSliderModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new AdvancedSliderModel();
     }
@@ -44,6 +45,7 @@ public final class AdvancedSliderModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return SimpleSliderModel.class;
     }

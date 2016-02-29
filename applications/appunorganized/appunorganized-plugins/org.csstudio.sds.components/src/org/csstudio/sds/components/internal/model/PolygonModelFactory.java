@@ -39,6 +39,7 @@ public final class PolygonModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         PolygonModel polygonElement = new PolygonModel();
         PointList points = new PointList();
@@ -57,6 +58,7 @@ public final class PolygonModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return PolygonModel.class;
     }

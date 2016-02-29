@@ -37,6 +37,7 @@ public final class LabelModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new LabelModel();
     }
@@ -44,6 +45,7 @@ public final class LabelModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class getWidgetModelType() {
         return LabelModel.class;
     }

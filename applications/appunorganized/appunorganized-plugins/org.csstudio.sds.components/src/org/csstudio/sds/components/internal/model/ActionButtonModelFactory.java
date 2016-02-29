@@ -36,6 +36,7 @@ public final class ActionButtonModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new ActionButtonModel();
     }
@@ -43,6 +44,7 @@ public final class ActionButtonModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return ActionButtonModel.class;
     }

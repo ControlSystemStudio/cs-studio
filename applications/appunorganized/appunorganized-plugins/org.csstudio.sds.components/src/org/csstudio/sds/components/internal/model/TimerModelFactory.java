@@ -35,6 +35,7 @@ public final class TimerModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new TimerModel();
     }
@@ -42,6 +43,7 @@ public final class TimerModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return TimerModel.class;
