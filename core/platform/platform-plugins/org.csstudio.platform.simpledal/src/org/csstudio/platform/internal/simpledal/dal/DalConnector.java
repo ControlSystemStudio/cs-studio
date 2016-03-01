@@ -42,7 +42,6 @@ import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;

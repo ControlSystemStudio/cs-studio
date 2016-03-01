@@ -21,8 +21,6 @@
  */
 package org.csstudio.platform.internal.simpledal.local;
 
-import java.util.Random;
-
 /**
  * Generator for random double values.
  *
