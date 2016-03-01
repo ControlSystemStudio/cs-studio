@@ -3,6 +3,7 @@ package org.csstudio.saverestore;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -259,7 +260,15 @@ public final class Utilities {
             return ValueFactory.newVByte(Byte.parseByte(data), alarm, time, (VByte) type);
         } else if (type instanceof VEnum) {
             List<String> labels = ((VEnum) type).getLabels();
-            return ValueFactory.newVEnum(labels.indexOf(data), labels, alarm, time);
+            int idx = labels.indexOf(data);
+            if (idx < 0) {
+                try {
+                    idx = Integer.parseInt(data);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("'" + data + "' is not a valid enum value.");
+                }
+            }
+            return ValueFactory.newVEnum(idx, labels, alarm, time);
         } else if (type instanceof VString) {
             return ValueFactory.newVString(data, alarm, time);
         } else if (type instanceof VBoolean) {
@@ -304,7 +313,20 @@ public final class Utilities {
         } else if (type instanceof VNumber) {
             return ((VNumber) type).getValue();
         } else if (type instanceof VEnum) {
-            return ((VEnum) type).getValue();
+            VEnum en = (VEnum) type;
+            String val = en.getValue();
+            if (val.isEmpty()) {
+                // if all labels are empty, return the index as a string, otherwise return the label
+                List<String> labels = en.getLabels();
+                for (String s : labels) {
+                    if (!s.isEmpty()) {
+                        return val;
+                    }
+                }
+                return String.valueOf(en.getIndex());
+            } else {
+                return val;
+            }
         } else if (type instanceof VString) {
             return ((VString) type).getValue();
         } else if (type instanceof VBoolean) {
@@ -413,8 +435,26 @@ public final class Utilities {
             return String.valueOf(((VNumber) type).getValue());
         } else if (type instanceof VEnum) {
             List<String> labels = ((VEnum) type).getLabels();
+            boolean allEmpty = true;
+            for (String s : labels) {
+                if (!s.isEmpty()) {
+                    allEmpty = false;
+                    break;
+                }
+            }
+            String value = ((VEnum) type).getValue();
+            if (allEmpty) {
+                List<String> newLabels = new ArrayList<>(labels.size());
+                for (int i = 0; i < labels.size(); i++) {
+                    newLabels.add(String.valueOf(i));
+                }
+                labels = newLabels;
+                if (value.isEmpty()) {
+                    value = String.valueOf(((VEnum) type).getIndex());
+                }
+            }
             final StringBuilder sb = new StringBuilder((labels.size() + 1) * 10);
-            sb.append(((VEnum) type).getValue());
+            sb.append(value);
             sb.append('~').append('[');
             labels.forEach(s -> sb.append(s).append(SEMI_COLON));
             if (labels.isEmpty()) {
@@ -558,7 +598,20 @@ public final class Utilities {
                 return String.valueOf(((VNumber) type).getValue());
             }
         } else if (type instanceof VEnum) {
-            return ((VEnum) type).getValue();
+            VEnum en = (VEnum) type;
+            String val = en.getValue();
+            if (val.isEmpty()) {
+                // if all labels are empty, return the index as a string, otherwise return the label
+                List<String> labels = en.getLabels();
+                for (String s : labels) {
+                    if (!s.isEmpty()) {
+                        return val;
+                    }
+                }
+                return String.valueOf(en.getIndex());
+            } else {
+                return val;
+            }
         } else if (type instanceof VString) {
             return ((VString) type).getValue();
         } else if (type instanceof VBoolean) {

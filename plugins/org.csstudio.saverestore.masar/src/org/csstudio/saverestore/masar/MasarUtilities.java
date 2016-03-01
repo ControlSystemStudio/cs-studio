@@ -404,6 +404,11 @@ public final class MasarUtilities {
                     ScalarType.pvString);
                 StringArrayData labels = new StringArrayData();
                 pvLabels.get(0, pvLabels.getLength(), labels);
+                for (int i = 0; i < labels.data.length; i++) {
+                    if (labels.data[i].isEmpty()) {
+                        labels.data[i] = String.valueOf(i);
+                    }
+                }
                 List<String> enumLabels = new ArrayList<>(Arrays.asList(labels.data));
                 if (enumLabels.size() <= index) {
                     enumLabels.add(String.valueOf(index));

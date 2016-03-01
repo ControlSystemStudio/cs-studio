@@ -236,55 +236,79 @@ public final class FileUtilities {
         String theValue = valueAndLabels[0];
         switch (vtype) {
             case DOUBLE_ARRAY:
-                String[] sd = theValue.split(ARRAY_SPLITTER);
+                String[] sd = theValue.split(ARRAY_SPLITTER,-1);
                 double[] dd = new double[sd.length];
                 for (int i = 0; i < sd.length; i++) {
-                    dd[i] = Double.parseDouble(sd[i]);
+                    if (sd[i].isEmpty()) {
+                        dd[i] = 0;
+                    } else {
+                        dd[i] = Double.parseDouble(sd[i]);
+                    }
                 }
                 ListDouble datad = new ArrayDouble(dd);
                 return ValueFactory.newVDoubleArray(datad, alarm, time, display);
             case FLOAT_ARRAY:
-                String[] sf = theValue.split(ARRAY_SPLITTER);
+                String[] sf = theValue.split(ARRAY_SPLITTER,-1);
                 float[] df = new float[sf.length];
                 for (int i = 0; i < sf.length; i++) {
-                    df[i] = Float.parseFloat(sf[i]);
+                    if (sf[i].isEmpty()) {
+                        df[i] = 0f;
+                    } else {
+                        df[i] = Float.parseFloat(sf[i]);
+                    }
                 }
                 ListFloat dataf = new ArrayFloat(df);
                 return ValueFactory.newVFloatArray(dataf, alarm, time, display);
             case LONG_ARRAY:
-                String[] sl = theValue.split(ARRAY_SPLITTER);
+                String[] sl = theValue.split(ARRAY_SPLITTER,-1);
                 long[] dl = new long[sl.length];
                 for (int i = 0; i < sl.length; i++) {
-                    dl[i] = Long.parseLong(sl[i]);
+                    if (sl[i].isEmpty()) {
+                        dl[i] = 0L;
+                    } else {
+                        dl[i] = Long.parseLong(sl[i]);
+                    }
                 }
                 ListLong datal = new ArrayLong(dl);
                 return ValueFactory.newVLongArray(datal, alarm, time, display);
             case INT_ARRAY:
-                String[] si = theValue.split(ARRAY_SPLITTER);
+                String[] si = theValue.split(ARRAY_SPLITTER,-1);
                 int[] di = new int[si.length];
                 for (int i = 0; i < si.length; i++) {
-                    di[i] = Integer.parseInt(si[i]);
+                    if (si[i].isEmpty()) {
+                        di[i] = 0;
+                    } else {
+                        di[i] = Integer.parseInt(si[i]);
+                    }
                 }
                 ListInt datai = new ArrayInt(di);
                 return ValueFactory.newVIntArray(datai, alarm, time, display);
             case SHORT_ARRAY:
-                String[] ss = theValue.split(ARRAY_SPLITTER);
+                String[] ss = theValue.split(ARRAY_SPLITTER,-1);
                 short[] ds = new short[ss.length];
                 for (int i = 0; i < ss.length; i++) {
-                    ds[i] = Short.parseShort(ss[i]);
+                    if (ss[i].isEmpty()) {
+                        ds[i] = (short)0;
+                    } else {
+                        ds[i] = Short.parseShort(ss[i]);
+                    }
                 }
                 ListShort datas = new ArrayShort(ds);
                 return ValueFactory.newVShortArray(datas, alarm, time, display);
             case BYTE_ARRAY:
-                String[] sb = theValue.split(ARRAY_SPLITTER);
+                String[] sb = theValue.split(ARRAY_SPLITTER,-1);
                 byte[] db = new byte[sb.length];
                 for (int i = 0; i < sb.length; i++) {
-                    db[i] = Byte.parseByte(sb[i]);
+                    if (sb[i].isEmpty()) {
+                        db[i] = (byte)0;
+                    } else {
+                        db[i] = Byte.parseByte(sb[i]);
+                    }
                 }
                 ListByte datab = new ArrayByte(db);
                 return ValueFactory.newVNumberArray(datab, alarm, time, display);
             case ENUM_ARRAY:
-                String[] se = theValue.split(ARRAY_SPLITTER);
+                String[] se = theValue.split(ARRAY_SPLITTER,-1);
                 List<String> labels = Arrays.asList(valueAndLabels[1].split(ARRAY_SPLITTER));
                 int[] de = new int[se.length];
                 for (int i = 0; i < se.length; i++) {
@@ -293,10 +317,10 @@ public final class FileUtilities {
                 ListInt datae = new ArrayInt(de);
                 return ValueFactory.newVEnumArray(datae, labels, alarm, time);
             case STRING_ARRAY:
-                String[] str = theValue.split(ARRAY_SPLITTER);
+                String[] str = theValue.split(ARRAY_SPLITTER,-1);
                 return ValueFactory.newVStringArray(Arrays.asList(str), alarm, time);
             case BOOLEAN_ARRAY:
-                String[] sbo = theValue.split(ARRAY_SPLITTER);
+                String[] sbo = theValue.split(ARRAY_SPLITTER,-1);
                 boolean[] dbo = new boolean[sbo.length];
                 for (int i = 0; i < sbo.length; i++) {
                     dbo[i] = Boolean.parseBoolean(sbo[i]);
@@ -304,10 +328,14 @@ public final class FileUtilities {
                 ListBoolean databo = new ArrayBoolean(dbo);
                 return ValueFactory.newVBooleanArray(databo, alarm, time);
             case NUMBER_ARRAY:
-                String[] nd = theValue.split(ARRAY_SPLITTER);
+                String[] nd = theValue.split(ARRAY_SPLITTER,-1);
                 double[] ndd = new double[nd.length];
                 for (int i = 0; i < nd.length; i++) {
-                    ndd[i] = Double.parseDouble(nd[i]);
+                    if (nd[i].isEmpty()) {
+                        ndd[i] = 0;
+                    } else {
+                        ndd[i] = Double.parseDouble(nd[i]);
+                    }
                 }
                 ListDouble datand = new ArrayDouble(ndd);
                 return ValueFactory.newVDoubleArray(datand, alarm, time, display);
@@ -329,7 +357,7 @@ public final class FileUtilities {
             case STRING:
                 return ValueFactory.newVString(theValue, alarm, time);
             case ENUM:
-                List<String> lbls = Arrays.asList(valueAndLabels[1].split("\\;"));
+                List<String> lbls = Arrays.asList(valueAndLabels[1].split("\\;",-1));
                 return ValueFactory.newVEnum(lbls.indexOf(theValue), lbls, alarm, time);
             case NODATA:
                 return VDisconnectedData.INSTANCE;

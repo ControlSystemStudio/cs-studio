@@ -729,7 +729,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                 final List<VSnapshot> snapshots = controller.getSnapshots(true);
                 SaveRestoreService.getInstance().execute("Save Snapshot", () -> {
                     save(snapshots, false, false);
-                    checkDirty();
+                    Platform.runLater(() -> checkDirty());
                 });
             }
         });
