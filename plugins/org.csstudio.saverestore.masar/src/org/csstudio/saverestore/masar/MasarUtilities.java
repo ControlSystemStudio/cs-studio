@@ -404,7 +404,11 @@ public final class MasarUtilities {
                     ScalarType.pvString);
                 StringArrayData labels = new StringArrayData();
                 pvLabels.get(0, pvLabels.getLength(), labels);
-                return ValueFactory.newVEnum(index, Arrays.asList(labels.data), alarm, time);
+                List<String> enumLabels = new ArrayList<>(Arrays.asList(labels.data));
+                if (enumLabels.size() <= index) {
+                    enumLabels.add(String.valueOf(index));
+                }
+                return ValueFactory.newVEnum(index, enumLabels, alarm, time);
             }
         }
         throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
