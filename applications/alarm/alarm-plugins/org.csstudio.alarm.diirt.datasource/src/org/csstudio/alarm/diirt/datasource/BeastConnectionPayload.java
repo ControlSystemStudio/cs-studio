@@ -4,16 +4,11 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
-import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.client.AlarmTreePV;
-
 public class BeastConnectionPayload {
 
-    private final AlarmTreeItem initial;
     private final boolean connected;
 
-    public BeastConnectionPayload(AlarmTreeItem initialState, boolean connected) {
-        this.initial = initialState;
+    public BeastConnectionPayload(boolean connected) {
         this.connected = connected;
     }
 
