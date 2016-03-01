@@ -15,7 +15,6 @@ import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVWriter;
-import org.diirt.datasource.WriteFunction;
 import org.diirt.datasource.expression.DesiredRateExpression;
 import org.diirt.datasource.expression.ReadMap;
 import org.diirt.datasource.expression.WriteExpression;
