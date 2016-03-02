@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.perspectives;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -28,6 +30,7 @@ import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,12 +63,15 @@ public class PerspectiveSaverUnitTest
     @InjectMocks
     private PerspectiveSaver saver;
 
+    private String workspaceLocation = "/dummy";
+
     @Before
     public void setUp() {
         try {
-            when(instanceLocation.getDataArea(any(String.class))).thenReturn(new URL("file://dummy"));
-            saver.init();
+            URL workspaceUrl = new URL("file:" + workspaceLocation);
+            when(instanceLocation.getDataArea(any(String.class))).thenReturn(workspaceUrl);
             doNothing().when(preferences).put(any(String.class), any(String.class));
+            // Return first argument if cloneElement() is called on mockModelService.
             when(mockModelService.cloneElement(any(MUIElement.class), any(MSnippetContainer.class))).thenAnswer(new Answer<MUIElement>() {
                 @Override
                 public MUIElement answer(InvocationOnMock invocation) {
@@ -112,6 +118,27 @@ public class PerspectiveSaverUnitTest
         props.put(key, value);
         Event e = new Event("mytopic", props);
         return e;
+    }
+
+    @Test
+    public void constructUriCreatesSensibleFilename() throws MalformedURLException {
+        String perspectiveName = "dummy";
+        String sensibleFilename = workspaceLocation + "/perspective_" + perspectiveName + ".xmi";
+        URI uri = URI.createFileURI(sensibleFilename);
+        URI u =  saver.constructUri(new URL("file:" + workspaceLocation), perspectiveName);
+        assertEquals(u,  uri);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void constructUriThrowsNullPointerExceptionIfFilenameIsNull() {
+        String perspectiveName = "dummy";
+        saver.constructUri(null, perspectiveName);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void constructUriThrowsNullPointerExceptionIfPerspectiveNameIsNull() throws MalformedURLException {
+        URL fileUrl = new URL("file:///dummy");
+        saver.constructUri(fileUrl, null);
     }
 
 }

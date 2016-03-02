@@ -37,7 +37,7 @@ public class PerspectiveLoader {
         File selectedFile = promptForXmiFile();
         if (selectedFile != null && selectedFile.isFile()) {
             ResourceSet rs = new ResourceSetImpl();
-            URI uri = URI.createURI(Plugin.FILE_PREFIX + selectedFile.getPath());
+            URI uri = URI.createFileURI(selectedFile.getPath());
             Resource res = rs.getResource(uri, true);
             EObject obj = res.getContents().get(0);
             if (obj instanceof MPerspective) {
@@ -59,7 +59,7 @@ public class PerspectiveLoader {
     private File promptForXmiFile() {
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         chooser.setText(Messages.PerspectiveLoader_selectFile);
-        chooser.setFilterExtensions(new String[] {"*" + Plugin.XMI_EXTENSION});
+        chooser.setFilterExtensions(new String[] {"*." + Plugin.XMI_EXTENSION});
         chooser.open();
         File dirname = new File(chooser.getFilterPath());
         String filename = chooser.getFileName();

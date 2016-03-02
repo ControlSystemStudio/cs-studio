@@ -10,6 +10,8 @@ import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.e4.ui.model.application.ui.advanced.impl.AdvancedFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 public class PerspectiveUtilsUnitTest {
 
@@ -27,7 +29,7 @@ public class PerspectiveUtilsUnitTest {
     }
 
     @Test
-    public void testPerspToStringReturnsStringForEmptyPerspective() throws IOException {
+    public void perspToStringReturnsStringForEmptyPerspective() throws IOException {
         String s = perspectiveUtils.perspToString(perspective);
         assertNotNull(s);
         assertTrue(s.contains("advanced:Perspective"));

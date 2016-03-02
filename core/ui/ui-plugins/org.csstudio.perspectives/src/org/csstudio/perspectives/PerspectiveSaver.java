@@ -55,10 +55,10 @@ public class PerspectiveSaver implements EventHandler {
     @PostConstruct
     public void init() {
         try {
-            Plugin.getLogger().config("Initialising perspective saver.");
             URL dataUri = instanceLocation.getDataArea(Plugin.ID);
             dataDirectory = new File(dataUri.getFile());
             Files.createDirectories(dataDirectory.toPath());
+            Plugin.getLogger().config("Initialising perspective saver to location " + dataDirectory);
             // Subscribe to perspective save events.
             broker.subscribe(UIEvents.UILifeCycle.PERSPECTIVE_SAVED, this);
         } catch (IOException e) {
@@ -87,14 +87,13 @@ public class PerspectiveSaver implements EventHandler {
         if (o instanceof MPerspective) {
             try {
                 MPerspective p = (MPerspective) o;
-
                 List<MPlaceholder> phs = modelService.findElements(p, null, MPlaceholder.class, null);
                 // Copy persisted state from part to placeholder.
                 for (MPlaceholder ph : phs) {
                     ph.getPersistedState().putAll(ph.getRef().getPersistedState());
                 }
                 MPerspective clone = (MPerspective) modelService.cloneElement(p, null);
-                URI uri = constructUri(clone.getLabel());
+                URI uri = constructUri(instanceLocation.getDataArea(Plugin.ID), clone.getLabel());
                 perspectiveUtils.savePerspective(clone, uri);
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
@@ -109,13 +108,14 @@ public class PerspectiveSaver implements EventHandler {
         }
     }
 
-    private URI constructUri(String perspectiveName) {
-        StringBuilder sb = new StringBuilder(Plugin.FILE_PREFIX);
-        sb.append("/");
-        sb.append(PERSPECTIVE_PREFIX);
-        sb.append(perspectiveName);
-        sb.append(Plugin.XMI_EXTENSION);
-        return URI.createURI(sb.toString());
+    public URI constructUri(URL dataArea, String perspectiveName) {
+        if (dataArea == null || perspectiveName == null) {
+            throw new NullPointerException("Arguments to constructUri may not be null.");
+        }
+        URI uri = URI.createURI(dataArea.toString());
+        uri = uri.appendSegment(PERSPECTIVE_PREFIX + perspectiveName);
+        uri = uri.appendFileExtension(Plugin.XMI_EXTENSION);
+        return uri;
     }
 
 }
