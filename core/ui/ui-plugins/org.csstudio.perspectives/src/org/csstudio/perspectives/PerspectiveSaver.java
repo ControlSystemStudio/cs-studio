@@ -108,7 +108,7 @@ public class PerspectiveSaver implements EventHandler {
         }
     }
 
-    public URI constructUri(URL dataArea, String perspectiveName) {
+    URI constructUri(URL dataArea, String perspectiveName) {
         if (dataArea == null || perspectiveName == null) {
             throw new NullPointerException("Arguments to constructUri may not be null.");
         }
