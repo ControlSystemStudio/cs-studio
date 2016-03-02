@@ -17,7 +17,7 @@ public class PerspectiveHandler extends AbstractHandler {
         Plugin.getLogger().config("PerspectiveHandler: execute");
         IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
         final PerspectiveLoader ps = ContextInjectionFactory.make(PerspectiveLoader.class, context);
-        ps.loadPerspectives();
+        ps.promptAndLoadPerspective();
         return null;
     }
 

@@ -33,26 +33,30 @@ public class PerspectiveLoader {
      * string.  Put into preferences; this triggers the new perspective import mechanism
      * in Eclipse 4.5.2 which imports the perspective properly.
      */
-    public void loadPerspectives() {
+    public void promptAndLoadPerspective() {
         File selectedFile = promptForXmiFile();
         if (selectedFile != null && selectedFile.isFile()) {
-            ResourceSet rs = new ResourceSetImpl();
-            URI uri = URI.createFileURI(selectedFile.getPath());
-            Resource res = rs.getResource(uri, true);
-            EObject obj = res.getContents().get(0);
-            if (obj instanceof MPerspective) {
-                MPerspective p = (MPerspective) obj;
-                try {
-                    String perspAsString = perspectiveUtils.perspToString(p);
-                    // The new perspective import and export mechanism will intercept
-                    // this preference change and import the perspective for us.
-                    preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
-                } catch (IOException e) {
-                    Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
-                }
-            } else {
-                Plugin.getLogger().warning(NLS.bind(Messages.PerspectiveLoader_fileNotUnderstood, uri));
+            URI fileUri = URI.createFileURI(selectedFile.getPath());
+            loadPerspective(fileUri);
+        }
+    }
+
+    public void loadPerspective(URI fileUri) {
+        ResourceSet rs = new ResourceSetImpl();
+        Resource res = rs.getResource(fileUri, true);
+        EObject obj = res.getContents().get(0);
+        if (obj instanceof MPerspective) {
+            MPerspective p = (MPerspective) obj;
+            try {
+                String perspAsString = perspectiveUtils.perspToString(p);
+                // The new perspective import and export mechanism will intercept
+                // this preference change and import the perspective for us.
+                preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
+            } catch (IOException e) {
+                Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
             }
+        } else {
+            Plugin.getLogger().warning(NLS.bind(Messages.PerspectiveLoader_fileNotUnderstood, fileUri));
         }
     }
 
