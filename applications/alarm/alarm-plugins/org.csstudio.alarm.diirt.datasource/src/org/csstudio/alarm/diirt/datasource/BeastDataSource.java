@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -21,7 +20,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.diirt.datasource.ChannelHandler;
@@ -49,8 +47,6 @@ public class BeastDataSource extends DataSource {
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
     private Executor executor = Executors.newScheduledThreadPool(4);
-
-    private boolean serverTimeout = false;
 
     static {
         // Install type support for the types it generates.
@@ -83,30 +79,26 @@ public class BeastDataSource extends DataSource {
 
                             @Override
                             public void serverTimeout(AlarmClientModel model) {
-                                // TODO Auto-generated method stub
-                                log.warning("beast  datasource: server timeout (server alive: " + model.isServerAlive() + ")");
-                                serverTimeout = true;
+                                log.warning("beast datasource: server timeout (server alive: " + model.isServerAlive() + ")");
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                             .get(channelHandlerLookupName(channelName));
-                                    channel.reconnect();
+                                    // notify the ChannelHandler that we lost connection
+                                    // (causes ConnectionChanged event + Listeners' PVReader.isConnected() will return the correct state)
+                                    channel.connectionStateChanged(false);
                                 }
                             }
 
                             @Override
-                            public void serverModeUpdate(
-                                    AlarmClientModel model,
-                                    boolean maintenance_mode) {
-                                // TODO Auto-generated method stub
-                                log.info("beast  datasource: server mode update");
+                            public void serverModeUpdate(AlarmClientModel model, boolean maintenance_mode) {
+                                log.fine("beast  datasource: server mode update");
                             }
 
-                            @SuppressWarnings("rawtypes")
+                            @SuppressWarnings({ "rawtypes", "unchecked" })
                             @Override
                             public void newAlarmState(AlarmClientModel alarmModel, AlarmTreePV pv, boolean parent_changed) {
-                                log.config("beast  datasource: new alarm state " + pv );
                                 if (pv != null) {
-                                    log.fine(pv.getPathName());
+//                                    log.fine(pv.getPathName());
                                     List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
                                     if (pathHandlers != null) {
                                         for (Consumer consumer : pathHandlers) {
@@ -120,7 +112,7 @@ public class BeastDataSource extends DataSource {
                                         }
                                     }
                                     // Notify all parent nodes if parent changed
-                                    if(parent_changed){
+                                    if (parent_changed) {
                                         AlarmTreeItem parent = pv.getParent();
                                         while (parent != null) {
                                             List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
@@ -136,14 +128,13 @@ public class BeastDataSource extends DataSource {
                                             parent = parent.getParent();
                                         }
                                     }
-                                }else if(serverTimeout && alarmModel.isServerAlive()){
-                                    // The server has recovered from a disconnect event.
-                                    // Attempt to reconnect all pv's
-                                    serverTimeout = alarmModel.isServerAlive();
+                                } else {
+                                    // The AlarmClientModel has recovered from a disconnection or is notifying us that the first
+                                    // messages have been received after initial connection.
                                     for (String channelName : map.keySet()) {
                                         BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                                 .get(channelHandlerLookupName(channelName));
-                                        channel.reconnect();
+                                        channel.reconnect(); // will send connection state + current AlarmTreeItem state
                                     }
                                 }
                             }
@@ -159,7 +150,7 @@ public class BeastDataSource extends DataSource {
         try {
             if (configuration.getConfigName() != null && !configuration.getConfigName().isEmpty()) {
                 alarmModel = AlarmClientModel.getInstance(configuration.getConfigName());
-            } else{
+            } else {
                 alarmModel = AlarmClientModel.getInstance();
             }
             return alarmModel;
@@ -171,7 +162,6 @@ public class BeastDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         return new BeastChannelHandler(channelName, this);
-
     }
 
     @Override
@@ -180,23 +170,50 @@ public class BeastDataSource extends DataSource {
         model.release();
     }
 
+    /**
+     * Override of default channelHandlerLookupName.
+     * This implementation makes a leading and trailing forward slash ("/") optional.
+     * All four of these will resolve to the same channel:
+     * "/demo/test/", "/demo/test", "demo/test/" & "demo/test".
+     *
+     * @see org.diirt.datasource.DataSource#channelHandlerLookupName(java.lang.String)
+     */
+    @Override
+    protected String channelHandlerLookupName(String channelName) {
+        String channel = channelName;
+        if (channel != null && !channel.equals("/") && !channel.isEmpty()) {
+            if (channel.endsWith("/"))
+                channel = channel.substring(0, channel.length() - 1);
+            if (channel.startsWith("/"))
+                channel = channel.substring(1);
+        }
+
+        return channel;
+    }
+
     public BeastTypeSupport getTypeSupport() {
         return typeSupport;
     }
 
-    protected void add(String channelName, Consumer beastChannelHandler){
+    @SuppressWarnings("rawtypes")
+    protected void add(String channelName, Consumer beastChannelHandler) {
+        String beastChannel = channelHandlerLookupName(channelName);
         synchronized (map) {
-            if (!map.containsKey(channelName) || map.get(channelName) == null) {
-                map.put(channelName, new ArrayList<Consumer>());
+            List<Consumer> list = map.get(beastChannel);
+            if (list == null) {
+                list = new ArrayList<Consumer>();
+                map.put(beastChannel, list);
             }
-            map.get(channelName).add(beastChannelHandler);
+            list.add(beastChannelHandler);
         }
     }
 
+    @SuppressWarnings("rawtypes")
     protected void remove(String channelName, Consumer beastChannelHandler) {
+        String beastChannel = channelHandlerLookupName(channelName);
         synchronized (map) {
-            if (map.containsKey(channelName)) {
-                map.get(channelName).remove(beastChannelHandler);
+            if (map.containsKey(beastChannel)) {
+                map.get(beastChannel).remove(beastChannelHandler);
             }
         }
     }
@@ -226,7 +243,7 @@ public class BeastDataSource extends DataSource {
         }
     }
 
-    protected boolean isWriteAllowed(){
+    protected boolean isWriteAllowed() {
         if (model != null) {
             return model.isServerAlive() && model.isWriteAllowed();
         } else {
@@ -234,7 +251,7 @@ public class BeastDataSource extends DataSource {
         }
     }
 
-    protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
+    protected void acknowledge(String channelName, boolean acknowledge) throws Exception {
         getState(channelName).acknowledge(acknowledge);
     }
 
@@ -260,16 +277,12 @@ public class BeastDataSource extends DataSource {
     /** @param pvs List where PVs to enable/disable will be added
      *  @param item Item for which to locate PVs, recursively
      */
-    protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item, boolean enable)
-    {
-        if (item instanceof AlarmTreePV)
-        {
+    protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item, boolean enable) {
+        if (item instanceof AlarmTreePV) {
             final AlarmTreePV pv = (AlarmTreePV) item;
             if (pv.isEnabled() != enable)
                 pvs.add(pv);
-        }
-        else
-        {
+        } else {
             final int N = item.getChildCount();
             for (int i=0; i<N; ++i)
                 addPVs(pvs, item.getChild(i), enable);
