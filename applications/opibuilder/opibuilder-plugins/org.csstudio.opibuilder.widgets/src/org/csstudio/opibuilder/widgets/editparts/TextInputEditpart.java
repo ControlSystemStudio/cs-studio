@@ -56,11 +56,15 @@ public class TextInputEditpart extends TextUpdateEditPart {
     private IPVListener pvLoadLimitsListener;
     private org.diirt.vtype.Display meta = null;
 
-    protected ITextInputEditPartDelegate delegate;
+    private ITextInputEditPartDelegate delegate;
 
     @Override
     public TextInputModel getWidgetModel() {
         return (TextInputModel) getModel();
+    }
+
+    protected void setDelegate(ITextInputEditPartDelegate delegate) {
+        this.delegate = delegate;
     }
 
     @Override
@@ -70,11 +74,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
         if(shouldBeTextInputFigure()){
             TextInputFigure textInputFigure = (TextInputFigure) createTextFigure();
             initTextFigure(textInputFigure);
-            delegate = new Draw2DTextInputEditpartDelegate(
-                    this, getWidgetModel(), textInputFigure);
+            setDelegate(new Draw2DTextInputEditpartDelegate(
+                    this, getWidgetModel(), textInputFigure));
 
         }else{
-            delegate = new NativeTextEditpartDelegate(this, getWidgetModel());
+            setDelegate(new NativeTextEditpartDelegate(this, getWidgetModel()));
         }
 
         getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);

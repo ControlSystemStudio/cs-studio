@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
@@ -45,7 +46,7 @@ import org.diirt.vtype.VType;
 public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
     private List<Axis> axisList;
-    protected List<Trace> traceList;
+    private List<Trace> traceList;
 
     @Override
     public XYGraphModel getWidgetModel() {
@@ -574,14 +575,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
     }
 
-    protected void setXValue(CircularBufferDataProvider dataProvider, VType value) {
+    private void setXValue(CircularBufferDataProvider dataProvider, VType value) {
         if(VTypeHelper.getSize(value) > 1){
             dataProvider.setCurrentXDataArray(VTypeHelper.getDoubleArray(value));
         }else
             dataProvider.setCurrentXData(VTypeHelper.getDouble(value));
     }
 
-    protected void setYValue(Trace trace,
+    private void setYValue(Trace trace,
             CircularBufferDataProvider dataProvider, VType y_value) {
         if(VTypeHelper.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
             Timestamp timestamp = VTypeHelper.getTimestamp(y_value);
@@ -664,5 +665,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
             YBuffer[j] = dataProvider.getSample(j).getYValue();
         }
         return YBuffer;
+    }
+
+    protected List<Trace> getTraceList() {
+        return Collections.unmodifiableList(traceList);
     }
 }

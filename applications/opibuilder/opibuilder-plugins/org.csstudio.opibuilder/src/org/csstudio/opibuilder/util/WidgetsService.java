@@ -103,7 +103,8 @@ public final class WidgetsService {
                     list = new ArrayList<String>();
                     allCategoriesMap.put(category, list);
                 }
-                if (!list.contains(typeId)) list.add(typeId); // ensure no duplicates in the widgets palette
+                // ensure no duplicates in the widgets palette
+                if (!list.contains(typeId)) list.add(typeId);
                 allWidgetDescriptorsMap.put(typeId, new WidgetDescriptor(
                         element, typeId, name, description, icon, category, pluginId, onlineHelpHtml));
             }
