@@ -39,44 +39,49 @@ import org.diirt.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class SavedValue
-{
+abstract public class SavedValue {
     /** @param current_value Current value of PV
      *  @return {@link SavedValue} that contains current value
      *  @throws Exception on error
      */
-    public static SavedValue forCurrentValue(final VType value) throws Exception
-    {
+    public static SavedValue forCurrentValue(final VType value) throws Exception {
         // Scalars
-        if (value instanceof VNumber)
+        if (value instanceof VNumber) {
             return new SavedScalarValue(((VNumber)value).getValue().toString());
-        if (value instanceof VEnum)
+        }
+        if (value instanceof VEnum) {
             return new SavedScalarValue(Integer.toString(((VEnum)value).getIndex()));
-        if (value instanceof VString)
+        }
+        if (value instanceof VString) {
             return new SavedScalarValue(((VString)value).getValue());
+        }
         // Arrays
         final List<String> texts = new ArrayList<>();
-        if (value instanceof VDoubleArray)
-        {   // Format double as double
+        if (value instanceof VDoubleArray) {  
+        	// Format double as double
             final IteratorDouble values = ((VDoubleArray)value).getData().iterator();
-            while (values.hasNext())
+            while (values.hasNext()) {
                 texts.add(Double.toString(values.nextDouble()));
+            }
             return new SavedArrayValue(texts);
         }
-        if (value instanceof VNumberArray)
-        {   // Format other numbers as integer
+        if (value instanceof VNumberArray) {
+        	// Format other numbers as integer
             final IteratorNumber values = ((VNumberArray)value).getData().iterator();
-            while (values.hasNext())
+            while (values.hasNext()) {
                 texts.add(Long.toString(values.nextLong()));
+            }
             return new SavedArrayValue(texts);
         }
-        if (value instanceof VStringArray)
+        if (value instanceof VStringArray) {
             return new SavedArrayValue(((VStringArray)value).getData());
-        if (value instanceof VEnumArray)
-        {   // Save indices
+        }
+        if (value instanceof VEnumArray) {   
+        	// Save indices
             final IteratorNumber values = ((VEnumArray)value).getIndexes().iterator();
-            while (values.hasNext())
+            while (values.hasNext()) {
                 texts.add(Long.toString(values.nextLong()));
+            }
             return new SavedArrayValue(texts);
         }
         throw new Exception("Cannot handle " + value);
@@ -85,11 +90,11 @@ abstract public class SavedValue
     /** @param saved_value Saved text, must not be <code>null</code>
      *  @return Converted to {@link Number}
      */
-    protected Number getSavedNumber(final String saved_value)
-    {
+    protected Number getSavedNumber(final String saved_value) {
         Objects.requireNonNull(saved_value);
-        if (saved_value.startsWith("0x"))
+        if (saved_value.startsWith("0x")) {
             return Long.decode(saved_value);
+        }
         // Treat other numbers as double to allow "1e2" even for integer
         return Double.parseDouble(saved_value);
     }

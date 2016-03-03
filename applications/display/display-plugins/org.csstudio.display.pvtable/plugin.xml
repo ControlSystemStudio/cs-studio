@@ -59,6 +59,19 @@
                tooltip="%PVTableMenu_TT">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.processvariable">
+         <control
+               class="org.csstudio.display.pvtable.WorkbenchWindowControlContribution1">
+            <visibleWhen
+                  checkEnabled="false">
+               <equals
+                     value="false">
+               </equals>
+            </visibleWhen>
+         </control>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
