@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ui.IStartup;
@@ -35,8 +37,10 @@ public class PerspectiveStartup implements IStartup {
     }
 
     private File getPerspectivesDirectory() throws MalformedURLException, IOException, URISyntaxException {
-        URL directoryUrl = FileLocator.resolve(new URL(Plugin.PERSPECTIVE_LOAD_LOCATION));
-        System.out.println(directoryUrl);
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String dirPreference = prefs.getString(PerspectivesPreferencePage.ID,
+                PerspectivesPreferencePage.PERSPECTIVE_LOAD_DIRECTORY, Plugin.PERSPECTIVE_LOAD_LOCATION, null);
+        URL directoryUrl = FileLocator.resolve(new URL(dirPreference));
         return new File(directoryUrl.toURI());
     }
 

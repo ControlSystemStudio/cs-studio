@@ -26,4 +26,13 @@
          point="org.eclipse.ui.startup">
       <startup class="org.csstudio.perspectives.PerspectiveStartup"> </startup>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.perspectives.PerspectivesPreferencePage"
+            id="org.csstudio.perspectives.preferences"
+            name="Perspectives preferences">
+      </page>
+   </extension>
 </plugin>
