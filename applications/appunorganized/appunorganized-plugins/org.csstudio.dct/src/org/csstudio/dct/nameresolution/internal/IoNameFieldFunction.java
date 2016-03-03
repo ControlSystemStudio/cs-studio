@@ -35,6 +35,7 @@ public final class IoNameFieldFunction implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
         IoNameService service = null;
 
@@ -61,6 +62,7 @@ public final class IoNameFieldFunction implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
         return Collections.EMPTY_LIST;
     }

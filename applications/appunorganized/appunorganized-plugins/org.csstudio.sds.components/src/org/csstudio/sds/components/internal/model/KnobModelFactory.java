@@ -15,6 +15,7 @@ public final class KnobModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new KnobModel();
     }
@@ -22,6 +23,7 @@ public final class KnobModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return KnobModel.class;

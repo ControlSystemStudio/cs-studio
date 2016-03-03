@@ -97,6 +97,7 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
      * the user. Returns <code>null</code> if the user did not enter any
      * credentials or cancelled the dialog.
      */
+    @Override
     public Credentials getCredentials() {
         // a one-element array for communication between the current thread
         // and the UI thread
@@ -135,6 +136,7 @@ public final class UiLoginCallbackHandler implements ILoginCallbackHandler {
     /**
      * Displays an error message to the user.
      */
+    @Override
     public void signalFailedLoginAttempt() {
 
         Display.getDefault().syncExec(new Runnable() {

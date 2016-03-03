@@ -35,6 +35,7 @@ class LongConverter implements IValueTypeConverter<Long> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Long convert(Object value) throws NumberFormatException {
         Long result = 0l;
 

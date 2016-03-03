@@ -14,6 +14,7 @@ public class DummyIoNameService implements IoNameService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getEpicsAddress(String key, String field) {
         return "ioxyz123." + key + "." + (field != null ? field : "xxx");
     }
@@ -21,6 +22,7 @@ public class DummyIoNameService implements IoNameService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public List<String> getAllIoNames() {
         List<String> arrayList = new ArrayList<String>();
         arrayList.add("test");

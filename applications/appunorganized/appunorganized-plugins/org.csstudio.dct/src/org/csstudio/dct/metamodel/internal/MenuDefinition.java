@@ -33,6 +33,7 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IChoice> getChoices() {
         return choices;
     }
@@ -44,6 +45,7 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addChoice(IChoice choice) {
         choices.add(choice);
     }
@@ -51,6 +53,7 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeChoice(IChoice choice) {
         choices.remove(choice);
     }
@@ -58,6 +61,7 @@ public final class MenuDefinition implements IMenuDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }

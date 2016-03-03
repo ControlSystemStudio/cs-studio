@@ -15,6 +15,7 @@ public final class TankModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new TankModel();
     }
@@ -22,6 +23,7 @@ public final class TankModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return TankModel.class;

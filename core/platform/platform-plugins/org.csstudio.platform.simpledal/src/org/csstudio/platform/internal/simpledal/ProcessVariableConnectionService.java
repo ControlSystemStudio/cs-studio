@@ -75,6 +75,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IConnector> getConnectors() {
         List<IConnector> result = new ArrayList<IConnector>();
 
@@ -83,6 +84,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
     }
 
+    @Override
     public int getNumberOfActiveConnectors() {
         int result = 0;
         synchronized (_connectors) {
@@ -97,6 +99,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     public <E> E readValueSynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType) throws ConnectionException {
         AbstractConnector connector = getConnector(processVariableAddress, valueType);
 
@@ -119,6 +122,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void readValueAsynchronously(IProcessVariableAddress processVariableAddress, ValueType valueType,
             IProcessVariableValueListener listener) {
@@ -132,6 +136,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
         }
     }
 
+    @Override
     public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType)
             throws ConnectionException {
         AbstractConnector connector = getConnector(processVariableAddress, valueType);
@@ -147,6 +152,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
         return result;
     }
 
+    @Override
     public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType,
             IProcessVariableWriteListener listener) {
         AbstractConnector connector = getConnector(processVariableAddress, valueType);
@@ -156,6 +162,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void register(IProcessVariableValueListener listener, IProcessVariableAddress pv, ValueType valueType) {
         AbstractConnector connector = getConnector(pv, valueType);
@@ -165,6 +172,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void unregister(IProcessVariableValueListener listener) {
         // we remove the listener from all connectors
@@ -180,6 +188,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
     /**
      * {@inheritDoc}
      */
+    @Override
     public SettableState checkWriteAccessSynchronously(IProcessVariableAddress pv) {
         AbstractConnector connector = getConnector(pv, pv.getValueTypeHint() != null ? pv.getValueTypeHint() : ValueType.DOUBLE);
 

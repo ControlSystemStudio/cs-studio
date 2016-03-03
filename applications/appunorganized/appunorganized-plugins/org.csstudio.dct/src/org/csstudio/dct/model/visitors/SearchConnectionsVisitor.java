@@ -36,24 +36,28 @@ public final class SearchConnectionsVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(Project project) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IFolder folder) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IPrototype prototype) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
         for (String source : record.getFinalFields().values()) {
             if (source != null) {
@@ -95,6 +99,7 @@ public final class SearchConnectionsVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IInstance instance) {
     }
 

@@ -7,16 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.diirt.datasource.formula.FormulaFunction;
 import org.diirt.datasource.formula.FormulaFunctionSet;
-import org.diirt.service.Service;
-import org.diirt.service.ServiceMethod;
 
 /**
  * @author carcassi

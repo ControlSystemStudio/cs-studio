@@ -36,6 +36,7 @@ public final class BargraphModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new BargraphModel();
     }
@@ -43,6 +44,7 @@ public final class BargraphModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return BargraphModel.class;
     }

@@ -37,6 +37,7 @@ class StringSequenceConverter implements IValueTypeConverter<String[]> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] convert(Object value) {
         String[] result = new String[0];
         if (value != null) {

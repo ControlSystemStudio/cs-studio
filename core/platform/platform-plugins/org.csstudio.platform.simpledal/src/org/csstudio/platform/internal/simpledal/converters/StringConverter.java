@@ -35,6 +35,7 @@ class StringConverter implements IValueTypeConverter<String> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String convert(Object value) {
         String result = value!=null?value.toString():"";
         assert result != null;

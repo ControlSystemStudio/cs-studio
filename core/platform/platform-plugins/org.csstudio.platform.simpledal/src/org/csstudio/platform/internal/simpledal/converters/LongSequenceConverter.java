@@ -39,6 +39,7 @@ class LongSequenceConverter implements IValueTypeConverter<long[]> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public long[] convert(Object value) throws NumberFormatException {
         long[] result = new long[0];
 

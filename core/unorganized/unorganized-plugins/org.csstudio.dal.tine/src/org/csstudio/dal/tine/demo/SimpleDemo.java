@@ -22,15 +22,12 @@
 
 package org.csstudio.dal.tine.demo;
 
-import org.csstudio.dal.tine.PropertyProxyUtilities;
 import org.csstudio.dal.tine.TINEApplicationContext;
 import org.csstudio.dal.DataExchangeException;
-import org.csstudio.dal.DoubleProperty;
 import org.csstudio.dal.DynamicValueAdapter;
 import org.csstudio.dal.DynamicValueEvent;
 import org.csstudio.dal.LongProperty;
 import org.csstudio.dal.RemoteException;
-import org.csstudio.dal.StringProperty;
 import org.csstudio.dal.impl.DefaultApplicationContext;
 import org.csstudio.dal.spi.DefaultPropertyFactoryService;
 import org.csstudio.dal.spi.PropertyFactory;

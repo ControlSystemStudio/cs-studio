@@ -30,8 +30,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import javax.jms.JMSException;
-import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
-import org.csstudio.utility.jms.sharedconnection.MonitorableSharedConnection;
 
 /**
  * @author mmoeller

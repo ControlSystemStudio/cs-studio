@@ -32,6 +32,7 @@ public class RandomDoubleGeneratorFactory implements IDataGeneratorFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractDataGenerator createGenerator(LocalChannel channel,
             int defaultPeriod, String[] options) {
         return new RandomDoubleGenerator(channel, defaultPeriod, options);

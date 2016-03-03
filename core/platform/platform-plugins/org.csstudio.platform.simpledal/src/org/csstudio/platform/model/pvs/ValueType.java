@@ -24,7 +24,6 @@ package org.csstudio.platform.model.pvs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.dal.DoubleProperty;
 import org.csstudio.dal.DoubleSeqProperty;
 import org.csstudio.dal.DynamicValueProperty;
