@@ -1,6 +1,7 @@
 package org.csstudio.perspectives;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -73,6 +74,19 @@ public class PerspectiveLoader {
             fullPath = new File(dirname, chooser.getFileName());
         }
         return fullPath;
+    }
+
+    public void loadFromDirectory(File directory) {
+        FilenameFilter filter = (File dir, String name) -> name.endsWith(Plugin.XMI_EXTENSION);
+        String[] contents = directory.list(filter);
+        if (contents != null) {
+            for (String f : contents) {
+                File perspectiveFile = new File(directory, f);
+                if (perspectiveFile.isFile()) {
+                    loadPerspective(URI.createFileURI(perspectiveFile.toString()));
+                }
+            }
+        }
     }
 
 }

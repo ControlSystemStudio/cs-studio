@@ -21,6 +21,8 @@ public class Messages extends NLS {
     public static String PerspectiveLoader_loadedPerspective;
     public static String PerspectiveLoader_fileNotUnderstood;
 
+    public static String PerspectiveStartup_startupLoadFailed;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
