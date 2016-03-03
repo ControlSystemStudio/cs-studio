@@ -18,6 +18,7 @@ public class Messages extends NLS {
 
     public static String PerspectiveLoader_selectFile;
     public static String PerspectiveLoader_loadFailed;
+    public static String PerspectiveLoader_loadedPerspective;
     public static String PerspectiveLoader_fileNotUnderstood;
 
     static {

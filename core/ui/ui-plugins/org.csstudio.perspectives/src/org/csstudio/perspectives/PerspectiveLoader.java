@@ -52,6 +52,7 @@ public class PerspectiveLoader {
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
                 preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
+                Plugin.getLogger().log(Level.INFO, NLS.bind(Messages.PerspectiveLoader_loadedPerspective, p.getLabel(), fileUri.toString()));
             } catch (IOException e) {
                 Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
             }
