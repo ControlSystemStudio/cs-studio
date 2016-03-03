@@ -33,9 +33,14 @@ public class FileUtils implements IFileUtils {
     }
 
     @Override
-    public File stringPathToFile(String path) throws MalformedURLException, IOException, URISyntaxException {
-        URL directoryUrl = FileLocator.resolve(new URL(path));
-        return new File(directoryUrl.toURI());
+    public File stringPathToFile(String path) throws IOException, URISyntaxException {
+        try {
+            URL directoryUrl = FileLocator.resolve(new URL(path));
+            return new File(directoryUrl.toURI());
+        } catch (MalformedURLException e) {
+            return new File(path);
+        }
+
     }
 
     @Override

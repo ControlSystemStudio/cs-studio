@@ -2,7 +2,6 @@ package org.csstudio.perspectives;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -17,7 +16,7 @@ public interface IFileUtils {
 
     public File urlToFile(URL url);
 
-    public File stringPathToFile(String path) throws MalformedURLException, IOException, URISyntaxException;
+    public File stringPathToFile(String path) throws IOException, URISyntaxException;
 
     public String stringPathToUriFileString(String path);
 
