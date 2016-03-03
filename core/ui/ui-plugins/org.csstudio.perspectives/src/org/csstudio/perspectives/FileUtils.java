@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +41,11 @@ public class FileUtils implements IFileUtils {
         } catch (MalformedURLException e) {
             return new File(path);
         }
-
     }
 
     @Override
     public String stringPathToUriFileString(String path) {
-        return "file:" + path;
+        return Paths.get(path).toUri().toString();
     }
 
     @Override
