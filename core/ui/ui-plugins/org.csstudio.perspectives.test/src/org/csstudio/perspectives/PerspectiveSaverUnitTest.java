@@ -44,8 +44,8 @@ import org.mockito.stubbing.Answer;
 import org.osgi.service.event.Event;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PerspectiveSaverUnitTest
-{
+public class PerspectiveSaverUnitTest {
+
     @Mock
     private Location instanceLocation;
 
