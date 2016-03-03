@@ -28,10 +28,6 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
     public static final String PERSPECTIVE_LOAD_DIRECTORY = "perspective_load_dir";
-    public static final String MESSAGE = "Perspectives preferences";
-    public static final String LOAD_DIR_TITLE = "Perspective directory";
-    public static final String PAGE_TITLE = "Perspectives preference page";
-    public static final String LOAD_DIR_TOOLTIP = "Directory from which to load perspectives at startup.";
     public static final String ID = "org.csstudio.perspectives.preferences";
     public static final String FILE_PREFIX = "file:";
 
@@ -43,13 +39,13 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     public PerspectivesPreferencePage() {
         super(FieldEditorPreferencePage.GRID);
         setPreferenceStore(new Plugin().getPreferenceStore());
-        setMessage(MESSAGE);
+        setMessage(Messages.PerspectivesPreferencePage_pageMessage);
     }
 
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
-        perspectivesDirEditor = new StringButtonFieldEditor(PERSPECTIVE_LOAD_DIRECTORY, LOAD_DIR_TITLE, parent) {
+        perspectivesDirEditor = new StringButtonFieldEditor(PERSPECTIVE_LOAD_DIRECTORY, Messages.PerspectivesPreferencePage_fieldText, parent) {
             private String lastPath = store.getString(PERSPECTIVE_LOAD_DIRECTORY);
 
             @Override
@@ -77,7 +73,7 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
                 return dir;
             }
         };
-        perspectivesDirEditor.getTextControl(parent).setToolTipText(LOAD_DIR_TOOLTIP);
+        perspectivesDirEditor.getTextControl(parent).setToolTipText(Messages.PerspectivesPreferencePage_fieldTooltip);
         addField(perspectivesDirEditor);
     }
 
@@ -85,7 +81,7 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     public void init(IWorkbench workbench) {
         store = new ScopedPreferenceStore(InstanceScope.INSTANCE, ID);
         setPreferenceStore(store);
-        setDescription(PAGE_TITLE);
+        setDescription(Messages.PerspectivesPreferencePage_pageTitle);
     }
 
     @Override
