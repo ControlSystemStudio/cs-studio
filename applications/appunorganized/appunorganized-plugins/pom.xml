@@ -24,8 +24,8 @@
     <module>org.csstudio.graphene.opiwidgets</module>
     <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
-    
-    
+
+
     <!--<module>org.csstudio.sds</module>
     <module>org.csstudio.sds.components</module>
     <module>org.csstudio.sds.components.epics</module>
@@ -44,9 +44,9 @@
     <module>org.csstudio.service.channelfinder</module>
     <!--<module>org.csstudio.service.jdbcsample</module>-->
     <module>org.csstudio.service.math</module>
-    <module>org.csstudio.service.unitconversion</module>
-    
-    
+    <!--<module>org.csstudio.service.unitconversion</module>-->
+
+
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>
@@ -60,7 +60,7 @@
     <module>org.csstudio.systemopen.mac</module>
     <module>org.csstudio.systemopen.win</module>
     <module>org.csstudio.testsuite</module>
-    <module>org.csstudio.unitconversion.ui</module>
+    <!--<module>org.csstudio.unitconversion.ui</module>-->
     <!--<module>org.csstudio.utility.adlConverter</module>
   <module>org.csstudio.utility.adlConverter.test</module>-->
     <module>org.csstudio.utility.ldap.service.impl.test</module>
