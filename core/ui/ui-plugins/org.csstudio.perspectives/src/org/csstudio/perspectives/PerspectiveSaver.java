@@ -3,7 +3,6 @@ package org.csstudio.perspectives;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -46,6 +45,9 @@ public class PerspectiveSaver implements EventHandler {
     @Inject
     private IPerspectiveUtils perspectiveUtils;
 
+    @Inject
+    private IFileUtils fileUtils;
+
     private File dataDirectory;
 
     /**
@@ -55,9 +57,9 @@ public class PerspectiveSaver implements EventHandler {
     @PostConstruct
     public void init() {
         try {
-            URL dataUri = instanceLocation.getDataArea(Plugin.ID);
-            dataDirectory = new File(dataUri.getFile());
-            Files.createDirectories(dataDirectory.toPath());
+            URL dataUrl = instanceLocation.getDataArea(Plugin.ID);
+            dataDirectory = fileUtils.urlToFile(dataUrl);
+            fileUtils.createDirectory(dataDirectory);
             Plugin.getLogger().config("Initialising perspective saver to location " + dataDirectory);
             // Subscribe to perspective save events.
             broker.subscribe(UIEvents.UILifeCycle.PERSPECTIVE_SAVED, this);
@@ -112,7 +114,7 @@ public class PerspectiveSaver implements EventHandler {
         if (dataArea == null || perspectiveName == null) {
             throw new NullPointerException("Arguments to constructUri may not be null.");
         }
-        URI uri = URI.createURI(dataArea.toString());
+        URI uri = fileUtils.urlToEmfUri(dataArea);
         uri = uri.appendSegment(PERSPECTIVE_PREFIX + perspectiveName);
         uri = uri.appendFileExtension(Plugin.XMI_EXTENSION);
         return uri;

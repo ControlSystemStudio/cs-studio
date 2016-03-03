@@ -35,6 +35,8 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     public static final String ID = "org.csstudio.perspectives.preferences";
     public static final String FILE_PREFIX = "file:";
 
+    private IFileUtils fileUtils = new FileUtils();
+
     private StringButtonFieldEditor perspectivesDirEditor;
     private ScopedPreferenceStore store;
 
@@ -64,13 +66,13 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
                     }
                 }
                 String dir = dialog.open();
-                dir = FILE_PREFIX + dir;
-                if (dir != null) {
-                    dir = dir.trim();
-                    if (dir.length() == 0) {
+                String dirUri = fileUtils.stringPathToUriFileString(dir);
+                if (dirUri != null) {
+                    dirUri = dirUri.trim();
+                    if (dirUri.length() == 0) {
                         return null;
                     }
-                    lastPath = dir;
+                    lastPath = dirUri;
                 }
                 return dir;
             }

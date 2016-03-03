@@ -1,8 +1,8 @@
 package org.csstudio.perspectives;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.inject.Inject;
@@ -16,8 +16,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.ui.PlatformUI;
 
 @SuppressWarnings("restriction")  // This class uses internal e4 API.
 public class PerspectiveLoader {
@@ -29,6 +27,9 @@ public class PerspectiveLoader {
     @Inject
     private IPerspectiveUtils perspectiveUtils;
 
+    @Inject
+    private IFileUtils fileUtils;
+
     /**
      * Present a FileDialog to the user to select a .xmi file.  Load file into XML
      * string.  Put into preferences; this triggers the new perspective import mechanism
@@ -37,7 +38,7 @@ public class PerspectiveLoader {
     public void promptAndLoadPerspective() {
         File selectedFile = promptForXmiFile();
         if (selectedFile != null && selectedFile.isFile()) {
-            URI fileUri = URI.createFileURI(selectedFile.getPath());
+            URI fileUri = fileUtils.fileToEmfUri(selectedFile);
             loadPerspective(fileUri);
         }
     }
@@ -63,29 +64,13 @@ public class PerspectiveLoader {
     }
 
     private File promptForXmiFile() {
-        FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-        chooser.setText(Messages.PerspectiveLoader_selectFile);
-        chooser.setFilterExtensions(new String[] {"*." + Plugin.XMI_EXTENSION});
-        chooser.open();
-        File dirname = new File(chooser.getFilterPath());
-        String filename = chooser.getFileName();
-        File fullPath = null;
-        if (filename != null) {
-            fullPath = new File(dirname, chooser.getFileName());
-        }
-        return fullPath;
+        return fileUtils.promptForFile(null, Plugin.XMI_EXTENSION);
     }
 
     public void loadFromDirectory(File directory) {
-        FilenameFilter filter = (File dir, String name) -> name.endsWith(Plugin.XMI_EXTENSION);
-        String[] contents = directory.list(filter);
-        if (contents != null) {
-            for (String f : contents) {
-                File perspectiveFile = new File(directory, f);
-                if (perspectiveFile.isFile()) {
-                    loadPerspective(URI.createFileURI(perspectiveFile.toString()));
-                }
-            }
+        List<File> xmiFiles = fileUtils.listDirectory(directory, Plugin.XMI_EXTENSION);
+        for (File xmiFile : xmiFiles) {
+            loadPerspective(URI.createFileURI(xmiFile.toString()));
         }
     }
 
