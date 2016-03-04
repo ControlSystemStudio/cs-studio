@@ -49,6 +49,11 @@ public class FileUtilsUnitTest {
     }
 
     @Test(expected=NullPointerException.class)
+    public void checkFileToEmfUriThrowsNullPointerExceptionIfArgumentIsNull() {
+        fileUtils.fileToEmfUri(null);
+    }
+
+    @Test(expected=NullPointerException.class)
     public void checkUrlToFileThrowsNullPointerExceptionIfNullArgument() {
         fileUtils.urlToFile(null);
     }

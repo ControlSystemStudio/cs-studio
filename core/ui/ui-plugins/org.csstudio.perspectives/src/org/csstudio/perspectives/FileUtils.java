@@ -39,19 +39,15 @@ public class FileUtils implements IFileUtils {
     }
 
     @Override
-    public File stringPathToFile(String path) throws IOException, URISyntaxException {
+    public File stringPathToFile(String path) throws IOException {
         try {
             URL directoryUrl = FileLocator.resolve(new URL(path));
             return new File(directoryUrl.toURI());
-        } catch (MalformedURLException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             return new File(path);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.csstudio.perspectives.IFileUtils#stringPathToUriFileString(java.lang.String)
-     */
     @Override
     public String stringPathToUriFileString(String path) {
         return Paths.get(path).toUri().toString();
