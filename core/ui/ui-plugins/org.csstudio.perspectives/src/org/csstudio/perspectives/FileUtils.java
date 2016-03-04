@@ -17,6 +17,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * Default implementation of IFileUtils.
+ */
 public class FileUtils implements IFileUtils {
 
     private static final String FILE_PROTOCOL = "file";

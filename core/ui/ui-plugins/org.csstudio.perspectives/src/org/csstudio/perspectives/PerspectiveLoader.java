@@ -18,6 +18,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osgi.util.NLS;
 
+/**
+ * Class handling loading of perspectives from .xmi files.
+ */
 @SuppressWarnings("restriction")  // This class uses internal e4 API.
 public class PerspectiveLoader {
 
@@ -44,6 +47,12 @@ public class PerspectiveLoader {
         }
     }
 
+    /**
+     * Load a perspective from the file specified in the URI.
+     * If the file does not contain a perspective, log a message and continue.
+     * If something goes wrong, log a message and continue.
+     * @param fileUri file containing the perspective in XMI format
+     */
     public void loadPerspective(URI fileUri) {
         ResourceSet rs = new ResourceSetImpl();
         Resource res = rs.getResource(fileUri, true);
@@ -64,6 +73,11 @@ public class PerspectiveLoader {
         }
     }
 
+    /**
+     * Load all perspectives from the specified directory.
+     * @param directory to load from
+     * @throws IOException if directory listing fails
+     */
     public void loadFromDirectory(Path directory) throws IOException {
         List<Path> xmiFiles = fileUtils.listDirectory(directory, Plugin.XMI_EXTENSION);
         for (Path xmiFile : xmiFiles) {

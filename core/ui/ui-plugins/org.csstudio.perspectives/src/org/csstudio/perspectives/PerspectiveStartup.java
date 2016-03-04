@@ -13,13 +13,18 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * Initialise utilities for loading and saving perspectives at startup.
+ */
 public class PerspectiveStartup implements IStartup {
 
     /**
-     * Create a perspective saver on startup.
+     * Create a perspective saver. Load all perspectives from the configured
+     * directory.
      */
     @Override
     public void earlyStartup() {
+        // Retrieve context and add our objects so that they can be injected.
         IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
         context.set(IPerspectiveUtils.class.getCanonicalName(), new PerspectiveUtils());
         context.set(IFileUtils.class.getCanonicalName(), new FileUtils());

@@ -23,6 +23,9 @@ import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
+/**
+ * Class handling saving perspectives to file.
+ */
 @SuppressWarnings("restriction")  // This class uses internal e4 API.
 public class PerspectiveSaver implements EventHandler {
 

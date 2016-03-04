@@ -22,7 +22,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * The preference page for org.csstudio.perspectives.
- *
  */
 public class PerspectivesPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
