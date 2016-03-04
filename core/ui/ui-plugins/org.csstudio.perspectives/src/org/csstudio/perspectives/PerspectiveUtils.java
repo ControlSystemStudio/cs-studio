@@ -26,15 +26,8 @@ public class PerspectiveUtils implements IPerspectiveUtils {
         resource.save(Collections.EMPTY_MAP);
     }
 
-    /**
-     * Convert an MPerspective object into an XMI XML string.
-     * @param persp Perspective to convert.
-     * @return XML string
-     * @throws IOException
-     * @throws IllegalArgumentException if perspective is null
-     */
     @Override
-    public String perspToString(MPerspective persp) throws IOException {
+    public String perspectiveToString(MPerspective persp) throws IOException {
         if (persp == null) {
             throw new IllegalArgumentException("Perspective may not be null");
         }

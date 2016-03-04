@@ -60,7 +60,7 @@ public class PerspectiveLoader {
         if (obj instanceof MPerspective) {
             MPerspective p = (MPerspective) obj;
             try {
-                String perspAsString = perspectiveUtils.perspToString(p);
+                String perspAsString = perspectiveUtils.perspectiveToString(p);
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
                 preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);

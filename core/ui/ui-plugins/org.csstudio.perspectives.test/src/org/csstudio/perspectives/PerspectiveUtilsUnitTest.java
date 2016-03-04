@@ -30,7 +30,7 @@ public class PerspectiveUtilsUnitTest {
 
     @Test
     public void perspToStringReturnsStringForEmptyPerspective() throws IOException {
-        String s = perspectiveUtils.perspToString(perspective);
+        String s = perspectiveUtils.perspectiveToString(perspective);
         assertNotNull(s);
         assertTrue(s.contains("advanced:Perspective"));
     }
@@ -38,14 +38,14 @@ public class PerspectiveUtilsUnitTest {
     @Test
     public void testPerspToStringIncludesPersistedState() throws IOException {
         perspective.getPersistedState().put("Hello", "World");
-        String s = perspectiveUtils.perspToString(perspective);
+        String s = perspectiveUtils.perspectiveToString(perspective);
         assertTrue(s.contains("Hello"));
         assertTrue(s.contains("World"));
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testPerspToStringThrowsIllegalArgumentExceptionForNull() throws IOException {
-        String s = perspectiveUtils.perspToString(null);
+        String s = perspectiveUtils.perspectiveToString(null);
     }
 
 }
