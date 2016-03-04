@@ -26,6 +26,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 public class PostgreSQL_RDB implements RDBImpl
 {
     /** {@inheritDoc} */
+    @Override
     public Dialect getDialect()
     {
         return RDBUtil.Dialect.PostgreSQL;

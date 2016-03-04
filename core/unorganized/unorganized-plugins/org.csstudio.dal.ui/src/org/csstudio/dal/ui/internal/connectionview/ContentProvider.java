@@ -15,6 +15,7 @@ class ContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
 
@@ -23,6 +24,7 @@ class ContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(final Object parent) {
         return ((IProcessVariableConnectionService) parent)
                 .getConnectors().toArray();
@@ -31,6 +33,7 @@ class ContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
 
     }

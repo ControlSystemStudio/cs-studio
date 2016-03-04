@@ -24,7 +24,6 @@
 import org.csstudio.dal.DoubleProperty;
 import org.csstudio.dal.DynamicValueEvent;
 import org.csstudio.dal.DynamicValueListener;
-import org.csstudio.dal.StringProperty;
 import org.csstudio.dal.impl.DefaultApplicationContext;
 import org.csstudio.dal.simple.AnyData;
 import org.csstudio.dal.simple.MetaData;
@@ -40,8 +39,6 @@ public class AnyDataTest {
     private PropertyFactory _propertyFactory;
 
     /**
-     * {@inheritDoc}
-     *
      * @throws Exception
      */
     @Before
@@ -73,8 +70,6 @@ public class AnyDataTest {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @throws Exception
      */
     @Test

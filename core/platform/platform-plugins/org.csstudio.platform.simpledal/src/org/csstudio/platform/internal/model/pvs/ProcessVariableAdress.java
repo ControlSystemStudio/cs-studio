@@ -95,6 +95,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ValueType getValueTypeHint() {
         return _valueTypeHint;
     }
@@ -106,6 +107,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCharacteristic() {
         return _characteristic;
     }
@@ -113,6 +115,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDevice() {
         return _device;
     }
@@ -120,6 +123,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getProperty() {
         return _property;
     }
@@ -127,6 +131,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public RemoteInfo toDalRemoteInfo() {
         assert _controlSystem != null;
         assert _property != null;
@@ -146,6 +151,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getFullName() {
         assert _controlSystem != null;
         assert _property != null;
@@ -175,6 +181,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ControlSystemEnum getControlSystem() {
         return _controlSystem;
     }
@@ -182,6 +189,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getRawName() {
         return _rawName;
     }
@@ -189,6 +197,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCharacteristic() {
         return (_characteristic != null && _characteristic.length() > 0);
     }
@@ -241,11 +250,13 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
         return sb.toString();
     }
 
+    @Override
     public IProcessVariableAddress deriveNoCharacteristicPart() {
         // TODO: is it OK to keep raw name?
         return new ProcessVariableAdress(_rawName,_controlSystem,_device,_property,null);
     }
 
+    @Override
     public IProcessVariableAddress deriveCharacteristic(String characteristic) {
         // TODO: is it OK to keep raw name?
         return new ProcessVariableAdress(_rawName,_controlSystem,_device,_property,characteristic);

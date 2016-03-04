@@ -49,6 +49,7 @@ public abstract class ActivationServiceException extends RuntimeException {
      * @see java.lang.Throwable#getMessage()
      * @return The Message
      */
+    @Override
     public final String getMessage() {
         return this.getMessage(_clazz);
     }

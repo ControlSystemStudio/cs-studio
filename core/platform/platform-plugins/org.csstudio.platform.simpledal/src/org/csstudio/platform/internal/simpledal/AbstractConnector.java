@@ -767,7 +767,6 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getName() {
         return _processVariableAddress.toString();
     }

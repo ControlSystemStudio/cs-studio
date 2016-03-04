@@ -84,6 +84,7 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void javaToNative(Object object, TransferData transferData) {
         if (object == null
@@ -121,6 +122,7 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object nativeToJava(TransferData transferData) {
         if (isSupportedType(transferData)) {
             byte[] buffer = (byte[]) super.nativeToJava(transferData);
@@ -160,6 +162,7 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String[] getTypeNames() {
         return new String[] { TYPE_NAME };
     }
@@ -167,6 +170,7 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected int[] getTypeIds() {
         return new int[] { TYPE_ID };
     }
