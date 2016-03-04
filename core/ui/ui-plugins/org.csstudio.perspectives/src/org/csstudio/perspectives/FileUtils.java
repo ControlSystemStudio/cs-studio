@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Default implementation of IFileUtils.
@@ -80,8 +80,8 @@ public class FileUtils implements IFileUtils {
     }
 
     @Override
-    public Path promptForFile(Path startingDirectory, String fileExtension) {
-        FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+    public Path promptForFile(Path startingDirectory, String fileExtension, Shell parent) {
+        FileDialog chooser = new FileDialog(parent);
         chooser.setText(Messages.FileUtils_selectFile);
         chooser.setFilterExtensions(new String[] {"*." + fileExtension});
         chooser.open();

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Miscellaneous utilities for handling files.
@@ -74,6 +75,6 @@ public interface IFileUtils {
      * @param fileExtension
      * @return selected file
      */
-    public Path promptForFile(Path startingDirectory, String fileExtension);
+    public Path promptForFile(Path startingDirectory, String fileExtension, Shell parent);
 
 }
