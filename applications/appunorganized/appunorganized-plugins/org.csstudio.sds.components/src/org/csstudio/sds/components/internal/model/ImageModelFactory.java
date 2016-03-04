@@ -35,6 +35,7 @@ public final class ImageModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new ImageModel();
     }
@@ -42,6 +43,7 @@ public final class ImageModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class getWidgetModelType() {
         return ImageModel.class;
     }

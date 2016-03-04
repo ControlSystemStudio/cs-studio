@@ -37,6 +37,7 @@ public final class WaveformModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new WaveformModel();
     }
@@ -44,6 +45,7 @@ public final class WaveformModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class<?> getWidgetModelType() {
         return WaveformModel.class;
     }

@@ -16,25 +16,24 @@ import org.eclipse.jface.viewers.TableViewer;
 /** {@link Action} to de-select all table entries
  *  @author Kay Kasemir
  */
-public class DeSelectAllAction extends PVTableAction
-{
-    public DeSelectAllAction(final TableViewer viewer)
-    {
+public class DeSelectAllAction extends PVTableAction {
+    public DeSelectAllAction(final TableViewer viewer) {
         super(Messages.UncheckAll, "icons/unchecked.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.CheckAll_TT);
     }
 
-    public void run()
-    {
+    @Override
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
-        if (model == null)
+        if (model == null) {
             return;
+        }
         final int N = model.getItemCount();
-        for (int i=0; i<N; ++i)
-        {
+        for (int i=0; i<N; ++i) {
             final PVTableItem item = model.getItem(i);
-            if (! item.isSelected())
+            if (! item.isSelected()) {
                 continue;
+            }
             item.setSelected(false);
             viewer.update(item, null);
         }

@@ -27,24 +27,28 @@ public final class SearchInstancesVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(Project project) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IFolder folder) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IPrototype prototype) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
 
     }
@@ -52,6 +56,7 @@ public final class SearchInstancesVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IInstance instance) {
         if(prototypeId.equals(instance.getPrototype().getId())) {
             result.add(instance);

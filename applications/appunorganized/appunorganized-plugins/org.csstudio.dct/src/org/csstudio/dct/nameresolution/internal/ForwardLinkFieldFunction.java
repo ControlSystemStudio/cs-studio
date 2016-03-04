@@ -23,6 +23,7 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
         IRecord r = RecordFinder.findRecordByPath(parameters[0], record.getContainer());
 
@@ -37,6 +38,7 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
         return result;
     }
 
+    @Override
     public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
         List<IContentProposal> result = new ArrayList<IContentProposal>();
 

@@ -48,6 +48,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getParameterValues() {
         return parameterValues;
     }
@@ -55,6 +56,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setParameterValue(String key, String value) {
         if (value != null && value.length() > 0) {
             parameterValues.put(key, value);
@@ -66,6 +68,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getParameterValue(String key) {
         return parameterValues.get(key);
     }
@@ -73,6 +76,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasParameterValue(String key) {
         return parameterValues.containsKey(key);
     }
@@ -80,6 +84,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPrototype getPrototype() {
         IContainer parent = getParent();
 
@@ -97,6 +102,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean isInherited() {
         return getParent() instanceof IInstance;
     }
@@ -104,6 +110,7 @@ public final class Instance extends AbstractContainer implements IInstance {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void accept(IVisitor visitor) {
         visitor.visit(this);
 

@@ -60,6 +60,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void handleUserManagementEvent(final UserManagementEvent event) {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {

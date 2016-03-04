@@ -26,7 +26,6 @@ import org.csstudio.dal.DataAccess;
 import org.csstudio.dal.DataExchangeException;
 import org.csstudio.dal.DynamicValueListener;
 import org.csstudio.dal.SimpleProperty;
-import org.csstudio.dal.context.ConnectionState;
 import org.csstudio.dal.proxy.AbstractPlug;
 import org.csstudio.dal.proxy.PropertyProxy;
 import org.csstudio.dal.proxy.PropertyProxyWrapper;

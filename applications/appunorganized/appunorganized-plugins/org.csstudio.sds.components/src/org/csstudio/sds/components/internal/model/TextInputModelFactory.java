@@ -36,6 +36,7 @@ public final class TextInputModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new TextInputModel();
     }
@@ -43,6 +44,7 @@ public final class TextInputModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return TextInputModel.class;

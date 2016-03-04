@@ -15,20 +15,18 @@ import org.eclipse.jface.viewers.TableViewer;
 /** {@link Action} to save value snapshots
  *  @author Kay Kasemir
  */
-public class SnapshotAction extends PVTableAction
-{
-    public SnapshotAction(final TableViewer viewer)
-    {
+public class SnapshotAction extends PVTableAction {
+    public SnapshotAction(final TableViewer viewer) {
         super(Messages.Snapshot, "icons/snapshot.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Snapshot_TT);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
-        if (model == null)
+        if (model == null) {
             return;
+        }
         model.save();
     }
 }

@@ -18,16 +18,15 @@ import org.eclipse.core.runtime.IAdapterFactory;
 public class AdapterFactory implements IAdapterFactory
 {
     @Override
-    public Class[] getAdapterList()
-    {
+    public Class[] getAdapterList() {
         return new Class[] { ProcessVariable.class };
     }
 
     @Override
-    public Object getAdapter(final Object adaptableObject, final Class adapterType)
-    {
-        if (adaptableObject instanceof PVTableItem  &&  adapterType == ProcessVariable.class)
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+        if (adaptableObject instanceof PVTableItem  &&  adapterType == ProcessVariable.class) {
             return new ProcessVariable(((PVTableItem)adaptableObject).getName());
+        }
         return null;
     }
 }

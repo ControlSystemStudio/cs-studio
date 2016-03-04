@@ -15,6 +15,7 @@ public class SixteenBinaryBarModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new SixteenBinaryBarModel();
     }
@@ -22,6 +23,7 @@ public class SixteenBinaryBarModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return SixteenBinaryBarModel.class;
     }

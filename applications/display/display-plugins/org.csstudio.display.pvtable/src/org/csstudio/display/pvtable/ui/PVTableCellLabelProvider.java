@@ -13,24 +13,23 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 /** Cell label provider for PV Table that handles the tool tip
  *  @author Kay Kasemir
  */
-abstract public class PVTableCellLabelProvider extends CellLabelProvider
-{
+abstract public class PVTableCellLabelProvider extends CellLabelProvider {
     private static final int TOOL_TIP_MAX = 100;
 
-    public static String getTableItemTooltip(final PVTableItem item)
-    {
-        if (item == PVTableModelContentProvider.NEW_ITEM)
+    public static String getTableItemTooltip(final PVTableItem item) {
+        if (item == PVTableModelContentProvider.NEW_ITEM) {
             return "Add new PV to table by adding its name";
+        }
         final String text = item.toString();
         // Limit size of tool tip (in case of array data)
-        if (text.length() > TOOL_TIP_MAX)
+        if (text.length() > TOOL_TIP_MAX) {
             return text.substring(0, TOOL_TIP_MAX) + "...";
+        }
         return text;
     }
 
     @Override
-    public String getToolTipText(final Object element)
-    {
+    public String getToolTipText(final Object element) {
         return getTableItemTooltip((PVTableItem) element);
     }
 }

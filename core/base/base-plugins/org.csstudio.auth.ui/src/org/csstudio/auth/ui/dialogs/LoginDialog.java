@@ -276,6 +276,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
      *
      * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
      */
+    @Override
     public Credentials getCredentials() {
         _credentials = null;
         this.setBlockOnOpen(true);
@@ -288,6 +289,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
      *
      * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
      */
+    @Override
     public void signalFailedLoginAttempt() {
         MessageDialog.openError(null, "Login", "Login failed. Please try again.");
     }

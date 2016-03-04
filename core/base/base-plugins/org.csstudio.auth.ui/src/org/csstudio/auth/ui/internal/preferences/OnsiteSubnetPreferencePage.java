@@ -97,6 +97,7 @@ public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench)
     {
         // nothing to do

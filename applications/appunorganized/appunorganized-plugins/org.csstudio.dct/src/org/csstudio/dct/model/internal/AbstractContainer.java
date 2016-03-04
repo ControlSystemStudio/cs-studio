@@ -80,6 +80,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IContainer getContainer() {
         return container;
     }
@@ -87,6 +88,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setContainer(IContainer container) {
         this.container = container;
     }
@@ -94,6 +96,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IContainer getParent() {
         return parent;
     }
@@ -101,6 +104,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final List<IInstance> getInstances() {
         return instances;
     }
@@ -108,6 +112,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IInstance getInstance(int index) {
         return instances.get(index);
     }
@@ -115,6 +120,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Set<IContainer> getDependentContainers() {
         return dependentContainers;
     }
@@ -122,6 +128,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addDependentContainer(IContainer container) {
         assert container != null;
         assert container.getParent() == this : "Container must inherit from here.";
@@ -131,6 +138,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeDependentContainer(IContainer container) {
         assert container != null;
         assert container.getParent() == this : "Container must inherit from here.";
@@ -140,6 +148,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addInstance(IInstance instance) {
         assert instance.getParent() != null : "Instance must have a hierarchical parent.";
         assert instance.getContainer() == null : "Instance must not be in a container yet.";
@@ -150,6 +159,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setInstance(int index, IInstance instance) {
         assert instance.getParent() != null : "Instance must have a hierarchical parent.";
         assert instance.getContainer() == null : "Instance must not be in a container yet.";
@@ -165,6 +175,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addInstance(int index, IInstance instance) {
         assert instance.getParent() != null : "Instance must have a hierarchical parent.";
         assert instance.getContainer() == null : "Instance must not be in a container yet.";
@@ -175,6 +186,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeInstance(IInstance instance) {
         assert instance.getParent() != null;
 
@@ -187,6 +199,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final List<IRecord> getRecords() {
         return records;
     }
@@ -194,6 +207,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addRecord(IRecord record) {
         assert record.getContainer() == null : "Record must not be part of another container.";
 
@@ -203,6 +217,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setRecord(int index, IRecord record) {
         assert record.getContainer() == null : "Record must not be part of another container.";
 
@@ -217,6 +232,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addRecord(int index, IRecord record) {
         assert record.getContainer() == null : "Record must not be part of another container.";
         records.add(index, record);
@@ -225,6 +241,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeRecord(IRecord record) {
         assert record.getContainer() == this : "Record must not be part of this container.";
 
@@ -234,6 +251,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IFolder getParentFolder() {
         return folder;
     }
@@ -241,6 +259,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IProject getProject() {
         IFolder f;
 
@@ -262,6 +281,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setParentFolder(IFolder folder) {
         this.folder = folder;
     }
@@ -269,6 +289,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Map<String, String> getFinalParameterValues() {
         Map<String, String> result = new HashMap<String, String>();
 
@@ -285,6 +306,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Map<String, String> getFinalProperties() {
         Map<String, String> result = new HashMap<String, String>();
 
@@ -319,6 +341,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public final List<IRecordContainer> getDependentRecordContainers() {
         return new ArrayList<IRecordContainer>(dependentContainers);
     }

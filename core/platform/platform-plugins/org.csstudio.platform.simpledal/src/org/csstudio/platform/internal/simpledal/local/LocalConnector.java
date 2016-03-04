@@ -59,6 +59,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public void valueChanged(Object value) {
         doForwardValue(value, new Timestamp());
     }

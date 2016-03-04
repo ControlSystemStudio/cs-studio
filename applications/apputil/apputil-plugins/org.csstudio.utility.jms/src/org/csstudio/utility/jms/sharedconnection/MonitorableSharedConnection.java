@@ -33,7 +33,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.transport.TransportListener;
 import org.csstudio.utility.jms.IConnectionMonitor;
 import org.csstudio.utility.jms.TransportEvent;
-import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 
 /**
  * A shared connection to a JMS broker which can be monitored using an

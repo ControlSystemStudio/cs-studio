@@ -10,7 +10,6 @@ import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
 import org.diirt.datasource.CompositeDataSource;
 import org.diirt.datasource.CompositeDataSourceConfiguration;
 import org.diirt.datasource.DataSource;
-import org.diirt.datasource.DataSourceProvider;
 import org.diirt.datasource.PVManager;
 import org.diirt.util.config.Configuration;
 import org.eclipse.core.runtime.FileLocator;

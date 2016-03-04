@@ -46,6 +46,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final List<IFolderMember> getMembers() {
         return members;
     }
@@ -53,6 +54,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addMember(IFolderMember member) {
         assert member != null;
         assert member.getParentFolder() == null;
@@ -62,6 +64,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setMember(int index, IFolderMember member) {
         assert member != null;
 
@@ -76,6 +79,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addMember(int index, IFolderMember member) {
         assert member.getParentFolder() == null;
         members.add(index, member);
@@ -84,6 +88,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeMember(IFolderMember member) {
         assert member.getParentFolder() == this : "member.getParentFolder()==this";
         members.remove(member);
@@ -92,6 +97,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removeMember(int index) {
         IFolderMember member = members.remove(index);
 
@@ -101,6 +107,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IFolder getParentFolder() {
         return parentFolder;
     }
@@ -108,6 +115,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setParentFolder(IFolder folder) {
         parentFolder = folder;
     }
@@ -148,6 +156,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final boolean isInherited() {
         return false;
     }
@@ -155,6 +164,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void accept(IVisitor visitor) {
         visitor.visit((Folder) this);
 
@@ -166,6 +176,7 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
     /**
      *{@inheritDoc}
      */
+    @Override
     public IProject getProject() {
         if(this instanceof IProject) {
             return (IProject) this;

@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.dal.context.AbstractApplicationContext;
 import org.csstudio.dal.context.LifecycleEvent;
 import org.csstudio.dal.context.LifecycleListener;
-import org.csstudio.dal.context.PlugContext;
 import org.csstudio.dal.proxy.AbstractPlug;
 
 import java.util.Properties;

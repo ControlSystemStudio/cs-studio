@@ -1,6 +1,5 @@
 package org.csstudio.platform.internal.simpledal.dal;
 
-import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;

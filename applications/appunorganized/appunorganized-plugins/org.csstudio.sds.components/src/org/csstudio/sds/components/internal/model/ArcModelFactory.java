@@ -35,6 +35,7 @@ public final class ArcModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new ArcModel();
     }
@@ -42,6 +43,7 @@ public final class ArcModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class getWidgetModelType() {
         return ArcModel.class;
     }

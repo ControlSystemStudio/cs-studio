@@ -36,6 +36,7 @@ public class ThumbWheelModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new ThumbWheelModel();
     }
@@ -43,6 +44,7 @@ public class ThumbWheelModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class<?> getWidgetModelType() {
         return ThumbWheelModel.class;
     }

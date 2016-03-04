@@ -59,8 +59,8 @@ public class PVTableXMLPersistenceTest
     {
         final PVTablePersistence persistence = new PVTableXMLPersistence();
         final PVTableModel model = new PVTableModel();
-        model.addItem(TestSettings.NAME, 0.1, new SavedScalarValue("3.14"));
-        model.addItem("test_array", 0.1, new SavedArrayValue(Arrays.asList("3.14", "314")));
+        model.addItem(TestSettings.NAME, 0.1, new SavedScalarValue("3.14"), null, false, null);
+        model.addItem("test_array", 0.1, new SavedArrayValue(Arrays.asList("3.14", "314")), null, false, null);
 
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
         persistence.write(model, buf);

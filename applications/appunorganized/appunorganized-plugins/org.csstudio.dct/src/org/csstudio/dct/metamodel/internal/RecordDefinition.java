@@ -34,6 +34,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFieldDefinition getFieldDefinitions(String fieldName) {
         return fieldDefinitions.get(fieldName);
     }
@@ -42,6 +43,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Collection<IFieldDefinition> getFieldDefinitions() {
         return fieldDefinitions.values();
     }
@@ -54,6 +56,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addFieldDefinition(IFieldDefinition fieldDefinition) {
         assert fieldDefinition != null;
         fieldDefinitions.put(fieldDefinition.getName(), fieldDefinition);
@@ -62,6 +65,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeFieldDefinition(IFieldDefinition fieldDefinition) {
         assert fieldDefinition != null;
         fieldDefinitions.remove(fieldDefinition.getName());
@@ -71,6 +75,7 @@ public final class RecordDefinition implements IRecordDefinition, Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getType() {
         return type;
     }
