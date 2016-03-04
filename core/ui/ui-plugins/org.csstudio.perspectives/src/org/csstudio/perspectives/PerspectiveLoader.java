@@ -37,7 +37,7 @@ public class PerspectiveLoader {
      * in Eclipse 4.5.2 which imports the perspective properly.
      */
     public void promptAndLoadPerspective() {
-        Path selectedFile = promptForXmiFile();
+        Path selectedFile = fileUtils.promptForFile(null, Plugin.XMI_EXTENSION);
         if (selectedFile != null && Files.isRegularFile(selectedFile)) {
             URI fileUri = fileUtils.pathToEmfUri(selectedFile);
             loadPerspective(fileUri);
@@ -62,10 +62,6 @@ public class PerspectiveLoader {
         } else {
             Plugin.getLogger().warning(NLS.bind(Messages.PerspectiveLoader_fileNotUnderstood, fileUri));
         }
-    }
-
-    private Path promptForXmiFile() {
-        return fileUtils.promptForFile(null, Plugin.XMI_EXTENSION);
     }
 
     public void loadFromDirectory(Path directory) throws IOException {
