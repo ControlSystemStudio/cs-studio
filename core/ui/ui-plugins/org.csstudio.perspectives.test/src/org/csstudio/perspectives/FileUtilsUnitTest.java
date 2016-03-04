@@ -17,13 +17,15 @@ import org.junit.Test;
 public class FileUtilsUnitTest {
 
     private FileUtils fileUtils;
-    private URL simpleUrl;
+    private URL fileUrl;
+    private URL httpUrl;
     private String fileString = "/tmp/hello.txt";
 
     @Before
     public void setUp() throws Exception {
         fileUtils = new FileUtils();
-        simpleUrl = new URL("file:" + fileString);
+        fileUrl = new URL("file:" + fileString);
+        httpUrl = new URL("http://www.google.com/maps");
     }
 
     @Test(expected=NullPointerException.class)
@@ -33,10 +35,17 @@ public class FileUtilsUnitTest {
 
     @Test
     public void checkUrlToEmfUriHandlesSimpleFile() throws MalformedURLException {
-        URI uri = fileUtils.urlToEmfUri(simpleUrl);
+        URI uri = fileUtils.urlToEmfUri(fileUrl);
         assertEquals(uri.scheme(), "file");
         assertArrayEquals(uri.segments(), new String[] {"tmp", "hello.txt"});
         assertEquals(uri.fileExtension(), "txt");
+    }
+
+    @Test
+    public void checkUrlToEmfUriHandlesHttpUrl() throws MalformedURLException {
+        URI uri = fileUtils.urlToEmfUri(httpUrl);
+        assertEquals(uri.authority(), "www.google.com");
+        assertArrayEquals(uri.segments(), new String[] {"maps"});
     }
 
     @Test(expected=NullPointerException.class)
@@ -46,8 +55,13 @@ public class FileUtilsUnitTest {
 
     @Test
     public void checkUrlToFileHandlesSimpleFile() {
-        File file = fileUtils.urlToFile(simpleUrl);
+        File file = fileUtils.urlToFile(fileUrl);
         assertEquals(file.getAbsolutePath(), fileString);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void urlToFileThrowsIllegalArgumentExceptionForHttpUrl() {
+        System.out.println(fileUtils.urlToFile(httpUrl).getAbsolutePath());
     }
 
     @Test(expected=NullPointerException.class)
@@ -65,5 +79,14 @@ public class FileUtilsUnitTest {
         String uri = fileUtils.stringPathToUriFileString(fileString);
         assertTrue(uri.startsWith("file"));
         assertTrue(uri.endsWith(fileString));
+    }
+
+    @Test
+    public void checkStringPathToUriFileStringMakesAbsoluteFromRelativePath() throws IOException, URISyntaxException {
+        String relativePath = "directory/file.txt";
+        String uri = fileUtils.stringPathToUriFileString(relativePath);
+        assertTrue(uri.startsWith("file"));
+        assertTrue(uri.endsWith(relativePath));
+        assertTrue(uri.contains(System.getProperty("user.dir")));
     }
 }

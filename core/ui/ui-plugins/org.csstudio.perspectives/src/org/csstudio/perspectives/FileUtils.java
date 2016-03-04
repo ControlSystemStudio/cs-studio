@@ -18,6 +18,8 @@ import org.eclipse.ui.PlatformUI;
 
 public class FileUtils implements IFileUtils {
 
+    private static final String FILE_PROTOCOL = "file";
+
     @Override
     public URI urlToEmfUri(URL url) {
         return URI.createURI(url.toString());
@@ -30,6 +32,9 @@ public class FileUtils implements IFileUtils {
 
     @Override
     public File urlToFile(URL url) {
+        if (!url.getProtocol().equals(FILE_PROTOCOL)) {
+            throw new IllegalArgumentException("Only file URLs are supported.");
+        }
         return new File(url.getFile());
     }
 
@@ -43,6 +48,10 @@ public class FileUtils implements IFileUtils {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.perspectives.IFileUtils#stringPathToUriFileString(java.lang.String)
+     */
     @Override
     public String stringPathToUriFileString(String path) {
         return Paths.get(path).toUri().toString();
