@@ -1,7 +1,8 @@
 package org.csstudio.perspectives;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -36,9 +37,9 @@ public class PerspectiveLoader {
      * in Eclipse 4.5.2 which imports the perspective properly.
      */
     public void promptAndLoadPerspective() {
-        File selectedFile = promptForXmiFile();
-        if (selectedFile != null && selectedFile.isFile()) {
-            URI fileUri = fileUtils.fileToEmfUri(selectedFile);
+        Path selectedFile = promptForXmiFile();
+        if (selectedFile != null && Files.isRegularFile(selectedFile)) {
+            URI fileUri = fileUtils.pathToEmfUri(selectedFile);
             loadPerspective(fileUri);
         }
     }
@@ -63,13 +64,13 @@ public class PerspectiveLoader {
         }
     }
 
-    private File promptForXmiFile() {
+    private Path promptForXmiFile() {
         return fileUtils.promptForFile(null, Plugin.XMI_EXTENSION);
     }
 
-    public void loadFromDirectory(File directory) {
-        List<File> xmiFiles = fileUtils.listDirectory(directory, Plugin.XMI_EXTENSION);
-        for (File xmiFile : xmiFiles) {
+    public void loadFromDirectory(Path directory) throws IOException {
+        List<Path> xmiFiles = fileUtils.listDirectory(directory, Plugin.XMI_EXTENSION);
+        for (Path xmiFile : xmiFiles) {
             loadPerspective(URI.createFileURI(xmiFile.toString()));
         }
     }

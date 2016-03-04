@@ -4,11 +4,11 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
@@ -49,29 +49,29 @@ public class FileUtilsUnitTest {
     }
 
     @Test(expected=NullPointerException.class)
-    public void checkFileToEmfUriThrowsNullPointerExceptionIfArgumentIsNull() {
-        fileUtils.fileToEmfUri(null);
+    public void checkPathToEmfUriThrowsNullPointerExceptionIfArgumentIsNull() {
+        fileUtils.pathToEmfUri(null);
     }
 
     @Test(expected=NullPointerException.class)
     public void checkUrlToFileThrowsNullPointerExceptionIfNullArgument() {
-        fileUtils.urlToFile(null);
+        fileUtils.urlToPath(null);
     }
 
     @Test
     public void checkUrlToFileHandlesSimpleFile() {
-        File file = fileUtils.urlToFile(fileUrl);
-        assertEquals(file.getAbsolutePath(), fileString);
+        Path file = fileUtils.urlToPath(fileUrl);
+        assertEquals(file.toAbsolutePath().toString(), fileString);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void urlToFileThrowsIllegalArgumentExceptionForHttpUrl() {
-        System.out.println(fileUtils.urlToFile(httpUrl).getAbsolutePath());
+        System.out.println(fileUtils.urlToPath(httpUrl).toAbsolutePath());
     }
 
     @Test(expected=NullPointerException.class)
     public void checkStringPathToFileThrowsNullPointerExceptionIfArgumentIsNull() throws IOException, URISyntaxException {
-        fileUtils.stringPathToFile(null);
+        fileUtils.stringPathToPath(null);
     }
 
     @Test(expected=NullPointerException.class)

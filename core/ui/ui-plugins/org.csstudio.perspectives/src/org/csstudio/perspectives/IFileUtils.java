@@ -1,8 +1,8 @@
 package org.csstudio.perspectives;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -24,23 +24,23 @@ public interface IFileUtils {
      * @param file; may not be null
      * @return uri
      */
-    public URI fileToEmfUri(File file);
+    public URI pathToEmfUri(Path path);
 
     /**
-     * Convert a file url to a file object.
+     * Convert a file url to a Path object.
      * @param url with scheme 'file:'; may not be null
-     * @return file object
+     * @return Path object
      */
-    public File urlToFile(URL url);
+    public Path urlToPath(URL url);
 
     /**
-     * Convert a string representing a path into a file object.
+     * Convert a string representing a path into a path object.
      * This may include an Eclipse 'platform:' uri.
      * @param path may be an Eclipse-style URI; may not be null
      * @return object representing the path
      * @throws IOException if some IO error occurs
      */
-    public File stringPathToFile(String path) throws IOException;
+    public Path stringPathToPath(String path) throws IOException;
 
     /**
      * Convert a string representing a filesystem path into a string
@@ -56,16 +56,17 @@ public interface IFileUtils {
      * @param directory may not be null
      * @throws IOException if some IO error occurs
      */
-    public void createDirectory(File directory) throws IOException;
+    public void createDirectory(Path directory) throws IOException;
 
     /**
-     * Return a list of files matching the file extension in the specified
+     * Return a list of paths matching the file extension in the specified
      * directory.
      * @param directory must represent a directory; may not be null
      * @param fileExtension to match
      * @return list of matching files
+     * @throws IOException if some IO error occurs
      */
-    public List<File> listDirectory(File directory, String fileExtension);
+    public List<Path> listDirectory(Path directory, String fileExtension) throws IOException;
 
     /**
      * Open a file chooser to select a file with the specified extension.
@@ -73,6 +74,6 @@ public interface IFileUtils {
      * @param fileExtension
      * @return selected file
      */
-    public File promptForFile(File startingDirectory, String fileExtension);
+    public Path promptForFile(Path startingDirectory, String fileExtension);
 
 }

@@ -1,12 +1,13 @@
 package org.csstudio.perspectives;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,25 +27,25 @@ public class FileUtils implements IFileUtils {
     }
 
     @Override
-    public URI fileToEmfUri(File file) {
-        return URI.createFileURI(file.getPath());
+    public URI pathToEmfUri(Path file) {
+        return URI.createFileURI(file.toString());
     }
 
     @Override
-    public File urlToFile(URL url) {
+    public Path urlToPath(URL url) {
         if (!url.getProtocol().equals(FILE_PROTOCOL)) {
             throw new IllegalArgumentException("Only file URLs are supported.");
         }
-        return new File(url.getFile());
+        return Paths.get(url.getFile());
     }
 
     @Override
-    public File stringPathToFile(String path) throws IOException {
+    public Path stringPathToPath(String path) throws IOException {
         try {
             URL directoryUrl = FileLocator.resolve(new URL(path));
-            return new File(directoryUrl.toURI());
+            return Paths.get(directoryUrl.toURI());
         } catch (MalformedURLException | URISyntaxException e) {
-            return new File(path);
+            return Paths.get(path);
         }
     }
 
@@ -54,36 +55,38 @@ public class FileUtils implements IFileUtils {
     }
 
     @Override
-    public void createDirectory(File directory) throws IOException {
-        if (directory.isDirectory()) {
-            Files.createDirectories(directory.toPath());
+    public void createDirectory(Path directory) throws IOException {
+        if (Files.isDirectory(directory)) {
+            Files.createDirectories(directory);
         }
     }
 
+    // Borrowed from https://docs.oracle.com/javase/7/docs/api/java/nio/file/DirectoryStream.html
     @Override
-    public List<File> listDirectory(File directory, String fileExtension) {
-        List<File> contents = new ArrayList<File>();
-        FilenameFilter filter = (File dir, String name) -> name.endsWith(fileExtension);
-        String[] files = directory.list(filter);
-        if (contents != null) {
-            for (String f : files) {
-                contents.add(new File(directory, f));
+    public List<Path> listDirectory(Path directory, String fileExtension) throws IOException {
+        List<Path> result = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, "*." + fileExtension)) {
+            for (Path entry: stream) {
+                result.add(entry);
             }
+        } catch (DirectoryIteratorException ex) {
+            // I/O error encounted during the iteration, the cause is an IOException
+            throw ex.getCause();
         }
-        return contents;
+        return result;
     }
 
     @Override
-    public File promptForFile(File startingDirectory, String fileExtension) {
+    public Path promptForFile(Path startingDirectory, String fileExtension) {
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         chooser.setText(Messages.FileUtils_selectFile);
         chooser.setFilterExtensions(new String[] {"*." + fileExtension});
         chooser.open();
-        File dirname = new File(chooser.getFilterPath());
+        Path dirname = Paths.get(chooser.getFilterPath());
         String filename = chooser.getFileName();
-        File fullPath = null;
+        Path fullPath = null;
         if (filename != null) {
-            fullPath = new File(dirname, chooser.getFileName());
+            fullPath = dirname.resolve(chooser.getFileName());
         }
         return fullPath;
     }

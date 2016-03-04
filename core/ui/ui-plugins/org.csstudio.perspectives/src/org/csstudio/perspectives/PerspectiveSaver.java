@@ -1,8 +1,8 @@
 package org.csstudio.perspectives;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -48,7 +48,7 @@ public class PerspectiveSaver implements EventHandler {
     @Inject
     private IFileUtils fileUtils;
 
-    private File dataDirectory;
+    private Path dataDirectory;
 
     /**
      * Create required resources and subscribe to the e4 event broker listening for
@@ -58,7 +58,7 @@ public class PerspectiveSaver implements EventHandler {
     public void init() {
         try {
             URL dataUrl = instanceLocation.getDataArea(Plugin.ID);
-            dataDirectory = fileUtils.urlToFile(dataUrl);
+            dataDirectory = fileUtils.urlToPath(dataUrl);
             fileUtils.createDirectory(dataDirectory);
             Plugin.getLogger().config("Initialising perspective saver to location " + dataDirectory);
             // Subscribe to perspective save events.

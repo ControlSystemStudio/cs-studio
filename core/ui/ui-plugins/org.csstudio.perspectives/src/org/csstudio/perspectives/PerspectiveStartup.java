@@ -1,9 +1,9 @@
 package org.csstudio.perspectives;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Platform;
@@ -28,19 +28,19 @@ public class PerspectiveStartup implements IStartup {
         // Load perspectives at startup.
         PerspectiveLoader loader = ContextInjectionFactory.make(PerspectiveLoader.class, context);
         try {
-            File f = getPerspectivesDirectory();
-            loader.loadFromDirectory(f);
+            Path perspectivesDirectory = getPerspectivesDirectory();
+            loader.loadFromDirectory(perspectivesDirectory);
         } catch (IOException | URISyntaxException e) {
             Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveStartup_startupLoadFailed, e);
         }
     }
 
-    private File getPerspectivesDirectory() throws MalformedURLException, IOException, URISyntaxException {
+    private Path getPerspectivesDirectory() throws MalformedURLException, IOException, URISyntaxException {
         IPreferencesService prefs = Platform.getPreferencesService();
         String dirPreference = prefs.getString(PerspectivesPreferencePage.ID,
                 PerspectivesPreferencePage.PERSPECTIVE_LOAD_DIRECTORY, Plugin.PERSPECTIVE_LOAD_LOCATION, null);
         IFileUtils fileUtils = new FileUtils();
-        return fileUtils.stringPathToFile(dirPreference);
+        return fileUtils.stringPathToPath(dirPreference);
     }
 
 }
