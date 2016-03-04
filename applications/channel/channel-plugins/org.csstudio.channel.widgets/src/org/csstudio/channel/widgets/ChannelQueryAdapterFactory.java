@@ -2,13 +2,8 @@ package org.csstudio.channel.widgets;
 
 import java.util.Collection;
 
-import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
-import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
-import org.csstudio.utility.pvmanager.widgets.ProcessVariableAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
@@ -40,7 +35,7 @@ public class ChannelQueryAdapterFactory implements IAdapterFactory {
 
     @Override
     public Class[] getAdapterList() {
-    return new Class[] { ChannelQuery.class, ChannelQuery[].class };
+        return new Class[] { ChannelQuery.class, ChannelQuery[].class };
     }
 
 }

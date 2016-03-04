@@ -1,7 +1,5 @@
 package org.csstudio.dct.model.commands;
 
-import java.util.UUID;
-
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.persistence.IPersistenceService;

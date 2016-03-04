@@ -23,7 +23,6 @@
 
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.dialogs.SdsResourceSelectionDialog;
-import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.util.IPropertyChangeListener;

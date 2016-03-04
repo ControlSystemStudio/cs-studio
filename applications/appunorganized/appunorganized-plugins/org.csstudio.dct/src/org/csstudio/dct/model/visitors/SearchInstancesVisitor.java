@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
@@ -15,7 +14,7 @@ import org.csstudio.dct.model.internal.Project;
 
 /**
  * Visitor implementation that can be used to find instances using their
- * prototype´s id as search criteria.
+ * prototypeï¿½s id as search criteria.
  *
  * @author swende
  *

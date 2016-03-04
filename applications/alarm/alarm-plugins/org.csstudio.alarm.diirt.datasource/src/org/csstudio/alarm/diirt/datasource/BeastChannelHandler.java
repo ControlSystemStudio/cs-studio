@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.datasource.ValueCache;

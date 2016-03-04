@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
 import org.csstudio.ui.util.dialogs.StringListSelectionDialog;

@@ -4,7 +4,6 @@
 package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Property.Builder.property;
-import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;

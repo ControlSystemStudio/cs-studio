@@ -4,7 +4,6 @@ import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Undoable command the removes an {@link IInstance} from a {@link IFolder} or a

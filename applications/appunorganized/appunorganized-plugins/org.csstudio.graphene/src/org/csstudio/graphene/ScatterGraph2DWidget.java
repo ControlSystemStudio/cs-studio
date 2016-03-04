@@ -11,7 +11,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.diirt.graphene.InterpolationScheme;
 import org.diirt.graphene.ScatterGraph2DRendererUpdate;
 import org.diirt.datasource.graphene.ExpressionLanguage;
 import org.diirt.datasource.graphene.ScatterGraph2DExpression;

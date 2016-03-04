@@ -3,7 +3,6 @@ package org.csstudio.dct.model.commands;
 import java.util.UUID;
 
 import org.csstudio.dct.model.IContainer;
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.internal.Instance;

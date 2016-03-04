@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Path;
  * @version $Revision: 1.11 $
  *
  */
-public final class LinkingContainerModel extends ContainerModel {
+public final class  extends ContainerModel {
     /**
      * The ID of the resource property.
      */

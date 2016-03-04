@@ -8,7 +8,6 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Prototype;
-import org.csstudio.dct.model.internal.RecordFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
 import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;

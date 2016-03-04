@@ -22,7 +22,6 @@
 package org.csstudio.sds.internal.model.logic;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.junit.Before;

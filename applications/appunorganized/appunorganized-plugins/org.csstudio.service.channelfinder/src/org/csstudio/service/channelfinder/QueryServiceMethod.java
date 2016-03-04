@@ -18,13 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.diirt.datasource.WriteFunction;
 import org.diirt.service.ServiceDescription;
 import org.diirt.service.ServiceMethod;
 import org.diirt.service.ServiceMethodDescription;
-import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VString;
-import org.diirt.vtype.VTable;
 import org.diirt.vtype.ValueFactory;
 
 import com.google.common.base.Function;

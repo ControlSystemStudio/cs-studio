@@ -2,7 +2,6 @@ package org.csstudio.dct.metamodel.internal;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

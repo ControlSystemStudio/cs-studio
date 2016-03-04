@@ -1,15 +1,9 @@
 package org.csstudio.archive.reader.ea4;
 
-import org.csstudio.archive.reader.*;
-import org.csstudio.archive.reader.ea4.EA4ArchiveReaderFactory;
-import org.epics.pvaccess.client.rpc.RPCClientImpl;
-import org.epics.pvaccess.server.rpc.RPCRequestException;
-import org.epics.pvdata.pv.PVStructure;
-import org.epics.pvdata.pv.PVStructureArray;
-import org.epics.pvdata.pv.StructureArrayData;
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReaderFactory;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
-import org.diirt.vtype.VTypeToString;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
