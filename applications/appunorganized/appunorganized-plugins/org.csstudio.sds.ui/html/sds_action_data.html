@@ -10,19 +10,19 @@
 <body>
 <h1>SDS Action Data</h1>
 <p>
-In SDS there are three kinds of action data that can be added to a widget. <br /> <br /> 
+In SDS there are three kinds of action data that can be added to a widget. <br /> <br />
 <img alt="Action Data Property Window" src="./image/sds_action_data.png" /> <br /> <br />
 <img alt="Open view as Shell" src="./image/sds_action_data_shell.png" />
   Opens a display in a new shell that is specified in the action <br />
 <img alt="Open view as View" src="./image/sds_action_data_view.png" />
-  Opens a display in a new view that is specified in the action  <br /> 
+  Opens a display in a new view that is specified in the action  <br />
 <img alt="Send a Value" src="./image/sds_action_data_send.png" />
   Writes a value to a process variable.  <br />
 </p>
 
 <p align="justify">
 The number of actions for a widget is not limited. In the execution mode of a display the cursor icon
-<img alt="Action Data Cursor" src="./image/sds_action_data_cursor.png" /> 
+<img alt="Action Data Cursor" src="./image/sds_action_data_cursor.png" />
 indicates that the underlying widget holds actions. By clicking the right mouse button all
 actions of the widget pops up.
 </p>
@@ -75,8 +75,8 @@ Add Action 'Open Shell' and set the properties as follows: <br />
 <img alt="Action Data Property Window" src="./image/sds_disp1_shell_action.png" hspace="50" />
 </p>
 
-<div style="text-indent: 40pt;">    
-The display configured in'Display' will be opened as a shell 
+<div style="text-indent: 40pt;">
+The display configured in'Display' will be opened as a shell
 with the argument 'send' (alias) and 'local://out1' (value).
 </div>
 <p>
@@ -99,7 +99,7 @@ as described in section
 <br />
 Select 'Ellipse' and add Action 'Send' as follows:<br />
 <img alt="Action Data Property Window" src="./image/sds_disp1_send_action_moon.png" hspace="50" /> <br />
-  Configure the same output channel for 'Action Data' like in 'Polyline': 
+  Configure the same output channel for 'Action Data' like in 'Polyline':
 <img alt="Action Data Property Window" src="./image/sds_disp1_output_channel1.png" hspace="50" /> <br />
 <br clear="all" />
 <br />
@@ -116,7 +116,7 @@ Select the group and add action 'Send':<br />
  and configure the following dynamisation:
 <img alt="Action Data Property Window" src="./image/sds_disp1_output_channel1.png" />
 <img alt="Action Data Property Window" src="./image/sds_empty_action_data2_display.png" align="right" hspace="50" />
-</p>    
+</p>
 
 <h3>Calling Display 2</h3>
 <p>
@@ -204,7 +204,7 @@ The dynamisation of the property 'Text Value' for the 'Label' is
 <p align="justify">The simplest example for an action is to call a view or shell without any
 parameters. Right click on file 'Calling Display1' &rarr; 'Run As Shell'. If you click now with the right
 mouse button on a widget you see the available actions in a popup menu (see figure). The widgets inherits
-one action from the group. Execute the action 'Open as view without aliases' by right click 
+one action from the group. Execute the action 'Open as view without aliases' by right click
 on the polyline and select the action. The display 'Called display' will be opened as a view
 in CSS.
 <br />
@@ -214,7 +214,7 @@ the polyline in the running shell 'Calling Display 1' and select the action 'Ope
 with aliases'.
 <br />
 Open 'Calling display 2': Right click on the file 'Calling display 2' &rarr;
-'Run as Shell'. Right click on the polyline in the running shell 'Calling Display 2' and 
+'Run as Shell'. Right click on the polyline in the running shell 'Calling Display 2' and
 select the action 'Open as Shell with aliases'.
 <br />
 The 'Called display' is executed in two
@@ -225,7 +225,7 @@ is parametrized with the appropriate channel. The action 'Call As Shell' sets vi
 property 'alias' an alias name for the called display. The called display has to configure
 the property 'alias' for the widgets to receive the paramter. To write the value of a 'Send
 action' to a channel, you have to dynamise the property 'Action Data' like in the example.
-The channel that is defined for the 'Output channel' is used from the 'Send action'.   
+The channel that is defined for the 'Output channel' is used from the 'Send action'.
 <br />
 <br clear="all" />
 </p>

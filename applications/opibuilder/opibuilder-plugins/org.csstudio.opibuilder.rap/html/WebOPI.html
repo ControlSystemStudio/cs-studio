@@ -11,13 +11,13 @@
 <h2>WebOPI</h2>
 <h3>Introduction</h3>
 <p>
-WebOPI aims to provide web access to Operator Interfaces (OPI) that 
-were created in CSS BOY (Best OPI, Yet). With WebOPI, people can 
-seamlessly visit their OPIs from anywhere in the world at any time 
-via a web-browser-equipped device such as a PC, laptop, tablet or 
+WebOPI aims to provide web access to Operator Interfaces (OPI) that
+were created in CSS BOY (Best OPI, Yet). With WebOPI, people can
+seamlessly visit their OPIs from anywhere in the world at any time
+via a web-browser-equipped device such as a PC, laptop, tablet or
 smart phone. The WebOPI is built upon the Eclipse Rich Ajax Platform (RAP),
- which allows single sourcing between RCP and RAP. Most of the BOY widget code 
- was reused for the WebOPI. OPIs displayed in a web browser look very similar 
+ which allows single sourcing between RCP and RAP. Most of the BOY widget code
+ was reused for the WebOPI. OPIs displayed in a web browser look very similar
 to the original BOY OPIs. Most of BOY OPI functions are supported in WebOPI,
  including the support of Macros, Rules, JavaScript and Jython script. Without
 any additional work, you can easily deploy OPIs created in BOY on Web
@@ -32,51 +32,51 @@ any additional work, you can easily deploy OPIs created in BOY on Web
 <h3>Download</h3>
 <p>See <a href="http://sourceforge.net/apps/trac/cs-studio/wiki/webopi">WebOPI home page</a>.</p>
 <h3>Install</h3>
-<p>In principle, WebOPI can be 
-deployed on all Servlet Containers that implement the Servlet API 2.3 through 3.0. 
-This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere. 
+<p>In principle, WebOPI can be
+deployed on all Servlet Containers that implement the Servlet API 2.3 through 3.0.
+This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere.
 Only Tomcat and Glassfish have been tested for WebOPI so far. </p>
 <h5>Deploy WebOPI on Tomcat</h5>
 <p>Requirement: Java 1.6 and up. Apache Tomcat 7.0.x.</p>
 <p>WebOPI is a Web Archive (WAR) file that can be deployed on <a href="http://tomcat.apache.org/">
-Tomcat</a> server. If you do not have Tomcat server available, 
+Tomcat</a> server. If you do not have Tomcat server available,
 then the first step would be installing Tomcat server.</p>
 
 <p>After Tomcat server installed, copy WebOPI WAR file (webopi.war) to
  <code>$CATALINA_HOME/webapps/</code> ($CATALINA_HOME is the root of your Tomcat installation). </p>
- 
- <p>For other Servlet Containers, please refer to 
+
+ <p>For other Servlet Containers, please refer to
  their own manuals about how to deploy Web Archive (WAR) on them.</p>
- 
+
  <h3>Configure</h3>
- <p>The WebOPI preference file path can be set by system property<code>org.csstudio.rap.preference</code>. 
+ <p>The WebOPI preference file path can be set by system property<code>org.csstudio.rap.preference</code>.
  On Tomcat, system property can be set in <code>$CATALINA_HOME/conf/catalina.properties</code>. Add a line as below:
  <pre class = "example_code">
- org.csstudio.rap.preference=/path/to/my/css_rap.ini </pre>  
+ org.csstudio.rap.preference=/path/to/my/css_rap.ini </pre>
  <p>
- If it is running inside Eclipse, it can be set as a JVM parameter: 
+ If it is running inside Eclipse, it can be set as a JVM parameter:
  <pre class = "example_code">-Dorg.csstudio.rap.preference=/my/path/to/css_rap.ini</pre>
- <p>If the system property <code>org.csstudio.rap.preference</code> is not set, 
+ <p>If the system property <code>org.csstudio.rap.preference</code> is not set,
  it will try to find <code>css_rap.ini</code> in user home directory.</p>
- 
+
  <p>To reduce network traffic, you may enable http compression on your tomcat server:  edit conf/server.xml:
 
 <pre class = "example_code">
-    &#60;Connector port="8080" 
+    &#60;Connector port="8080"
            ...
            compression="on"
            compressionMinSize="1024"
     compressableMimeType="text/html,text/xml,text/plain,text/javascript,application/json"/>
 </pre>
   <p>By enableing http compression, it can save network traffic up to 10 times!</p>
- <p> After WebOPI is properly configured, you can start Tomcat using 
+ <p> After WebOPI is properly configured, you can start Tomcat using
  <code>$CATALINA_HOME/bin/startup.sh</code>. (You need to restart Tomcat server every time after you
  have made changes to the configuration.)</p>
-  
+
  <p>
- css_rap.ini follows the same format of plugin_customization.ini as in CSS product.  
+ css_rap.ini follows the same format of plugin_customization.ini as in CSS product.
  Below is an css_rap.ini example, you can make corresponding modifications for your site. </p>
- 
+
 <pre class="example_code">
 #---------------EPICS configuration-----------------------
 org.csstudio.platform.libs.epics/auto_addr_list=false
@@ -106,7 +106,7 @@ org.csstudio.opibuilder/secure_whole_site=true
 org.csstudio.opibuilder/unsecured_opi_paths=/home/public/opis|http://xxx.com/css/
 
 #The opi paths that need to be authenticated to access any opi started with one of these paths regardless the value of secure_whole_site.
-#If same path is set for unsecured_opi_paths too, it will be treated as secured path. 
+#If same path is set for unsecured_opi_paths too, it will be treated as secured path.
 #It can be absolute local directory path, an URL path or relative path to opi_repository. For example:
 #org.csstudio.opibuilder/secured_opi_paths=http://xxx.com/css/CCR_Screens|/home/controls/opis
 
@@ -129,34 +129,34 @@ org.csstudio.rap.core/login_module_options = username=css, password="rap rock"
 </pre>
 
 <p>In above example, EPICS configuration items are same as in CSS. Most items in WebOPI configuration
-are same as in BOY, but there are some additional items:</p> 
+are same as in BOY, but there are some additional items:</p>
 <ul>
-<li>opi_repository: It is a start path to the directory where the OPI files are placed. If you put your 
+<li>opi_repository: It is a start path to the directory where the OPI files are placed. If you put your
 BOY opi files under this directory, you will be able to access them from WebOPI via relative path to this directory.
-This path can also 
+This path can also
 be an URL path,for example: <code>http://mysite.com/opi_files/</code>. All other file paths used in preference file
 such as startup_opi, color_file, can also be a relative path relative to this path,
 but they could also be absolute paths.</li>
 <li>startup_opi: The default start up OPI when no OPI is specified in URL.</li>
 <li>mobile_startup_opi (optional): The default start up OPI for mobile URL.</li>
-</ul> 
+</ul>
 
-<p>Except <code>opi_repository</code> which must be an absolute path to a directory, 
-you can use either relative or absolute path for path items, 
-such as startup_opi, color_file and top_opis. If it is relative path, 
+<p>Except <code>opi_repository</code> which must be an absolute path to a directory,
+you can use either relative or absolute path for path items,
+such as startup_opi, color_file and top_opis. If it is relative path,
 it is relative to <code>opi_repository.</code></p>
 
 
 <h3>Web Access URL</h3>
-<p>If you directly put webopi.war under $CATALINA_HOME/webapps/, then the address to 
+<p>If you directly put webopi.war under $CATALINA_HOME/webapps/, then the address to
 access WebOPI would be <code>http://your_site.com/webopi/</code>. or <code>http://127.0.0.1:8080/webopi/</code>.
 You can also rename webopi.war to whatever name you like, such as your_name.war, then the URL would
 be <code>http://your_site.com/your_name</code>.
-Once after you connected to above URL, it will automatically append <code>/w</code> to the URL. 
+Once after you connected to above URL, it will automatically append <code>/w</code> to the URL.
 </p>
-<p>Using above URL will open the <code>startup_opi</code> specified in css_rap.ini. To open other OPIs, 
+<p>Using above URL will open the <code>startup_opi</code> specified in css_rap.ini. To open other OPIs,
 you can directly append <code>?opi=path/to/opi.opi</code> to the URL. It can be either an absolute path (
-local file path on web server or http URL) or 
+local file path on web server or http URL) or
 a relative path to opi_repository. For example: <br>
 <br><code>http://your_site.com/webopi/w?opi=http://mysite.com/opis/widgets/1_2_Image.opi</code><br>
 <code>http://your_site.com/webopi/w?opi=/user/local/me/widgets/1_2_Image.opi</code><br>
@@ -198,9 +198,9 @@ The macros are defined in the preference file with the item <code>macros</code>.
 
 <h3>Debug URL</h3>
 <p>To show debug and logging information, you can append <code>rap?startup=debug</code> to <code>webopi/</code>.
-For example: <br>   <code>http://your_site.com/webopi/rap?startup=debug</code>. 
+For example: <br>   <code>http://your_site.com/webopi/rap?startup=debug</code>.
 <br> If you want to show more lines,
-you can append <code>&lines=number</code>. 
+you can append <code>&lines=number</code>.
 For example, <br><code>http://your_site.com/webopi/rap?startup=debug&lines=500</code>.</p>
 
 <p>So far, Debug URL only works for Tomcat server.</p>
@@ -209,7 +209,7 @@ For example, <br><code>http://your_site.com/webopi/rap?startup=debug&lines=500</
 
 <p>
 For Tomcat server:
-Shutdown tomcat server first. Remove <code>webopi.war</code> and <code>webopi</code> folder under <code>webapps/</code> directory. 
+Shutdown tomcat server first. Remove <code>webopi.war</code> and <code>webopi</code> folder under <code>webapps/</code> directory.
 Remove <code>$CATALINA_HOME/work/Catalina/localhost/webopi</code>.
 </p><p>
 Before redeploy WebOPI, a full uninstall is required.
@@ -220,17 +220,17 @@ Before redeploy WebOPI, a full uninstall is required.
 <p>Please see <a href="WebOPI_developer.html">Developer Manual</a></p>
 
 <h3> Known Issues</h3>
-<p> 
+<p>
 Here is the list of things that are not supported in WebOPI, please avoid to use these functions in your OPI if you want to deploy it on web.
 </p>
 <ul>
  <li>Doesn't support workspace, so you cannot use absolute workspace path in WebOPI. Use relative path everywhere if possible.</li>
  <li>Doesn't support ESC key. Press ESC key will stop client side update. So you cannot cancel editing in text input widget.
   This is a bug of RAP, see <a href="http://www.eclipse.org/forums/index.php/mv/msg/33802/109693/#msg_109693">http://www.eclipse.org/forums/index.php/mv/msg/33802/109693/#msg_109693</a>
-  </li>  
-  
+  </li>
 
- <li>No ramp on Gauge, Meter and Knob. Reason: Arc is filled in chord in RAP. See 
+
+ <li>No ramp on Gauge, Meter and Knob. Reason: Arc is filled in chord in RAP. See
  <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=353421">https://bugs.eclipse.org/bugs/show_bug.cgi?id=353421</a></li>
  <li>Does't support dash line</li>
  <li>Doesn't support Pattern (3D effect)</li>
@@ -249,9 +249,9 @@ Here is the list of things that are not supported in WebOPI, please avoid to use
 <h5>Tomcat cannot be accessed after restart</h5>
 <p>Using shutdown.sh cannot fully shutdown tomcat sometimes, so you have to kill tomcat manually and
  then start tomcat again. The command to find tomcat's pid is <code>ps aux|grep tomcat</code></p>
- 
+
  <br>
  <br>
- 
+
 </body>
 </html>
