@@ -198,7 +198,7 @@ public abstract class CommonBoolSymbolFigure extends AbstractBoolFigure
      */
     public void setSymbolImagePath(CommonBoolSymbolModel model,
             IPath imagePath) {
-    	this.model = model;
+        this.model = model;
         if (imagePath == null || imagePath.isEmpty()) {
             return;
         }

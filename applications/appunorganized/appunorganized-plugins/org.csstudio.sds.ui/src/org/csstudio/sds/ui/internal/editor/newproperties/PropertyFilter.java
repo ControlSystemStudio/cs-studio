@@ -29,6 +29,7 @@ public class PropertyFilter implements IFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean select(Object o) {
         boolean result = false;
 

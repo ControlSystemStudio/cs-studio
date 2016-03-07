@@ -42,6 +42,7 @@ public final class DisplayTestingPerspective implements IPerspectiveFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createInitialLayout(final IPageLayout layout) {
         layout.setEditorAreaVisible(false);
 

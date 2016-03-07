@@ -326,7 +326,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     /**
      * {@inheritDoc}
      *
-     * We override the behaviour of the superclass totally. Don´t add a super
+     * We override the behaviour of the superclass totally. Donï¿½t add a super
      * call in future!!
      */
     @Override
@@ -1035,9 +1035,9 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     }
 
     /**
-     * Returns the path for this editor´s input data.
+     * Returns the path for this editorï¿½s input data.
      *
-     * @return the path for this editor´s input data
+     * @return the path for this editorï¿½s input data
      */
     public IPath getFilePath() {
         IPath result = null;
@@ -1063,6 +1063,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public DisplayModel getDisplayModel() {
         return _displayModel;
     }
@@ -1144,6 +1145,8 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
     }
 
     final class GridSpacingListener implements org.eclipse.jface.util.IPropertyChangeListener {
+
+        @Override
         public void propertyChange(final PropertyChangeEvent event) {
             if (event.getProperty().equals(PreferenceConstants.PROP_GRID_SPACING)) {
                 IEditorReference[] references = PlatformUI.getWorkbench()

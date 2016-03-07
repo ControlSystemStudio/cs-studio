@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui;
 
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IValue;
 import org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart;
 import org.csstudio.sds.components.ui.internal.editparts.MenuButtonEditPart;

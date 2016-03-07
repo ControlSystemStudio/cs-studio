@@ -41,6 +41,7 @@ public final class DoubleArrayPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
         PropertyDescriptor descriptor = new DoubleArrayPropertyDescriptor(id,

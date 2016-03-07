@@ -78,6 +78,7 @@ public final class NewScriptRuleWizard extends Wizard implements INewWizard {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench,
             final IStructuredSelection selection) {
         _selection = selection;

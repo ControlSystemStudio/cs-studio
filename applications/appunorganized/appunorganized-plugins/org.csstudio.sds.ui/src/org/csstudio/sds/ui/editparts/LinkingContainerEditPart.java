@@ -72,6 +72,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFigure getContentPane() {
         return ((LinkingContainerFigure) getFigure()).getContentsPane();
     }
@@ -184,6 +185,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
             _figure = figure;
         }
 
+        @Override
         public IStatus run(final IProgressMonitor progressMonitor) {
             IStatus status = Status.OK_STATUS;
 

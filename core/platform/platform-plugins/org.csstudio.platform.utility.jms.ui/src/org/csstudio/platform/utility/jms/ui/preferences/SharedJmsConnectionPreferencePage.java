@@ -56,6 +56,7 @@ public class SharedJmsConnectionPreferencePage
      * of preferences. Each field editor knows how to save and
      * restore itself.
      */
+    @Override
     public void createFieldEditors() {
         addField(new StringFieldEditor(PreferenceConstants.SENDER_BROKER_URL,
                 Messages.SharedJmsConnectionPreferencePage_SenderUrlLabel,
@@ -71,6 +72,7 @@ public class SharedJmsConnectionPreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench) {
     }
 }

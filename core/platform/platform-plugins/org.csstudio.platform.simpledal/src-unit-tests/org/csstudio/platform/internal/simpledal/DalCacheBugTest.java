@@ -36,8 +36,6 @@ public class DalCacheBugTest {
     private PropertyFactory _propertyFactory;
 
     /**
-     * {@inheritDoc}
-     *
      * @throws Exception
      */
     @Before
@@ -69,8 +67,6 @@ public class DalCacheBugTest {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @throws Exception
      */
     @Test

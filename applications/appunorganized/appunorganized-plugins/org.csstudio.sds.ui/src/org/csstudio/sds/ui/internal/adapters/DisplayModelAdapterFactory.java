@@ -36,6 +36,7 @@ public final class DisplayModelAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         assert adaptableObject != null;
         assert adapterType != null;
@@ -51,6 +52,7 @@ public final class DisplayModelAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class[] getAdapterList() {
         return new Class[] { IPropertySource.class };
     }

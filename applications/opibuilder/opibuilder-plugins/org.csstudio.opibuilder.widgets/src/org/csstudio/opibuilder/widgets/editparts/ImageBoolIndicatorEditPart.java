@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * EditPart controller for the image widg	et.
+ * EditPart controller for the image widget.
  *
  * @author Xihui Chen
  *

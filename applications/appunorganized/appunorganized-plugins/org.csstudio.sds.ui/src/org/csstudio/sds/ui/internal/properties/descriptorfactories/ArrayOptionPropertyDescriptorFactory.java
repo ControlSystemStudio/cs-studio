@@ -44,6 +44,7 @@ public final class ArrayOptionPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
         final ArrayOptionProperty optionProperty = (ArrayOptionProperty) property;

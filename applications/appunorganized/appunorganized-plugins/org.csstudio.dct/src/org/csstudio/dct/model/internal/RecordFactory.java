@@ -1,6 +1,5 @@
 package org.csstudio.dct.model.internal;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 

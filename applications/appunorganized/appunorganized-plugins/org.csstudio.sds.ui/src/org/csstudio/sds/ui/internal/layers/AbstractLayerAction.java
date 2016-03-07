@@ -52,6 +52,7 @@ abstract class AbstractLayerAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void init(final IViewPart view) {
         assert view instanceof LayerManagementView : "view instanceof LayerManagementView";
         _activeView = (LayerManagementView) view;
@@ -60,6 +61,7 @@ abstract class AbstractLayerAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void selectionChanged(final IAction action,
             final ISelection selection) {
         IStructuredSelection sel = (IStructuredSelection) selection;
@@ -76,6 +78,7 @@ abstract class AbstractLayerAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void run(final IAction action) {
         Command cmd = createCommand(_selectedLayer, _activeView
                 .getCurrentLayerSupport(), action);

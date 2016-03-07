@@ -151,6 +151,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
      * <p>
      * Since no cell editor is returned, the property is read only.
      */
+    @Override
     public CellEditor createPropertyEditor(final Composite parent) {
         return null;
     }
@@ -169,6 +170,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getCategory() {
         return _category;
     }
@@ -176,6 +178,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getDescription() {
         return _description;
     }
@@ -183,6 +186,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getDisplayName() {
         return _display;
     }
@@ -190,6 +194,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String[] getFilterFlags() {
         return _filterFlags;
     }
@@ -197,6 +202,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object getHelpContextIds() {
         return _helpIds;
     }
@@ -204,6 +210,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object getId() {
         return _id;
     }
@@ -211,6 +218,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ILabelProvider getLabelProvider() {
         if (_labelProvider != null) {
             return _labelProvider;
@@ -241,6 +249,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean isCompatibleWith(
             final IPropertyDescriptor anotherProperty) {
         if (getAlwaysIncompatible()) {
@@ -373,6 +382,7 @@ public abstract class PropertyDescriptor implements IPropertyDescriptor {
         _validator = validator;
     }
 
+    @Override
     public PropertyTypesEnum getPropertyType() {
         return _compatiblePropertyType;
     }

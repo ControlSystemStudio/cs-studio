@@ -11,12 +11,6 @@ import static org.junit.Assert.*;
 
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.simu.DynamicValue;
-import org.csstudio.utility.pv.simu.LocalPVFactory;
-import org.csstudio.utility.pv.simu.NoiseValue;
-import org.csstudio.utility.pv.simu.SineValue;
-import org.csstudio.utility.pv.simu.Value;
-import org.csstudio.utility.pv.simu.ValueListener;
 import org.junit.Test;
 
 /** JUnit test of the dynamic values

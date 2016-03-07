@@ -69,6 +69,7 @@ public class SNLCodeElementRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IToken evaluate(final ICharacterScanner scanner) {
         return this._wordRule.evaluate(scanner);
     }

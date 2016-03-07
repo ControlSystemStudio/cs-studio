@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.platform.utility.rdb.RDBCache;
 import org.junit.Test;
 
 /** JUnit test of the {@link RDBCache}

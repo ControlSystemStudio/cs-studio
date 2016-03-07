@@ -71,6 +71,7 @@ public final class FallbackEditpart extends AbstractWidgetEditPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object getAdapter(final Class adapter) {
             return null;
         }

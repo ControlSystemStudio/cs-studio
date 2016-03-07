@@ -37,6 +37,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSNCompilerPath() {
         return getFolder(PreferenceConstants.SNC_LOCATION_POST_FIX);
     }
@@ -44,6 +45,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCCompilerPath() {
         return getFolder(PreferenceConstants.C_COMPILER_LOCATION_POST_FIX);
     }
@@ -51,6 +53,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPreCompilerPath() {
         return getFolder(PreferenceConstants.PRE_COMPILER_LOCATION_POST_FIX);
     }
@@ -58,6 +61,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getApplicationCompilerPath() {
         return getFolder(PreferenceConstants.APPLICATION_COMPILER_POST_FIX);
     }
@@ -65,6 +69,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getCCompilerOptions() {
         List<String> result = new ArrayList<String>();
 
@@ -84,6 +89,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getEpicsFolder() {
         return getFolder(PreferenceConstants.EPICS_BASE_LOCATION_POST_FIX);
     }
@@ -91,6 +97,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getSeqFolder() {
         return getFolder(PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX);
     }
@@ -98,6 +105,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getScratchFolder() {
         return getFolder(PreferenceConstants.EPICS_SCRATCH_LOCATION_POST_FIX);
     }
@@ -121,11 +129,13 @@ public class CompilerOptionsService implements ICompilerOptionsService {
         return result;
     }
 
+    @Override
     public boolean getKeepGeneratedFiles() {
         return _preferenceStore.getBoolean(SNLUiActivator.PLUGIN_ID
                 + PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX);
     }
 
+    @Override
     public boolean getSaveAndCompile() {
         return _preferenceStore.getBoolean(SNLUiActivator.PLUGIN_ID
                 + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX);

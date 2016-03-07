@@ -1,13 +1,9 @@
 package org.csstudio.logbook.ui.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
-import org.csstudio.ui.util.AdapterUtil;
-import org.csstudio.ui.util.ReflectUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

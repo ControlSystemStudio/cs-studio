@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * Cell editor implementation that uses a combo box.
  *
- * The editor displays a set of {@link IOption}´s. When one of the options is
+ * The editor displays a set of {@link IOption}ï¿½s. When one of the options is
  * chosen, the identifier of that option (see {@link IOption#getIdentifier()})
  * is returned as selected value for this cell editor.
  *
@@ -157,6 +157,7 @@ public class OptionComboBoxCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void focusLost() {
         if (isActivated()) {
             applyEditorValueAndDeactivate();
@@ -166,6 +167,7 @@ public class OptionComboBoxCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void keyReleaseOccured(KeyEvent keyEvent) {
         if (keyEvent.character == '\u001b') { // Escape character
             fireCancelEditor();

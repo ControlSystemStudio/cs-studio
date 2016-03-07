@@ -37,6 +37,7 @@ public final class CommitValueActionHandler implements IWidgetActionHandler {
      * {@inheritDoc}
      * @required action instanceof CommitValueWidgetAction
      */
+    @Override
     public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
         assert action instanceof CommitValueActionModel : "Precondition violated: action instanceof CommitValueWidgetAction";
         CommitValueActionModel valueAction = (CommitValueActionModel) action;

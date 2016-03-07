@@ -43,6 +43,7 @@ public final class Leistungstrennschalter extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintBase(final Graphics gfx, final int width, final int height) {
         int delta=gfx.getLineWidth()/2+gfx.getLineWidth()%2;
         gfx.drawRectangle(delta,4*delta,width-2*delta,height-8*delta);
@@ -55,6 +56,7 @@ public final class Leistungstrennschalter extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintOpenState(final Graphics gfx, final int width, final int height) {
         gfx.drawLine(width/2,2*height/3,
                 width/2+(int)(height/3*Trigonometry.cos(120.0)),
@@ -64,6 +66,7 @@ public final class Leistungstrennschalter extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintDashedOpenState(final Graphics gfx, final int width, final int height) {
         gfx.setLineStyle(SWT.LINE_DOT);
         gfx.drawLine(width/2,2*height/3,
@@ -75,6 +78,7 @@ public final class Leistungstrennschalter extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintClosedState(final Graphics gfx, final int width, final int height) {
         gfx.drawLine(width/2,2*height/3,width/2,height/3);
         gfx.fillOval(width/2-this.getLineWidth()*2,2*height/3-this.getLineWidth()*2,

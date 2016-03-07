@@ -203,6 +203,7 @@ public class ColorSection extends AbstractTextSection<ColorProperty, String> imp
     /**
      *{@inheritDoc}
      */
+    @Override
     public void selectionChanged(final SelectionChangedEvent event) {
         final NamedColor namedColor = (NamedColor) ((IStructuredSelection) event.getSelection()).getFirstElement();
         applyPropertyChange(namedColor.getHex());
@@ -237,18 +238,22 @@ public class ColorSection extends AbstractTextSection<ColorProperty, String> imp
             this.namedColor = namedColor;
         }
 
+        @Override
         public String getContent() {
             return "${" + namedColor.getName() + "}";
         }
 
+        @Override
         public int getCursorPosition() {
             return 0;
         }
 
+        @Override
         public String getDescription() {
             return namedColor.getDescription();
         }
 
+        @Override
         public String getLabel() {
             return namedColor.getName();
         }

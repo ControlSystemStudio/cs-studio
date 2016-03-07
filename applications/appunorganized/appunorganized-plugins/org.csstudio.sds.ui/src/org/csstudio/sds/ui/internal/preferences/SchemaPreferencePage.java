@@ -92,6 +92,7 @@ public final class SchemaPreferencePage extends FieldEditorPreferencePage implem
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench) {
         _schemaDescriptors = WidgetInitializationService.getInstance().getInitializationSchemaDescriptors();
     }

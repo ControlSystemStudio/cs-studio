@@ -20,6 +20,7 @@ public class OpenDataBrowserActionHandler implements IWidgetActionHandler {
 
     private static final String STRIP_TOOL_ID = "org.csstudio.platform.ui.striptool";
 
+    @Override
     public void executeAction(AbstractWidgetModel widget, AbstractWidgetActionModel action) {
         assert action instanceof OpenDataBrowserActionModel : "action instanceof OpenDataBrowserActionModel";
 

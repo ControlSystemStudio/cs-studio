@@ -5,9 +5,7 @@ package org.csstudio.shift.ui;
 
 import gov.bnl.shiftClient.Shift;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.csstudio.shift.ShiftBuilder;
 import org.eclipse.jface.window.ApplicationWindow;

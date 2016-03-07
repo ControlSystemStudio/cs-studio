@@ -75,9 +75,11 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
         label.setTransparent(false);
         label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
         label.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClicked(final MouseEvent me) {
             }
 
+            @Override
             public void mousePressed(final MouseEvent me) {
                 if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
                     final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent()
@@ -86,6 +88,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
                 }
             }
 
+            @Override
             public void mouseReleased(final MouseEvent me) {
             }
 
@@ -241,6 +244,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValue getSample(final int index) {
         if (index != 0) {
             throw new IndexOutOfBoundsException(index + " is not a valid sample index");

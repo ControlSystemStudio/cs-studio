@@ -1,6 +1,5 @@
 package org.csstudio.platform.internal.dal;
 
-import org.csstudio.dal.RemoteException;
 import org.csstudio.dal.ResponseListener;
 import org.csstudio.dal.simple.AnyData;
 import org.csstudio.dal.simple.ConnectionParameters;

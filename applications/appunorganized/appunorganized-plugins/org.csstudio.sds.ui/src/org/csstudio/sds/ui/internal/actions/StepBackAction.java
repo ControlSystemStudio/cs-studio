@@ -55,6 +55,7 @@ public final class StepBackAction extends AbstractOrderAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Command createCommand(final ContainerModel container,
             final AbstractWidgetModel widget) {
         return new ChangeOrderCommand(container, widget, container.getPreviousLayerIndex(widget));

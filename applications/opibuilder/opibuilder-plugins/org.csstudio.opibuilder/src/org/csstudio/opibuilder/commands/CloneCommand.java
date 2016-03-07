@@ -154,6 +154,7 @@ public final class CloneCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute() {
         Clipboard clipboard = new Clipboard(Display.getCurrent());
         DisplayModel tempModel = new DisplayModel();
@@ -198,6 +199,7 @@ public final class CloneCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void redo() {
         _compoundCommand.redo();
     }
@@ -205,6 +207,7 @@ public final class CloneCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void undo() {
         _compoundCommand.undo();
     }

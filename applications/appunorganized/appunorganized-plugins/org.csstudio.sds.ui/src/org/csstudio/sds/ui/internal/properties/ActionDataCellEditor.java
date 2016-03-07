@@ -370,6 +370,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
 
                 private Menu _menu;
 
+                @Override
                 public void dispose() {
                     if (_menu != null) {
                         _menu.dispose();
@@ -377,6 +378,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
                     }
                 }
 
+                @Override
                 public Menu getMenu(final Control parent) {
                     System.out.println("Parent: " + parent);
                     if (_menu != null) {
@@ -386,6 +388,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
                     return _menu;
                 }
 
+                @Override
                 public Menu getMenu(final Menu parent) {
                     return null;
                 }
@@ -930,6 +933,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
             /**
              * {@inheritDoc}
              */
+            @Override
             public Image getColumnImage(final Object element,
                     final int columnIndex) {
                 if (columnIndex == 2 && element instanceof IPropertyDescriptor) {
@@ -952,6 +956,7 @@ public final class ActionDataCellEditor extends AbstractDialogCellEditor {
             /**
              * {@inheritDoc}
              */
+            @Override
             public String getColumnText(final Object element,
                     final int columnIndex) {
                 if (element instanceof IPropertyDescriptor) {

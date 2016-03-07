@@ -177,9 +177,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
         AbstractWidgetModel model = getWidgetModel();
 
         // FIXME: Sven Wende: Das Setzen dieser Property und alles, was im
-        // Weiteren damit zusammenhängt sollte dringend! einem Refactoring
+        // Weiteren damit zusammenhï¿½ngt sollte dringend! einem Refactoring
         // unterworfen werden. Die Property und das Handling in den konkreten
-        // Widgets ist nicht abstrakt und könnte viel weiter oben in der
+        // Widgets ist nicht abstrakt und kï¿½nnte viel weiter oben in der
         // Widget-Hierarchie und der Editpart-Hierarchie erledigt werden. Diesen
         // Aufruf hier zu machen, ist ein wilder Hack!!
         getCastedModel().setPropertyValue(
@@ -650,7 +650,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
     }
 
     /**
-     * TODO: nur temporär verwenden! Returns the layer name
+     * TODO: nur temporï¿½r verwenden! Returns the layer name
      *
      * @param s
      *            the layerName (may be null or "")

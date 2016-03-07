@@ -80,6 +80,7 @@ public final class BundelingThread implements Runnable {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void run() {
         processQueue();
     }
@@ -92,6 +93,7 @@ public final class BundelingThread implements Runnable {
 
         if (display == null) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     Runnable r;
 

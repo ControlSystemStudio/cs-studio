@@ -1,7 +1,6 @@
 package org.csstudio.dct.nameresolution.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.dct.model.IRecord;
@@ -9,7 +8,6 @@ import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**

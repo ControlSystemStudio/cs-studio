@@ -10,8 +10,6 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 
-import org.csstudio.utility.pv.epics.PVContext;
-import org.csstudio.utility.pv.epics.RefCountedChannel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

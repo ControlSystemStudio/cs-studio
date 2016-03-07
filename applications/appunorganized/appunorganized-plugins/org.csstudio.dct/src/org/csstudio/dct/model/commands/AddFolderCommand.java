@@ -1,8 +1,6 @@
 package org.csstudio.dct.model.commands;
 
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.internal.Folder;
 import org.eclipse.gef.commands.Command;
 
 /**

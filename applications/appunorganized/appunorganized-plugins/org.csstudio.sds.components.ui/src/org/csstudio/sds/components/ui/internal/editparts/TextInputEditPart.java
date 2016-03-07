@@ -408,6 +408,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValue getSample(final int index) {
         if (index != 0) {
             throw new IndexOutOfBoundsException(index + " is not a valid sample index");

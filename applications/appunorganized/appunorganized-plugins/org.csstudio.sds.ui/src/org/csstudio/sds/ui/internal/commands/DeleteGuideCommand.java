@@ -64,6 +64,7 @@ public final class DeleteGuideCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute() {
         _oldParts = new HashMap<AbstractWidgetModel, Integer>(_guide.getMap());
         Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();
@@ -76,6 +77,7 @@ public final class DeleteGuideCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void undo() {
         _parent.addGuide(_guide);
         Iterator<AbstractWidgetModel> iter = _oldParts.keySet().iterator();

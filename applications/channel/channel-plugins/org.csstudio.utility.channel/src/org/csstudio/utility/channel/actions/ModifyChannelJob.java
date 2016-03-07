@@ -9,7 +9,6 @@ import gov.bnl.channelfinder.api.ChannelFinderClient;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import static gov.bnl.channelfinder.api.Property.Builder.property;
 
-import java.awt.PageAttributes.OriginType;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

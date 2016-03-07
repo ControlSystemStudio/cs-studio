@@ -43,6 +43,7 @@ public final class Erdtrenner extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintBase(final Graphics gfx, final int width, final int height) {
         int wireHeight=(int)Math.round((double)height*0.82);
         gfx.drawLine(width/2,0,width/2,wireHeight/3);
@@ -58,6 +59,7 @@ public final class Erdtrenner extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintOpenState(final Graphics gfx, final int width, final int height) {
         int wireHeight=(int)Math.round((double)height*0.82);
         gfx.drawLine(width/2,2*wireHeight/3,
@@ -68,6 +70,7 @@ public final class Erdtrenner extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintDashedOpenState(final Graphics gfx, final int width, final int height) {
         int wireHeight=(int)Math.round((double)height*0.82);
         gfx.setLineStyle(SWT.LINE_DOT);
@@ -80,6 +83,7 @@ public final class Erdtrenner extends CosySwitch {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintClosedState(final Graphics gfx, final int width, final int height) {
         int wireHeight=(int)Math.round((double)height*0.82);
         gfx.drawLine(width/2,2*wireHeight/3,width/2,wireHeight/3);
