@@ -232,7 +232,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
      */
     public void setSymbolImagePath(ControlBoolSymbolModel model,
             IPath imagePath) {
-    	this.model = model;
+        this.model = model;
         if (imagePath == null || imagePath.isEmpty()) {
             return;
         }
