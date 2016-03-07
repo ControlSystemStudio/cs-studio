@@ -166,6 +166,7 @@ public final class LinkingContainerFigure extends Panel implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
             return new BorderAdapter(this);

@@ -64,6 +64,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IFigure createDragSourceFeedbackFigure(
             final AbstractWidgetModel model, final Rectangle initalBounds) {
         assert model != null;
@@ -87,6 +88,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void showChangeBoundsFeedback(
             final AbstractWidgetModel model, final PrecisionRectangle bounds,
             final IFigure feedbackFigure, final ChangeBoundsRequest request) {
@@ -123,6 +125,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Shape createSizeOnDropFeedback(
             final CreateRequest createRequest) {
         assert createRequest != null;
@@ -147,6 +150,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void showSizeOnDropFeedback(final CreateRequest createRequest,
             final IFigure feedbackFigure, final Insets insets) {
         assert createRequest != null;
@@ -171,6 +175,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public final Class getCreationTool() {
         return PointListCreationTool.class;
@@ -179,6 +184,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Command createInitialBoundsCommand(
             final AbstractWidgetModel widgetModel,
             final CreateRequest request, final Rectangle bounds) {
@@ -205,6 +211,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Command createChangeBoundsCommand(
             final AbstractWidgetModel model,
             final ChangeBoundsRequest request, final Rectangle targetBounds) {
@@ -242,6 +249,7 @@ abstract class AbstractPolyFeedbackFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
         assert hostEP != null;
         assert hostEP.getModel() instanceof AbstractPolyModel : "hostEP.getModel() instanceof AbstractPolyModel"; //$NON-NLS-1$

@@ -176,6 +176,7 @@ public final class ResourceCellEditor extends AbstractDialogCellEditor {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void propertyChange(final PropertyChangeEvent event) {
             if (event.getProperty().equals("useWorkspaceAsRoot")) {
                 if (event.getNewValue() instanceof Boolean) {

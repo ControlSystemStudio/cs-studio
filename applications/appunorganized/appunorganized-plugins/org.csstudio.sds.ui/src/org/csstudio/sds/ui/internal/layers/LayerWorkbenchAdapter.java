@@ -38,6 +38,7 @@ final class LayerWorkbenchAdapter implements IWorkbenchAdapter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(final Object o) {
         return new Object[0];
     }
@@ -45,6 +46,7 @@ final class LayerWorkbenchAdapter implements IWorkbenchAdapter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ImageDescriptor getImageDescriptor(final Object object) {
         Layer layer = (Layer) object;
 
@@ -57,6 +59,7 @@ final class LayerWorkbenchAdapter implements IWorkbenchAdapter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLabel(final Object o) {
         return ((Layer) o).getDescription();
     }
@@ -64,6 +67,7 @@ final class LayerWorkbenchAdapter implements IWorkbenchAdapter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(final Object o) {
         return null;
     }

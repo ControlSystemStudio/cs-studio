@@ -95,6 +95,7 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFigure getContentPane() {
         return ((GroupingContainerFigure) getFigure()).getContentsPane();
     }

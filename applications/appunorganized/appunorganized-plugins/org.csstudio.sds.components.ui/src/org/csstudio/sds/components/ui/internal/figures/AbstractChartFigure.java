@@ -446,6 +446,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -495,6 +496,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean isOpaque() {
         return !_transparent;
     }
@@ -540,6 +542,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setBackgroundColor(final Color backgroundColor) {
         super.setBackgroundColor(backgroundColor);
         _plotFigure.setBackgroundColor(backgroundColor);

@@ -113,6 +113,7 @@ public final class LayerTreeViewer implements ILayerModelListener {
         _treeViewer
                 .addSelectionChangedListener(new ISelectionChangedListener() {
 
+                    @Override
                     public void selectionChanged(
                             final SelectionChangedEvent event) {
                         IStructuredSelection sel = (IStructuredSelection) event
@@ -128,6 +129,7 @@ public final class LayerTreeViewer implements ILayerModelListener {
         // handle doubleclicks (toggles layer visibility)
         _treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 IStructuredSelection sel = (IStructuredSelection) event
                         .getSelection();
@@ -287,6 +289,7 @@ public final class LayerTreeViewer implements ILayerModelListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void layerChanged(final Layer layer, final String property) {
         // just refresh the viewer completely if anything changes
         _treeViewer.refresh();

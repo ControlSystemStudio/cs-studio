@@ -44,6 +44,7 @@ public final class BooleanPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id, final WidgetProperty property) {
         PropertyDescriptor descriptor = new BooleanPropertyDescriptor(id, property.getDescription(), PropertyTypesEnum.BOOLEAN);
         // validator

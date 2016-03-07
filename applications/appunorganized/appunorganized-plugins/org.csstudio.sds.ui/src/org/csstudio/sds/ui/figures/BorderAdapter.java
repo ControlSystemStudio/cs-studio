@@ -83,6 +83,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setBorderWidth(final int width) {
         _borderWidth = width;
         refreshBorder();
@@ -91,6 +92,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setBorderColor(final Color borderColor) {
         _borderColor = borderColor;
         refreshBorder();
@@ -99,6 +101,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setBorderStyle(final int style) {
         _borderStyle = style;
         refreshBorder();
@@ -107,6 +110,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setBorderText(final String borderText) {
         _borderText = borderText;
         refreshBorder();
@@ -259,6 +263,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Insets getInsets(final IFigure figure) {
             return _insets;
         }
@@ -266,6 +271,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void paint(final IFigure figure, final Graphics graphics,
                 final Insets insets) {
             Rectangle bounds = figure.getBounds();

@@ -109,6 +109,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         // value
         IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -121,6 +122,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
         // min
         IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -133,6 +135,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
         // max
         IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -145,6 +148,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
         // increment
         IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -157,6 +161,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 
         // orientation
         IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -181,6 +186,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValue getSample(final int index) {
         if (index != 0) {
             throw new IndexOutOfBoundsException(index + " is not a valid sample index");
@@ -209,6 +215,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int size() {
         // always one sample
         return 1;

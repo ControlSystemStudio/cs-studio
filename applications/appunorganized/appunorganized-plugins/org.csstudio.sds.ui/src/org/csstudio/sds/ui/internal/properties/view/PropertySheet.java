@@ -235,6 +235,7 @@ public final class PropertySheet extends PageBookView implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IWorkbenchPart part, final ISelection sel) {
         // we ignore our own selection or null selection
         if (part == this || sel == null) {

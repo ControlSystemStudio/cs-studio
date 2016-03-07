@@ -118,6 +118,7 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void createControls(final Composite parent,
                                      TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
@@ -354,9 +355,7 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
     /**
      *{@inheritDoc}
      */
-    /**
-     *{@inheritDoc}
-     */
+    @Override
     public void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor) {
         refresh();
     }
@@ -364,12 +363,14 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyManualValueChanged(String propertyId, Object manualValue) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyValueChanged(Object oldValue, Object newValue) {
         refresh();
     }

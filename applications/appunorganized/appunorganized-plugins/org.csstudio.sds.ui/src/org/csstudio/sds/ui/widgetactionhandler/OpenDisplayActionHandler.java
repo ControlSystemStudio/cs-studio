@@ -50,6 +50,7 @@ public final class OpenDisplayActionHandler implements IWidgetActionHandler {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void executeAction(final AbstractWidgetModel widget,
             final AbstractWidgetActionModel action) {
         assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";

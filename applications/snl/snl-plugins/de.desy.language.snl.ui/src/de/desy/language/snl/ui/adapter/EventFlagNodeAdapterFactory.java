@@ -16,6 +16,7 @@ class EventFlagNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -48,6 +49,7 @@ class EventFlagNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return new Class[] { EventFlagNode.class };

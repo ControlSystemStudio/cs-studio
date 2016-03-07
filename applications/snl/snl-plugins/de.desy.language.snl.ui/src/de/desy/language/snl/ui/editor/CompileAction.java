@@ -24,6 +24,7 @@ public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowAct
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActiveEditor(IAction action, IEditorPart targetEditor) {
         if (targetEditor != null) {
             if (targetEditor instanceof SNLEditor) {
@@ -35,6 +36,7 @@ public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowAct
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
         if (_editor != null) {
             if (_editor.isDirty()) {
@@ -54,6 +56,7 @@ public class CompileAction implements IEditorActionDelegate, IWorkbenchWindowAct
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // nothing to do
     }

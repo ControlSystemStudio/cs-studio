@@ -140,6 +140,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getHandleBounds() {
         return getPoints().getBounds();
     }
@@ -166,6 +167,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -232,6 +234,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
         /**
          * {@inheritDoc}
          */
+        @Override
         public Insets getInsets(final IFigure figure) {
             return new Insets(_borderWidth);
         }
@@ -239,6 +242,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
         /**
          * {@inheritDoc}
          */
+        @Override
         public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
             graphics.setBackgroundColor(_borderColor);
             graphics.setForegroundColor(_borderColor);

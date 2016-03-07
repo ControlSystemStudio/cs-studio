@@ -42,7 +42,7 @@ import org.eclipse.ui.part.ViewPart;
 public final class LayerManagementView extends ViewPart implements
         IPartListener {
     /**
-     * The view´s ID.
+     * The viewï¿½s ID.
      */
     public static final String VIEW_ID = "org.csstudio.sds.ui.internal.layers.LayerManagementView";
 
@@ -102,6 +102,7 @@ public final class LayerManagementView extends ViewPart implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partActivated(final IWorkbenchPart part) {
         ILayerManager layerManager = (ILayerManager) part
                 .getAdapter(ILayerManager.class);
@@ -128,6 +129,7 @@ public final class LayerManagementView extends ViewPart implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partClosed(final IWorkbenchPart part) {
         if (_layerSourcePart != null && _layerSourcePart == part) {
             // forget the part
@@ -141,6 +143,7 @@ public final class LayerManagementView extends ViewPart implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partBroughtToTop(final IWorkbenchPart part) {
         // do nothing
     }
@@ -148,6 +151,7 @@ public final class LayerManagementView extends ViewPart implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partDeactivated(final IWorkbenchPart part) {
         // do nothing
     }
@@ -155,6 +159,7 @@ public final class LayerManagementView extends ViewPart implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void partOpened(final IWorkbenchPart part) {
         // do nothing
     }

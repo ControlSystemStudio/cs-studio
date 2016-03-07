@@ -113,6 +113,7 @@ public class FontSection extends AbstractTextSection<FontProperty, String> imple
     /**
      *{@inheritDoc}
      */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         final NamedFont namedColor = (NamedFont) ((IStructuredSelection) event.getSelection()).getFirstElement();
         applyPropertyChange(namedColor.toFontString());
@@ -148,18 +149,22 @@ public class FontSection extends AbstractTextSection<FontProperty, String> imple
             this.namedFont = namedColor;
         }
 
+        @Override
         public String getContent() {
             return "${" + namedFont.getName() + "}";
         }
 
+        @Override
         public int getCursorPosition() {
             return 0;
         }
 
+        @Override
         public String getDescription() {
             return namedFont.getDescription();
         }
 
+        @Override
         public String getLabel() {
             return namedFont.getName();
         }

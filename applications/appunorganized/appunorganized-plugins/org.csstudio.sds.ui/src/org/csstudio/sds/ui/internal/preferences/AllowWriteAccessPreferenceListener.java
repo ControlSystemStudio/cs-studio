@@ -10,6 +10,7 @@ public class AllowWriteAccessPreferenceListener implements IPropertyChangeListen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getProperty().equals(PreferenceConstants.PROP_WRITE_ACCESS_DENIED)) {
             ActivationService.getInstance().handleRightsManagementEvent(null);

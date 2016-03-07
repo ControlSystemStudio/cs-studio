@@ -175,6 +175,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
             /**
              * {@inheritDoc}
              */
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 double value = (Double) newValue;
@@ -203,6 +204,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
             /**
              * {@inheritDoc}
              */
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 StripChartFigure figure = (StripChartFigure) refreshableFigure;
@@ -243,6 +245,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
         @Override
         public void run() {
             Display.getDefault().syncExec(new Runnable() {
+                @Override
                 public void run() {
                     // Note: this is safe from deadlocks only under the
                     // assumption that no other thread ever holds the monitor

@@ -41,9 +41,10 @@ public final class PointlistPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
-        // einen sinnvolleren Descriptor zurückgeben! (swende)
+        // einen sinnvolleren Descriptor zurï¿½ckgeben! (swende)
         PropertyDescriptor descriptor = new PointlistPropertyDescriptor(id,
                 property.getDescription(), PropertyTypesEnum.POINT_LIST, property.getCategory().toString());
 
