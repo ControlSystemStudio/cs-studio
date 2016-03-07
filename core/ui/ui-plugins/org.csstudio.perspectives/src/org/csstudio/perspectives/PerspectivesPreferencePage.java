@@ -80,7 +80,7 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     public void init(IWorkbench workbench) {
         store = new ScopedPreferenceStore(InstanceScope.INSTANCE, ID);
         setPreferenceStore(store);
-        setDescription(Messages.PerspectivesPreferencePage_pageTitle);
+        setDescription(Messages.PerspectivesPreferencePage_pageDescription);
     }
 
     @Override
