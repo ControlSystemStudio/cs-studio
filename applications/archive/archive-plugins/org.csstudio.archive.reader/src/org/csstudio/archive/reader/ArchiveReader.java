@@ -175,4 +175,11 @@ public interface ArchiveReader extends Closeable
     /** Must be called when archive is no longer used to release resources */
     @Override
     public void close();
+
+    /**
+     * Enable concurrency if possible.
+     * @param concurrency
+     */
+    default void enableConcurrency(boolean concurrency) {
+    }
 }

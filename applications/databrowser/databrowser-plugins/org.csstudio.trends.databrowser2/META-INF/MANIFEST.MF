@@ -52,5 +52,6 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.persistence,
  org.csstudio.trends.databrowser2.preferences,
  org.csstudio.trends.databrowser2.propsheet,
+ org.csstudio.trends.databrowser2.archive,
  org.csstudio.trends.databrowser2.ui
 Bundle-ClassPath: .

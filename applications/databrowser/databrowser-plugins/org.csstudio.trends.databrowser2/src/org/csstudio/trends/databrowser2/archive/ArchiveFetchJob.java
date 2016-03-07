@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -42,6 +43,9 @@ public class ArchiveFetchJob extends Job
 {
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
+
+    /**to manage concurrency on postgresql*/
+    private final boolean concurrency;
 
     /** Item for which to fetch samples */
     final private PVItem item;
@@ -96,6 +100,7 @@ public class ArchiveFetchJob extends Job
             long samples = 0;
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
+            List<ArchiveDataSource> sourcesWhereChannelDoesntExist = new ArrayList<>();
             for (int i=0; i<archives.length && !cancelled; ++i)
             {
                 final ArchiveDataSource archive = archives[i];
@@ -118,13 +123,24 @@ public class ArchiveFetchJob extends Job
                     {
                         the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
+                    the_reader.enableConcurrency(concurrency);
                     final ValueIterator value_iter;
-                    if (item.getRequestType() == RequestType.RAW)
-                        value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
-                                                             TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
-                    else
-                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
-                                                                   TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
+                    try
+                    {
+                        if (item.getRequestType() == RequestType.RAW)
+                            value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
+                                                                 TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
+                        else
+                            value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
+                                                                       TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
+                    }
+                    catch (UnknownChannelException e)
+                    {
+                        // Do not immediately notify about unknown channels. First search for the data in all archive
+                        // sources and only report this kind of errors at the end
+                        sourcesWhereChannelDoesntExist.add(archives[i]);
+                        continue;
+                    }
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())
@@ -151,6 +167,12 @@ public class ArchiveFetchJob extends Job
                     }
                 }
             }
+            if (!sourcesWhereChannelDoesntExist.isEmpty() && !cancelled)
+            {
+                listener.channelNotFound(ArchiveFetchJob.this, sourcesWhereChannelDoesntExist.size() < archives.length,
+                    sourcesWhereChannelDoesntExist
+                        .toArray(new ArchiveDataSource[sourcesWhereChannelDoesntExist.size()]));
+            }
             timer.stop();
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
@@ -176,6 +198,23 @@ public class ArchiveFetchJob extends Job
     public ArchiveFetchJob(PVItem item, final Instant start,
             final Instant end, final ArchiveFetchJobListener listener)
     {
+        this(item, start, end, listener, false);
+    }
+
+    /**
+     * Construct a new job.
+     *
+     * @param item the item for which the data are fetched
+     * @param start the lower time boundary for the historic data
+     * @param end the upper time boundary for the history data
+     * @param listener the listener notified when the job is complete or an error happens
+     * @param enableConcurrency a parameter forwarded to the reader
+     *
+     * @see ArchiveReader#enableConcurrency(boolean)
+     */
+    protected ArchiveFetchJob(PVItem item, final Instant start,
+        final Instant end, final ArchiveFetchJobListener listener, boolean enableConcurrency)
+    {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
                 new Object[] { item.getName(), TimeHelper.format(start),
                         TimeHelper.format(end) }));
@@ -183,6 +222,7 @@ public class ArchiveFetchJob extends Job
         this.start = start;
         this.end = end;
         this.listener = listener;
+        this.concurrency = enableConcurrency;
     }
 
     /** @return PVItem for which this job was created */
