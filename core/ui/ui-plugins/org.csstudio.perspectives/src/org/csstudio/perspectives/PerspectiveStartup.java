@@ -3,6 +3,7 @@ package org.csstudio.perspectives;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
@@ -10,6 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.PlatformUI;
 
@@ -32,9 +34,13 @@ public class PerspectiveStartup implements IStartup {
         ContextInjectionFactory.make(PerspectiveSaver.class, context);
         // Load perspectives at startup.
         PerspectiveLoader loader = ContextInjectionFactory.make(PerspectiveLoader.class, context);
+
+        Path perspectivesDirectory = null;
         try {
-            Path perspectivesDirectory = getPerspectivesDirectory();
+            perspectivesDirectory = getPerspectivesDirectory();
             loader.loadFromDirectory(perspectivesDirectory);
+        } catch (NoSuchFileException e) {
+            Plugin.getLogger().info(NLS.bind(Messages.PerspectiveStartup_startupDirNotFound, perspectivesDirectory));
         } catch (IOException | URISyntaxException e) {
             Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveStartup_startupLoadFailed, e);
         }
