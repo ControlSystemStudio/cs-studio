@@ -29,10 +29,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.platform"
+            category="org.eclipse.ui.preferencePages.Workbench"
             class="org.csstudio.perspectives.PerspectivesPreferencePage"
             id="org.csstudio.perspectives.preferences"
-            name="Perspectives preferences">
+            name="Perspectives save/load">
       </page>
    </extension>
 </plugin>
