@@ -21,8 +21,10 @@ public class Messages extends NLS {
 
     public static String PerspectivesPreferencePage_pageDescription;
     public static String PerspectivesPreferencePage_pageMessage;
-    public static String PerspectivesPreferencePage_fieldText;
-    public static String PerspectivesPreferencePage_fieldTooltip;
+    public static String PerspectivesPreferencePage_loadText;
+    public static String PerspectivesPreferencePage_loadTooltip;
+    public static String PerspectivesPreferencePage_saveText;
+    public static String PerspectivesPreferencePage_saveTooltip;
 
     public static String PerspectiveSaver_initFailed;
     public static String PerspectiveSaver_saveFailed;

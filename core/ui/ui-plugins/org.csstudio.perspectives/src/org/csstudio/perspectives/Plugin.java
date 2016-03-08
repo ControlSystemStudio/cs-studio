@@ -11,6 +11,7 @@ public class Plugin extends AbstractUIPlugin {
     public static final String XMI_EXTENSION = "xmi";
     public static final String PERSPECTIVE_SUFFIX = "_e4persp";
     public static final String PERSPECTIVE_LOAD_LOCATION = "platform:/config/perspectives";
+    public static final String PERSPECTIVE_SAVE_LOCATION = "platform:/resource/CSS/perspectives";
 
     private static final Logger logger = Logger.getLogger(ID);
 

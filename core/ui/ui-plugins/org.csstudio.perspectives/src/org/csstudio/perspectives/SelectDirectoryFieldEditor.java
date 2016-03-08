@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 
 public class SelectDirectoryFieldEditor extends StringButtonFieldEditor {
-    
+
     private String lastPath;
     private IFileUtils fileUtils;
 

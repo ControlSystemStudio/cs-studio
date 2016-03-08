@@ -20,13 +20,13 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class PerspectivesPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
-    public static final String PERSPECTIVE_LOAD_DIRECTORY = "perspective_load_dir";
     public static final String ID = "org.csstudio.perspectives.preferences";
+    public static final String PERSPECTIVE_LOAD_DIRECTORY = "perspective_load_dir";
+    public static final String PERSPECTIVE_SAVE_DIRECTORY = "perspective_save_dir";
     public static final String FILE_PREFIX = "file:";
 
     private IFileUtils fileUtils = new FileUtils();
 
-    private SelectDirectoryFieldEditor perspectivesDirEditor;
     private ScopedPreferenceStore store;
 
     public PerspectivesPreferencePage() {
@@ -38,10 +38,18 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
-        String lastPath = store.getString(PERSPECTIVE_LOAD_DIRECTORY);
-        perspectivesDirEditor = new SelectDirectoryFieldEditor(PERSPECTIVE_LOAD_DIRECTORY, Messages.PerspectivesPreferencePage_fieldText, parent, lastPath, fileUtils);
-        perspectivesDirEditor.getTextControl(parent).setToolTipText(Messages.PerspectivesPreferencePage_fieldTooltip);
-        addField(perspectivesDirEditor);
+        String lastLoadPath = store.getString(PERSPECTIVE_LOAD_DIRECTORY);
+        SelectDirectoryFieldEditor perspectiveLoadDirEditor = new
+                SelectDirectoryFieldEditor(PERSPECTIVE_LOAD_DIRECTORY,
+                        Messages.PerspectivesPreferencePage_loadText, parent, lastLoadPath, fileUtils);
+        perspectiveLoadDirEditor.getTextControl(parent).setToolTipText(Messages.PerspectivesPreferencePage_loadTooltip);
+        addField(perspectiveLoadDirEditor);
+        String lastSavePath = store.getString(PERSPECTIVE_SAVE_DIRECTORY);
+        SelectDirectoryFieldEditor perspectiveSaveDirEditor = new
+                SelectDirectoryFieldEditor(PERSPECTIVE_SAVE_DIRECTORY,
+                        Messages.PerspectivesPreferencePage_saveText, parent, lastSavePath, fileUtils);
+        perspectiveSaveDirEditor.getTextControl(parent).setToolTipText(Messages.PerspectivesPreferencePage_saveTooltip);
+        addField(perspectiveSaveDirEditor);
     }
 
     @Override

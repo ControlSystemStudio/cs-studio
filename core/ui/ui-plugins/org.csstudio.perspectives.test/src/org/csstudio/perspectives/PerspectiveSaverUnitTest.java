@@ -9,6 +9,7 @@ package org.csstudio.perspectives;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -18,11 +19,15 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.model.application.ui.MSnippetContainer;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
@@ -53,6 +58,9 @@ public class PerspectiveSaverUnitTest {
     private IEclipsePreferences preferences;
 
     @Mock
+    private IPreferencesService prefsService;
+
+    @Mock
     private IEventBroker mockBroker;
 
     @Mock
@@ -73,8 +81,9 @@ public class PerspectiveSaverUnitTest {
     public void setUp() {
         try {
             URL workspaceUrl = new URL("file:" + workspaceLocation);
-            when(instanceLocation.getDataArea(any(String.class))).thenReturn(workspaceUrl);
-            doNothing().when(preferences).put(any(String.class), any(String.class));
+            when(instanceLocation.getDataArea(anyString())).thenReturn(workspaceUrl);
+            doNothing().when(preferences).put(anyString(), anyString());
+            when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn("dummy");
             // Return first argument if cloneElement() is called on mockModelService.
             when(mockModelService.cloneElement(any(MUIElement.class), any(MSnippetContainer.class))).thenAnswer(new Answer<MUIElement>() {
                 @Override
@@ -129,7 +138,7 @@ public class PerspectiveSaverUnitTest {
         String perspectiveName = "dummy";
         String sensibleFilename = workspaceLocation + "/perspective_" + perspectiveName + ".xmi";
         URI uri = URI.createFileURI(sensibleFilename);
-        URI u =  saver.constructUri(new URL("file:" + workspaceLocation), perspectiveName);
+        URI u =  saver.constructUri(Paths.get(workspaceLocation), perspectiveName);
         assertEquals(u,  uri);
     }
 
@@ -141,8 +150,8 @@ public class PerspectiveSaverUnitTest {
 
     @Test(expected=NullPointerException.class)
     public void constructUriThrowsNullPointerExceptionIfPerspectiveNameIsNull() throws MalformedURLException {
-        URL fileUrl = new URL("file:///dummy");
-        saver.constructUri(fileUrl, null);
+        Path dummy = Paths.get("file:///dummy");
+        saver.constructUri(dummy, null);
     }
 
 }
