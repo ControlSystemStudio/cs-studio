@@ -46,6 +46,7 @@ public class QuickstartPreferencePage
     /**
      * List of selected files in quickstart menu.
      */
+    @Override
     public final void createFieldEditors() {
         addField(new PreferenceTableEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()));
     }
@@ -53,6 +54,7 @@ public class QuickstartPreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

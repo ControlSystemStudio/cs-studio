@@ -47,6 +47,7 @@ public class IfNotZero implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if((arguments!=null)&&(arguments.length>0)){
             if (arguments[0] instanceof Double) {

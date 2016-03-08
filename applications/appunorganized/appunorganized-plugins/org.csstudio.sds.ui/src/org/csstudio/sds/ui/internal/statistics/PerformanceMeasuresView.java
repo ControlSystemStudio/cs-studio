@@ -314,6 +314,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
         }
     }

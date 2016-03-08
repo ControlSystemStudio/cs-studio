@@ -131,6 +131,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      *{@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return createConnectionAnchor();
     }
@@ -138,6 +139,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      *{@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return createConnectionAnchor();
     }
@@ -145,6 +147,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      *{@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return createConnectionAnchor();
     }
@@ -152,6 +155,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      *{@inheritDoc}
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return createConnectionAnchor();
     }
@@ -159,6 +163,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
@@ -180,6 +185,7 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
 
         figure.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseDoubleClicked(MouseEvent me) {
                 AbstractContainerNode node = getCastedModel();
                 IContainer container = (IContainer) node.getElement();
@@ -189,9 +195,11 @@ public class ContainerNodeEditPart extends AbstractGraphicalEditPart implements 
                 viewer.setContents(model);
             }
 
+            @Override
             public void mousePressed(MouseEvent me) {
             }
 
+            @Override
             public void mouseReleased(MouseEvent me) {
             }
 

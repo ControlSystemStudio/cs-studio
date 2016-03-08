@@ -7,7 +7,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 
 /**
- * Base class for actions that are used in the outline´s view menu.
+ * Base class for actions that are used in the outline's view menu.
  *
  * @author Sven Wende
  *
@@ -18,6 +18,7 @@ abstract class AbstractOutlineViewAction implements IViewActionDelegate {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void init(IViewPart view) {
         this.outline = (ContentOutline) view;
     }
@@ -25,6 +26,7 @@ abstract class AbstractOutlineViewAction implements IViewActionDelegate {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
         OutlinePage outlinePage = null;
 
@@ -40,6 +42,7 @@ abstract class AbstractOutlineViewAction implements IViewActionDelegate {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void selectionChanged(IAction action, ISelection selection) {
 
     }

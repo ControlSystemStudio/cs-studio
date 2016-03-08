@@ -53,6 +53,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IEpicsDBSyntaxHighlighter append(String epicsDB) {
         _epicsDB.append(epicsDB);
         return this;
@@ -61,6 +62,7 @@ public class EpicsDBSyntaxHighlighterImpl implements IEpicsDBSyntaxHighlighter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public StyleRange[] getStyleRange() {
         SortedMap<Integer, StyleRange> styleRanges = new TreeMap<Integer, StyleRange>();
         Color comment = CustomMediaFactory.getInstance().getColor(63, 127, 95);

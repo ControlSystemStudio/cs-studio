@@ -66,6 +66,7 @@ public final class SdsActivationAdapterFactory implements IAdapterFactory {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void activate(final Object o, final boolean activate) {
             assert o instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
             AbstractWidgetModel model = (AbstractWidgetModel) o;

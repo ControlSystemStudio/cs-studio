@@ -25,6 +25,7 @@ public abstract class AbstractWidgetPropertyPostProcessor<W extends AbstractWidg
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void setInitializationData(final IConfigurationElement config,
                                             final String propertyName,
                                             final Object data) throws CoreException {

@@ -62,6 +62,7 @@ public final class SimpleColorRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 0)) {
             if (arguments[0] instanceof Number) {

@@ -18,6 +18,7 @@ public class SearchNodeVisitor implements INodeVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(AbstractNode node) {
         if (id.equals(node.getElement().getId())) {
             result = node;

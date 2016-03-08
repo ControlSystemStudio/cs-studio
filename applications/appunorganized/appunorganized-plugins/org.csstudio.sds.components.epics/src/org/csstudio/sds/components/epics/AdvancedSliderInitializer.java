@@ -36,6 +36,7 @@ public final class AdvancedSliderInitializer extends
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(final AbstractControlSystemSchema schema) {
         initializeCommonAlarmBehaviour();
         initializeCommonConnectionStates();

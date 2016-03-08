@@ -62,7 +62,7 @@ public final class MenuCellEditor extends CellEditor {
     public void activate() {
         super.activate();
         getControl().getDisplay().asyncExec(new Runnable() {
-
+            @Override
             public void run() {
                 ((CCombo) getControl()).setListVisible(true);
             }
@@ -91,16 +91,19 @@ public final class MenuCellEditor extends CellEditor {
 
         _combobox.addKeyListener(new KeyAdapter() {
             // hook key pressed - see PR 14201
+            @Override
             public void keyPressed(KeyEvent e) {
                 keyReleaseOccured(e);
             }
         });
 
         _combobox.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent event) {
                 applyEditorValueAndDeactivate();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 Object sel = _viewer.getSelection();
 
@@ -119,6 +122,7 @@ public final class MenuCellEditor extends CellEditor {
         });
 
         _combobox.addTraverseListener(new TraverseListener() {
+            @Override
             public void keyTraversed(TraverseEvent e) {
                 if (e.detail == SWT.TRAVERSE_ESCAPE || e.detail == SWT.TRAVERSE_RETURN) {
                     e.doit = false;
@@ -127,6 +131,7 @@ public final class MenuCellEditor extends CellEditor {
         });
 
         _combobox.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 MenuCellEditor.this.focusLost();
             }
@@ -189,6 +194,7 @@ public final class MenuCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void focusLost() {
         if (isActivated()) {
             applyEditorValueAndDeactivate();
@@ -198,6 +204,7 @@ public final class MenuCellEditor extends CellEditor {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void keyReleaseOccured(KeyEvent keyEvent) {
         if (keyEvent.character == '\u001b') { // Escape character
             fireCancelEditor();

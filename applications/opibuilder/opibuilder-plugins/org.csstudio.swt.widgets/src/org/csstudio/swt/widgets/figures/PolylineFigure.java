@@ -338,6 +338,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
      * @see #translate(int, int)
      * @since 2.0
      */
+    @Override
     public void primTranslate(int dx, int dy) {
         bounds.x += dx;
         bounds.y += dy;
@@ -437,6 +438,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
     /**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
      * @see org.eclipse.draw2d.IFigure#containsPoint(int, int)
      */
+    @Override
     public boolean containsPoint(int x, int y) {
         int tolerance = (int) Math.max(getLineWidthFloat() / 2.0f,
                 2);

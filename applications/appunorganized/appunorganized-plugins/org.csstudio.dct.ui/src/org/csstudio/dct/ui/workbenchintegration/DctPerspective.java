@@ -14,6 +14,7 @@ public final class DctPerspective implements IPerspectiveFactory {
     /**
      *{@inheritDoc}
      */
+    @Override
     @SuppressWarnings("deprecation")
     public void createInitialLayout(IPageLayout layout) {
         layout.setEditorAreaVisible(true);

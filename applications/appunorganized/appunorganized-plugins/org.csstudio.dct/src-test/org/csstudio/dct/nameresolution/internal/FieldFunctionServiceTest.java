@@ -191,6 +191,7 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
         if (parameters == null || parameters.length != 2) {
             throw new Exception("This function expects 2 parameters.");

@@ -121,7 +121,7 @@ public final class RuleDescriptor implements IAdaptable {
     /**
      * Returns the return type of the rule.
      *
-     * @return the rule´s return type
+     * @return the ruleÂ´s return type
      */
     public PropertyTypesEnum[] getCompatiblePropertyTypes() {
         return _returnType;
@@ -176,6 +176,7 @@ public final class RuleDescriptor implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);

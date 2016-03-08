@@ -34,6 +34,7 @@ public final class WaveformInitializer extends AbstractEpicsWidgetInitializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(final AbstractControlSystemSchema schema) {
 
         initializeCommonConnectionStates();

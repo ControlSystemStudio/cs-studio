@@ -60,6 +60,7 @@ public final class GroupingContainerModel extends ContainerModel {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getTypeID() {
         return ID;
     }
@@ -67,6 +68,7 @@ public final class GroupingContainerModel extends ContainerModel {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void configureProperties() {
         addBooleanProperty(PROP_TRANSPARENT, "Transparent Background",WidgetPropertyCategory.FORMAT,true, true, PROP_COLOR_FOREGROUND);
     }
