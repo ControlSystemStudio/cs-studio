@@ -1,3 +1,13 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.saverestore;
 
 import java.text.DateFormat;
@@ -259,13 +269,18 @@ public final class Utilities {
         } else if (type instanceof VByte) {
             return ValueFactory.newVByte(Byte.parseByte(data), alarm, time, (VByte) type);
         } else if (type instanceof VEnum) {
-            List<String> labels = ((VEnum) type).getLabels();
+            List<String> labels = new ArrayList<>(((VEnum) type).getLabels());
             int idx = labels.indexOf(data);
             if (idx < 0) {
                 try {
                     idx = Integer.parseInt(data);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("'" + data + "' is not a valid enum value.");
+                }
+            }
+            if (labels.size() <= idx) {
+                for (int i = labels.size(); i <= idx; i++) {
+                    labels.add(String.valueOf(i));
                 }
             }
             return ValueFactory.newVEnum(idx, labels, alarm, time);

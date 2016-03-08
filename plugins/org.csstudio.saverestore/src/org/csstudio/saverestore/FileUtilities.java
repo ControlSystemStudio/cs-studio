@@ -1,3 +1,13 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.saverestore;
 
 import java.io.BufferedReader;
@@ -357,8 +367,21 @@ public final class FileUtilities {
             case STRING:
                 return ValueFactory.newVString(theValue, alarm, time);
             case ENUM:
-                List<String> lbls = Arrays.asList(valueAndLabels[1].split("\\;",-1));
-                return ValueFactory.newVEnum(lbls.indexOf(theValue), lbls, alarm, time);
+                List<String> lbls = new ArrayList<>(Arrays.asList(valueAndLabels[1].split("\\;",-1)));
+                int idx = lbls.indexOf(theValue);
+                if (idx < 0) {
+                    try {
+                        idx = Integer.parseInt(theValue);
+                    } catch (NumberFormatException e) {
+                        idx = 0;
+                    }
+                    if (lbls.size() <= idx) {
+                        for (int i = lbls.size(); i <= idx; i++) {
+                            lbls.add(String.valueOf(i));
+                        }
+                    }
+                }
+                return ValueFactory.newVEnum(idx, lbls, alarm, time);
             case NODATA:
                 return VDisconnectedData.INSTANCE;
         }

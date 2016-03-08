@@ -411,7 +411,9 @@ public final class MasarUtilities {
                 }
                 List<String> enumLabels = new ArrayList<>(Arrays.asList(labels.data));
                 if (enumLabels.size() <= index) {
-                    enumLabels.add(String.valueOf(index));
+                    for (int i = enumLabels.size(); i <= index; i++) {
+                        enumLabels.add(String.valueOf(i));
+                    }
                 }
                 return ValueFactory.newVEnum(index, enumLabels, alarm, time);
             }
