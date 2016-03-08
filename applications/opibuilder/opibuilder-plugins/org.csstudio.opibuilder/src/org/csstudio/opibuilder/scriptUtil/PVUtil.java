@@ -383,7 +383,7 @@ public class PVUtil{
     }
 
     /**
-     * Get the list of Enum values 
+     * Get the list of Enum values
      * @param pv the PV.
      * @return the list of values into a string array
      */
