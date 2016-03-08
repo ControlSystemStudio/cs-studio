@@ -56,7 +56,6 @@ public enum PrecompilerDirectives implements ILanguageElements {
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getElementName() {
         return this._inCodeName;
     }

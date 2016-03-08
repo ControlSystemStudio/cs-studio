@@ -218,7 +218,6 @@ public enum PredefinedMethods implements ILanguageElements {
     /**
      * {@inheritDoc}
      */
-    @Override
     public String getElementName() {
         return this.getMethodName();
     }
