@@ -32,6 +32,7 @@ public final class CommitValueActionModelFactory implements IActionModelFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetActionModel createWidgetActionModel() {
         return new CommitValueActionModel();
     }

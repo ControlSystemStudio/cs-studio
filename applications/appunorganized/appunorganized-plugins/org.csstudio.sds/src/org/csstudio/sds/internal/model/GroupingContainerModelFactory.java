@@ -35,6 +35,7 @@ public final class GroupingContainerModelFactory implements IWidgetModelFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new GroupingContainerModel();
     }
@@ -42,6 +43,7 @@ public final class GroupingContainerModelFactory implements IWidgetModelFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return GroupingContainerModel.class;

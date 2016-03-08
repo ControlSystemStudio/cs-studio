@@ -82,6 +82,7 @@ public final class AdvancedDbFileExporter implements IExporter {
         return sb.toString();
     }
 
+    @Override
     public String export(IProject project) {
         StringBuffer sb = new StringBuffer();
         for (IRecord r : project.getFinalRecords()) {

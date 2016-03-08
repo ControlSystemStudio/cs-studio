@@ -386,6 +386,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {
 
         // text alignment
         IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
                 RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
                 label.setTextAlignment((Integer) newValue);
@@ -396,6 +397,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {
 
         // transparent background
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
                 RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
                 label.setTransparent((Boolean) newValue);

@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
-import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.eclipse.jface.action.IAction;
@@ -18,7 +17,7 @@ import org.eclipse.jface.action.IAction;
  */
 public class SelectParentAction extends AbstractWidgetTargetAction{
 
-
+    @Override
     public void run(IAction action) {
 
         AbstractContainerEditpart containerEditpart = getParentContainerEditpart();

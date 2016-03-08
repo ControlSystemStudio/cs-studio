@@ -32,6 +32,7 @@ public final class InitInstanceCommandTest extends AbstractTestCommand {
     /**
      *{@inheritDoc}
      */
+    @Override
     @Before
     public void doSetUp() throws Exception {
         prototypeA = new Prototype("A", UUID.randomUUID());

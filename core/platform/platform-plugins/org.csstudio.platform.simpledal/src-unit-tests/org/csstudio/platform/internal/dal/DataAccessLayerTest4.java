@@ -3,10 +3,6 @@ package org.csstudio.platform.internal.dal;
 import junit.framework.TestCase;
 
 import org.csstudio.dal.DalPlugin;
-import org.csstudio.dal.CharacteristicInfo;
-import org.csstudio.dal.Request;
-import org.csstudio.dal.ResponseEvent;
-import org.csstudio.dal.ResponseListener;
 import org.csstudio.dal.simple.AnyData;
 import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.ChannelListener;

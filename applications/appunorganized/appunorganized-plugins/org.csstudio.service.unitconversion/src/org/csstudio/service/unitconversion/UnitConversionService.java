@@ -27,7 +27,7 @@ public class UnitConversionService extends Service {
         .addServiceMethod(findMethod())
         .addServiceMethod(getInfoMethod()));
     }
-    
+
     public static ServiceMethodDescription listMethod() {
         return new ServiceMethodDescription("find", "Find Devices") {
 
@@ -39,7 +39,7 @@ public class UnitConversionService extends Service {
                 "result", "Query Result", VStringArray.class).addResult(
                         "result_size", "Query Result size", VNumber.class);
     }
-    
+
     public static ServiceMethodDescription findMethod() {
         return new ServiceMethodDescription("list", "List Devices") {
 
@@ -52,7 +52,7 @@ public class UnitConversionService extends Service {
                 .addResult("result", "Query Result", VTable.class)
                 .addResult("result_size", "Query Result size", VNumber.class);
     }
-    
+
     public static ServiceMethodDescription getInfoMethod() {
         return new ServiceMethodDescription("info", "get conversion Info") {
 

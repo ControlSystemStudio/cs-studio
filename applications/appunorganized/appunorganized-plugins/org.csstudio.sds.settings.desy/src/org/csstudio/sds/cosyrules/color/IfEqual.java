@@ -47,6 +47,7 @@ public class IfEqual implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 1)) {
             double d1 = 0.0;

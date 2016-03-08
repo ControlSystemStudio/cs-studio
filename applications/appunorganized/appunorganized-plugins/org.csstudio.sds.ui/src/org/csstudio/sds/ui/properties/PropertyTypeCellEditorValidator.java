@@ -52,6 +52,7 @@ public final class PropertyTypeCellEditorValidator implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public String isValid(final Object value) {
         String error = null;
 

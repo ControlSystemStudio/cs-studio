@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
-import org.csstudio.logbook.ui.LinkTable;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

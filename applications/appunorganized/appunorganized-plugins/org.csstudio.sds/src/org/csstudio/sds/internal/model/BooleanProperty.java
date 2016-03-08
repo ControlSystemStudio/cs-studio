@@ -70,6 +70,7 @@ public final class BooleanProperty extends WidgetProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getCompatibleJavaTypes() {
         return new Class[]{Boolean.class};

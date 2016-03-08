@@ -68,6 +68,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final String getTooltip() {
         return doGetKeyDescription(delegate);
     }
@@ -75,6 +76,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final String getDisplayValue(int column) {
         String result = null;
 
@@ -98,6 +100,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final String getEditingValue(int column) {
         String result = null;
 
@@ -121,6 +124,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void setValue(int column, Object value, CommandStack commandStack) {
         Command cmd = null;
         switch (column) {
@@ -142,6 +146,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final RGB getBackgroundColor(int column) {
         RGB result = null;
         if (!hasError()) {
@@ -168,6 +173,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final RGB getForegroundColor(int column) {
         RGB result = null;
         if (!hasError()) {
@@ -194,6 +200,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final Font getFont(int column) {
         Font result = null;
         if (hasError()) {
@@ -220,6 +227,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final boolean canModify(int column) {
         boolean result = false;
 
@@ -243,6 +251,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final Image getImage(int column) {
         return doGetImage(delegate, column);
     }
@@ -250,6 +259,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final CellEditor getCellEditor(int column, Composite parent) {
         CellEditor editor = column == 1 ? doGetValueCellEditor(delegate, parent) : null;
 
@@ -263,6 +273,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
     /**
      *{@inheritDoc}
      */
+    @Override
     public final int compareTo(ITableRow row) {
         return doCompareTo(row);
     }
