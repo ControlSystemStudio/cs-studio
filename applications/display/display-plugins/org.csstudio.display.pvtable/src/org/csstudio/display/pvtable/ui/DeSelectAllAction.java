@@ -13,8 +13,10 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to de-select all table entries
- *  @author Kay Kasemir
+/**
+ * {@link Action} to de-select all table entries
+ *
+ * @author Kay Kasemir
  */
 public class DeSelectAllAction extends PVTableAction {
     public DeSelectAllAction(final TableViewer viewer) {
@@ -29,9 +31,9 @@ public class DeSelectAllAction extends PVTableAction {
             return;
         }
         final int N = model.getItemCount();
-        for (int i=0; i<N; ++i) {
+        for (int i = 0; i < N; ++i) {
             final PVTableItem item = model.getItem(i);
-            if (! item.isSelected()) {
+            if (!item.isSelected()) {
                 continue;
             }
             item.setSelected(false);

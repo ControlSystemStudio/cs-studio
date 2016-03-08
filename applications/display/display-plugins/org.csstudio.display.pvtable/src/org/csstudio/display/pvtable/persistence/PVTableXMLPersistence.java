@@ -32,8 +32,10 @@ import org.diirt.vtype.ValueFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** Persist PVTableModel as XML file
- *  @author Kay Kasemir
+/**
+ * Persist PVTableModel as XML file
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PVTableXMLPersistence extends PVTablePersistence {
@@ -72,9 +74,12 @@ public class PVTableXMLPersistence extends PVTablePersistence {
         return read(doc);
     }
 
-    /** @param doc XML document
-     *  @return PV table model
-     *  @throws Exception on error
+    /**
+     * @param doc
+     *            XML document
+     * @return PV table model
+     * @throws Exception
+     *             on error
      */
     private PVTableModel read(final Document doc) throws Exception {
         final PVTableModel model = new PVTableModel();
@@ -83,14 +88,13 @@ public class PVTableXMLPersistence extends PVTablePersistence {
         Element root_node = doc.getDocumentElement();
         String root_name = root_node.getNodeName();
         if (!root_name.equals(ROOT)) {
-            throw new Exception("Expected <" + ROOT + ">, found <" + root_name+ ">");
+            throw new Exception("Expected <" + ROOT + ">, found <" + root_name + ">");
         }
         // Get the default <tolerance> entry
         double default_tolerance = Preferences.getTolerance();
         try {
             default_tolerance = DOMHelper.getSubelementDouble(root_node, TOLERANCE);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             default_tolerance = Preferences.getTolerance();
         }
 
@@ -103,7 +107,7 @@ public class PVTableXMLPersistence extends PVTablePersistence {
             Measure measure = null;
             while (pv != null) {
                 String pv_name = DOMHelper.getSubelementString(pv, NAME);
-                if (! pv_name.isEmpty()) {
+                if (!pv_name.isEmpty()) {
                     final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
                     final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
                     String timeSaved = DOMHelper.getSubelementString(pv, SAVED_TIME, "");
@@ -112,30 +116,33 @@ public class PVTableXMLPersistence extends PVTablePersistence {
                     boolean isMeasure = DOMHelper.getSubelementBoolean(pv, MEASURE, false);
                     SavedValue saved = readSavedValue(pv);
                     PVTableItem pvItem = null;
-                    if(pv_name.startsWith("#mesure#")) {
-                    	pvItem = model.addItem(pv_name, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.NONE, ""), ValueFactory.newTime(TimestampHelper.parse(timeMeasure))));
-                    }
-                    else {
-                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
+                    if (pv_name.startsWith("#mesure#")) {
+                        pvItem = model.addItem(pv_name,
+                                ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.NONE, ""),
+                                        ValueFactory.newTime(TimestampHelper.parse(timeMeasure))));
+                    } else {
+                        pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
                     }
                     pvItem.setSelected(selected);
-                    // Legacy files may contain a separate readback PV and value for this entry
+                    // Legacy files may contain a separate readback PV and value
+                    // for this entry
                     pv_name = DOMHelper.getSubelementString(pv, READBACK_NAME);
                     // This legacy entry never supported arrays..
                     saved = new SavedScalarValue(DOMHelper.getSubelementString(pv, READBACK_SAVED));
-                    if(isMeasure == true && model.getConfig() != null) {
-                    	if(pvItem.isMeasureHeader()) {
-                    		measure = model.getConfig().addMeasure();
-                    	}
-                    	if(measure != null) {
-                    		pvItem.setMeasure(measure);
-                    		measure.getItems().add(pvItem);
-                    	}
+                    if (isMeasure == true && model.getConfig() != null) {
+                        if (pvItem.isMeasureHeader()) {
+                            measure = model.getConfig().addMeasure();
+                        }
+                        if (measure != null) {
+                            pvItem.setMeasure(measure);
+                            measure.getItems().add(pvItem);
+                        }
                     }
-                    if (! pv_name.isEmpty()) {
-                    	// If found, add as separate PV, not selected to be restored
-                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
-                    	pvItem.setSelected(false);
+                    if (!pv_name.isEmpty()) {
+                        // If found, add as separate PV, not selected to be
+                        // restored
+                        pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
+                        pvItem.setSelected(false);
                     }
                 }
                 pv = DOMHelper.findNextElementNode(pv, PV);
@@ -145,8 +152,10 @@ public class PVTableXMLPersistence extends PVTablePersistence {
         return model;
     }
 
-    /** @param pv PV element that might contain saved value, scalar or array
-     *  @return {@link SavedValue} or <code>null</code>
+    /**
+     * @param pv
+     *            PV element that might contain saved value, scalar or array
+     * @return {@link SavedValue} or <code>null</code>
      */
     private SavedValue readSavedValue(final Element pv) {
         final String saved_scalar = DOMHelper.getSubelementString(pv, SAVED_VALUE, null);
@@ -175,7 +184,7 @@ public class PVTableXMLPersistence extends PVTablePersistence {
         XMLWriter.start(out, 1, PVLIST);
         out.println();
         final int N = model.getItemCount();
-        for (int i=0; i<N; ++i) {
+        for (int i = 0; i < N; ++i) {
             final PVTableItem item = model.getItem(i);
             XMLWriter.start(out, 2, PV);
             out.println();
@@ -189,13 +198,12 @@ public class PVTableXMLPersistence extends PVTablePersistence {
             final SavedValue saved = item.getSavedValue().orElse(null);
             if (saved instanceof SavedScalarValue) {
                 XMLWriter.XML(out, 3, SAVED_VALUE, saved.toString());
-            }
-            else if (saved instanceof SavedArrayValue) {
+            } else if (saved instanceof SavedArrayValue) {
                 XMLWriter.start(out, 3, SAVED_ARRAY);
                 out.println();
-                final SavedArrayValue array = (SavedArrayValue)saved;
+                final SavedArrayValue array = (SavedArrayValue) saved;
                 final int AN = array.size();
-                for (int el=0; el<AN; ++el) {
+                for (int el = 0; el < AN; ++el) {
                     XMLWriter.XML(out, 4, ITEM, array.get(el));
                 }
                 XMLWriter.end(out, 3, SAVED_ARRAY);

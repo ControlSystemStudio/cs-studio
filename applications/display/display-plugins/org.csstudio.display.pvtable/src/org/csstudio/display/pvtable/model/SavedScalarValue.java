@@ -15,15 +15,19 @@ import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VString;
 import org.diirt.vtype.VType;
 
-/** Saved value of a scalar table item
- *  @author Kay Kasemir
+/**
+ * Saved value of a scalar table item
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SavedScalarValue extends SavedValue {
     final private String saved_value;
 
-    /** Initialize from text
-     *  @param value_text
+    /**
+     * Initialize from text
+     *
+     * @param value_text
      */
     public SavedScalarValue(final String value_text) {
         saved_value = value_text;
@@ -36,16 +40,16 @@ public class SavedScalarValue extends SavedValue {
             return true;
         }
         if (current_value instanceof VNumber) {
-            final double v1 = ((VNumber)current_value).getValue().doubleValue();
+            final double v1 = ((VNumber) current_value).getValue().doubleValue();
             final double v2 = getSavedNumber(saved_value).doubleValue();
             return Math.abs(v2 - v1) <= tolerance;
         }
         if (current_value instanceof VString) {
-            final String v1 = ((VString)current_value).getValue();
+            final String v1 = ((VString) current_value).getValue();
             return v1.equals(saved_value);
         }
         if (current_value instanceof VEnum) {
-            final int v1 = ((VEnum)current_value).getIndex();
+            final int v1 = ((VEnum) current_value).getIndex();
             final int v2 = Integer.parseInt(saved_value);
             return Math.abs(v2 - v1) <= tolerance;
         }
@@ -59,11 +63,9 @@ public class SavedScalarValue extends SavedValue {
         final VType pv_type = pv.read();
         if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat)) {
             pv.write(Double.parseDouble(saved_value));
-        }
-        else if (pv_type instanceof VNumber) {
+        } else if (pv_type instanceof VNumber) {
             pv.write(getSavedNumber(saved_value).longValue());
-        }
-        else { // Write as text
+        } else { // Write as text
             pv.write(saved_value);
         }
     }

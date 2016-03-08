@@ -12,8 +12,10 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to save value snapshots
- *  @author Kay Kasemir
+/**
+ * {@link Action} to save value snapshots
+ *
+ * @author Kay Kasemir
  */
 public class SnapshotAction extends PVTableAction {
     public SnapshotAction(final TableViewer viewer) {
