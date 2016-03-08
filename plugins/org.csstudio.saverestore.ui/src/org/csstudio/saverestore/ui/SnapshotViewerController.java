@@ -54,10 +54,13 @@ import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
 import org.csstudio.saverestore.ui.util.VTypePair;
+import org.csstudio.ui.fx.util.FXDetailsDialog;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.PVWriterEvent;
+import org.diirt.datasource.PVWriterListener;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
@@ -99,13 +102,15 @@ public class SnapshotViewerController {
     private static final String EMPTY_STRING = "";
 
     private class PV {
+        final String pvName;
         final PVReader<VType> reader;
         final PVWriter<Object> writer;
         PVReader<VType> readback;
         VType value = VDisconnectedData.INSTANCE;
         VType readbackValue = VDisconnectedData.INSTANCE;
 
-        PV(PVReader<VType> reader, PVWriter<Object> writer, PVReader<VType> readback) {
+        PV(String pvName, PVReader<VType> reader, PVWriter<Object> writer, PVReader<VType> readback) {
+            this.pvName = pvName;
             this.reader = reader;
             this.writer = writer;
             this.reader.addPVReaderListener(e -> {
@@ -272,7 +277,7 @@ public class SnapshotViewerController {
                     String name = e.pvNameProperty().get();
                     PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
                         .maxRate(TimeDuration.ofMillis(100));
-                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(TimeDuration.ofMillis(1000))
+                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(TimeDuration.ofMillis(2000))
                         .async();
                     String readback = e.readbackNameProperty().get();
                     PVReader<VType> readbackReader = null;
@@ -280,7 +285,7 @@ public class SnapshotViewerController {
                         readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
                             .maxRate(TimeDuration.ofMillis(100));
                     }
-                    pvs.put(e, new PV(reader, writer, readbackReader));
+                    pvs.put(e, new PV(name, reader, writer, readbackReader));
                 } else {
                     if (pv.readback == null) {
                         String readback = e.readbackNameProperty().get();
@@ -740,7 +745,7 @@ public class SnapshotViewerController {
                 sb.append('"').append(Utilities.valueToString(v)).append('"');
                 sb.append(',');
                 if (v instanceof Time) {
-//                    sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
+                    // sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
                     sb.append(((Time) v).getTimestamp());
                 }
                 if (showLiveReadback) {
@@ -749,7 +754,7 @@ public class SnapshotViewerController {
                     sb.append(',').append('"').append(Utilities.valueToString(((VTypePair) pair).value)).append('"')
                         .append(',');
                     if (pair.value instanceof Time) {
-//                        sb.append(Utilities.timestampToLittleEndianString(((Time) pair.value).getTimestamp(),true));
+                        // sb.append(Utilities.timestampToLittleEndianString(((Time) pair.value).getTimestamp(),true));
                         sb.append(((Time) pair.value).getTimestamp());
                     }
                 }
@@ -860,25 +865,86 @@ public class SnapshotViewerController {
      * @param s the snapshot
      */
     public void restoreSnapshot(VSnapshot s) {
+        Map<PV, PVWriterListener<?>> restorablePVs = new HashMap<>();
         try {
             suspend();
-//            if (s.isSaved()) {
-                List<String> names = s.getNames();
-                List<VType> values = s.getValues();
-                for (int i = 0; i < names.size(); i++) {
-                    TableEntry e = items.get(names.get(i));
-                    // only restore the value if the entry is in the filtered list as well
-                    if (filteredList.contains(e) && e.selectedProperty().get()) {
-                        pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
+            List<String> names = s.getNames();
+            List<VType> values = s.getValues();
+            final Map<PV, PVWriterEvent<?>> restoredPVs = new HashMap<>();
+            for (int i = 0; i < names.size(); i++) {
+                final TableEntry e = items.get(names.get(i));
+                // only restore the value if the entry is in the filtered list as well
+                if (filteredList.contains(e) && e.selectedProperty().get()) {
+                    final PV pv = pvs.get(e);
+                    PVWriterListener<?> l = w -> {
+                        restoredPVs.put(pv, w);
+                        synchronized (restoredPVs) {
+                            restoredPVs.notifyAll();
+                        }
+                    };
+                    restorablePVs.put(pv, l);
+                    pv.writer.addPVWriterListener(l);
+                    pv.writer.write(Utilities.toRawValue(values.get(i)));
+                }
+            }
+            try {
+                long time = System.currentTimeMillis();
+                while (System.currentTimeMillis() - time < 30000
+                    && !SaveRestoreService.getInstance().isCurrentJobCancelled()) {
+                    synchronized (restoredPVs) {
+                        if (restoredPVs.size() == restorablePVs.size()) {
+                            break;
+                        } else {
+                            restoredPVs.wait(100);
+                        }
                     }
                 }
+            } catch (InterruptedException e) {
+                // ignore
+            }
+
+            List<String> messages = new ArrayList<>();
+            for (Map.Entry<PV, PVWriterEvent<?>> pv : restoredPVs.entrySet()) {
+                if (pv.getValue().isWriteFailed()) {
+                    StringBuilder sb = new StringBuilder(200);
+                    sb.append(pv.getKey().pvName).append(':').append(' ');
+                    Exception e = pv.getValue().getPvWriter().lastWriteException();
+                    if (e == null || e.getMessage() == null || e.getMessage().isEmpty()) {
+                        sb.append("Unknown error");
+                    } else {
+                        sb.append(e.getMessage());
+                    }
+                    messages.add(sb.toString());
+                }
+            }
+
+            if (restoredPVs.size() != restorablePVs.size()) {
+                // not all PVs responded in time
+                for (PV pv : restorablePVs.keySet()) {
+                    if (restoredPVs.containsKey(pv)) {
+                        messages.add(pv.pvName + ": Timeout");
+                    }
+                }
+            }
+            if (messages.isEmpty()) {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot {0}: {1}.",
                     new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get() });
-//            } else {
-//                throw new IllegalArgumentException(
-//                    "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
-//            }
+            } else {
+                StringBuilder sb = new StringBuilder(messages.size() * 200);
+                messages.forEach(e -> sb.append(e).append('\n'));
+                SaveRestoreService.LOGGER.log(Level.WARNING,
+                    "Not all PVs could be restored for {0}: {1}. The following errors occured:\n{2}",
+                    new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get(), sb.toString() });
+
+
+                FXDetailsDialog.open(getSnapshotReceiver().getShell(), "Restore error",
+                    "There were some errors restoring the snapshot\n " + s.getSnapshot().get(),
+                    sb.toString());
+            }
         } finally {
+            for (Map.Entry<PV, PVWriterListener<?>> e : restorablePVs.entrySet()) {
+                e.getKey().writer.removePVWriterListener(e.getValue());
+            }
             resume();
         }
     }
@@ -1101,7 +1167,7 @@ public class SnapshotViewerController {
             PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
                 .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
             PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
-            pvs.put(entry, new PV(reader, writer, null));
+            pvs.put(entry, new PV(pvName, reader, writer, null));
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
             ActionManager.reportException(e, receiver.getShell());
