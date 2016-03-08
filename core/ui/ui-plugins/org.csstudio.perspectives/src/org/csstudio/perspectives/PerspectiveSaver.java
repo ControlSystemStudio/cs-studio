@@ -102,7 +102,7 @@ public class PerspectiveSaver implements EventHandler {
                 perspectiveUtils.savePerspective(clone, uri);
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
-                // I'm not sure why we need to import explicitly even though the 
+                // I'm not sure why we need to import explicitly even though the
                 // perspective has been saved.
                 String perspAsString = perspectiveUtils.perspectiveToString(clone);
                 preferences.put(clone.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
