@@ -11,12 +11,13 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.eclipse.core.runtime.IAdapterFactory;
 
-/** Adapter from PV Table to CSS types
- *  @author Kay Kasemir
+/**
+ * Adapter from PV Table to CSS types
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("rawtypes")
-public class AdapterFactory implements IAdapterFactory
-{
+public class AdapterFactory implements IAdapterFactory {
     @Override
     public Class[] getAdapterList() {
         return new Class[] { ProcessVariable.class };
@@ -24,8 +25,8 @@ public class AdapterFactory implements IAdapterFactory
 
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
-        if (adaptableObject instanceof PVTableItem  &&  adapterType == ProcessVariable.class) {
-            return new ProcessVariable(((PVTableItem)adaptableObject).getName());
+        if (adaptableObject instanceof PVTableItem && adapterType == ProcessVariable.class) {
+            return new ProcessVariable(((PVTableItem) adaptableObject).getName());
         }
         return null;
     }

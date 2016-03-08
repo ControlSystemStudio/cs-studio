@@ -22,84 +22,85 @@ import org.eclipse.ui.part.EditorActionBarContributor;
 
 /**
  * EditorActionBarContributor for the PV Table
- * 
+ *
  * @author Kay Kasemir, A. PHILIPPE L. PHILIPPE GANIL/FRANCE
  */
 public class PVTableEditorActionBarContributor extends EditorActionBarContributor {
-	private IToolBarManager manager;
-	final private PVTableAction snap = new SnapshotAction(null);
-	final private PVTableAction restore = new RestoreAction(null);
-	final private PVTableAction tolerance = new ToleranceAction(null);
-	final private PVTableAction measure = new MeasureAction(null);
-	final private PVTableAction deleteAllMeasure = new DeleteAllMeasureAction(null);
-	final private PVTableAction deleteLastMeasure = new DeleteLastMeasureAction(null);
-	final private PVTableAction exportXLS = new ExportXLSAction(null);
-	final private String measureActionID = "org.csstudio.display.pvtable.measureAction";
-	final private String deleteAllMeasureActionID = "org.csstudio.display.pvtable.deleteAllMeasureAction";
-	final private String deleteLastMeasureActionID = "org.csstudio.display.pvtable.deleteLastAction";
-	final private String exportXLSActionID = "org.csstudio.display.pvtable.exportXLSAction";
-	{
-		measure.setId(measureActionID);
-		deleteAllMeasure.setId(deleteAllMeasureActionID);
-		deleteLastMeasure.setId(deleteLastMeasureActionID);
-		exportXLS.setId(exportXLSActionID);
-	}
+    private IToolBarManager manager;
+    final private PVTableAction snap = new SnapshotAction(null);
+    final private PVTableAction restore = new RestoreAction(null);
+    final private PVTableAction tolerance = new ToleranceAction(null);
+    final private PVTableAction measure = new MeasureAction(null);
+    final private PVTableAction deleteAllMeasure = new DeleteAllMeasureAction(null);
+    final private PVTableAction deleteLastMeasure = new DeleteLastMeasureAction(null);
+    final private PVTableAction exportXLS = new ExportXLSAction(null);
+    final private String measureActionID = "org.csstudio.display.pvtable.measureAction";
+    final private String deleteAllMeasureActionID = "org.csstudio.display.pvtable.deleteAllMeasureAction";
+    final private String deleteLastMeasureActionID = "org.csstudio.display.pvtable.deleteLastAction";
+    final private String exportXLSActionID = "org.csstudio.display.pvtable.exportXLSAction";
 
-	/**
-	 * Invoked once when the first PVTableEditor gets opened. Items stay in
-	 * toolbar until the last PVTableEditor exits.
-	 */
-	@Override
-	public void contributeToToolBar(final IToolBarManager mgr) {
-		mgr.add(snap);
-		mgr.add(restore);
-		mgr.add(tolerance);
-		mgr.add(exportXLS);
-		mgr.add(new Separator());
-		this.manager = mgr;
-	}
+    {
+        measure.setId(measureActionID);
+        deleteAllMeasure.setId(deleteAllMeasureActionID);
+        deleteLastMeasure.setId(deleteLastMeasureActionID);
+        exportXLS.setId(exportXLSActionID);
+    }
 
-	/** @see org.eclipse.ui.part.EditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart) */
-	@Override
-	public void setActiveEditor(final IEditorPart target) {
-		final PVTableEditor editor = (PVTableEditor) target;
-		snap.setViewer(editor.getTableViewer());
-		restore.setViewer(editor.getTableViewer());
-		tolerance.setViewer(editor.getTableViewer());
-		measure.setViewer(editor.getTableViewer());
-		deleteLastMeasure.setViewer(editor.getTableViewer());
-		deleteAllMeasure.setViewer(editor.getTableViewer());
-		exportXLS.setViewer(editor.getTableViewer());
-		
-		this.refreshMeasureItemVisibility(editor);
-	}
+    /**
+     * Invoked once when the first PVTableEditor gets opened. Items stay in
+     * toolbar until the last PVTableEditor exits.
+     */
+    @Override
+    public void contributeToToolBar(final IToolBarManager mgr) {
+        mgr.add(snap);
+        mgr.add(restore);
+        mgr.add(tolerance);
+        mgr.add(exportXLS);
+        mgr.add(new Separator());
+        this.manager = mgr;
+    }
 
-	public void refreshMeasureItemVisibility(PVTableEditor editor) {
-		if (editor.getModel().getConfig() != null) {
-			if(manager.find(measureActionID) == null){
-				manager.add(measure);
-				manager.add(deleteLastMeasure);
-				manager.add(deleteAllMeasure);
-			}
-		} else {
-			manager.remove(measureActionID);
-			manager.remove(deleteAllMeasureActionID);
-			manager.remove(deleteLastMeasureActionID);
-		}
-		// Force the update.
-		manager.update(true);
-	}
+    /** @see org.eclipse.ui.part.EditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart) */
+    @Override
+    public void setActiveEditor(final IEditorPart target) {
+        final PVTableEditor editor = (PVTableEditor) target;
+        snap.setViewer(editor.getTableViewer());
+        restore.setViewer(editor.getTableViewer());
+        tolerance.setViewer(editor.getTableViewer());
+        measure.setViewer(editor.getTableViewer());
+        deleteLastMeasure.setViewer(editor.getTableViewer());
+        deleteAllMeasure.setViewer(editor.getTableViewer());
+        exportXLS.setViewer(editor.getTableViewer());
 
-	/** @see org.eclipse.ui.part.EditorActionBarContributor#dispose() */
-	@Override
-	public void dispose() {
-		snap.setViewer(null);
-		restore.setViewer(null);
-		tolerance.setViewer(null);
-		measure.setViewer(null);
-		deleteLastMeasure.setViewer(null);
-		deleteAllMeasure.setViewer(null);
-		exportXLS.setViewer(null);
-		super.dispose();
-	}
+        this.refreshMeasureItemVisibility(editor);
+    }
+
+    public void refreshMeasureItemVisibility(PVTableEditor editor) {
+        if (editor.getModel().getConfig() != null) {
+            if (manager.find(measureActionID) == null) {
+                manager.add(measure);
+                manager.add(deleteLastMeasure);
+                manager.add(deleteAllMeasure);
+            }
+        } else {
+            manager.remove(measureActionID);
+            manager.remove(deleteAllMeasureActionID);
+            manager.remove(deleteLastMeasureActionID);
+        }
+        // Force the update.
+        manager.update(true);
+    }
+
+    /** @see org.eclipse.ui.part.EditorActionBarContributor#dispose() */
+    @Override
+    public void dispose() {
+        snap.setViewer(null);
+        restore.setViewer(null);
+        tolerance.setViewer(null);
+        measure.setViewer(null);
+        deleteLastMeasure.setViewer(null);
+        deleteAllMeasure.setViewer(null);
+        exportXLS.setViewer(null);
+        super.dispose();
+    }
 }

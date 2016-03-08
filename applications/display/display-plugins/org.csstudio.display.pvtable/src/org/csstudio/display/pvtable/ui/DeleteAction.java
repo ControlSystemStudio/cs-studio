@@ -21,8 +21,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 
-/** {@link Action} to delete entries from table
- *  @author Kay Kasemir
+/**
+ * {@link Action} to delete entries from table
+ *
+ * @author Kay Kasemir
  */
 public class DeleteAction extends PVTableAction {
     public DeleteAction(final TableViewer viewer) {
@@ -36,27 +38,28 @@ public class DeleteAction extends PVTableAction {
         if (model == null) {
             return;
         }
-        final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+        final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
         if (sel == null) {
             return;
         }
         final Iterator<?> iterator = sel.iterator();
         while (iterator.hasNext()) {
             final PVTableItem item = (PVTableItem) iterator.next();
-            if(item.isConfHeader()){
-            	boolean isDelete = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), Messages.InformationPopup, Messages.InformationPopup_DelConfHeader);
-            	
-            	if(isDelete == false){
-            		return;
-            	}
-            	
-            	Configuration conf = model.getConfig();
+            if (item.isConfHeader()) {
+                boolean isDelete = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                        Messages.InformationPopup, Messages.InformationPopup_DelConfHeader);
+
+                if (isDelete == false) {
+                    return;
+                }
+
+                Configuration conf = model.getConfig();
                 List<Measure> allMeasures = conf.getMeasures();
-            	for(Measure measure : allMeasures) {
-        	        List<PVTableItem> itemsMeasure = measure.getItems();
-        	        for(PVTableItem itemMes : itemsMeasure) {
-        	        	model.removeItem(itemMes);
-        	        }
+                for (Measure measure : allMeasures) {
+                    List<PVTableItem> itemsMeasure = measure.getItems();
+                    for (PVTableItem itemMes : itemsMeasure) {
+                        model.removeItem(itemMes);
+                    }
                 }
             }
             model.removeItem(item);

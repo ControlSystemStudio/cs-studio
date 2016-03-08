@@ -18,8 +18,10 @@ import java.util.regex.Pattern;
 import org.diirt.util.time.Timestamp;
 import org.diirt.util.time.TimestampFormat;
 
-/** Time stamp gymnastics
- *  @author Kay Kasemir
+/**
+ * Time stamp gymnastics
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class TimestampHelper {
@@ -31,9 +33,11 @@ public class TimestampHelper {
     final private static TimestampFormat time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
     final private static DateFormat dateFormat = new SimpleDateFormat(TimestampHelper.FORMAT_PARSE);
     final private static DecimalFormat decimalFormat = new DecimalFormat(TimestampHelper.FORMAT_DECIMAL);
-    
-    /** @param timestamp {@link Timestamp}, may be <code>null</code>
-     *  @return Time stamp formatted as string
+
+    /**
+     * @param timestamp
+     *            {@link Timestamp}, may be <code>null</code>
+     * @return Time stamp formatted as string
      */
     public static String format(final Timestamp timestamp) {
         if (timestamp == null) {
@@ -43,29 +47,30 @@ public class TimestampHelper {
             return time_format.format(timestamp);
         }
     }
-       
+
     /**
-     * Take a String and return a Timestamp
-     * Should be implemented in TimestampFormat
+     * Take a String and return a Timestamp Should be implemented in
+     * TimestampFormat
+     *
      * @param sTimestamp
      * @return
      * @throws ParseException
      * @author A.PHILIPPE, L.PHILIPPE GANIL/FRANCE
      */
     public static Timestamp parse(final String sTimestamp) throws ParseException {
-    	if(sTimestamp == "" || sTimestamp == null) {
-    		return null;
-    	}
-    	Date date = dateFormat.parse(sTimestamp);
-    	Pattern matchNanoField = Pattern.compile("\\.[0-9]{1,9}");
-    	Matcher m = matchNanoField.matcher(sTimestamp);
-    	Timestamp t = null;
-    	if(m.find()){
-    		String nanoString = m.group();
-    		t = Timestamp.of(date.toInstant().getEpochSecond(), decimalFormat.parse(nanoString).intValue());
-    	}else{
-    		t = Timestamp.of(date);
-    	}
-    	return t;
+        if (sTimestamp == "" || sTimestamp == null) {
+            return null;
+        }
+        Date date = dateFormat.parse(sTimestamp);
+        Pattern matchNanoField = Pattern.compile("\\.[0-9]{1,9}");
+        Matcher m = matchNanoField.matcher(sTimestamp);
+        Timestamp t = null;
+        if (m.find()) {
+            String nanoString = m.group();
+            t = Timestamp.of(date.toInstant().getEpochSecond(), decimalFormat.parse(nanoString).intValue());
+        } else {
+            t = Timestamp.of(date);
+        }
+        return t;
     }
 }

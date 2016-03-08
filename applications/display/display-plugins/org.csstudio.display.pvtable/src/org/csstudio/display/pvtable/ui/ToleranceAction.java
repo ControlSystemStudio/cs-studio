@@ -21,34 +21,30 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 
-/** {@link Action} to save value snapshots
- *  @author Kay Kasemir
+/**
+ * {@link Action} to save value snapshots
+ *
+ * @author Kay Kasemir
  */
-public class ToleranceAction extends PVTableAction
-{
-    public ToleranceAction(final TableViewer viewer)
-    {
+public class ToleranceAction extends PVTableAction {
+    public ToleranceAction(final TableViewer viewer) {
         super(Messages.Tolerance, "icons/pvtable.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Tolerance_TT);
     }
 
-    public void run()
-    {
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
         final List<PVTableItem> items = new ArrayList<>();
-        final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-        if (sel != null  &&  sel.size() > 0)
-        {    // Use selected model items
+        final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+        if (sel != null && sel.size() > 0) { // Use selected model items
             final Iterator<?> iterator = sel.iterator();
             while (iterator.hasNext())
                 items.add((PVTableItem) iterator.next());
-        }
-        else
-        {    // Use all model items
+        } else { // Use all model items
             final int N = model.getItemCount();
-            for (int i=0; i<N; ++i)
+            for (int i = 0; i < N; ++i)
                 items.add(model.getItem(i));
         }
 
@@ -57,22 +53,15 @@ public class ToleranceAction extends PVTableAction
 
         double tolerance = items.get(0).getTolerance();
 
-        final InputDialog dlg = new InputDialog(viewer.getControl().getShell(),
-                Messages.Tolerance, Messages.EnterTolerance,
-                Double.toString(tolerance),
-                new IInputValidator()
-                {
+        final InputDialog dlg = new InputDialog(viewer.getControl().getShell(), Messages.Tolerance,
+                Messages.EnterTolerance, Double.toString(tolerance), new IInputValidator() {
                     @Override
-                    public String isValid(final String text)
-                    {
-                        try
-                        {
+                    public String isValid(final String text) {
+                        try {
                             double x = Double.parseDouble(text);
                             if (x >= 0.0)
                                 return null;
-                        }
-                        catch (NumberFormatException ex)
-                        {
+                        } catch (NumberFormatException ex) {
                             // Ignore, fall through
                         }
                         return Messages.EnterPositiveTolerance;
