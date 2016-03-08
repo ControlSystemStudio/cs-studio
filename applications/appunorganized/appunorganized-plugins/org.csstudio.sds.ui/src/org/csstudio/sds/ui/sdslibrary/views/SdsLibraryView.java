@@ -12,7 +12,6 @@ import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.actions.WidgetModelTransfer;
-import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.csstudio.sds.ui.sdslibrary.preferences.LibraryFolderPreferenceItem;
 import org.csstudio.sds.ui.sdslibrary.preferences.LibraryFolderPreferenceService;
 import org.csstudio.sds.ui.sdslibrary.preferences.LibraryFolderPreferenceService.LibraryFolderPreferenceChangeListener;

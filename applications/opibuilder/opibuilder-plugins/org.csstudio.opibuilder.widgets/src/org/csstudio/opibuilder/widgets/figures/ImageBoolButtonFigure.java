@@ -185,7 +185,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         if (!isEnabled() && !indicatorMode) {
             symbolImage.setBackgroundColor(DISABLE_COLOR);
         } else {
-        	FigureTransparencyHelper.setBackground(symbolImage, getBackgroundColor(), model);
+            FigureTransparencyHelper.setBackground(symbolImage, getBackgroundColor(), model);
         }
         symbolImage.paintFigure(graphics);
         super.paintClientArea(graphics);

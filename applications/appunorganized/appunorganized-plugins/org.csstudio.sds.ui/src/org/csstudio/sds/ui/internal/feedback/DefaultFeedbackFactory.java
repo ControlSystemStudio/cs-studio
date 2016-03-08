@@ -54,6 +54,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IFigure createDragSourceFeedbackFigure(
             final AbstractWidgetModel model, final Rectangle initalBounds) {
 
@@ -70,6 +71,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void showChangeBoundsFeedback(final AbstractWidgetModel model, final PrecisionRectangle bounds, final IFigure feedbackFigure, final ChangeBoundsRequest request) {
         feedbackFigure.translateToRelative(bounds);
         feedbackFigure.setBounds(bounds);
@@ -78,6 +80,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Shape createSizeOnDropFeedback(final CreateRequest createRequest) {
         return new RectangleFigure();
     }
@@ -85,6 +88,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void showSizeOnDropFeedback(final CreateRequest request,
             final IFigure feedbackFigure, final Insets insets) {
         Point p = new Point(request.getLocation().getCopy());
@@ -98,6 +102,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getCreationTool() {
         return null;
     }
@@ -117,6 +122,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Command createInitialBoundsCommand(
             final AbstractWidgetModel widgetModel,
             final CreateRequest request, final Rectangle bounds) {
@@ -129,6 +135,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Command createChangeBoundsCommand(final AbstractWidgetModel widgetModel,
             final ChangeBoundsRequest request, final Rectangle bounds) {
         assert widgetModel != null;
@@ -141,6 +148,7 @@ public final class DefaultFeedbackFactory implements IGraphicalFeedbackFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
         return null;
     }

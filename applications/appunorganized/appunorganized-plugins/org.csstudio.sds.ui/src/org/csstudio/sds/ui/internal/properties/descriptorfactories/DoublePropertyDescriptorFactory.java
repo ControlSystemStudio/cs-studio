@@ -40,6 +40,7 @@ public final class DoublePropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
         PropertyDescriptor descriptor = new DoublePropertyDescriptor(id,

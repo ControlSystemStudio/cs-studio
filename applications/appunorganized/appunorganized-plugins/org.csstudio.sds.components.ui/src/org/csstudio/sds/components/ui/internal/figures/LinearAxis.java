@@ -70,6 +70,7 @@ final class LinearAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int valueToCoordinate(final double value) {
         double dataRange = _dataUpper - _dataLower;
         double scaling = (_displaySize - 1) / dataRange;
@@ -90,6 +91,7 @@ final class LinearAxis implements IAxis {
      * @return <code>true</code> if the value is legal, <code>false</code>
      *         otherwise.
      */
+    @Override
     public boolean isLegalValue(final double value) {
         // Note: cannot use == or != operator here because NaN != NaN.
         return !Double.isNaN(value);
@@ -98,6 +100,7 @@ final class LinearAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Tick> calculateTicks(final int minMajorDistance,
             final int minMinorDistance) {
 
@@ -119,6 +122,7 @@ final class LinearAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Tick> calculateIntegerTicks(final int minMajorDistance,
             final int minMinorDistance) {
 
@@ -141,6 +145,7 @@ final class LinearAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataRange(final double lower, final double upper) {
         _dataLower = lower;
         _dataUpper = upper;
@@ -149,6 +154,7 @@ final class LinearAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDisplaySize(final int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Invalid display size");

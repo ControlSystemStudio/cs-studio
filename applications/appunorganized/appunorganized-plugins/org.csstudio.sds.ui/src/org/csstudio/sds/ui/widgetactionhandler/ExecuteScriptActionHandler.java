@@ -54,6 +54,7 @@ public final class ExecuteScriptActionHandler implements IWidgetActionHandler {
      *
      * @required action instanceof ExecuteScriptActionModel
      */
+    @Override
     public void executeAction(final AbstractWidgetModel widget,
             final AbstractWidgetActionModel action) {
         assert action instanceof ExecuteScriptActionModel : "Precondition violated: action instanceof ExecuteScriptActionModel";

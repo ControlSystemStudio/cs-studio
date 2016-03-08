@@ -200,10 +200,10 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                         Double doubleValue = VTypeHelper.getDouble((VType) newValue);
                         symbolFigure.setState(doubleValue);
                     }else if (newValue instanceof VBoolean) {
-                    	symbolFigure.setState((VBoolean)newValue);
+                        symbolFigure.setState((VBoolean)newValue);
                     }else {
-                    	String stringValue = VTypeHelper.getString((VType) newValue);
-                    	symbolFigure.setState(stringValue);
+                        String stringValue = VTypeHelper.getString((VType) newValue);
+                        symbolFigure.setState(stringValue);
                     }
                     // autoSizeWidget(symbolFigure);
                 }

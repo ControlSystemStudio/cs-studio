@@ -60,6 +60,7 @@ public class WidgetEditPartFactory implements EditPartFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public EditPart createEditPart(final EditPart context,
             final Object modelElement) {
         EditPart part = getPartForModel(modelElement);

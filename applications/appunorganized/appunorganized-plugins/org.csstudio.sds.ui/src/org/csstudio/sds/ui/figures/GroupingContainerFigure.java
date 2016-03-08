@@ -94,6 +94,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
      * @return Rectangle
      *             The bounds of the handles
      */
+    @Override
     public Rectangle getHandleBounds() {
         return getBounds().getCropped(new Insets(2, 0, 2, 0));
     }
@@ -101,6 +102,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
     /**
      * {@inheritDoc}
      */
+    @Override
     public Dimension getPreferredSize(final int w, final int h) {
         Dimension prefSize = super.getPreferredSize(w, h);
         Dimension defaultSize = new Dimension(100, 100);
@@ -111,6 +113,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void paintFigure(final Graphics graphics) {
         if (!_transparent) {
             Rectangle rect = getBounds().getCopy();
@@ -123,6 +126,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "CircuitBoardFigure"; //$NON-NLS-1$
     }
@@ -130,6 +134,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean useLocalCoordinates() {
         return false;
     }
@@ -166,6 +171,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {

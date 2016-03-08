@@ -40,6 +40,7 @@ public final class ColorPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
         PropertyDescriptor descriptor = new ColorPropertyDescriptor(id,

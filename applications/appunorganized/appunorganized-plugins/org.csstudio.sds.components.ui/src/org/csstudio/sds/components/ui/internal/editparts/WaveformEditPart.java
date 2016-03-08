@@ -93,6 +93,7 @@ public final class WaveformEditPart extends AbstractChartEditPart {
             /**
              * {@inheritDoc}
              */
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 WaveformFigure figure = (WaveformFigure) refreshableFigure;

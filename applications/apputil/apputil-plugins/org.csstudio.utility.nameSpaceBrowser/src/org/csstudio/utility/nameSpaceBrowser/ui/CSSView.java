@@ -49,7 +49,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -546,7 +545,7 @@ public class CSSView extends Composite implements Observer {
      *            this String a not modified (by no Casesensitivity toLowerCase)
      * @param simpleRegExp
      *            this String a modified
-     * @return true match search and regExp and false don´t match
+     * @return true match search and regExp and false donï¿½t match
      */
     protected boolean searchString(final String searchString, final String simpleRegExp) {
 
@@ -558,7 +557,7 @@ public class CSSView extends Composite implements Observer {
         return searchString.toLowerCase().matches(regExp);
     }
 
-    // Setzt den Defaultfilter für IProzessVariablen
+    // Setzt den Defaultfilter fï¿½r IProzessVariablen
     public void setDefaultFilter(final String defaultPVFilter) {
         this._defaultPVFilter = defaultPVFilter;
         if (!_cssParameter.newCSSView) {
@@ -618,7 +617,7 @@ public class CSSView extends Composite implements Observer {
             _tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(final SelectionChangedEvent event) {
-                    // TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig
+                    // TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu hï¿½ufig
                     // angeklickt werden kann.
                     if (_cssParameter.newCSSView) {
                         _parent.setEnabled(false);

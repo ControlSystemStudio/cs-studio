@@ -65,6 +65,7 @@ public final class GridSpacingContributionItem extends ControlContribution
      * @param parent The parent composite
      * @return The Control
      */
+    @Override
     protected Control createControl(final Composite parent) {
         Composite comp = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(2,false);
@@ -95,6 +96,7 @@ public final class GridSpacingContributionItem extends ControlContribution
      * @param control The control to compute width
      * @return int The width required
      */
+    @Override
     protected int computeWidth(final Control control) {
         return control.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x;
     }
@@ -110,6 +112,7 @@ public final class GridSpacingContributionItem extends ControlContribution
     /**
      * {@inheritDoc}
      */
+    @Override
     public void widgetDefaultSelected(final SelectionEvent e) {
         this.setPreferenceValue();
     }
@@ -117,6 +120,7 @@ public final class GridSpacingContributionItem extends ControlContribution
     /**
      * {@inheritDoc}
      */
+    @Override
     public void widgetSelected(final SelectionEvent e) {
         this.setPreferenceValue();
     }
@@ -124,6 +128,7 @@ public final class GridSpacingContributionItem extends ControlContribution
     /**
      * {@inheritDoc}
      */
+    @Override
     public void modifyText(final ModifyEvent e) {
         this.setPreferenceValue();
     }
@@ -131,6 +136,7 @@ public final class GridSpacingContributionItem extends ControlContribution
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         if (event.getProperty().equals(PreferenceConstants.PROP_GRID_SPACING)) {
             Integer spacing;

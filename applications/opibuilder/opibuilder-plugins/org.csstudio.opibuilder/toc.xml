@@ -18,7 +18,7 @@
       <topic href="html/PreferencePage.html" label="Setting Preferences">
       </topic>
   <topic href="html/Widgets_Overview.html" label="Widgets">
-  	<anchor id="boy_widget"/>
+    <anchor id="boy_widget"/>
      <topic label="Widget Properties" href="html/Widget_Properties.html"> </topic>
      <topic href="html/widgets/PVWidgets.html" label="PV Widgets"> </topic>
 

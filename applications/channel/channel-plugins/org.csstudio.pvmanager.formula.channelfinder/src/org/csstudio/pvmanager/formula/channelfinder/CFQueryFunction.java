@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.diirt.datasource.WriteFunction;
 import org.diirt.datasource.formula.StatefulFormulaFunction;
 import org.diirt.service.ServiceMethod;
 import org.diirt.service.ServiceRegistry;

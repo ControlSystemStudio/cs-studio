@@ -69,6 +69,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         final SimpleSliderFigure slider = new SimpleSliderFigure();
         slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
+            @Override
             public void sliderValueChanged(final double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     model.setPropertyManualValue(SimpleSliderModel.PROP_VALUE, newValue);
@@ -117,6 +118,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         // value
         IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -131,6 +133,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // min
         IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -145,6 +148,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // max
         IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -158,6 +162,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // increment
         IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -172,6 +177,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // precision
         IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -186,6 +192,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // show value as text
         IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -198,6 +205,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // minSliderWide
         IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -212,6 +220,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
         // orientation
         IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
@@ -241,6 +250,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IValue getSample(final int index) {
         if (index != 0) {
             throw new IndexOutOfBoundsException(index

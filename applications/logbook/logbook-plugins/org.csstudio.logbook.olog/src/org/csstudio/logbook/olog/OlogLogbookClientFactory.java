@@ -4,13 +4,11 @@ import static edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder.serviceURL;
 
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientFactory;
-import org.csstudio.utility.olog.Activator;
 import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 import edu.msu.nscl.olog.api.Olog;
-import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 
 public class OlogLogbookClientFactory implements LogbookClientFactory {
 

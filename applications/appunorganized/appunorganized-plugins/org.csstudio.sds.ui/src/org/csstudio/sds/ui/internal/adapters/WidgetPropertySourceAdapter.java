@@ -60,6 +60,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getEditableValue() {
         return "Properties of display widget model"; //$NON-NLS-1$
     }
@@ -67,6 +68,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
         Set<String> visiblePropertyIds = _widgetModel.getVisiblePropertyIds();
 
@@ -84,7 +86,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
 
             IPropertyDescriptor descriptor = null;
 
-            // get a property descriptor for the current property´s type
+            // get a property descriptor for the current propertyï¿½s type
             if (service.hasPropertyDescriptorFactory(widgetProperty
                     .getPropertyType())) {
                 final IPropertyDescriptorFactory factory = service
@@ -120,6 +122,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getPropertyValue(final Object id) {
         assert id != null;
         Object result = null;
@@ -136,6 +139,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPropertySet(final Object id) {
         String propertyId = id.toString();
 
@@ -158,6 +162,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void resetPropertyValue(final Object id) {
         String propertyId = id.toString();
 
@@ -171,6 +176,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setPropertyValue(final Object id, final Object value) {
         String propertyId = id.toString();
 
@@ -182,6 +188,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DynamicsDescriptor getDynamicsDescriptor(final Object id) {
         String propertyId = id.toString();
 
@@ -195,6 +202,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDynamicsDescriptor(final Object id,
             final DynamicsDescriptor dynamicsDescriptor) {
         String propertyId = id.toString();
@@ -210,6 +218,7 @@ public final class WidgetPropertySourceAdapter implements IPropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getAliases() {
         return _widgetModel.getAllInheritedAliases();
     }

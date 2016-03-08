@@ -176,6 +176,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -222,10 +223,12 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
             _borderWidth = borderWidth;
         }
 
+        @Override
         public Insets getInsets(final IFigure arg0) {
             return new Insets(_borderWidth);
         }
 
+        @Override
         public void paint(final IFigure figure, final Graphics gfx, final Insets arg2) {
             gfx.setBackgroundColor(_borderColor);
             gfx.setForegroundColor(_borderColor);

@@ -40,6 +40,7 @@ public final class RuleDescriptorAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         assert adaptableObject != null;
@@ -91,6 +92,7 @@ public final class RuleDescriptorAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class };
     }

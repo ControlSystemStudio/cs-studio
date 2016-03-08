@@ -9,8 +9,6 @@ package org.csstudio.utility.clock.preferences;
 
 import org.csstudio.utility.clock.Messages;
 import org.csstudio.utility.clock.Plugin;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;

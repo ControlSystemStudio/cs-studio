@@ -44,6 +44,7 @@ public class NoActivationAdapterFoundException extends ActivationServiceExceptio
     /**
      * {@inheritDoc}
      */
+    @Override
     protected final String getMessage(final Class<?> clazz) {
         return "No ActivationAdapter found for "+clazz;
     }

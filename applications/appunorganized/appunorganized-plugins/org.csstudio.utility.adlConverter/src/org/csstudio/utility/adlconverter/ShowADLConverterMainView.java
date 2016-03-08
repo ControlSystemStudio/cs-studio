@@ -49,12 +49,14 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void init(final IWorkbenchWindow window) {
         _window = window;
     }
@@ -62,6 +64,7 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(final IAction action) {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -76,12 +79,14 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IAction action, final ISelection selection) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public IWorkbenchWindow getWorkbenchWindow() {
         return _window;
     }

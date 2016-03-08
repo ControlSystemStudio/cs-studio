@@ -83,6 +83,7 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createEditPolicies() {
         super.createEditPolicies();
 

@@ -112,6 +112,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected GraphicalViewer doOpen(final int x,
                                      final int y,
                                      final boolean openRelative,
@@ -213,6 +214,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
             /**
              * {@inheritDoc}
              */
+            @Override
             public void widgetDisposed(final DisposeEvent e) {
                 dispose();
             }
@@ -282,6 +284,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
     /**
      * Disposes the shell.
      */
+    @Override
     protected void doDispose() {
         // close the shell
         if (!_shell.isDisposed()) {
@@ -364,6 +367,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
     /**
      * Sets the focus on this Shell.
      */
+    @Override
     public void bringToTop() {
         if (_shell != null && !_shell.isDisposed()) {
             _shell.setMinimized(false);
@@ -377,6 +381,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void handleWindowPositionChange(final int x,
                                               final int y,
                                               final int width,
@@ -434,14 +439,17 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
                                                                    _input.getAliases());
         }
 
+        @Override
         public void mouseEnter(MouseEvent e) {
             _label.setForeground(CustomMediaFactory.getInstance().getColor(0, 255, 255));
         }
 
+        @Override
         public void mouseExit(MouseEvent e) {
             _label.setForeground(CustomMediaFactory.getInstance().getColor(0, 0, 255));
         }
 
+        @Override
         public void mouseHover(MouseEvent e) {
         }
     }

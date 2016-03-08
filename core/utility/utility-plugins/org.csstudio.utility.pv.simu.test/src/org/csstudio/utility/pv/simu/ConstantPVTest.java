@@ -15,7 +15,6 @@ import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.simu.ConstantPVFactory;
 import org.junit.Test;
 
 /** JUnit test of ConstantPV

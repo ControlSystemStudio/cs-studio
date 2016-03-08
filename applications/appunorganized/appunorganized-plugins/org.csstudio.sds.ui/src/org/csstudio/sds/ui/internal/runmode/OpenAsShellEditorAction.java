@@ -42,6 +42,7 @@ public final class OpenAsShellEditorAction implements IEditorActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActiveEditor(final IAction action,
             final IEditorPart targetEditor) {
         _editor = (DisplayEditor) targetEditor;
@@ -50,6 +51,7 @@ public final class OpenAsShellEditorAction implements IEditorActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(final IAction action) {
         RunModeService.getInstance().openDisplayShellInRunMode(_editor.getFilePath());
     }
@@ -57,6 +59,7 @@ public final class OpenAsShellEditorAction implements IEditorActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
     }

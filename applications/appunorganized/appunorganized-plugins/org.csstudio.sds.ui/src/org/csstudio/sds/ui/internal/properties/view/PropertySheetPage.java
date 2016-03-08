@@ -221,7 +221,7 @@ public final class PropertySheetPage extends Page implements
         menuMgr.add(_defaultsAction);
         Menu menu = menuMgr.createContextMenu(_viewer.getControl());
         _viewer.getControl().setMenu(menu);
-        // TODO: Menü für Object Contributions offen halten, oder nicht ?
+        // TODO: Menï¿½ fï¿½r Object Contributions offen halten, oder nicht ?
         // (swende)
         // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite().registerContextMenu(menuMgr,
         // viewer);
@@ -301,6 +301,7 @@ public final class PropertySheetPage extends Page implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAdapter(final Class adapter) {
         if (ISaveablePart.class.equals(adapter)) {
             return getSaveablePart();
@@ -524,6 +525,7 @@ public final class PropertySheetPage extends Page implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IWorkbenchPart part,
             final ISelection selection) {
         if (_viewer == null) {
@@ -643,18 +645,21 @@ public final class PropertySheetPage extends Page implements
         /**
          * {@inheritDoc}
          */
+        @Override
         public void partActivated(final IWorkbenchPart part) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void partBroughtToTop(final IWorkbenchPart part) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void partClosed(final IWorkbenchPart part) {
             if (_sourcePart == part) {
                 _sourcePart = null;
@@ -667,12 +672,14 @@ public final class PropertySheetPage extends Page implements
         /**
          * {@inheritDoc}
          */
+        @Override
         public void partDeactivated(final IWorkbenchPart part) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void partOpened(final IWorkbenchPart part) {
         }
     }

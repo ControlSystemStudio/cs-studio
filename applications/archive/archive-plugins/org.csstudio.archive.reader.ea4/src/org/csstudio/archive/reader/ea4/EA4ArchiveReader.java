@@ -1,7 +1,6 @@
 
 package org.csstudio.archive.reader.ea4;
 
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import org.epics.pvaccess.client.rpc.RPCClientImpl;

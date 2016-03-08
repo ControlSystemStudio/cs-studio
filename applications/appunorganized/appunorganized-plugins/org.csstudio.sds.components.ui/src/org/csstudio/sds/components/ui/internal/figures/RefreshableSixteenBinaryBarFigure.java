@@ -170,6 +170,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
      *
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public final Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {

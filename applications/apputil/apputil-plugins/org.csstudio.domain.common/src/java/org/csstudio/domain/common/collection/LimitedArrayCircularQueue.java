@@ -497,10 +497,10 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
+     * @throws UnsupportedOperationException
+     * @throws ClassCastException
+     * @throws NullPointerException
+     * @throws IllegalArgumentException
      */
     public int drainTo(final Collection<? super E> c) {
         if (c == this) {
@@ -531,10 +531,10 @@ public class LimitedArrayCircularQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
+     * @throws UnsupportedOperationException
+     * @throws ClassCastException
+     * @throws NullPointerException
+     * @throws IllegalArgumentException
      */
     public int drainTo(final Collection<? super E> c,
                        final int maxElements) {

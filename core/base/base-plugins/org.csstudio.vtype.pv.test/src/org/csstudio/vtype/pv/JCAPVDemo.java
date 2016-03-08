@@ -15,10 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.PVFactory;
-import org.csstudio.vtype.pv.PVListener;
-import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PV;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.diirt.vtype.VEnumArray;

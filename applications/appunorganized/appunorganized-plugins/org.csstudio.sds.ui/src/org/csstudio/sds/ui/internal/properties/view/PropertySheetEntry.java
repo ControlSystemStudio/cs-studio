@@ -135,6 +135,7 @@ public class PropertySheetEntry extends EventManager implements
      * changes in the CellEditor, and cancel and finish requests.
      */
     private ICellEditorListener _cellEditorListener = new ICellEditorListener() {
+        @Override
         public void editorValueChanged(final boolean oldValidState,
                 final boolean newValidState) {
             if (!newValidState) {
@@ -146,10 +147,12 @@ public class PropertySheetEntry extends EventManager implements
             }
         }
 
+        @Override
         public void cancelEditor() {
             setErrorText(null);
         }
 
+        @Override
         public void applyEditorValue() {
             PropertySheetEntry.this.applyEditorValue();
         }
@@ -158,6 +161,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void addPropertySheetEntryListener(
             final IPropertySheetEntryListener listener) {
         addListenerObject(listener);
@@ -166,6 +170,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void applyEditorValue() {
         if (_editor == null) {
             return;
@@ -364,6 +369,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         if (_editor != null) {
             _editor.dispose();
@@ -423,6 +429,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getCategory() {
         return _descriptor.getCategory();
     }
@@ -430,6 +437,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final IPropertySheetEntry[] getChildEntries() {
         if (_childEntries == null) {
             createChildEntries();
@@ -440,6 +448,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getDescription() {
         return _descriptor.getDescription();
     }
@@ -457,6 +466,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getDisplayName() {
         return _descriptor.getDisplayName();
     }
@@ -464,6 +474,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final CellEditor getEditor(final Composite parent) {
 
         if (_editor == null) {
@@ -498,6 +509,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getErrorText() {
         return _errorText;
     }
@@ -505,6 +517,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getFilters()[] {
         return _descriptor.getFilterFlags();
     }
@@ -512,6 +525,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object getHelpContextIds() {
         return _descriptor.getHelpContextIds();
     }
@@ -519,6 +533,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Image getImage() {
         ILabelProvider provider = _descriptor.getLabelProvider();
         if (provider == null) {
@@ -580,6 +595,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getValueAsString() {
         if (_editValue == null) {
             return "";//$NON-NLS-1$
@@ -601,6 +617,7 @@ public class PropertySheetEntry extends EventManager implements
      * @return the value objects of this entry
      * @since 3.1 (was previously private)
      */
+    @Override
     public final Object[] getValues() {
         return _values;
     }
@@ -608,6 +625,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean hasChildEntries() {
         if (_childEntries != null && _childEntries.length > 0) {
             return true;
@@ -722,6 +740,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void removePropertySheetEntryListener(
             final IPropertySheetEntryListener listener) {
         removeListenerObject(listener);
@@ -730,6 +749,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void resetPropertyValue() {
         if (_parent == null) {
             // root does not have a default value
@@ -849,6 +869,7 @@ public class PropertySheetEntry extends EventManager implements
      * @param objects
      *            the new values for this entry
      */
+    @Override
     public final void setValues(final Object[] objects) {
         _values = objects;
         _sources = new HashMap(_values.length * 2 + 1);
@@ -904,6 +925,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean isDynamicallySampled() {
         if (_editValue == null) {
             return false;
@@ -922,6 +944,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final DynamicAspectsWizard getDynamicsDescriptionConfigurationWizard() {
         return new DynamicAspectsWizard(_dynamicsDescriptor, _alias, _descriptor, getValues()[0]);
     }
@@ -951,6 +974,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setDynamicsDescriptors(
             final DynamicsDescriptor[] dynamicsDescriptors) {
         _dynamicsDescriptors = dynamicsDescriptors;
@@ -975,6 +999,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final DynamicsDescriptor[] getDynamicsDescriptors() {
         return _dynamicsDescriptors;
     }
@@ -982,6 +1007,7 @@ public class PropertySheetEntry extends EventManager implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void applyDynamicsDescriptor(
             final DynamicsDescriptor newDynamicsDescriptor) {
         // See if the value changed and if so update

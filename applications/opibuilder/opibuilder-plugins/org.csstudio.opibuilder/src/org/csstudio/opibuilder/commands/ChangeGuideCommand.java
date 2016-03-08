@@ -90,6 +90,7 @@ public final class ChangeGuideCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute() {
         // Cache the old values
         _oldGuide = GuideUtil.getInstance().getGuide(_model, _horizontal);
@@ -102,6 +103,7 @@ public final class ChangeGuideCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void redo() {
         changeGuide(_newGuide, _newAlign);
     }
@@ -121,6 +123,7 @@ public final class ChangeGuideCommand extends Command {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void undo() {
         changeGuide(_oldGuide, _oldAlign);
     }

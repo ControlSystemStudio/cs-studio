@@ -6,21 +6,13 @@ package org.csstudio.logbook.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.logbook.Attachment;
 import org.csstudio.logbook.AttachmentBuilder;
-import org.csstudio.logbook.LogEntry;
-import org.csstudio.logbook.LogEntryBuilder;
-import org.csstudio.logbook.LogbookBuilder;
-import org.csstudio.logbook.TagBuilder;
 import org.csstudio.logbook.ui.LinkTable;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,9 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk

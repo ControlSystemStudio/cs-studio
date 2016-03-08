@@ -219,45 +219,47 @@ class PropertyDataEditingSupport extends EditingSupport {
 class PropertyDataLabelProvider extends LabelProvider implements
                 ITableLabelProvider {
 
-            /**
-             * {@inheritDoc}
-             */
-            public Image getColumnImage(final Object element,
-                    final int columnIndex) {
-                if (columnIndex == 1 && element instanceof PropertyData) {
-                    PropertyData propertyData = (PropertyData) element;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Image getColumnImage(final Object element,
+            final int columnIndex) {
+        if (columnIndex == 1 && element instanceof PropertyData) {
+            PropertyData propertyData = (PropertyData) element;
 
-                    try {
-                        return propertyData.property.getPropertyDescriptor().getLabelProvider().
-                                    getImage(propertyData.tmpValue);
-                    } catch (NullPointerException e) {
-                    }
-
-                }
-                return null;
+            try {
+                return propertyData.property.getPropertyDescriptor().getLabelProvider().
+                        getImage(propertyData.tmpValue);
+            } catch (NullPointerException e) {
             }
 
-            /**
-             * {@inheritDoc}
-             */
-            public String getColumnText(final Object element,
-                    final int columnIndex) {
-                if (element instanceof PropertyData) {
-                    PropertyData propertyData = (PropertyData) element;
-                    if (columnIndex == 0) {
-                        return propertyData.property.getDescription();
-                    }
-                    try {
-                        return propertyData.property.getPropertyDescriptor().getLabelProvider().getText(
-                                    propertyData.tmpValue);
-                    } catch (NullPointerException e) {
-                    }
-                }
-                if (element != null) {
-                    return element.toString();
-                }
-                return "error";
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getColumnText(final Object element,
+            final int columnIndex) {
+        if (element instanceof PropertyData) {
+            PropertyData propertyData = (PropertyData) element;
+            if (columnIndex == 0) {
+                return propertyData.property.getDescription();
             }
+            try {
+                return propertyData.property.getPropertyDescriptor().getLabelProvider().getText(
+                        propertyData.tmpValue);
+            } catch (NullPointerException e) {
+            }
+        }
+        if (element != null) {
+            return element.toString();
+        }
+        return "error";
+    }
 
 
 }

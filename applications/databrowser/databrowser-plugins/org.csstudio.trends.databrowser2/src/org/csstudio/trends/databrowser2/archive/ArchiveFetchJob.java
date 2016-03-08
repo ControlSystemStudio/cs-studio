@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -99,6 +100,7 @@ public class ArchiveFetchJob extends Job
             long samples = 0;
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
+            List<ArchiveDataSource> sourcesWhereChannelDoesntExist = new ArrayList<>();
             for (int i=0; i<archives.length && !cancelled; ++i)
             {
                 final ArchiveDataSource archive = archives[i];
@@ -123,12 +125,22 @@ public class ArchiveFetchJob extends Job
                     }
                     the_reader.enableConcurrency(concurrency);
                     final ValueIterator value_iter;
-                    if (item.getRequestType() == RequestType.RAW)
-                        value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
-                                                             TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
-                    else
-                        value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
-                                                                   TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
+                    try
+                    {
+                        if (item.getRequestType() == RequestType.RAW)
+                            value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
+                                                                 TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end));
+                        else
+                            value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
+                                                                       TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
+                    }
+                    catch (UnknownChannelException e)
+                    {
+                        // Do not immediately notify about unknown channels. First search for the data in all archive
+                        // sources and only report this kind of errors at the end
+                        sourcesWhereChannelDoesntExist.add(archives[i]);
+                        continue;
+                    }
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())
@@ -154,6 +166,12 @@ public class ArchiveFetchJob extends Job
                         reader = null;
                     }
                 }
+            }
+            if (!sourcesWhereChannelDoesntExist.isEmpty() && !cancelled)
+            {
+                listener.channelNotFound(ArchiveFetchJob.this, sourcesWhereChannelDoesntExist.size() < archives.length,
+                    sourcesWhereChannelDoesntExist
+                        .toArray(new ArchiveDataSource[sourcesWhereChannelDoesntExist.size()]));
             }
             timer.stop();
             if (!cancelled)

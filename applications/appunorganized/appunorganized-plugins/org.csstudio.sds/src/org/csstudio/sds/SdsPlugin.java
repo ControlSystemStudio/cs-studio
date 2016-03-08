@@ -21,13 +21,6 @@
  */
 package org.csstudio.sds;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-
 import org.csstudio.sds.cursorservice.ICursorService;
 import org.csstudio.sds.internal.SdsResourceChangeListener;
 import org.csstudio.sds.internal.eventhandling.BehaviorService;
@@ -37,7 +30,6 @@ import org.csstudio.sds.internal.eventhandling.WidgetPropertyPostProcessingServi
 import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.util.StringUtil;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;

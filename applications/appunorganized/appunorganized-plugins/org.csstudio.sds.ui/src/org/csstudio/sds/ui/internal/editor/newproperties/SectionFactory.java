@@ -13,6 +13,7 @@ public class SectionFactory implements ISectionFactory {
     /**
      *{@inheritDoc}
      */
+    @Override
     public ISection createSection(String propertyId, PropertyTypesEnum type) {
         ISection section = null;
         switch (type) {

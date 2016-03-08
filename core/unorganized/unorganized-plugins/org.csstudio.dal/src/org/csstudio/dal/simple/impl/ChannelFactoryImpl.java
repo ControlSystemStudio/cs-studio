@@ -69,6 +69,7 @@ public class ChannelFactoryImpl implements ChannelFactory
     }
 
     /** {@inheritDoc} */
+    @Override
     final public String[] getSupportedConnectionTypes() throws Exception
     {
         String[] s= propertyFactoryManager.getSupportedPlugTypes();
@@ -80,12 +81,14 @@ public class ChannelFactoryImpl implements ChannelFactory
     }
 
     /** {@inheritDoc} */
+    @Override
     final public AnyDataChannel createChannel(final String name) throws Exception
     {
         return propertyFactoryManager.getProperty(name);
     }
 
     /** {@inheritDoc} */
+    @Override
     final public AnyDataChannel createChannel(final RemoteInfo remoteInfo) throws Exception {
         return propertyFactoryManager.getProperty(remoteInfo);
     }
