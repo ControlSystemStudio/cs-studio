@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.apputil.time.DelayCheck;
 import org.junit.Test;
 
 /** JUnit test of {@link DelayCheck}

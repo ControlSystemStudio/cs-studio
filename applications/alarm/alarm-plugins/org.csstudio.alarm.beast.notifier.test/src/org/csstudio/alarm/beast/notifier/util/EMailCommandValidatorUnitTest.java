@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.notifier.util;
 
-import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
 import org.junit.Assert;
 import org.junit.Test;
 
