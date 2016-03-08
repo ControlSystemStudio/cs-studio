@@ -73,6 +73,7 @@ public interface IFileUtils {
      * Open a file chooser to select a file with the specified extension.
      * @param startingDirectory directory for the chooser to start at
      * @param fileExtension
+     * @param parent used for centreing the dialog
      * @return selected file
      */
     public Path promptForFile(Path startingDirectory, String fileExtension, Shell parent);
