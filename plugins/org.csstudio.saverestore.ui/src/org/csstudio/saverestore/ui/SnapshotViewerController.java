@@ -1,3 +1,13 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.saverestore.ui;
 
 import static org.diirt.datasource.ExpressionLanguage.channel;
@@ -852,7 +862,7 @@ public class SnapshotViewerController {
     public void restoreSnapshot(VSnapshot s) {
         try {
             suspend();
-            if (s.isSaved()) {
+//            if (s.isSaved()) {
                 List<String> names = s.getNames();
                 List<VType> values = s.getValues();
                 for (int i = 0; i < names.size(); i++) {
@@ -864,10 +874,10 @@ public class SnapshotViewerController {
                 }
                 SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot {0}: {1}.",
                     new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get() });
-            } else {
-                throw new IllegalArgumentException(
-                    "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
-            }
+//            } else {
+//                throw new IllegalArgumentException(
+//                    "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
+//            }
         } finally {
             resume();
         }
