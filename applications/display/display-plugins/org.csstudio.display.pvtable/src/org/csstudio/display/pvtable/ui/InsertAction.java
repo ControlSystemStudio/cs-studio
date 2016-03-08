@@ -16,30 +16,28 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to insert new row into table
- *  @author Kay Kasemir
+/**
+ * {@link Action} to insert new row into table
+ *
+ * @author Kay Kasemir
  */
-public class InsertAction extends PVTableAction
-{
-    public InsertAction(final TableViewer viewer)
-    {
+public class InsertAction extends PVTableAction {
+    public InsertAction(final TableViewer viewer) {
         super(Messages.Insert, "icons/add.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Insert_TT);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
-        final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
+        final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
         if (sel == null)
             return;
 
         final Iterator<?> iterator = sel.iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             final PVTableItem item = (PVTableItem) iterator.next();
             model.addItemAbove(item, "# ");
         }

@@ -23,62 +23,63 @@ import org.diirt.vtype.VString;
 import org.diirt.vtype.VStringArray;
 import org.diirt.vtype.VType;
 
-/** Base for saved values of a table item
+/**
+ * Base for saved values of a table item
+ * <p>
+ * Values are always saved as String. When reading autosave-files, the PV's data
+ * type is unknown until the channel connects, and a channel may never connect.
+ * To allow reading and writing files without changing the exact value format,
+ * the text is kept.
+ * <p>
+ * Derived implementations provide support for scalar (String) and array (List
+ * <String>)
  *
- *  <p>Values are always saved as String.
- *  When reading autosave-files, the PV's data type
- *  is unknown until the channel connects,
- *  and a channel may never connect.
- *  To allow reading and writing files without
- *  changing the exact value format, the text
- *  is kept.
- *
- *  <p>Derived implementations provide support for
- *  scalar (String) and array (List<String>)
- *
- *  @author Kay Kasemir
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 abstract public class SavedValue {
-    /** @param current_value Current value of PV
-     *  @return {@link SavedValue} that contains current value
-     *  @throws Exception on error
+    /**
+     * @param current_value
+     *            Current value of PV
+     * @return {@link SavedValue} that contains current value
+     * @throws Exception
+     *             on error
      */
     public static SavedValue forCurrentValue(final VType value) throws Exception {
         // Scalars
         if (value instanceof VNumber) {
-            return new SavedScalarValue(((VNumber)value).getValue().toString());
+            return new SavedScalarValue(((VNumber) value).getValue().toString());
         }
         if (value instanceof VEnum) {
-            return new SavedScalarValue(Integer.toString(((VEnum)value).getIndex()));
+            return new SavedScalarValue(Integer.toString(((VEnum) value).getIndex()));
         }
         if (value instanceof VString) {
-            return new SavedScalarValue(((VString)value).getValue());
+            return new SavedScalarValue(((VString) value).getValue());
         }
         // Arrays
         final List<String> texts = new ArrayList<>();
-        if (value instanceof VDoubleArray) {  
-        	// Format double as double
-            final IteratorDouble values = ((VDoubleArray)value).getData().iterator();
+        if (value instanceof VDoubleArray) {
+            // Format double as double
+            final IteratorDouble values = ((VDoubleArray) value).getData().iterator();
             while (values.hasNext()) {
                 texts.add(Double.toString(values.nextDouble()));
             }
             return new SavedArrayValue(texts);
         }
         if (value instanceof VNumberArray) {
-        	// Format other numbers as integer
-            final IteratorNumber values = ((VNumberArray)value).getData().iterator();
+            // Format other numbers as integer
+            final IteratorNumber values = ((VNumberArray) value).getData().iterator();
             while (values.hasNext()) {
                 texts.add(Long.toString(values.nextLong()));
             }
             return new SavedArrayValue(texts);
         }
         if (value instanceof VStringArray) {
-            return new SavedArrayValue(((VStringArray)value).getData());
+            return new SavedArrayValue(((VStringArray) value).getData());
         }
-        if (value instanceof VEnumArray) {   
-        	// Save indices
-            final IteratorNumber values = ((VEnumArray)value).getIndexes().iterator();
+        if (value instanceof VEnumArray) {
+            // Save indices
+            final IteratorNumber values = ((VEnumArray) value).getIndexes().iterator();
             while (values.hasNext()) {
                 texts.add(Long.toString(values.nextLong()));
             }
@@ -87,8 +88,10 @@ abstract public class SavedValue {
         throw new Exception("Cannot handle " + value);
     }
 
-    /** @param saved_value Saved text, must not be <code>null</code>
-     *  @return Converted to {@link Number}
+    /**
+     * @param saved_value
+     *            Saved text, must not be <code>null</code>
+     * @return Converted to {@link Number}
      */
     protected Number getSavedNumber(final String saved_value) {
         Objects.requireNonNull(saved_value);
@@ -99,17 +102,26 @@ abstract public class SavedValue {
         return Double.parseDouble(saved_value);
     }
 
-    /** Compare saved value against current value of a PV
-     *  @param current_value Value to compare against
-     *  @param tolerance Tolerance to use for numeric values
-     *  @return <code>true</code> if values match within tolerance
-     *  @throws Exception on error
+    /**
+     * Compare saved value against current value of a PV
+     *
+     * @param current_value
+     *            Value to compare against
+     * @param tolerance
+     *            Tolerance to use for numeric values
+     * @return <code>true</code> if values match within tolerance
+     * @throws Exception
+     *             on error
      */
     abstract public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception;
 
-    /** Restore saved value to PV
-     *  @param pv PV to write
-     *  @throws Exception on error
+    /**
+     * Restore saved value to PV
+     *
+     * @param pv
+     *            PV to write
+     * @throws Exception
+     *             on error
      */
     abstract public void restore(final PV pv) throws Exception;
 

@@ -10,8 +10,10 @@ package org.csstudio.display.pvtable.ui;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.eclipse.jface.viewers.CellLabelProvider;
 
-/** Cell label provider for PV Table that handles the tool tip
- *  @author Kay Kasemir
+/**
+ * Cell label provider for PV Table that handles the tool tip
+ *
+ * @author Kay Kasemir
  */
 abstract public class PVTableCellLabelProvider extends CellLabelProvider {
     private static final int TOOL_TIP_MAX = 100;

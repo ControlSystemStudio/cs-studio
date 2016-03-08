@@ -14,16 +14,17 @@ import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-/** 'Virtual' content provider, input is {@link PVTableModel}
- *  @author Kay Kasemir
+/**
+ * 'Virtual' content provider, input is {@link PVTableModel}
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVTableModelContentProvider implements ILazyContentProvider
-{
-    /** 'Magic' table item added to the end of the actual model
-     *  to allow adding entries.
-     *  Setting the name of this item is handled as adding a new
-     *  item for that name.
+public class PVTableModelContentProvider implements ILazyContentProvider {
+    /**
+     * 'Magic' table item added to the end of the actual model to allow adding
+     * entries. Setting the name of this item is handled as adding a new item
+     * for that name.
      */
     final public static PVTableItem NEW_ITEM = new PVTableItem("", 0.0, null, new PVTableItemListener() {
         @Override
@@ -48,28 +49,23 @@ public class PVTableModelContentProvider implements ILazyContentProvider
     public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
         this.viewer = (TableViewer) viewer;
         model = (PVTableModel) newInput;
-        if (viewer != null   &&  model != null) {
-        	if(model.getConfig() != null && model.getConfig().getMeasures().size() > 0){
-        		this.viewer.setItemCount(model.getItemCount());
-        	}else{
-        		this.viewer.setItemCount(model.getItemCount() + 1);
-        	}
-        }
-        else {
+        if (viewer != null && model != null) {
+            if (model.getConfig() != null && model.getConfig().getMeasures().size() > 0) {
+                this.viewer.setItemCount(model.getItemCount());
+            } else {
+                this.viewer.setItemCount(model.getItemCount() + 1);
+            }
+        } else {
             this.viewer.setItemCount(0);
         }
     }
-
 
     @Override
     public void updateElement(final int index) {
         if (index < model.getItemCount()) {
             viewer.replace(model.getItem(index), index);
-        }
-        else {
-        	
+        } else {
 
-        	
             viewer.replace(NEW_ITEM, index);
         }
     }

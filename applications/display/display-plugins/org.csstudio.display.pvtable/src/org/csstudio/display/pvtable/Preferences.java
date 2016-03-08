@@ -10,14 +10,14 @@ package org.csstudio.display.pvtable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-/** Preference settings
- *  @author Kay Kasemir
+/**
+ * Preference settings
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Preferences
-{
-    public static double getTolerance()
-    {
+public class Preferences {
+    public static double getTolerance() {
         double tolerance = 0.01;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
@@ -25,8 +25,7 @@ public class Preferences
         return tolerance;
     }
 
-    public static int getUpdateItemThreshold()
-    {
+    public static int getUpdateItemThreshold() {
         int threshold = 50;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
@@ -34,27 +33,23 @@ public class Preferences
         return threshold;
     }
 
-    public static boolean treatByteArrayAsString()
-    {
+    public static boolean treatByteArrayAsString() {
         return getBoolOption("treat_byte_array_as_string");
     }
 
-    public static boolean showDescription()
-    {
+    public static boolean showDescription() {
         return getBoolOption("show_description");
     }
-    
-    public static boolean showSaveTimestamp(){
-    	return getBoolOption("show_save_timestamp");
+
+    public static boolean showSaveTimestamp() {
+        return getBoolOption("show_save_timestamp");
     }
 
-    public static boolean showUnits()
-    {
+    public static boolean showUnits() {
         return getBoolOption("show_units");
     }
 
-    private static boolean getBoolOption(final String name)
-    {
+    private static boolean getBoolOption(final String name) {
         boolean option = true;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
