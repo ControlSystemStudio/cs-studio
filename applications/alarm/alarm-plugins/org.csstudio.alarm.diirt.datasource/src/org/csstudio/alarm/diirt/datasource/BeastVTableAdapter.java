@@ -63,6 +63,9 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         keys.add("Type");
         values.add(message.getType());
 
+        keys.add("AlarmPVsCount");
+        values.add(String.valueOf(message.getAlarmsCount()));
+
         VTable table = newVTable(
                 column("Key", newVStringArray(keys, alarmNone(), timeNow())),
                 column("Value", newVStringArray(values, alarmNone(), timeNow())));
