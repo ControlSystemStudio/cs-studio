@@ -10,6 +10,7 @@ package org.csstudio.perspectives;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -97,6 +98,10 @@ public class PerspectiveSaverUnitTest {
         }
     }
 
+    /*
+     * The handleEvent tests check whether modelService.findElements() is called as a
+     * proxy for whether the private method saver.savePerspectiveToDirectory() is called.
+     */
     @Test
     public void handleEventIgnoresEventsWherePropertyIsNotPresent() {
         Event testEvent = createTestEvent("hello", "world");
@@ -112,12 +117,22 @@ public class PerspectiveSaverUnitTest {
     }
 
     @Test
-    public void handleEventHandlesEventsWherePropertiesAreMPerspectives() {
+    public void handleEventIgnoresEventsIfNoSaveDirPreferenceIsSet() {
+        // Return null from preference query.
+        when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn(null);
+        Event testEvent = createTestEvent(UIEvents.EventTags.ELEMENT, new Object());
+        saver.handleEvent(testEvent);
+        verify(mockModelService, never()).findElements(any(MUIElement.class), any(String.class), any(Class.class), any(List.class));
+    }
+
+    @Test
+    public void handleEventHandlesEventsWherePropertiesAreMPerspectives() throws IOException {
         MPerspective mockPerspective = mock(MPerspective.class);
         when(mockPerspective.getLabel()).thenReturn("dummy");
         Event testEvent = createTestEvent(UIEvents.EventTags.ELEMENT, mockPerspective);
         saver.handleEvent(testEvent);
         verify(mockModelService).findElements(mockPerspective, null, MPlaceholder.class, null);
+        verify(perspectiveUtils).savePerspective(eq(mockPerspective), any(URI.class));
     }
 
     /**

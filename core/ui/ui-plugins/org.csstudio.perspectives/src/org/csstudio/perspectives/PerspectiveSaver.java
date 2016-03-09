@@ -65,6 +65,7 @@ public class PerspectiveSaver implements EventHandler {
 
     /**
      * When a perspective is saved by a user, save it also to a file in .xmi format.
+     * Only do this if the relevant preference setting is present.
      *
      * Importantly, it is necessary to save any persisted state from an MPart into
      * the corresponding MPlaceholder in the perspective.  This allows OPIView to
