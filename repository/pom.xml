@@ -184,7 +184,7 @@
 								</artifact>
 								<artifact>
 									<id>com.sun.jersey:jersey-bundle:1.19</id>
-                                    <override>true</override>
+                                                                        <override>true</override>
 									<instructions>
 									    <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
 									    <Embed-Transitive>true</Embed-Transitive>
@@ -193,27 +193,24 @@
 								<artifact>
 									<id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
 								</artifact>
+								<artifact>
+									<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.poi:3.11_1</id>
+									<override>true</override>
+									<instructions>
+										<Export-Package>!org.apache.xmlbeans.*,!org.etsi.*,!org.openxmlformats.*,!org.w3.*,!com.*,org.apache.poi.*,</Export-Package>
+										<Bundle-Version>3.11.1.css1</Bundle-Version>
+									</instructions>	
+								</artifact>
+								<artifact>
+									<id>org.apache.santuario:xmlsec:1.5.8</id>
+									<override>true</override>
+									<instructions>
+										<Export-Package>!javax.*,!org.apache.xml.*,org.apache.*,</Export-Package>
+										<Bundle-Version>1.5.8.css1</Bundle-Version>
+									</instructions>
+								</artifact>
 
-								<artifact>
-									<id>org.apache.poi:poi:3.13</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.poi:poi-examples:3.13</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.poi:poi-excelant:3.13</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.poi:poi-ooxml:3.13</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.poi:poi-ooxml-schemas:3.13</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.poi:poi-scratchpad:3.13</id>
-								</artifact>
 							        	
-
 								<!-- pvmanager-plugins from reactor -->
 								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
