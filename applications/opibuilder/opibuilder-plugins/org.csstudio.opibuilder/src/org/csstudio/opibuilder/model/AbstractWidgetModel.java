@@ -206,6 +206,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
      */
     public static final String PROP_SCALE_OPTIONS = "scale_options"; //$NON-NLS-1$
 
+    /**
+     * The widget class. If the property is defined, the properties from the class with this name (defined in the
+     * BOY schema) are applied to this model.
+     */
+    public static final String PROP_WIDGET_CLASS = "wdget_class"; //$NON-NLS-1$
 
 
     private Map<String, AbstractWidgetProperty> propertyMap;
@@ -383,6 +388,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
                 WidgetPropertyCategory.Basic, name));
         addProperty(new UnchangableStringProperty(PROP_WIDGET_TYPE, "Widget Type",
                 WidgetPropertyCategory.Basic, name));
+        addProperty(new StringProperty(PROP_WIDGET_CLASS, "Widget Class", WidgetPropertyCategory.Basic, ""));
 
         addProperty(new UnsavableListProperty(
                 PROP_SRC_CONNECTIONS, "Source Connections", WidgetPropertyCategory.Display, sourceConnections));
@@ -391,8 +397,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
         addProperty(new UnsavableListProperty(
                 PROP_TGT_CONNECTIONS, "Target Connections", WidgetPropertyCategory.Display, targetConnections));
         setPropertyVisible(PROP_TGT_CONNECTIONS, false);
-
-
     }
 
     /**
@@ -407,7 +411,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
         return null;
     }
 
-
+    public String getWidgetClass() {
+        return getCastedPropertyValue(PROP_WIDGET_CLASS);
+    }
 
     public Set<String> getAllPropertyIDs(){
         return new HashSet<String>(propertyMap.keySet());
