@@ -76,7 +76,7 @@ public class PerspectiveLoader {
 
     /**
      * Load all perspectives from the specified directory.
-     * @param directory to load from
+     * @param directory to load from; may not be null
      * @throws IOException if directory listing fails
      */
     public void loadFromDirectory(Path directory) throws IOException {

@@ -38,7 +38,9 @@ public class PerspectiveStartup implements IStartup {
         Path perspectivesDirectory = null;
         try {
             perspectivesDirectory = getPerspectivesDirectory();
-            loader.loadFromDirectory(perspectivesDirectory);
+            if (perspectivesDirectory != null) {
+                loader.loadFromDirectory(perspectivesDirectory);
+            }
         } catch (NoSuchFileException e) {
             Plugin.getLogger().info(NLS.bind(Messages.PerspectiveStartup_startupDirNotFound, perspectivesDirectory));
         } catch (IOException | URISyntaxException e) {
@@ -49,9 +51,12 @@ public class PerspectiveStartup implements IStartup {
     private Path getPerspectivesDirectory() throws MalformedURLException, IOException, URISyntaxException {
         IPreferencesService prefs = Platform.getPreferencesService();
         String dirPreference = prefs.getString(PerspectivesPreferencePage.ID,
-                PerspectivesPreferencePage.PERSPECTIVE_LOAD_DIRECTORY, Plugin.PERSPECTIVE_LOAD_LOCATION, null);
-        IFileUtils fileUtils = new FileUtils();
-        return fileUtils.stringPathToPath(dirPreference);
+                PerspectivesPreferencePage.PERSPECTIVE_LOAD_DIRECTORY, null, null);
+        Path dirPath = null;
+        if (dirPreference != null) {
+            dirPath = new FileUtils().stringPathToPath(dirPreference);
+        }
+        return dirPath;
     }
 
 }
