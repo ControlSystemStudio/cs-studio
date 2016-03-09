@@ -32,7 +32,7 @@
             category="org.eclipse.ui.preferencePages.Workbench"
             class="org.csstudio.perspectives.PerspectivesPreferencePage"
             id="org.csstudio.perspectives.preferences"
-            name="Perspectives save/load">
+            name="Perspectives sharing">
       </page>
    </extension>
 </plugin>
