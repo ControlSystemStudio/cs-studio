@@ -210,7 +210,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
      * The widget class. If the property is defined, the properties from the class with this name (defined in the
      * BOY schema) are applied to this model.
      */
-    public static final String PROP_WIDGET_CLASS = "wdget_class"; //$NON-NLS-1$
+    public static final String PROP_WIDGET_CLASS = "widget_class"; //$NON-NLS-1$
 
 
     private Map<String, AbstractWidgetProperty> propertyMap;

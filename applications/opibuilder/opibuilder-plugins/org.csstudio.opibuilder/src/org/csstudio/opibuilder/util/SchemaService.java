@@ -33,15 +33,20 @@ import org.eclipse.swt.widgets.Display;
 
 public final class SchemaService {
 
+    private static final Pattern TRUE_PROPERTY_PATTERN = Pattern.compile("[0-9a-z_\\.]*");
+    private static final String FORCE = "force";
+
     private static SchemaService instance;
 
     private final Map<String, AbstractWidgetModel> schemaWidgetsMap;
     private final Map<String, AbstractWidgetModel> widgetsClassesMap;
+    private final Map<String, Boolean> widgetClassesRules;
 
 
     private SchemaService() {
         schemaWidgetsMap = new HashMap<>();
         widgetsClassesMap = new HashMap<>();
+        widgetClassesRules = new HashMap<>(100);
         reLoad();
     }
 
@@ -61,6 +66,7 @@ public final class SchemaService {
         if (schemaOPI == null || schemaOPI.isEmpty()) {
             return;
         }
+        final IPath rulesFile = PreferencesHelper.getWidgetClassesRulesPath();
         if(Display.getCurrent() != null){ // in UI thread, show progress dialog
             IRunnableWithProgress job = new IRunnableWithProgress() {
 
@@ -69,7 +75,7 @@ public final class SchemaService {
                         InterruptedException {
                     monitor.beginTask("Connecting to " + schemaOPI,
                             IProgressMonitor.UNKNOWN);
-                    loadSchema(schemaOPI);
+                    loadSchema(schemaOPI, rulesFile);
                     monitor.done();
                 }
             };
@@ -81,7 +87,7 @@ public final class SchemaService {
             }
         }
         else
-            loadSchema(schemaOPI);
+            loadSchema(schemaOPI, rulesFile);
 
     }
 
@@ -89,6 +95,10 @@ public final class SchemaService {
      * @param schemaOPI
      */
     public void loadSchema(final IPath schemaOPI) {
+        loadSchema(schemaOPI, null);
+    }
+
+    private void loadSchema(final IPath schemaOPI, final IPath widgetClassRules) {
         try {
             InputStream inputStream = ResourceUtil.pathToInputStream(
                     schemaOPI, false);
@@ -105,10 +115,10 @@ public final class SchemaService {
                     widgetsClassesMap.put(m.getName(), m);
                 }
             }
+            loadWidgetClassRulesDefinitions(widgetClassRules);
         } catch (Exception e) {
             String message = "Failed to load schema file: " + schemaOPI;
-            OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                    message, e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
             ConsoleService.getInstance().writeError(message + "\n" + e);//$NON-NLS-1$
         }
     }
@@ -189,9 +199,28 @@ public final class SchemaService {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Load the widget class for the specified model. If it exists, all properties defined in the class model (which
+     * were not configured in the rules file to be skipped) are applied to the given model. If the class model for the
+     * widget does not exist, nothing happens.
+     *
+     * @param model the model to which the widget class settings are applied
+     */
     public void applyWidgetClassProperties(AbstractWidgetModel model) {
-        getWidgetClass(model).ifPresent(m -> {
-            //TODO
+        getWidgetClass(model).ifPresent(widgetClass -> {
+            String typeId = widgetClass.getWidgetType().toLowerCase(Locale.UK) + ".";
+            Boolean rule;
+            for (String id : widgetClass.getAllPropertyIDs()) {
+                rule = widgetClassesRules.get(id);
+                if (rule == null) {
+                    rule = widgetClassesRules.get(typeId + id);
+                }
+                if (rule == null || rule) {
+                    // if rule == null the property was not specified to be skipped, if rule == true, the property was
+                    // explicitly defined as force
+                    model.setPropertyValue(id,widgetClass.getPropertyValue(id), false);
+                }
+            }
         });
     }
 
@@ -212,42 +241,31 @@ public final class SchemaService {
         return null;
     }
 
-    private static final Pattern TRUE_PROPERTY_PATTERN = Pattern.compile("[0-9a-z_\\.]*");
-    private static final String FORCE = "force";
-
     private void loadWidgetClassRulesDefinitions(IPath rulesFile) {
-        Map<String, Boolean> generalRules = new HashMap<>();
-        Map<String, Boolean> widgetSpecificRules = new HashMap<>();
-
-        if (rulesFile != null) {
+        widgetClassesRules.clear();
+        //widget class and widget type are always skipped
+        widgetClassesRules.put(AbstractWidgetModel.PROP_WIDGET_CLASS, Boolean.FALSE);
+        widgetClassesRules.put(AbstractWidgetModel.PROP_WIDGET_TYPE, Boolean.FALSE);
+        if (rulesFile == null) {
+            //if no file is specified use default rules, which ignores the widget name and position
+            widgetClassesRules.put(AbstractWidgetModel.PROP_NAME, Boolean.FALSE);
+            widgetClassesRules.put(AbstractWidgetModel.PROP_XPOS, Boolean.FALSE);
+            widgetClassesRules.put(AbstractWidgetModel.PROP_YPOS, Boolean.FALSE);
+        } else {
             Properties p = new Properties();
             try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
                 p.load(stream);
-            } catch (IOException e) {
-
-            }
-            String ruleStr;
-            for (Entry<Object, Object> e : p.entrySet()) {
-                String key = ((String) e.getKey()).toLowerCase(Locale.UK);
-                String value = (String) e.getValue();
-
-                if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
-                    if (key.indexOf('.') > 0) {
-                        // widget specific rule
-                        widgetSpecificRules.put(key, FORCE.equalsIgnoreCase(value) ? Boolean.TRUE : Boolean.FALSE);
-                    } else {
-                        // general rule
-                        generalRules.put(key, FORCE.equalsIgnoreCase(value) ? Boolean.TRUE : Boolean.FALSE);
+                for (Entry<Object, Object> e : p.entrySet()) {
+                    String key = ((String) e.getKey()).toLowerCase(Locale.UK);
+                    String value = (String) e.getValue();
+                    if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
+                        widgetClassesRules.put(key, FORCE.equalsIgnoreCase(value) ? Boolean.TRUE : Boolean.FALSE);
                     }
                 }
+            } catch (IOException e) {
+                OPIBuilderPlugin.getLogger().log(Level.WARNING, "Could not read the widget class rules from "
+                    + rulesFile, e);
             }
         }
     }
-
-    public static void main(String[] args) throws Exception{
-        Properties p = new Properties();
-        p.load(new FileInputStream(new File("widgetClassRules.def")));
-        System.out.println(p);
-    }
-
 }
