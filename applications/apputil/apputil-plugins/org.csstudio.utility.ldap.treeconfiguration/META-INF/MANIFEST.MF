@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: LDAP Tree configuration
 Bundle-SymbolicName: org.csstudio.utility.ldap.treeconfiguration
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Export-Package: org.csstudio.utility.ldap.treeconfiguration
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",

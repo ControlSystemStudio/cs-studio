@@ -22,7 +22,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.simplepv;bundle-version="1.0.0",
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: registered
 Export-Package: org.csstudio.opibuilder.widgets.symbol,
  org.csstudio.opibuilder.widgets.symbol.bool,

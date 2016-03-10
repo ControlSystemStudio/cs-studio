@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: UI for Utility PV
 Bundle-SymbolicName: org.csstudio.utility.pv.ui; singleton:=true
 Bundle-Version: 1.0.3.qualifier
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.osgi;bundle-version="3.6.0",

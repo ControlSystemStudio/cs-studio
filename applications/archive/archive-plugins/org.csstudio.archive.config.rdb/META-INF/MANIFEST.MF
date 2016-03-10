@@ -5,7 +5,7 @@ Bundle-Description: Archive configuration stored in RDB
 Bundle-SymbolicName: org.csstudio.archive.config.rdb;singleton:=true
 Bundle-Version: 3.2.15.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.platform.utility.rdb;bundle-version="1.6.0",
  org.csstudio.archive.config;bundle-version="3.2.0",

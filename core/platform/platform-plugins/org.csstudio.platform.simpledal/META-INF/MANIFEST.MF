@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Simpledal
 Bundle-SymbolicName: org.csstudio.platform.simpledal;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.csstudio.platform.libs.jmock,
  org.apache.log4j;bundle-version="1.2.16",
  org.csstudio.dal;bundle-version="1.0.0",

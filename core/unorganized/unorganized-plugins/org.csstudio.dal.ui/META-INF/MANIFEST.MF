@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.simpledal;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
 Export-Package: org.csstudio.dal.ui,
  org.csstudio.dal.ui.dnd.rfc

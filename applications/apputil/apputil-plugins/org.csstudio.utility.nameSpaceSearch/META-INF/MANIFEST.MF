@@ -17,6 +17,6 @@ Require-Bundle: org.csstudio.utility.namespace.utility,
  org.csstudio.csdata;bundle-version="3.1.0",
  org.csstudio.ui.util;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Import-Package: org.slf4j
