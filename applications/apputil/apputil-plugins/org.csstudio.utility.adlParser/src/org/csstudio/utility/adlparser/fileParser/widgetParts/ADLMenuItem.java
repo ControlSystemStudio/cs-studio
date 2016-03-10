@@ -88,6 +88,7 @@ public class ADLMenuItem extends WidgetPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     final void init() {
         name = new String("menu item");
     }

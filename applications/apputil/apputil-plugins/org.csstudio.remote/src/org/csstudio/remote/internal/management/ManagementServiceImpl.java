@@ -72,6 +72,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CommandDescription[] getSupportedCommands() {
         synchronized (this) {
             if (_commands == null) {
@@ -237,6 +238,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CommandResult execute(String commandId, CommandParameters parameters) {
         CommandContribution command = _commands.get(commandId);
         if (command != null) {
@@ -254,6 +256,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CommandParameterEnumValue[] getDynamicEnumerationValues(
             String commandId, String parameterId) {
         CommandContribution command = _commands.get(commandId);

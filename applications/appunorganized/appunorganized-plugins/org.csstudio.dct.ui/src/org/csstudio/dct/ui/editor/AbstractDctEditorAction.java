@@ -19,6 +19,7 @@ public abstract class AbstractDctEditorAction implements IEditorActionDelegate, 
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void setActiveEditor(IAction action, IEditorPart targetEditor) {
         if (targetEditor instanceof DctEditor) {
             editor = (DctEditor) targetEditor;
@@ -31,6 +32,7 @@ public abstract class AbstractDctEditorAction implements IEditorActionDelegate, 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
 
     }

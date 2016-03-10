@@ -41,14 +41,15 @@ public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTable
     }
 
     /**
-     * @Override {@inheritDoc}
+     * {@inheritDoc}
      */
+    @Override
     protected String doGetKey(IElement delegate) {
         return key;
     }
 
     /**
-     * @Override {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected String doGetValue(IElement delegate) {
@@ -57,7 +58,7 @@ public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTable
     }
 
     /**
-     * @Override {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected String doGetValueForDisplay(IElement delegate) {
@@ -65,7 +66,7 @@ public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTable
     }
 
     /**
-     * @Override {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected Command doSetValue(IElement delegate, Object value) {
@@ -101,7 +102,7 @@ public final class HierarchicalBeanPropertyTableRowAdapter extends AbstractTable
     }
 
     /**
-     * @Override {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected boolean doCanModifyValue(IElement delegate) {

@@ -45,6 +45,7 @@ public final class Set_5 implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 0)) {
             double d = 0.0;

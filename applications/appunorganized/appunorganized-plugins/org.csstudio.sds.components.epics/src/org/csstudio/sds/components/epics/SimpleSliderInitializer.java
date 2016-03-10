@@ -37,6 +37,7 @@ public final class SimpleSliderInitializer extends
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(final AbstractControlSystemSchema schema) {
         initializeCommonAlarmBehaviour();
         initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#D0D0D0");

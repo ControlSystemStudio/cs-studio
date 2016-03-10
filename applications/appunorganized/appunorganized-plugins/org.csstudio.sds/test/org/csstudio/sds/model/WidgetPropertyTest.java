@@ -81,6 +81,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dynamicsDescriptorChanged(
             final DynamicsDescriptor dynamicsDescriptor) {
 
@@ -89,6 +90,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyManualValueChanged(String propertyId, final Object manualValue) {
 
     }
@@ -96,6 +98,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyValueChanged(final Object oldValue,
             final Object newValue) {
 

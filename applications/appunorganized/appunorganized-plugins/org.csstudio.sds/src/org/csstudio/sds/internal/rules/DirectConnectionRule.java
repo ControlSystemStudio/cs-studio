@@ -42,6 +42,7 @@ public final class DirectConnectionRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         Object result = 0;
 

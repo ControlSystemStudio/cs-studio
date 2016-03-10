@@ -72,6 +72,7 @@ public final class ProcessVariableProperty extends WidgetProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getCompatibleJavaTypes() {
         return new Class[]{IProcessVariableAddress.class};

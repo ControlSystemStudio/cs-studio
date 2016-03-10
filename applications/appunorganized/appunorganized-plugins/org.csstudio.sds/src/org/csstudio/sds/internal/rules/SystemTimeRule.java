@@ -43,6 +43,7 @@ public final class SystemTimeRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 0)
                 && (arguments[0] instanceof Number)) {

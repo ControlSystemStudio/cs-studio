@@ -107,6 +107,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             _searchBox = searchBox;
         }
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             search();
         }
@@ -115,6 +116,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensitive());
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
             search();
         }
@@ -140,9 +142,11 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             _searchBox = searchBox;
         }
 
+        @Override
         public void modifyText(final ModifyEvent e) {
 
-        final boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensitive());
+            final boolean found = searchAndMarkInPreview(_searchBox.getText(),
+                    false, isCaseSensitive());
             if(found) {
                 _searchBox.setBackground(white);
                 _searchBox.setForeground(black);
@@ -182,6 +186,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
         outlineSelectionListener = new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
@@ -283,6 +288,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
         }
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
                 final ExporterDescriptor descriptor = (ExporterDescriptor) sel.getFirstElement();
@@ -317,10 +323,12 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
         caseSensitiveButton.setText("Case Sensitive");
         caseSensitiveButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 setCaseSensitive(caseSensitiveButton.getSelection());
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 setCaseSensitive(caseSensitiveButton.getSelection());
             }
@@ -552,6 +560,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
             getSite().setSelectionProvider(outline);
         } else if (adapter == IGotoMarker.class) {
             return new IGotoMarker() {
+                @Override
                 public void gotoMarker(final IMarker marker) {
                     try {
                         final String location = (String) marker.getAttribute(IMarker.LOCATION);
@@ -572,6 +581,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
     /**
      *{@inheritDoc}
      */
+    @Override
     public void commandStackChanged(final EventObject event) {
         firePropertyChange(PROP_DIRTY);
         markErrorsAndWarnings();

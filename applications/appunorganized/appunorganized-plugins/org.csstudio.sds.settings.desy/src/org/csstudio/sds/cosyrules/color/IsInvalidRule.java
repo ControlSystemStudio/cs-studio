@@ -63,6 +63,7 @@ public class IsInvalidRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         int severity = 0;
         if ((arguments != null) && (arguments.length > 0)) {

@@ -45,6 +45,7 @@ public final class MKK_sv implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 0)) {
             double d = 0.0;

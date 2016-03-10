@@ -119,6 +119,7 @@ public abstract class AbstractDisplayImportWizard extends Wizard implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void init(final IWorkbench workbench,
             final IStructuredSelection selection) {
         _workbench = workbench;

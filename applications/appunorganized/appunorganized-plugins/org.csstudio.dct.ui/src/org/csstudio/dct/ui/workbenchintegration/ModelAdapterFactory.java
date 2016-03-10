@@ -23,6 +23,7 @@ public final class ModelAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         Object adapter = null;
 
@@ -49,7 +50,7 @@ public final class ModelAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
-
+    @Override
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IActionFilter.class };
     }

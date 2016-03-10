@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.junit.Test;
 
 /** JUnit test of GUIUpdateThrottle

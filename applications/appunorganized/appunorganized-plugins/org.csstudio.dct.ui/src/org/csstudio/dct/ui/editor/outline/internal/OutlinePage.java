@@ -120,16 +120,19 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
     private void initDragAndDrop(final TreeViewer viewer) {
 
         viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DragSourceListener() {
+            @Override
             public void dragFinished(final DragSourceEvent event) {
 
             }
 
+            @Override
             public void dragSetData(final DragSourceEvent event) {
                 event.doit = true;
                 event.data = "do_not_delete_because_its_empty_but_important";
 
             }
 
+            @Override
             public void dragStart(final DragSourceEvent event) {
                 // .. save current selection in local var
                 final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
@@ -147,6 +150,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
         });
 
         viewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DropTargetListener() {
+            @Override
             private void updateFeedback(final DropTargetEvent event) {
                 final AbstractDnDHandler handler = getDndHandler(dndSource);
 
@@ -162,22 +166,27 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
                 }
             }
 
+            @Override
             public void dragEnter(final DropTargetEvent event) {
                 updateFeedback(event);
             }
 
+            @Override
             public void dragLeave(final DropTargetEvent event) {
                 updateFeedback(event);
             }
 
+            @Override
             public void dragOperationChanged(final DropTargetEvent event) {
                 updateFeedback(event);
             }
 
+            @Override
             public void dragOver(final DropTargetEvent event) {
                 updateFeedback(event);
             }
 
+            @Override
             public void drop(final DropTargetEvent event) {
                 final TreeItem item = (TreeItem) event.item;
 
@@ -202,6 +211,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
                 }
             }
 
+            @Override
             public void dropAccept(final DropTargetEvent event) {
             }
 
@@ -242,6 +252,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
     /**
      * {@inheritDoc}
      */
+    @Override
     public void commandStackChanged(final EventObject event) {
         if (getTreeViewer() != null) {
             getTreeViewer().refresh();

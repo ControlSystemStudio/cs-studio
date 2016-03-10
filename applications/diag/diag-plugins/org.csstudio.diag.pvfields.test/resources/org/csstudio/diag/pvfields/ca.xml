@@ -3,18 +3,18 @@
     <!--
         Channel Access client configuration
         ===================================
-        
+
         The core parameter for Channel Access are configured through
         the JCA Context. This includes what implementation of JCA is used
         (JCA-JNI or CAJ-PureJava) and the configuration parameters for those
         implementations.
-        
+
         By default, CAJ is used with the default CAJ configuration.
         CAJ should, by default, honor the standard EPICS environment variables
         to configure the client. One can still override that configuration
         by specifying the configuration properties here. Please, refer
         to the JCA/CAJ instructions for details on these properties.
-        
+
         We recommend to use the CAJ (pure java) implementation, as the JCA (JNI)
         implementation currently lacks an official maintainer.
     -->
@@ -24,20 +24,20 @@
     <jcaContext pureJava="true" addr_list="192.168.1.0" auto_addr_list="false" connection_timeout="60.0"
                 beacon_period="30.0" repeater_port="6065" server_port="6064"
                 max_array_bytes="163840" />
-    
+
     <!-- This examples uses the JNI over C implementation (JCA) with the given
         configuration parameters -->
     <!--<jcaContext pureJava="false" preemptive_callback="true" addr_list="" auto_addr_list="true" connection_timeout="30.0"
                 beacon_period="15.0" repeater_port="5065" server_port="5064"
                 max_array_bytes="16384" />-->
-    
-        
+
+
     <!--
         Channel Access data source options
         ===================================
-        
+
         The data source itself si configurable through the following parameters:
-        
+
         dbePropertySupported - whether to subscribe to DBE_PROPERTY to monitor
             metadata chances. Possible values are "true" or "false". The default
             is "false" (the safe chioce since old versions of EPICS do not handle it)
@@ -59,7 +59,7 @@
             tries to detect the version of the client and act accordingly.
             Auto detection may not work on JNI implementation.
     -->
-    
+
     <!-- Example to configure the dataSource option -->
     <dataSourceOptions monitorMask="ALARM" dbePropertySupported="true"
                        honorZeroPrecision="false" rtypValueOnly="true"

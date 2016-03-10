@@ -47,6 +47,7 @@ public final class AdvancedColorRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 0) && (arguments.length < 5)) {
             if (arguments[0] instanceof Number) {

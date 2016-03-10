@@ -145,11 +145,13 @@ public class ScriptedRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final synchronized Object evaluate(final Object[] arguments) {
         Object result = Context.call(new ContextAction() {
             /**
              * {@inheritDoc}
              */
+            @Override
             public Object run(final Context cx) {
                 Object scriptResult = null;
 
@@ -187,6 +189,7 @@ public class ScriptedRule implements IRule {
      *
      * @return The textual description of this rule.
      */
+    @Override
     public final String getDescription() {
         return _description;
     }

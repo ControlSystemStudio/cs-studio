@@ -32,6 +32,7 @@ public final class RemoveInstanceCommandTest extends AbstractTestCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Before
     public void doSetUp() throws Exception {
         prototypeA = new Prototype("prototypeA", UUID.randomUUID());
