@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.archiverecord.ArchiveRecordReader;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.junit.Before;

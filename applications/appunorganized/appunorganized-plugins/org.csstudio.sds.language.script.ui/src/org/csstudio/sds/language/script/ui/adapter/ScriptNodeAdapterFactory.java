@@ -62,6 +62,7 @@ public class ScriptNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -102,6 +103,7 @@ public class ScriptNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         Class[] classes = this._adapterMap.keySet().toArray(

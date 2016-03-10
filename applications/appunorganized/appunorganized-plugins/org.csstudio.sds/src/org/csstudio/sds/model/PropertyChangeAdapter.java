@@ -33,18 +33,21 @@ public class PropertyChangeAdapter implements IPropertyChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyManualValueChanged(String propertyId, final Object manualValue) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyValueChanged(final Object oldValue, final Object newValue) {
     }
 }

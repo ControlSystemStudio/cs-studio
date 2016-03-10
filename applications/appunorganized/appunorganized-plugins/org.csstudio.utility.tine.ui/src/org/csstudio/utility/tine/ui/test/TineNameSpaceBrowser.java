@@ -41,6 +41,7 @@ public class TineNameSpaceBrowser extends NameSpaceBrowser {
         //init the first column
         setColumn(0);
     }
+    @Override
     public void setColumn(int i) {
         String[] s = null;
         switch(i) {

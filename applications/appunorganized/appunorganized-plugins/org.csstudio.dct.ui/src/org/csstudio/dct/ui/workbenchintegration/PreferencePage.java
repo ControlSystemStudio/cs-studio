@@ -83,6 +83,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     /**
      *{@inheritDoc}
      */
+    @Override
     public void init(IWorkbench workbench) {
 
     }

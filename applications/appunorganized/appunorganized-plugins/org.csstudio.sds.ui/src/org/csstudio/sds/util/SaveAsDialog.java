@@ -109,6 +109,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void configureShell(final Shell shell) {
         super.configureShell(shell);
         shell.setText(Messages.SaveAsDialog_TITLE);
@@ -117,6 +118,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createContents(final Composite parent) {
 
         Control contents = super.createContents(parent);
@@ -134,6 +136,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void createButtonsForButtonBar(final Composite parent) {
         _okButton = createButton(parent, IDialogConstants.OK_ID,
                 IDialogConstants.OK_LABEL, true);
@@ -144,6 +147,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Control createDialogArea(final Composite parent) {
         // top level composite
         Composite parentComposite = (Composite) super.createDialogArea(parent);
@@ -160,6 +164,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 //        composite.setFont(parentComposite.getFont());
 
         Listener listener = new Listener() {
+            @Override
             public void handleEvent(final Event event) {
                 setDialogComplete(validatePage());
             }
@@ -205,6 +210,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void okPressed() {
         // Get new path.
         IPath path = _resourceGroup.getContainerFullPath().append(
@@ -319,6 +325,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected IDialogSettings getDialogBoundsSettings() {
         IDialogSettings settings = SdsUiPlugin.getDefault()
                 .getDialogSettings();

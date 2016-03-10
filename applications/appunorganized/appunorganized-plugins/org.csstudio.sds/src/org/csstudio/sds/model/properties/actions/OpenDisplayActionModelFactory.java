@@ -32,6 +32,7 @@ public final class OpenDisplayActionModelFactory implements IActionModelFactory 
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetActionModel createWidgetActionModel() {
         return new OpenDisplayActionModel();
     }

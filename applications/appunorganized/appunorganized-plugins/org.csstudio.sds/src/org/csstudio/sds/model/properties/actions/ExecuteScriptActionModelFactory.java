@@ -32,6 +32,7 @@ public final class ExecuteScriptActionModelFactory implements IActionModelFactor
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetActionModel createWidgetActionModel() {
         return new ExecuteScriptActionModel();
     }

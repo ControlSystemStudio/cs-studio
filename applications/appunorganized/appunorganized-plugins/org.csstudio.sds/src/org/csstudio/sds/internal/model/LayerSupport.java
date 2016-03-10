@@ -279,6 +279,7 @@ public final class LayerSupport implements PropertyChangeListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         fireLayerModelChangeEvent((Layer) evt.getSource(), evt.getPropertyName());
     }

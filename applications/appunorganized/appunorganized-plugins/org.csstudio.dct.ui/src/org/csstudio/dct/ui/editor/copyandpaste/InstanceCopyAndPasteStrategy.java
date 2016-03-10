@@ -29,6 +29,7 @@ public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy
     /**
      *{@inheritDoc}
      */
+    @Override
     public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
         assert copiedElements != null;
         assert project != null;
@@ -53,6 +54,7 @@ public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy
     /**
      *{@inheritDoc}
      */
+    @Override
     public List<Serializable> createCopyElements(List<IElement> selectedElements) {
         Set<IContainer> items = new HashSet<IContainer>();
 
@@ -68,6 +70,7 @@ public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean canCopy(List<IElement> selectedElements) {
         boolean result = false;
 
@@ -84,6 +87,7 @@ public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean canPaste(List<IElement> selectedElements) {
         boolean result = false;
 
@@ -100,6 +104,7 @@ public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getContentDescription() {
         return "Instances";
     }

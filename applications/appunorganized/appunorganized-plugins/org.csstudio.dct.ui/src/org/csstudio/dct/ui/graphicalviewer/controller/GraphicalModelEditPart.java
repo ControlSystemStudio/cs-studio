@@ -88,6 +88,7 @@ public class GraphicalModelEditPart extends AbstractGraphicalEditPart implements
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
     }

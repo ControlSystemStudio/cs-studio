@@ -15,6 +15,7 @@ class FunctionNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -50,6 +51,7 @@ class FunctionNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         return new Class[] { FunctionNode.class };

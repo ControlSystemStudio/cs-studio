@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.notifier.actions;
 
-import org.csstudio.alarm.beast.notifier.actions.CommandActionImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -6,7 +6,6 @@ package org.csstudio.logbook.olog.property.shift;
 import gov.bnl.shiftClient.Shift;
 
 import org.csstudio.logbook.ui.LogTreeView;
-import org.csstudio.logbook.ui.LogViewerPerspective;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

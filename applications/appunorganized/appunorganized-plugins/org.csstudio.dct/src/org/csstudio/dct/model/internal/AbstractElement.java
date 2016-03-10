@@ -107,6 +107,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final Object getAdapter(Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);

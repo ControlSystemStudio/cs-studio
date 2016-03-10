@@ -33,6 +33,7 @@ public abstract class AbstractCommandStackAction extends AbstractDctEditorAction
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void run(IAction action) {
         doRun(commandStack);
     }
@@ -40,6 +41,7 @@ public abstract class AbstractCommandStackAction extends AbstractDctEditorAction
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void stackChanged(CommandStackEvent event) {
         getActionProxy().setEnabled(isActionEnabled(commandStack));
     }

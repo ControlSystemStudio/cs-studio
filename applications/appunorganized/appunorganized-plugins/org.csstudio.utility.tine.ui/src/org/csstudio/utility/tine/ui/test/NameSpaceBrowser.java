@@ -291,6 +291,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
     }
 
     class ListSelection implements ListSelectionListener {
+        @Override
         public void valueChanged(ListSelectionEvent event) {
 
             JList list = (JList) event.getSource();
@@ -306,6 +307,7 @@ public class NameSpaceBrowser extends JDialog //implements ActionFrame
         }
     }
     class ListKeyListener extends KeyAdapter {
+        @Override
         public void keyTyped(KeyEvent event) {
             selectListItem (event);
         }

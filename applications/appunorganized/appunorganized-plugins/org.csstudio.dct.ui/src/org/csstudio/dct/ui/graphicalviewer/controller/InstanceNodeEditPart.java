@@ -78,6 +78,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
         anchorCenter = new ChopboxAnchor(figure);
 
         figure.getButton().addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 final IPrototype prototype = getCastedModel().getElement().getPrototype();
 
@@ -100,6 +101,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connectionEditpart) {
         return anchorCenter;
     }
@@ -107,6 +109,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getSourceConnectionAnchor(Request request) {
         return null;
     }
@@ -114,6 +117,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connectionEditpart) {
         return anchorCenter;
     }
@@ -121,6 +125,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getTargetConnectionAnchor(Request request) {
         return null;
     }
@@ -128,6 +133,7 @@ public class InstanceNodeEditPart extends AbstractGraphicalEditPart implements N
     /**
      * {@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
