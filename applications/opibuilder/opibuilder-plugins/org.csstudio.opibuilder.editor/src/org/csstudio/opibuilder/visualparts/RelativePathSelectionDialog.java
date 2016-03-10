@@ -206,6 +206,7 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
         return _path;
     }
 
+    @Override
     public void handleEvent(Event event) {
         ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
 

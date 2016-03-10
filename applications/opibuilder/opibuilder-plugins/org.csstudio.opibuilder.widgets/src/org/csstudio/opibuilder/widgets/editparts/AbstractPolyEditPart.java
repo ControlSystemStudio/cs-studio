@@ -60,6 +60,7 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 
         // points
         IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -100,6 +101,7 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 
 
         IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 getWidgetModel().setPoints(

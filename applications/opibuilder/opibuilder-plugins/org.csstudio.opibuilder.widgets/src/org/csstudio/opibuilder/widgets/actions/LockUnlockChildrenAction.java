@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 
+    @Override
     public void run(IAction action) {
 
         final GroupingContainerModel containerModel = getSelectedContainer();

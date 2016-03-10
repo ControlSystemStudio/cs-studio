@@ -79,10 +79,12 @@ public class BorderFactory {
         if (width>0) {
             return new AbstractBorder() {
 
+                @Override
                 public Insets getInsets(IFigure figure) {
                     return new Insets(width);
                 }
 
+                @Override
                 public void paint(IFigure figure, Graphics graphics, Insets insets) {
                 }
             };

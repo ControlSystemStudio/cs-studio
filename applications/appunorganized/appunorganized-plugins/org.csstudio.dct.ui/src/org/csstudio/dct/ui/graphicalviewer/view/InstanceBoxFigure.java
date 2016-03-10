@@ -25,6 +25,7 @@ public class InstanceBoxFigure extends Panel {
 
         button  = new Button(caption);
         button.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 LOG.info("ddsads {}",caption);
             }

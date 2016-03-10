@@ -99,6 +99,7 @@ public abstract class SNLModel extends SNLElement {
      * @see #descriptors
      * @see #getPropertyDescriptors()
      */
+    @Override
     public Object getPropertyValue(Object propertyId) {
         if (XPOS_PROP.equals(propertyId)) {
             return Integer.toString(location.x);
@@ -186,6 +187,7 @@ public abstract class SNLModel extends SNLElement {
      * @see #descriptors
      * @see #getPropertyDescriptors()
      */
+    @Override
     public void setPropertyValue(Object propertyId, Object value) {
         if (XPOS_PROP.equals(propertyId)) {
             int x = Integer.parseInt((String) value);

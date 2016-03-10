@@ -86,6 +86,7 @@ public class ChangeOrderAction extends SelectionAction {
             return widget;
         }
 
+        @Override
         public int compareTo(IndexedWidget o) {
 
             return index.compareTo(Integer.valueOf(o.getIndex()));

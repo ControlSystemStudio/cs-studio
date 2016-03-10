@@ -64,6 +64,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
     /**
      * @see org.eclipse.gef.Disposable#dispose()
      */
+    @Override
     public void dispose() {
         if(zoomManager != null)
             zoomManager.removeZoomListener(this);

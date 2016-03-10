@@ -191,6 +191,7 @@ public class ADLObject extends WidgetPart{
     /**
      * @return child objects
      */
+    @Override
     public Object[] getChildren(){
         Object[] ret = new Object[4];
         ret[0] = new ADLResource(ADLResource.X, new Integer(_x));

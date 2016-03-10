@@ -66,6 +66,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             this.control = control;
         }
 
+        @Override
         public void mouseEnter(MouseEvent e) {
             control.setToolTipText(editPart.getWidgetModel()
                     .getTooltip());
@@ -140,6 +141,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         // the widget should has the same relative position as its parent
         // container.
         ancestorListener = new AncestorListener.Stub() {
+            @Override
             public void ancestorMoved(org.eclipse.draw2d.IFigure arg0) {
                 relocateWidget();
                 updateWidgetVisibility();
@@ -148,6 +150,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         addAncestorListener(ancestorListener);
         addFigureListener(new FigureListener() {
 
+            @Override
             public void figureMoved(IFigure source) {
                 relocateWidget();
             }
@@ -156,6 +159,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         //hook swt widget with GEF
         composite.getDisplay().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
 //                final Control swtWidget = getSWTWidget();
                 if (swtWidget == null || swtWidget.isDisposed() || !editpart.isActive()) {
@@ -352,11 +356,13 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             updateFlag = true;
             if (!isDirectlyOnDisplay()) {
                 updateManagerListener = new UpdateListener() {
+                    @Override
                     public void notifyPainting(Rectangle damage,
                             @SuppressWarnings("rawtypes") Map dirtyRegions) {
                         updateWidgetVisibility();
                     }
 
+                    @Override
                     public void notifyValidating() {
                     }
 
@@ -384,6 +390,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         GUIRefreshThread.getInstance(runmode).addIgnorableTask(
                 new WidgetIgnorableUITask(this, new Runnable() {
 
+                    @Override
                     public void run() {
                         if(!getSWTWidget().isDisposed() && getParent() != null)
                             doRelocateWidget();

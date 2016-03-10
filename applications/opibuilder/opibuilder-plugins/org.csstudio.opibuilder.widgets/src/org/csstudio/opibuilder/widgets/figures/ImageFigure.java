@@ -275,6 +275,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         return true;
     }
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
@@ -322,6 +323,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         this.imageListener = listener;
     }
 
+    @Override
     public void symbolImageLoaded() {
         decrementLoadingCounter();
         sizeChanged();
@@ -329,10 +331,12 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         repaint();
     }
 
+    @Override
     public void repaintRequested() {
         repaint();
     }
 
+    @Override
     public void sizeChanged() {
         if (imageListener != null)
             imageListener.imageResized(this);

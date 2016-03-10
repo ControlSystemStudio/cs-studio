@@ -25,11 +25,13 @@ public class WidgetCreationFactory implements CreationFactory {
         this.widgetDescriptor = widgetDescriptor;
     }
 
+    @Override
     public Object getNewObject() {
         widgetModel = widgetDescriptor.getWidgetModel();
         return widgetModel;
     }
 
+    @Override
     public Object getObjectType() {
         if(widgetModel == null)
             widgetModel = widgetDescriptor.getWidgetModel();

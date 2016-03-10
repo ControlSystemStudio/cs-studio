@@ -221,6 +221,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             stopPulsing();
     }
 
+    @Override
     public IPV getControlPV(){
         if(controlPVPropId != null)
             return pvMap.get(controlPVPropId);
@@ -233,6 +234,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * @return the PV corresponding to the <code>PV Name</code> property.
      * null if PV Name is not configured for this widget.
      */
+    @Override
     public IPV getPV(){
         return pvMap.get(IPVWidgetModel.PROP_PVNAME);
     }
@@ -241,6 +243,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * @param pvPropId the PV property id.
      * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
      */
+    @Override
     public IPV getPV(String pvPropId){
         return pvMap.get(pvPropId);
     }
@@ -249,6 +252,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
      * @return the {@link IValue} of the PV.
      */
+    @Override
     public VType getPVValue(String pvPropId){
         final IPV pv = pvMap.get(pvPropId);
         if(pv != null){
@@ -294,6 +298,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             updateSuppressTimer = new OPITimer();
         if(timerTask == null)
             timerTask = new Runnable() {
+                @Override
                 public void run() {
                     AbstractWidgetProperty pvValueProperty =
                             editpart.getWidgetModel().getProperty(controlPVValuePropId);
@@ -319,12 +324,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         initUpdateSuppressTimer();
     }
 
+    @Override
     public boolean isPVControlWidget(){
         return controlPVPropId!=null;
     }
 
     public void registerBasePropertyChangeHandlers() {
         IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 editpart.setFigureBorder(editpart.calculateBorder());
@@ -337,6 +344,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
         // value
         IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure figure) {
@@ -411,6 +419,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             public PVNamePropertyChangeHandler(String pvNamePropID) {
                 this.pvNamePropID = pvNamePropID;
             }
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 IPV oldPV = pvMap.get(pvNamePropID);
@@ -464,6 +473,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             });
 
         IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 saveBackColor = ((OPIColor)newValue).getSWTColor();
                 return false;
@@ -472,6 +482,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         editpart.setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backColorHandler);
 
         IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 saveForeColor = ((OPIColor)newValue).getSWTColor();
                 return false;
@@ -481,6 +492,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
         IWidgetPropertyChangeHandler backColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 isBackColorAlarmSensitive = (Boolean)newValue;
                 figure.setBackgroundColor(calculateBackColor());
@@ -491,6 +503,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
         IWidgetPropertyChangeHandler foreColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 isForeColorAlarmSensitive = (Boolean)newValue;
                 figure.setForegroundColor(calculateForeColor());
@@ -502,6 +515,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
         IWidgetPropertyChangeHandler alarmPulsingHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 isAlarmPulsing = (Boolean)newValue;
                 stopPulsing();
@@ -526,9 +540,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     public synchronized void startPulsing() {
         stopPulsing();
         Runnable pulsingTask = new Runnable() {
+            @Override
             public void run() {
                 UIBundlingThread.getInstance().addRunnable(new Runnable() {
 
+                    @Override
                     public void run() {
                         synchronized (PVWidgetEditpartDelegate.this) {
                             // Change the colours of all alarm sensitive components
@@ -641,6 +657,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * @param pvPropId
      * @param value
      */
+    @Override
     public void setPVValue(String pvPropId, Object value){
         fireSetPVValue(pvPropId, value);
         final IPV pv = pvMap.get(pvPropId);
@@ -660,6 +677,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 pv.setValue(value);
             } catch (final Exception e) {
                 UIBundlingThread.getInstance().addRunnable(new Runnable(){
+                    @Override
                     public void run() {
                         String message =
                             "Failed to write PV:" + pv.getName();
@@ -728,6 +746,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             if(lastWriteAccess.get()){
                 UIBundlingThread.getInstance().addRunnable(
                         editpart.getViewer().getControl().getDisplay(),new Runnable(){
+                    @Override
                     public void run() {
                         setControlEnabled(true);
                     }
@@ -735,6 +754,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             } else {
                 UIBundlingThread.getInstance().addRunnable(
                         editpart.getViewer().getControl().getDisplay(),new Runnable(){
+                    @Override
                     public void run() {
                         setControlEnabled(false);
                     }

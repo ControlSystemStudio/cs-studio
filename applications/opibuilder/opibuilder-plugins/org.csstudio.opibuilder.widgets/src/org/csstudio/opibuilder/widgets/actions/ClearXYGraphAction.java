@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IAction;
  */
 public class ClearXYGraphAction extends AbstractWidgetTargetAction {
 
+    @Override
     public void run(IAction action) {
         getSelectedXYGraph().clearGraph();
 

@@ -42,8 +42,10 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
         handlers = new ArrayList<IWidgetPropertyChangeHandler>();
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         Runnable runnable = new Runnable() {
+            @Override
             public synchronized void run() {
                 if(editpart == null || !editpart.isActive()){
                     return;

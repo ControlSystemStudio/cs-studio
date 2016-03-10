@@ -54,6 +54,7 @@ public class EditPasteAction extends Action  implements IMenuListener
         }
     }
 
+    @Override
     public void menuAboutToShow(IMenuManager manager)
     {
         if(ClipboardHandler.getInstance().isImageAvailable())
@@ -66,6 +67,7 @@ public class EditPasteAction extends Action  implements IMenuListener
         }
     }
 
+    @Override
     public void run()
     {
         Image image = null;

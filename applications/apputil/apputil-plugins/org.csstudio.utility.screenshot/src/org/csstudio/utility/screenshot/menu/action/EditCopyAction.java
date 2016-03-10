@@ -46,11 +46,13 @@ public class EditCopyAction extends Action implements IMenuListener
         this.setEnabled(true);
     }
 
+    @Override
     public void menuAboutToShow(IMenuManager manager)
     {
 
     }
 
+    @Override
     public void run()
     {
         Image swtImage = null;

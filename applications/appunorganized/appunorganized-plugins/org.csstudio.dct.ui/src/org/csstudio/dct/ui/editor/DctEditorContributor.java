@@ -89,6 +89,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setActivePage(IEditorPart part) {
         if (activeEditorPart == part) {
             return;
@@ -117,6 +118,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
     /**
      *{@inheritDoc}
      */
+    @Override
     public void contributeToMenu(IMenuManager manager) {
         IMenuManager menu = new MenuManager("DCT");
         manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
@@ -154,6 +156,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 
                 try {
                     dialog.run(false, true, new IRunnableWithProgress() {
+                        @Override
                         public void run(IProgressMonitor monitor) {
                             function.run(project, monitor);
                         }
@@ -171,6 +174,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
     /**
      *{@inheritDoc}
      */
+    @Override
     public void contributeToToolBar(IToolBarManager manager) {
         manager.add(new Separator());
     }

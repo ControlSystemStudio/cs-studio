@@ -42,6 +42,7 @@ public class GlobalSettingsPreferencePage extends FieldEditorPreferencePage
         this.addField(editor);
     }
 
+    @Override
     public void init(IWorkbench workbench) {
 
     }

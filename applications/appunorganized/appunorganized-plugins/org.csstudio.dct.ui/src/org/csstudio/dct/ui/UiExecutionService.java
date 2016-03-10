@@ -64,11 +64,13 @@ public final class UiExecutionService {
 
         ExecutionService.getInstance().getScheduledExecutorService()
                 .scheduleAtFixedRate(new Runnable() {
+                    @Override
                     public void run() {
                         Display display = Display.getCurrent();
 
                         if (display == null) {
                             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                                @Override
                                 public void run() {
                                     Runnable r;
 

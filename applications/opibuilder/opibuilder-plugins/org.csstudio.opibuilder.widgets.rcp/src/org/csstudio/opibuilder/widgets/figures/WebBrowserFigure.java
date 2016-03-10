@@ -36,6 +36,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
                 | BrowserViewer.LOCATION_BAR : SWT.None);
     }
 
+    @Override
     public void setUrl(String url){
         if(runmode && url.trim().length() > 0)
             try {
@@ -66,6 +67,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
 
     }
 
+    @Override
     public Browser getBrowser() {
         return browser;
     }

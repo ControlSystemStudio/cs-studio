@@ -53,6 +53,7 @@ public class ZoomOutAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.getPaintSurface().zoomOut();

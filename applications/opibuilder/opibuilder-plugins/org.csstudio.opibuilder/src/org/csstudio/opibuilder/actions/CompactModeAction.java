@@ -66,6 +66,7 @@ public class CompactModeAction extends Action implements
     /**
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         //Do nothing if in full screen
         FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance().
@@ -112,14 +113,17 @@ public class CompactModeAction extends Action implements
         }
     }
 
+    @Override
     public void run(IAction action) {
         run();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
 
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
 
         if(WorkbenchWindowService.getInstance().getCompactModeAction(window) != null){
@@ -154,6 +158,7 @@ public class CompactModeAction extends Action implements
 //        }
     }
 
+    @Override
     public void dispose() {
         WorkbenchWindowService.getInstance().unregisterCompactModeAction(window);
     }

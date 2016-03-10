@@ -92,6 +92,7 @@ public interface IRecord extends IPropertyContainer, IElement {
      * @param value
      *            the property value
      */
+    @Override
     void addProperty(String name, String value);
 
     /**
@@ -110,6 +111,7 @@ public interface IRecord extends IPropertyContainer, IElement {
      * @param name
      *            the property name
      */
+    @Override
     void removeProperty(String name);
 
     /**
@@ -118,6 +120,7 @@ public interface IRecord extends IPropertyContainer, IElement {
      *
      * @return aggregated property information
      */
+    @Override
     Map<String, String> getFinalProperties();
 
     /**
@@ -130,6 +133,7 @@ public interface IRecord extends IPropertyContainer, IElement {
      *
      * @return the properties that are locally defined for this record
      */
+    @Override
     Map<String, String> getProperties();
 
     /**

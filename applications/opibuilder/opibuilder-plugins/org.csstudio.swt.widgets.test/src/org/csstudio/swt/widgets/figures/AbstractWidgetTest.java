@@ -98,6 +98,7 @@ public abstract class AbstractWidgetTest {
 
             final Runnable propertyTestTask = new Runnable() {
 
+                @Override
                 public void run() {
                         int nextRunTime = 10;
 

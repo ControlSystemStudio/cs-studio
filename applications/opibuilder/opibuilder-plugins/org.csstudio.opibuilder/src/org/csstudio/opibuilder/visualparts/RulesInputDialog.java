@@ -170,6 +170,7 @@ public class RulesInputDialog extends HelpTrayDialog {
         rulesViewer.setInput(ruleDataList);
         rulesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 refreshToolbarOnSelection();
             }
@@ -221,6 +222,7 @@ public class RulesInputDialog extends HelpTrayDialog {
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 invokeRuleDataDialog();
             }

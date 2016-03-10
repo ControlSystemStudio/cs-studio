@@ -19,7 +19,7 @@ import org.eclipse.jface.action.IAction;
 public class AddTabBeforeAction extends AbstractWidgetTargetAction {
 
 
-
+    @Override
     public void run(IAction action) {
         Command command = new AddTabCommand(getSelectedTabWidget(), true);
         execute(command);

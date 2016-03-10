@@ -75,6 +75,7 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
 //        return new Composite(group, 0);
 //    }
 
+    @Override
     public void init(IWorkbench workbench) {
         // Can be empty
     }

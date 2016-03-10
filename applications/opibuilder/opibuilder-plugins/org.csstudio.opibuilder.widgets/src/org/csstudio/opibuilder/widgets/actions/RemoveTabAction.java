@@ -19,7 +19,7 @@ import org.eclipse.jface.action.IAction;
 public class RemoveTabAction extends AbstractWidgetTargetAction {
 
 
-
+    @Override
     public void run(IAction action) {
         Command command = new RemoveTabCommand(getSelectedTabWidget());
             execute(command);

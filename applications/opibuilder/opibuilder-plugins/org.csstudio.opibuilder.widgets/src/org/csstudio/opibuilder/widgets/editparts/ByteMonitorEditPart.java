@@ -111,6 +111,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 boolean succeed = true;
@@ -138,6 +139,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         // on color
         IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -151,6 +153,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         // off color
         colorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -166,6 +169,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         //change orientation of the bit display
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
@@ -190,6 +194,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         //change the display order of the bits
         IWidgetPropertyChangeHandler reverseBitsHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
@@ -204,6 +209,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         //Set the bit to use as a starting point
         IWidgetPropertyChangeHandler startBitHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
@@ -218,6 +224,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         //Set the number of bits to display
         IWidgetPropertyChangeHandler numBitsHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
@@ -231,6 +238,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         //Square LED
         IWidgetPropertyChangeHandler squareLEDHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -243,6 +251,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         //LED spacing
         IWidgetPropertyChangeHandler ledBorderWidthHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -255,6 +264,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         //LED border color
         IWidgetPropertyChangeHandler ledBorderColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -267,6 +277,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -279,6 +290,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         // labels
         IWidgetPropertyChangeHandler labelsHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -293,7 +305,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         //Set the LED rendering style
         IWidgetPropertyChangeHandler packHandler = new IWidgetPropertyChangeHandler() {
-
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;

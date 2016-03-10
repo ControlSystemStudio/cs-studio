@@ -39,6 +39,7 @@ public class VersatileLineBorder extends LineBorder {
     /**
      * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
      */
+    @Override
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
         tempRect.setBounds(getPaintRectangle(figure, insets));
         if ((getWidth() & 1) == 1) {

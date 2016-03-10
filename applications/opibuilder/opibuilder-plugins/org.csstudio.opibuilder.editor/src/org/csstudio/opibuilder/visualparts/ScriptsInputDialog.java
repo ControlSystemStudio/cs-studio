@@ -387,6 +387,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
         });
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 refreshGUIOnSelection();
             }

@@ -43,6 +43,7 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
 
         //effect 3D
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

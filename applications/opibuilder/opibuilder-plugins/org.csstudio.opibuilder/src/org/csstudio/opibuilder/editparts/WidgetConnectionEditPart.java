@@ -363,6 +363,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         return (ConnectionModel) getModel();
     }
 
+    @Override
     public PolylineConnection getConnectionFigure() {
         return (PolylineConnection) getFigure();
     }
@@ -389,6 +390,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (key == IActionFilter.class)
             return new IActionFilter() {
+                @Override
                 public boolean testAttribute(Object target, String name,
                         String value) {
                     if (name.equals("executionMode") && //$NON-NLS-1$

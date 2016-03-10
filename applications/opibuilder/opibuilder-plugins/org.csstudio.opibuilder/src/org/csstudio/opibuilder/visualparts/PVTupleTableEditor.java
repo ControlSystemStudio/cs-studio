@@ -405,6 +405,7 @@ public class PVTupleTableEditor extends Composite {
             this.pvTupleList = pvTupleList;
         }
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex == 2 && element instanceof PVTuple) {
                 if (((PVTuple) element).trigger) {

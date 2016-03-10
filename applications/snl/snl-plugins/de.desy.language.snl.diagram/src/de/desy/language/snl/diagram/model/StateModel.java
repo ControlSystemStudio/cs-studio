@@ -12,10 +12,12 @@ public class StateModel extends SNLModel {
 
     private StateNode _stateNode;
 
+    @Override
     public String getIconName() {
         return "ellipse16.gif";
     }
 
+    @Override
     public String toString() {
         return "State '" + _stateNode.getSourceIdentifier() + "'";
     }

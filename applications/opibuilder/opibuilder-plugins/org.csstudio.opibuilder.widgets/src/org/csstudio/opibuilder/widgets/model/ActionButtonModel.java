@@ -207,6 +207,7 @@ public class ActionButtonModel extends AbstractPVWidgetModel implements ITextMod
      *
      * @return The label text.
      */
+    @Override
     public String getText() {
         return (String) getProperty(PROP_TEXT).getPropertyValue();
     }

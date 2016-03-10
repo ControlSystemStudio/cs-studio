@@ -31,7 +31,7 @@ public class ShowMacrosAction implements IObjectActionDelegate {
     private IWorkbenchPart targetPart;
 
 
-
+    @Override
     public void run(IAction action) {
         AbstractWidgetModel widget = (AbstractWidgetModel) getSelectedWidget().getModel();
         String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
@@ -48,13 +48,14 @@ public class ShowMacrosAction implements IObjectActionDelegate {
                 "Predefined Macros", sb.toString());
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;
         }
     }
 
-
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }

@@ -35,10 +35,11 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
         UIBundlingThread.getInstance().addRunnable(
                 editPart.getRoot().getViewer().getControl().getDisplay(),
                 new Runnable() {
-            public void run() {
-                pvWidgetEditpart.setControlEnabled(false);
-            }
-        });
+                    @Override
+                    public void run() {
+                        pvWidgetEditpart.setControlEnabled(false);
+                    }
+                });
         }
     }
 

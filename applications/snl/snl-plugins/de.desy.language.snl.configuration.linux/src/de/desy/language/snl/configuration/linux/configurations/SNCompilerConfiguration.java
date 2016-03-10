@@ -17,6 +17,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerOptions()
      */
+    @Override
     public List<String> getCompilerParameters(String sourceFile, String targetFile) {
         List<String> result = new ArrayList<String>();
         result.add(getCompilerPath());
@@ -30,6 +31,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getErrorPattern()
      */
+    @Override
     public Pattern getErrorPattern() {
         return Pattern.compile("(syntax error: line no. )([\\d]*)([^\\n]*)(\\n)([\\S\\s]*)");
     }
@@ -37,6 +39,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerPath()
      */
+    @Override
     protected String getCompilerPath() {
         return getCompilerOptionService().getSNCompilerPath();
     }
@@ -44,6 +47,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFolder()
      */
+    @Override
     public String getSourceFolder() {
         return SNLConstants.GENERATED_FOLDER.getValue();
     }
@@ -51,6 +55,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFolder()
      */
+    @Override
     public String getTargetFolder() {
         return SNLConstants.GENERATED_FOLDER.getValue();
     }
@@ -58,6 +63,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getSourceFileExtension()
      */
+    @Override
     public String getSourceFileExtension() {
         return SNLConstants.I_FILE_EXTENSION.getValue();
     }
@@ -65,6 +71,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
     /* (non-Javadoc)
      * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getTargetFileExtension()
      */
+    @Override
     public String getTargetFileExtension() {
         return SNLConstants.C_FILE_EXTENSION.getValue();
     }

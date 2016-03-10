@@ -9,6 +9,7 @@ public class Perspective implements IPerspectiveFactory {
     private static final String ID_RIGHT = "rightFolder";
     private static final String ID_BOTTOM = "bottomFolder";
 
+    @Override
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);

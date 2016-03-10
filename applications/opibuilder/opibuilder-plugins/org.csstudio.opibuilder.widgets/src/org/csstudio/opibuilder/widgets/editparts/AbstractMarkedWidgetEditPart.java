@@ -85,6 +85,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
                 if(pv != null){
                     if(pvLoadLimitsListener == null)
                         pvLoadLimitsListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && VTypeHelper.getDisplayInfo(value) != null){
@@ -150,11 +151,13 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
      * of subclasses, which can call this method in their implementation of
      * {@link #registerPropertyChangeHandlers()}.
      */
+    @Override
     protected void registerCommonPropertyChangeHandlers() {
         super.registerCommonPropertyChangeHandlers();
 
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 registerLoadLimitsListener();
                 return false;
@@ -164,6 +167,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //showMarkers
         IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -177,6 +181,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //LoLo Level
         IWidgetPropertyChangeHandler loloHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -189,6 +194,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Lo Level
         IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -201,6 +207,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Hi Level
         IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -213,6 +220,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //HiHi Level
         IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -225,6 +233,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //show lolo
         IWidgetPropertyChangeHandler showLoloHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -237,6 +246,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //show lo
         IWidgetPropertyChangeHandler showLoHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -249,6 +259,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //show Hi
         IWidgetPropertyChangeHandler showHiHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -261,6 +272,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //show Hihi
         IWidgetPropertyChangeHandler showHihiHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -274,6 +286,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Lolo color
         IWidgetPropertyChangeHandler LoloColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -286,6 +299,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Lo color
         IWidgetPropertyChangeHandler LoColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -298,6 +312,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Hi color
         IWidgetPropertyChangeHandler HiColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -310,6 +325,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 
         //Hihi color
         IWidgetPropertyChangeHandler HihiColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

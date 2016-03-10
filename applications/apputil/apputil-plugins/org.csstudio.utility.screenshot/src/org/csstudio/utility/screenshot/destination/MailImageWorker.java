@@ -78,6 +78,7 @@ public class MailImageWorker implements IImageWorker {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
@@ -85,6 +86,7 @@ public class MailImageWorker implements IImageWorker {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void processImage(Shell parentShell, Image image) {
 
         InternetAddress addressFrom = null;

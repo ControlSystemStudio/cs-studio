@@ -69,6 +69,7 @@ public class AboutDialog extends Dialog implements ActionListener
         super(s);
     }
 
+    @Override
     protected Control createContents(Composite parent)
     {
         Rectangle   rect    = null;
@@ -98,7 +99,7 @@ public class AboutDialog extends Dialog implements ActionListener
         rect.setBounds(7, 50, 201, 12);
         labelInfo1.setBounds(DialogUnit.mapUnits(rect));
 
-        labelInfo2 = new JLabel("Markus Möller, MKS-2");
+        labelInfo2 = new JLabel("Markus Mï¿½ller, MKS-2");
         labelInfo2.setHorizontalAlignment(JLabel.CENTER);
         rect.setBounds(7, 62, 201, 12);
         labelInfo2.setBounds(DialogUnit.mapUnits(rect));
@@ -125,6 +126,7 @@ public class AboutDialog extends Dialog implements ActionListener
         return parent;
     }
 
+    @Override
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
@@ -133,6 +135,7 @@ public class AboutDialog extends Dialog implements ActionListener
         shell.setText(_window.getShell().getText() + " - About");
     }
 
+    @Override
     protected void initializeBounds()
     {
         Point       point   = null;
@@ -143,6 +146,7 @@ public class AboutDialog extends Dialog implements ActionListener
         this.getShell().setBounds(point.x, point.y, INIT_WIDTH, INIT_HEIGHT);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent)
     {
         if(actionEvent.getActionCommand().compareTo("BUTTON_OK") == 0)
@@ -171,7 +175,7 @@ public class AboutDialog extends Dialog implements ActionListener
         DEFPUSHBUTTON   "OK",IDC_ABOUTDLG_OK,88,128,50,14
         CTEXT           "Designed and Written by: ",IDC_STATIC,7,50,201,12,
                         SS_CENTERIMAGE
-        CTEXT           "Markus Möller, MKS-2",IDC_STATIC,7,62,201,12,
+        CTEXT           "Markus Mï¿½ller, MKS-2",IDC_STATIC,7,62,201,12,
                         SS_CENTERIMAGE
         CTEXT           "Send questions and bug reports to:",IDC_STATIC,7,83,201,12,
                         SS_CENTERIMAGE

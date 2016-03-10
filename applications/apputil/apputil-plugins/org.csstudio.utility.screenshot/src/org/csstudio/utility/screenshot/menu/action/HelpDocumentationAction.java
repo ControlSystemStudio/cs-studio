@@ -43,6 +43,7 @@ public class HelpDocumentationAction extends Action
         this.setEnabled(false);
     }
 
+    @Override
     public void run()
     {
         MessageDialog.openInformation(null, ScreenshotMessages.getString("ScreenshotPlugin.Screenshot"), ScreenshotMessages.getString("ScreenshotView.MESSAGE_NOT_IMPLEMENTED"));
