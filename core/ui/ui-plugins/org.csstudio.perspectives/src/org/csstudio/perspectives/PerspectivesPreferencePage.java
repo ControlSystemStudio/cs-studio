@@ -9,7 +9,6 @@ package org.csstudio.perspectives;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -58,20 +57,6 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
         store = new ScopedPreferenceStore(InstanceScope.INSTANCE, ID);
         setPreferenceStore(store);
         setDescription(Messages.PerspectivesPreferencePage_pageDescription);
-    }
-
-    @Override
-    public boolean isValid() {
-        return perspectiveLoadDirEditor.isValid() && perspectiveSaveDirEditor.isValid();
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        if (!isValid()) {
-            setErrorMessage(Messages.PerspectivesPreferencePage_dirNotSelected);
-        } else {
-            setErrorMessage(null);
-        }
     }
 
 }

@@ -17,6 +17,7 @@ public class SelectDirectoryFieldEditor extends StringButtonFieldEditor {
         super(name, labelText, parent);
         this.lastPath = lastPath;
         this.fileUtils = fileUtils;
+        setErrorMessage(Messages.PerspectivesPreferencePage_dirNotSelected);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class SelectDirectoryFieldEditor extends StringButtonFieldEditor {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean doCheckState() {
         try {
             return fileUtils.isDirectory(getTextControl().getText());
         } catch (IOException e) {
