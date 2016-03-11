@@ -34,7 +34,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.diirt.vtype;bundle-version="2.7.1",
  org.python.jython;bundle-version="2.5.2",
  org.csstudio.swt.widgets;bundle-version="2.1.0",
- org.csstudio.swt.xygraph;bundle-version="2.0.4"
+ org.csstudio.swt.xygraph;bundle-version="2.0.4",
+ org.eclipse.e4.ui.workbench;bundle-version="1.3.1"
 Eclipse-RegisterBuddy: org.python.jython
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
