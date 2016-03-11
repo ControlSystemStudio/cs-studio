@@ -23,7 +23,6 @@ public class PerspectivesPreferencePage extends FieldEditorPreferencePage
     public static final String ID = "org.csstudio.perspectives.preferences";
     public static final String PERSPECTIVE_LOAD_DIRECTORY = "perspective_load_dir";
     public static final String PERSPECTIVE_SAVE_DIRECTORY = "perspective_save_dir";
-    public static final String FILE_PREFIX = "file:";
 
     private SelectDirectoryFieldEditor perspectiveLoadDirEditor;
     private SelectDirectoryFieldEditor perspectiveSaveDirEditor;
