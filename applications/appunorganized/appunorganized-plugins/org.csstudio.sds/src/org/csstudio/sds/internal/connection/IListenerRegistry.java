@@ -1,7 +1,5 @@
 package org.csstudio.sds.internal.connection;
 
-import java.beans.PropertyChangeListener;
-
 import org.csstudio.sds.model.IPropertyChangeListener;
 import org.csstudio.sds.model.WidgetProperty;
 import org.eclipse.gef.EditPart;

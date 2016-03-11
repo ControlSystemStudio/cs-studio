@@ -15,6 +15,7 @@ public final class XMeterModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new XMeterModel();
     }
@@ -22,6 +23,7 @@ public final class XMeterModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return XMeterModel.class;

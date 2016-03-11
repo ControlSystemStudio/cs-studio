@@ -12,14 +12,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-/** Action connected to workbench menu action set for opening a new editor.
- *  @author Kay Kasemir
+/**
+ * Action connected to workbench menu action set for opening a new editor.
+ *
+ * @author Kay Kasemir
  */
-public class NewPVTableAction extends AbstractHandler
-{
+public class NewPVTableAction extends AbstractHandler {
     @Override
-    public Object execute(final ExecutionEvent event) throws ExecutionException
-    {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
         PVTableEditor.createPVTableEditor();
         return null;
     }

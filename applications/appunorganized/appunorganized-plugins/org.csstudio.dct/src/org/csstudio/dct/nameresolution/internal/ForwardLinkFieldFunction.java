@@ -1,7 +1,6 @@
 package org.csstudio.dct.nameresolution.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.dct.model.IRecord;
@@ -9,7 +8,6 @@ import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.RecordFinder;
 import org.csstudio.dct.util.AliasResolutionUtil;
-import org.csstudio.dct.util.ResolutionUtil;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
 /**
@@ -23,6 +21,7 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
         IRecord r = RecordFinder.findRecordByPath(parameters[0], record.getContainer());
 
@@ -37,6 +36,7 @@ public final class ForwardLinkFieldFunction implements IFieldFunction {
         return result;
     }
 
+    @Override
     public List<IContentProposal> getParameterProposal(int parameterIndex, String[] knownParameters, IRecord record) {
         List<IContentProposal> result = new ArrayList<IContentProposal>();
 

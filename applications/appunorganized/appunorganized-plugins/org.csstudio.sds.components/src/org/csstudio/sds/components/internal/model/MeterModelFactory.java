@@ -36,6 +36,7 @@ public final class MeterModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new MeterModel();
     }
@@ -43,6 +44,7 @@ public final class MeterModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return MeterModel.class;
     }

@@ -64,6 +64,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getType() {
         assert type != null || parentRecord != null : "type!=null || parentRecord!=null";
         return type != null ? type : parentRecord.getType();
@@ -76,6 +77,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getFinalProperties() {
         Map<String, String> result = new HashMap<String, String>();
 
@@ -94,6 +96,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addField(String key, String value) {
         fields.put(key, value);
     }
@@ -101,6 +104,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getField(String key) {
         return fields.get(key);
     }
@@ -108,6 +112,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeField(String key) {
         fields.remove(key);
     }
@@ -122,6 +127,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getFields() {
         return fields;
     }
@@ -129,6 +135,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getFinalFields() {
         Map<String, String> result = new LinkedHashMap<String, String>();
 
@@ -147,6 +154,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getDefaultFields() {
         Map<String, String> result = new HashMap<String, String>();
 
@@ -168,6 +176,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getEpicsName() {
         return epicsName;
     }
@@ -175,6 +184,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void setEpicsName(String epicsName) {
         this.epicsName = epicsName;
     }
@@ -182,6 +192,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String getEpicsNameFromHierarchy() {
         String name = "unknown";
 
@@ -201,6 +212,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRecord getParentRecord() {
         return parentRecord;
     }
@@ -208,6 +220,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IContainer getContainer() {
         return container;
     }
@@ -222,6 +235,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setContainer(IContainer container) {
         this.container = container;
     }
@@ -229,6 +243,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean isAbstract() {
         return getRootContainer(getContainer()) instanceof IPrototype;
     }

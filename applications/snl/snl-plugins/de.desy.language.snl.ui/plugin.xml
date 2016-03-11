@@ -103,7 +103,7 @@
          </adapter>
       </factory>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective

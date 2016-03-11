@@ -118,6 +118,7 @@ public final class ConvenienceTableWrapper {
 
         ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
                 viewer) {
+            @Override
             protected boolean isEditorActivationEvent(
                     final ColumnViewerEditorActivationEvent event) {
                 return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
@@ -221,6 +222,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
 
@@ -229,6 +231,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         @SuppressWarnings("unchecked")
         public Object[] getElements(final Object parent) {
             return ((List<ITableRow>) parent).toArray();
@@ -237,6 +240,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
 
         }
@@ -310,6 +314,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getToolTipText(final Object element) {
             ITableRow row = (ITableRow) element;
             return row.getTooltip();
@@ -318,6 +323,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Point getToolTipShift(final Object object) {
             return new Point(5, 5);
         }
@@ -325,6 +331,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public int getToolTipDisplayDelayTime(final Object object) {
             return 100;
         }
@@ -332,6 +339,7 @@ public final class ConvenienceTableWrapper {
         /**
          * {@inheritDoc}
          */
+        @Override
         public int getToolTipTimeDisplayed(final Object object) {
             return 10000;
         }

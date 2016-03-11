@@ -71,6 +71,7 @@ final class LogarithmicAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDataRange(final double lower, final double upper) {
         _dataLower = lower;
         _dataUpper = upper;
@@ -79,6 +80,7 @@ final class LogarithmicAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDisplaySize(final int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Invalid display size");
@@ -90,6 +92,7 @@ final class LogarithmicAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int valueToCoordinate(final double value) {
         double dataRange = Math.log10(_dataUpper) - Math.log10(_dataLower);
         double scaling = (_displaySize - 1) / dataRange;
@@ -110,6 +113,7 @@ final class LogarithmicAxis implements IAxis {
      * @return <code>true</code> if the value is legal, <code>false</code>
      *         otherwise.
      */
+    @Override
     public boolean isLegalValue(final double value) {
         return value > 0.0;
     }
@@ -117,6 +121,7 @@ final class LogarithmicAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Tick> calculateTicks(final int minMajorDistance, final int minMinorDistance) {
         double lower = Math.log10(_dataLower);
         double upper = Math.log10(_dataUpper);
@@ -158,6 +163,7 @@ final class LogarithmicAxis implements IAxis {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Tick> calculateIntegerTicks(final int minMajorDistance,
             final int minMinorDistance) {
         // TODO filter to only integer ticks.

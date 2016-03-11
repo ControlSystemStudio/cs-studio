@@ -3,13 +3,11 @@ package org.csstudio.dct;
 import java.util.Map;
 
 import org.csstudio.dct.model.IProject;
-import org.csstudio.dct.model.IRecord;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
  * Represents a record function. Corresponding extensions (extension point
- * org.csstudio.dct.recordfunctions) can be started from the editor´s menu. On
+ * org.csstudio.dct.recordfunctions) can be started from the editorï¿½s menu. On
  * start, the run() method will be applied to all records.
  *
  * The specified attributes will appear in the properties table for each record

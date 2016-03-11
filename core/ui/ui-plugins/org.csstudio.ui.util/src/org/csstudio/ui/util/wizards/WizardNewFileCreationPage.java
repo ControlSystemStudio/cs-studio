@@ -146,6 +146,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void createControl(final Composite parent) {
         initializeDialogUnits(parent);
         // top level group
@@ -349,6 +350,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
      * @param event
      *            The event to handle.
      */
+    @Override
     public void handleEvent(final Event event) {
         setPageComplete(validatePage());
     }
@@ -446,6 +448,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setVisible(final boolean visible) {
         super.setVisible(visible);
         if (visible) {

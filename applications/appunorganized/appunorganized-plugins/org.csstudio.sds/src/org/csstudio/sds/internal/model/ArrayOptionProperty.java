@@ -119,6 +119,7 @@ public final class ArrayOptionProperty extends WidgetProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getCompatibleJavaTypes() {
         return new Class[] { Integer.class };

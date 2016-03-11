@@ -32,6 +32,7 @@ public class ActionDataRule implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         ActionData result = new ActionData();
 

@@ -42,6 +42,7 @@ public final class ZoomInActionDelegate implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IViewPart view) {
         if (view instanceof DisplayViewPart) {
             _action = ((DisplayViewPart) view).getZoomInAction();
@@ -51,6 +52,7 @@ public final class ZoomInActionDelegate implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(final IAction action) {
         if (_action != null) {
             _action.run();
@@ -60,6 +62,7 @@ public final class ZoomInActionDelegate implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
 

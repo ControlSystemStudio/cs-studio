@@ -15,7 +15,7 @@ public class DefineFunctionStatementParser_Test extends TestCase {
                                        "#define DBG_D100 (DBG_D100_EIN|debugNextStep)\n" +
                                        "#define SET_MAN(pv) pv = PID_MANUELL; pvPut(pv); // Test Kommentar\n" +
                                        "#define PV_SET_SYNC(pv, val) pv = val; pvPut (pv, SYNC);\n" +
-                                       "#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
+                                       "#define DBG_TTSTOP_EIN  FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
                                        "#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
                                        "// usw...\n";
 

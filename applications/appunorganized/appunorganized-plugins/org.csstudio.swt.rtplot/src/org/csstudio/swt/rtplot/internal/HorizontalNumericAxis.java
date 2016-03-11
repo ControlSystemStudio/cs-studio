@@ -13,7 +13,6 @@ import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;

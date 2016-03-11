@@ -3,8 +3,6 @@ package org.csstudio.platform.internal.dal;
 import junit.framework.TestCase;
 
 import org.csstudio.dal.DalPlugin;
-import org.csstudio.dal.CharacteristicInfo;
-import org.csstudio.dal.RemoteException;
 import org.csstudio.dal.Request;
 import org.csstudio.dal.ResponseEvent;
 import org.csstudio.dal.ResponseListener;

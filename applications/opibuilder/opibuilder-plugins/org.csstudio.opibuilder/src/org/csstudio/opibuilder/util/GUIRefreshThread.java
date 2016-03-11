@@ -70,6 +70,7 @@ public final class GUIRefreshThread implements Runnable {
         tasksQueue = new LinkedHashSet<WidgetIgnorableUITask>();
         resetAsyncEmpty = new Runnable() {
 
+            @Override
             public void run() {
                 asyncEmpty = true;
             }
@@ -119,6 +120,7 @@ public final class GUIRefreshThread implements Runnable {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void run() {
         boolean isEmpty;
         while (true) {

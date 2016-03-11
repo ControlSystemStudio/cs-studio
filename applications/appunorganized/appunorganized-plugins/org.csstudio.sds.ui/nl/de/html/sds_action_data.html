@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 
 <head>
-	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
-	<title>SDS Actions</title>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+    <title>SDS Actions</title>
 </head>
 
 <body>
@@ -17,27 +17,27 @@ In SDS gibt es drei Arten von Action-Data, die zu einem Widget hinzugef&uuml;gt 
 <img alt="Open view as View" src="./image/sds_action_data_view.png" />
   Öffnet ein Display in einer neuen View, die in der Action angegeben wird. <br />
 <img alt="Send a Value" src="./image/sds_action_data_send.png" />
-  Schreibt einen Wert auf eine Prozessvariable.	 <br />
+  Schreibt einen Wert auf eine Prozessvariable.  <br />
 </p>
 
 <p align="justify">
-Die Anzahl von Aktionen f&uuml;r ein Widget ist nicht eingeschr&auml;nkt. Im Ausf&uuml;hrungsmodus eines Displays zeigt das Cursor-Icon 
-<img alt="Action Data Cursor" src="./image/sds_action_data_cursor.png" /> 
+Die Anzahl von Aktionen f&uuml;r ein Widget ist nicht eingeschr&auml;nkt. Im Ausf&uuml;hrungsmodus eines Displays zeigt das Cursor-Icon
+<img alt="Action Data Cursor" src="./image/sds_action_data_cursor.png" />
 an, dass das darunterliegende Widget Aktionen enth&auml;lt.
 Mit einem Rechtsklick werden alle Aktionen des Widgets ge&ouml;ffnet.
 </p>
 
 <p align="justify">
-Im n&auml;chsten Abschnitt gibt es ein Beispiel mit ein paar Aktionen. Es werden nur 
-Prozessvariable mit dem Pr&auml;fix 'local://' verwendet, damit das Beispiel unabh&auml;ngig von 
-einem Kontrollsystem bleibt. Weil die folgenden Punkte sich auf 
+Im n&auml;chsten Abschnitt gibt es ein Beispiel mit ein paar Aktionen. Es werden nur
+Prozessvariable mit dem Pr&auml;fix 'local://' verwendet, damit das Beispiel unabh&auml;ngig von
+einem Kontrollsystem bleibt. Weil die folgenden Punkte sich auf
 Aktionen beziehen, werden sie  auch in den Beispiel-Displays erkl&auml;rt: <br /><br />
 
-<b>Inheritance of Actions: </b> Eine Aktion, die in einem oberen 
+<b>Inheritance of Actions: </b> Eine Aktion, die in einem oberen
  Level definiert ist, ist f&uuml;r die Widgets unterhalb dieses Levels verf&uuml;gbar.<br />
 <b>Group Container: </b>Definieren von ein paar Widgets als Gruppe, um die
  Vererbung von Aktionen zu demonstrieren. <br />
-<b>Alias: </b>Aliase sind wichtig f&uuml;r Aktionen, wenn 
+<b>Alias: </b>Aliase sind wichtig f&uuml;r Aktionen, wenn
  neue Displays mit Parametern gerufen werden. <br />
 </p>
 
@@ -49,20 +49,20 @@ Diese drei Displays sind Bestandteil der 'sample displays' von SDS.
 Man kann sie via Menu 'CSS' &rarr; 'Display' &rarr; 'Install Synoptic
 Display Studio Sample Displays' installieren. <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_empty_action_data1_display.png" align="right"
-	hspace="50" />
+    src="./image/sds_empty_action_data1_display.png" align="right"
+    hspace="50" />
 </p>
 
 <h3>Calling Display 1</h3>
 <p align="justify" style="border: thin solid green;">
-Erzeugen eines Displays namens 'Calling Display 1'. Hinzuf&uuml;gen der Widgets 
-'Label', 'Polyline' und 'Ellipse' zum Display. Setzen der Eigenschaft 
-'Value Type' von 'label' auf 'Text Value', damit das Widget in der Lage 
+Erzeugen eines Displays namens 'Calling Display 1'. Hinzuf&uuml;gen der Widgets
+'Label', 'Polyline' und 'Ellipse' zum Display. Setzen der Eigenschaft
+'Value Type' von 'label' auf 'Text Value', damit das Widget in der Lage
 ist, Strings zu verarbeiten und die dynamischen Attribute zu konfigurieren:
 <img alt="Action Data Property Window"
-	src="./image/sds_disp1_input1_label.png" />
+    src="./image/sds_disp1_input1_label.png" />
 <br /> <br />
-Ausw&auml;hlen 'Polyline' und Doppelklick auf die Eigenschaft 'Action Data', um neue 
+Ausw&auml;hlen 'Polyline' und Doppelklick auf die Eigenschaft 'Action Data', um neue
 Aktionen hinzuf&uuml;gen zu k&ouml;nnen. Hinzuf&uuml;gen der Aktion 'Open View' und Setzen der Eigenschaften wie folgt:
 <img alt="Action Data Property Window" src="./image/sds_addAction.png" hspace="50" />
 <br clear="all"/> <br />
@@ -76,7 +76,7 @@ Hinzuf&uuml;gen der Aktion 'Open Shell' und setzten der Eigenschaften wie folgt:
 </p>
 
 <div style="text-indent: 40pt;">
-Das Display, welches in 'Display' konfiguriert ist, wird als Shell mit dem Argument 
+Das Display, welches in 'Display' konfiguriert ist, wird als Shell mit dem Argument
 'send' (alias) und 'local://out1' (value, Wert) ge&ouml;ffnet.
 </div>
 <p>
@@ -84,7 +84,7 @@ Das Display, welches in 'Display' konfiguriert ist, wird als Shell mit dem Argum
 Hinzuf&uuml;gen der Aktion 'Send' und setzten der Eigenschaften wie folgt:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp1_send_action.png" hspace="50" />
+    src="./image/sds_disp1_send_action.png" hspace="50" />
 <br clear="all" />
 <br />
 </p>
@@ -92,7 +92,7 @@ Hinzuf&uuml;gen der Aktion 'Send' und setzten der Eigenschaften wie folgt:
 Um den Wert zu senden, muss man im 'Dynamics Wizard' einen output channel als
 'Action Data' konfigurieren.
 <img alt="Action Data Property Window"
-	src="./image/sds_disp1_output_channel1.png" hspace="5" />
+    src="./image/sds_disp1_output_channel1.png" hspace="5" />
 wie im Abschnitt
 <a href="sds_dynamic_attributes.html">SDS Dynamic Attributes</a> beschrieben.
 <br clear="all" />
@@ -121,10 +121,10 @@ Ausw&auml;hlen der Gruppe und Hinzuf&uuml;gen der Aktion 'Send': <br />
 <h3>Calling Display 2</h3>
 <p>
 Erzeugen eines Displays namens 'Calling Display 2'. Hinzuf&uuml;gen der Widgets
-'Label', 'Polyline' and 'Ellipse' zum Display. Setzen der Eigenschaft 
+'Label', 'Polyline' and 'Ellipse' zum Display. Setzen der Eigenschaft
 'Value Type' auf 'Text Value' von 'Label' und Konfigurieren der dynamischen Attribute:
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_output.png" hspace="5" />
+    src="./image/sds_disp2_output.png" hspace="5" />
 <br />
 Setzen der Parameter f&uuml;r Polyline und Ellipse wie im vorigen Display:
 <br />
@@ -132,53 +132,53 @@ Setzen der Parameter f&uuml;r Polyline und Ellipse wie im vorigen Display:
 Polyline View Action:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_polyline_action_view.png" hspace="50" />
+    src="./image/sds_disp2_polyline_action_view.png" hspace="50" />
 <br />
 <br />
 Polyline Shell Action:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_action_alias.png" hspace="50" />
+    src="./image/sds_disp2_action_alias.png" hspace="50" />
 <br />
 <br />
 Polyline Send Action:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_send_action.png" hspace="50" />
+    src="./image/sds_disp2_send_action.png" hspace="50" />
 <br />
 <br />
 Setzen der Dynamisierung von 'Action Data' auf
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_polyline_action_dyn.png" hspace="5" />
+    src="./image/sds_disp2_polyline_action_dyn.png" hspace="5" />
 <br />
 <br />
 Ellipse Send Action:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_ellipse_send_action.png" hspace="50" />
+    src="./image/sds_disp2_ellipse_send_action.png" hspace="50" />
 <br />
 <br />
 Setzen der Dynamisierung von 'Action Data' auf
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_ellipse_dyn_action.png" hspace="5" />
+    src="./image/sds_disp2_ellipse_dyn_action.png" hspace="5" />
 <br />
 <br />
 Group (Polyline and Ellipse) Send Action:
 <br />
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_group_send_action.png" hspace="50" />
+    src="./image/sds_disp2_group_send_action.png" hspace="50" />
 <br />
 <br />
 Setzen der Dynamisierung von 'Action Data' auf
 <img alt="Action Data Property Window"
-	src="./image/sds_disp2_ellipse_dyn_action.png" hspace="5" />
+    src="./image/sds_disp2_ellipse_dyn_action.png" hspace="5" />
 <br />
 <br />
 <br />
 
 <img alt="Action Data Property Window"
     src="./image/sds_empty_called_display.png" align="right" hspace="50" />
-</p>   
+</p>
 
 <h3>Called Display</h3>
 <p>
@@ -193,7 +193,7 @@ Setzen eines alias f&uuml;r das Label', wie der folgende Screenshot zeigt:
 <br />
 Die Dynamisierung der Eigenschaft 'Text Value' von 'Label' ist
 <img alt="Action Data Property Window"
-	src="./image/sds_disp3_label_dyn.png" hspace="5" />
+    src="./image/sds_disp3_label_dyn.png" hspace="5" />
 <br />
 </p>
 
@@ -206,11 +206,11 @@ Das einfachste Beispiel f&uuml;r eine Aktion ist, eine View oder Shell ohne Para
 Rechtsklick auf die Datei 'Calling Display1' &rarr; 'Run As Shell'. Wenn man nun einen Rechtsklick
 auf ein Widget ausf&uuml;hrt, sieht man die verf&uuml;gbaren Aktionen in einem Popup-Menu (s. Figur).
 Die Widgets erben eine Aktion von der Gruppe. Ausf&uuml;hren der Aktion 'Open as view without aliases'
-mit Rechtsklick auf die Polyline und Ausf&uuml;hren der Aktion. Das Display 'called display' wird als 
+mit Rechtsklick auf die Polyline und Ausf&uuml;hren der Aktion. Das Display 'called display' wird als
 View in CSS ge&ouml;ffnet.
 <br />
 <br />
-Um das gleiche Display f&uuml;r verschiedene Anwendungen zu benutzen, kann es mit Parametern 
+Um das gleiche Display f&uuml;r verschiedene Anwendungen zu benutzen, kann es mit Parametern
 gerufen werden. Rechtsklick auf die Polyline in der laufenden Shell 'Calling Display 1'
 und Ausw&auml;hlen der Aktion 'Open as Shell with aliases'.<br />
 
@@ -223,12 +223,12 @@ Wenn man jetzt die Aktion 'Send a value' von polyline,
 ellipse oder group aus ausf&uuml;hrt, sieht man den Wert im Label des Calling Displays.
 
 Der Label des 'called displays' zeigt den Wert, der im 'calling display' gesetzt ist,
-weil das 'called display' mit dem entsprechenden Kanal parametrisiert ist. 
+weil das 'called display' mit dem entsprechenden Kanal parametrisiert ist.
 
-Die Aktion 'Call As Shell' setzt &uuml;ber die Eigenschaft 'alias' einen Aliasnamen 
+Die Aktion 'Call As Shell' setzt &uuml;ber die Eigenschaft 'alias' einen Aliasnamen
 f&uuml;r Widgets, um Parameter zu empfangen.
 
-Um einen Wert von 'Send action' auf einen Kanal zu schreiben, muss man die Eigenschaft 
+Um einen Wert von 'Send action' auf einen Kanal zu schreiben, muss man die Eigenschaft
 'Action data' dynamisieren, wie im Beispiel gezeigt wird.
 Der Kanal, der f&uuml;r den 'output channel' definiert ist, wird von 'Send action' benutzt.
 <br />

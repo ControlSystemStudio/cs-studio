@@ -52,6 +52,7 @@ public final class OpenShellActionHandler implements IWidgetActionHandler {
      *
      * @required action instanceof OpenDisplayWidgetAction
      */
+    @Override
     public void executeAction(final AbstractWidgetModel widget, final AbstractWidgetActionModel action) {
         assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
         OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;

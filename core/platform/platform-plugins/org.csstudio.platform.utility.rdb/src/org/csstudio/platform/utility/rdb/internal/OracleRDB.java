@@ -26,6 +26,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 public class OracleRDB implements RDBImpl
 {
     /** {@inheritDoc} */
+    @Override
     public Dialect getDialect()
     {
         return RDBUtil.Dialect.Oracle;

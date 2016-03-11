@@ -162,7 +162,7 @@
         </repository>
         <repository>
           <id>csstudio-thirdparty</id>
-	  <url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</url>
+          <url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>

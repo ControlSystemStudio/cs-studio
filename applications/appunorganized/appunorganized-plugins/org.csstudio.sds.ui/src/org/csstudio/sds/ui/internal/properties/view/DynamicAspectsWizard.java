@@ -231,6 +231,7 @@ public final class DynamicAspectsWizard extends Wizard {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void createControl(final Composite parent) {
             Composite c = new Composite(parent, SWT.None);
             c.setLayout(new GridLayout(1, false));
@@ -678,6 +679,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 public boolean canModify(final Object element, final String property) {
                     return true;
                 }
@@ -685,6 +687,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 public Object getValue(final Object element, final String property) {
                     if (element instanceof ConnectionState || element instanceof DynamicValueState) {
                         return getStateMap().get(element);
@@ -695,6 +698,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 @SuppressWarnings("unchecked")
                 public void modify(final Object element, final String property, final Object value) {
                     if (element instanceof TableItem) {
@@ -719,6 +723,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 public Image getColumnImage(final Object element, final int columnIndex) {
                     if (columnIndex == 2) {
                         Object value = getStateMap().get(element);
@@ -738,6 +743,7 @@ public final class DynamicAspectsWizard extends Wizard {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 public String getColumnText(final Object element, final int columnIndex) {
                     if (element == null) {
                         return "Fehler";

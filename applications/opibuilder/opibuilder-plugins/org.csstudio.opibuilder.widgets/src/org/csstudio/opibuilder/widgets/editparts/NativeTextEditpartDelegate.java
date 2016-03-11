@@ -106,6 +106,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                 });
             }else {
                 text.addListener (SWT.DefaultSelection, new Listener () {
+                    @Override
                     public void handleEvent (Event e) {
                         outputText(text.getText());
                         switch (model.getFocusTraverse()) {

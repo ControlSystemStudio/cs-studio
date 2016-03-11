@@ -1,15 +1,9 @@
 package org.csstudio.archive.reader.ea4;
 
-import java.util.logging.Logger;
-
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
-import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
@@ -21,10 +15,7 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 
-import org.epics.pvaccess.client.rpc.RPCClient;
 import org.epics.pvaccess.client.rpc.RPCClientImpl;
-import org.epics.pvaccess.client.rpc.RPCClientRequester;
-import org.epics.pvaccess.server.rpc.RPCRequestException;
 
 import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.factory.PVDataFactory;
@@ -32,18 +23,10 @@ import org.epics.pvdata.factory.PVDataFactory;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.FieldCreate;
-import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.PVDataCreate;
-import org.epics.pvdata.pv.PVShort;
-import org.epics.pvdata.pv.PVShortArray;
-import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVIntArray;
 import org.epics.pvdata.pv.IntArrayData;
-import org.epics.pvdata.pv.PVFloat;
-import org.epics.pvdata.pv.PVFloatArray;
-import org.epics.pvdata.pv.FloatArrayData;
-import org.epics.pvdata.pv.PVDouble;
 import org.epics.pvdata.pv.PVDoubleArray;
 import org.epics.pvdata.pv.DoubleArrayData;
 import org.epics.pvdata.pv.PVString;
@@ -52,7 +35,6 @@ import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.PVStructureArray;
 import org.epics.pvdata.pv.StructureArrayData;
-import org.epics.pvdata.pv.Status;
 
 import org.epics.pvdata.pv.Structure;
 

@@ -51,6 +51,7 @@ public class TickmarkRule implements IRule {
      *
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
         if (arguments != null) {
             if (arguments.length > 1) {

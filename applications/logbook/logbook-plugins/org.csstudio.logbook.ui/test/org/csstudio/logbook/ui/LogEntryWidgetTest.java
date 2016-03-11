@@ -5,7 +5,6 @@ package org.csstudio.logbook.ui;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntry;

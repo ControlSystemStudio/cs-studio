@@ -27,6 +27,7 @@ public class ProcessVariableAddressDragSourceListener extends AbstractTransferDr
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void dragSetData(DragSourceEvent event) {
         List<ProcessVariable> pvs = new ArrayList<ProcessVariable>();

@@ -40,6 +40,7 @@ public final class BeanPropertyTableRowAdapter extends AbstractTableRowAdapter<I
     /**
      * @Override {@inheritDoc}
      */
+    @Override
     protected String doGetKey(IElement delegate) {
         return key;
     }

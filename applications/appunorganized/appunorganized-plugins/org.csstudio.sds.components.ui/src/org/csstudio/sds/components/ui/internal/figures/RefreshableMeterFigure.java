@@ -938,6 +938,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -1019,6 +1020,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Insets getInsets(final IFigure figure) {
             return new Insets(0);
         }
@@ -1026,6 +1028,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
             graphics.setForegroundColor(_borderColor);
             graphics.setLineWidth(_borderWidth);

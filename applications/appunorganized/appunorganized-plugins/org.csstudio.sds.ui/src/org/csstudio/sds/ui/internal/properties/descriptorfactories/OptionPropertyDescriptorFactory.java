@@ -44,6 +44,7 @@ public final class OptionPropertyDescriptorFactory implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public IPropertyDescriptor createPropertyDescriptor(final Object id,
             final WidgetProperty property) {
         final OptionProperty optionProperty = (OptionProperty) property;

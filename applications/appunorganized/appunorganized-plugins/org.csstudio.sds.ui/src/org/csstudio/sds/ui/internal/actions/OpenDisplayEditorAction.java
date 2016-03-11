@@ -46,6 +46,7 @@ public final class OpenDisplayEditorAction implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
 
     }
@@ -53,6 +54,7 @@ public final class OpenDisplayEditorAction implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbenchWindow window) {
         _window = window;
     }
@@ -60,6 +62,7 @@ public final class OpenDisplayEditorAction implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(final IAction action) {
 //        String query = "x."+DisplayEditor.SDS_FILE_EXTENSION; //$NON-NLS-1$
 //
@@ -90,6 +93,7 @@ public final class OpenDisplayEditorAction implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
     }

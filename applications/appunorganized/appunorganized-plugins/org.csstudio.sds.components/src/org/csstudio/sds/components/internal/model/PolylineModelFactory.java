@@ -37,6 +37,7 @@ public final class PolylineModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         PolylineModel polylineElement = new PolylineModel();
         PointList points = new PointList();
@@ -53,6 +54,7 @@ public final class PolylineModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return PolylineModel.class;
     }

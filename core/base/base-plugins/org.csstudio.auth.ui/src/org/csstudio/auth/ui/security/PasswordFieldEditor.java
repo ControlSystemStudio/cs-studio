@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.security.SecureStorage;
-import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.resource.JFaceResources;

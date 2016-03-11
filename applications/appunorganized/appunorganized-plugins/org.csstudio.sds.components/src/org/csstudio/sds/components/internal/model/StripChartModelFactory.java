@@ -36,6 +36,7 @@ public final class StripChartModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new StripChartModel();
     }
@@ -43,6 +44,7 @@ public final class StripChartModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class<StripChartModel> getWidgetModelType() {
         return StripChartModel.class;
     }

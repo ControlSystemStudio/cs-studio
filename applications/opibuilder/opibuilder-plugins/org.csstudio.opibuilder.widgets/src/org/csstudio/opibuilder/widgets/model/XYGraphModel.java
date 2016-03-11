@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
-
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
@@ -29,8 +28,6 @@ import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Version;
 

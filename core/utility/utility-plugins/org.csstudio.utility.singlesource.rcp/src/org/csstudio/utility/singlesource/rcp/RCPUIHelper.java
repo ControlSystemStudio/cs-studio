@@ -96,6 +96,7 @@ public class RCPUIHelper extends UIHelper
         return path;
     }
 
+    @Override
     public IPath openDialog(final Shell shell, final int style,
             final IPath original, final String extension, String title) {
         if (title == null) {
@@ -198,6 +199,7 @@ public class RCPUIHelper extends UIHelper
     }
 
     /** {@inheritDoc} */
+    @Override
     public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
         // TODO Improve implementation
 
@@ -225,6 +227,7 @@ public class RCPUIHelper extends UIHelper
     }
 
     /** {@inheritDoc} */
+    @Override
     public void detachView(final IViewPart view) {
         // TODO Use more generic IWorkbenchPart?, getPartSite()?
         // Pre-E4 code:

@@ -53,6 +53,7 @@ public final class WidgetCreationFactory implements CreationFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getNewObject() {
         AbstractWidgetModel widgetModel = null;
 
@@ -72,6 +73,7 @@ public final class WidgetCreationFactory implements CreationFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getObjectType() {
         return WidgetModelFactoryService.getInstance().getWidgetModelType(_widgetType);
     }

@@ -23,6 +23,7 @@
 
 public class SystemInfoGeneratorFactory implements IDataGeneratorFactory {
 
+    @Override
     public AbstractDataGenerator createGenerator(LocalChannel channel,
             int defaultPeriod, String[] options) {
         return new SystemInfoGenerator(channel, defaultPeriod, options);

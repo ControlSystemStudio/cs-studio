@@ -29,6 +29,7 @@ public class WidgetPropertyPostProcessingService implements IWidgetPropertyPostP
     /**
      *{@inheritDoc}
      */
+    @Override
     public void applyForAllProperties(AbstractWidgetModel widget, EventType eventType) {
         for (WidgetProperty property : widget.getProperties()) {
             CompoundCommand chain = new CompoundCommand();
@@ -43,6 +44,7 @@ public class WidgetPropertyPostProcessingService implements IWidgetPropertyPostP
     /**
      *{@inheritDoc}
      */
+    @Override
     public void applyForSingleProperty(AbstractWidgetModel widget, WidgetProperty widgetProperty, CompoundCommand chain, EventType eventType) {
         for (AbstractWidgetPropertyPostProcessor processor : processors) {
             processor.applyAfterPropertyChangeCommands(widget, widgetProperty, chain, eventType);

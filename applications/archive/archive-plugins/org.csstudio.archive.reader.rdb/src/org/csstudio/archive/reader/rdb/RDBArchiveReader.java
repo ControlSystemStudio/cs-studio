@@ -65,6 +65,8 @@ public class RDBArchiveReader implements ArchiveReader
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
 
+    private boolean concurrency = false;
+
     /** Initialize
      *  @param url Database URL
      *  @param user .. user
@@ -102,8 +104,11 @@ public class RDBArchiveReader implements ArchiveReader
         this.use_array_blob = use_array_blob;
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = ConnectionCache.get(url, user, password);
+
         // Read-only allows MySQL to use load balancing
-        rdb.getConnection().setReadOnly(true);
+        if (!rdb.getConnection().isReadOnly()) {
+            rdb.getConnection().setReadOnly(true);
+        }
 
         final Dialect dialect = rdb.getDialect();
         switch (dialect)
@@ -366,7 +371,7 @@ public class RDBArchiveReader implements ArchiveReader
     public ValueIterator getRawValues(final int channel_id,
             final Timestamp start, final Timestamp end) throws Exception
     {
-        return new RawSampleIterator(this, channel_id, start, end);
+        return new RawSampleIterator(this, channel_id, start, end, concurrency);
     }
 
     /** {@inheritDoc} */
@@ -513,5 +518,10 @@ public class RDBArchiveReader implements ArchiveReader
     {
         cancel();
         ConnectionCache.release(rdb);
+    }
+
+    @Override
+    public void enableConcurrency(boolean concurrency) {
+        this.concurrency  = concurrency;
     }
 }

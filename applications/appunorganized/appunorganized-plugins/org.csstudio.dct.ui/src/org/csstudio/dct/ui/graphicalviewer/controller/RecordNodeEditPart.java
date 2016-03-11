@@ -195,6 +195,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connectionEditpart) {
         final Connection connection = (Connection) connectionEditpart.getModel();
         final int index = getCastedModel().getSourceConnections().indexOf(connection);
@@ -204,6 +205,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getSourceConnectionAnchor(final Request request) {
         return null;
     }
@@ -211,6 +213,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connectionEditpart) {
         return anchorCenter;
     }
@@ -218,6 +221,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public AbstractConnectionAnchor getTargetConnectionAnchor(final Request request) {
         return null;
     }
@@ -225,6 +229,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
 
     }
@@ -252,6 +257,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public void connectionStateChanged(final ConnectionState connectionState) {
         UiExecutionService.getInstance().queue(new Runnable() {
             public void run() {
@@ -269,6 +275,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public void errorOccured(final String error) {
 
     }
@@ -276,6 +283,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
     /**
      *{@inheritDoc}
      */
+    @Override
     public void valueChanged(final Object value, final Timestamp timestamp) {
     }
 

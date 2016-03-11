@@ -60,6 +60,7 @@ abstract class PropertySheetAction extends Action implements IWidgetSelectionLis
     /**
      * {@inheritDoc}
      */
+    @Override
     public void handleWidgetSelection(final Object[] selectedObjects) {
         this.setEnabled((selectedObjects!=null && selectedObjects.length>0));
     }

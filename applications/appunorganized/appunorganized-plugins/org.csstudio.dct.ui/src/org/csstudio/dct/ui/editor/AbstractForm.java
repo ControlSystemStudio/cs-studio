@@ -45,6 +45,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
     private static final Logger LOG = LoggerFactory.getLogger(AbstractForm.class);
 
     private final class ElementJumpLinkListener implements Listener {
+        @Override
         public void handleEvent(Event event) {
             UUID id = null;
 
@@ -217,6 +218,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
     /**
      *{@inheritDoc}
      */
+    @Override
     public final void commandStackChanged(EventObject event) {
         refresh();
     }

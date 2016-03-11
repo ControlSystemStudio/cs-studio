@@ -188,6 +188,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addMonitor(IConnectionMonitor monitor) {
         _monitorSupport.addMonitor(monitor);
     }
@@ -195,6 +196,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeMonitor(IConnectionMonitor monitor) {
         _monitorSupport.removeMonitor(monitor);
     }
@@ -202,6 +204,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isActive() {
         return _allConnectionsActive;
     }

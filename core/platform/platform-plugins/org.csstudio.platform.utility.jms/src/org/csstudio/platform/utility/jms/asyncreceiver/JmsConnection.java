@@ -228,6 +228,7 @@ final class JmsConnection implements TransportListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onCommand(final Object command) {
         // do nothing
     }
@@ -239,6 +240,7 @@ final class JmsConnection implements TransportListener {
      * @param e
      *            the exception.
      */
+    @Override
     public void onException(final IOException e) {
         // TODO perform recovery in this case?
 //        _log.error(this, "Exception occurred.", e);
@@ -248,6 +250,7 @@ final class JmsConnection implements TransportListener {
     /**
      * Called when the JMS transport is interrupted.
      */
+    @Override
     public void transportInterupted() {
 //        _log.debug(this, "Transport interrupted.");
         _interrupted = true;
@@ -257,6 +260,7 @@ final class JmsConnection implements TransportListener {
     /**
      * Called when the JMS transport is resumed.
      */
+    @Override
     public void transportResumed() {
 //        _log.debug(this, "Transport resumed.");
         _interrupted = false;

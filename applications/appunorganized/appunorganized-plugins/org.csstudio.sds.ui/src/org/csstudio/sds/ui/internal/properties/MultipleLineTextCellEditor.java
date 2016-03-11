@@ -203,6 +203,7 @@ public final class MultipleLineTextCellEditor extends AbstractDialogCellEditor {
                  */
                 private static final int RETURN = 13;
 
+                @Override
                 public void keyPressed(final KeyEvent e) {
                     if (e.keyCode == SWT.ESC) {
                         buttonPressed(IDialogConstants.CANCEL_ID);

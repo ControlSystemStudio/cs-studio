@@ -24,6 +24,7 @@ public class DisposeConnectorAction implements IObjectActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 
     }
@@ -31,6 +32,7 @@ public class DisposeConnectorAction implements IObjectActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run(IAction action) {
         if(_selectedConnectors!=null) {
             for(IConnector c : _selectedConnectors) {
@@ -42,6 +44,7 @@ public class DisposeConnectorAction implements IObjectActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection != null && selection instanceof IStructuredSelection) {
             IStructuredSelection sel = (IStructuredSelection) selection;

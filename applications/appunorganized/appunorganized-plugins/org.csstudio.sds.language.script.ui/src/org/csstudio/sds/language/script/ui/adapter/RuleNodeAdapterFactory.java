@@ -16,6 +16,7 @@ class RuleNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -48,6 +49,7 @@ class RuleNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         return new Class[] { RuleNode.class };

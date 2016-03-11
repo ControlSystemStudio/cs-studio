@@ -29,6 +29,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void init(IViewPart view) {
         outlineView = (ContentOutline) view;
     }
@@ -36,6 +37,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void run(IAction action) {
         Command command = createCommand(selectedElements);
         if (command != null) {
@@ -59,6 +61,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {

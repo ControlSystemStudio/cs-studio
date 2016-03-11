@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.datasource.ValueCache;
@@ -85,7 +84,6 @@ public class BeastChannelHandler extends
 
     @Override
     protected void connect() {
-        // TODO Auto-generated method stub
         log.fine("connect: " + getChannelName());
         datasource.add(getChannelName(), this);
         initialize();
@@ -97,16 +95,25 @@ public class BeastChannelHandler extends
     }
 
     private void initialize() {
-        log.fine("initialize: " +  getChannelName());
+        log.fine("initialize: " + getChannelName());
         AlarmTreeItem initialState;
         try {
             initialState = datasource.getState(getChannelName());
+            processConnection(new BeastConnectionPayload(datasource.isConnected())); // always send at least the connection state
             if (initialState != null) {
-                processConnection(new BeastConnectionPayload(initialState, datasource.isConnected()));
                 processMessage(new BeastMessagePayload(initialState));
             }
         } catch (Exception e) {
             reportExceptionToAllReadersAndWriters(e);
+        }
+    }
+
+    protected void connectionStateChanged(boolean connected) {
+//        log.info("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
+        try {
+            processConnection(new BeastConnectionPayload(connected));
+        } catch (Exception e) {
+            log.warning("connectionStateChange: processConnection threw an exception: " + e.toString());
         }
     }
 

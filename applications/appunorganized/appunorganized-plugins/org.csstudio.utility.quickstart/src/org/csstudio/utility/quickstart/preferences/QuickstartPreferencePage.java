@@ -23,7 +23,6 @@
 
 import org.csstudio.utility.quickstart.Activator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -47,6 +46,7 @@ public class QuickstartPreferencePage
     /**
      * List of selected files in quickstart menu.
      */
+    @Override
     public final void createFieldEditors() {
         addField(new PreferenceTableEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()));
     }
@@ -54,6 +54,7 @@ public class QuickstartPreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

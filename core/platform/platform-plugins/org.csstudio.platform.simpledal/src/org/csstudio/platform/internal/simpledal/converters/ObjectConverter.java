@@ -35,6 +35,7 @@ class ObjectConverter implements IValueTypeConverter<Object> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object convert(Object value) {
         Object result = value!=null?value:new Object();
         assert result != null;

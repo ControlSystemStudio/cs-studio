@@ -2,8 +2,8 @@
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<title>Main Topic</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Main Topic</title>
 </head>
 
 <body>
@@ -18,200 +18,200 @@ an AbstractWidgetModel for BOY which is then written out by the normal file save
 <h2>Widget Mapping and the limits on the conversion</h2>
 The MEDM widgets map to the following BOY widgets:
 <ul>
-	<li>Graphics
-		<table border="1">
-		<tr>
-			<td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
-		</tr>
-		<tr>
-			<td>Rectangle</td><td>Rectangle</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Arc</td><td>Arc</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Polyline</td><td>Polyline</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Polygon</td><td>Polygon</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Oval</td><td>Ellipse</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Text</td><td>Label</td>
-			<td>Text alignment is not yet handled<br/>
-			See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Line</td><td>Polyline</td>
-			<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		<tr>
-			<td>Image</td><td>Image</td>
-			<td>Image Type not handled<br/>
-			Image Name not handled<br/>
-			Image Calc not handled<br/>
-			Need a better way to set the image path.<br/>
-			See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-		</tr>
-		</table>
-	</li>
-	<li>Monitors
-		<table border="1">
-			<tr>
-				<td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
-			</tr>
-			<tr>
-				<td>Meter</td><td>Meter</td>
-				<td>See conversion of <a href="#limits">Limits</a><br/>
-				No way to show the value of the channel in the meter widget<br/>
-				See conversion of <a href="#color_mode">color mode</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Strip Chart</td><td></td>
-				<td>Not yet handled</td>
-			</tr>
-			<tr>
-				<td>Scale</td><td></td>
-				<td>Not yet handled</td>
-			</tr>
-			<tr>
-				<td>Byte</td><td>Byte Monitor</td>
-				<td>This has just been started.  Use caution.</td>
-			</tr>
-			<tr>
-				<td>Bar</td><td>Tank</td>
-				<td>This conversion is not handled well at this point.  The tank is not the best substitute but there really isn't another choice.</td>
-			</tr>
-			<tr>
-				<td>Text Monitor</td><td>Text Update</td>
-				<td>Limits not handled<br/>Not 
-				all Format options handled<br></br>
-				Not all color modes are handled</td>
-			</tr>
-			<tr>
-				<td>Cartesian Plot</td><td>XY Graph</td>
-				<td></td>
-			</tr>
-		</table>
-	</li>
-	<li>Controllers
-		<table border="1">
-			<tr>
-				<td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
-			</tr>
-			<tr>
-				<td>Choice Button</td><td>Choice Button</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Message Button</td><td>Action Button</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Slider</td><td>Scaled Slider</td>
-				<td>Increment not handled<br>Color Mode not handled<br>Direction not handled<br>Label not handled<br>Limits not handled</td>
-			</tr>
-			<tr>
-				<td>Shell Command</td><td></td>
-				<td>Not implemented</td>
-			</tr>
-			<tr>
-				<td>Text Entry</td><td>Text Input</td>
-				<td>Limits not handled<br>
-				Not all format options handled<br/>Not all
-				color mode not handled</td>
-			</tr>
-			<tr>
-				<td>Menu</td><td>Menu Button</td>
-				<td>See conversion of <a href="#color_mode">color mode</a><br>On some platforms MEDM does not set the color.  This option was added to prevent<br>interactions with CDE.  If the color was set in MEDM this color will be used in the<br>conversion.  Comparison on some platforms may indicate a problem.  The Windows<br>MEDM distribution seems to have display the colors properly.</td>
-			</tr>
-			<tr>
-				<td>Related Display</td><td>Action Button</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Wheel Switch</td><td></td>
-				<td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-			</tr>
-		</table>
-	</li>
-	<li>Others
-		<table border="1">
-			<tr>
-				<td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
-			</tr>
-			<tr>
-				<td>Composite</td><td>Grouping container if no Composite file is specified<br/>
-				Linking container if a composite file is specified</td>
-				<td>Composite file not yet handled completely<br/>
-				See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
-			</tr>
-		</table>
-	</li>
+    <li>Graphics
+        <table border="1">
+        <tr>
+            <td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
+        </tr>
+        <tr>
+            <td>Rectangle</td><td>Rectangle</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Arc</td><td>Arc</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Polyline</td><td>Polyline</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Polygon</td><td>Polygon</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Oval</td><td>Ellipse</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Text</td><td>Label</td>
+            <td>Text alignment is not yet handled<br/>
+            See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Line</td><td>Polyline</td>
+            <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        <tr>
+            <td>Image</td><td>Image</td>
+            <td>Image Type not handled<br/>
+            Image Name not handled<br/>
+            Image Calc not handled<br/>
+            Need a better way to set the image path.<br/>
+            See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+        </tr>
+        </table>
+    </li>
+    <li>Monitors
+        <table border="1">
+            <tr>
+                <td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
+            </tr>
+            <tr>
+                <td>Meter</td><td>Meter</td>
+                <td>See conversion of <a href="#limits">Limits</a><br/>
+                No way to show the value of the channel in the meter widget<br/>
+                See conversion of <a href="#color_mode">color mode</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Strip Chart</td><td></td>
+                <td>Not yet handled</td>
+            </tr>
+            <tr>
+                <td>Scale</td><td></td>
+                <td>Not yet handled</td>
+            </tr>
+            <tr>
+                <td>Byte</td><td>Byte Monitor</td>
+                <td>This has just been started.  Use caution.</td>
+            </tr>
+            <tr>
+                <td>Bar</td><td>Tank</td>
+                <td>This conversion is not handled well at this point.  The tank is not the best substitute but there really isn't another choice.</td>
+            </tr>
+            <tr>
+                <td>Text Monitor</td><td>Text Update</td>
+                <td>Limits not handled<br/>Not
+                all Format options handled<br></br>
+                Not all color modes are handled</td>
+            </tr>
+            <tr>
+                <td>Cartesian Plot</td><td>XY Graph</td>
+                <td></td>
+            </tr>
+        </table>
+    </li>
+    <li>Controllers
+        <table border="1">
+            <tr>
+                <td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
+            </tr>
+            <tr>
+                <td>Choice Button</td><td>Choice Button</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Message Button</td><td>Action Button</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Slider</td><td>Scaled Slider</td>
+                <td>Increment not handled<br>Color Mode not handled<br>Direction not handled<br>Label not handled<br>Limits not handled</td>
+            </tr>
+            <tr>
+                <td>Shell Command</td><td></td>
+                <td>Not implemented</td>
+            </tr>
+            <tr>
+                <td>Text Entry</td><td>Text Input</td>
+                <td>Limits not handled<br>
+                Not all format options handled<br/>Not all
+                color mode not handled</td>
+            </tr>
+            <tr>
+                <td>Menu</td><td>Menu Button</td>
+                <td>See conversion of <a href="#color_mode">color mode</a><br>On some platforms MEDM does not set the color.  This option was added to prevent<br>interactions with CDE.  If the color was set in MEDM this color will be used in the<br>conversion.  Comparison on some platforms may indicate a problem.  The Windows<br>MEDM distribution seems to have display the colors properly.</td>
+            </tr>
+            <tr>
+                <td>Related Display</td><td>Action Button</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Wheel Switch</td><td></td>
+                <td>See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+            </tr>
+        </table>
+    </li>
+    <li>Others
+        <table border="1">
+            <tr>
+                <td>MEDM</td><td>BOY</td><td>Limit of conversion</td>
+            </tr>
+            <tr>
+                <td>Composite</td><td>Grouping container if no Composite file is specified<br/>
+                Linking container if a composite file is specified</td>
+                <td>Composite file not yet handled completely<br/>
+                See limits on  <a href="#dynAttr">Dynamic Attributes</a></td>
+            </tr>
+        </table>
+    </li>
 </ul>
 
 <h2>Limits on conversions by MEDM Widget Parts</h2>
-	<table border="1">
-		<tr>
-			<td>Widget Part</td><td>Limits</td>
-		</tr>
-		<tr>
-		<td>Object</td><td></td>
-		</tr>
-		<tr>
-		<td>Bassic Attribute</td><td></td>
-		</tr>
+    <table border="1">
+        <tr>
+            <td>Widget Part</td><td>Limits</td>
+        </tr>
+        <tr>
+        <td>Object</td><td></td>
+        </tr>
+        <tr>
+        <td>Bassic Attribute</td><td></td>
+        </tr>
 
-		<tr>
-		<td><a name="dynAttr">Dynamic attribute</a></td><td>Not handling the calc option for visibility</td>
-		</tr>
-		<tr>
-		<td>Monitor</td><td></td>
-		</tr>
-		<tr>
-		<td>Control</td><td></td>
-		</tr>
-		<tr>
-		<td>Children</td><td></td>
-		</tr>
-		<tr>
-		<td><a name="color_mode">Color Mode</a></td><td>discrete not handled</td>
-		</tr>
-		<tr>
-		<td><a name="limits">Limits</a></td><td>Not yet handled</td>
-		</tr>
-		<tr>
-		<td>Menu Item</td><td></td>
-		</tr>
-		<tr>
-		<td>Points</td><td></td>
-		</tr>
-		<tr>
-		<td>Sensitive</td><td></td>
-		</tr>
-		<tr>
-		<td>Related Display Item</td><td></td>
-		</tr>
-		<tr>
-		<td>Pen</td><td></td>
-		</tr>
-		<tr>
-		<td>Plot Com</td><td></td>
-		</tr>
-		<tr>
-		<td>Plot Data</td><td></td>
-		</tr>
-		<tr>
-		<td>Plot Trace</td><td></td>
-		</tr>
-	</table>
+        <tr>
+        <td><a name="dynAttr">Dynamic attribute</a></td><td>Not handling the calc option for visibility</td>
+        </tr>
+        <tr>
+        <td>Monitor</td><td></td>
+        </tr>
+        <tr>
+        <td>Control</td><td></td>
+        </tr>
+        <tr>
+        <td>Children</td><td></td>
+        </tr>
+        <tr>
+        <td><a name="color_mode">Color Mode</a></td><td>discrete not handled</td>
+        </tr>
+        <tr>
+        <td><a name="limits">Limits</a></td><td>Not yet handled</td>
+        </tr>
+        <tr>
+        <td>Menu Item</td><td></td>
+        </tr>
+        <tr>
+        <td>Points</td><td></td>
+        </tr>
+        <tr>
+        <td>Sensitive</td><td></td>
+        </tr>
+        <tr>
+        <td>Related Display Item</td><td></td>
+        </tr>
+        <tr>
+        <td>Pen</td><td></td>
+        </tr>
+        <tr>
+        <td>Plot Com</td><td></td>
+        </tr>
+        <tr>
+        <td>Plot Data</td><td></td>
+        </tr>
+        <tr>
+        <td>Plot Trace</td><td></td>
+        </tr>
+    </table>
 </body>
 </html>

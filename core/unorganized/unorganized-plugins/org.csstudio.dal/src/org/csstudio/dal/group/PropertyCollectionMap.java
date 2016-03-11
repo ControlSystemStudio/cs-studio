@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.csstudio.dal.DynamicValueProperty;
-import org.csstudio.dal.device.DeviceCollectionMap;
 
 import com.cosylab.util.ListenerList;
 

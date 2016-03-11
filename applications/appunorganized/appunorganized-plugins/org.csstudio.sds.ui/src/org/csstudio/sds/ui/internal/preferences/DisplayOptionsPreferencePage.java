@@ -131,6 +131,7 @@ public final class DisplayOptionsPreferencePage extends
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

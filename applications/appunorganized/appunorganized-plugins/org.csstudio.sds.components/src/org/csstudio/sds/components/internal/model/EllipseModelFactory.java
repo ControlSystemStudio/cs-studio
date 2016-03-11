@@ -36,6 +36,7 @@ public final class EllipseModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new EllipseModel();
     }
@@ -43,6 +44,7 @@ public final class EllipseModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public Class getWidgetModelType() {
         return EllipseModel.class;
     }

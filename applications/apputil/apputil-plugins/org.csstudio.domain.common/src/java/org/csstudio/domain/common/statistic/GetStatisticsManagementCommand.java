@@ -44,6 +44,7 @@ public class GetStatisticsManagementCommand implements IManagementCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
         return CommandResult.createSuccessResult(stats, TYPE);

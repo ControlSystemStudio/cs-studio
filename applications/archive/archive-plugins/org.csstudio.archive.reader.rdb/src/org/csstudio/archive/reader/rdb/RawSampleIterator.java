@@ -27,11 +27,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     /** Result of <code>sel_samples</code> */
     private ResultSet result_set = null;
 
+    private boolean concurrency = false;
+
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
     private VType value = null;
-
     /** Initialize
      *  @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -41,9 +42,10 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     public RawSampleIterator(final RDBArchiveReader reader,
             final int channel_id, final Timestamp start,
-            final Timestamp end) throws Exception
+            final Timestamp end, boolean concurrency) throws Exception
     {
         super(reader, channel_id);
+        this.concurrency = concurrency;
         try
         {
             determineInitialSample(start, end);
@@ -55,6 +57,19 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             // Else: Not a real error; return empty iterator
             value = null;
         }
+    }
+    /** Initialize
+     *  @param reader RDBArchiveReader
+     *  @param channel_id ID of channel
+     *  @param start Start time
+     *  @param end End time
+     *  @throws Exception on error
+     */
+    public RawSampleIterator(final RDBArchiveReader reader,
+            final int channel_id, final Timestamp start,
+            final Timestamp end) throws Exception
+    {
+        this(reader, channel_id, start, end, false);
     }
 
     /** Get the samples: <code>result_set</code> will have the samples,
@@ -100,12 +115,23 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         }
 
         // Fetch the samples
-        if (reader.useArrayBlob())
-            sel_samples = reader.getConnection().prepareStatement(
-                    reader.getSQL().sample_sel_by_id_start_end_with_blob);
-        else
-            sel_samples = reader.getConnection().prepareStatement(
-                    reader.getSQL().sample_sel_by_id_start_end);
+        if (reader.useArrayBlob()) {
+            if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end_with_blob, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            } else {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end_with_blob);
+            }
+        } else {
+            if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            } else {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end);
+            }
+        }
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
 
         // Test w/ ~170000 raw samples:
@@ -207,5 +233,9 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                  // Ignore
              }
         }
+    }
+
+    public void setConcurrency(boolean concurrency) {
+        this.concurrency = concurrency;
     }
 }

@@ -1,7 +1,6 @@
 package org.csstudio.dct.metamodel.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addRecordDefinition(IRecordDefinition recordDefinition) {
         recordDefinitions.put(recordDefinition.getType(), recordDefinition);
     }
@@ -41,6 +41,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRecordDefinition getRecordDefinition(String recordType) {
         return recordDefinitions.get(recordType);
     }
@@ -48,6 +49,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IRecordDefinition> getRecordDefinitions() {
         return new ArrayList<IRecordDefinition>(recordDefinitions.values());
     }
@@ -55,6 +57,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeRecordDefinition(IRecordDefinition recordDefinition) {
         recordDefinitions.remove(recordDefinition.getType());
     }
@@ -62,6 +65,7 @@ public final class DatabaseDefinition implements IDatabaseDefinition {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDbdVersion() {
         return dbdVersion;
     }

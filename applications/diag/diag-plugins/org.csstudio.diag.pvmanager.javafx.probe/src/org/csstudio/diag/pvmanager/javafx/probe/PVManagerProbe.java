@@ -1,57 +1,16 @@
 package org.csstudio.diag.pvmanager.javafx.probe;
 
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.diirt.datasource.formula.ExpressionLanguage.*;
-import static org.diirt.util.time.TimeDuration.*;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.csstudio.ui.util.widgets.ErrorBar;
-import org.csstudio.ui.util.widgets.PVFormulaInputBar;
-import org.diirt.datasource.PV;
-import org.diirt.datasource.PVManager;
-import org.diirt.datasource.PVReaderEvent;
-import org.diirt.datasource.PVReaderListener;
-import org.diirt.datasource.TimeoutException;
-import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
 import org.diirt.javafx.tools.Probe;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.wb.swt.ResourceManager;
 
 /**
  * Probe view.

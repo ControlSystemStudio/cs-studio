@@ -196,6 +196,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
 
@@ -204,6 +205,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getElements(final Object parent) {
             return (Object[]) parent;
         }
@@ -211,6 +213,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
 
         }
@@ -236,6 +239,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
@@ -243,6 +247,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getColumnText(final Object element, final int columnIndex) {
             String result = ""; //$NON-NLS-1$
             MeasureCategoriesEnum category = (MeasureCategoriesEnum) element;
@@ -286,18 +291,21 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void addListener(final ILabelProviderListener listener) {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void dispose() {
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean isLabelProperty(final Object element,
                 final String property) {
             return false;
@@ -306,6 +314,7 @@ public final class PerformanceMeasuresView extends ViewPart {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
         }
     }

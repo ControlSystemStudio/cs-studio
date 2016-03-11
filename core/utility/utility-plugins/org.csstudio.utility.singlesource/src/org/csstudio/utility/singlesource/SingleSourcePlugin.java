@@ -33,6 +33,7 @@ public class SingleSourcePlugin implements BundleActivator
     private static UIHelper ui;
 
     /** {@inheritDoc} */
+    @Override
     public void start(final BundleContext context) throws Exception
     {
         // Registry lookup
@@ -57,6 +58,7 @@ public class SingleSourcePlugin implements BundleActivator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop(final BundleContext context) throws Exception
     {
         SingleSourcePlugin.resources = null;

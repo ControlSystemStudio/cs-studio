@@ -383,6 +383,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void layerChanged(final org.csstudio.sds.internal.model.Layer layer, final String property) {
         new CheckedUiRunnable() {
             @Override
@@ -411,7 +412,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
      * Called by child editparts when their current layer has changed.
      *
      * Note: Layers are only supported if the figure for this editpart used a
-     * {@link LayeredWidgetPane} as its content pane. Otherwise this call won´t
+     * {@link LayeredWidgetPane} as its content pane. Otherwise this call wonï¿½t
      * have any effect.
      *
      * @param childEditPart

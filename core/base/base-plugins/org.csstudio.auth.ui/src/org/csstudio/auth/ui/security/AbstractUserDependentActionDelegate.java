@@ -49,6 +49,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void run(final IAction action) {
         _action = action;
         updateState();
@@ -58,6 +59,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void selectionChanged(final IAction action, final ISelection selection) {
         _action = action;
         updateState();

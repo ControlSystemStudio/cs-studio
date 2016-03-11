@@ -35,6 +35,7 @@ public final class SdsActivationAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         assert adaptableObject != null;
@@ -50,6 +51,7 @@ public final class SdsActivationAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         return new Class[] { IActivationAdapter.class };
@@ -64,6 +66,7 @@ public final class SdsActivationAdapterFactory implements IAdapterFactory {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void activate(final Object o, final boolean activate) {
             assert o instanceof AbstractWidgetModel : "adaptableObject instanceof AbstractWidgetModel"; //$NON-NLS-1$
             AbstractWidgetModel model = (AbstractWidgetModel) o;

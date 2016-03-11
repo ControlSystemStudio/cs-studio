@@ -14,10 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Record;
@@ -194,6 +191,7 @@ public final class FieldFunctionServiceTest implements IFieldFunction {
     /**
      *{@inheritDoc}
      */
+    @Override
     public String evaluate(String name, String[] parameters, IRecord record, String fieldName) throws Exception {
         if (parameters == null || parameters.length != 2) {
             throw new Exception("This function expects 2 parameters.");

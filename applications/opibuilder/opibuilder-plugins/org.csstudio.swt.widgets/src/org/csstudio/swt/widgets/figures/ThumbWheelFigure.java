@@ -570,6 +570,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
     /**
      * {@inheritDoc}
      */
+    @Override
     public void paintFigure(final Graphics graphics) {
         graphics.setBackgroundColor(this.getBackgroundColor());
         Rectangle bounds = this.getBounds().getCopy();

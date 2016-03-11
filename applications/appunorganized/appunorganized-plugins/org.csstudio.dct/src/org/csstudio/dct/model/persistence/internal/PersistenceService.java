@@ -50,6 +50,7 @@ public final class PersistenceService implements IPersistenceService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void saveProject(IFile file, Project project) throws Exception {
         file.setContents(getAsStream(project), true, false, new NullProgressMonitor());
     }
@@ -57,7 +58,7 @@ public final class PersistenceService implements IPersistenceService {
     /**
      *{@inheritDoc}
      */
-
+    @Override
     public InputStream getAsStream(Project project) throws Exception {
         Format format = Format.getPrettyFormat();
 //        format.setEncoding("ISO-8859-1");
@@ -78,6 +79,7 @@ public final class PersistenceService implements IPersistenceService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public Project loadProject(IFile file) throws Exception {
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(file.getContents());
@@ -94,6 +96,7 @@ public final class PersistenceService implements IPersistenceService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public IDatabaseDefinition loadDatabaseDefinition(String path) {
         IDatabaseDefinition result = null;
 

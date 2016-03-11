@@ -14,16 +14,12 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
 
 import gov.bnl.shiftClient.Shift;
@@ -35,7 +31,6 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 
@@ -227,7 +222,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
         if (visibleColumns.contains("Type")) {
             final TableViewerColumn tableViewerColumnType = new TableViewerColumn(
-                    shiftTableViewer, 
+                    shiftTableViewer,
                     SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
             tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
                 public String getText(final Object element) {
@@ -277,7 +272,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
         if (visibleColumns.contains("On Shift Personal")) {
             final TableViewerColumn tableViewerColumnLeadOperator = new TableViewerColumn(
-                    shiftTableViewer, 
+                    shiftTableViewer,
                     SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
             tableViewerColumnLeadOperator
                     .setLabelProvider(new ColumnLabelProvider() {
@@ -307,7 +302,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
         if (visibleColumns.contains("On Shift Personal")) {
             final TableViewerColumn tableViewerColumnOnShiftPersonal = new TableViewerColumn(
-                    shiftTableViewer, 
+                    shiftTableViewer,
                     SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
             tableViewerColumnOnShiftPersonal
                     .setLabelProvider(new ColumnLabelProvider() {
@@ -465,5 +460,5 @@ public class ShiftTable extends Composite implements ISelectionProvider {
     public List<String> getColumns() {
         return columns;
     }
- 
+
 }

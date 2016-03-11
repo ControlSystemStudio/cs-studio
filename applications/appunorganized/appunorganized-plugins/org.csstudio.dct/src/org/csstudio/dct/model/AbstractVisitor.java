@@ -16,18 +16,21 @@ public abstract class AbstractVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(Project project) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IFolder folder) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IPrototype prototype) {
 
     }
@@ -35,6 +38,7 @@ public abstract class AbstractVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IInstance instance) {
 
     }
@@ -42,6 +46,7 @@ public abstract class AbstractVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
 
     }

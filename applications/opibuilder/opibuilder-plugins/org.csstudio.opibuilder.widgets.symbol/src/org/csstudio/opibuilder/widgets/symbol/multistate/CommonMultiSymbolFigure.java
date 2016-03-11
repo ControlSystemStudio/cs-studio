@@ -48,7 +48,7 @@ import org.eclipse.swt.graphics.Font;
 public abstract class CommonMultiSymbolFigure extends Figure implements SymbolImageListener {
 
     private static final String BOOLEAN_VALUE_TRUE = "true";
-	protected String baseImagePath;
+    protected String baseImagePath;
     protected Map<Integer, String> statesMap;
 
     protected SymbolImageProperties symbolProperties;
@@ -224,34 +224,34 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         }
         setState(index);
     }
-    
+
     public synchronized void setState(VBoolean stateBoolean) {
-    	String state = ((VBoolean) stateBoolean).getValue().toString().toLowerCase();
-    	int index = statesStr.indexOf(state);
-    	if (index < 0) { // search if image exists
-    		try {
-    			statesDbl.add(Double.valueOf(state));
-    		} catch (NumberFormatException e) {
-    			statesDbl.add(null);
-    		}
-    		statesStr.add(state);
-    		index = BOOLEAN_VALUE_TRUE.equals(state)?1:0;
-    		statesMap.put(index, state);
-    		initRemainingStates(statesMap);
-    		IPath path = findImage(index);
-    		if (path == null)
-    			path = symbolImagePath;
-    		remainingImagesToLoad = 1;
-    		loadImageFromFile(path, index);
-    	}
-    	setState(index);
+        String state = ((VBoolean) stateBoolean).getValue().toString().toLowerCase();
+        int index = statesStr.indexOf(state);
+        if (index < 0) { // search if image exists
+            try {
+                statesDbl.add(Double.valueOf(state));
+            } catch (NumberFormatException e) {
+                statesDbl.add(null);
+            }
+            statesStr.add(state);
+            index = BOOLEAN_VALUE_TRUE.equals(state)?1:0;
+            statesMap.put(index, state);
+            initRemainingStates(statesMap);
+            IPath path = findImage(index);
+            if (path == null)
+                path = symbolImagePath;
+            remainingImagesToLoad = 1;
+            loadImageFromFile(path, index);
+        }
+        setState(index);
     }
 
-	private void initRemainingStates(Map<Integer, String> statesMapCurrent) {
-		for(int i=2; i<8; i++){
-			statesMapCurrent.put(i,String.valueOf(i));
-		}
-	}
+    private void initRemainingStates(Map<Integer, String> statesMapCurrent) {
+        for(int i=2; i<8; i++){
+            statesMapCurrent.put(i,String.valueOf(i));
+        }
+    }
 
     /**
      * Set all the state string values.
@@ -304,7 +304,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
      * @param imagePath
      */
     public void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
-    	this.model = model;
+        this.model = model;
         if (imagePath == null || imagePath.isEmpty())
             return;
         if (!SymbolUtils.isExtensionAllowed(imagePath)) {
@@ -357,32 +357,32 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         IPath path = SymbolUtils.searchStateImage(statesMap.get(stateIndex), baseImagePath);
         if (path == null)
             path = SymbolUtils.searchStateImage(stateIndex, baseImagePath);
-        
+
         return path;
     }
 
     private void loadImageFromFile(final IPath imagePath, final Integer stateIndex) {
         if (imagePath != null && !imagePath.isEmpty()) {
             switch (executionMode) {
-                case RUN_MODE:
-                    if (stateIndex != null) {
-                        SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
-                                this);
-                        if (stateIndex != currentStateIndex)
-                            img.setVisible(false);
-                        if (images != null)
-                            images.put(stateIndex, img);
-                    } else {
-                        disposeCurrent();
-                        currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, true,
-                                symbolProperties, this);
-                    }
-                    break;
-                case EDIT_MODE:
-                    disposeCurrent();
-                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, false, symbolProperties,
+            case RUN_MODE:
+                if (stateIndex != null) {
+                    SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
                             this);
-                    break;
+                    if (stateIndex != currentStateIndex)
+                        img.setVisible(false);
+                    if (images != null)
+                        images.put(stateIndex, img);
+                } else {
+                    disposeCurrent();
+                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, true,
+                            symbolProperties, this);
+                }
+                break;
+            case EDIT_MODE:
+                disposeCurrent();
+                currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, false, symbolProperties,
+                        this);
+                break;
             }
         }
     }
@@ -494,35 +494,35 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         int x = 0;
         if (textArea.width > textSize.width) {
             switch (labelPosition) {
-                case CENTER:
-                case TOP:
-                case BOTTOM:
-                    x = (textArea.width - textSize.width) / 2;
-                    break;
-                case RIGHT:
-                case TOP_RIGHT:
-                case BOTTOM_RIGHT:
-                    x = textArea.width - textSize.width;
-                    break;
-                default:
-                    break;
+            case CENTER:
+            case TOP:
+            case BOTTOM:
+                x = (textArea.width - textSize.width) / 2;
+                break;
+            case RIGHT:
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+                x = textArea.width - textSize.width;
+                break;
+            default:
+                break;
             }
         }
         int y = 0;
         if (textArea.height > textSize.height) {
             switch (labelPosition) {
-                case CENTER:
-                case LEFT:
-                case RIGHT:
-                    y = (textArea.height - textSize.height) / 2;
-                    break;
-                case BOTTOM:
-                case BOTTOM_LEFT:
-                case BOTTOM_RIGHT:
-                    y = textArea.height - textSize.height;
-                    break;
-                default:
-                    break;
+            case CENTER:
+            case LEFT:
+            case RIGHT:
+                y = (textArea.height - textSize.height) / 2;
+                break;
+            case BOTTOM:
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                y = textArea.height - textSize.height;
+                break;
+            default:
+                break;
             }
         }
         if (useLocalCoordinates())
@@ -697,7 +697,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
             Dimension labelSize = label.getPreferredSize();
             label.setBounds(new Rectangle(getLabelLocation(clientArea.x + clientArea.width / 2 - labelSize.width / 2,
                     clientArea.y + clientArea.height / 2 - labelSize.height / 2), new Dimension(labelSize.width,
-                    labelSize.height)));
+                            labelSize.height)));
         }
         super.layout();
     }

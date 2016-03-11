@@ -15,6 +15,7 @@ public final class ThermometerModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new ThermometerModel();
     }
@@ -22,6 +23,7 @@ public final class ThermometerModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return ThermometerModel.class;

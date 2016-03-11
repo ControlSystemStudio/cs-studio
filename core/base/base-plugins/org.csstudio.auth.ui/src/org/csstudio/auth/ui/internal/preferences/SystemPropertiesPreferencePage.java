@@ -238,6 +238,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IWorkbench workbench) {
         // nothing to do
     }
@@ -319,6 +320,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
+        @Override
         public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof PropertiesModel) {
                 return ((PropertiesModel) inputElement)._entries.toArray();
@@ -352,6 +354,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * Disposes of this content provider.
          */
+        @Override
         public void dispose() {
             // nothing to do
         }
@@ -359,6 +362,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
             if (viewer instanceof TableViewer) {
@@ -382,6 +386,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
+        @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;  // no images
         }
@@ -389,6 +394,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof SystemPropertyPreferenceEntry) {
                 SystemPropertyPreferenceEntry entry =

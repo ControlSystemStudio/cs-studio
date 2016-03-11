@@ -16,7 +16,7 @@ public class DeviceInfoWidget extends Composite {
     private Device device;
 
     public DeviceInfoWidget(Composite parent, int style) {
-    super(parent, style);
+        super(parent, style);
     }
 
 }

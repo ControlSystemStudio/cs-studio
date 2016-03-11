@@ -36,6 +36,7 @@ public final class TriangleModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new TriangleModel();
     }
@@ -43,6 +44,7 @@ public final class TriangleModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class getWidgetModelType() {
         return TriangleModel.class;

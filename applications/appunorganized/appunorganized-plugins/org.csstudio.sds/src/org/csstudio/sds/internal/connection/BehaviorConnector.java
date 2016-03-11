@@ -42,6 +42,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     /**
      *{@inheritDoc}
      */
+    @Override
     public void channelDataUpdate(AnyDataChannel channel) {
         behavior.processChannelDataUpdate(widget, channel);
     }
@@ -49,6 +50,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     /**
      *{@inheritDoc}
      */
+    @Override
     public void channelStateUpdate(AnyDataChannel channel) {
         behavior.processChannelStateUpdate(widget, channel);
     }
@@ -60,6 +62,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     /**
      *{@inheritDoc}
      */
+    @Override
     public void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor) {
         // ignore
     }
@@ -67,6 +70,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyManualValueChanged(String propertyId, Object manualValue) {
         Object value2set = behavior.convertOutgoingValue(widget, propertyId, manualValue);
 
@@ -83,6 +87,7 @@ public final class BehaviorConnector implements ChannelListener, org.csstudio.sd
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyValueChanged(Object oldValue, Object newValue) {
         // ignore
     }

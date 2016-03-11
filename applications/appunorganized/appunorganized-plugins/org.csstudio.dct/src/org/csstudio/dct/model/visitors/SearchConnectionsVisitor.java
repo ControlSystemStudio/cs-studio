@@ -1,14 +1,10 @@
 package org.csstudio.dct.model.visitors;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IProject;
@@ -17,12 +13,10 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.Project;
 import org.csstudio.dct.nameresolution.RecordFinder;
-import org.csstudio.dct.nameresolution.internal.FieldFunctionService;
-import org.csstudio.dct.nameresolution.internal.ForwardLinkFieldFunction;
 
 /**
  * Visitor implementation that can be used to find instances using their
- * prototype´s id as search criteria.
+ * prototypeï¿½s id as search criteria.
  *
  * @author swende
  *
@@ -36,24 +30,28 @@ public final class SearchConnectionsVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(Project project) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IFolder folder) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IPrototype prototype) {
     }
 
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
         for (String source : record.getFinalFields().values()) {
             if (source != null) {
@@ -95,6 +93,7 @@ public final class SearchConnectionsVisitor implements IVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IInstance instance) {
     }
 

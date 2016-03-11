@@ -51,6 +51,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getName() {
         return name;
     }
@@ -58,6 +59,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setName(String name) {
         this.name = name;
     }
@@ -65,6 +67,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
     /**
      * {@inheritDoc}
      */
+    @Override
     public final UUID getId() {
         return id;
     }
@@ -104,6 +107,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public final Object getAdapter(Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);

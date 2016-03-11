@@ -191,6 +191,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements IAdaptabl
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -265,6 +266,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements IAdaptabl
         /**
          * {@inheritDoc}
          */
+        @Override
         public Insets getInsets(final IFigure figure) {
             return _insets;
         }
@@ -272,6 +274,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements IAdaptabl
         /**
          * {@inheritDoc}
          */
+        @Override
         public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
             if (_borderWidth > 0) {
                 Rectangle rectangle = figure.getBounds().getCopy();

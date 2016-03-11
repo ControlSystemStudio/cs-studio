@@ -20,6 +20,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final RGB getBackground(Object element) {
         return doGetBackground((E) element);
     }
@@ -27,6 +28,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final FontData getFont(Object element) {
         return doGetFontData((E) element);
     }
@@ -34,6 +36,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final RGB getForeground(Object element) {
         return doGetForeground((E) element);
     }
@@ -41,6 +44,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object[] getChildren(Object element) {
         return doGetChildren((E) element);
     }
@@ -48,6 +52,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final ImageDescriptor getImageDescriptor(Object element) {
         ImageDescriptor result = null;
 
@@ -63,6 +68,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final String getLabel(Object element) {
         return doGetLabel((E) element);
     }
@@ -70,6 +76,7 @@ public abstract class BaseWorkbenchAdapter<E> implements IWorkbenchAdapter, IWor
     /**
      * {@inheritDoc}
      */
+    @Override
     public final Object getParent(Object element) {
         return doGetParent((E) element);
     }

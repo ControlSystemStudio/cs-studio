@@ -18,28 +18,28 @@ This widget displays an arc, i.e. a control that draws an alliptical arc.
 <tr><td><b>Property</b></td><td><b>Name in <code>ArcModel</code></b></td><td><b>Identifier</b></td>
 <td><b>Description</b></td></tr>
 <tr>
-	<td>Transparent Background</td><td><code>PROP_TRANSPARENT</code></td><td><code>transparent_background</code></td>
-	<td>If <code>true</code>, the background will be transparent.</td>
+    <td>Transparent Background</td><td><code>PROP_TRANSPARENT</code></td><td><code>transparent_background</code></td>
+    <td>If <code>true</code>, the background will be transparent.</td>
 </tr>
 <tr>
-	<td>Start Angle</td><td><code>PROP_STARTANGLE</code></td><td><code>start_angle</code></td>
-	<td>The start angle of the arc, in degrees.</td>
+    <td>Start Angle</td><td><code>PROP_STARTANGLE</code></td><td><code>start_angle</code></td>
+    <td>The start angle of the arc, in degrees.</td>
 </tr>
 <tr>
-	<td>Angle</td><td><code>PROP_ANGLE</code></td><td><code>angle</code></td>
-	<td>The angle of the arc, in degrees.</td>
+    <td>Angle</td><td><code>PROP_ANGLE</code></td><td><code>angle</code></td>
+    <td>The angle of the arc, in degrees.</td>
 </tr>
 <tr>
-	<td>Filled</td><td><code>PROP_FILLED</code></td><td><code>filled</code></td>
-	<td>If <code>true</code>, the arc will be drawn as a filled elliptical section.</td>
+    <td>Filled</td><td><code>PROP_FILLED</code></td><td><code>filled</code></td>
+    <td>If <code>true</code>, the arc will be drawn as a filled elliptical section.</td>
 </tr>
 <tr>
-	<td>Fill Color</td><td><code>PROP_FILLCOLOR</code></td><td><code>color.fill</code></td>
-	<td>The color with which the arc is to be filled.</td>
+    <td>Fill Color</td><td><code>PROP_FILLCOLOR</code></td><td><code>color.fill</code></td>
+    <td>The color with which the arc is to be filled.</td>
 </tr>
 <tr>
-	<td>Line Width</td><td><code>PROP_LINEWIDTH</code></td><td><code>lineWidth</code></td>
-	<td>Width of the lines the graphic is drawn with.</td>
+    <td>Line Width</td><td><code>PROP_LINEWIDTH</code></td><td><code>lineWidth</code></td>
+    <td>Width of the lines the graphic is drawn with.</td>
 </tr>
 </table>
 
@@ -47,19 +47,19 @@ This widget displays an arc, i.e. a control that draws an alliptical arc.
 
 <ul>
 <li>the model factory <code>ArcModelFactory</code></li>
-	<p>Nothing special here, this file is almost the same for all widgets.</p>
+    <p>Nothing special here, this file is almost the same for all widgets.</p>
 <li>the model itself, <code>ArcModel</code></li>
-	<p>This class defines all the properties and provides functions for getting their values (the <code>get*</code> functions).</p>
+    <p>This class defines all the properties and provides functions for getting their values (the <code>get*</code> functions).</p>
 <li>the editpart <code>ArcEditPart</code></li>
-	<p>This performs initial property synchronisation between the figure and the model (the <code>doCreateFigure</code> function)
-	and registers property listeners. These listeners all just call functions in the figure, which set internal variables.</p>
+    <p>This performs initial property synchronisation between the figure and the model (the <code>doCreateFigure</code> function)
+    and registers property listeners. These listeners all just call functions in the figure, which set internal variables.</p>
 <li>the figure itself, <code>RefreshableArcFigure</code></li>
-	<p>This is where all the drawing is done. The main class contains functions that outsiders can use to set or get
-	internal variables (the <code>set*</code> and <code>get*</code> functions). The bounding box of the arc defines its ellipse.
-	<ul>
-	<li><code>fillShape</code> draws the background, if not set to transparent and possibly fills the elliptic section.</li>
-	<li><code>outlineShape</code> draws the arc.</li>
-	</ul>
+    <p>This is where all the drawing is done. The main class contains functions that outsiders can use to set or get
+    internal variables (the <code>set*</code> and <code>get*</code> functions). The bounding box of the arc defines its ellipse.
+    <ul>
+    <li><code>fillShape</code> draws the background, if not set to transparent and possibly fills the elliptic section.</li>
+    <li><code>outlineShape</code> draws the arc.</li>
+    </ul>
 </ul>
 </p>
 

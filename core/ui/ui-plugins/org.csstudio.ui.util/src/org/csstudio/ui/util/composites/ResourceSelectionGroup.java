@@ -106,6 +106,7 @@ public final class ResourceSelectionGroup extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run() {
             final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(getFullPath());
             final StringBuffer buffer = new StringBuffer(Messages.CreateFolderAction_DIALOG_MESSAGE);
@@ -159,6 +160,7 @@ public final class ResourceSelectionGroup extends Composite {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void run() {
             InputDialog inputDialog = new InputDialog(_shell, Messages.CreateProjectAction_DIALOG_TITLE,
                     Messages.CreateProjectAction_DIALOG_MESSAGE, "", null); //$NON-NLS-1$ //$NON-NLS-2$

@@ -48,6 +48,7 @@ public class DefaultEpicsAlarmForeground implements IRule{
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
          if ((arguments != null) && (arguments.length > 0)) {
              double serverity = 0.0;

@@ -3,7 +3,6 @@ package org.csstudio.dal.spi;
 import javax.naming.directory.DirContext;
 
 import org.csstudio.dal.context.AbstractApplicationContext;
-import org.csstudio.dal.context.PlugContext;
 import org.csstudio.dal.proxy.AbstractPlug;
 
 /**

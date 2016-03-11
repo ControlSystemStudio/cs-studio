@@ -85,6 +85,7 @@ public final class RefreshableActionButtonFigure extends Button implements
      * @param s
      *             The text for the button
      */
+    @Override
     public void setTextValue(final String s) {
         _label.setText(s);
     }
@@ -126,6 +127,7 @@ public final class RefreshableActionButtonFigure extends Button implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public Object getAdapter(final Class adapter) {
         if(adapter == ICrossedFigure.class) {

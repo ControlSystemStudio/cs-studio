@@ -1,13 +1,8 @@
 package org.csstudio.platform.internal.simpledal.dal;
 
-import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
-import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.dal.CharacteristicInfo;
-import org.csstudio.dal.DataExchangeException;
 import org.csstudio.dal.DynamicValueCondition;
 import org.csstudio.dal.DynamicValueProperty;
 import org.csstudio.dal.DynamicValueState;
-import org.csstudio.dal.Timestamp;
 import org.csstudio.dal.context.ConnectionEvent;
 import org.csstudio.dal.context.LinkAdapter;
 

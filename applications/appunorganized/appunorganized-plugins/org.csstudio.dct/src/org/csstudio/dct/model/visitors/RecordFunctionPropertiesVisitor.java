@@ -23,6 +23,7 @@ public final class RecordFunctionPropertiesVisitor extends AbstractVisitor {
     /**
      *{@inheritDoc}
      */
+    @Override
     public void visit(IRecord record) {
         if (record.isAbstract()) {
             for (String key : properties.keySet()) {

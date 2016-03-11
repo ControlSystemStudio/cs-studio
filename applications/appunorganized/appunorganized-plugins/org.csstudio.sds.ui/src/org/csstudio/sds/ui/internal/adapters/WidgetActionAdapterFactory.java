@@ -41,6 +41,7 @@ public final class WidgetActionAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -78,6 +79,7 @@ public final class WidgetActionAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class };

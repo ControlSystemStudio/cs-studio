@@ -1,7 +1,5 @@
 package org.csstudio.sds.service.pvvalidation.mkk;
 
-import java.util.ArrayList;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

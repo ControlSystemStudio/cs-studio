@@ -147,6 +147,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getHandleBounds() {
         return getPoints().getBounds();
     }
@@ -173,6 +174,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setLineStyle(final int lineStyle) {
         if ((lineStyle >= 0) && (lineStyle < _lineStyles.length)) {
             super.setLineStyle(_lineStyles[lineStyle]);
@@ -182,6 +184,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {

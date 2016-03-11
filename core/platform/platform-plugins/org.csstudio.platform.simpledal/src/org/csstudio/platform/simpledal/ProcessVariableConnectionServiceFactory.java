@@ -21,9 +21,6 @@
  */
 package org.csstudio.platform.simpledal;
 
-
-import javax.swing.tree.FixedHeightLayoutCache;
-
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.internal.simpledal.ConnectorFactory;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;

@@ -55,6 +55,7 @@ public class ConnectionEditPart extends AbstractConnectionEditPart implements Pr
     /**
      *{@inheritDoc}
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         refreshVisuals();
     }

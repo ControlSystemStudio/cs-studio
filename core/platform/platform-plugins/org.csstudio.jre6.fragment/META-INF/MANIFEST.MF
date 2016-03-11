@@ -6,8 +6,7 @@ Fragment-Host: system.bundle
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Jaka Bobnar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: javax.activation,
- javax.transaction,
+Export-Package: javax.transaction,
  javax.transaction.xa,
  javax.activation;version="1.1.0",
  javax.xml;version="1.3.0",

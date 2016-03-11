@@ -22,14 +22,12 @@
 package org.csstudio.utility.adlconverter.fpcreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.LinkingContainerModel;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.core.runtime.Path;
 
 /**
  * TODO (jhatje) :

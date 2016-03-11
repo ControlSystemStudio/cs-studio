@@ -36,6 +36,7 @@ public final class ActionFilterAdapter implements IActionFilter {
     /**
      *{@inheritDoc}
      */
+    @Override
     public boolean testAttribute(Object target, String name, String value) {
         if (ATTR_ERROR.equals(name) && target instanceof IElement) {
             FindErrorMarkerVisitor visitor = new FindErrorMarkerVisitor();
@@ -78,22 +79,27 @@ public final class ActionFilterAdapter implements IActionFilter {
 
         }
 
+        @Override
         public void visit(Project project) {
             doVisit(project);
         }
 
+        @Override
         public void visit(IFolder folder) {
             doVisit(folder);
         }
 
+        @Override
         public void visit(IPrototype prototype) {
             doVisit(prototype);
         }
 
+        @Override
         public void visit(IInstance instance) {
             doVisit(instance);
         }
 
+        @Override
         public void visit(IRecord record) {
             doVisit(record);
         }

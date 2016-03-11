@@ -198,6 +198,7 @@ public final class Layer implements IAdaptable {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("rawtypes")
     public Object getAdapter(final Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);

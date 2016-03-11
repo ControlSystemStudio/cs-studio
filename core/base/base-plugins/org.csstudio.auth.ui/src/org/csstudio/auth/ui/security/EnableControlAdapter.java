@@ -36,6 +36,7 @@ public class EnableControlAdapter implements IActivationAdapter {
      * @param o The Control-Object
      * @param activate The value for the activation
      */
+    @Override
     public final void activate(final Object o, final boolean activate) {
         if (o instanceof Control) {
             ((Control) o).setEnabled(activate);

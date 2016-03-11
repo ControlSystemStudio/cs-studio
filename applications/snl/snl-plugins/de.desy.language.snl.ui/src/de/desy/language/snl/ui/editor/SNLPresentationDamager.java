@@ -116,6 +116,7 @@ public class SNLPresentationDamager implements IPresentationDamager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRegion getDamageRegion(final ITypedRegion partition,
             final DocumentEvent event, final boolean documentPartitioningChanged) {
         IRegion region = this.getSurroundingComment(event.getOffset());
@@ -442,6 +443,7 @@ public class SNLPresentationDamager implements IPresentationDamager {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDocument(final IDocument document) {
         this._document = document;
     }

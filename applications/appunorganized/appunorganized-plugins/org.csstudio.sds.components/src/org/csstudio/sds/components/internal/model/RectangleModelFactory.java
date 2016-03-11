@@ -36,6 +36,7 @@ public final class RectangleModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AbstractWidgetModel createWidgetModel() {
         return new RectangleModel();
     }
@@ -43,6 +44,7 @@ public final class RectangleModelFactory implements IWidgetModelFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class getWidgetModelType() {
         return RectangleModel.class;
     }

@@ -57,6 +57,7 @@ public final class SimpleDbFileExporter implements IExporter {
         return sb.toString();
     }
 
+    @Override
     public String export(IProject project) {
         StringBuffer sb = new StringBuffer();
         for (IRecord r :project.getFinalRecords()) {
