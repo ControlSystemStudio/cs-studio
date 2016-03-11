@@ -94,4 +94,9 @@ public class FileUtils implements IFileUtils {
         return fullPath;
     }
 
+    @Override
+    public boolean isDirectory(String path) throws IOException {
+        return Files.isDirectory(stringPathToPath(path));
+    }
+
 }

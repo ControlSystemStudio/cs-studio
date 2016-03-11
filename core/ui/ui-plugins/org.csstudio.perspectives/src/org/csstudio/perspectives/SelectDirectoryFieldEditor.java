@@ -44,4 +44,13 @@ public class SelectDirectoryFieldEditor extends StringButtonFieldEditor {
         return dir;
     }
 
+    @Override
+    public boolean isValid() {
+        try {
+            return fileUtils.isDirectory(getTextControl().getText());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
 }

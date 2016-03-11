@@ -78,4 +78,13 @@ public interface IFileUtils {
      */
     public Path promptForFile(Path startingDirectory, String fileExtension, Shell parent);
 
+    /**
+     * Return true if the string represents a valid path.  This may include an
+     * Eclipse 'platform:' URI
+     * @param path
+     * @return true if the string represents a valid path
+     * @throws IOException if some IO error occurs
+     */
+    public boolean isDirectory(String path) throws IOException;
+
 }

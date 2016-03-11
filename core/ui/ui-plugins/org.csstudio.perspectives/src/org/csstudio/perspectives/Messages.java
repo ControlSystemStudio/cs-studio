@@ -25,12 +25,15 @@ public class Messages extends NLS {
     public static String PerspectivesPreferencePage_loadTooltip;
     public static String PerspectivesPreferencePage_saveText;
     public static String PerspectivesPreferencePage_saveTooltip;
+    public static String PerspectivesPreferencePage_dirNotSelected;
 
     public static String PerspectiveSaver_initFailed;
     public static String PerspectiveSaver_saveFailed;
 
     public static String PerspectiveStartup_startupDirNotFound;
     public static String PerspectiveStartup_startupLoadFailed;
+
+
 
     static {
         // initialize resource bundle
