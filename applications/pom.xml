@@ -175,7 +175,7 @@
           <url>http://download.controlsystemstudio.org/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
-        <!-- Adding the applications repositories to allows child modules to depend on each other --> 
+        <!-- Adding the applications repositories to allows child modules to depend on each other -->
         <repository>
           <id>csstudio-applications</id>
           <url>http://download.controlsystemstudio.org/applications/${cs-studio.version}</url>

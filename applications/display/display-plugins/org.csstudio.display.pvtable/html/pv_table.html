@@ -1,144 +1,144 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<head>
-		<link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
-		<title>PV Table</title>
-	</head>
-	
-	<body>
-		<h1>Overview (En)</h1>
-		<p>
-			The PV Table provides a tabular view of PV names and their current value with time stamp and alarm state.
-		</p>
-		<p>
-			You can take a "snapshot" of current values and dates, and the table will now highlight rows
-			where the current value differs from the snapshot.
-		</p>
-		<p>
-			The configuration (PV names, saved value, saved date) can be saved and later re-loaded,
-			see details on the file format described below.
-		</p>
-		
-		
-		
-		<img src="pvtable.png"/>
-		
-		<h2>Adding and Removing PVs</h2>
-		
-		<p>
-			The simplest way is to enter new PV names in last row of table.
-		</p>
-		<p>
-			To insert a new PV in the middle of the table, open the context menu on
-			the desired table row and select 
-			<img src="../icons/add.gif"/> "Insert Row (above)" to add a row above,
-			then change the PV name of the new row.
-		</p>
-		<p>
-			Finally, you use drag-and-drop to move existing rows within the table,
-			or to 'drop' PV names into the table from tools that support dragging PV names.
-		</p>
-		<p>
-			Delete PV names by changing their name to an empty name,
-			or by selecting one or more PVs and deleting them via the context menu.
-		</p>
-		
-		<h2>Comments</h2>
-		<p>
-			PV names that start with "# " are considered a comment.
-			This can also be used to add empty lines into the table by entering just "#" as a PV name.
-		</p>
-		
-		<h2>Configuration</h2>
-		<p>
-			Configuration can be created by add a configuration header to enter a name, in the column PV,
-			which beggin with <u>#conf#</u>. All PVs below this header are considered as configuration PVs.
-			And all PVs above this header are considered as standard PV and are not include in the configuration
-			PV list.
-		</p>
-		
-		<h2>Measures</h2>
-		<p>
-			The Configuration permit to make a "Mesure" to click on the button in the button bar. 
-			A "Mesure Header" and a list of PVs's copies from the configuration is generated for each measure.
-			A comment in the configuration is not copied into the measure.
-			This is not possible to insert any row between measures rows. But it is possible to edit a measure header.
-			Be careful to not delete the prefix <u>#mesure#</u>, if you do, your modification will not be considered. 
-		</p>
-		<p>
-			The context menu is specific for measures and allow to delete a measure. Buttons in action bar permits to
-			delete the last measure or all measures. (If all measures are deleted, the measure counter return to 1).
-		</p>
-		
-		<h2>Checking PVs for Snapshot/Restore</h2>
-		
-		<p>
-			By default, the check mark at the start of each table row is set.
-			When taking a snapshot of current values or restoring PVs to the snapshot,
-			this typically applies to rows where the check mark is set.
-		</p>
-		<p>
-			You can un-check table rows if they should be excluded.
-			The context menu of the table offers shortcuts to select or de-select the whole table.
-		</p>
-		<p>
-			In addition, the context menu also allows taking a snapshot or restoring the
-			row on which the context menu was invoked, which can be useful to operate on just
-			one PV and not the whole table.
-		</p>
-		
-		<h2>Restoring PVs</h2>
-		
-		<p>
-			The value of PVs can be restored, i.e. the saved value will be written to the PV.
-			By default, this affects every row of the table, but the check-mark at the start
-			of each table row can be use to de-select rows.
-		</p>
-		
-		<h2>Tolerance</h2>
-		
-		<p>
-			Values are highlighted when they differ from the saved snapshot value by a certain amount.
-			The currently used tolerance is displayed in the tool-tip of a table row.
-			This 'tolerance' value can be configured via the context menu of selected table rows.
-		</p>
-		<p>
-			When configuring the 'tolerance', note that it applies to the rows which are
-			selected in the table via the usual selection mechanism (click on one row, shift-click to select multiple rows, ...).
-			If no row specific rows are selected to set their tolerance, the tolerance for every row in the table will be updated.
-			This is independent of the check mark in the first table column which marks rows to be restored by writing
-			their saved value back to the PVs.
-		</p>
-		
-		<h2>File Formats</h2>
-		
-		<p>
-			The original PVTable file format uses a ".pvs" extension for its file names.
-			The files have an XML format which is described by the <file>pv_table.xsd</file>
-			contained in the PV Table sources.
-		</p>
-		<p>
-			Since version 4.0.0, the PVTable also supports file format
-			used by the EPICS synApps <code>autosave</code> module,
-			<a href="http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html">http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html</a>.
-			Whenever loading or saving a PVTable from a file with a ".sav" extension,
-			the <code>autosave</code> format will be used.
-		</p>
-		<p>
-			Advantages of the original PVTable ".pvs" file format:
-			<ul>
-				<li>Contains global as well as per-element 'tolerance'.</li>
-				<li>Tracks which rows were selected.</li>
-				<li>Best for standalone operation of the PVTable.</li>
-			</ul>
-		</p>
-		<p>
-			Advantages of the <code>autosave</code> ".sav" file format:
-			<ul>
-				<li>It can be used by the IOC to load/save settings.</li>
-				<li>PVTable allows easy comparison of last settings written by IOC against current values.</li>
-				<li>Best for use together with on-demand save/restore on the IOC.</li>
-			</ul>
-		</p>
-	</body>
+    <head>
+        <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+        <title>PV Table</title>
+    </head>
+
+    <body>
+        <h1>Overview (En)</h1>
+        <p>
+            The PV Table provides a tabular view of PV names and their current value with time stamp and alarm state.
+        </p>
+        <p>
+            You can take a "snapshot" of current values and dates, and the table will now highlight rows
+            where the current value differs from the snapshot.
+        </p>
+        <p>
+            The configuration (PV names, saved value, saved date) can be saved and later re-loaded,
+            see details on the file format described below.
+        </p>
+
+
+
+        <img src="pvtable.png"/>
+
+        <h2>Adding and Removing PVs</h2>
+
+        <p>
+            The simplest way is to enter new PV names in last row of table.
+        </p>
+        <p>
+            To insert a new PV in the middle of the table, open the context menu on
+            the desired table row and select
+            <img src="../icons/add.gif"/> "Insert Row (above)" to add a row above,
+            then change the PV name of the new row.
+        </p>
+        <p>
+            Finally, you use drag-and-drop to move existing rows within the table,
+            or to 'drop' PV names into the table from tools that support dragging PV names.
+        </p>
+        <p>
+            Delete PV names by changing their name to an empty name,
+            or by selecting one or more PVs and deleting them via the context menu.
+        </p>
+
+        <h2>Comments</h2>
+        <p>
+            PV names that start with "# " are considered a comment.
+            This can also be used to add empty lines into the table by entering just "#" as a PV name.
+        </p>
+
+        <h2>Configuration</h2>
+        <p>
+            Configuration can be created by add a configuration header to enter a name, in the column PV,
+            which beggin with <u>#conf#</u>. All PVs below this header are considered as configuration PVs.
+            And all PVs above this header are considered as standard PV and are not include in the configuration
+            PV list.
+        </p>
+
+        <h2>Measures</h2>
+        <p>
+            The Configuration permit to make a "Mesure" to click on the button in the button bar.
+            A "Mesure Header" and a list of PVs's copies from the configuration is generated for each measure.
+            A comment in the configuration is not copied into the measure.
+            This is not possible to insert any row between measures rows. But it is possible to edit a measure header.
+            Be careful to not delete the prefix <u>#mesure#</u>, if you do, your modification will not be considered.
+        </p>
+        <p>
+            The context menu is specific for measures and allow to delete a measure. Buttons in action bar permits to
+            delete the last measure or all measures. (If all measures are deleted, the measure counter return to 1).
+        </p>
+
+        <h2>Checking PVs for Snapshot/Restore</h2>
+
+        <p>
+            By default, the check mark at the start of each table row is set.
+            When taking a snapshot of current values or restoring PVs to the snapshot,
+            this typically applies to rows where the check mark is set.
+        </p>
+        <p>
+            You can un-check table rows if they should be excluded.
+            The context menu of the table offers shortcuts to select or de-select the whole table.
+        </p>
+        <p>
+            In addition, the context menu also allows taking a snapshot or restoring the
+            row on which the context menu was invoked, which can be useful to operate on just
+            one PV and not the whole table.
+        </p>
+
+        <h2>Restoring PVs</h2>
+
+        <p>
+            The value of PVs can be restored, i.e. the saved value will be written to the PV.
+            By default, this affects every row of the table, but the check-mark at the start
+            of each table row can be use to de-select rows.
+        </p>
+
+        <h2>Tolerance</h2>
+
+        <p>
+            Values are highlighted when they differ from the saved snapshot value by a certain amount.
+            The currently used tolerance is displayed in the tool-tip of a table row.
+            This 'tolerance' value can be configured via the context menu of selected table rows.
+        </p>
+        <p>
+            When configuring the 'tolerance', note that it applies to the rows which are
+            selected in the table via the usual selection mechanism (click on one row, shift-click to select multiple rows, ...).
+            If no row specific rows are selected to set their tolerance, the tolerance for every row in the table will be updated.
+            This is independent of the check mark in the first table column which marks rows to be restored by writing
+            their saved value back to the PVs.
+        </p>
+
+        <h2>File Formats</h2>
+
+        <p>
+            The original PVTable file format uses a ".pvs" extension for its file names.
+            The files have an XML format which is described by the <file>pv_table.xsd</file>
+            contained in the PV Table sources.
+        </p>
+        <p>
+            Since version 4.0.0, the PVTable also supports file format
+            used by the EPICS synApps <code>autosave</code> module,
+            <a href="http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html">http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html</a>.
+            Whenever loading or saving a PVTable from a file with a ".sav" extension,
+            the <code>autosave</code> format will be used.
+        </p>
+        <p>
+            Advantages of the original PVTable ".pvs" file format:
+            <ul>
+                <li>Contains global as well as per-element 'tolerance'.</li>
+                <li>Tracks which rows were selected.</li>
+                <li>Best for standalone operation of the PVTable.</li>
+            </ul>
+        </p>
+        <p>
+            Advantages of the <code>autosave</code> ".sav" file format:
+            <ul>
+                <li>It can be used by the IOC to load/save settings.</li>
+                <li>PVTable allows easy comparison of last settings written by IOC against current values.</li>
+                <li>Best for use together with on-demand save/restore on the IOC.</li>
+            </ul>
+        </p>
+    </body>
 </html>
