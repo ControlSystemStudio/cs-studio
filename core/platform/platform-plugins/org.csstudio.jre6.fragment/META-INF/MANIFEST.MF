@@ -8,6 +8,7 @@ Bundle-Vendor: Jaka Bobnar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: javax.transaction,
  javax.transaction.xa,
+ javax.annotation;version="1.0.0",
  javax.activation;version="1.1.0",
  javax.xml;version="1.3.0",
  javax.xml.bind;version="1.3.0",

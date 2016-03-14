@@ -43,6 +43,12 @@ public class OPIEditorPreferencePage extends FieldEditorPreferencePage
         schemaOPIEditor.getTextControl(parent).setToolTipText(
                 "The opi file that defines the default widget properties value");
         addField(schemaOPIEditor);
+        WorkspaceFileFieldEditor widgetClassRulesEditor =
+            new WorkspaceFileFieldEditor(PreferencesHelper.WIDGET_CLASSES_RULES,
+                "Widget Class Rules: ", new String[]{"def"}, parent);//$NON-NLS-2$
+        widgetClassRulesEditor.getTextControl(parent).setToolTipText(
+                "The rules definitions for the widget classes (which properties are not conrolled by the widget class)");
+        addField(widgetClassRulesEditor);
 
         BooleanFieldEditor autoSaveEditor =
             new BooleanFieldEditor(PreferencesHelper.AUTOSAVE,

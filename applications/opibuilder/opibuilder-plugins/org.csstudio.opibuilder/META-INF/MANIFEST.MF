@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY base plugin
 Bundle-Description: Base plugin of BOY
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.2.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin

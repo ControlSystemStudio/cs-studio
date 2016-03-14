@@ -22,8 +22,6 @@
 
 package org.csstudio.opibuilder.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +49,7 @@ import org.csstudio.opibuilder.properties.ScriptProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.UnsavableListProperty;
+import org.csstudio.opibuilder.properties.WidgetClassProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
@@ -208,9 +207,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
     /**
      * The widget class. If the property is defined, the properties from the class with this name (defined in the
-     * BOY schema) are applied to this model.
+     * BOY schema) are applied to this model. This property is a pv.
      */
     public static final String PROP_WIDGET_CLASS = "widget_class"; //$NON-NLS-1$
+
+    /**
+     * The widget class value. If the property is defined, the properties from the class with this name (defined in the
+     * BOY schema) are applied to this model.
+     */
+    public static final String PROP_WIDGET_CLASS_VALUE = "widget_class_value"; //$NON-NLS-1$
 
 
     private Map<String, AbstractWidgetProperty> propertyMap;
@@ -330,73 +335,65 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     }
 
     protected void configureBaseProperties() {
-        addProperty(new IntegerProperty(PROP_WIDTH, "Width",
-                WidgetPropertyCategory.Position, 100, 1, 10000));
-        addProperty(new IntegerProperty(PROP_HEIGHT, "Height",
-                WidgetPropertyCategory.Position, 100, 1, 10000));
-        addProperty(new IntegerProperty(PROP_XPOS, "X",
-                WidgetPropertyCategory.Position, 0));
-        addProperty(new IntegerProperty(PROP_YPOS, "Y",
-                WidgetPropertyCategory.Position, 0));
+        addProperty(new IntegerProperty(PROP_WIDTH, "Width", WidgetPropertyCategory.Position, 100, 1, 10000));
+        addProperty(new IntegerProperty(PROP_HEIGHT, "Height", WidgetPropertyCategory.Position, 100, 1, 10000));
+        addProperty(new IntegerProperty(PROP_XPOS, "X", WidgetPropertyCategory.Position, 0));
+        addProperty(new IntegerProperty(PROP_YPOS, "Y", WidgetPropertyCategory.Position, 0));
         addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
                 WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
         addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
                 WidgetPropertyCategory.Display, new RGB(192, 192, 192)));
-        addProperty(new FontProperty(PROP_FONT, "Font",
-                WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
+        addProperty(new FontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
         addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
                 WidgetPropertyCategory.Border, new RGB(0, 128, 255)));
         addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style",
                 WidgetPropertyCategory.Border, BorderStyle.stringValues(), 0));
-        addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width",
-                WidgetPropertyCategory.Border, 1, 0, 1000));
-        addProperty(new BooleanProperty(PROP_ENABLED, "Enabled",
-                WidgetPropertyCategory.Behavior, true));
-        addProperty(new BooleanProperty(PROP_VISIBLE, "Visible",
-                WidgetPropertyCategory.Behavior, true));
-        addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts",
-                WidgetPropertyCategory.Behavior));
-        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
-                WidgetPropertyCategory.Behavior));
+        addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", WidgetPropertyCategory.Border, 1, 0, 1000));
+        addProperty(new BooleanProperty(PROP_ENABLED, "Enabled", WidgetPropertyCategory.Behavior, true));
+        addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", WidgetPropertyCategory.Behavior, true));
+        addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", WidgetPropertyCategory.Behavior));
+        addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", WidgetPropertyCategory.Behavior));
         addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
         addProperty(new RulesProperty(PROP_RULES, "Rules", WidgetPropertyCategory.Behavior));
-        addProperty(new ComplexDataProperty(PROP_SCALE_OPTIONS,
-                "Scale Options", WidgetPropertyCategory.Position, new WidgetScaleData(this, true, true, false), "Set Scale Options"));
+        addProperty(new ComplexDataProperty(PROP_SCALE_OPTIONS, "Scale Options", WidgetPropertyCategory.Position,
+                new WidgetScaleData(this, true, true, false), "Set Scale Options"));
         addProperty(new StringProperty(PROP_WIDGET_UID, "Widget UID", WidgetPropertyCategory.Basic,
                 new UID().toString()));
         //update the WUID saved in connections without triggering anything
-        getProperty(PROP_WIDGET_UID).addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                for(ConnectionModel connection : sourceConnections){
-                    connection.setPropertyValue(ConnectionModel.PROP_SRC_WUID, evt.getNewValue(), false);
-                }
-                for(ConnectionModel connection : targetConnections){
-                    connection.setPropertyValue(ConnectionModel.PROP_TGT_WUID, evt.getNewValue(), false);
-                }
-            }
+        getProperty(PROP_WIDGET_UID).addPropertyChangeListener(evt -> {
+            sourceConnections.forEach(s -> s.setPropertyValue(ConnectionModel.PROP_SRC_WUID, evt.getNewValue(), false));
+            targetConnections.forEach(s -> s.setPropertyValue(ConnectionModel.PROP_TGT_WUID, evt.getNewValue(), false));
         });
 
         setPropertyVisibleAndSavable(PROP_WIDGET_UID, false, true);
 
         WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
-        String name;
-        name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf(".")+1) :
-            descriptor.getName();
-        addProperty(new StringProperty(PROP_NAME, "Name",
-                WidgetPropertyCategory.Basic, name));
-        addProperty(new UnchangableStringProperty(PROP_WIDGET_TYPE, "Widget Type",
-                WidgetPropertyCategory.Basic, name));
-        addProperty(new StringProperty(PROP_WIDGET_CLASS, "Widget Class", WidgetPropertyCategory.Basic, ""));
-
-        addProperty(new UnsavableListProperty(
-                PROP_SRC_CONNECTIONS, "Source Connections", WidgetPropertyCategory.Display, sourceConnections));
+        String name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf('.')+1) : descriptor.getName();
+        addProperty(new StringProperty(PROP_NAME, "Name", WidgetPropertyCategory.Basic, name));
+        addProperty(new UnchangableStringProperty(PROP_WIDGET_TYPE, "Widget Type", WidgetPropertyCategory.Basic, name));
+        addProperty(new UnsavableListProperty(PROP_SRC_CONNECTIONS, "Source Connections",
+                WidgetPropertyCategory.Display, sourceConnections));
         setPropertyVisible(PROP_SRC_CONNECTIONS, false);
-
-        addProperty(new UnsavableListProperty(
-                PROP_TGT_CONNECTIONS, "Target Connections", WidgetPropertyCategory.Display, targetConnections));
+        addProperty(new UnsavableListProperty(PROP_TGT_CONNECTIONS, "Target Connections",
+                WidgetPropertyCategory.Display, targetConnections));
         setPropertyVisible(PROP_TGT_CONNECTIONS, false);
+
+        //add two separate properties, but do not add this to the pvMap. We want it to be able to set the value
+        //with a pv, but do not want that pv to control the border or anything else.
+        addProperty(new WidgetClassProperty(getTypeID(), PROP_WIDGET_CLASS, "Widget Class", WidgetPropertyCategory.Basic,""));
+        addProperty(new PVValueProperty(PROP_WIDGET_CLASS_VALUE, null) {
+            @Override
+            public Object checkValue(Object value) {
+                //widget class should always be a string, and never VString or any other type
+                //we are only interested into the value
+                if (value instanceof String) {
+                    return value;
+                } else {
+                    return null;
+                }
+            }
+        });
+        setPropertyVisibleAndSavable(PROP_WIDGET_CLASS_VALUE, false, false);
     }
 
     /**
@@ -413,6 +410,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
     public String getWidgetClass() {
         return getCastedPropertyValue(PROP_WIDGET_CLASS);
+    }
+
+    public String getWidgetClassValue() {
+        return String.valueOf(getPropertyValue(PROP_WIDGET_CLASS_VALUE));
     }
 
     public Set<String> getAllPropertyIDs(){
@@ -458,15 +459,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
         return (TYPE) getProperty(propertyName).getPropertyValue();
     }
 
-
-
     @Override
     public Object getEditableValue() {
         return this;
     }
-
-
-
 
     public ActionsInput getActionsInput(){
         return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
@@ -493,6 +489,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     public int getX(){
         return ((Integer)getCastedPropertyValue(PROP_XPOS)).intValue();
     }
+
     public int getY(){
         return ((Integer)getCastedPropertyValue(PROP_YPOS)).intValue();
     }
@@ -539,6 +536,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     public ScriptsInput getScriptsInput(){
         return (ScriptsInput)getCastedPropertyValue(PROP_SCRIPTS);
     }
+
     public Dimension getSize(){
         return new Dimension(
                 ((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
@@ -731,8 +729,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     }
 
     public void setScaleOptions(boolean isWidthScalable, boolean isHeightScalable, boolean keepWHRatio){
-        setPropertyValue(PROP_SCALE_OPTIONS,
-                new WidgetScaleData(this, isWidthScalable, isHeightScalable, keepWHRatio));
+        setPropertyValue(PROP_SCALE_OPTIONS, new WidgetScaleData(this, isWidthScalable, isHeightScalable, keepWHRatio));
     }
 
 
@@ -744,8 +741,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     protected Dimension getScaledSize(double widthRatio, double heightRatio){
         WidgetScaleData scaleOptions = getScaleOptions();
         int newW = originSize.width, newH = originSize.height;
-        if(scaleOptions.isKeepWHRatio()&&
-                scaleOptions.isHeightScalable() && scaleOptions.isWidthScalable()){
+        if(scaleOptions.isKeepWHRatio() && scaleOptions.isHeightScalable() && scaleOptions.isWidthScalable()){
             if(widthRatio <= heightRatio){
                 newW=(int)Math.round(originSize.width*widthRatio);
                 newH=originSize.height*newW/originSize.width;
@@ -805,8 +801,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     public void setForegroundColor(RGB color){
         setPropertyValue(PROP_COLOR_FOREGROUND, color);
     }
-
-
 
     public void setLocation(int x, int y){
         setPropertyValue(PROP_XPOS, x);

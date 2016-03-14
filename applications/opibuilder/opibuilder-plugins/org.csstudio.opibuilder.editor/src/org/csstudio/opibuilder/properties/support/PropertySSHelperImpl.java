@@ -113,6 +113,11 @@ public class PropertySSHelperImpl extends PropertySSHelper {
         return new PVNamePropertyDescriptor(prop_id, description, detaileDescription);
     }
 
+    @Override
+    public PropertyDescriptor getWidgetClassPropertyDescriptor(String widgetID, String propID,
+            String description, String detaileDescription) {
+        return new WidgetClassPropertyDescriptor(widgetID, propID, description, detaileDescription);
+    }
 
     @Override
     public PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
