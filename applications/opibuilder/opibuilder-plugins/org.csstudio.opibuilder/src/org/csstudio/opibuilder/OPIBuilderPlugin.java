@@ -98,6 +98,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
         }
         if(!isRAP) {
             preferenceLisener = new IPropertyChangeListener() {
+                @Override
                 public void propertyChange(PropertyChangeEvent event) {
                     if (event.getProperty()
                             .equals(PreferencesHelper.COLOR_FILE))

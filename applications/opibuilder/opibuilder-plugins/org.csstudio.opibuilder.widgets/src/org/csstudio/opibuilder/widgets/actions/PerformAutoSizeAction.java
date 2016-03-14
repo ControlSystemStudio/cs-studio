@@ -30,7 +30,7 @@ import org.eclipse.jface.action.IAction;
  */
 public class PerformAutoSizeAction extends AbstractWidgetTargetAction{
 
-
+    @Override
     public void run(IAction action) {
         if(getContainerEditpart().getChildren().size() <=0){
             return;

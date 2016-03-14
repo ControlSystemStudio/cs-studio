@@ -54,6 +54,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillColor
         IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -66,6 +67,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillBackgroundColor
         IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -78,6 +80,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -90,6 +93,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 
         // Change fill color when "FillColor Alarm Sensitive" property changes.
         IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
                 TankFigure figure = (TankFigure) refreshableFigure;
                 boolean sensitive = (Boolean)newValue;

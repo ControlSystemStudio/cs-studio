@@ -72,6 +72,7 @@ public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implemen
             ResourceUtil.pathToInputStreamInJob(path, uiTask,
                     "Load Button Icon...", new IJobErrorHandler() {
 
+                @Override
                 public void handleError(Exception exception) {
                     image = null;
                     ErrorHandlerUtil.handleError("Failed to load button icon.", exception);

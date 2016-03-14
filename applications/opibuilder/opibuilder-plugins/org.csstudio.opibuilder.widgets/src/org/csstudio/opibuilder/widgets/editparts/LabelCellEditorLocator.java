@@ -29,6 +29,7 @@ public class LabelCellEditorLocator
             setLabel(figure);
         }
 
+        @Override
         public void relocate(CellEditor celleditor) {
             Text text = (Text)celleditor.getControl();
             if(OPIBuilderPlugin.isRAP())

@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IAction;
 public class FillParentContainerAction extends AbstractWidgetTargetAction{
 
 
+    @Override
     public void run(IAction action) {
 
         AbstractBaseEditPart widget = (AbstractBaseEditPart)selection.getFirstElement();

@@ -50,6 +50,7 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
         super.activate();
 
         childrenPropertyChangeListener = new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
 
                 if(evt.getOldValue() instanceof Integer){
@@ -77,7 +78,7 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
             removePropertyChangeListener(childrenPropertyChangeListener);
     }
 
-
+    @Override
     public AbstractContainerModel getWidgetModel(){
         return (AbstractContainerModel)getModel();
     }

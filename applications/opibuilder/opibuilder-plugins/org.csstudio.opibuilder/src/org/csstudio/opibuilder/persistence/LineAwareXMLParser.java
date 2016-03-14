@@ -67,10 +67,12 @@ public class LineAwareXMLParser {
             this.saxHandler = sh;
         }
 
+        @Override
         public Element element(String name) {
             return this.element(name, (Namespace) null);
         }
 
+        @Override
         public Element element(String name, Namespace namespace) {
             return new LineAwareElement(name, namespace, saxHandler.getDocumentLocator().getLineNumber());
         }

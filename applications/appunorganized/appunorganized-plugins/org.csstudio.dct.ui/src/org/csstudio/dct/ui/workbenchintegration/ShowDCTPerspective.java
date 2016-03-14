@@ -42,15 +42,18 @@ public class ShowDCTPerspective implements IWorkbenchWindowActionDelegate {
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
 
+    @Override
     public void dispose() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         _window = window;
     }
 
+    @Override
     public void run(IAction action) {
         try {
             PlatformUI.getWorkbench().showPerspective(
@@ -61,6 +64,7 @@ public class ShowDCTPerspective implements IWorkbenchWindowActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         // TODO Auto-generated method stub
 

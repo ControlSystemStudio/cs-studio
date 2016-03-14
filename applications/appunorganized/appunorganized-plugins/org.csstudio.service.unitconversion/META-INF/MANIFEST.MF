@@ -13,4 +13,4 @@ Import-Package: com.google.common.base,
  com.google.common.collect,
  javax.ws.rs,
  org.diirt.service;version="3.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

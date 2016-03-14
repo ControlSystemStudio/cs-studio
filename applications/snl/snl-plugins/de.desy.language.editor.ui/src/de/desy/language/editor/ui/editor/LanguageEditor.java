@@ -103,6 +103,7 @@ public abstract class LanguageEditor extends TextEditor {
     private final class MeasurementProvider implements IMeasurementProvider {
         private Set<IUpdateListener> _listener = new HashSet<IUpdateListener>();
 
+        @Override
         public String getRessourceIdentifier() {
             IEditorInput input = getEditorInput();
             if (input instanceof FileEditorInput) {
@@ -112,10 +113,12 @@ public abstract class LanguageEditor extends TextEditor {
             return "Test";
         }
 
+        @Override
         public KeyValuePair[] getMeasuredData() {
             return _measurementData;
         }
 
+        @Override
         public void addUpdateListener(IUpdateListener listener) {
             _listener.add(listener);
         }

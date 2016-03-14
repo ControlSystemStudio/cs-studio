@@ -29,6 +29,7 @@ public class WidgetEditPartFactory implements EditPartFactory {
         this.executionMode = executionMode;
     }
 
+    @Override
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart part = getPartForModel(model);
         if(part != null){

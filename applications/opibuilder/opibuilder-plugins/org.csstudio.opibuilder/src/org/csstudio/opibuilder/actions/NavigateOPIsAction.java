@@ -41,7 +41,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
     private class MenuCreator implements IMenuCreator {
         private Menu historyMenu;
 
-
+        @Override
         public Menu getMenu(Menu parent) {
             setMenu(new Menu(parent));
             fillMenu(historyMenu);
@@ -49,6 +49,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
             return historyMenu;
         }
 
+        @Override
         public Menu getMenu(Control parent) {
             setMenu(new Menu(parent));
             fillMenu(historyMenu);
@@ -106,6 +107,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
             recreateMenu = false;
         }
 
+        @Override
         public void dispose() {
             if (historyMenu != null) {
                 for (int i = 0; i < historyMenu.getItemCount(); i++) {
@@ -173,6 +175,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
         update();
     }
 
+    @Override
     public void displayOpenHistoryChanged(DisplayOpenManager manager) {
         update();
     }

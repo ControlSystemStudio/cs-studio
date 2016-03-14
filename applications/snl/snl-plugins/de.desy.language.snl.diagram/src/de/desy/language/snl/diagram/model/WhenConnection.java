@@ -84,6 +84,7 @@ public class WhenConnection extends ModelElement {
      *
      * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
      */
+    @Override
     public Object getPropertyValue(Object id) {
         return super.getPropertyValue(id);
     }

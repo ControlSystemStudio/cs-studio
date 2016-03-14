@@ -143,16 +143,21 @@ public final class OPIShell implements IOPIRuntime {
         shell.setLayout(new FillLayout());
         shell.addShellListener(new ShellListener() {
             private boolean firstRun = true;
+            @Override
             public void shellIconified(ShellEvent e) {}
+            @Override
             public void shellDeiconified(ShellEvent e) {}
+            @Override
             public void shellDeactivated(ShellEvent e) {
                 activeShell = null;
             }
+            @Override
             public void shellClosed(ShellEvent e) {
                 // Remove this shell from the cache.
                 openShells.remove(OPIShell.this);
                 sendUpdateCommand();
             }
+            @Override
             public void shellActivated(ShellEvent e) {
                 if (firstRun) {
                     // Resize the shell after it's open, so we can take into account different window borders.

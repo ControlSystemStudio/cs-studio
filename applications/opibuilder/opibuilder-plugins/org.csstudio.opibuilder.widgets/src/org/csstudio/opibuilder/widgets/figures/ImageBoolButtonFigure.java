@@ -294,6 +294,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         this.imageListener = listener;
     }
 
+    @Override
     public void symbolImageLoaded() {
         decrementLoadingCounter();
         sizeChanged();
@@ -301,10 +302,12 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         repaint();
     }
 
+    @Override
     public void repaintRequested() {
         repaint();
     }
 
+    @Override
     public void sizeChanged() {
         if (imageListener != null)
             imageListener.imageResized(this);

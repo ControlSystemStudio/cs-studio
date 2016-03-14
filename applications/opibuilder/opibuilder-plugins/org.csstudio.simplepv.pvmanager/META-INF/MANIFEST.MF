@@ -11,5 +11,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.diirt.vtype;bundle-version="2.7.1",
  org.diirt.datasource;bundle-version="3.0.1",
  org.diirt.datasource-formula;bundle-version="3.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

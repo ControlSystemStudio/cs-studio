@@ -75,26 +75,32 @@ public final class NativeTextModel extends TextInputModel {
     }
 
 
+    @Override
     public boolean isShowNativeBorder(){
         return (Boolean)getPropertyValue(PROP_SHOW_NATIVE_BORDER);
     }
 
+    @Override
     public boolean isReadOnly(){
         return (Boolean)getPropertyValue(PROP_READ_ONLY);
     }
 
+    @Override
     public boolean isPasswordInput(){
         return (Boolean)getPropertyValue(PROP_PASSWORD_INPUT);
     }
 
+    @Override
     public boolean isShowHScroll(){
         return (Boolean)getPropertyValue(PROP_SHOW_H_SCROLL);
     }
 
+    @Override
     public boolean isShowVScroll(){
         return (Boolean)getPropertyValue(PROP_SHOW_V_SCROLL);
     }
 
+    @Override
     public FOCUS_TRAVERSE getFocusTraverse(){
         return FOCUS_TRAVERSE.values()[(Integer)getPropertyValue(PROP_NEXT_FOCUS)];
     }

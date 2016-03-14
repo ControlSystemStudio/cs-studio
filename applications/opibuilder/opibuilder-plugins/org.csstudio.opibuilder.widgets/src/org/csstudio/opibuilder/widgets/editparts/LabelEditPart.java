@@ -75,10 +75,12 @@ public class LabelEditPart extends AbstractWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 ((TextFigure)figure).setText((String)newValue);
                 Display.getCurrent().timerExec(10, new Runnable() {
+                    @Override
                     public void run() {
                         if(getWidgetModel().isAutoSize())
                             getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
@@ -92,6 +94,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 
         IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((TextFigure)figure).setSelectable(determinSelectable());
                 return false;
@@ -102,9 +105,11 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 Display.getCurrent().timerExec(10, new Runnable() {
+                    @Override
                     public void run() {
                         if(getWidgetModel().isAutoSize()){
                             getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
@@ -121,6 +126,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextFigure)figure).setOpaque(!(Boolean)newValue);
@@ -130,6 +136,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if((Boolean)newValue){
@@ -142,6 +149,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_AUTOSIZE, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
@@ -151,6 +159,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
@@ -161,6 +170,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 
         handler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractWidgetModel model = getWidgetModel();
                 AbstractContainerModel parent = model.getParent();
@@ -181,7 +191,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
                 });
 
         handler = new IWidgetPropertyChangeHandler() {
-
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(figure instanceof WrappableTextFigure)
                     ((WrappableTextFigure)figure).setShowScrollbar((Boolean)newValue);

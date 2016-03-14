@@ -35,6 +35,7 @@ public class OPITimer {
 
     private final Runnable dueTask = new Runnable() {
 
+            @Override
             public void run() {
                 due = true;
             }

@@ -12,5 +12,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.data
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.pv.epics
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: EPICS Channel Access support for utility.PV

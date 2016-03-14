@@ -60,6 +60,7 @@ public class OPIEditorPreferencePage extends FieldEditorPreferencePage
 
     }
 
+    @Override
     public void init(IWorkbench workbench) {
 
     }

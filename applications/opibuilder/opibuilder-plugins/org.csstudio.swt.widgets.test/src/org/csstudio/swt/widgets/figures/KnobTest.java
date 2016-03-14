@@ -17,6 +17,7 @@ public class KnobTest extends AbstractRoundRampedWidgetTest{
         KnobFigure knob = new KnobFigure();
         knob.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 System.out.println("Knob Dragged: " + newValue);
             }

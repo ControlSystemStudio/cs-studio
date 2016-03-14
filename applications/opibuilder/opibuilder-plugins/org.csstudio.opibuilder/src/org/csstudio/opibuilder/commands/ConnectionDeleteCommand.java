@@ -36,10 +36,12 @@ public class ConnectionDeleteCommand extends Command {
         this.connection = conn;
     }
 
+    @Override
     public void execute() {
         connection.disconnect();
     }
 
+    @Override
     public void undo() {
         connection.reconnect();
     }

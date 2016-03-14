@@ -474,6 +474,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
             Arrays.sort(modelArray, new Comparator<AbstractBaseEditPart>(){
 
+                @Override
                 public int compare(AbstractBaseEditPart o1,
                         AbstractBaseEditPart o2) {
                     if(o1.getWidgetModel().getParent().getChildren().indexOf(o1.getWidgetModel()) >
@@ -514,6 +515,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
     /* (non-Javadoc)
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getResizeChildrenCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
      */
+    @Override
     protected Command getResizeChildrenCommand(ChangeBoundsRequest request) {
         CompoundCommand resize = new CompoundCommand();
         Command c;

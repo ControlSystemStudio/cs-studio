@@ -75,6 +75,7 @@ public class GraphicalRepresentationUtil {
             /**
              * {@inheritDoc}
              */
+            @Override
             public void widgetDisposed(final DisposeEvent e) {
                 // FIXME
             }

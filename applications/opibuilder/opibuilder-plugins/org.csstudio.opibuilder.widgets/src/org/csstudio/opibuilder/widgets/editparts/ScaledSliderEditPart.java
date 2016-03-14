@@ -82,6 +82,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillBackgroundColor
         IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -94,6 +95,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
         //thumbColor
         IWidgetPropertyChangeHandler thumbColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -106,6 +108,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -119,6 +122,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
         //horizontal
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -144,6 +148,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
         //enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
         //which is not the case for the scaled slider
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -156,6 +161,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
 
         IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -167,6 +173,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
         setPropertyChangeHandler(ScaledSliderModel.PROP_STEP_INCREMENT, incrementHandler);
 
         IWidgetPropertyChangeHandler pageIncrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

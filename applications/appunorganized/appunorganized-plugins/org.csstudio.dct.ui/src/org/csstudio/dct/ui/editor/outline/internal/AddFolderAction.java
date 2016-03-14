@@ -34,6 +34,7 @@ public final class AddFolderAction extends AbstractOutlineAction {
         if (selection.size() == 1 && selection.get(0) instanceof IFolder) {
             InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Folder Name",
                     "Please enter a name for the new folder:", "", new IInputValidator() {
+                        @Override
                         public String isValid(String newText) {
                             return null;
                         }

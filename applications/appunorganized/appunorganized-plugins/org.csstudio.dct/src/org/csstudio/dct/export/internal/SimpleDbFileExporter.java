@@ -18,10 +18,6 @@ import org.csstudio.dct.util.ResolutionUtil;
 public final class SimpleDbFileExporter implements IExporter {
     private static final String NEWLINE = "\r\n";
 
-
-    /**
-     *{@inheritDoc}
-     */
     public String render(IRecord record) {
 
         StringBuffer sb = new StringBuffer();
@@ -57,6 +53,9 @@ public final class SimpleDbFileExporter implements IExporter {
         return sb.toString();
     }
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public String export(IProject project) {
         StringBuffer sb = new StringBuffer();

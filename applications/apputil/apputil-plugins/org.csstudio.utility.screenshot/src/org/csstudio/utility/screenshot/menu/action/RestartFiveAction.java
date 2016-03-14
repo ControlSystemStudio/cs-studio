@@ -42,6 +42,7 @@ public class RestartFiveAction extends Action
         this.setEnabled(false);
     }
 
+    @Override
     public void run()
     {
         worker.setRestartTime(5000);

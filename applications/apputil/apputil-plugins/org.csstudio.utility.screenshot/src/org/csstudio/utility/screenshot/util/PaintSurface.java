@@ -78,6 +78,7 @@ public class PaintSurface
 
         paintCanvas.addPaintListener(new PaintListener()
         {
+            @Override
             public void paintControl(PaintEvent event)
             {
                 Rectangle clientRect = null;
@@ -124,6 +125,7 @@ public class PaintSurface
 
         paintCanvas.addControlListener(new ControlAdapter()
         {
+            @Override
             public void controlResized(ControlEvent event)
             {
                 syncScrollBars();
@@ -138,6 +140,7 @@ public class PaintSurface
         ScrollBar horizontal = paintCanvas.getHorizontalBar();
         horizontal.setEnabled(false);
         horizontal.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 scrollHorizontally((ScrollBar) event.widget);
             }
@@ -146,6 +149,7 @@ public class PaintSurface
         ScrollBar vertical = paintCanvas.getVerticalBar();
         vertical.setEnabled(false);
         vertical.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 scrollVertically((ScrollBar) event.widget);
             }

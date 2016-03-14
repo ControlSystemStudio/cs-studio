@@ -52,6 +52,7 @@ public class SelectionScreenAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.setDisplayedImage(worker.getAllImages().getScreenImage());

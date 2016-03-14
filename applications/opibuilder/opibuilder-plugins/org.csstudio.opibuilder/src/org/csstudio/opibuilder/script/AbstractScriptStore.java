@@ -160,6 +160,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
         IPVListener suppressPVListener = new IPVListener.Stub() {
 
+            @Override
             public synchronized void valueChanged(IPV pv) {
                 if (triggerSuppressed && checkPVsConnected(scriptData, pvArray)) {
                     executeScriptInUIThread(pv);
@@ -170,6 +171,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
         };
 
         IPVListener triggerPVListener = new IPVListener.Stub() {
+            @Override
             public synchronized void valueChanged(IPV pv) {
 
                 // skip the first trigger if it is needed.
@@ -237,6 +239,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
     private void executeScriptInUIThread(final IPV triggerPV) {
         Display display = editPart.getRoot().getViewer().getControl().getDisplay();
         UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+            @Override
             public void run() {
                 if ((!scriptData.isStopExecuteOnError() || !errorInScript) && !unRegistered) {
                     try {
@@ -269,6 +272,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
     }
 
+    @Override
     public void unRegister() {
         unRegistered = true;
         for(Entry<IPV, IPVListener> entry :  pvListenerMap.entrySet()){

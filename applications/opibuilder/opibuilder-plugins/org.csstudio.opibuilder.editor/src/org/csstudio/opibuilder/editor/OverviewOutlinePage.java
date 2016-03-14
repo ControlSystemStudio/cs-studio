@@ -43,6 +43,7 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             rootEP = root;
         }
 
+        @Override
         public void createControl(Composite parent){
             overview = new Canvas(parent, SWT.NONE);
             LightweightSystem lws = new LightweightSystem(overview);
@@ -53,6 +54,7 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             lws.setContents(thumbnail);
 
             disposeListener = new DisposeListener() {
+                    @Override
                     public void widgetDisposed(DisposeEvent e) {
                         if (thumbnail != null) {
                             thumbnail.deactivate();
@@ -63,6 +65,7 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             rootEP.getViewer().getControl().addDisposeListener(disposeListener);
         }
 
+        @Override
         public void dispose(){
             if (thumbnail != null) {
                 thumbnail.deactivate();
@@ -71,30 +74,36 @@ public class OverviewOutlinePage extends Page implements IContentOutlinePage
             super.dispose();
         }
 
+        @Override
         public Control getControl() {
             return overview;
         }
 
+        @Override
         public void setFocus() {
             if(getControl() != null)
                 getControl().setFocus();
         }
 
 
+        @Override
         public void addSelectionChangedListener(
                 ISelectionChangedListener listener) {
 
         }
 
+        @Override
         public ISelection getSelection() {
             return StructuredSelection.EMPTY;
         }
 
+        @Override
         public void removeSelectionChangedListener(
                 ISelectionChangedListener listener) {
 
         }
 
+        @Override
         public void setSelection(ISelection selection) {
 
         }

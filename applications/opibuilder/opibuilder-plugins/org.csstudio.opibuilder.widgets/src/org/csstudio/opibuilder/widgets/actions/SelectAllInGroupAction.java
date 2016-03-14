@@ -19,12 +19,11 @@ import org.eclipse.jface.action.IAction;
 public class SelectAllInGroupAction extends AbstractWidgetTargetAction{
 
 
+    @Override
     public void run(IAction action) {
 
         GroupingContainerModel containerModel = getContainerModel();
         containerModel.selectWidgets(containerModel.getChildren(), false);
-
-
     }
 
 

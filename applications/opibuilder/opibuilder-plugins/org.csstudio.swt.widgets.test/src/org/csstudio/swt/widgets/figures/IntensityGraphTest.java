@@ -24,6 +24,7 @@ public class IntensityGraphTest extends AbstractWidgetTest{
 
         Thread t = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 while (true) {
                     try {

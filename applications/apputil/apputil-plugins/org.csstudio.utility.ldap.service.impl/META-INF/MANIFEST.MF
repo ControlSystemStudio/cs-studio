@@ -21,5 +21,5 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.model.builder,
  org.csstudio.utility.ldap.preference,
  org.csstudio.utility.ldap.utils
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

@@ -136,6 +136,7 @@ public final class InstanceDialog extends Dialog {
         treeViewer.setInput(project);
 
         treeViewer.addOpenListener(new IOpenListener(){
+            @Override
             public void open(OpenEvent event) {
                 okPressed();
             }

@@ -354,6 +354,7 @@ public final class ResourceAndContainerGroup implements Listener {
      * @param e
      *            org.eclipse.swt.widgets.Event
      */
+    @Override
     public void handleEvent(final Event e) {
         validateControls();
         this.refreshFullPath();

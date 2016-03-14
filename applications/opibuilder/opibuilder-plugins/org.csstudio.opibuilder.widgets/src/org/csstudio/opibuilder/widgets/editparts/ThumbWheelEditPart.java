@@ -87,6 +87,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         figure.addWheelListener(new WheelListener() {
 
+            @Override
             public void decrementDecimalPart(int index) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     logic.decrementDecimalDigitAt(index);
@@ -99,6 +100,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
                 }
             }
 
+            @Override
             public void incrementDecimalPart(int index) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     logic.incrementDecimalDigitAt(index);
@@ -111,6 +113,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
                 }
             }
 
+            @Override
             public void decrementIntegerPart(int index) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     logic.decrementIntigerDigitAt(index);
@@ -123,6 +126,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
                 }
             }
 
+            @Override
             public void incrementIntegerPart(int index) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     logic.incrementIntigerWheel(index);
@@ -194,6 +198,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
                 if (pv != null) {
                     if (pvLoadLimitsListener == null)
                         pvLoadLimitsListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 Display displayInfo = VTypeHelper.getDisplayInfo(value);
@@ -225,6 +230,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // PV value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(newValue != null){
@@ -239,6 +245,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 registerLoadLimitsListener();
@@ -250,6 +257,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // decimal wheels
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -266,6 +274,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // integer wheels
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -283,6 +292,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // min
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 logic.setMin((Double) newValue);
@@ -294,6 +304,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // max
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 logic.setMax((Double) newValue);
@@ -318,6 +329,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // font
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -332,6 +344,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // border color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -344,6 +357,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // focused border color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -356,6 +370,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // border width
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
@@ -368,6 +383,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
         // show button
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;

@@ -74,6 +74,7 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
         });
 
         treeViewer.addOpenListener(new IOpenListener() {
+            @Override
             public void open(OpenEvent event) {
                 StructuredSelection sel = (StructuredSelection) event.getSelection();
 
@@ -97,6 +98,7 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 
     }
 
+    @Override
     public void partActivated(IWorkbenchPart part) {
         if (part instanceof DctEditor) {
             editor = (DctEditor) part;
@@ -107,22 +109,27 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
         }
     }
 
+    @Override
     public void partBroughtToTop(IWorkbenchPart part) {
 
     }
 
+    @Override
     public void partClosed(IWorkbenchPart part) {
 
     }
 
+    @Override
     public void partDeactivated(IWorkbenchPart part) {
 
     }
 
+    @Override
     public void partOpened(IWorkbenchPart part) {
 
     }
 
+    @Override
     public void selectionChanged(IWorkbenchPart part, ISelection s2) {
         ISelection selection = getSite().getPage().getSelection("org.eclipse.ui.views.ContentOutline");
 

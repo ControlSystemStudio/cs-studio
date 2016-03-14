@@ -173,6 +173,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         });
         viewer.setLabelProvider(new LabelProvider());
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 refreshGUIOnSelection();
             }
@@ -184,6 +185,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 okPressed();
             }

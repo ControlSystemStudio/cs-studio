@@ -9,6 +9,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;bundle-version="3.7.0",
  org.csstudio.ui.util;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.csstudio.logbook.midas.Activator
 Bundle-Vendor: Florian Feldbauer <florian@ep1.ruhr-uni-bochum.de> - RUB

@@ -247,6 +247,7 @@ public final class FilePathDialogWithFilter extends Dialog implements Listener {
         return path;
     }
 
+    @Override
     public void handleEvent(Event event) {
         ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
         path = widget.getFullPath();

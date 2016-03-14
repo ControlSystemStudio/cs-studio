@@ -401,6 +401,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
         viewer.getTable().setSortDirection(SWT.UP);
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 refreshToolbarOnSelection();
             }
@@ -526,6 +527,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
 
     private final static class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if(columnIndex == 1 && element instanceof ColorTuple){
                 return new OPIColor(((ColorTuple)element).rgb).getImage();
@@ -533,6 +535,7 @@ public class ColorMapEditDialog extends HelpTrayDialog {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             if(columnIndex == 0 && element instanceof ColorTuple)
                 return Double.toString(((ColorTuple)element).value);

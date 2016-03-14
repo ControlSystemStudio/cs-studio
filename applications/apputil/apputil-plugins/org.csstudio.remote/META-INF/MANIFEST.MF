@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.jms;bundle-version="5.4.2",
  org.csstudio.servicelocator;bundle-version="1.0.0",
  org.csstudio.utility.jms;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.remote.jms.command,
  org.csstudio.remote.management

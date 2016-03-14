@@ -74,6 +74,7 @@ public class LanguageOutlinePage extends ContentOutlinePage implements
 
     private void refreshViewer() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public synchronized void run() {
                 if (getTreeViewer().getTree()
@@ -88,6 +89,7 @@ public class LanguageOutlinePage extends ContentOutlinePage implements
         });
     }
 
+    @Override
     public void caretMoved(CaretEvent event) {
         try {
             propagateSelectionChanged = false;

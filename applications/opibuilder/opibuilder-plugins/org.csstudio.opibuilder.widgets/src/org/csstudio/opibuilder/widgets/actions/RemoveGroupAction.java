@@ -26,6 +26,7 @@ import org.eclipse.jface.action.IAction;
 public class RemoveGroupAction extends AbstractWidgetTargetAction{
 
 
+    @Override
     public void run(IAction action) {
         CompoundCommand compoundCommand = new CompoundCommand("Remove Group");
 

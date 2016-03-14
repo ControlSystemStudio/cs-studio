@@ -232,22 +232,27 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
         return false;
     }
 
+    @Override
     public boolean isBorderAlarmSensitve(){
         return getDelegate().isBorderAlarmSensitve();
     }
 
+    @Override
     public boolean isForeColorAlarmSensitve(){
         return getDelegate().isForeColorAlarmSensitve();
     }
 
+    @Override
     public boolean isBackColorAlarmSensitve(){
         return getDelegate().isBackColorAlarmSensitve();
     }
 
+    @Override
     public String getPVName(){
         return getDelegate().getPVName();
     }
 
+    @Override
     public boolean isAlarmPulsing(){
         return getDelegate().isAlarmPulsing();
     }

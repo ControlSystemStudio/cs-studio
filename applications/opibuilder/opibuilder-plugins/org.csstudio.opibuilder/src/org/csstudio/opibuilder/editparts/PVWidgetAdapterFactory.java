@@ -28,6 +28,7 @@ public class PVWidgetAdapterFactory implements IAdapterFactory {
         return null;
     }
 
+    @Override
     public Class<?>[] getAdapterList() {
         return new Class<?>[] { ProcessVariable.class, ProcessVariable[].class };
     }

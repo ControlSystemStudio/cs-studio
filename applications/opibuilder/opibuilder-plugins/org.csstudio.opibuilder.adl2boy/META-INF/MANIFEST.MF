@@ -18,5 +18,5 @@ Require-Bundle: org.jdom;bundle-version="1.1.0",
  org.csstudio.utility.adlParser;bundle-version="1.0.0",
  org.csstudio.opibuilder.widgets,
  org.eclipse.draw2d;bundle-version="3.9.100"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

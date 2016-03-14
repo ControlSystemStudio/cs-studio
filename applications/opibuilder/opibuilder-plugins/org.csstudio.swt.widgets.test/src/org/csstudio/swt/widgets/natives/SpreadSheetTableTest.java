@@ -89,6 +89,7 @@ public void testMain() {
 
     table.addCellEditingListener(new ITableCellEditingListener() {
 
+        @Override
         public void cellValueChanged(int row, int col, String oldValue,
                 String newValue) {
             System.out.println(row + " " + col + " " + oldValue + " " + newValue);
@@ -114,6 +115,7 @@ public void testMain() {
     button.setText("Delete Column");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
             table.deleteColumn(0);
         }
@@ -123,6 +125,7 @@ public void testMain() {
     button.setText("Insert Row");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
             table.insertRow(1);
         }
@@ -132,6 +135,7 @@ public void testMain() {
     button.setText("Set cell text");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
 
             for(int j=0; j<table.getColumnCount(); j++)
@@ -146,6 +150,7 @@ public void testMain() {
     button.setText("Set Content");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
             String[][] content = table.getSelection();
             table.setContent(content);
@@ -156,6 +161,7 @@ public void testMain() {
     button.setText("Print Selection");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
             String[][] content = table.getSelection();
             for(int i=0; i<content.length; i++)
@@ -167,6 +173,7 @@ public void testMain() {
     button.setText("Print");
     button.pack();
     button.addListener(SWT.Selection, new Listener() {
+        @Override
         public void handleEvent(Event event) {
             String[][] content = table.getContent();
             for(int i=0; i<content.length; i++)

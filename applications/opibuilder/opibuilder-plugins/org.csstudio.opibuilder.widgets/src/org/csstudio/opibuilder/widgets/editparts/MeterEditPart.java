@@ -53,6 +53,7 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 
         // needle Color
         IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 MeterFigure xMeter = (MeterFigure) refreshableFigure;
@@ -65,6 +66,7 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 
         // Ramp gradient
         IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 MeterFigure xMeter = (MeterFigure) refreshableFigure;
@@ -76,6 +78,7 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 
         // Show Value Label
         IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 MeterFigure xMeter = (MeterFigure) refreshableFigure;

@@ -52,6 +52,7 @@ public class SelectionSectionAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.setDisplayedImage(worker.getAllImages().getSectionImage());

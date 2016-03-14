@@ -59,6 +59,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 
         //needle Color
         IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -72,6 +73,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -84,6 +86,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 
         //Ramp gradient
         IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -96,6 +99,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 
         final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(((Integer)newValue) < GaugeModel.MINIMUM_SIZE)
                     newValue = GaugeModel.MINIMUM_SIZE;
@@ -105,6 +109,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
         };
         PropertyChangeListener sizeListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }

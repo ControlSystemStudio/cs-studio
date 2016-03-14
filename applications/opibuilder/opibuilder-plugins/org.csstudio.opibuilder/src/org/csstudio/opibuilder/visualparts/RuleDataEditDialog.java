@@ -187,6 +187,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
         nameText.setText(ruleData.getName());
         nameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 ruleData.setName(nameText.getText());
             }
@@ -298,6 +299,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
         expressionViewer.setInput(expressionList);
         expressionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 refreshActionBarOnSelection();
             }

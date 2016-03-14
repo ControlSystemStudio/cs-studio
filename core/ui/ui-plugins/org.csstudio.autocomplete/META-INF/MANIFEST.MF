@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.vtype.pv;resolution:=optional,
  org.csstudio.diirt.util;resolution:=optional
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.autocomplete,
  org.csstudio.autocomplete.parser,
  org.csstudio.autocomplete.parser.engine,
