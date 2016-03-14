@@ -35,8 +35,8 @@ public class Messages extends NLS {
     public static String ExportXLSImpossible_NoConf;
     public static String ImpossibleToDelete;
     public static String InformationPopup;
-    public static String InformationPopup_DelConfHeader;
     public static String InformationPopup_ConfAlreadyExist;
+    public static String InformationPopup_DelConfHeader;
     public static String InformationPopup_NoConfToDel;
     public static String InformationPopup_NoMeasureToDel;
     public static String Insert;
