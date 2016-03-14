@@ -12,8 +12,8 @@
 }
 
 .separator:vertical .line {
-	-fx-border-style: dashed;
-	-fx-padding: 0.0em 0.0em 0.0em 0.0em;
+    -fx-border-style: dashed;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
 }
 
 .text-area:alerted {
