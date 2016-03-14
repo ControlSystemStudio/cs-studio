@@ -13,6 +13,7 @@ public class OPIEditorMatcher implements IEditorMatchingStrategy {
      * @see org.eclipse.ui.IEditorMatchingStrategy#matches(org.eclipse.ui.
      * IEditorReference, org.eclipse.ui.IEditorInput)
      */
+    @Override
     public boolean matches(IEditorReference editorRef, IEditorInput input) {
         try {
             IEditorInput editorInput = editorRef.getEditorInput();

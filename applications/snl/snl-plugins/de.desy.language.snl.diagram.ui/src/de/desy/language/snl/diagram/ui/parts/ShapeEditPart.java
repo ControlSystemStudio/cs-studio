@@ -230,6 +230,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
      *
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(
             final ConnectionEditPart connection) {
         return getConnectionAnchor();
@@ -240,6 +241,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
      *
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
         return getConnectionAnchor();
     }
@@ -249,6 +251,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
      *
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(
             final ConnectionEditPart connection) {
         return getConnectionAnchor();
@@ -259,6 +262,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
      *
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
         return getConnectionAnchor();
     }
@@ -268,6 +272,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
      *
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final String prop = evt.getPropertyName();
         if (SNLModel.SIZE_PROP.equals(prop)

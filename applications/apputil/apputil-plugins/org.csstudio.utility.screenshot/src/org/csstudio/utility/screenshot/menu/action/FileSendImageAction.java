@@ -42,6 +42,7 @@ public class FileSendImageAction extends Action {
         this.setText(imageWorker.getMenuItemEntry());
     }
 
+    @Override
     public void run() {
         imageWorker.processImage(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(),
                                  worker.getDisplayedImage());

@@ -46,6 +46,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 
         // URL
         IWidgetPropertyChangeHandler urlHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ((AbstractWebBrowserFigure<?>)refreshableFigure).setUrl((String)newValue);

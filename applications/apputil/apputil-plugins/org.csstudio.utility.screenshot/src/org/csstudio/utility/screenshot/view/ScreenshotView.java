@@ -275,6 +275,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener {
         worker.setFocus();
     }
 
+    @Override
     public void flavorsChanged(FlavorEvent flavorEvent) {
 
         if(ClipboardHandler.getInstance().isImageAvailable()) {

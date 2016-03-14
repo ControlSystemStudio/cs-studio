@@ -138,6 +138,7 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
     /**
      * @see org.eclipse.gef.EditPolicy#eraseSourceFeedback(Request)
      */
+    @Override
     public void eraseSourceFeedback(Request request) {
         if (REQ_MOVE_BENDPOINT.equals(request.getType()))
             eraseConnectionFeedback((BendpointRequest) request);

@@ -8,7 +8,7 @@ Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.security;bundle-version="1.1.1",
  org.csstudio.workspace;bundle-version="3.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.auth.internal,
  org.csstudio.auth.internal.preferences,

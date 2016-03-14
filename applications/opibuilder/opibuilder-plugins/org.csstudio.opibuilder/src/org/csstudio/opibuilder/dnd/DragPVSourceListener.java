@@ -27,6 +27,7 @@ public class DragPVSourceListener extends AbstractTransferDragSourceListener {
             event.doit = false;
     }
 
+    @Override
     public void dragSetData(DragSourceEvent event) {
         List<?> widgetLists = getViewer().getSelectedEditParts();
         if (!widgetLists.isEmpty()

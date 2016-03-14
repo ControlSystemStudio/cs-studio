@@ -87,6 +87,7 @@ public abstract class AbstractNode<E extends IElement> extends AbstractBase {
      *
      * @return a non-null String instance
      */
+    @Override
     public String getCaption() {
         String s = doGetCaption(element);
 

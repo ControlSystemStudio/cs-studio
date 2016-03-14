@@ -82,6 +82,7 @@ public class RunScriptFileDemo {
 
     display.asyncExec(new Runnable() {
 
+        @Override
         public void run() {
             try {
                 Context scriptContext2 = Context.enter();

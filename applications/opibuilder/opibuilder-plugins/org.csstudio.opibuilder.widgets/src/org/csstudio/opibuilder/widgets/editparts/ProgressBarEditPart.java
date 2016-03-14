@@ -62,6 +62,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         IWidgetPropertyChangeHandler originHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((ProgressBarFigure)figure).setOrigin((Double)newValue);
                 return false;
@@ -71,6 +72,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
     IWidgetPropertyChangeHandler originIgnoredHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((ProgressBarFigure)figure).setOriginIgnored((Boolean)newValue);
                 return false;
@@ -80,6 +82,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillColor
         IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -92,6 +95,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillBackgroundColor
         IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -106,6 +110,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -118,6 +123,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler showLabelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -129,6 +135,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
         setPropertyChangeHandler(ProgressBarModel.PROP_SHOW_LABEL, showLabelHandler);
 
         IWidgetPropertyChangeHandler indicatorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -141,6 +148,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         //horizontal
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -166,6 +174,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
         //enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
         //which is not the case for the scaled slider
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -178,6 +187,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 
         // Change fill color when "FillColor Alarm Sensitive" property changes.
         IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
                 ProgressBarFigure figure = (ProgressBarFigure) refreshableFigure;
                 boolean sensitive = (Boolean)newValue;

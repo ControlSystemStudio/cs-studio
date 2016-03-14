@@ -13,4 +13,4 @@ Import-Package: com.google.common.base,
  org.osgi.util.tracker;version="1.4.0",
  org.slf4j
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

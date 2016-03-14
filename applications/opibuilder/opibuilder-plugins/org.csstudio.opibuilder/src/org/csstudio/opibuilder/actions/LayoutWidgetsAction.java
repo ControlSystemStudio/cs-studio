@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IAction;
  */
 public class LayoutWidgetsAction extends AbstractWidgetTargetAction {
 
+    @Override
     public void run(IAction action) {
 
         AbstractLayoutEditpart layoutWidget = getLayoutWidget();

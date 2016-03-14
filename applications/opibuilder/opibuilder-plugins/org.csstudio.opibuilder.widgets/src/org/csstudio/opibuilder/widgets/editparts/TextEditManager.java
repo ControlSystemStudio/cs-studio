@@ -50,6 +50,7 @@ private Font scaledFont;
 private boolean multiLine = true;
 private AbstractBaseEditPart editPart;
 private ZoomListener zoomListener = new ZoomListener() {
+    @Override
     public void zoomChanged(double newZoom) {
         updateScaledFont(newZoom);
     }
@@ -67,6 +68,7 @@ public TextEditManager(AbstractBaseEditPart source, CellEditorLocator locator) {
 /**
  * @see org.eclipse.gef.tools.DirectEditManager#bringDown()
  */
+@Override
 protected void bringDown() {
     ZoomManager zoomMgr = (ZoomManager)getEditPart().getViewer()
             .getProperty(ZoomManager.class.toString());
@@ -88,6 +90,7 @@ protected void bringDown() {
     disposeScaledFont();
 }
 
+@Override
 protected CellEditor createCellEditorOn(Composite composite) {
     CellEditor editor =  new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
         @Override
@@ -142,6 +145,7 @@ private void disposeScaledFont() {
     }
 }
 
+@Override
 protected void initCellEditor() {
     // update text
     ITextFigure textFigure = getEditPart().getAdapter(ITextFigure.class);

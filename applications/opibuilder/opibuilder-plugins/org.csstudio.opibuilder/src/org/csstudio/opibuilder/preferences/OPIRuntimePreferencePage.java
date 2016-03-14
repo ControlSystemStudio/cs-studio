@@ -88,10 +88,12 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
                 });
                 tableEditor.getTableViewer().getTable().addFocusListener(new FocusListener() {
 
+                    @Override
                     public void focusLost(FocusEvent e) {
                         boolean valid = isValid();
                         fireStateChanged(IS_VALID, !valid, valid);                            }
 
+                    @Override
                     public void focusGained(FocusEvent e) {
                         boolean valid = isValid();
                         fireStateChanged(IS_VALID, !valid, valid);                            }
@@ -167,6 +169,7 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
         addField(startWindowInCompactEditor);
     }
 
+    @Override
     public void init(IWorkbench workbench) {
 
     }

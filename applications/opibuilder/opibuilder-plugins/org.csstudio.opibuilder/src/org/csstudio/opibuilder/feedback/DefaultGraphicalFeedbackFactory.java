@@ -32,11 +32,13 @@ import org.eclipse.gef.requests.CreateRequest;
 public class DefaultGraphicalFeedbackFactory implements
         IGraphicalFeedbackFactory {
 
+    @Override
     public IFigure createDragSourceFeedbackFigure(AbstractWidgetModel model,
             Rectangle initalBounds) {
         return null;
     }
 
+    @Override
     public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
             PrecisionRectangle bounds, IFigure feedbackFigure,
             ChangeBoundsRequest request) {
@@ -46,10 +48,12 @@ public class DefaultGraphicalFeedbackFactory implements
 
     }
 
+    @Override
     public Shape createSizeOnDropFeedback(CreateRequest createRequest) {
         return null;
     }
 
+    @Override
     public void showSizeOnDropFeedback(CreateRequest request,
             IFigure feedback, Insets insets) {
         Point p = new Point(request.getLocation().getCopy());
@@ -61,20 +65,24 @@ public class DefaultGraphicalFeedbackFactory implements
 
     }
 
+    @Override
     public Class<?> getCreationTool() {
         return null;
     }
 
+    @Override
     public Command createChangeBoundsCommand(AbstractWidgetModel widgetModel,
             ChangeBoundsRequest request, Rectangle targetBounds) {
         return null;
     }
 
+    @Override
     public Command createInitialBoundsCommand(AbstractWidgetModel widgetModel,
             CreateRequest request, Rectangle targetBounds) {
         return null;
     }
 
+    @Override
     public List<Handle> createCustomHandles(GraphicalEditPart editPart) {
         return null;
     }

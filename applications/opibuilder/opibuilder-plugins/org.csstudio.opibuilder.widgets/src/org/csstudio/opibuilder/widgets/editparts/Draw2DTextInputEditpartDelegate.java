@@ -55,6 +55,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
         textInputFigure
                 .addManualValueChangeListener(new IManualStringValueChangeListener() {
 
+                    @Override
                     public void manualValueChanged(String newValue) {
                         outputText(newValue);
                     }
@@ -106,6 +107,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
 
         IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextInputFigure) figure).setDateTimeFormat((String) newValue);
@@ -117,6 +119,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
 
         IWidgetPropertyChangeHandler fileSourceHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextInputFigure) figure)
@@ -129,6 +132,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
 
         IWidgetPropertyChangeHandler fileReturnPartHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TextInputFigure) figure).setFileReturnPart(FileReturnPart
@@ -144,6 +148,7 @@ public class Draw2DTextInputEditpartDelegate implements ITextInputEditPartDelega
     /**
      * @param newValue
      */
+    @Override
     public void updatePropSheet() {
         switch (model.getSelectorType()) {
         case NONE:

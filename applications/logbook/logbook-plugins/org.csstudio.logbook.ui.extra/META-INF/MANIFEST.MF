@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui.extra
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
  com.google.common.collect

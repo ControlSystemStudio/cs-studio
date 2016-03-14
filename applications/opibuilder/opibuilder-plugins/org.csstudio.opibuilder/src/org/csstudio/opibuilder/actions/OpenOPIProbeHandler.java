@@ -21,7 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class OpenOPIProbeHandler extends AbstractHandler {
     private static final String MACRO_NAME = "probe_pv"; //$NON-NLS-1$
 
-
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         final ISelection selection =
             HandlerUtil.getActiveMenuSelection(event);

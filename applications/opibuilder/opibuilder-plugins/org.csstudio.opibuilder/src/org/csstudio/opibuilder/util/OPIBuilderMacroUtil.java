@@ -73,6 +73,7 @@ class WidgetMacroTableProvider implements IMacroTableProvider{
         macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widgetModel);
     }
 
+    @Override
     public String getMacroValue(String macroName) {
         if(macroMap != null && macroMap.containsKey(macroName))
             return macroMap.get(macroName);

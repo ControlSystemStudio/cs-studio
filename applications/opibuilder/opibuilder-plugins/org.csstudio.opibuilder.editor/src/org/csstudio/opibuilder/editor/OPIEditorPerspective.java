@@ -36,6 +36,7 @@ public class OPIEditorPerspective implements IPerspectiveFactory
     /** Create suggested OPI Editor layout:
      *  <pre>Navigator | Editor | Properties</pre>
      */
+    @Override
     public void createInitialLayout(IPageLayout layout)
     {
         final String editor = layout.getEditorArea();

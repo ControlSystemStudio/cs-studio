@@ -127,6 +127,7 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements
      * @see
      * java.beans.PropertyChangeListener#propertyChange(PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final String prop = evt.getPropertyName();
         // these properties are fired when Shapes are added into or removed from

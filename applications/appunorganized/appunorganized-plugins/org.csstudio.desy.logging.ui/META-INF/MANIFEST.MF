@@ -7,6 +7,6 @@ Bundle-Activator: org.csstudio.desy.logging.ui.DesyLoggingActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: DESY, Joerg Penning <css-developer@desy.de>
 Import-Package: org.slf4j

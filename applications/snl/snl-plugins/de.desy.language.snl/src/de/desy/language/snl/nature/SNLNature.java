@@ -63,6 +63,7 @@ public class SNLNature implements IProjectNature {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void configure() throws CoreException {
         // TODO Add snl builder to commands of projectdescription,
         // see: SNLNature2
@@ -71,6 +72,7 @@ public class SNLNature implements IProjectNature {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deconfigure() throws CoreException {
         // TODO Add snl builder to commands of projectdescription,
         // see: SNLNature2
@@ -81,6 +83,7 @@ public class SNLNature implements IProjectNature {
      *
      * @return The project or null if no project has been set before.
      */
+    @Override
     public IProject getProject() {
         return this._project;
     }
@@ -91,6 +94,7 @@ public class SNLNature implements IProjectNature {
      * @param project
      *            The project to use or null if no project to configure.
      */
+    @Override
     public void setProject(final IProject project) {
         this._project = project;
     }

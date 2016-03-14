@@ -57,6 +57,7 @@ public class ADLTreeView extends ViewPart {
     }
     private void hookPageSelection() {
         pageSelectionListener = new ISelectionListener() {
+            @Override
             public void selectionChanged(IWorkbenchPart part,
                     ISelection selection) {
                 pageSelectionChanged(part, selection);

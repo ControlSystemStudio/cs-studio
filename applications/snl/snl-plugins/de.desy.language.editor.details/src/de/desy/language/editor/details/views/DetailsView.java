@@ -68,28 +68,36 @@ public class DetailsView extends ViewPart {
      */
 
     private final class RefreshDetailViewListener implements IPartListener2 {
+        @Override
         public void partVisible(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partOpened(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partInputChanged(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partHidden(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partDeactivated(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partClosed(IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partBroughtToTop(IWorkbenchPartReference partRef) {
             partChanged(partRef);
         }
 
+        @Override
         public void partActivated(IWorkbenchPartReference partRef) {
             partChanged(partRef);
         }
@@ -103,6 +111,7 @@ public class DetailsView extends ViewPart {
         }
     }
     class DataLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public String getColumnText(Object obj, int index) {
             if (obj instanceof KeyValuePair) {
                 if (index == 0) {
@@ -115,6 +124,7 @@ public class DetailsView extends ViewPart {
             }
             return getText(obj);
         }
+        @Override
         public Image getColumnImage(Object obj, int index) {
             return getImage(obj);
         }
@@ -141,6 +151,7 @@ public class DetailsView extends ViewPart {
      * This is a callback that will allow us
      * to create the viewer and initialize it.
      */
+    @Override
     public void createPartControl(Composite parent) {
         Composite main = new Composite(parent, SWT.NONE);
         main.setLayout(new GridLayout(1, false));
@@ -173,6 +184,7 @@ public class DetailsView extends ViewPart {
             _measurementProvider = provider;
             refreshContent();
              _measurementProvider.addUpdateListener(new IUpdateListener() {
+                 @Override
                 public void update() {
                     refreshContent();
                 }
@@ -191,6 +203,7 @@ public class DetailsView extends ViewPart {
     /**
      * Passing the focus request to the viewer's control.
      */
+    @Override
     public void setFocus() {
         _measurementDataViewer.getControl().setFocus();
     }

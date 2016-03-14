@@ -10,7 +10,7 @@ Require-Bundle: org.junit;bundle-version="3.8.2",
  org.eclipse.draw2d;bundle-version="3.5.1",
  org.eclipse.core.resources;bundle-version="3.5.1"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.utility.adlparser.fileParser,
  org.csstudio.utility.adlparser.fileParser.widgetParts,
  org.csstudio.utility.adlparser.fileParser.widgets

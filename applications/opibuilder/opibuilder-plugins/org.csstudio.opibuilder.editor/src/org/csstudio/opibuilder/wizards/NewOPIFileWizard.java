@@ -59,6 +59,7 @@ public class NewOPIFileWizard extends Wizard implements INewWizard {
         return true;
     }
 
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
         this.selection = selection;

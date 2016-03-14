@@ -40,6 +40,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
         figure.setSelectedColor(getWidgetModel().getSelectedColor().getSWTColor());
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE)
                     setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
@@ -80,6 +81,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
         // value
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -107,6 +109,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
         // bit
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -119,12 +122,14 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
         //label
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
                 CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
                 figure.setText((String) newValue);
                 Display.getCurrent().timerExec(10, new Runnable() {
+                    @Override
                     public void run() {
                         if(getWidgetModel().isAutoSize())
                             performAutoSize(refreshableFigure);
@@ -136,6 +141,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if((Boolean)newValue){
@@ -148,6 +154,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((CheckBoxFigure)figure).setSelectedColor(
@@ -158,9 +165,11 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(CheckBoxModel.PROP_SELECTED_COLOR, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 Display.getCurrent().timerExec(10, new Runnable() {
+                    @Override
                     public void run() {
                         if(getWidgetModel().isAutoSize()){
                             performAutoSize(figure);

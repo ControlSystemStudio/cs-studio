@@ -92,6 +92,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
         promptGroupCombo.setSelection(new StructuredSelection(PromptGroup.ALL));
 
         promptGroupCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 promptGroup = (PromptGroup) ((IStructuredSelection) event.getSelection()).getFirstElement();
                 refreshFilter();

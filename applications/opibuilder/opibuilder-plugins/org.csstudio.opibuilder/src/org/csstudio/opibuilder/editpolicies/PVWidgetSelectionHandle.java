@@ -167,7 +167,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
             super(source, null, locator);
         }
 
-
+            @Override
             protected CellEditor createCellEditorOn(Composite composite) {
                 final PVNameTextCellEditor cellEditor = new PVNameTextCellEditor(
                 (Composite) getEditPart().getViewer().getControl());
@@ -197,6 +197,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
              * from the source edit part and executing it via the {@link CommandStack}.
              * Finally, {@link #bringDown()} is called to perform and necessary cleanup.
              */
+            @Override
             protected void commit() {
                 if (committing)
                     return;
@@ -247,6 +248,7 @@ public class PVWidgetSelectionHandle extends AbstractHandle {
                 redo = actionBars.getGlobalActionHandler(ActionFactory.REDO.getId());
             }
 
+            @Override
             protected void bringDown() {
 
                 if (actionHandler != null) {

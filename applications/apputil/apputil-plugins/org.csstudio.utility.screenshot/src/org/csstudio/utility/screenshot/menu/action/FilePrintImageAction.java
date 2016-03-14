@@ -54,6 +54,7 @@ public class FilePrintImageAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         Display mainDisplay = ScreenshotPlugin.getDefault().getDisplay();

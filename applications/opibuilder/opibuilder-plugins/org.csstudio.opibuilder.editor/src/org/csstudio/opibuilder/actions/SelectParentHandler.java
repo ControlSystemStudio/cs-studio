@@ -27,6 +27,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class SelectParentHandler extends AbstractHandler {
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         GraphicalViewer viewer = HandlerUtil.getActivePart(event).getAdapter(

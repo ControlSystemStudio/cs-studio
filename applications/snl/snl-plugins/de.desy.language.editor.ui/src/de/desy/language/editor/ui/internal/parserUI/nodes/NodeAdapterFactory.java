@@ -8,6 +8,7 @@ import de.desy.language.editor.core.parser.RootNode;
 public class NodeAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         assert adaptableObject != null;
         assert adapterType != null;
@@ -29,6 +30,7 @@ public class NodeAdapterFactory implements IAdapterFactory {
     }
 
     @SuppressWarnings("rawtypes")
+    @Override
     public Class[] getAdapterList() {
         return new Class[] {RootNode.class};
     }

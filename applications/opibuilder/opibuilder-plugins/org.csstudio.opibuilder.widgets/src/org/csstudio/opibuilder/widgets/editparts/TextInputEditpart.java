@@ -198,6 +198,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             removeAllPropertyChangeHandlers(LabelModel.PROP_TEXT);
             IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         final IFigure figure) {
                     String text = (String) newValue;
@@ -206,6 +207,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                      setFigureText(text);
                      if(getWidgetModel().isAutoSize()){
                             Display.getCurrent().timerExec(10, new Runnable() {
+                                @Override
                                 public void run() {
                                         performAutoSize();
                                 }
@@ -222,6 +224,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 registerLoadLimitsListener();
@@ -266,6 +269,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
         parent.selectWidget(model, true);
     }
 
+    @Override
     public DragTracker getDragTracker(Request request) {
         if (getExecutionMode() == ExecutionMode.RUN_MODE &&
                 delegate instanceof Draw2DTextInputEditpartDelegate) {
@@ -292,6 +296,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
             performDirectEdit();
     }
 
+    @Override
     protected void performDirectEdit() {
         new TextEditManager(this, new LabelCellEditorLocator(
                 (Figure) getFigure()), getWidgetModel().isMultilineInput()).show();

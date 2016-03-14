@@ -42,6 +42,7 @@ public class EditClearAction extends Action
         this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_TT"));
     }
 
+    @Override
     public void run()
     {
         if(MessageDialog.openConfirm(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(), ScreenshotPlugin.getDefault().getNameAndVersion() + ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_TITLE"), ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_MSG")))

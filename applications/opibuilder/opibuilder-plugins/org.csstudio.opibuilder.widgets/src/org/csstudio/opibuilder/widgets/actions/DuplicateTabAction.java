@@ -19,7 +19,7 @@ import org.eclipse.jface.action.IAction;
 public class DuplicateTabAction extends AbstractWidgetTargetAction {
 
 
-
+    @Override
     public void run(IAction action) {
         Command command = new DuplicateTabCommand(getSelectedTabWidget());
         execute(command);
