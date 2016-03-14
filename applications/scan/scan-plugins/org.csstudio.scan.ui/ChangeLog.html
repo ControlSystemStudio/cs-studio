@@ -9,6 +9,17 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.scan.</p>
 
+<h2>Version 4.2.6 - 2016-03-14</h2>
+<ul>
+  <li>Scan Server gives more specific error message for cases
+      that were previously all reported as "Timeout while waiting for device = 3":
+    <ul>
+       <li>"Completion timeout" if put-callback failed to arrive within timeout</li>
+       <li>"device (0) != 3.0 after completion" if read-back differed after completion</li>
+    </ul>
+  </li>
+</ul>
+
 <h2>Version 4.2.5 - 2015-11-23</h2>
 <ul>
   <li>Scan Server supports "?queue=false" to execute scans as soon as possible, not queued.</li>
@@ -27,16 +38,16 @@
       Write, then wait for readback to match;
       Write, then wait for completion callback;
       Write, then wait for completion callback and check readback.
-      <br>
+      <br/>
       It will no longer wait for completion callback with a timeout AND
       then use the timeout again to wait for a readback.
-      <br>
+      <br/>
       This avoids problems with devices that properly support put-callback completion.
       Temperature controller for example can require a timeout of hours to reach
       a desired cryogenic temperature. Once they issue the callback, the temperature
       is within the region.
       Instead of again applying the long timeout, a failure should be noticed right away.
-      <br>
+      <br/>
       This update will require changes to scans that used completion for devices that do not
       support command completion. Such scans must no longer use completion in the scan commands,
       and instead rely on the timeout for the readback.
