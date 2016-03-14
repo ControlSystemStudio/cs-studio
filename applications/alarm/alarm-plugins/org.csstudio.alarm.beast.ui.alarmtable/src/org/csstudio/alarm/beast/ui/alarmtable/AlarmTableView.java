@@ -186,9 +186,8 @@ public class AlarmTableView extends ViewPart
             this.combinedTables = Preferences.isCombinedAlarmTable();
             this.filterType = FilterType.TREE;
             this.columns = ColumnWrapper.fromSaveArray(Preferences.getColumns());
-            //set format for all tables except the main one
-            if (site.getSecondaryId() != null)
-                this.timeFormat = Preferences.getTimeFormat();
+            this.timeFormat = Preferences.getTimeFormat();
+            //if timeformat is null, the default format is used, which is AlarmTreeLeaf#getTimestampText
         }
         else
         {
@@ -200,8 +199,9 @@ public class AlarmTableView extends ViewPart
                     FilterType.TREE : FilterType.valueOf(filterTypeSet.toUpperCase());
 
             this.timeFormat = memento.getString(Preferences.ALARM_TABLE_TIME_FORMAT);
-            if (site.getSecondaryId() != null && (this.timeFormat == null || this.timeFormat.isEmpty()))
+            if (this.timeFormat == null || this.timeFormat.isEmpty())
                 this.timeFormat = Preferences.getTimeFormat();
+            //if timeformat is null, the default format is used, which is AlarmTreeLeaf#getTimestampText
 
             this.columns = ColumnWrapper.restoreColumns(memento.getChild(Preferences.ALARM_TABLE_COLUMN_SETTING));
 

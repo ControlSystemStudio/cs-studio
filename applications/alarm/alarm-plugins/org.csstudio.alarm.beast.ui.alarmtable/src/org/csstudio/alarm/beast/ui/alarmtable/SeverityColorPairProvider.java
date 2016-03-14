@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2016 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -60,6 +67,17 @@ public class SeverityColorPairProvider implements DisposeListener
             }
 
         }
+
+        // If the *_ACK severity color pairs weren't specified, the
+        // MAJOR, MINOR & INVALID color pair is used for them
+        if (colors[SeverityLevel.MINOR_ACK.ordinal()] == null && colors[SeverityLevel.MINOR.ordinal()] != null)
+            colors[SeverityLevel.MINOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MINOR.ordinal()].getRGB());
+        if (colors[SeverityLevel.MAJOR_ACK.ordinal()] == null && colors[SeverityLevel.MAJOR.ordinal()] != null)
+            colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
+        if (colors[SeverityLevel.INVALID_ACK.ordinal()] == null && colors[SeverityLevel.INVALID.ordinal()] != null)
+            colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
+        if (colors[SeverityLevel.UNDEFINED_ACK.ordinal()] == null && colors[SeverityLevel.UNDEFINED.ordinal()] != null)
+            colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, colors[SeverityLevel.UNDEFINED.ordinal()].getRGB());
     }
 
     /** @see DisposeListener */
