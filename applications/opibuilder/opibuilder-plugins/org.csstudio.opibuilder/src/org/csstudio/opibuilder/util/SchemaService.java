@@ -352,7 +352,6 @@ public final class SchemaService {
             widgetClassesPropertiesRules.put(AbstractWidgetModel.PROP_NAME, Boolean.FALSE);
             widgetClassesPropertiesRules.put(AbstractWidgetModel.PROP_XPOS, Boolean.FALSE);
             widgetClassesPropertiesRules.put(AbstractWidgetModel.PROP_YPOS, Boolean.FALSE);
-            widgetClassesPropertiesRules.put(AbstractWidgetModel.PROP_RULES, Boolean.FALSE);
         } else {
             try (InputStream inputStream = ResourceUtil.pathToInputStream(rulesFile, false)) {
                 Properties p = new Properties();
