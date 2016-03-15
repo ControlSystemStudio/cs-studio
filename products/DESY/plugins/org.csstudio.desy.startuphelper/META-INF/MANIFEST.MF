@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.slf4j;bundle-version="1.6.1"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
 Export-Package: org.csstudio.desy.startuphelper,
  org.csstudio.desy.startuphelper.login,

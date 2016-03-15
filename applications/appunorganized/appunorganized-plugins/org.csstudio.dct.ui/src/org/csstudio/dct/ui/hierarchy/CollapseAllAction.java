@@ -14,14 +14,17 @@ import org.eclipse.ui.IViewPart;
 public final class CollapseAllAction implements IViewActionDelegate {
     private HierarchyView view;
 
+    @Override
     public void init(IViewPart view) {
         this.view = (HierarchyView) view;
     }
 
+    @Override
     public void run(IAction action) {
         view.getTreeViewer().collapseAll();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
 
     }

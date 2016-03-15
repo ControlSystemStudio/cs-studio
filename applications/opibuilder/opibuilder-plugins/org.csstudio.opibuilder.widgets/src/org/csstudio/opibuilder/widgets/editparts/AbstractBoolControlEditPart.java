@@ -50,6 +50,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
         figure.setRunMode(getExecutionMode().equals(
                 ExecutionMode.RUN_MODE));
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
+            @Override
             public void manualValueChanged(final double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE){
                     if(getWidgetModel().getDataType() == 0)
@@ -70,6 +71,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
      * of subclasses, which can call this method in their implementation of
      * {@link #registerPropertyChangeHandlers()}.
      */
+    @Override
     protected void registerCommonPropertyChangeHandlers() {
 
         configureButtonListener((AbstractBoolControlFigure) getFigure());
@@ -78,6 +80,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 
         // toggle button
         final IWidgetPropertyChangeHandler toggleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -88,6 +91,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
         };
         getWidgetModel().getProperty(AbstractBoolControlModel.PROP_TOGGLE_BUTTON).
         addPropertyChangeListener(new PropertyChangeListener(){
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 toggleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
@@ -98,6 +102,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 
         // show confirm dialog
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -110,6 +115,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 
         // confirm tip
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -122,6 +128,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 
         // password
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -135,6 +142,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
         //enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
         //which is not the case for the bool control widget
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -162,6 +170,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
             final AbstractBoolControlFigure figure) {
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 // If the display is not in run mode, don't do anything.
                 if (getExecutionMode() != ExecutionMode.RUN_MODE)

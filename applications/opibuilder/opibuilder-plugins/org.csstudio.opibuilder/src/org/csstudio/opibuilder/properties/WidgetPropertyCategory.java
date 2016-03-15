@@ -34,6 +34,7 @@ public interface WidgetPropertyCategory {
      * Image category.
      */
     public final static WidgetPropertyCategory Image = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Image";
         }
@@ -43,6 +44,7 @@ public interface WidgetPropertyCategory {
      * Behavior category.
      */
     public final static WidgetPropertyCategory Behavior = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Behavior";
         }
@@ -52,6 +54,7 @@ public interface WidgetPropertyCategory {
      * Display category.
      */
     public final static WidgetPropertyCategory Display = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Display";
         }
@@ -61,6 +64,7 @@ public interface WidgetPropertyCategory {
      * Position category.
      */
     public final static WidgetPropertyCategory Position = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Position";
         }
@@ -71,6 +75,7 @@ public interface WidgetPropertyCategory {
      * Misc category.
      */
     public final static WidgetPropertyCategory Misc = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Misc";
         }
@@ -80,6 +85,7 @@ public interface WidgetPropertyCategory {
      * Border category.
      */
     public final static WidgetPropertyCategory Border = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Border";
         }
@@ -89,6 +95,7 @@ public interface WidgetPropertyCategory {
      * Misc category.
      */
     public final static WidgetPropertyCategory Basic = new WidgetPropertyCategory(){
+        @Override
         public String toString() {
             return "Basic";
         }

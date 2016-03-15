@@ -61,6 +61,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
     @Override
     public void hookMouseClickAction() {
         ((ActionButtonFigure)editpart.getFigure()).addActionListener(new ButtonActionListener(){
+            @Override
             public void actionPerformed(int mouseEventState) {
                 List<AbstractWidgetAction> actions = editpart.getHookedActions();
                 if(actions!= null){
@@ -96,6 +97,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 
         // text
         IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
@@ -108,6 +110,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 
         //image
         IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
@@ -123,6 +126,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 
         // width
         IWidgetPropertyChangeHandler widthHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
@@ -135,6 +139,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 
         // height
         IWidgetPropertyChangeHandler heightHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
@@ -147,6 +152,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 
         // button style
         final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
@@ -159,6 +165,7 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
         };
         editpart.getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), editpart.getFigure());
                 }

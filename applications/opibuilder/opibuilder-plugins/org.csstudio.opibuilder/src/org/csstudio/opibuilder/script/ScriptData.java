@@ -132,20 +132,24 @@ public class ScriptData implements IAdaptable {
 
 
     @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(Class adapter) {
         if(adapter == IWorkbenchAdapter.class)
             return new IWorkbenchAdapter() {
 
+                @Override
                 public Object getParent(Object o) {
                     return null;
                 }
 
+                @Override
                 public String getLabel(Object o) {
                     if(isEmbedded)
                         return getScriptName();
                     return path.toString();
                 }
 
+                @Override
                 public ImageDescriptor getImageDescriptor(Object object) {
                     String icon;
                     if(isEmbedded){
@@ -162,6 +166,7 @@ public class ScriptData implements IAdaptable {
                             OPIBuilderPlugin.PLUGIN_ID, icon);
                 }
 
+                @Override
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }

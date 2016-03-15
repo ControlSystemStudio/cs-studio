@@ -278,6 +278,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isInherited() {
         IRecord p = getParentRecord();
         boolean result = p!=null && !(p instanceof BaseRecord);
@@ -287,6 +288,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDependentRecord(IRecord record) {
         assert record != null;
         assert record.getParentRecord() == this : "Record must inherit from here.";
@@ -296,6 +298,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<IRecord> getDependentRecords() {
         return inheritingRecords;
     }
@@ -303,6 +306,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeDependentRecord(IRecord record) {
         assert record != null;
         assert record.getParentRecord() == this : "Record must inherit from here.";
@@ -312,6 +316,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRecordDefinition getRecordDefinition() {
         IRecord base = getRecordStack().pop();
         return base.getRecordDefinition();
@@ -320,6 +325,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void accept(IVisitor visitor) {
         visitor.visit(this);
     }

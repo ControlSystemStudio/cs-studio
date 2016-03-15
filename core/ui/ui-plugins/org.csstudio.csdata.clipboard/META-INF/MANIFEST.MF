@@ -6,7 +6,7 @@ Bundle-Description: (TO REVIEW) Allow copying CS data like PV names to the clipb
 Bundle-Localization: plugin
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.0",
  org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0"

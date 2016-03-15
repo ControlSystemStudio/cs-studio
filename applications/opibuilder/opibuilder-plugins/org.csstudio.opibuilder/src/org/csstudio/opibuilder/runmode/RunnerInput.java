@@ -42,6 +42,7 @@ public class RunnerInput implements IRunnerInput{
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.runmode.IRunnerInput#setDisplayOpenManager(org.csstudio.opibuilder.runmode.DisplayOpenManager)
      */
+    @Override
     public void setDisplayOpenManager(DisplayOpenManager displayOpenManager) {
         this.displayOpenManager = displayOpenManager;
     }
@@ -49,6 +50,7 @@ public class RunnerInput implements IRunnerInput{
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.runmode.IRunnerInput#getDisplayOpenManager()
      */
+    @Override
     public DisplayOpenManager getDisplayOpenManager() {
         return displayOpenManager;
     }
@@ -108,22 +110,27 @@ public class RunnerInput implements IRunnerInput{
     /* (non-Javadoc)
      * @see org.csstudio.opibuilder.runmode.IRunnerInput#getMacrosInput()
      */
+    @Override
     public MacrosInput getMacrosInput() {
         return macrosInput;
     }
 
+    @Override
     public void saveState(IMemento memento) {
         RunnerInputFactory.saveState(memento, this);
     }
 
+    @Override
     public String getFactoryId() {
         return RunnerInputFactory.getFactoryId();
     }
 
+    @Override
     public IPath getPath() {
         return path;
     }
 
+    @Override
     public boolean exists() {
         InputStream in = null;
         try {
@@ -134,28 +141,33 @@ public class RunnerInput implements IRunnerInput{
         return in != null;
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor() {
         return null;
     }
 
+    @Override
     public String getName() {
         return getPath().lastSegment();
     }
 
+    @Override
     public IPersistableElement getPersistable() {
         return this;
     }
 
+    @Override
     public String getToolTipText() {
         return path.toString();
     }
 
 
-
+    @Override
     public InputStream getInputStream() throws Exception {
         return ResourceUtil.pathToInputStream(getPath(), false);
     }
 
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         return null;
     }

@@ -59,10 +59,12 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
 
     boolean contentProposalOpen = false;
 
+    @Override
     public void proposalPopupClosed(ContentProposalAdapter adapter) {
         contentProposalOpen = false;
     }
 
+    @Override
     public void proposalPopupOpened(ContentProposalAdapter adapter) {
         contentProposalOpen = true;
     }
@@ -84,6 +86,7 @@ public class ContentProposingTextCellEditor extends TextCellEditor implements IC
             this.aliases = aliases;
         }
 
+        @Override
         public IContentProposal[] getProposals(String contents, int position) {
             List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 

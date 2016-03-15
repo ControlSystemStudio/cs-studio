@@ -39,6 +39,7 @@ public class DummyAction extends Action
         this.setToolTipText("Just a place holder");
     }
 
+    @Override
     public void run()
     {
     }

@@ -72,12 +72,13 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
     public ShowPVInfoAction() {
     }
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
 
 
-
+    @Override
     public void run(IAction action) {
         if(getSelectedWidget() == null ||
                 getSelectedWidget().getAllPVs() == null ||

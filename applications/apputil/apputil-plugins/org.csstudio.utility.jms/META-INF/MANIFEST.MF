@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.utility.jms.Activator
 Bundle-Vendor: Markus Moeller <markus.moeller@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.jms;bundle-version="5.4.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.jms,
  org.csstudio.utility.jms.consumer,

@@ -51,6 +51,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
      *
      * @return the casted {@link ImageModel}
      */
+    @Override
     public ImageModel getWidgetModel() {
         return (ImageModel) getModel();
     }
@@ -98,6 +99,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     protected void registerCropPropertyHandlers() {
         // top
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setTopCrop((Integer) newValue);
@@ -109,6 +111,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // bottom
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setBottomCrop((Integer) newValue);
@@ -120,6 +123,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // left
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setLeftCrop((Integer) newValue);
@@ -131,6 +135,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // right
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setRightCrop((Integer) newValue);
@@ -148,6 +153,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         // changes to the filename property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 IPath absolutePath = (IPath) newValue;
@@ -163,6 +169,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setStretch((Boolean) newValue);
@@ -174,6 +181,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setAutoSize((Boolean) newValue);
@@ -188,6 +196,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setAnimationDisabled((Boolean) newValue);
@@ -198,6 +207,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the align to nearest second property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setAlignedToNearestSecond((Boolean) newValue);
@@ -208,6 +218,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.resizeImage();
@@ -220,6 +231,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.resizeImage();
@@ -247,6 +259,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
             return;
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
                     Display.getDefault().timerExec(100, this);
@@ -270,6 +283,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     public void registerImageRotationPropertyHandlers() {
         // degree rotation property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 int newDegree = getWidgetModel().getDegree((Integer) newValue);
@@ -296,6 +310,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // flip horizontal rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipH((Boolean) newValue);
@@ -318,6 +333,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // flip vertical rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipV((Boolean) newValue);

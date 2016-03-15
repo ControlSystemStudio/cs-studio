@@ -9,5 +9,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.diirt.service,
  org.diirt.service-jdbc
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.diirt.datasource.util

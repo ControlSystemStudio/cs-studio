@@ -102,12 +102,14 @@ public class PropertiesSelectDialog extends Dialog {
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @SuppressWarnings("unchecked")
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 selectedProps = ((StructuredSelection)viewer.getSelection()).toList();
             }
         });
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 okPressed();
             }

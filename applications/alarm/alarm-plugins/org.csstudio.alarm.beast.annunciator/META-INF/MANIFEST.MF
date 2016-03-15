@@ -16,6 +16,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.utility.speech;bundle-version="1.2.6",
  org.csstudio.apputil;bundle-version="1.0.11",
  org.csstudio.ui.util;bundle-version="4.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: BEAST Voice annunciator, 'speaks' alarm messages from JMS to operators
 

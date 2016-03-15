@@ -51,6 +51,7 @@ public class TabEditPart extends AbstractContainerEditpart {
             this.tabIndex = tabIndex;
             this.tabProperty = tabProperty;
         }
+        @Override
         public boolean handleChange(Object oldValue, Object newValue,
                 IFigure refreshableFigure) {
             setTabProperty(tabIndex, tabProperty, newValue);
@@ -78,10 +79,12 @@ public class TabEditPart extends AbstractContainerEditpart {
     public void activate() {
         getWidgetModel().setTabItemHandler(new ITabItemHandler() {
 
+            @Override
             public void addTab(int index, TabItem tabItem) {
                 TabEditPart.this.addTab(index, tabItem);
             }
 
+            @Override
             public void removeTab(int index) {
                 TabEditPart.this.removeTab(index);
             }
@@ -89,6 +92,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         super.activate();
 
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
+            @Override
             public void run() {
                 //add initial tab
                 int j = getTabFigure().getTabAmount();
@@ -100,6 +104,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         });
 
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
+            @Override
             public void run() {
                 int index = getWidgetModel().getActiveTab();
                 getTabFigure().setActiveTabIndex(index);
@@ -200,6 +205,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         tabFigure.setHorizontal(getWidgetModel().isHorizontal());
         tabFigure.setMinimumTabHeight(getWidgetModel().getMinimumTabHeight());
         tabFigure.addTabListener(new ITabListener() {
+            @Override
             public void activeTabIndexChanged(int oldIndex, int newIndex) {
                 for (AbstractWidgetModel child : getWidgetModel().getChildren())
                     child.setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);
@@ -292,6 +298,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         }
         IWidgetPropertyChangeHandler relocContainerHandler = new IWidgetPropertyChangeHandler(){
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     updateTabAreaSize();
@@ -305,6 +312,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, relocContainerHandler);
 
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TabFigure) figure).setHorizontal((Boolean) newValue);
@@ -316,6 +324,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         setPropertyChangeHandler(TabModel.PROP_HORIZONTAL_TABS, horizontalHandler);
 
         IWidgetPropertyChangeHandler activeTabHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((TabFigure) figure).setActiveTabIndex((Integer) newValue);
@@ -376,6 +385,7 @@ public class TabEditPart extends AbstractContainerEditpart {
     private void registerTabsAmountChangeHandler(){
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 TabModel model = getWidgetModel();
@@ -407,6 +417,7 @@ public class TabEditPart extends AbstractContainerEditpart {
         };
         getWidgetModel().getProperty(TabModel.PROP_TAB_COUNT).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }
@@ -510,6 +521,7 @@ public class TabEditPart extends AbstractContainerEditpart {
             getTabFigure().setIconPath(index,
                     getWidgetModel().toAbsolutePath((IPath) newValue),
                     new IJobErrorHandler() {
+                        @Override
                         public void handleError(Exception e) {
                             String message = "Failed to load image from " + newValue + "\n" + e;
                             Activator.getLogger().log(Level.WARNING, message, e);
@@ -533,6 +545,7 @@ public class TabEditPart extends AbstractContainerEditpart {
      */
     private void updateTabAreaSize() {
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
+            @Override
             public void run() {
                 Dimension tabAreaSize = getTabAreaSize();
                 for(AbstractWidgetModel child : getWidgetModel().getChildren()){

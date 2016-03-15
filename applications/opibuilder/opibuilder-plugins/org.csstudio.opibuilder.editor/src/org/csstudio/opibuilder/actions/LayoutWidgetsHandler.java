@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class LayoutWidgetsHandler extends AbstractHandler {
 
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();

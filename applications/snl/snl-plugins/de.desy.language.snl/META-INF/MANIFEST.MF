@@ -17,4 +17,4 @@ Export-Package: de.desy.language.snl,
  de.desy.language.snl.parser,
  de.desy.language.snl.parser.nodes,
  de.desy.language.snl.parser.parser;x-friends:="de.desy.language.snl.ui"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

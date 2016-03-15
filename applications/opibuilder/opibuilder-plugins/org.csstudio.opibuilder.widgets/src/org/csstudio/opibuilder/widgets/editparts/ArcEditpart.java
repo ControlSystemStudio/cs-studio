@@ -41,6 +41,7 @@ public class ArcEditpart extends AbstractShapeEditPart {
         super.registerPropertyChangeHandlers();
         // fill
         IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -53,6 +54,7 @@ public class ArcEditpart extends AbstractShapeEditPart {
 
         //start angle
         IWidgetPropertyChangeHandler startAngleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -65,6 +67,7 @@ public class ArcEditpart extends AbstractShapeEditPart {
 
         //total angle
         IWidgetPropertyChangeHandler totalAngleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

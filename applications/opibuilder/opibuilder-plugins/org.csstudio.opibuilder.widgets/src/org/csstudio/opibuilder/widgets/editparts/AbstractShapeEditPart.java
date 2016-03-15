@@ -73,6 +73,7 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 
         // line style
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

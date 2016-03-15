@@ -73,6 +73,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // fill
         IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -85,6 +86,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // fill orientaion
         IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -97,6 +99,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // transparent
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -109,6 +112,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // arrow Type
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -123,6 +127,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // arrow length
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -136,6 +141,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
         // Fill Arrow
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

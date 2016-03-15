@@ -18,6 +18,7 @@ import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 
 /** Provider of label/color/... for the alarm table.
  *  @author Kay Kasemir
@@ -95,6 +96,22 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         if (alarm.getParent() == null)
             return alarm.getDescription();
         return alarm.getToolTipText();
+    }
+
+    /** @return Tooltip shift for the alarm tooltip */
+    @Override
+    public Point getToolTipShift(Object object) {
+        /* Default tooltip position is 10px right and 0px down from the current cursor position.
+         * This causes a bug on Linux (GTK) when the tooltip is longer than the available
+         * space on the right of the cursor: the tooltip window is shifted left, but is immediately
+         * removed (presumably because the mouse now hovers over the tooltip, however it doesn't
+         * happen if the tooltip is also automatically moved up and the mouse is smack in the middle
+         * of it..).
+         *
+         * Shifting the tooltip position a bit lower fixed the problem observed on Linux.
+         */
+
+        return new Point(10, 2);
     }
 
     /** Update one cell of the table */

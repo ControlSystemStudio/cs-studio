@@ -182,6 +182,7 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     /**
      * Scale its children.
      */
+    @Override
     public void scaleChildren() {
         if(isAutoFit())
             return;

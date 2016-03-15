@@ -286,6 +286,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
     void addParameter() {
         InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
                 "Please enter a name for the new property:", "", new IInputValidator() {
+                    @Override
                     public String isValid(String newText) {
                         String error = null;
 

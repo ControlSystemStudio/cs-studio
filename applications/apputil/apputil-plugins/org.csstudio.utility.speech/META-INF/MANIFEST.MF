@@ -16,6 +16,6 @@ Bundle-ClassPath: lib/cmu_time_awb.jar,
  lib/freetts.jar,
  lib/jsapi.jar,
  .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Library to generate speech output using FreeTTS or external program

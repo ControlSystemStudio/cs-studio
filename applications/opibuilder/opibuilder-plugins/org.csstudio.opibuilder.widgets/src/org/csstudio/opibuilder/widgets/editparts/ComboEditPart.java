@@ -111,6 +111,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                 if(pv != null){
                     if(loadItemsFromPVListener == null)
                         loadItemsFromPVListener = new IPVListener.Stub() {
+                        @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && value instanceof VEnum){
@@ -145,6 +146,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 registerLoadItemsListener();
                 return false;
@@ -156,6 +158,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
         autoSizeWidget((ComboFigure) getFigure());
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(newValue != null){
@@ -177,6 +180,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
         // Items
         IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
             @SuppressWarnings("unchecked")
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(newValue != null && newValue instanceof List){
@@ -190,6 +194,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(ComboModel.PROP_ITEMS, itemsHandler);
 
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 updatePropSheet((Boolean) newValue);
@@ -198,6 +203,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(ComboModel.PROP_ITEMS_FROM_PV).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }
@@ -206,6 +212,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 
         //size change handlers--always apply the default height
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 autoSizeWidget((ComboFigure)figure);

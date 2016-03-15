@@ -100,6 +100,7 @@ public final class Parameter implements Serializable {
     /**
      * Clones the parameter.
      */
+    @Override
     public Parameter clone() {
         return new Parameter(name, defaultValue);
     }

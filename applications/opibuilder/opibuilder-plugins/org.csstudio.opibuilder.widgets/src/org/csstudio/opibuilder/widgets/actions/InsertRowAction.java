@@ -90,10 +90,12 @@ public class InsertRowAction implements IObjectActionDelegate {
     public InsertRowAction() {
     }
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
 
+    @Override
     public void run(IAction action) {
         TableEditPart tableEditPart = getSelectedWidget();
         if(tableEditPart.getTable().isEmpty()){
@@ -111,6 +113,7 @@ public class InsertRowAction implements IObjectActionDelegate {
 
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;

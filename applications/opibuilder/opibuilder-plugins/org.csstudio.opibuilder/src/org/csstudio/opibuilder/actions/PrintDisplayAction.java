@@ -48,6 +48,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
     /**
      * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
      */
+    @Override
     protected boolean calculateEnabled() {
         return true;
     }
@@ -55,6 +56,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
     /**
      * @see org.eclipse.gef.ui.actions.EditorPartAction#init()
      */
+    @Override
     protected void init() {
         super.init();
         setText("Print...");
@@ -70,6 +72,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
     /**
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         final GraphicalViewer viewer;
         viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);

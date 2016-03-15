@@ -57,6 +57,7 @@ public class FitImageAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.getPaintSurface().fitCanvas();

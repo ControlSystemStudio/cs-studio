@@ -20,6 +20,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 
+    @Override
     public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
         assert copiedElements != null;
         assert project != null;
@@ -52,6 +53,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
         return cmd;
     }
 
+    @Override
     public List<Serializable> createCopyElements(List<IElement> selectedElements) {
         List<Serializable> copies = new ArrayList<Serializable>();
 
@@ -71,6 +73,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
         return copies;
     }
 
+    @Override
     public boolean canCopy(List<IElement> selectedElements) {
         boolean result = false;
 
@@ -84,6 +87,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
         return result;
     }
 
+    @Override
     public boolean canPaste(List<IElement> selectedElements) {
         boolean result = false;
 
@@ -97,6 +101,7 @@ public class RecordCopyAndPasteStrategy implements ICopyAndPasteStrategy {
         return result;
     }
 
+    @Override
     public String getContentDescription() {
         return "Records";
     }

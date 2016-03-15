@@ -15,6 +15,7 @@ public class ADLTreeLabelProvider implements ILabelProvider {
         // TODO Auto-generated constructor stub
     }
 
+    @Override
     public Image getImage(Object element) {
         //TODO switch to use WidgetParts and Widgets to get more complete entries
         ImageDescriptor descriptor = null;
@@ -30,6 +31,7 @@ public class ADLTreeLabelProvider implements ILabelProvider {
         return image;
     }
 
+    @Override
     public String getText(Object element) {
         //TODO switch to use WidgetParts and Widgets to get more complete entries
         if (element instanceof ADLWidget){
@@ -51,21 +53,25 @@ public class ADLTreeLabelProvider implements ILabelProvider {
         return element.toString();
     }
 
+    @Override
     public void addListener(ILabelProviderListener listener) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void dispose() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void removeListener(ILabelProviderListener listener) {
         // TODO Auto-generated method stub
 

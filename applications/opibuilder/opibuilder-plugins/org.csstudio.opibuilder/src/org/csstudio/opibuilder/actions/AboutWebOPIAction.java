@@ -116,6 +116,7 @@ public class AboutWebOPIAction extends Action {
             return container;
         }
 
+        @Override
         protected void createButtonsForButtonBar(Composite parent) {
             // create OK and Cancel buttons by default
             createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),

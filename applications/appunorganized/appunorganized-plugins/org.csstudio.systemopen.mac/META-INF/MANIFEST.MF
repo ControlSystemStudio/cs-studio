@@ -4,7 +4,7 @@ Bundle-Name: Opens file/directory in MacOS
 Bundle-SymbolicName: org.csstudio.systemopen.mac;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.systemopen;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-PlatformFilter: (| (osgi.os=macosx))
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Contributes icon and text for MacOS

@@ -7,4 +7,4 @@ Bundle-Vendor: C1 WPS mbH / DESY Stiftung
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: de.desy.language.libraries.utils.contract
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -147,6 +147,7 @@ public class ADLBasicAttribute extends WidgetPart{
     /**
      * @return child objects
      */
+    @Override
     public Object[] getChildren(){
         Object[] ret = new Object[4];
         ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));

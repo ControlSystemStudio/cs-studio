@@ -35,6 +35,7 @@ public final class AddPrototypeAction extends AbstractOutlineAction {
 
         InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Prototype Name",
                 "Please enter a name for the new prototype:", "New Prototype", new IInputValidator() {
+                    @Override
                     public String isValid(String newText) {
                         if (newText == null || newText.trim().length() <= 0) {
                             return "Please enter a valid name";

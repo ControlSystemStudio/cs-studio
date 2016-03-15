@@ -7,5 +7,5 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - S
 Require-Bundle: org.csstudio.utility.pv;bundle-version="3.0.0",
  org.csstudio.data;bundle-version="3.2.0"
 Export-Package: org.csstudio.utility.pv.simu
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Simulated PVs: Ramp, sine wave, local PVs, ...

@@ -73,6 +73,7 @@ protected LabeledBorder getLabeledBorder() {
 /**
  * @return the label for this border
  */
+@Override
 public String getLabel() {
     return getLabeledBorder().getLabel();
 }
@@ -81,6 +82,7 @@ public String getLabel() {
  * Sets the label for this border.
  * @param label the label
  */
+@Override
 public void setLabel(String label) {
     getLabeledBorder().setLabel(label);
 }
@@ -89,6 +91,7 @@ public void setLabel(String label) {
  * Sets the font for this border's label.
  * @param font the font
  */
+@Override
 public void setFont(Font font) {
     getLabeledBorder().setFont(font);
 }

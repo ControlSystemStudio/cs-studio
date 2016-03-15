@@ -90,6 +90,7 @@ class ExecuteJavaScriptJdkAction extends AbstractExecuteScriptAction {
                 //compile
                 UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
+                    @Override
                     public void run() {
                         try {
                             if(isEmbedded())
@@ -109,6 +110,7 @@ class ExecuteJavaScriptJdkAction extends AbstractExecuteScriptAction {
             }
 
             UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+                @Override
                 public void run() {
 
                     try {

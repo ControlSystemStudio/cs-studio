@@ -13,4 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.sds.cosyrules.color
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

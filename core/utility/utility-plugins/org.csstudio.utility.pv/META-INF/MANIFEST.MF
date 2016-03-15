@@ -9,5 +9,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.data;bundle-version="1.0.0"
 Export-Package: org.csstudio.utility.pv
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: API for access to live control system data

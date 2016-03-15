@@ -15,5 +15,5 @@ Bundle-ClassPath: .,
  etc/
 Export-Package: org.csstudio.dal.tine,
  org.csstudio.dal.tine
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Desy <css-developer@desy.de>, Helge Rickens

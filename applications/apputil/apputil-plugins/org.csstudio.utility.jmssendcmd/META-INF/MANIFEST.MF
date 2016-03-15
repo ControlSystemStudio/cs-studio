@@ -4,7 +4,7 @@ Bundle-Name: Headless JMS Sender
 Bundle-SymbolicName: org.csstudio.utility.jmssendcmd;singleton:=true
 Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Command-line tool for sending JMS messages, also usable as EDM 'write' logger
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
  org.csstudio.logging;bundle-version="0.0.1",

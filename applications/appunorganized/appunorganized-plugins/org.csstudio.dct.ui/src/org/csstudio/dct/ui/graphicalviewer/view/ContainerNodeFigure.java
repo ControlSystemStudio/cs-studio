@@ -108,6 +108,7 @@ public class ContainerNodeFigure extends Panel {
         return instanceArea;
     }
 
+    @Override
     public void addMouseListener(MouseListener listener) {
         clickable.addMouseListener(listener);
     }

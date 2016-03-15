@@ -28,11 +28,13 @@ public class DeleteRowAction implements IObjectActionDelegate {
     }
 
 
+    @Override
     public void run(IAction action) {
         TableEditPart tableEditPart = getSelectedWidget();
         tableEditPart.getTable().deleteRow(tableEditPart.getMenuTriggeredCell().x);
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;

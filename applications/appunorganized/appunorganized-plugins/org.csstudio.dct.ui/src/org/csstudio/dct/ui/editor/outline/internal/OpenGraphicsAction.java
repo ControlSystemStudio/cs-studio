@@ -18,6 +18,7 @@ import org.eclipse.gef.commands.Command;
  */
 public final class OpenGraphicsAction extends AbstractOutlineAction {
 
+    @Override
     public final void doRun(List<IElement> selection) {
         assert selection != null;
         assert selection.size() == 1;

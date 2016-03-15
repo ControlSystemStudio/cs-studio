@@ -51,8 +51,10 @@ public class MultilineTextEditDialog extends Dialog {
         text.setLayoutData(gridData);
         text.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyReleased(KeyEvent e) {}
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.character == '\r') { // Return key
                     if ((e.stateMask & SWT.CTRL) != 0) {

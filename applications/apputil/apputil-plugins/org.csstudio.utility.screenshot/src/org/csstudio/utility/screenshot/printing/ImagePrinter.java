@@ -51,6 +51,7 @@ public class ImagePrinter implements Runnable {
         invert = inv;
     }
 
+    @Override
     public void run() {
         PrintDialog dialog = new PrintDialog(shell);
         PrinterData pd = dialog.open();

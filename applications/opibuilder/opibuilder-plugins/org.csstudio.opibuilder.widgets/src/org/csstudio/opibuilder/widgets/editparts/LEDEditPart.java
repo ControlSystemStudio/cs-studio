@@ -53,6 +53,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
 
         //effect 3D
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -65,6 +66,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
 
         //Sqaure LED
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -82,6 +84,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
         //force square size
         final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(getWidgetModel().isSquareLED())
                     return false;
@@ -93,6 +96,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
         };
         PropertyChangeListener sizeListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }

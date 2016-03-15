@@ -4,7 +4,7 @@ Bundle-Name: Auto-Complete UI Helper implementation for RCP
 Bundle-SymbolicName: org.csstudio.autocomplete.ui.rcp;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Abstraction to support both RCP and RAP
 Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.core.runtime;bundle-version="3.7.0",

@@ -127,6 +127,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Title
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -139,6 +140,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Title Font
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -152,6 +154,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Show plot area border
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -164,6 +167,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Plot area background color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -177,6 +181,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Transparent
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -190,6 +195,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Show legend
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -202,6 +208,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
         //Show Toolbar
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -215,6 +222,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         //trigger pv value
         handler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 for(int i=0; i<getWidgetModel().getTracesAmount(); i++){
                     CircularBufferDataProvider dataProvider =
@@ -237,6 +245,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
     private void registerAxesAmountChangeHandler(){
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 XYGraphModel model = (XYGraphModel)getModel();
@@ -267,6 +276,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(XYGraphModel.PROP_AXIS_COUNT).
         addPropertyChangeListener(new PropertyChangeListener(){
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
         }
@@ -391,6 +401,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
     private void registerTraceAmountChangeHandler(){
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure refreshableFigure) {
                 XYGraphModel model = (XYGraphModel)getModel();
@@ -424,6 +435,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(XYGraphModel.PROP_TRACE_COUNT).
             addPropertyChangeListener(new PropertyChangeListener(){
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }
@@ -452,9 +464,11 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                     //cannot use setPropertyChangeHandler because the PV value has to be buffered
                     //which means that it cannot be ignored.
                     getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
+                        @Override
                         public void propertyChange(final PropertyChangeEvent evt) {
                             UIBundlingThread.getInstance().addRunnable(
                                     getViewer().getControl().getDisplay(), new Runnable() {
+                                @Override
                                 public void run() {
                                     if(isActive())
                                         handler.handleChange(
@@ -602,6 +616,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
             this.axisIndex = axisIndex;
             this.axisProperty = axisProperty;
         }
+        @Override
         public boolean handleChange(Object oldValue, Object newValue,
                 IFigure refreshableFigure) {
             Axis axis = axisList.get(axisIndex);
@@ -621,6 +636,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
             this.xPVPropID = xPVPropID;
             this.yPVPropID = yPVPropID;
         }
+        @Override
         public boolean handleChange(Object oldValue, Object newValue,
                 IFigure refreshableFigure) {
             Trace trace = traceList.get(traceIndex);

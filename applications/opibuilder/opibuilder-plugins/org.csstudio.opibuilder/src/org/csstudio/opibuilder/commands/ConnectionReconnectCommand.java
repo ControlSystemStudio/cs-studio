@@ -54,6 +54,7 @@ public class ConnectionReconnectCommand extends Command {
      *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
+    @Override
     public boolean canExecute() {
         if (newSource != null) {
             return checkSourceReconnection();
@@ -90,6 +91,7 @@ public class ConnectionReconnectCommand extends Command {
      *
      * @see org.eclipse.gef.commands.Command#execute()
      */
+    @Override
     public void execute() {
         if(newSource != null && newSourceTerminal != null){
             connection.connect(newSource, newSourceTerminal,
@@ -127,8 +129,7 @@ public class ConnectionReconnectCommand extends Command {
         newSourceTerminal = null;
     }
 
-
-
+    @Override
     public void undo() {
         connection.connect(oldSource, oldSourceTerminal, oldTarget, oldTargetTerminal);
     }

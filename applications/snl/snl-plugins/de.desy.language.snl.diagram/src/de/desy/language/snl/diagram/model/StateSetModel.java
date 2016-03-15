@@ -11,10 +11,12 @@ public class StateSetModel extends SNLModel {
     private static final long serialVersionUID = 1;
     private StateSetNode _stateSetNode;
 
+    @Override
     public String getIconName() {
         return "rectangle16.gif";
     }
 
+    @Override
     public String toString() {
         return "StateSet '" + _stateSetNode.getSourceIdentifier() + "'";
     }

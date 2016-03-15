@@ -96,6 +96,7 @@ public abstract class AbstractPropertyContainerForm<E extends IPropertyContainer
             public void mouseDown(MouseEvent e) {
                 InputDialog dialog = new InputDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Enter Property Name",
                         "Please enter a name for the new property:", "", new IInputValidator() {
+                            @Override
                             public String isValid(String newText) {
                                 String error = null;
 

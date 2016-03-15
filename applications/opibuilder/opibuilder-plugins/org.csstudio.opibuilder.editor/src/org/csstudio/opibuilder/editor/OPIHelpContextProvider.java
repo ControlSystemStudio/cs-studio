@@ -27,10 +27,12 @@ public class OPIHelpContextProvider implements IContextProvider{
         this.viewer = viewer;
     }
 
+    @Override
     public int getContextChangeMask() {
         return IContextProvider.SELECTION;
     }
 
+    @Override
     public IContext getContext(Object target) {
         ISelection selection = viewer.getSelection();
         if(selection instanceof IStructuredSelection){
@@ -43,6 +45,7 @@ public class OPIHelpContextProvider implements IContextProvider{
         return HelpSystem.getContext(OPIBuilderPlugin.PLUGIN_ID +  ".opi_editor"); //$NON-NLS-1$
     }
 
+    @Override
     public String getSearchExpression(Object target) {
         return null;
     }
@@ -55,26 +58,31 @@ public class OPIHelpContextProvider implements IContextProvider{
             this.widgetModel = widgetModel;
         }
 
+        @Override
         public IHelpResource[] getRelatedTopics() {
             IHelpResource[] helpResources = new WidgetHelpResource[1];
             helpResources[0] = new WidgetHelpResource(widgetModel);
             return helpResources;
         }
 
+        @Override
         public String getText() {
             return WidgetsService.getInstance().getWidgetDescriptor(
                     widgetModel.getTypeID()).getDescription();
         }
 
+        @Override
         public String getTitle() {
             return WidgetsService.getInstance().getWidgetDescriptor(
                     widgetModel.getTypeID()).getName();
         }
 
+        @Override
         public String getStyledText() {
             return getText();
         }
 
+        @Override
         public String getCategory(IHelpResource topic) {
             if(topic instanceof WidgetHelpResource)
                 return "See Details";
@@ -92,6 +100,7 @@ public class OPIHelpContextProvider implements IContextProvider{
             this.widgetModel = widgetModel;
         }
 
+        @Override
         public String getHref() {
             WidgetDescriptor widgetDescriptor =
                     WidgetsService.getInstance().getWidgetDescriptor(widgetModel.getTypeID());
@@ -111,6 +120,7 @@ public class OPIHelpContextProvider implements IContextProvider{
             return OPIBuilderPlugin.PLUGIN_ID + "/html/widgets/WidgetHelpNotFound.html"; //$NON-NLS-1$
         }
 
+        @Override
         public String getLabel() {
             return WidgetsService.getInstance().getWidgetDescriptor(
                     widgetModel.getTypeID()).getName();

@@ -42,6 +42,7 @@ public class RestartThreeAction extends Action
         this.setEnabled(false);
     }
 
+    @Override
     public void run()
     {
         worker.setRestartTime(3000);

@@ -4,7 +4,7 @@ Bundle-Name: Test Fragment of opibuilder
 Bundle-SymbolicName: org.csstudio.opibuilder.test;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Fragment-Host: org.csstudio.opibuilder;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-ClassPath: lib/rhino/js.jar,
  .

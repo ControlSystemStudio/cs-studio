@@ -30,6 +30,7 @@ public class GUIUtil {
         InputDialog dlg = new InputDialog(Display.getCurrent()
                 .getActiveShell(), "Password Input Dialog",
                 dialogMessage, "", new IInputValidator() {
+                    @Override
                     public String isValid(String newText) {
                         if (newText.equals(password))
                             return null;

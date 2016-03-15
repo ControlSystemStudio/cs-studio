@@ -35,6 +35,7 @@ import org.eclipse.jface.action.IAction;
 public class CreateGroupAction extends AbstractWidgetTargetAction {
 
 
+    @Override
     public void run(IAction action) {
 
         List<AbstractWidgetModel> originalSelectedWidgets = getSelectedWidgetModels();
@@ -171,6 +172,7 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 
             Arrays.sort(modelArray, new Comparator<AbstractWidgetModel>(){
 
+                @Override
                 public int compare(AbstractWidgetModel o1,
                         AbstractWidgetModel o2) {
                     if(o1.getParent().getChildren().indexOf(o1) >

@@ -45,6 +45,7 @@ public class WidgetTreeEditpart extends AbstractTreeEditPart {
         super.activate();
         PropertyChangeListener visualListener = new PropertyChangeListener() {
 
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     refreshVisuals();
                 }

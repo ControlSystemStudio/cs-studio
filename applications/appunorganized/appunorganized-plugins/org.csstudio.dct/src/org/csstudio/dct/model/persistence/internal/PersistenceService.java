@@ -137,26 +137,32 @@ public final class PersistenceService implements IPersistenceService {
         // .. redirect the VDCT console
         Console.setInstance(new ConsoleInterface() {
 
+            @Override
             public void flush() {
 
             }
 
+            @Override
             public void print(String text) {
                 LOG.info(text);
             }
 
+            @Override
             public void println() {
                 LOG.info("\r\n");
             }
 
+            @Override
             public void println(String text) {
                 LOG.info(text);
             }
 
+            @Override
             public void println(Throwable thr) {
                 LOG.error("",thr);
             }
 
+            @Override
             public void silent(String text) {
                 LOG.debug(text);
             }
