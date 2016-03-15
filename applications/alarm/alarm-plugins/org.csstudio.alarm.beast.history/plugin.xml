@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Alarm History View"
+            icon="icons/sample.gif"
+            category="org.csstudio.alarm.beast.history"
+            class="org.csstudio.alarm.beast.history.views.AlarmHistoryView"
+            id="org.csstudio.alarm.beast.history.views.AlarmHistoryView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm?endof=org.csstudio.alarm.beast.alarmtable">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="Alarm History"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.history.views.AlarmHistoryView">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.AlarmHistoryCommand"
+            id="org.csstudio.alarm.beast.history.openview"
+            name="Open Alarm History">
+      </command>
+   </extension>
+
+</plugin>
