@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.util.concurrent.TimeoutException;
+
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceCondition;
 import org.csstudio.scan.condition.NumericValueCondition;
@@ -118,6 +120,13 @@ public class WriteHelper
             // Wait?
             if (condition != null)
                 condition.await();
+        }
+        catch (TimeoutException ex)
+        {   // Did condition really time out, or did it simply not match after completion,
+            // where the timeout is very short?
+            if (completion)
+                throw new Exception(device + " != " + value + " after completion", ex);
+            throw ex;
         }
         catch (InterruptedException ex)
         {
