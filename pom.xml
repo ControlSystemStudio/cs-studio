@@ -45,11 +45,6 @@
   <!-- P2 REPOSITORIES -->
   <repositories>
     <repository>
-      <id>csstudio-maven-osgi-bundles</id>
-      <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.3</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
       <id>eclipse</id>
       <url>http://download.eclipse.org/releases/mars</url>
       <layout>p2</layout>
@@ -63,6 +58,21 @@
 
   <!-- If a local repository is specified then enable that repository -->
   <profiles>
+    <profile>
+      <id>cs-studio</id>
+      <activation>
+        <property>
+          <name>!cs-studio</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-maven-osgi-bundles</id>
+          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.3</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
     <profile>
       <id>csstudio-local-repo-enable</id>
       <activation>
