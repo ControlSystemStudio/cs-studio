@@ -1,18 +1,7 @@
 package org.csstudio.alarm.beast.history.views;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-
-import java.io.ByteArrayInputStream;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,15 +16,39 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.eclipse.jface.action.*;
+import org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * 
@@ -54,8 +67,8 @@ public class AlarmHistoryView extends ViewPart {
     private Action action1;
     private Action doubleClickAction;
 
-    class NameSorter extends ViewerSorter {
-    }
+    private AlarmHistoryQueryParameters alarmHistoryQueryParameters;
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     /**
      * The constructor.
@@ -79,16 +92,25 @@ public class AlarmHistoryView extends ViewPart {
         hookContextMenu();
         hookDoubleClickAction();
         contributeToActionBars();
+        changeSupport.addPropertyChangeListener((evt) -> {
+            switch (evt.getPropertyName()) {
+            case "alarmHistoryQueryParameters":
+                
+                break;
+            default:
+                break;
+            }
+        });
     }
 
-    private void updateUI(Composite parent){
+    private void updateUI(Composite parent) {
 
         createColumns(parent, viewer);
 
         final Table table = viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
+
         viewer.setContentProvider(new ArrayContentProvider());
     }
     /*
@@ -108,14 +130,15 @@ public class AlarmHistoryView extends ViewPart {
      * "TYPE":"alarm",
      * "SEVERITY":"UNDEFINED"}
      */
-    
+
     // List of all possible columns
     private static final List<String> columnName = Arrays.asList("EVENTTIME", "NAME", "HOST", "TEXT", "VALUE", "USER",
             "CONFIG", "STATUS", "APPLICATION-ID", "CURRENT_STATUS", "CURRENT_SEVERITY", "TYPE", "SEVERITY");
-    private static List<String> visibleColumns = Arrays.asList("EVENTTIME", "NAME", "TEXT", "USER",
-            "STATUS", "SEVERITY");
+    private static List<String> visibleColumns = Arrays.asList("EVENTTIME", "NAME", "TEXT", "USER", "STATUS",
+            "SEVERITY");
+
     private void createColumns(Composite parent, TableViewer viewer) {
-        
+
         for (String columnName : visibleColumns) {
             TableViewerColumn col = createTableViewerColumn(columnName, 150, 0);
             col.setLabelProvider(new ColumnLabelProvider() {
@@ -125,7 +148,7 @@ public class AlarmHistoryView extends ViewPart {
                     Map<String, String> p = (Map<String, String>) element;
                     return p.get(columnName);
                 }
-              });
+            });
         }
     }
 
@@ -137,26 +160,32 @@ public class AlarmHistoryView extends ViewPart {
         column.setResizable(true);
         column.setMoveable(true);
         column.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if(e.getSource() instanceof TableColumn){
-                    TableColumn sortingColumn = (TableColumn)e.getSource();
-                    if(sortingColumn.getText().equals("EVENTTIME")){
+                if (e.getSource() instanceof TableColumn) {
+                    TableColumn sortingColumn = (TableColumn) e.getSource();
+                    if (sortingColumn.getText().equals("EVENTTIME")) {
                         viewer.setComparator(new TimeComparator());
-                    } else{
+                    } else {
                         viewer.setComparator(new ViewerComparator());
                     }
                 }
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
-                
+
             }
         });
         return viewerColumn;
+    }
+
+    public void setAlarmHistoryQueryParameters(AlarmHistoryQueryParameters parameters) {
+        Object oldValue = this.alarmHistoryQueryParameters;
+        this.alarmHistoryQueryParameters = alarmHistoryQueryParameters;
+        changeSupport.firePropertyChange("alarmHistoryQueryParameters", oldValue, this.alarmHistoryQueryParameters);
     }
 
     private void hookContextMenu() {
@@ -198,17 +227,17 @@ public class AlarmHistoryView extends ViewPart {
             public void run() {
                 Client client = Client.create();
                 WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-                AlarmHistoryQueryParameters parameter = new AlarmHistoryQueryParameters(null, null);
-                
+                AlarmHistoryQueryParameters parameter = AlarmHistoryQueryBuilder.buildQuery().build();
+
                 String response = r.accept(MediaType.APPLICATION_JSON).post(String.class, parameter.getQueryString());
-                
+
                 List<Map<String, String>> alarmMessages = new ArrayList<Map<String, String>>();
                 try {
                     JsonFactory factory = new JsonFactory();
 
                     ObjectMapper mapper = new ObjectMapper(factory);
-                    JsonNode rootNode = mapper.readTree(response);  
-                    
+                    JsonNode rootNode = mapper.readTree(response);
+
                     JsonNode node = rootNode.get("hits").get("hits");
                     for (JsonNode jsonNode : node) {
                         alarmMessages.add(
@@ -226,7 +255,7 @@ public class AlarmHistoryView extends ViewPart {
         action1.setToolTipText("Action 1 tooltip");
         action1.setImageDescriptor(
                 PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-        
+
         doubleClickAction = new Action() {
             public void run() {
                 ISelection selection = viewer.getSelection();
@@ -254,12 +283,12 @@ public class AlarmHistoryView extends ViewPart {
     public void setFocus() {
         viewer.getControl().setFocus();
     }
-    
+
     private static class TimeComparator extends ViewerComparator {
-        
+
         public TimeComparator() {
         }
-        
+
         @SuppressWarnings("unchecked")
         @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
@@ -275,4 +304,5 @@ public class AlarmHistoryView extends ViewPart {
             }
         }
     }
+
 }

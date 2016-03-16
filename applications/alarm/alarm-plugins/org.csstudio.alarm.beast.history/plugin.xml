@@ -31,14 +31,68 @@
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+               label="Show Alarm History"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+               label="Show --- Alarm History"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.alarm.beast.history.views.AlarmHistoryCommand"
-            id="org.csstudio.alarm.beast.history.openview"
-            name="Open Alarm History">
+            defaultHandler="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+            id="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+            name="Show Alarm History">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.csdata.ProcessVariable"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.csdata.TimestampedPV"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="[Lorg.csstudio.csdata.ProcessVariable;"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="[Lorg.csstudio.csdata.TimestampedPV;"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>
