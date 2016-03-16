@@ -14,8 +14,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +62,7 @@ public class MasarUtilitiesTest {
 
     @Test
     public void testCreateSaveSetList() {
-        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+        DateFormat format = MasarConstants.DATE_FORMAT.get();
         long time = System.currentTimeMillis();
         Date date1 = new Date(time - 1000);
         Date date2 = new Date(time - 2500);
@@ -126,7 +126,7 @@ public class MasarUtilitiesTest {
 
     @Test
     public void testCreateSnapshotsList() throws ParseException {
-        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+        DateFormat format = MasarConstants.DATE_FORMAT.get();
         long time = (System.currentTimeMillis() / 1000) * 1000; // seconds precision
         Date date1 = new Date(time - 10000);
         Date date2 = new Date(time - 25000);

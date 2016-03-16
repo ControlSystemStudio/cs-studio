@@ -10,8 +10,8 @@
  */
 package org.csstudio.saverestore.masar;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,8 +24,8 @@ import java.util.function.Function;
 import javax.security.auth.Subject;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -182,7 +182,7 @@ public final class MasarUtilities {
         pvConfigs.get(0, pvConfigs.getLength(), configs);
 
         List<Snapshot> snapshots = new ArrayList<>(events.data.length);
-        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+        DateFormat format = MasarConstants.DATE_FORMAT.get();
         for (int i = 0; i < events.data.length; i++) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, String.valueOf(events.data[i]));

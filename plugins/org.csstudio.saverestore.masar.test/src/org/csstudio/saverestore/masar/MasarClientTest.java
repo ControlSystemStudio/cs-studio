@@ -21,8 +21,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -101,7 +101,7 @@ public class MasarClientTest {
                     field.put(0, 3, new String[] { "config1", "config2", "config3" }, 0);
                 } else if (MasarConstants.FC_LOAD_SAVE_SETS
                     .equals(in.getStringField(MasarConstants.F_FUNCTION).get())) {
-                    SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+                    DateFormat format = MasarConstants.DATE_FORMAT.get();
                     structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SAVE_SET);
                     PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
                     ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_CONFIG_INDEX, ScalarType.pvLong)).put(0,
@@ -120,7 +120,7 @@ public class MasarClientTest {
                     .equals(in.getStringField(MasarConstants.F_FUNCTION).get())) {
                     PVString field = in.getStringField(MasarConstants.F_EVENTID);
                     if (field != null && "5".equals(field.get())) {
-                        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+                        DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
                         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong)).put(0,
@@ -134,7 +134,7 @@ public class MasarClientTest {
                         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString)).put(0,
                             1, new String[] { "taz-mania" }, 0);
                     } else if (in.getStringField(MasarConstants.F_CONFIGID) == null) {
-                        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+                        DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
                         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong)).put(0,
@@ -149,7 +149,7 @@ public class MasarClientTest {
                         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString)).put(0,
                             3, new String[] { "bugsbunny", "elmerfudd", "daffyduck" }, 0);
                     } else if (in.getStringField(MasarConstants.F_EVENTID) == null) {
-                        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+                        DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
                         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong)).put(0,
@@ -296,7 +296,7 @@ public class MasarClientTest {
 
     @Test
     public void testGetSaveSets() throws MasarException {
-        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
+        DateFormat format = MasarConstants.DATE_FORMAT.get();
         BaseLevel base = new BaseLevel(service, "all", "all");
         List<SaveSet> sets = client.getSaveSets(Optional.of(base), service);
         assertEquals(3, sets.size());

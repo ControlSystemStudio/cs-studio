@@ -10,9 +10,11 @@
  */
 package org.csstudio.saverestore.masar;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.pv.Field;
@@ -30,8 +32,12 @@ import org.epics.pvdata.pv.Structure;
 public final class MasarConstants {
 
     // used for transforming the date string from the MASAR format string to Date and vice versa
-    static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
-        .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    static final ThreadLocal<DateFormat> DATE_FORMAT = ThreadLocal
+        .withInitial(() -> {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            return format;
+        });
 
     static final String PARAM_SNAPSHOT_ID = "Snapshot ID";
     // various structure names and ids
