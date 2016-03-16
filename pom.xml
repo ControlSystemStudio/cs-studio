@@ -56,7 +56,6 @@
     </repository>
   </repositories>
 
-  <!-- If a local repository is specified then enable that repository -->
   <profiles>
     <profile>
       <id>cs-studio</id>
@@ -73,6 +72,7 @@
         </repository>
       </repositories>
     </profile>
+    <!-- If a local repository is specified then enable that repository -->
     <profile>
       <id>csstudio-local-repo-enable</id>
       <activation>
