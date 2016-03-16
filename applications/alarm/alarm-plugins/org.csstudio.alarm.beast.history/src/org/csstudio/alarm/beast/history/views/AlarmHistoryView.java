@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.MediaType;
 
@@ -38,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -68,6 +70,8 @@ public class AlarmHistoryView extends ViewPart {
     private Action doubleClickAction;
 
     private AlarmHistoryQueryParameters alarmHistoryQueryParameters;
+    private PeriodicAlarmHistoryQuery alarmHistoryQuery;
+    
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     /**
@@ -101,6 +105,27 @@ public class AlarmHistoryView extends ViewPart {
                 break;
             }
         });
+        initialize();
+    }
+    
+    /**
+     * create rest client and jobs using preferences
+     */
+    private void initialize(){
+        // Start the Query jobs
+        Client client = Client.create();
+        WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
+        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 30, TimeUnit.SECONDS);
+        alarmHistoryQuery.addLogQueryListener((result) -> {
+            Display.getDefault().asyncExec( () -> {
+            if(result.lastException!=null){
+                // Display exception
+            } else {
+                viewer.setInput(result.alarmMessages);
+                }
+            });
+        });
+        alarmHistoryQuery.start();
     }
 
     private void updateUI(Composite parent) {
