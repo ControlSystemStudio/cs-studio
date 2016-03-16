@@ -51,6 +51,15 @@ Next to the value the difference to the base snapshot is displayed (if the value
 </ul>
 <div class='figure'><img src="snapshotViewerMultiple.png"/><p>Fig. 2: Snapshot Viewer displaying multiple snapshots</p></div>
 
+<h4>Colours and Icons</h4>
+When different values are compared in the table, the result of the comparison determines the colour of the table cell.
+If the values are the same or within the prescribed threshold, the cell will be white. If the values are different for
+more than the specified threshold, the cell will be red. In addition to the red colour, an exclamation mark
+<img src="hprio_tsk.png"/> is drawn in front of the value.
+<br/>
+If the PV was disconnected at the time when the snapshot was taken, the table cell will also be painted red. In such 
+case an X icon <img src="showerr_tsk.png"/> is drawn at the beginning of the cell. 
+
 <h4>Table Controls</h4>
 Any stored value in the table can be edited, which can be done at any time. To do that double click on the cell in the
 table and enter a new value. If the edited value is an enum, a choice box is provided, from which you can select the

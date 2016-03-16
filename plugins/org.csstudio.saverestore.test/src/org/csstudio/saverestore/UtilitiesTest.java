@@ -12,12 +12,14 @@ package org.csstudio.saverestore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.csstudio.saverestore.Utilities;
@@ -325,7 +327,8 @@ public class UtilitiesTest {
     }
 
     /**
-     * Tests {@link Utilities#valueToCompareString(VType, VType, Optional)}.
+     * Tests {@link Utilities#valueToCompareString(VType, VType, Optional)}. The test doesn't cover all possible
+     * combinations, but it does cover a handful of them.
      */
     @Test
     public void testValueToCompareString() {
@@ -353,7 +356,7 @@ public class UtilitiesTest {
         val2 = ValueFactory.newVDouble(6d,alarm,time,display);
         result = Utilities.valueToCompareString(val1, val2, threshold);
         assertEquals("6.0 \u03940.0", result.getString());
-        assertTrue(result.getValuesEqual() == 0);
+        assertEquals(0,result.getValuesEqual());
         assertTrue(result.isWithinThreshold());
 
         val1 = ValueFactory.newVLong(15L,alarm,time,display);
@@ -381,28 +384,155 @@ public class UtilitiesTest {
         val2 = ValueFactory.newVLong(15L,alarm,time,display);
         result = Utilities.valueToCompareString(val1, val2, Optional.empty());
         assertEquals("15.0 \u03940.0", result.getString());
-        assertTrue(result.getValuesEqual() == 0);
+        assertEquals(0,result.getValuesEqual());
         assertTrue(result.isWithinThreshold());
 
         val1 = ValueFactory.newVString("first",alarm,time);
         val2 = ValueFactory.newVLong(15L,alarm,time,display);
         result = Utilities.valueToCompareString(val1, val2, Optional.empty());
         assertEquals("first", result.getString());
-        assertFalse(result.getValuesEqual() == 0);
+        assertNotEquals(0, result.getValuesEqual());
         assertFalse(result.isWithinThreshold());
 
         val1 = ValueFactory.newVDoubleArray(new ArrayDouble(1,2,3),alarm,time,display);
         val2 = ValueFactory.newVDoubleArray(new ArrayDouble(1,2,3),alarm,time,display);
         result = Utilities.valueToCompareString(val1, val2, Optional.empty());
         assertEquals("[1.0, 2.0, 3.0]", result.getString());
-        assertTrue(result.getValuesEqual() == 0);
+        assertEquals(0,result.getValuesEqual());
         assertTrue(result.isWithinThreshold());
 
         val1 = ValueFactory.newVDoubleArray(new ArrayDouble(1,2,3),alarm,time,display);
         val2 = ValueFactory.newVLongArray(new ArrayLong(1,2,3),alarm,time,display);
         result = Utilities.valueToCompareString(val1, val2, Optional.empty());
         assertEquals("[1.0, 2.0, 3.0]", result.getString());
-        assertFalse(result.getValuesEqual() == 0);
+        assertNotEquals(0, result.getValuesEqual());
+        assertFalse(result.isWithinThreshold());
+
+        //compare string array values: equal, non equal
+        val1 = ValueFactory.newVStringArray(Arrays.asList("value1","value2"),alarm,time);
+        val2 = ValueFactory.newVStringArray(Arrays.asList("value1","value2"),alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("[value1, value2]", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVStringArray(Arrays.asList("value1","value2"),alarm,time);
+        val2 = ValueFactory.newVStringArray(Arrays.asList("value1","value3"),alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("[value1, value2]", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
+        assertFalse(result.isWithinThreshold());
+
+        //compare string values: equal, first less than second, second less than first
+        val1 = ValueFactory.newVString("value1",alarm,time);
+        val2 = ValueFactory.newVString("value1",alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("value1", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVString("value1",alarm,time);
+        val2 = ValueFactory.newVString("value2",alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("value1", result.getString());
+        assertTrue(result.getValuesEqual() < 0);
+        assertFalse(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVString("value2",alarm,time);
+        val2 = ValueFactory.newVString("value1",alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("value2", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
+        assertFalse(result.isWithinThreshold());
+
+        //compare long values: equal, first less than second, second less than first
+        val1 = ValueFactory.newVLong(6L,alarm,time,display);
+        val2 = ValueFactory.newVLong(6L,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u03940", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVLong(5L,alarm,time,display);
+        val2 = ValueFactory.newVLong(6L,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("5 \u0394-1", result.getString());
+        assertTrue(result.getValuesEqual() < 0);
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVLong(6L,alarm,time,display);
+        val2 = ValueFactory.newVLong(5L,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u0394+1", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
+        assertTrue(result.isWithinThreshold());
+
+        //compare int values: equal, first less than second, second less than first
+        val1 = ValueFactory.newVInt(6,alarm,time,display);
+        val2 = ValueFactory.newVInt(6,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u03940", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVInt(5,alarm,time,display);
+        val2 = ValueFactory.newVInt(6,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("5 \u0394-1", result.getString());
+        assertTrue(result.getValuesEqual() < 0);
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVInt(6,alarm,time,display);
+        val2 = ValueFactory.newVInt(5,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u0394+1", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
+        assertTrue(result.isWithinThreshold());
+
+        //compare short values: equal, first less than second, second less than first
+        val1 = ValueFactory.newVShort((short)6,alarm,time,display);
+        val2 = ValueFactory.newVShort((short)6,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u03940", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVShort((short)5,alarm,time,display);
+        val2 = ValueFactory.newVShort((short)6,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("5 \u0394-1", result.getString());
+        assertTrue(result.getValuesEqual() < 0);
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVShort((short)6,alarm,time,display);
+        val2 = ValueFactory.newVShort((short)5,alarm,time, display);
+        result = Utilities.valueToCompareString(val1, val2, threshold);
+        assertEquals("6 \u0394+1", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
+        assertTrue(result.isWithinThreshold());
+
+        //compare enum values: equal, first less than second, second less than first
+        List<String> labels = Arrays.asList("val1","val2","val3");
+
+        val1 = ValueFactory.newVEnum(1,labels,alarm,time);
+        val2 = ValueFactory.newVEnum(1,labels,alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, Optional.empty());
+        assertEquals("val2", result.getString());
+        assertEquals(0, result.getValuesEqual());
+        assertTrue(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVEnum(1,labels,alarm,time);
+        val2 = ValueFactory.newVEnum(2,labels,alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, Optional.empty());
+        assertEquals("val2", result.getString());
+        assertTrue(result.getValuesEqual() < 0);
+        assertFalse(result.isWithinThreshold());
+
+        val1 = ValueFactory.newVEnum(2,labels,alarm,time);
+        val2 = ValueFactory.newVEnum(1,labels,alarm,time);
+        result = Utilities.valueToCompareString(val1, val2, Optional.empty());
+        assertEquals("val3", result.getString());
+        assertTrue(result.getValuesEqual() > 0);
         assertFalse(result.isWithinThreshold());
     }
 

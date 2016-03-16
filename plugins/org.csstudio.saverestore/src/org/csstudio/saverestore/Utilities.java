@@ -82,7 +82,7 @@ public final class Utilities {
      * <code>VTypeComparison</code> is the result of comparison of two {@link VType} values. The {@link #string} field
      * provides the textual representation of the comparison and the {@link #valuesEqual} provides information whether
      * the values are equal (0), the first value is greater than second (1), or the first value is less than second
-     * (-1).
+     * (-1). This only applies to scalar values. In case of array values the comparison can only result in 0 or 1.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
@@ -322,7 +322,8 @@ public final class Utilities {
         } else if (type instanceof VEnumArray) {
             return ((VEnumArray) type).getData();
         } else if (type instanceof VStringArray) {
-            return ((VStringArray) type).getData();
+            List<String> data = ((VStringArray) type).getData();
+            return data == null ? new String[0] : data.toArray(new String[data.size()]);
         } else if (type instanceof VBooleanArray) {
             return ((VBooleanArray) type).getData();
         } else if (type instanceof VNumber) {
@@ -769,6 +770,12 @@ public final class Utilities {
             int b = ((VEnum) value).getIndex();
             int c = ((VEnum) baseValue).getIndex();
             return new VTypeComparison(str, Integer.compare(b, c), b == c);
+        } else if (value instanceof VString && baseValue instanceof VString) {
+            String str = valueToString(value);
+            String b = ((VString) value).getValue();
+            String c = ((VString) baseValue).getValue();
+            int diff = b.compareTo(c);
+            return new VTypeComparison(str, diff, diff == 0);
         } else if (value instanceof VNumberArray && baseValue instanceof VNumberArray) {
             String sb = valueToString(value);
             boolean equal = areValuesEqual(value, baseValue, Optional.empty());
@@ -892,6 +899,10 @@ public final class Utilities {
             int b = ((VEnum) v1).getIndex();
             int c = ((VEnum) v2).getIndex();
             return b == c;
+        } else if (v1 instanceof VString && v2 instanceof VString) {
+            String b = ((VString) v1).getValue();
+            String c = ((VString) v2).getValue();
+            return b.equals(c);
         } else if (v1 instanceof VNumberArray && v2 instanceof VNumberArray) {
             if ((v1 instanceof VByteArray && v2 instanceof VByteArray)
                 || (v1 instanceof VShortArray && v2 instanceof VShortArray)
