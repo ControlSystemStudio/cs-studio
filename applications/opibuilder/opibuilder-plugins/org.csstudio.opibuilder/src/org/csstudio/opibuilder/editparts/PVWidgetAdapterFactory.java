@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class PVWidgetAdapterFactory implements IAdapterFactory {
 
+    @Override
     public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
         if(adaptableObject instanceof IPVWidgetEditpart){
             if (adapterType == ProcessVariable.class) {

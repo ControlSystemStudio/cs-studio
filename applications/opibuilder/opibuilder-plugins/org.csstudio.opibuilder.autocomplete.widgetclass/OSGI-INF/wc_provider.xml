@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="Widget Class Provider">
+   <implementation class="org.csstudio.opibuilder.autocomplete.widgetclass.WidgetClassProvider"/>
+   <service>
+      <provide interface="org.csstudio.autocomplete.IAutoCompleteProvider"/>
+   </service>
+   <property name="highLevelProvider" value="true"/>
+</scr:component>

@@ -35,6 +35,7 @@
     <module>org.csstudio.opibuilder.widgets.symbol</module>
     <module>org.csstudio.swt.widgets</module>
     <module>org.csstudio.swt.widgets.rcp</module>
+    <module>org.csstudio.opibuilder.autocomplete.widgetclass</module>
     <!--module>org.csstudio.swt.widgets.test</module--><!-- Graphic test that does not follow naming convention for tests-->
   </modules>
 </project>

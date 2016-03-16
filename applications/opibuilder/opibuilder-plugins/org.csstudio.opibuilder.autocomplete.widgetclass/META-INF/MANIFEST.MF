@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Widgetclass
+Bundle-SymbolicName: org.csstudio.opibuilder.autocomplete.widgetclass;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.autocomplete,
+ org.csstudio.opibuilder;bundle-version="5.1.0"
+Bundle-Vendor: FRIB
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.csstudio.opibuilder.autocomplete.widgetclass
+Service-Component: OSGI-INF/*.xml
