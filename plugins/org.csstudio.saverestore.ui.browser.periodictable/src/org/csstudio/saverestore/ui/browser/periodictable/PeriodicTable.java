@@ -477,14 +477,17 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     @Override
     public String getTitleFor(Optional<Isotope> bl, Optional<String> branch) {
         if (bl.isPresent()) {
-            if (branch.isPresent()) {
-                return "Elements for " + branch.get() + " (" + bl.get().element.fullName + ")";
-            } else {
-                return "Elements (" + bl.get().element.fullName + ")";
+            try {
+                if (branch.isPresent()) {
+                    return "Elements for " + branch.get() + " (" + bl.get().element.fullName + ")";
+                } else {
+                    return "Elements (" + bl.get().element.fullName + ")";
+                }
+            } catch (ClassCastException e) {
+                //could happen in case when switching from default to periodic table
             }
-        } else {
-            return "Elements";
         }
+        return "Elements";
     }
 
     /*

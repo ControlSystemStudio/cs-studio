@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
@@ -261,7 +262,8 @@ public class FXMessageDialog extends IconAndMessageDialog {
     public static boolean open(final DialogType kind, final Shell parent, final String title, final String message,
         final int style) {
         final int[] ans = new int[] { -1 };
-        parent.getDisplay().syncExec(() -> {
+        Display display = parent == null ? Display.getDefault() : parent.getDisplay();
+        display.syncExec(() -> {
             FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0);
             dialog.setShellStyle(dialog.getShellStyle() | (style & SWT.SHEET));
             ans[0] = dialog.open();

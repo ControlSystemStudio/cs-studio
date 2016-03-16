@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -930,6 +931,7 @@ public class SnapshotViewerController {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot {0}: {1}.",
                     new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get() });
             } else {
+                Collections.sort(messages);
                 StringBuilder sb = new StringBuilder(messages.size() * 200);
                 messages.forEach(e -> sb.append(e).append('\n'));
                 SaveRestoreService.LOGGER.log(Level.WARNING,
