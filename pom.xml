@@ -56,7 +56,6 @@
     </repository>
   </repositories>
 
-  <!-- If a local repository is specified then enable that repository -->
   <profiles>
     <profile>
       <id>cs-studio</id>
@@ -73,6 +72,7 @@
         </repository>
       </repositories>
     </profile>
+    <!-- If a local repository is specified then enable that repository -->
     <profile>
       <id>csstudio-local-repo-enable</id>
       <activation>
@@ -156,21 +156,6 @@
     <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <configuration>
-          <dependency-resolution>
-            <extraRequirements>
-              <requirement>
-                <type>eclipse-plugin</type>
-                <id>com.google.guava</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-            </extraRequirements>
-          </dependency-resolution>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho.version}</version>
         <extensions>true</extensions>
@@ -182,10 +167,12 @@
         <configuration>
           <dependency-resolution>
             <extraRequirements>
-              <!-- Extra Target Bundles Here -->
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>com.google.guava</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
             </extraRequirements>
-            <!-- Default behavior is to resolve ALL dependencies. -->
-            <!--<optionalDependencies>ignore</optionalDependencies> -->
           </dependency-resolution>
 
           <filters>
@@ -194,22 +181,22 @@
               <removeAll /> </filter> -->
           </filters>
 
-            <environments>
-              <environment>
-                <os>linux</os>
-                <ws>gtk</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>win32</os>
-                <ws>win32</ws>
-                <arch>x86_64</arch>
-              </environment>
-              <environment>
-                <os>macosx</os>
-                <ws>cocoa</ws>
-                <arch>x86_64</arch>
-              </environment>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
           </environments>
         </configuration>
       </plugin>
