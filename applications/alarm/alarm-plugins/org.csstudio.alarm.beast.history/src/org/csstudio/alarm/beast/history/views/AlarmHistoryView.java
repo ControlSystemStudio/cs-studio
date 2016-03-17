@@ -72,6 +72,12 @@ public class AlarmHistoryView extends ViewPart {
 
     private AlarmHistoryQueryParameters alarmHistoryQueryParameters;
     private PeriodicAlarmHistoryQuery alarmHistoryQuery;
+
+    // List of all possible columns
+    private static final List<String> columnName = Arrays.asList("EVENTTIME", "NAME", "HOST", "TEXT", "VALUE", "USER",
+            "CONFIG", "STATUS", "APPLICATION-ID", "CURRENT_STATUS", "CURRENT_SEVERITY", "TYPE", "SEVERITY");
+    private List<String> visibleColumns = Arrays.asList("EVENTTIME", "NAME", "TEXT", "USER", "STATUS",
+            "SEVERITY");
     
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
@@ -87,21 +93,15 @@ public class AlarmHistoryView extends ViewPart {
      * it.
      */
     public void createPartControl(Composite parent) {
-        viewer = new TableViewer(parent,
-                SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-
-        updateUI(parent);
-        // Create the help context id for the viewer's control
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.csstudio.alarm.beast.history.viewer");
-        getSite().setSelectionProvider(viewer);
-        makeActions();
-        hookContextMenu();
-        hookDoubleClickAction();
-        contributeToActionBars();
+        createUI(parent);        
         changeSupport.addPropertyChangeListener((evt) -> {
             switch (evt.getPropertyName()) {
             case "alarmHistoryQueryParameters":
                 alarmHistoryQuery.setQuery((AlarmHistoryQueryParameters) evt.getNewValue());
+                break;
+            case "visibleColumns":
+                viewer.getTable().dispose();
+                createUI(parent);
                 break;
             default:
                 break;
@@ -109,42 +109,16 @@ public class AlarmHistoryView extends ViewPart {
         });
         initialize();
     }
-
-    private AlarmHistoryQueryListener listener = new AlarmHistoryQueryListener() {
-
-        @Override
-        public void queryExecuted(AlarmHistoryResult result) {
-            Display.getDefault().asyncExec(() -> {
-                if (result.lastException != null) {
-                    // Display exception
-                } else {
-                    viewer.setInput(result.alarmMessages);
-                }
-            });
-        }
-    };
     
-    /**
-     * create rest client and jobs using preferences
-     */
-    private void initialize(){
-        // Start the Query jobs
-        Client client = Client.create();
-        WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-        alarmHistoryQueryParameters = buildQuery().build();
-        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 10, TimeUnit.SECONDS);
-        alarmHistoryQuery.addQueryListener(listener);
-        alarmHistoryQuery.start();
+    private void createUI(Composite parent) {
+        viewer = new TableViewer(parent,
+                SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+     // Create the help context id for the viewer's control
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.csstudio.alarm.beast.history.viewer");
+        getSite().setSelectionProvider(viewer);
+        updateUI(parent);
     }
 
-    @Override
-    public void dispose(){
-        if(alarmHistoryQuery!=null){
-            alarmHistoryQuery.removeQueryListener(listener);
-            alarmHistoryQuery.stop();
-        }
-    }
-    
     private void updateUI(Composite parent) {
 
         createColumns(parent, viewer);
@@ -154,6 +128,7 @@ public class AlarmHistoryView extends ViewPart {
         table.setLinesVisible(true);
 
         viewer.setContentProvider(new ArrayContentProvider());
+        viewer.getTable().pack();
     }
     /*
      * Example of the data coming from the alarm message server
@@ -172,12 +147,6 @@ public class AlarmHistoryView extends ViewPart {
      * "TYPE":"alarm",
      * "SEVERITY":"UNDEFINED"}
      */
-
-    // List of all possible columns
-    private static final List<String> columnName = Arrays.asList("EVENTTIME", "NAME", "HOST", "TEXT", "VALUE", "USER",
-            "CONFIG", "STATUS", "APPLICATION-ID", "CURRENT_STATUS", "CURRENT_SEVERITY", "TYPE", "SEVERITY");
-    private static List<String> visibleColumns = Arrays.asList("EVENTTIME", "NAME", "TEXT", "USER", "STATUS",
-            "SEVERITY");
 
     private void createColumns(Composite parent, TableViewer viewer) {
 
@@ -224,12 +193,42 @@ public class AlarmHistoryView extends ViewPart {
         return viewerColumn;
     }
 
-    public void setAlarmHistoryQueryParameters(AlarmHistoryQueryParameters parameters) {
-        Object oldValue = this.alarmHistoryQueryParameters;
-        this.alarmHistoryQueryParameters = parameters;
-        changeSupport.firePropertyChange("alarmHistoryQueryParameters", oldValue, this.alarmHistoryQueryParameters);
+
+    private AlarmHistoryQueryListener listener = new AlarmHistoryQueryListener() {
+
+        @Override
+        public void queryExecuted(AlarmHistoryResult result) {
+            Display.getDefault().asyncExec(() -> {
+                if (result.lastException != null) {
+                    // Display exception
+                } else {
+                    viewer.setInput(result.alarmMessages);
+                }
+            });
+        }
+    };
+    
+    /**
+     * create rest client and jobs using preferences
+     */
+    private void initialize(){
+        // Start the Query jobs
+        Client client = Client.create();
+        WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
+        alarmHistoryQueryParameters = buildQuery().build();
+        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 10, TimeUnit.SECONDS);
+        alarmHistoryQuery.addQueryListener(listener);
+        alarmHistoryQuery.start();
     }
 
+    @Override
+    public void dispose(){
+        if(alarmHistoryQuery!=null){
+            alarmHistoryQuery.removeQueryListener(listener);
+            alarmHistoryQuery.stop();
+        }
+    }    
+    
     private void hookContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
@@ -324,6 +323,30 @@ public class AlarmHistoryView extends ViewPart {
      */
     public void setFocus() {
         viewer.getControl().setFocus();
+    }    
+
+    public List<String> getVisibleColumns() {
+        return this.visibleColumns;
+    }
+
+    public void setVisibleColumns(List<String> visibleColumns) {
+        Object oldValue = this.visibleColumns;
+        this.visibleColumns = visibleColumns;
+        changeSupport.firePropertyChange("visibleColumns", oldValue, this.visibleColumns);
+    }
+
+    public static List<String> getColumnname() {
+        return columnName;
+    }
+
+    public AlarmHistoryQueryParameters getAlarmHistoryQueryParameters() {
+        return alarmHistoryQueryParameters;
+    }
+    
+    public void setAlarmHistoryQueryParameters(AlarmHistoryQueryParameters parameters) {
+        Object oldValue = this.alarmHistoryQueryParameters;
+        this.alarmHistoryQueryParameters = parameters;
+        changeSupport.firePropertyChange("alarmHistoryQueryParameters", oldValue, this.alarmHistoryQueryParameters);
     }
 
     private static class TimeComparator extends ViewerComparator {
