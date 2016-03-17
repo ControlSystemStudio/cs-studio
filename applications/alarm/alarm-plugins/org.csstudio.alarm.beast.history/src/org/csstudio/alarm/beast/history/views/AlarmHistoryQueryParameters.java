@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
@@ -31,7 +32,7 @@ public class AlarmHistoryQueryParameters {
         private List<ProcessVariable> pvs = new ArrayList<ProcessVariable>();
         private Instant start;
         private Instant end;
-        private int size;
+        private int size = 100;
 
         public static AlarmHistoryQueryBuilder buildQuery(){
             return new AlarmHistoryQueryBuilder();
@@ -86,9 +87,54 @@ public class AlarmHistoryQueryParameters {
         this.size = size;
     }
 
+    /**
+     * build a elastic search query using
+     * 1. list of all the pv's OR'ed
+     * 2. with a time range if specified
+     * 3. and the result limited to the size defined
+     * 
+     * @return
+     */
     public String getQueryString() {
-        return "{\"query\" : " + 
-                    "{\"term\" : " + "{ \"NAME\" : \"XF:31IDA-OP{Tbl-Ax:X1}Mtr\" }" + "}" + "}";
+        // TODO the ideal solution would be to use the elastic search client
+        // instead of jersey and REST.
+        // This would have better performance, along with a much nicer api to
+        // build the queries.
+        // Currently this effort has been limited by the inability to add and
+        // use third party libraries easily. resulting in the rather ugly string
+        // concatenated query
+        
+        
+        /**example query
+        {"size" : 100,
+          "query" : {
+            "bool" : {
+              "must" : {
+                "terms" : { "NAME" : ["XF:31IDA-OP{Tbl-Ax:X1}Mtr", "XF:31IDA-OP{Tbl-Ax:X2}Mtr"] }     
+              }, 
+              "should" :{
+                "range" : { "EVENTTIME": 
+                            {"gte":"2014-01-01 00:00:00.000",
+                            "lte": "now"}
+                          }
+              }
+            }
+          }
+        }**/
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ \"size\":"+String.valueOf(size)+", \"query\" : { \"bool\" : ");
+        // Add the pvNames
+        if(pvs.isEmpty()){
+            sb.append("{ \"must\" : { \"match_all\" : { } }");
+        }else{
+            sb.append("{ \"must\" : { \"terms\" : { \"NAME\" : ["); 
+            sb.append(String.join(",",
+                    pvs.stream().map(ProcessVariable::getName).map(e -> "\"" + e + "\"").collect(Collectors.toList())));
+            sb.append("] } }");
+        }
+        // Add time constraint
+        sb.append("} } }");
+        return sb.toString();
     }
 
 }

@@ -27,15 +27,15 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class AlarmHistoryQueryJob extends Job {
 
-    private final static String name = "LogQueryJob";
+    private final static String name = "AlarmHistoryQueryJob";
 
     private final AlarmHistoryQueryParameters query;
     private final Client client;
 
     AlarmHistoryQueryJob(AlarmHistoryQueryParameters query, Client client) {
-    super(name);
-    this.query = query;
-    this.client = client;
+        super(name);
+        this.query = query;
+        this.client = client;
     }
 
     void completedQuery(AlarmHistoryResult result) {
@@ -47,12 +47,10 @@ public class AlarmHistoryQueryJob extends Job {
         AlarmHistoryResult result = null;
         List<Map<String, String>> alarmMessages = new ArrayList<Map<String, String>>();
     try {
-        
         Client client = Client.create();
         WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-        AlarmHistoryQueryParameters parameter = AlarmHistoryQueryBuilder.buildQuery().build();
 
-        String response = r.accept(MediaType.APPLICATION_JSON).post(String.class, parameter.getQueryString());
+        String response = r.accept(MediaType.APPLICATION_JSON).post(String.class, query.getQueryString());
 
         try {
             JsonFactory factory = new JsonFactory();

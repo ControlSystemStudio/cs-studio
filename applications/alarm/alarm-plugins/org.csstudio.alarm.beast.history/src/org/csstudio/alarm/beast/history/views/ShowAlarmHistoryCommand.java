@@ -12,6 +12,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -20,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import static org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder.*;
+
 /**
  * @author Kunal Shroff
  *
@@ -34,28 +36,30 @@ public class ShowAlarmHistoryCommand extends AbstractHandler {
 
         if (Platform.isRunning()) {
             if (selection instanceof IStructuredSelection) {
-                IStructuredSelection strucSelection = (IStructuredSelection) selection;
                 TimestampedPV[] timestampedPVs = AdapterUtil.convert(selection, TimestampedPV.class);
                 if (timestampedPVs == null || timestampedPVs.length == 0) {
                     // failed to convert to TimestampedPVs try ProcessVariable
                     ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
                     if (pvs != null && pvs.length > 0) {
-                        alarmHistoryQueryParameters = Platform.getAdapterManager().getAdapter(pvs, AlarmHistoryQueryParameters.class);
+                        alarmHistoryQueryParameters = Platform.getAdapterManager().getAdapter(pvs,
+                                AlarmHistoryQueryParameters.class);
                     }
                 } else {
-                    alarmHistoryQueryParameters = Platform.getAdapterManager().getAdapter(timestampedPVs, AlarmHistoryQueryParameters.class);
+                    alarmHistoryQueryParameters = Platform.getAdapterManager().getAdapter(timestampedPVs,
+                            AlarmHistoryQueryParameters.class);
                 }
             }
         }
 
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        AlarmHistoryView alarmHistoryView = (AlarmHistoryView)page.findView(AlarmHistoryView.ID);
-        alarmHistoryView.setAlarmHistoryQueryParameters(alarmHistoryQueryParameters);
         try {
+            IWorkbenchPage page = window.getActivePage();
+            AlarmHistoryView alarmHistoryView = (AlarmHistoryView) page.findView(AlarmHistoryView.ID);
+            alarmHistoryView.setAlarmHistoryQueryParameters(alarmHistoryQueryParameters);
             page.showView(AlarmHistoryView.ID);
-        } catch (PartInitException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

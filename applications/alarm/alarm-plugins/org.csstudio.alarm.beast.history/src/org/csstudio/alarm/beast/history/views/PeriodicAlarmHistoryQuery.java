@@ -124,7 +124,7 @@ public class PeriodicAlarmHistoryQuery {
      *
      * @param listener a new AlarmHistoryQueryListener listener
      */
-    public void addLogQueryListener(AlarmHistoryQueryListener listener) {
+    public void addQueryListener(AlarmHistoryQueryListener listener) {
         listeners.add(listener);
     }
 
@@ -133,7 +133,7 @@ public class PeriodicAlarmHistoryQuery {
      *
      * @param listener a AlarmHistoryQueryListener listener
      */
-    public void removeLogQueryListener(AlarmHistoryQueryListener listener) {
+    public void removeQueryListener(AlarmHistoryQueryListener listener) {
         listeners.remove(listener);
     }
 

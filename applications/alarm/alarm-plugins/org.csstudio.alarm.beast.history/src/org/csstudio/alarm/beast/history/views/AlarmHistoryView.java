@@ -18,6 +18,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder;
+import org.csstudio.alarm.beast.history.views.PeriodicAlarmHistoryQuery.AlarmHistoryResult;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -52,9 +53,9 @@ import org.eclipse.ui.part.ViewPart;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import static org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder.*;
 /**
  * 
- * <p>
  */
 
 public class AlarmHistoryView extends ViewPart {
@@ -73,6 +74,7 @@ public class AlarmHistoryView extends ViewPart {
     private PeriodicAlarmHistoryQuery alarmHistoryQuery;
     
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+
 
     /**
      * The constructor.
@@ -99,7 +101,7 @@ public class AlarmHistoryView extends ViewPart {
         changeSupport.addPropertyChangeListener((evt) -> {
             switch (evt.getPropertyName()) {
             case "alarmHistoryQueryParameters":
-                
+                alarmHistoryQuery.setQuery((AlarmHistoryQueryParameters) evt.getNewValue());
                 break;
             default:
                 break;
@@ -107,6 +109,20 @@ public class AlarmHistoryView extends ViewPart {
         });
         initialize();
     }
+
+    private AlarmHistoryQueryListener listener = new AlarmHistoryQueryListener() {
+
+        @Override
+        public void queryExecuted(AlarmHistoryResult result) {
+            Display.getDefault().asyncExec(() -> {
+                if (result.lastException != null) {
+                    // Display exception
+                } else {
+                    viewer.setInput(result.alarmMessages);
+                }
+            });
+        }
+    };
     
     /**
      * create rest client and jobs using preferences
@@ -115,19 +131,20 @@ public class AlarmHistoryView extends ViewPart {
         // Start the Query jobs
         Client client = Client.create();
         WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 30, TimeUnit.SECONDS);
-        alarmHistoryQuery.addLogQueryListener((result) -> {
-            Display.getDefault().asyncExec( () -> {
-            if(result.lastException!=null){
-                // Display exception
-            } else {
-                viewer.setInput(result.alarmMessages);
-                }
-            });
-        });
+        alarmHistoryQueryParameters = buildQuery().build();
+        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 10, TimeUnit.SECONDS);
+        alarmHistoryQuery.addQueryListener(listener);
         alarmHistoryQuery.start();
     }
 
+    @Override
+    public void dispose(){
+        if(alarmHistoryQuery!=null){
+            alarmHistoryQuery.removeQueryListener(listener);
+            alarmHistoryQuery.stop();
+        }
+    }
+    
     private void updateUI(Composite parent) {
 
         createColumns(parent, viewer);
@@ -209,7 +226,7 @@ public class AlarmHistoryView extends ViewPart {
 
     public void setAlarmHistoryQueryParameters(AlarmHistoryQueryParameters parameters) {
         Object oldValue = this.alarmHistoryQueryParameters;
-        this.alarmHistoryQueryParameters = alarmHistoryQueryParameters;
+        this.alarmHistoryQueryParameters = parameters;
         changeSupport.firePropertyChange("alarmHistoryQueryParameters", oldValue, this.alarmHistoryQueryParameters);
     }
 
