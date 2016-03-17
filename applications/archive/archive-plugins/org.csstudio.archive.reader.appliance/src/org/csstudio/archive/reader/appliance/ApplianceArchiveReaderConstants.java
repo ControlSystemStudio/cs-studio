@@ -6,7 +6,7 @@ package org.csstudio.archive.reader.appliance;
  *
  * @author Miha Novak <miha.novak@cosylab.com>
  */
-public interface ApplianceArchiveReaderConstants {
+public class ApplianceArchiveReaderConstants {
     /** The name of the archiver appliance reader as it appears in the preferences */
     public static final String ARCHIVER_NAME = "EPICS Archiver Appliance";
     /** The description of the archiver appliance reader */
@@ -52,5 +52,8 @@ public interface ApplianceArchiveReaderConstants {
     public static final String OP_MEAN = "mean_";
     /** Operator for the optimized post processor */
     public static final String OP_OPTIMIZED = "optimized_";
+
+    /** The schema delimiter: ca://pvName or pva://pvname */
+    static final String SCHEMA_DELIMITER = "://";
 
 }
