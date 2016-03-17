@@ -12,7 +12,6 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.util.SchemaService;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -158,7 +157,7 @@ public abstract class AbstractWidgetProperty {
      * @return the isSavable
      */
     public boolean isSavable() {
-        return isSavable && !SchemaService.getInstance().isPropertyBoundToWidgetClass(widgetModel, prop_id);
+        return isSavable;
     }
 
     /**Set to true if the property should be saved to xml file.
