@@ -33,6 +33,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MemoryInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -222,15 +223,26 @@ public class ScanServerImpl implements ScanServer
         }
     }
 
-    /** If memory consumption is high, remove (one) older scan */
+    /** If memory consumption is high, remove some older scans */
     private void cullScans() throws Exception
     {
         final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
-        while (getInfo().getMemoryPercentage() > threshold)
+        int count = 0;
+        final Logger logger = Logger.getLogger(getClass().getName());
+
+        MemoryInfo used = new MemoryInfo();
+        while (used.getMemoryPercentage() > threshold && count < 10)
         {
-            if (! scan_engine.removeOldestCompletedScan())
+            final LoggedScan removed = scan_engine.removeOldestCompletedScan();
+            if (removed == null)
                 return;
+            ++count;
+            logger.log(Level.INFO, "Culled " + count + ": " + removed);
             System.gc();
+            final MemoryInfo now = new MemoryInfo();
+            logger.log(Level.INFO, "Before: " + used);
+            logger.log(Level.INFO, "Now   : " + now);
+            used = now;
         }
     }
 
