@@ -172,15 +172,31 @@ public class ScanEngine
     }
 
     /** Remove the oldest completed scan
-     *  @return LoggedScan that was removed or null
+     *  @return LoggedScan that was removed or <code>null</code>
      */
-    public LoggedScan removeOldestCompletedScan()
+    public Scan removeOldestCompletedScan()
     {
         for (LoggedScan scan : scan_queue)
             if (scan.getScanState().isDone())
             {
                 scan_queue.remove(scan);
                 return scan;
+            }
+        return null;
+    }
+
+    /** Turn oldest completed in-memory scan into logged scan
+     *  @return Logged that was turned into logged scan or <code>null</code>
+     */
+    public Scan logOldestCompletedScan()
+    {
+        for (LoggedScan scan : scan_queue)
+            if (scan.getScanState().isDone()  &&  scan instanceof ExecutableScan)
+            {
+                final LoggedScan logged = new LoggedScan(scan);
+                final int index = scan_queue.indexOf(scan);
+                scan_queue.set(index, logged);
+                return logged;
             }
         return null;
     }
