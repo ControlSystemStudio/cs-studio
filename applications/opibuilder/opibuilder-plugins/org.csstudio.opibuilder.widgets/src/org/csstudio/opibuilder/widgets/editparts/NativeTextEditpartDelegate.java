@@ -40,6 +40,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
     private TextInputEditpart editpart;
     private TextInputModel model;
     private Text text;
+    private boolean skipTraverse;
 
 
 
@@ -137,6 +138,17 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                             break;
                         }
                     }
+                });
+                text.addTraverseListener(e -> {
+                    if (skipTraverse) return;
+                    e.doit = false;
+                    skipTraverse = true;
+                    if (e.stateMask == 0) {
+                        SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
+                    } else {
+                        SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
+                    }
+                    skipTraverse = false;
                 });
             }
             //Recover text if editing aborted.
