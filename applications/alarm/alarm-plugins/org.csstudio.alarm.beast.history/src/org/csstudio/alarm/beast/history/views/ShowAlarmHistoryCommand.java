@@ -53,15 +53,15 @@ public class ShowAlarmHistoryCommand extends AbstractHandler {
 
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        try {
-            IWorkbenchPage page = window.getActivePage();
-            AlarmHistoryView alarmHistoryView = (AlarmHistoryView) page.findView(AlarmHistoryView.ID);
-            alarmHistoryView.setAlarmHistoryQueryParameters(alarmHistoryQueryParameters);
-            page.showView(AlarmHistoryView.ID);
 
+        IWorkbenchPage page = window.getActivePage();
+        try {
+            AlarmHistoryView alarmHistoryView = (AlarmHistoryView)page.showView(AlarmHistoryView.ID);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        AlarmHistoryView alarmHistoryView = (AlarmHistoryView) page.findView(AlarmHistoryView.ID);
+        alarmHistoryView.setAlarmHistoryQueryParameters(alarmHistoryQueryParameters);
         return null;
     }
 
