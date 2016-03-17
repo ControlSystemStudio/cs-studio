@@ -128,7 +128,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
                             PreferencesHelper.SCHEMA_OPI)) {
                         SchemaService.getInstance().reLoad();
                     } else if (event.getProperty().equals(PreferencesHelper.WIDGET_CLASSES_RULES)) {
-                        SchemaService.getInstance().reLoad();
+                        SchemaService.getInstance().reloadWidgetClassRules();
                     } else if (event.getProperty().equals(
                             PreferencesHelper.DISPLAY_SYSTEM_OUTPUT)) {
                         if (PreferencesHelper.isDisplaySystemOutput())

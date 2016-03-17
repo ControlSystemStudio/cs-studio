@@ -81,6 +81,27 @@ public final class SchemaService {
     }
 
     /**
+     * Reloads the widget class rules file.
+     */
+    public void reloadWidgetClassRules() {
+        final IPath rulesFile = PreferencesHelper.getWidgetClassesRulesPath();
+        if (Display.getCurrent() != null) {
+            IRunnableWithProgress job = monitor -> {
+                monitor.beginTask("Connecting to " + rulesFile, IProgressMonitor.UNKNOWN);
+                loadWidgetClassRulesDefinitions(rulesFile);
+                monitor.done();
+            };
+            try {
+                new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, job);
+            } catch (Exception e) {
+                ErrorHandlerUtil.handleError("Failed to load widget class rules", e);
+            }
+        } else {
+            loadWidgetClassRulesDefinitions(rulesFile);
+        }
+    }
+
+    /**
      * Reload schema opi.
      */
     public void reLoad() {
@@ -106,7 +127,6 @@ public final class SchemaService {
         } else {
             loadSchema(schemaOPI, rulesFile);
         }
-
     }
 
     /**
