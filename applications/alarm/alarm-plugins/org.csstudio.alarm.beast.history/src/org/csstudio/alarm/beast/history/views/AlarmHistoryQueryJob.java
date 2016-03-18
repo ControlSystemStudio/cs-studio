@@ -30,12 +30,12 @@ public class AlarmHistoryQueryJob extends Job {
     private final static String name = "AlarmHistoryQueryJob";
 
     private final AlarmHistoryQueryParameters query;
-    private final Client client;
+    private final WebResource webResource;
 
-    AlarmHistoryQueryJob(AlarmHistoryQueryParameters query, Client client) {
+    AlarmHistoryQueryJob(AlarmHistoryQueryParameters query, WebResource webResource) {
         super(name);
         this.query = query;
-        this.client = client;
+        this.webResource = webResource;
     }
 
     void completedQuery(AlarmHistoryResult result) {
@@ -47,10 +47,7 @@ public class AlarmHistoryQueryJob extends Job {
         AlarmHistoryResult result = null;
         List<Map<String, String>> alarmMessages = new ArrayList<Map<String, String>>();
     try {
-        Client client = Client.create();
-        WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-
-        String response = r.accept(MediaType.APPLICATION_JSON).post(String.class, query.getQueryString());
+        String response = webResource.accept(MediaType.APPLICATION_JSON).post(String.class, query.getQueryString());
 
         try {
             JsonFactory factory = new JsonFactory();
@@ -66,7 +63,7 @@ public class AlarmHistoryQueryJob extends Job {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }        
+        }
         result = new AlarmHistoryResult(alarmMessages, null);
     } catch (Exception e) {
         result = new AlarmHistoryResult(alarmMessages, e);

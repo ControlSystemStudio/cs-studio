@@ -10,7 +10,7 @@
       </category>
       <view
             name="Alarm History View"
-            icon="icons/sample.gif"
+            icon="icons/msg_hist.gif"
             category="org.csstudio.alarm.beast.history"
             class="org.csstudio.alarm.beast.history.views.AlarmHistoryView"
             id="org.csstudio.alarm.beast.history.views.AlarmHistoryView">
@@ -37,7 +37,7 @@
          <command
                commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
                icon="icons/msg_hist.gif"
-               label="Show --- Alarm History"
+               label="Show Alarm History"
                style="push">
          </command>
       </menuContribution>

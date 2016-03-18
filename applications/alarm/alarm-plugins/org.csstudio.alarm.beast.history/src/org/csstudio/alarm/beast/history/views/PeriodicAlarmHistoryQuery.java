@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * PeriodicAlarmHistoryQuery, allows you to periodically query the alarm history
@@ -23,7 +24,7 @@ import com.sun.jersey.api.client.Client;
 public class PeriodicAlarmHistoryQuery {
 
     private volatile AlarmHistoryQueryParameters query;
-    private final Client client;
+    private final WebResource client;
     private final TimeUnit timeUnit;
     private final int delay;
 
@@ -55,13 +56,13 @@ public class PeriodicAlarmHistoryQuery {
      * Create a new periodic query for the alarm history
      *
      * @param query the query
-     * @param client
+     * @param r
      * @param delay
      * @param minutes
      */
-    public PeriodicAlarmHistoryQuery(AlarmHistoryQueryParameters query, Client client, int delay, TimeUnit timeUnit) {
+    public PeriodicAlarmHistoryQuery(AlarmHistoryQueryParameters query, WebResource r, int delay, TimeUnit timeUnit) {
         this.query = query;
-        this.client = client;
+        this.client = r;
         this.delay = delay;
         this.timeUnit = timeUnit;
     }

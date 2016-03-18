@@ -19,6 +19,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder;
 import org.csstudio.alarm.beast.history.views.PeriodicAlarmHistoryQuery.AlarmHistoryResult;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -220,9 +221,11 @@ public class AlarmHistoryView extends ViewPart {
     private void initialize(){
         // Start the Query jobs
         Client client = Client.create();
-        WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
+        String url = Platform.getPreferencesService().
+                getString("org.csstudio.alarm.beast.history", "alarm_history_url", "http://localhost:9200/alarms/beast/_search", null);
+        WebResource r = client.resource(url);
         alarmHistoryQueryParameters = buildQuery().build();
-        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, client, 10, TimeUnit.SECONDS);
+        alarmHistoryQuery = new PeriodicAlarmHistoryQuery(alarmHistoryQueryParameters, r, 10, TimeUnit.SECONDS);
         alarmHistoryQuery.addQueryListener(listener);
         alarmHistoryQuery.start();
     }
@@ -233,95 +236,6 @@ public class AlarmHistoryView extends ViewPart {
             alarmHistoryQuery.removeQueryListener(listener);
             alarmHistoryQuery.stop();
         }
-    }    
-    
-    private void hookContextMenu() {
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                AlarmHistoryView.this.fillContextMenu(manager);
-            }
-        });
-        Menu menu = menuMgr.createContextMenu(viewer.getControl());
-        viewer.getControl().setMenu(menu);
-        getSite().registerContextMenu(menuMgr, viewer);
-    }
-
-    private void contributeToActionBars() {
-        IActionBars bars = getViewSite().getActionBars();
-        fillLocalPullDown(bars.getMenuManager());
-        fillLocalToolBar(bars.getToolBarManager());
-    }
-
-    private void fillLocalPullDown(IMenuManager manager) {
-        manager.add(action1);
-        manager.add(new Separator());
-    }
-
-    private void fillContextMenu(IMenuManager manager) {
-        manager.add(action1);
-        // Other plug-ins can contribute there actions here
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-    }
-
-    private void fillLocalToolBar(IToolBarManager manager) {
-        manager.add(action1);
-    }
-
-    private void makeActions() {
-        action1 = new Action() {
-            public void run() {
-                Client client = Client.create();
-                WebResource r = client.resource("http://130.199.219.79:9999/alarms/beast/_search");
-                AlarmHistoryQueryParameters parameter = AlarmHistoryQueryBuilder.buildQuery().build();
-
-                String response = r.accept(MediaType.APPLICATION_JSON).post(String.class, parameter.getQueryString());
-
-                List<Map<String, String>> alarmMessages = new ArrayList<Map<String, String>>();
-                try {
-                    JsonFactory factory = new JsonFactory();
-
-                    ObjectMapper mapper = new ObjectMapper(factory);
-                    JsonNode rootNode = mapper.readTree(response);
-
-                    JsonNode node = rootNode.get("hits").get("hits");
-                    for (JsonNode jsonNode : node) {
-                        alarmMessages.add(
-                                mapper.readValue(jsonNode.get("_source"), new TypeReference<Map<String, String>>() {
-                        }));
-                    }
-                    viewer.setInput(alarmMessages);
-                    viewer.refresh();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        action1.setText("Action 1");
-        action1.setToolTipText("Action 1 tooltip");
-        action1.setImageDescriptor(
-                PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-
-        doubleClickAction = new Action() {
-            public void run() {
-                ISelection selection = viewer.getSelection();
-                Object obj = ((IStructuredSelection) selection).getFirstElement();
-                showMessage("Double-click detected on " + obj.toString());
-            }
-        };
-    }
-
-    private void hookDoubleClickAction() {
-        viewer.addDoubleClickListener(new IDoubleClickListener() {
-            public void doubleClick(DoubleClickEvent event) {
-                doubleClickAction.run();
-            }
-        });
-    }
-
-    private void showMessage(String message) {
-        MessageDialog.openInformation(viewer.getControl().getShell(), "Alarm History View", message);
     }
 
     /**
