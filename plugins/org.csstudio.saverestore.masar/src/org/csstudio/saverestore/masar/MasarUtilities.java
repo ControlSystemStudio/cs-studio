@@ -85,6 +85,10 @@ import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.UnionArrayData;
 
+import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.DBR_Byte;
+import gov.aps.jca.dbr.DBR_Float;
+import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.Severity;
 import gov.aps.jca.dbr.Status;
 
@@ -255,8 +259,8 @@ public final class MasarUtilities {
             Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
                 toStatus(alarmStatus.data[i]));
             boolean isarray = data.data[i].get() instanceof PVArray;
-            values.add(isarray ? toValue((PVArray) data.data[i].get(), time, alarm)
-                : toValue(data.data[i].get(), time, alarm));
+            values.add(isarray ? toValue((PVArray) data.data[i].get(), time, alarm, dbrType.data[i] % 7)
+                : toValue(data.data[i].get(), time, alarm, dbrType.data[i] % 7));
         }
         return new VSnapshot(snapshot, names, values, snapshotTime, null);
     }
@@ -302,9 +306,12 @@ public final class MasarUtilities {
      * @param val the value to transform
      * @param time the time to use for the value
      * @param alarm the alarm to use for the value
+     * @param dbrType the dbrType as masar returns it (if the scalar type is different than dbr, it will be converted
+     *          to the type prescribed by the dbr, but only if the dbr is of a smaller type than the value - int
+     *          value will be transformed to short or byte, short will be transformed to byte etc.)
      * @return the {@link VType} representing the input parameters
      */
-    private static VType toValue(PVArray val, Time time, Alarm alarm) {
+    private static VType toValue(PVArray val, Time time, Alarm alarm, int dbrType) {
         if (!(val instanceof PVScalarArray)) {
             throw new IllegalArgumentException(
                 "The value type should be a scalar array type, but it was not: " + val.getClass());
@@ -327,31 +334,111 @@ public final class MasarUtilities {
             case pvShort:
                 ShortArrayData shval = new ShortArrayData();
                 ((PVShortArray) val).get(0, val.getLength(), shval);
-                return ValueFactory.newVShortArray(new ArrayShort(shval.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[shval.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)shval.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVShortArray(new ArrayShort(shval.data), alarm, time, display);
+                }
             case pvUShort:
                 ShortArrayData shuval = new ShortArrayData();
                 ((PVUShortArray) val).get(0, val.getLength(), shuval);
-                return ValueFactory.newVShortArray(new ArrayShort(shuval.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[shuval.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)shuval.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVShortArray(new ArrayShort(shuval.data), alarm, time, display);
+                }
             case pvInt:
                 IntArrayData ival = new IntArrayData();
                 ((PVIntArray) val).get(0, val.getLength(), ival);
-                return ValueFactory.newVIntArray(new ArrayInt(ival.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[ival.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)ival.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                    short[] svalue = new short[ival.data.length];
+                    for (int i = 0; i < svalue.length; i++) {
+                        svalue[i] = (short)ival.data[i];
+                    }
+                    return ValueFactory.newVShortArray(new ArrayShort(svalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVIntArray(new ArrayInt(ival.data), alarm, time, display);
+                }
             case pvUInt:
                 IntArrayData iuval = new IntArrayData();
                 ((PVUIntArray) val).get(0, val.getLength(), iuval);
-                return ValueFactory.newVIntArray(new ArrayInt(iuval.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[iuval.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)iuval.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                    short[] svalue = new short[iuval.data.length];
+                    for (int i = 0; i < svalue.length; i++) {
+                        svalue[i] = (short)iuval.data[i];
+                    }
+                    return ValueFactory.newVShortArray(new ArrayShort(svalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVIntArray(new ArrayInt(iuval.data), alarm, time, display);
+                }
             case pvLong:
                 LongArrayData lval = new LongArrayData();
                 ((PVLongArray) val).get(0, val.getLength(), lval);
-                return ValueFactory.newVLongArray(new ArrayLong(lval.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[lval.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)lval.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                    short[] svalue = new short[lval.data.length];
+                    for (int i = 0; i < svalue.length; i++) {
+                        svalue[i] = (short)lval.data[i];
+                    }
+                    return ValueFactory.newVShortArray(new ArrayShort(svalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVLongArray(new ArrayLong(lval.data), alarm, time, display);
+                }
             case pvULong:
                 LongArrayData luval = new LongArrayData();
                 ((PVULongArray) val).get(0, val.getLength(), luval);
-                return ValueFactory.newVLongArray(new ArrayLong(luval.data), alarm, time, display);
+                if (dbrType == DBR_Byte.TYPE.getValue()) {
+                    byte[] bvalue = new byte[luval.data.length];
+                    for (int i = 0; i < bvalue.length; i++) {
+                        bvalue[i] = (byte)luval.data[i];
+                    }
+                    return ValueFactory.newVNumberArray(new ArrayByte(bvalue), alarm, time, display);
+                } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                    short[] svalue = new short[luval.data.length];
+                    for (int i = 0; i < svalue.length; i++) {
+                        svalue[i] = (short)luval.data[i];
+                    }
+                    return ValueFactory.newVShortArray(new ArrayShort(svalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVLongArray(new ArrayLong(luval.data), alarm, time, display);
+                }
             case pvDouble:
                 DoubleArrayData dval = new DoubleArrayData();
                 ((PVDoubleArray) val).get(0, val.getLength(), dval);
-                return ValueFactory.newVDoubleArray(new ArrayDouble(dval.data), alarm, time, display);
+                if (dbrType == DBR_Float.TYPE.getValue()) {
+                    float[] fvalue = new float[dval.data.length];
+                    for (int i = 0; i < fvalue.length; i++) {
+                        fvalue[i] = (float)dval.data[i];
+                    }
+                    return ValueFactory.newVFloatArray(new ArrayFloat(fvalue), alarm, time, display);
+                } else {
+                    return ValueFactory.newVDoubleArray(new ArrayDouble(dval.data), alarm, time, display);
+                }
             case pvFloat:
                 FloatArrayData fval = new FloatArrayData();
                 ((PVFloatArray) val).get(0, val.getLength(), fval);
@@ -371,9 +458,12 @@ public final class MasarUtilities {
      * @param val the value
      * @param time the time of value
      * @param alarm the alarm of the value
+     * @param dbrType the dbrType as masar returns it (if the scalar type is different than dbr, it will be converted
+     *          to the type prescribed by the dbr, but only if the dbr is of a smaller type than the value - int
+     *          value will be transformed to short or byte, short will be transformed to byte etc.)
      * @return the {@link VType} describing the value
      */
-    private static VType toValue(PVField val, Time time, Alarm alarm) {
+    private static VType toValue(PVField val, Time time, Alarm alarm, int dbrType) {
         if (val == null) {
             //this happens when a PV is not connected
             return VDisconnectedData.INSTANCE;
@@ -388,19 +478,55 @@ public final class MasarUtilities {
                 case pvUByte:
                     return ValueFactory.newVByte(((PVUByte) val).get(), alarm, time, display);
                 case pvShort:
-                    return ValueFactory.newVShort(((PVShort) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVShort) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVShort(((PVShort) val).get(), alarm, time, display);
+                    }
                 case pvUShort:
-                    return ValueFactory.newVShort(((PVUShort) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVUShort) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVShort(((PVUShort) val).get(), alarm, time, display);
+                    }
                 case pvInt:
-                    return ValueFactory.newVInt(((PVInt) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVInt) val).get(), alarm, time, display);
+                    } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                        return ValueFactory.newVShort((short)((PVInt) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVInt(((PVInt) val).get(), alarm, time, display);
+                    }
                 case pvUInt:
-                    return ValueFactory.newVInt(((PVUInt) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVUInt) val).get(), alarm, time, display);
+                    } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                        return ValueFactory.newVShort((short)((PVUInt) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVInt(((PVUInt) val).get(), alarm, time, display);
+                    }
                 case pvLong:
-                    return ValueFactory.newVLong(((PVLong) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVLong) val).get(), alarm, time, display);
+                    } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                        return ValueFactory.newVShort((short)((PVLong) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVLong(((PVLong) val).get(), alarm, time, display);
+                    }
                 case pvULong:
-                    return ValueFactory.newVLong(((PVULong) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Byte.TYPE.getValue()) {
+                        return ValueFactory.newVByte((byte)((PVULong) val).get(), alarm, time, display);
+                    } else if (dbrType == DBR_Short.TYPE.getValue()) {
+                        return ValueFactory.newVShort((short)((PVULong) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVLong(((PVULong) val).get(), alarm, time, display);
+                    }
                 case pvDouble:
-                    return ValueFactory.newVDouble(((PVDouble) val).get(), alarm, time, display);
+                    if (dbrType == DBR_Float.TYPE.getValue()) {
+                        return ValueFactory.newVFloat((float)((PVDouble) val).get(), alarm, time, display);
+                    } else {
+                        return ValueFactory.newVDouble(((PVDouble) val).get(), alarm, time, display);
+                    }
                 case pvFloat:
                     return ValueFactory.newVFloat(((PVFloat) val).get(), alarm, time, display);
                 case pvString:
@@ -445,4 +571,6 @@ public final class MasarUtilities {
         }
         return subj == null ? System.getProperty("user.name") : SecuritySupport.getSubjectName(subj);
     }
+
+
 }
