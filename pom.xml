@@ -72,7 +72,13 @@
         </repository>
       </repositories>
     </profile>
-    <!-- If a local repository is specified then enable that repository -->
+    <!-- If a local repository is specified then enable that repository
+         
+         This option is DEPRECATED; use csstudio.composite.repo:
+         Composite repo can list local or remote sites,
+         so it covers the 'local' case, but avoids
+         copying all artifacts plus dependencies into a csstudio.local.repo
+      -->
     <profile>
       <id>csstudio-local-repo-enable</id>
       <activation>
@@ -84,6 +90,22 @@
         <repository>
           <id>csstudio-local-repo</id>
           <url>file:${csstudio.local.repo}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <!-- If composite repo is defined, use it. -->
+    <profile>
+      <id>csstudio-composite-repo-enable</id>
+      <activation>
+        <property>
+          <name>csstudio.composite.repo</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-composite-repo</id>
+          <url>file:${csstudio.composite.repo}</url>
           <layout>p2</layout>
         </repository>
       </repositories>
