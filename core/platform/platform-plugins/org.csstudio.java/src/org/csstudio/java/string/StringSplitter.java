@@ -18,24 +18,34 @@ import java.util.regex.Pattern;
  */
 public class StringSplitter
 {
+    private static final String QUOTE = "'\\\"";
+    private static final String NOT_QUOTE = "^" + QUOTE;
+
+    private static final char SPACE = ' ';
+    private static final char TAB = '\t';
+    private static final char PIPE = '|';
+
+    private static final String ESCAPED_QUOTE = "\\\\\\\"";
+    private static final String ESCAPED_SINGLE_QUOTE = "\\\\\'";
+
+    static final String SUBSTITUTE_QUOTE = "\uF8FF";
+    static final String SUBSTITUTE_SINGLE_QUOTE = "\uE000";
+
+    private static final String splitRegex = "(?="
+            + "([" + NOT_QUOTE + "]*"  // any number of non-quotes
+            +  "[" + QUOTE + "]"       // a quote
+            +  "[" + NOT_QUOTE + "]*"  // any number of non-quotes
+            +  "[" + QUOTE + "]"       // a quote, not preceeded by an escape
+            + ")*"                     // any number of times
+            +  "[" + NOT_QUOTE + "]*"  // any number of non quotes
+            + "$)";
+
     /** Prevent instantiation */
     private StringSplitter()
     {
         // NOP
     }
 
-    private static final String QUOTE = "'\\\"";
-    private static final String NOT_QUOTE = "^" + QUOTE;
-    private static final char SPACE = ' ';
-
-    private static final String splitRegex = "(?="
-            + "([" + NOT_QUOTE + "]*"  // any number of non-quotes
-            +  "[" + QUOTE + "]"       // a quote
-            +  "[" + NOT_QUOTE + "]*"  // any number of non-quotes
-            +  "[" + QUOTE + "]"       // a quote
-            + ")*"                     // any number of times
-            +  "[" + NOT_QUOTE + "]*"  // any number of non quotes
-            + "$)";
 
     /** Split source string into an array of elements separated by the splitting character,
      *  but ignoring split characters enclosed in quotes.
@@ -55,21 +65,26 @@ public class StringSplitter
         // Trim, replace tabs with spaces so we only need to handle
         // space in the following; only if not splitting on TAB
         final String trimmedSource;
-        if (splitChar != '\t') {
-            trimmedSource = source.replace('\t', SPACE).trim();
+        if (splitChar != TAB) {
+            trimmedSource = source.replace(TAB, SPACE).trim();
         }
         else {
             trimmedSource = source;
         }
+
+        final String escapedSource = substituteEscapedQuotes(trimmedSource);
+
         String fullRegex = splitChar + splitRegex;
-        if (splitChar == '|') {
+        if (splitChar == PIPE) {
             fullRegex = "\\" + fullRegex;
         }
+
         return Pattern.compile(fullRegex)
-                .splitAsStream(trimmedSource)
+                .splitAsStream(escapedSource)
                 .filter(item -> !item.isEmpty())
                 .map(item -> item.trim())
                 .map(item -> deleteHeadTailQuotes ? removeQuotes(item) : item)
+                .map(item -> revertQuoteSubsitutions(item))
                 .toArray(size -> new String[size]);
     }
 
@@ -83,5 +98,36 @@ public class StringSplitter
     static String removeQuotes(String input) {
         final String headtailRegex = "^[" + QUOTE + "]|[" + QUOTE + "]$";
         return input.replaceAll(headtailRegex, "");
+    }
+
+    /**
+     * Remove escaped quotes (single and double) from the input string.
+     * These may be found inside a 'quoted section' and should not be processed.
+     *
+     * Replace the character sequences with an unlikely unicode character.
+     *
+     * @param source String to process
+     * @return
+     */
+    static String substituteEscapedQuotes(String source) {
+
+        return source
+                .replaceAll(ESCAPED_QUOTE, SUBSTITUTE_QUOTE)
+                .replaceAll(ESCAPED_SINGLE_QUOTE, SUBSTITUTE_SINGLE_QUOTE);
+
+    }
+
+    /**
+     * Restore 'escaped quotes' (single and double) removed with
+     * {@link StringSplitter.substitueEscapeQuotes}
+     *
+     * @param source String to process
+     * @return
+     */
+    static String revertQuoteSubsitutions(String input) {
+        return input
+                .replaceAll(SUBSTITUTE_SINGLE_QUOTE, ESCAPED_SINGLE_QUOTE)
+                .replaceAll(SUBSTITUTE_QUOTE, ESCAPED_QUOTE);
+
     }
 }

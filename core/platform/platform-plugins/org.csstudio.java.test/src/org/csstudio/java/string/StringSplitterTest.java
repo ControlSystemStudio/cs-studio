@@ -36,7 +36,6 @@ public class StringSplitterTest
     {
         final String result[] = StringSplitter.splitIgnoreInQuotes(
                 "/tmp/demo \"Hello Dolly\" \"this is a test\"   ", ' ', true);
-        printResult(result);
 
         assertEquals(3, result.length);
         assertEquals("/tmp/demo", result[0]);
@@ -115,7 +114,6 @@ public class StringSplitterTest
                 .splitIgnoreInQuotes(
                         " First  \"The Second with escaped quote --> \\\" <--\" \"The Third\"   ",
                         ' ', true);
-        printResult(result);
         assertEquals(3, result.length);
         assertEquals("First", result[0]);
         assertEquals("The Second with escaped quote --> \\\" <--", result[1]);
@@ -143,7 +141,8 @@ public class StringSplitterTest
     public void doesNotSplitOnEscapedQuotedQuote() throws Exception
     {
         final String result[] = StringSplitter
-                .splitIgnoreInQuotes("be\"fo re\\\"afte\"r", ' ', true);
+                .splitIgnoreInQuotes("be\"fo re\\\"af te\"r", ' ', true);
+
         assertEquals(1, result.length);
     }
 
@@ -152,19 +151,16 @@ public class StringSplitterTest
     public void doesNotSplitOnEscapedQuotedSingleQuote() throws Exception
     {
         final String result[] = StringSplitter
-                .splitIgnoreInQuotes("be'fo re\\'afte'r", ' ', true);
+                .splitIgnoreInQuotes("be'fo re\\'af te'r", ' ', true);
+
         assertEquals(1, result.length);
     }
-
-
-
 
     @Test
     public void xtermWithSingleQuotedArgs() throws Exception
     {
         final String command = "xterm -T 'Console CS-DI-IOC-05' -e 'console CS-DI-IOC-05'";
         final String result[] = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
-
         assertEquals(5,  result.length);
     }
 
@@ -179,11 +175,6 @@ public class StringSplitterTest
         assertEquals("four five", result[1]);
     }
 
-    private void printResult(final String[] result) {
-        for (String elt : result) {
-            System.out.println(elt);
-        }
-    }
     @Test
     public void xtermWithEscapedDoubleQuotedArgs() throws Exception
     {
@@ -206,7 +197,53 @@ public class StringSplitterTest
     @Test
     public void removeQuotesReturnsDoubleQuotedStringStripped()
     {
-        assertEquals("doubleQuotes", StringSplitter.removeQuotes("\"doubleQuotes\""));
+        assertEquals("doubleQuotes",
+                StringSplitter.removeQuotes("\"doubleQuotes\""));
     }
 
+    @Test
+    public void substituteDoesNotChangeDoubleQuotes()
+    {
+        assertEquals("my doublequote \"",
+                StringSplitter.substituteEscapedQuotes("my doublequote \""));
+    }
+
+    @Test
+    public void substituteReplacesEscapedDoubleQuotes()
+    {
+        assertEquals("my escaped " + StringSplitter.SUBSTITUTE_QUOTE + " doublequote",
+                StringSplitter.substituteEscapedQuotes("my escaped \\\" doublequote"));
+    }
+
+
+    @Test
+    public void substituteRevertLeavesEscapedDoubleQuotesUnchanged()
+    {
+
+        assertEquals("my escaped \\\" doublequote",
+                StringSplitter.revertQuoteSubsitutions(
+                        StringSplitter.substituteEscapedQuotes("my escaped \\\" doublequote")));
+    }
+
+    @Test
+    public void substituteDoesNotChangeSingleQuotes()
+    {
+        assertEquals("my singlequote '",
+                StringSplitter.substituteEscapedQuotes("my singlequote '"));
+    }
+
+    @Test
+    public void substituteReplacesEscapedSingleQuotes()
+    {
+        assertEquals("my escaped " + StringSplitter.SUBSTITUTE_SINGLE_QUOTE + " singlequote",
+                StringSplitter.substituteEscapedQuotes("my escaped \\\' singlequote"));
+    }
+
+    @Test
+    public void substituteRevertLeavesEscapedSingleQuotesUnchanged()
+    {
+        assertEquals("my escaped \\\' singlequote",
+                StringSplitter.revertQuoteSubsitutions(
+                        StringSplitter.substituteEscapedQuotes("my escaped \\\' singlequote")));
+    }
 }
