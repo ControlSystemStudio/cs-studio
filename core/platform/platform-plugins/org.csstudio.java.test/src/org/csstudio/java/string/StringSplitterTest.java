@@ -36,10 +36,35 @@ public class StringSplitterTest
     {
         final String result[] = StringSplitter.splitIgnoreInQuotes(
                 "/tmp/demo \"Hello Dolly\" \"this is a test\"   ", ' ', true);
+        printResult(result);
+
         assertEquals(3, result.length);
         assertEquals("/tmp/demo", result[0]);
         assertEquals("Hello Dolly", result[1]);
         assertEquals("this is a test", result[2]);
+    }
+
+    /** Quotes, with tabs treated as space, that get removed */
+    @Test
+    public void tabsHandledAsSingleSpaces() throws Exception
+    {
+        final String result[] = StringSplitter.splitIgnoreInQuotes(
+                "/tmp/demo\t\"Hello Dolly\" \"this\tis a test\"\t", ' ', true);
+        assertEquals(3, result.length);
+        assertEquals("/tmp/demo", result[0]);
+        assertEquals("Hello Dolly", result[1]);
+        assertEquals("this is a test", result[2]);
+    }
+
+    @Test
+    public void splitOnTabsDoesNotSplitOnSpaces() throws Exception
+    {
+        final String result[] = StringSplitter.splitIgnoreInQuotes(
+                "/tmp/demo\tHello Dolly\t\"this\tis a test\"", '\t', true);
+        assertEquals(3, result.length);
+        assertEquals("/tmp/demo", result[0]);
+        assertEquals("Hello Dolly", result[1]);
+        assertEquals("this\tis a test", result[2]);
     }
 
     /** Spaces within quotes that should remain */
@@ -90,10 +115,98 @@ public class StringSplitterTest
                 .splitIgnoreInQuotes(
                         " First  \"The Second with escaped quote --> \\\" <--\" \"The Third\"   ",
                         ' ', true);
+        printResult(result);
         assertEquals(3, result.length);
         assertEquals("First", result[0]);
         assertEquals("The Second with escaped quote --> \\\" <--", result[1]);
         assertEquals("The Third", result[2]);
+    }
+
+    @Test
+    public void doesNotSplitOnEscapedQuote() throws Exception
+    {
+        final String result[] = StringSplitter
+                .splitIgnoreInQuotes("before\\\"after", ' ', true);
+        assertEquals(1, result.length);
+    }
+
+    @Test
+    public void doesNotSplitOnEscapedSingleQuote() throws Exception
+    {
+        final String result[] = StringSplitter
+                .splitIgnoreInQuotes("before\'after", ' ', true);
+        assertEquals(1, result.length);
+    }
+
+
+    @Test
+    public void doesNotSplitOnEscapedQuotedQuote() throws Exception
+    {
+        final String result[] = StringSplitter
+                .splitIgnoreInQuotes("be\"fo re\\\"afte\"r", ' ', true);
+        assertEquals(1, result.length);
+    }
+
+
+    @Test
+    public void doesNotSplitOnEscapedQuotedSingleQuote() throws Exception
+    {
+        final String result[] = StringSplitter
+                .splitIgnoreInQuotes("be'fo re\\'afte'r", ' ', true);
+        assertEquals(1, result.length);
+    }
+
+
+
+
+    @Test
+    public void xtermWithSingleQuotedArgs() throws Exception
+    {
+        final String command = "xterm -T 'Console CS-DI-IOC-05' -e 'console CS-DI-IOC-05'";
+        final String result[] = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
+
+        assertEquals(5,  result.length);
+    }
+
+    @Test
+    public void spaceSeparatedStringWithCommaSplit() throws Exception
+    {
+        final String command = "one two three, four five";
+        final String result[] = StringSplitter.splitIgnoreInQuotes(command, ',', true);
+
+        assertEquals(2,  result.length);
+        assertEquals("one two three", result[0]);
+        assertEquals("four five", result[1]);
+    }
+
+    private void printResult(final String[] result) {
+        for (String elt : result) {
+            System.out.println(elt);
+        }
+    }
+    @Test
+    public void xtermWithEscapedDoubleQuotedArgs() throws Exception
+    {
+        final String command = "xterm -T \"Console CS-DI-IOC-05\" -e \"console CS-DI-IOC-05\"";
+        final String result[] = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
+
+        assertEquals(5,  result.length);
+    }
+
+    @Test
+    public void removeQuotesReturnsUnquotedStringUnchanged()
+    {
+        assertEquals("noQuotes", StringSplitter.removeQuotes("noQuotes"));
+    }
+    @Test
+    public void removeQuotesReturnsSingleQuotedStringStripped()
+    {
+        assertEquals("singleQuotes", StringSplitter.removeQuotes("'singleQuotes'"));
+    }
+    @Test
+    public void removeQuotesReturnsDoubleQuotedStringStripped()
+    {
+        assertEquals("doubleQuotes", StringSplitter.removeQuotes("\"doubleQuotes\""));
     }
 
 }
