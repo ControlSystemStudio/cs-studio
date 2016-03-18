@@ -767,14 +767,15 @@ public final class Utilities {
             return new VTypeComparison(str, Boolean.compare(b, c), b == c);
         } else if (value instanceof VEnum && baseValue instanceof VEnum) {
             String str = valueToString(value);
-            int b = ((VEnum) value).getIndex();
-            int c = ((VEnum) baseValue).getIndex();
-            return new VTypeComparison(str, Integer.compare(b, c), b == c);
+            String b = ((VEnum) value).getValue();
+            String c = ((VEnum) baseValue).getValue();
+            int diff = b == null ? (c == null ? 0 : 1) : (c == null ? -1 : b.compareTo(c));
+            return new VTypeComparison(str, diff, diff == 0);
         } else if (value instanceof VString && baseValue instanceof VString) {
             String str = valueToString(value);
             String b = ((VString) value).getValue();
             String c = ((VString) baseValue).getValue();
-            int diff = b.compareTo(c);
+            int diff = b == null ? (c == null ? 0 : 1) : (c == null ? -1 : b.compareTo(c));
             return new VTypeComparison(str, diff, diff == 0);
         } else if (value instanceof VNumberArray && baseValue instanceof VNumberArray) {
             String sb = valueToString(value);
@@ -896,13 +897,13 @@ public final class Utilities {
             boolean c = ((VBoolean) v2).getValue();
             return b == c;
         } else if (v1 instanceof VEnum && v2 instanceof VEnum) {
-            int b = ((VEnum) v1).getIndex();
-            int c = ((VEnum) v2).getIndex();
-            return b == c;
+            String b = ((VEnum) v1).getValue();
+            String c = ((VEnum) v2).getValue();
+            return b != null && b.equals(c) || b == c;
         } else if (v1 instanceof VString && v2 instanceof VString) {
             String b = ((VString) v1).getValue();
             String c = ((VString) v2).getValue();
-            return b.equals(c);
+            return b != null && b.equals(c) || b == c;
         } else if (v1 instanceof VNumberArray && v2 instanceof VNumberArray) {
             if ((v1 instanceof VByteArray && v2 instanceof VByteArray)
                 || (v1 instanceof VShortArray && v2 instanceof VShortArray)

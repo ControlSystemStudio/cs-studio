@@ -911,9 +911,13 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         } else {
             value = null;
         }
-        TableEntry entry = getItems().get(clickedRow);
-        VSnapshot snapshot = snapshotIndex > -1 ? uiSnapshots.get(snapshotIndex) : null;
-        String name = (readback ? entry.readbackNameProperty() : entry.pvNameProperty()).get();
-        return new VTypeNamePair(value, name, snapshot, readback, entry);
+        if (getItems().size() > clickedRow) {
+            TableEntry entry = getItems().get(clickedRow);
+            VSnapshot snapshot = snapshotIndex > -1 ? uiSnapshots.get(snapshotIndex) : null;
+            String name = (readback ? entry.readbackNameProperty() : entry.pvNameProperty()).get();
+            return new VTypeNamePair(value, name, snapshot, readback, entry);
+        } else {
+            return null;
+        }
     }
 }
