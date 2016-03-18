@@ -23,6 +23,7 @@
             locationURI="menu:alarm?endof=org.csstudio.alarm.beast.alarmtable">
          <command
                commandId="org.eclipse.ui.views.showView"
+               icon="icons/msg_hist.gif"
                label="Alarm History"
                style="push">
             <parameter
@@ -35,22 +36,21 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
-               label="Show Alarm History"
+               icon="icons/msg_hist.gif"
+               label="Show --- Alarm History"
                style="push">
-            <visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <adapt
-                           type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
-                     </adapt>
-                  </iterate>
-               </with>
-            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.csstudio.alarm.beast.history.views.AlarmHistoryView?after=additions">
+         <command
+               commandId="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryTable"
+               icon="icons/gear-16.png"
+               style="push">
          </command>
          <command
-               commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
-               label="Show --- Alarm History"
+               commandId="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryQuery"
+               icon="icons/mail-find.png"
                style="push">
          </command>
       </menuContribution>
@@ -61,6 +61,16 @@
             defaultHandler="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
             id="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
             name="Show Alarm History">
+      </command>
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.ConfigureAlarmHistoryTable"
+            id="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryTable"
+            name="Configure Alarm History Table">
+      </command>
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.ConfigureAlarmHistoryQuery"
+            id="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryQuery"
+            name="Configure Alarm History Query">
       </command>
    </extension>
    <extension

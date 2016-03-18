@@ -54,6 +54,8 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 import static org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder.*;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 /**
  * 
  */
@@ -102,6 +104,9 @@ public class AlarmHistoryView extends ViewPart {
             case "visibleColumns":
                 viewer.getTable().dispose();
                 createUI(parent);
+                if (alarmHistoryQuery != null) {
+                    alarmHistoryQuery.setQuery(getAlarmHistoryQueryParameters());
+                }
                 break;
             default:
                 break;
@@ -111,6 +116,7 @@ public class AlarmHistoryView extends ViewPart {
     }
     
     private void createUI(Composite parent) {
+        parent.setLayout(new GridLayout(1, false));
         viewer = new TableViewer(parent,
                 SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
      // Create the help context id for the viewer's control
@@ -124,11 +130,11 @@ public class AlarmHistoryView extends ViewPart {
         createColumns(parent, viewer);
 
         final Table table = viewer.getTable();
+        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-
         viewer.setContentProvider(new ArrayContentProvider());
-        viewer.getTable().pack();
+        parent.layout();
     }
     /*
      * Example of the data coming from the alarm message server

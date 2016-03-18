@@ -87,6 +87,22 @@ public class AlarmHistoryQueryParameters {
         this.size = size;
     }
 
+    public List<ProcessVariable> getPvs() {
+        return pvs;
+    }
+
+    public Instant getStart() {
+        return start;
+    }
+
+    public Instant getEnd() {
+        return end;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
     /**
      * build a elastic search query using
      * 1. list of all the pv's OR'ed
@@ -122,7 +138,9 @@ public class AlarmHistoryQueryParameters {
           }
         }**/
         StringBuilder sb = new StringBuilder();
-        sb.append("{ \"size\":"+String.valueOf(size)+", \"query\" : { \"bool\" : ");
+        sb.append("{ \"size\":"+String.valueOf(size)+", "
+                + "\"sort\": { \"EVENTTIME\": { \"order\": \"desc\" }} , "
+                + "\"query\" : { \"bool\" : ");
         // Add the pvNames
         if(pvs.isEmpty()){
             sb.append("{ \"must\" : { \"match_all\" : { } }");
