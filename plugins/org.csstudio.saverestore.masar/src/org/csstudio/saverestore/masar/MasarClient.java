@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import org.csstudio.saverestore.CompletionNotifier;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.time.Timestamp;
@@ -116,11 +116,13 @@ public class MasarClient {
         private final CountDownLatch connectedSignaler = new CountDownLatch(1);
         private final Semaphore doneSemaphore = new Semaphore(0);
         private final String service;
+        private final Channel channel;
         private volatile ChannelRPC channelRPC;
         private volatile PVStructure result;
 
-        MasarChannelRPCRequester(String service) {
+        MasarChannelRPCRequester(String service, Channel channel) {
             this.service = service;
+            this.channel = channel;
         }
 
         @Override
@@ -186,6 +188,9 @@ public class MasarClient {
             if (channelRPC != null) {
                 channelRPC.destroy();
             }
+            if (channel != null) {
+                channel.destroy();
+            }
         }
 
         @Override
@@ -207,7 +212,7 @@ public class MasarClient {
         MasarChannelRequester channelRequester = new MasarChannelRequester(notifier, neverConnected);
         Channel channel = channelProvider.createChannel(service, channelRequester, ChannelProvider.PRIORITY_DEFAULT);
 
-        MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester(service);
+        MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester(service, channel);
         channel.createChannelRPC(channelRPCRequester, null);
         return channelRPCRequester;
     }
