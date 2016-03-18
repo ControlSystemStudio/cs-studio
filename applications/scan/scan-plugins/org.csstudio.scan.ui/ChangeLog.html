@@ -9,7 +9,7 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.scan.</p>
 
-<h2>Version 4.2.7 - 2016-03-17</h2>
+<h2>Version 4.2.7 - 2016-03-18</h2>
 <ul>
   <li>Scan Server 'culls' scans first by turning in-memory scans
       into logged scans, because dropping the list of commands frees the most memory.
@@ -18,6 +18,7 @@
   <li>Scan Server's web server no longer tries to send error message
       to disconnected client.
   </li>
+  <li>Parallel command aborts body commands on timeout or when it's aborted itself.</li>
 </ul>
 
 <h2>Version 4.2.6 - 2016-03-14</h2>
