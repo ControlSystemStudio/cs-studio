@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ScanServer" uid="scan-server" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="4.0.3.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="ScanServer" uid="scan-server" id="org.csstudio.scan.server.product" application="org.csstudio.scan.server.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -9,7 +9,8 @@
    <launcherArgs>
       <programArgs>--launcher.suppressErrors
       </programArgs>
-      <vmArgs>-Djava.awt.headless=true
+      <vmArgs>-Dosgi.requiredJavaVersion=1.8
+-Djava.awt.headless=true
 -Xms10m
 -Xmx1024m
 -Declipse.exitdata=
@@ -51,6 +52,8 @@
       <plugin id="org.csstudio.scan.server"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.vtype.pv"/>
+      <plugin id="org.diirt.util"/>
+      <plugin id="org.diirt.vtype"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
@@ -71,12 +74,8 @@
       <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="org.epics.pvAccessJava"/>
-      <plugin id="org.epics.pvDataJava"/>
       <plugin id="org.epics.pvaccess"/>
       <plugin id="org.epics.pvdata"/>
-      <plugin id="org.epics.util"/>
-      <plugin id="org.epics.vtype"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.python.jython"/>

@@ -55,9 +55,10 @@ public class ServerServlet extends HttpServlet
             return;
         }
 
+        final Document doc;
         try
         {
-            final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             switch (detail)
             {
             case "info":
@@ -69,12 +70,21 @@ public class ServerServlet extends HttpServlet
             default:
                 throw new Exception("Invalid request /server/" + detail);
             }
-            ServletHelper.submitXML(doc, response);
         }
         catch (Exception ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /server error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+            return;
+        }
+        try
+        {
+            ServletHelper.submitXML(doc, response);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /server reply error", ex);
+            // Can't send error to client because sending to client is the problem
         }
     }
 }
