@@ -142,6 +142,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     @Override
     public ApplianceValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
         try {
+            name = stripSchema(name);
             ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this);
             iterators.put(it,this);
             return it;
@@ -157,6 +158,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
         boolean binningSupported = true;
         ApplianceValueIterator it = null;
+        name = stripSchema(name);
         if (useNewOptimizedOperator) {
             //try to fetch the data using the new optimized operator
             try {
@@ -349,5 +351,10 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     @Override
     public void finished(ApplianceValueIterator iterator) {
         iterators.remove(iterator);
+    }
+
+    private static String stripSchema(String name) {
+        int idx = name.indexOf(ApplianceArchiveReaderConstants.SCHEMA_DELIMITER);
+        return idx > -1 ? name.substring(idx + ApplianceArchiveReaderConstants.SCHEMA_DELIMITER.length()) : name;
     }
 }

@@ -10,20 +10,16 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -210,28 +206,20 @@ public class ColumnConfigurer extends TitleAreaDialog {
         rightButton = new Button(leftRight, SWT.PUSH);
         rightButton.setToolTipText("Show");
         rightButton.setImage(IMAGES.get(RIGHT));
-        rightButton.addSelectionListener(new SelectionListener() {
+        rightButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 moveLeftRight(true);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         rightButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         leftButton = new Button(leftRight, SWT.PUSH);
         leftButton.setToolTipText("Hide");
         leftButton.setImage(IMAGES.get(LEFT));
-        leftButton.addSelectionListener(new SelectionListener() {
+        leftButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 moveLeftRight(false);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         leftButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
@@ -256,22 +244,19 @@ public class ColumnConfigurer extends TitleAreaDialog {
                 moveLeftRight(false);
             }
         });
-        shownList.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (showWidthAndWeightFields) {
-                    Object obj = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    if (obj instanceof ColumnWrapper) {
-                        widthField.setText(String.valueOf(((ColumnWrapper)obj).getMinWidth()));
-                        weightField.setText(String.valueOf(((ColumnWrapper)obj).getWeight()));
-                        widthField.setEnabled(true);
-                        weightField.setEnabled(true);
-                    } else {
-                        widthField.setText("");
-                        weightField.setText("");
-                        widthField.setEnabled(false);
-                        weightField.setEnabled(false);
-                    }
+        shownList.addSelectionChangedListener(event -> {
+            if (showWidthAndWeightFields) {
+                Object obj = ((IStructuredSelection)event.getSelection()).getFirstElement();
+                if (obj instanceof ColumnWrapper) {
+                    widthField.setText(String.valueOf(((ColumnWrapper)obj).getMinWidth()));
+                    weightField.setText(String.valueOf(((ColumnWrapper)obj).getWeight()));
+                    widthField.setEnabled(true);
+                    weightField.setEnabled(true);
+                } else {
+                    widthField.setText("");
+                    weightField.setText("");
+                    widthField.setEnabled(false);
+                    weightField.setEnabled(false);
                 }
             }
         });
@@ -281,28 +266,20 @@ public class ColumnConfigurer extends TitleAreaDialog {
         upButton = new Button(upDown, SWT.PUSH);
         upButton.setToolTipText("Up");
         upButton.setImage(IMAGES.get(UP));
-        upButton.addSelectionListener(new SelectionListener() {
+        upButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 moveUpDown(true);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         upButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         downButton = new Button(upDown, SWT.PUSH);
         downButton.setToolTipText("Down");
         downButton.setImage(IMAGES.get(DOWN));
-        downButton.addSelectionListener(new SelectionListener() {
+        downButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 moveUpDown(false);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         downButton.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
@@ -356,15 +333,12 @@ public class ColumnConfigurer extends TitleAreaDialog {
         data = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
         data.widthHint = 80;
         widthField.setLayoutData(data);
-        widthField.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (checkButtons()) {
-                    IStructuredSelection selection = (IStructuredSelection)shownList.getSelection();
-                    Object obj = selection.getFirstElement();
-                    if (obj instanceof ColumnWrapper) {
-                        ((ColumnWrapper)obj).setMinWidth(Integer.parseInt(widthField.getText()));
-                    }
+        widthField.addModifyListener(e -> {
+            if (checkButtons()) {
+                IStructuredSelection selection = (IStructuredSelection)shownList.getSelection();
+                Object obj = selection.getFirstElement();
+                if (obj instanceof ColumnWrapper) {
+                    ((ColumnWrapper)obj).setMinWidth(Integer.parseInt(widthField.getText()));
                 }
             }
         });
@@ -377,37 +351,41 @@ public class ColumnConfigurer extends TitleAreaDialog {
         data = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
         data.widthHint = 80;
         weightField.setLayoutData(data);
-        weightField.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (checkButtons()) {
-                    IStructuredSelection selection = (IStructuredSelection)shownList.getSelection();
-                    Object obj = selection.getFirstElement();
-                    if (obj instanceof ColumnWrapper) {
-                        ((ColumnWrapper)obj).setWeight(Integer.parseInt(weightField.getText()));
-                    }
+        weightField.addModifyListener(e -> {
+            if (checkButtons()) {
+                IStructuredSelection selection = (IStructuredSelection)shownList.getSelection();
+                Object obj = selection.getFirstElement();
+                if (obj instanceof ColumnWrapper) {
+                    ((ColumnWrapper)obj).setWeight(Integer.parseInt(weightField.getText()));
                 }
             }
         });
     }
 
     private boolean checkButtons() {
-        String weight = weightField.getText();
-        String width = widthField.getText();
-        try {
-            // try to convert
-            int wi = Integer.parseInt(width);
-            int we = Integer.parseInt(weight);
+        if (shownList.getSelection().isEmpty()) {
             if (okButton != null) {
-                boolean b = wi > 0 && we > -1;
-                okButton.setEnabled(b);
-                return b;
+                okButton.setEnabled(true);
             }
-        } catch (Exception ex) {
-            if (okButton != null)
-                okButton.setEnabled(false);
+            return false;
+        } else {
+            String weight = weightField.getText();
+            String width = widthField.getText();
+            try {
+                // try to convert
+                int wi = Integer.parseInt(width);
+                int we = Integer.parseInt(weight);
+                if (okButton != null) {
+                    boolean b = wi > 0 && we > -1;
+                    okButton.setEnabled(b);
+                    return b;
+                }
+            } catch (Exception ex) {
+                if (okButton != null)
+                    okButton.setEnabled(false);
+            }
+            return false;
         }
-        return false;
     }
 
     private void createTimeFormatPanel(Composite base) {
@@ -430,23 +408,20 @@ public class ColumnConfigurer extends TitleAreaDialog {
         data = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         data.widthHint = 180;
         timeFormatField.setLayoutData(data);
-        timeFormatField.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                String text = timeFormatField.getText();
-                if (text.isEmpty()) {
+        timeFormatField.addModifyListener(e -> {
+            String text = timeFormatField.getText();
+            if (text.isEmpty()) {
+                if (okButton != null)
+                    okButton.setEnabled(true);
+            } else {
+                try {
+                    // try to convert
+                    new SimpleDateFormat(text);
                     if (okButton != null)
                         okButton.setEnabled(true);
-                } else {
-                    try {
-                        // try to convert
-                        new SimpleDateFormat(text);
-                        if (okButton != null)
-                            okButton.setEnabled(true);
-                    } catch (Exception ex) {
-                        if (okButton != null)
-                            okButton.setEnabled(false);
-                    }
+                } catch (Exception ex) {
+                    if (okButton != null)
+                        okButton.setEnabled(false);
                 }
             }
         });
@@ -527,5 +502,4 @@ public class ColumnConfigurer extends TitleAreaDialog {
         hiddenList.refresh();
         shownList.refresh();
     }
-
 }
