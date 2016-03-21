@@ -45,10 +45,11 @@ public class ScansServlet extends HttpServlet
             final HttpServletResponse response)
             throws ServletException, IOException
     {
+        final Document doc;
         try
         {
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             final List<ScanInfo> scans = scan_server.getScanInfos();
-            final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             final Element root = doc.createElement("scans");
             doc.appendChild(root);
             for (ScanInfo info : scans)
@@ -56,12 +57,21 @@ public class ScansServlet extends HttpServlet
                 final Element scan = ServletHelper.createXMLElement(doc, info);
                 root.appendChild(scan);
             }
-            ServletHelper.submitXML(doc, response);
         }
         catch (Exception ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scans error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+            return;
+        }
+        try
+        {
+            ServletHelper.submitXML(doc, response);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scans reply error", ex);
+            // Can't send error to client because sending to client is the problem
         }
     }
 
