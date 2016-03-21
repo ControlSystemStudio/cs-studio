@@ -33,6 +33,8 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MemoryInfo;
+import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -222,15 +224,35 @@ public class ScanServerImpl implements ScanServer
         }
     }
 
-    /** If memory consumption is high, remove (one) older scan */
+    /** If memory consumption is high, remove some older scans */
     private void cullScans() throws Exception
     {
         final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
-        while (getInfo().getMemoryPercentage() > threshold)
+        int count = 0;
+        final Logger logger = Logger.getLogger(getClass().getName());
+
+        MemoryInfo used = new MemoryInfo();
+        while (used.getMemoryPercentage() > threshold && count < 10)
         {
-            if (! scan_engine.removeOldestCompletedScan())
-                return;
+            ++count;
+            // Try to turn scan with commands into logged scan
+            Scan removed = scan_engine.logOldestCompletedScan();
+            if (removed != null)
+                logger.log(Level.INFO, "Culling " + count + ", replaced with log: " + removed);
+            else
+            {   // If not possible, delete oldest scan
+                removed = scan_engine.removeOldestCompletedScan();
+                if (removed != null)
+                    logger.log(Level.INFO, "Culling " + count + ", removed: " + removed);
+                else
+                    return;
+            }
+            // Log time stamps of before..after can be used to time the GC
+            logger.log(Level.INFO, "Before " + used);
             System.gc();
+            final MemoryInfo now = new MemoryInfo();
+            logger.log(Level.INFO, "Now    " + now);
+            used = now;
         }
     }
 
