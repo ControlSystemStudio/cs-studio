@@ -111,8 +111,7 @@ public final class OPIShell implements IOPIRuntime {
 
         shell = new Shell(display);
         shell.setImage(icon);
-        displayModel = new DisplayModel(path);
-        displayModel.setOpiRuntime(this);
+
         actionRegistry = new ActionRegistry();
 
         viewer = new GraphicalViewerImpl();
