@@ -11,8 +11,8 @@
   <properties>
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>0.23.1</tycho-extras.version>
-    <cs-studio.version>4.2</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.2</cs-studio-central.url>
+    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.3</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
@@ -117,12 +117,12 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.1</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.2</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-thirdparty</id>
-          <url>http://download.controlsystemstudio.org/updates/4.2</url>
+          <url>http://download.controlsystemstudio.org/updates/4.3</url>
           <layout>p2</layout>
         </repository>
       </repositories>
