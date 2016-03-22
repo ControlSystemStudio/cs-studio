@@ -230,9 +230,9 @@ public class OpenDisplayAction extends AbstractWidgetAction
                 .getCopy();
 
         if (macrosInput.isInclude_parent_macros()) {
-            Map<String, String> macrosMap = getWidgetModel() instanceof AbstractContainerModel ? ((AbstractContainerModel) getWidgetModel())
-                    .getParentMacroMap() : getWidgetModel().getParent()
-                    .getMacroMap();
+            Map<String, String> macrosMap = getWidgetModel() instanceof AbstractContainerModel ?
+                            ((AbstractContainerModel) getWidgetModel()).getParentMacroMap() :
+                            getWidgetModel().getParent().getMacroMap();
             result.getMacrosMap().putAll(macrosMap);
         }
         result.getMacrosMap().putAll(macrosInput.getMacrosMap());
