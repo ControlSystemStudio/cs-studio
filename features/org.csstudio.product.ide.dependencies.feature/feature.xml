@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.product.ide.dependencies.feature"
       label="IDE dependencies"
-      version="4.3.0">
+      version="4.3.1.qualifier">
 
    <description url="http://www.example.com/description">
       Include the maven dependencies for the common product not avaiable in any existing features.
