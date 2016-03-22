@@ -393,7 +393,13 @@ public class OPIRuntimeDelegate implements IAdaptable{
         return result;
     }
 
-
+    /**
+     *  Macros defined in the {@code input} object are put into the map of
+     *  macros taken from the displayModel to ensures the 'default' values are
+     *  overridden.
+     *
+     * @param input
+     */
     private void addRunnerInputMacros(final IEditorInput input) {
         MacrosInput parentMacros = ((IRunnerInput) input).getMacrosInput();
         if (parentMacros != null) {
