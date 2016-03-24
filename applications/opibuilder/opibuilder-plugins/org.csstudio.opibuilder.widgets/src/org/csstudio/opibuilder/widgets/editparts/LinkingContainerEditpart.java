@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
@@ -26,14 +27,11 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GeometryUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.widgets.Activator;
-import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.csstudio.swt.widgets.figures.LinkingContainerFigure;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
@@ -113,7 +111,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                     if(oldValue != null && oldValue instanceof IPath){
                         widgetModel.setDisplayModel(null);
                     }else{
-                        DisplayModel displayModel = new DisplayModel(absolutePath);
+                        DisplayModel displayModel = new DisplayModel(resolveMacros(absolutePath));
                         if (widgetModel.getMacroMap().equals(displayModel.getMacroMap())) {
                             widgetModel.setDisplayModel(displayModel);
                         } else {
@@ -165,33 +163,44 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         return linkingContainerID.incrementAndGet();
     }
 
-
     /**
-     * @param path the path of the OPI file
+     * Replace all macros in the name of the given path and construct a new path from the resolved name.
      *
-     * Removing this call because the add remove children in fillLinkingContainer overlap
-     * with the add remove in configureDisplayModel, and cause pv connection issues.
-     * This reverts some of the work from #912
+     * @param original the original path to resolve
+     * @return the path with all macros substituted with real values
      */
-    private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
-        try {
-          //  model.removeAllChildren();
-            XMLUtil.fillLinkingContainer(model);
-        } catch (Exception e) {
-            //log first
-            String message = "Failed to load: " + model.getDisplayModel().getOpiFilePath() + "\n"+ e.getMessage();
-            Activator.getLogger().log(Level.WARNING, message , e);
-            ConsoleService.getInstance().writeError(message);
-            //TODO because this might not work - depends on the type of exception that happened
-            LabelModel loadingErrorLabel = new LabelModel();
-            loadingErrorLabel.setLocation(0, 0);
-            loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
-            loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-            loadingErrorLabel.setText(message);
-            loadingErrorLabel.setName("Label");
-            getWidgetModel().addChild(loadingErrorLabel);
-        }
+    private IPath resolveMacros(IPath original) {
+        String path = original.toString();
+        path = OPIBuilderMacroUtil.replaceMacros(getWidgetModel(), path);
+        return ResourceUtil.getPathFromString(path);
     }
+
+//    /**
+//     * @param path the path of the OPI file
+//     *
+//     * Removing this call because the add remove children in fillLinkingContainer overlap
+//     * with the add remove in configureDisplayModel, and cause pv connection issues.
+//     * This reverts some of the work from #912
+//     */
+//    private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
+//        try {
+//          //  model.removeAllChildren();
+//            XMLUtil.fillLinkingContainer(model);
+//        } catch (Exception e) {
+//            //log first
+//            String message = "Failed to load: " + model.getDisplayModel().getOpiFilePath() + "\n"+ e.getMessage();
+//            Activator.getLogger().log(Level.WARNING, message , e);
+//            ConsoleService.getInstance().writeError(message);
+//            //TODO because this might not work - depends on the type of exception that happened
+//            LabelModel loadingErrorLabel = new LabelModel();
+//            loadingErrorLabel.setLocation(0, 0);
+//            loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
+//            loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
+//            loadingErrorLabel.setText(message);
+//            loadingErrorLabel.setName("Label");
+//            getWidgetModel().addChild(loadingErrorLabel);
+//        }
+//    }
 
     /**
      * @param path the path of the OPI file
@@ -199,7 +208,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
     private synchronized void configureDisplayModel() {
         //This need to be executed after GUI created.
         if(getWidgetModel().getDisplayModel() == null) {
-            IPath path = getWidgetModel().getOPIFilePath();
+            IPath path = resolveMacros(getWidgetModel().getOPIFilePath());
             log.info(path.toString());
 
             final DisplayModel tempDisplayModel = new DisplayModel(path);
@@ -210,8 +219,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                             ResourceUtil.pathToInputStream(path), tempDisplayModel,
                             getViewer().getControl().getDisplay());
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                OPIBuilderPlugin.getLogger().log(Level.WARNING, "Could not reload the linking container.",e);
             }
         }
 
@@ -231,7 +239,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
 
         connectionList = displayModel.getConnectionList();
-        if(connectionList !=null && !connectionList.isEmpty()){
+        if(!connectionList.isEmpty()){
             if(originalPoints != null)
                 originalPoints.clear();
             else
@@ -239,6 +247,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         }
 
         for (ConnectionModel conn : connectionList) {
+            conn.setLoadedFromLinkedOpi(true);
             if(conn.getPoints()!=null)
                 originalPoints.put(conn, conn.getPoints().getCopy());
         }
