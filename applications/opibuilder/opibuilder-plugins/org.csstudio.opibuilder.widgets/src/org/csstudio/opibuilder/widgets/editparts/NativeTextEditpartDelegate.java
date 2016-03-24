@@ -127,7 +127,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                     }
                 });
                 text.addTraverseListener(e -> {
-                    if (skipTraverse) return;
+                    if (e.character == '\r' || skipTraverse) return;
                     e.doit = false;
                     skipTraverse = true;
                     if (e.stateMask == 0) {
