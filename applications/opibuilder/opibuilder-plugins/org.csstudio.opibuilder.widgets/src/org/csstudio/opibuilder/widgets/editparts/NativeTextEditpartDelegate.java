@@ -127,7 +127,8 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                     }
                 });
                 text.addTraverseListener(e -> {
-                    if (e.character == '\r' || skipTraverse) return;
+                    //if return or escape key triggered the event, ignore
+                    if (e.character == '\r' || e.keyCode == 27 || skipTraverse) return;
                     e.doit = false;
                     skipTraverse = true;
                     if (e.stateMask == 0) {
