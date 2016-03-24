@@ -61,6 +61,14 @@ public class BeastMessagePayload {
         return pv.getCurrentSeverity().getDisplayName();
     }
 
+    public String getCurrentMessage(){
+        if(pv instanceof AlarmTreePV){
+            return ((AlarmTreePV)pv).getCurrentMessage();
+        }else {
+            return "NA";
+        }
+    }
+    
     public String getType(){
         if(pv instanceof AlarmTreePV){
             return "leaf";
@@ -72,7 +80,6 @@ public class BeastMessagePayload {
 
     public String getTime(){
         if(pv instanceof AlarmTreeLeaf){
-            //TODO use a user configurable format
             return TimestampHelper.format(((AlarmTreeLeaf)pv).getTimestamp());
         }else{
             return "NA";
