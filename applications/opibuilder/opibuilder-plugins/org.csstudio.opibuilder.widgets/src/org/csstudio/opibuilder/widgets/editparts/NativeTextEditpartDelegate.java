@@ -50,15 +50,9 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         this.model = model;
     }
 
-    protected void setText(Text text) {
-        this.text = text;
-    }
+    @Override
+    public IFigure doCreateFigure() {
 
-    /**
-     *
-     * @return the SWT style for the text widget (based on the model settings)
-     */
-    protected int getTextFigureStyle() {
         int style=SWT.NONE;
         if(model.isShowNativeBorder())
             style |= SWT.BORDER;
@@ -90,15 +84,8 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
             break;
         }
 
-        return style;
-    }
-
-    @Override
-    public IFigure doCreateFigure() {
-        int style = getTextFigureStyle();
-
         final NativeTextFigure figure = new NativeTextFigure(editpart, style);
-        setText(figure.getSWTWidget());
+        text = figure.getSWTWidget();
 
         if(!model.isReadOnly()){
             if(model.isMultilineInput()){
@@ -140,7 +127,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                     }
                 });
                 text.addTraverseListener(e -> {
-                    if (skipTraverse) return;
+                    if (e.character == '\r' || skipTraverse) return;
                     e.doit = false;
                     skipTraverse = true;
                     if (e.stateMask == 0) {
