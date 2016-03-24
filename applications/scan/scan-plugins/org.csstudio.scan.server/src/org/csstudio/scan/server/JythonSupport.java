@@ -182,9 +182,6 @@ public class JythonSupport
             "Loading Jython class {0} from {1}",
             new Object[] { class_name, pack_name });
 
-        // Display path
-        //interpreter.exec("import sys");
-        //interpreter.exec("print 'Jython Path: ', sys.path");
         try
         {
             // Import class into Jython
@@ -195,6 +192,9 @@ public class JythonSupport
             Logger.getLogger(getClass().getName()).log(Level.WARNING,
                 "Error loading Jython class {0} from {1}",
                 new Object[] { class_name, pack_name });
+            Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                    "Search path: {0}",interpreter.getSystemState().path);
+
             throw new Exception("Error loading Jython class " + class_name + ":" + getExceptionMessage(ex), ex);
         }
         // Create Java reference
