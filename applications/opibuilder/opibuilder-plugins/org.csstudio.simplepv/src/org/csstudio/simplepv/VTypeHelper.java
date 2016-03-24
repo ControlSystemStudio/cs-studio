@@ -49,7 +49,7 @@ import org.diirt.vtype.ValueUtil;
  */
 public class VTypeHelper {
 
-    public static final int DEFAULT_PRECISION = 4;//$NON-NLS-1$
+    public static final int DEFAULT_PRECISION = 4;
     public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
     /**
      * The max count of values to be formatted into string. The value beyond
@@ -384,18 +384,23 @@ public class VTypeHelper {
     private static String formatNumberArray(FormatEnum formatEnum, VNumberArray pmArray,
             int precision) {
         ListNumber data = ((VNumberArray) pmArray).getData();
-        StringBuilder sb = new StringBuilder(data.size());
         if (formatEnum == FormatEnum.STRING) {
-            for (int i = 0; i < data.size(); i++) {
-                final char c = (char) data.getInt(i);
-                if (c == 0)
+            final byte[] bytes = new byte[data.size()];
+            // Copy bytes until end _or_ '\0'
+            int len = 0;
+            while (len<bytes.length)
+            {
+                final byte b = data.getByte(len);
+                if (b == 0)
                     break;
-                sb.append(c);
+                else
+                    bytes[len++] = b;
             }
-            return sb.toString();
+            return new String(bytes, 0, len);
         } else {
             if (data.size() <= 0)
                 return "[]"; //$NON-NLS-1$
+            StringBuilder sb = new StringBuilder(data.size());
             sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
             for (int i = 1; i < data.size(); i++) {
                 sb.append(ARRAY_ELEMENT_SEPARATOR);
@@ -529,7 +534,7 @@ public class VTypeHelper {
                 final StringBuffer pattern = new StringBuffer(10);
                 pattern.append("0."); //$NON-NLS-1$
                 for (int i = 0; i < precision; ++i)
-                    pattern.append('0'); //$NON-NLS-1$
+                    pattern.append('0');
                 pattern.append("E0"); //$NON-NLS-1$
                 numberFormat = new DecimalFormat(pattern.toString());
                 formatCacheMap.put(-precision, numberFormat);
