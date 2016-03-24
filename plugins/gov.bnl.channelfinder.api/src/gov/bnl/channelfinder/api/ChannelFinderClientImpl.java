@@ -798,7 +798,7 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 			try {
 				service.path(resourceTags).path(this.pxmlTag.getName())
 					.type(MediaType.APPLICATION_JSON)
-					.put(mapper.writeValueAsString(this.pxmlTag));
+					.post(mapper.writeValueAsString(this.pxmlTag));
 			} catch (UniformInterfaceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
