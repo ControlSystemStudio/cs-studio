@@ -33,35 +33,39 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
     public boolean updateCache(ValueCache cache,
             BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine("VTable ADAPTER:" + message.toString());
-        // if (filter(message, connection.getFilter())) {
-        // try {
-        // if (message.getMessage() instanceof MapMessage) {
+        
         List<String> keys = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
 
-        keys.add("Name");
+        keys.add(Messages.Name);
         values.add(message.getName());
 
-        keys.add("AlarmStatus");
-        values.add(message.getAlarmStatus());
+        keys.add(Messages.AlarmSeverity);
+        values.add(message.getAlarmSeverity());
 
-        keys.add("CurrentStatus");
-        values.add(message.getCurrentState());
+        keys.add(Messages.CurrentSeverity);
+        values.add(message.getCurrentSeverity());
 
-        keys.add("Active");
+        keys.add(Messages.CurrentStatus);
+        values.add(message.getCurrentMessage());
+
+        keys.add(Messages.Active);
         values.add(String.valueOf(message.isActive()));
 
-        keys.add("Description");
+        keys.add(Messages.AlarmState);
         values.add(message.getDescription());
 
-        keys.add("Value");
+        keys.add(Messages.Value);
         values.add(message.getValue());
 
-        keys.add("Enable");
+        keys.add(Messages.Enable);
         values.add(String.valueOf(message.getEnable()));
 
-        keys.add("Type");
+        keys.add(Messages.Type);
         values.add(message.getType());
+
+        keys.add(Messages.Time);
+        values.add(message.getTime());
 
         VTable table = newVTable(
                 column("Key", newVStringArray(keys, alarmNone(), timeNow())),
