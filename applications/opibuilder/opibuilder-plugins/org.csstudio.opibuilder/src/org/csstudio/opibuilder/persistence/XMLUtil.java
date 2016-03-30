@@ -491,7 +491,8 @@ public class XMLUtil {
 
             IPath path = container.getOPIFilePath();
             if(path != null && !path.isEmpty()) {
-                final Map<String,String> macroMap = buildMacroMap(container);
+                final Map<String,String> macroMap = PreferencesHelper.getMacros();
+                macroMap.putAll(buildMacroMap(container));
                 String resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> macroMap.get(s));
                 path = ResourceUtil.getPathFromString(resolvedPath);
 
