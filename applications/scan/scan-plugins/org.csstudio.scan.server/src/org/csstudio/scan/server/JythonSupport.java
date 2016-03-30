@@ -72,9 +72,8 @@ public class JythonSupport
             // Prevent: console: Failed to install '': java.nio.charset.UnsupportedCharsetException: cp0.
             props.setProperty("python.console.encoding", "UTF-8");
 
-            // TODO Remove debugging
             // Options: error, warning, message (default), comment, debug
-            props.setProperty("python.verbose", "debug");
+            // props.setProperty("python.verbose", "debug");
 
             // Add scan script paths
             final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
