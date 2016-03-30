@@ -5,11 +5,15 @@
 package org.csstudio.alarm.diirt.datasource;
 
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 
 
 /**
+ * A message payload used by the beast datasource.
+ *
  * @author Kunal Shroff
  *
  */
@@ -29,7 +33,7 @@ public class BeastMessagePayload {
         return pv.getMessage();
     }
 
-    public String getAlarmStatus() {
+    public String getAlarmSeverity() {
         return pv.getSeverity().getDisplayName();
     }
 
@@ -54,8 +58,16 @@ public class BeastMessagePayload {
         }
     }
 
-    public String getCurrentState(){
+    public String getCurrentSeverity(){
         return pv.getCurrentSeverity().getDisplayName();
+    }
+
+    public String getCurrentMessage(){
+        if(pv instanceof AlarmTreePV){
+            return ((AlarmTreePV)pv).getCurrentMessage();
+        }else {
+            return "NA";
+        }
     }
 
     public String getType(){
@@ -91,5 +103,13 @@ public class BeastMessagePayload {
      */
     public int getAlarmsCount() {
         return countAlarmPVs(pv);
+    }
+
+    public String getTime(){
+        if(pv instanceof AlarmTreeLeaf){
+            return TimestampHelper.format(((AlarmTreeLeaf)pv).getTimestamp());
+        }else{
+            return "NA";
+        }
     }
 }

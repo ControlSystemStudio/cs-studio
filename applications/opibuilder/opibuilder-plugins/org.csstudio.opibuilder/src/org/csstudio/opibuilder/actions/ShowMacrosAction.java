@@ -43,9 +43,11 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         sb.append("\n");
         sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
-        ConsoleService.getInstance().writeInfo(sb.toString());
+        //show the dialog first, because on some linux systems the console print brings the workbench window to top,
+        //blocking entire CSS
         MessageDialog.openInformation(targetPart.getSite().getShell(),
                 "Predefined Macros", sb.toString());
+        ConsoleService.getInstance().writeInfo(sb.toString());
     }
 
     @Override
