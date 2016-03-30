@@ -13,7 +13,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 
 /**
  * A message payload used by the beast datasource.
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -69,7 +69,7 @@ public class BeastMessagePayload {
             return "NA";
         }
     }
-    
+
     public String getType(){
         if(pv instanceof AlarmTreePV){
             return "leaf";
@@ -103,6 +103,7 @@ public class BeastMessagePayload {
      */
     public int getAlarmsCount() {
         return countAlarmPVs(pv);
+    }
 
     public String getTime(){
         if(pv instanceof AlarmTreeLeaf){
