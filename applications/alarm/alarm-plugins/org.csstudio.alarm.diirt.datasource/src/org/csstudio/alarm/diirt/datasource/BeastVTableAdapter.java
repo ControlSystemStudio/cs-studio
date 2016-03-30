@@ -64,6 +64,9 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         keys.add(Messages.Type);
         values.add(message.getType());
 
+        keys.add(Messages.AlarmCount);
+        values.add(String.valueOf(message.getAlarmsCount()));
+
         keys.add(Messages.Time);
         values.add(message.getTime());
 
