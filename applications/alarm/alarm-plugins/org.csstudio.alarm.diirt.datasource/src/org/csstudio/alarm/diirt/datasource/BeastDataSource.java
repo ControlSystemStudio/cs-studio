@@ -111,22 +111,20 @@ public class BeastDataSource extends DataSource {
                                             consumer.accept(pv);
                                         }
                                     }
-                                    // Notify all parent nodes if parent changed
-                                    if (parent_changed) {
-                                        AlarmTreeItem parent = pv.getParent();
-                                        while (parent != null) {
-                                            List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
-                                            if (parentHandlers != null) {
-                                                for (Consumer consumer : parentHandlers) {
-                                                    try {
-                                                        consumer.accept(getState(parent.getPathName()));
-                                                    } catch (Exception e) {
+                                    // Notify parent nodes (regardless of parent_changed - because the parents' AlarmPVsCount)
+                                    AlarmTreeItem parent = pv.getParent();
+                                    while (parent != null) {
+                                        List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
+                                        if (parentHandlers != null) {
+                                            for (Consumer consumer : parentHandlers) {
+                                                try {
+                                                    consumer.accept(getState(parent.getPathName()));
+                                                } catch (Exception e) {
 
-                                                    }
                                                 }
                                             }
-                                            parent = parent.getParent();
                                         }
+                                        parent = parent.getParent();
                                     }
                                 } else {
                                     // The AlarmClientModel has recovered from a disconnection or is notifying us that the first
