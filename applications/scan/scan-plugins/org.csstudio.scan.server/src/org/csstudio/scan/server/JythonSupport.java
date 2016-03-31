@@ -32,7 +32,7 @@ import org.python.util.PythonInterpreter;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JythonSupport
+public class JythonSupport implements AutoCloseable
 {
     static final boolean initialized = init();
 
@@ -190,7 +190,9 @@ public class JythonSupport
         try
         {
             // Import class into Jython
-            final String statement = "import sys\nprint sys.path\nfrom " + pack_name +  " import " + class_name;
+            // Debug: Print the path that's actually used
+            // final String statement = "import sys\nprint sys.path\nfrom " + pack_name +  " import " + class_name;
+            final String statement = "from " + pack_name +  " import " + class_name;
             interpreter.exec(statement);
         }
         catch (PyException ex)
@@ -240,5 +242,12 @@ public class JythonSupport
             ex.traceback.dumpStack(buf);
         }
         return buf.toString();
+    }
+
+    /** Close the interpreter, release resources */
+    @Override
+    public void close() throws Exception
+    {
+        interpreter.close();
     }
 }
