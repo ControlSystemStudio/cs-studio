@@ -82,10 +82,17 @@ public class PerspectiveSaver implements EventHandler {
     public void handleEvent(Event event) {
         Object o = event.getProperty(UIEvents.EventTags.ELEMENT);
         if (o instanceof MPerspective) {
+            MPerspective perspective = (MPerspective) o;
             try {
+                // You must use the original perspective to persist state.
+                persistMPartState(perspective);
+                // You must use a clone of the perspective to save to both the
+                // registry and to file.
+                MPerspective clone = (MPerspective) modelService.cloneElement(perspective, null);
+                savePerspectiveToRegistry(clone);
                 Path saveDir = getSaveDirectory();
                 if (saveDir != null) {
-                    savePerspectiveToDirectory((MPerspective) o, saveDir);
+                    savePerspectiveToDirectory(clone, saveDir);
                 }
             } catch (IOException e) {
                 Plugin.getLogger().log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
@@ -93,23 +100,24 @@ public class PerspectiveSaver implements EventHandler {
         }
     }
 
-    private void savePerspectiveToDirectory(MPerspective p, Path saveDir) throws IOException {
-        List<MPlaceholder> phs = modelService.findElements(p, null, MPlaceholder.class, null);
+    private void persistMPartState(MPerspective perspective) {
+        List<MPlaceholder> phs = modelService.findElements(perspective, null, MPlaceholder.class, null);
         // Copy persisted state from part to placeholder.
         for (MPlaceholder ph : phs) {
             ph.getPersistedState().putAll(ph.getRef().getPersistedState());
         }
-        // If you do not clone the MPerspective, an IllegalArgumentException
-        // is thrown by the framework when importing.
-        MPerspective clone = (MPerspective) modelService.cloneElement(p, null);
-        URI uri = constructUri(saveDir, clone.getLabel());
-        perspectiveUtils.savePerspective(clone, uri);
-        // The new perspective import and export mechanism will intercept
-        // this preference change and import the perspective for us.
-        // I'm not sure why we need to import explicitly even though the
-        // perspective has been saved.
-        String perspAsString = perspectiveUtils.perspectiveToString(clone);
-        preferences.put(clone.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
+    }
+
+    private void savePerspectiveToRegistry(MPerspective perspective) throws IOException {
+        // The perspective import and export mechanism introduced in Mars M2 will
+        // intercept this preference change and import the perspective for us.
+        String perspAsString = perspectiveUtils.perspectiveToString(perspective);
+        preferences.put(perspective.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
+    }
+
+    private void savePerspectiveToDirectory(MPerspective p, Path saveDir) throws IOException {
+        URI uri = constructUri(saveDir, p.getLabel());
+        perspectiveUtils.savePerspective(p, uri);
         Plugin.getLogger().config("Saved perspective to " + uri);
     }
 
