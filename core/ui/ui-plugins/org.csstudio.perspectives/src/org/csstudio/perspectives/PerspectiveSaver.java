@@ -99,6 +99,8 @@ public class PerspectiveSaver implements EventHandler {
         for (MPlaceholder ph : phs) {
             ph.getPersistedState().putAll(ph.getRef().getPersistedState());
         }
+        // If you do not clone the MPerspective, an IllegalArgumentException
+        // is thrown by the framework when importing.
         MPerspective clone = (MPerspective) modelService.cloneElement(p, null);
         URI uri = constructUri(saveDir, clone.getLabel());
         perspectiveUtils.savePerspective(clone, uri);
