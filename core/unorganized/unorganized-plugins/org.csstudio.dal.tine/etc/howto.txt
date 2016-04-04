@@ -1,4 +1,0 @@
-Important preconditions for using the TINE plug:
-
-- tine.properties must reside in the application's classpath or in the user's home directory
-- tine.home property within tine.properties must point to the cshosts.csv file
