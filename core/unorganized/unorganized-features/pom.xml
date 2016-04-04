@@ -12,7 +12,6 @@
   <name>Unorganized features</name>
   <modules>
     <module>org.csstudio.pvmanager.autocomplete.feature</module>
-    <module>org.csstudio.dal.feature</module>
   </modules>
   <build>
     <plugins>
