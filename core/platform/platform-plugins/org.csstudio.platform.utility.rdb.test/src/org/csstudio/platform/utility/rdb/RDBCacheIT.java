@@ -20,7 +20,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RDBCacheUnitTest
+public class RDBCacheIT
 {
     final private static String CACHE_NAME = "Test";
 

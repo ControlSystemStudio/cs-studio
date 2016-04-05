@@ -16,7 +16,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JMSConnectionFactoryTest implements JMSConnectionListener
+public class JMSConnectionFactoryIT implements JMSConnectionListener
 {
     /** JMS server URL. <B>Adjust for your site!</B> */
     final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";

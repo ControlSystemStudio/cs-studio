@@ -20,7 +20,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RDBUtilTest
+public class RDBUtilIT
 {
     private void test(final String url) throws Exception
     {

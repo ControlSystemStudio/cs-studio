@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class StringIDHelperTest
+public class StringIDHelperIT
 {
     @Test
     public void test() throws Exception
