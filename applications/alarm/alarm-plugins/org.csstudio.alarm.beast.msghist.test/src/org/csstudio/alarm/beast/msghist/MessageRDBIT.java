@@ -39,7 +39,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MessageRDBTest
+public class MessageRDBIT
 {
     /** URL for RDB that holds log messages */
     final public static String URL =
