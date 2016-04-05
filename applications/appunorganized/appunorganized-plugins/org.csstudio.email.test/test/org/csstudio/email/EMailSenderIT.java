@@ -11,9 +11,6 @@ import java.io.File;
 
 import org.junit.Assert;
 
-import org.csstudio.domain.common.resource.CssResourceLocator;
-import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
-import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.Test;
 
 /** JUnit test of the Mailer
@@ -23,25 +20,13 @@ import org.junit.Test;
  *  @author Bastian Knerr - Changed to TestDataProvider
  */
 @SuppressWarnings("nls")
-public class EMailSenderHeadlessTest
+public class EMailSenderIT
 {
-    // Get site specific test data provider
-    public static org.csstudio.testsuite.util.TestDataProvider PROV = createTestDataProvider();
-    private static TestDataProvider createTestDataProvider() {
-        try {
-            return TestDataProvider.getInstance(EmailTestActivator.ID);
-        } catch (final Exception e) {
-            Assert.fail("Unexpected exception creating the test data provider for plugin " +
-                        EmailTestActivator.ID + ".\n" + e.getMessage());
-        }
-        return null;
-    }
-
     /**
      * Please, specify these settings to your site's host and email address.
      */
-    final private static String HOST = (String) PROV.get("smtp.host");
-    private static String FROM = (String) PROV.get("sender");
+    final private static String HOST = System.getProperty("smtp.host");
+    private static String FROM = System.getProperty("sender");
     static {
         if (FROM == null) {
             FROM = System.getProperty("user.email"); // preferable for user triggered tests!
@@ -63,14 +48,10 @@ public class EMailSenderHeadlessTest
 
         mailer.addText("Hello, this is a test");
 
-        final File textFile = CssResourceLocator.locateResourceFile(RepoDomain.APPLICATIONS,
-                                                                    EmailTestActivator.ID,
-                                                                    "./testfile.txt");
+        final File textFile = new File("./testfile.txt");
         mailer.attachText(textFile.getAbsolutePath());
 
-        final File imgFile = CssResourceLocator.locateResourceFile(RepoDomain.APPLICATIONS,
-                                                                   EmailTestActivator.ID,
-                                                                   "./test.jpg");
+        final File imgFile = new File("./test.jpg");
         mailer.attachImage(imgFile.getAbsolutePath());
 
         mailer.close();
