@@ -16,7 +16,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ArchiveRepositoryHeadlessTest
+public class ArchiveRepositoryIT
 {
     @Test
     public void testArchiveRepository() throws Exception

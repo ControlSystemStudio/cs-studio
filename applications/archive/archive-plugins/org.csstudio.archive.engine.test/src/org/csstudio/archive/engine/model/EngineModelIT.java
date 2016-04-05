@@ -22,7 +22,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EngineModelHeadlessTest
+public class EngineModelIT
 {
     @Test
     public void testReadConfig() throws Exception

@@ -17,7 +17,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ArchiveConfigFactoryHeadlessTest
+public class ArchiveConfigFactoryIT
 {
     @Test
     public void testArchiveConfig() throws Exception
