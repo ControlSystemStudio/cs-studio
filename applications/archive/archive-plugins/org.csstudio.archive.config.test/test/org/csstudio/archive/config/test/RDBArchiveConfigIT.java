@@ -23,7 +23,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RDBArchiveConfigTest
+public class RDBArchiveConfigIT
 {
     private String engine_name;
     private ArchiveConfig config;
