@@ -27,11 +27,6 @@
     <module>org.csstudio.utility.product</module>
     <module>org.csstudio.utility.product.test</module>
     <module>org.csstudio.utility.product.default</module>
-    <module>org.csstudio.utility.pv</module>
-    <module>org.csstudio.utility.pv.epics</module>
-    <module>org.csstudio.utility.pv.epics.test</module>
-    <module>org.csstudio.utility.pv.simu</module>
-    <module>org.csstudio.utility.pv.simu.test</module>
     <module>org.csstudio.utility.pvmanager.ui</module>
     <module>org.csstudio.utility.pvmanager.ui.toolbox</module>
     <module>org.csstudio.utility.pvmanager.widgets</module>
