@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class FormulaDialogTest
+public class FormulaDialogDemo
 {
     @Test
     public void dialogDemo() throws Exception
