@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.junit.Test;
 
-public class XMLUtilTest extends TestCase {
+public class XMLUtilIT extends TestCase {
 
     AbstractWidgetModel testModel = new DisplayModel();
 

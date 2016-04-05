@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ResourceUtilTest {
+public class ResourceUtilIT {
     private static final String TEST_MESSAGE = "Test OK";
     public final static IPath URL_PATH = new Path("http://ics-srv-web2.sns.ornl.gov/opi");
     public final static IPath URL_PATH2 = new Path("platform:/plugin/org.csstudio.opibuilder/");

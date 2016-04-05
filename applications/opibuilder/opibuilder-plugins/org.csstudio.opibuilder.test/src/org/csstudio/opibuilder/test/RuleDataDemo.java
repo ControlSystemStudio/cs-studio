@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.visualparts.RuleDataEditDialog;
 import org.junit.Test;
 
-public class RuleDataTest {
+public class RuleDataDemo {
 
     DisplayModel model = new DisplayModel();
 
