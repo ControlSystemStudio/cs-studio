@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.simplepv.pvmanager;
 
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -96,7 +95,7 @@ public class PVManagerReadIT extends TestHelper
                 TimeUnit.SECONDS.sleep(1);
         }
         assertThat(pv.isConnected(), equalTo(true));
-        assertThat(changes.get(), greaterThanOrEqualTo(5));
+        assertThat(changes.get() >= 5, equalTo(true));
         pv.stop();
         assertThat(pv.isStarted(), equalTo(false));
 
@@ -184,7 +183,7 @@ public class PVManagerReadIT extends TestHelper
         synchronized (values)
         {
             System.out.println(values);
-            assertThat(values.size(), greaterThanOrEqualTo(1));
+            assertThat(values.size() >= 1, equalTo(true));
         }
         // ..AND they should have arrived with at least some multiples
         // (PV updates at 1Hz, we use a 2 sec update period)
