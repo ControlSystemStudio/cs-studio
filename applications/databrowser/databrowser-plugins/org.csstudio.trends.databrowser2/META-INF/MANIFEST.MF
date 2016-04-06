@@ -6,8 +6,7 @@ Bundle-Version: 4.2.1.qualifier
 Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser2.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.csstudio.utility.test;resolution:=optional,
- org.eclipse.ui;bundle-version="3.5.0";resolution:=optional,
+Require-Bundle: org.eclipse.ui;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.core.resources;bundle-version="3.5.0";resolution:=optional,
