@@ -29,7 +29,6 @@
     <module>org.csstudio.swt.xygraph.rap</module>
     <module>org.csstudio.swt.xygraph.rcp</module>
     <module>org.csstudio.swt.xygraph.test</module>
-    <module>org.csstudio.testsuite</module>
     <module>org.csstudio.pretune</module>
   </modules>
 </project>
