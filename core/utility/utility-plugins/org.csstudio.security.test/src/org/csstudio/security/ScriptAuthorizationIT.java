@@ -27,7 +27,7 @@ import com.sun.security.auth.UserPrincipal;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScriptAuthorizationUnitTest
+public class ScriptAuthorizationIT
 {
     @Test
     public void testFileBasedAuthorization() throws Exception
