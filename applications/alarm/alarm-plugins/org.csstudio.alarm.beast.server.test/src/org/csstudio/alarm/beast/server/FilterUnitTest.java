@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import static org.csstudio.utility.test.HamcrestMatchers.notANumber;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -159,7 +158,7 @@ public class FilterUnitTest implements FilterListener
 
         synchronized (this)
         {    // Last value should remain unchanged
-            assertThat(last_value, notANumber());
+            assertThat(Double.isNan(last_value), equalTo(true));
         }
 
         filter.stop();
