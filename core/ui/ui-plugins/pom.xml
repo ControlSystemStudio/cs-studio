@@ -27,7 +27,7 @@
     <module>org.csstudio.csdata.clipboard</module>
     <module>org.csstudio.perspectives</module>
     <module>org.csstudio.perspectives.test</module>
-    <module>org.csstudio.platform.jaasAuthentication.ui</module>
-    <module>org.csstudio.platform.ldapAuthorization.ui</module>
+    
+    
   </modules>
 </project>
