@@ -9,8 +9,8 @@
   <artifactId>platform-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.platform.jaasAuthentication</module>
-    <module>org.csstudio.platform.ldapAuthorization</module>
+    
+    
     <module>org.csstudio.platform.libs.epics.ui</module>
     <module>org.csstudio.platform.libs.hibernate.ui</module>
     <module>org.csstudio.platform.utility.jms</module>
