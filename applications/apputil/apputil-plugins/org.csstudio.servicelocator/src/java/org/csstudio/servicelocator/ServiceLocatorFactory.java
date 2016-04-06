@@ -27,12 +27,11 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import org.csstudio.servicelocator.ServiceLocator.IServiceProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Support for the service locator. Helps registering services with service trackers.
@@ -42,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ServiceLocatorFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceLocatorFactory.class);
+    private static final Logger LOG = Logger.getLogger(ServiceLocatorFactory.class.getName());
 
     private ServiceLocatorFactory() {
         // utility class, no objects will be created
