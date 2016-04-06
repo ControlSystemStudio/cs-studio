@@ -5,8 +5,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 4.0.101.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit;bundle-version="4.8.2",
- org.csstudio.utility.test
+Require-Bundle: org.junit;bundle-version="4.8.2"
 Import-Package: org.csstudio.vtype.pv,
  org.diirt.datasource.loc,
  org.diirt.support.ca;version="3.0.1"
