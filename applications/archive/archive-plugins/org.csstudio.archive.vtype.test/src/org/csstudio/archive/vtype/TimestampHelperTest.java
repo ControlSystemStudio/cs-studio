@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import static org.csstudio.utility.test.HamcrestMatchers.lessThan;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -98,7 +97,7 @@ public class TimestampHelperTest
         final Date date = new Date(-312);
         System.out.println(date);
         System.out.println(date.getTime());
-        assertThat(date.getTime(), lessThan(0));
+        assertThat(date.getTime() < 0, equalTo(true));
 
         Timestamp timestamp = TimestampHelper.fromMillisecs(date.getTime());
         System.out.println(TimestampHelper.format(timestamp));
