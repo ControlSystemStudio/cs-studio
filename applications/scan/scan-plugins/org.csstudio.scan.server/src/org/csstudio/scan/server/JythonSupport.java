@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.eclipse.core.runtime.FileLocator;
@@ -28,33 +29,51 @@ import org.python.util.PythonInterpreter;
 
 /** Helper for obtaining Jython interpreter
  *
- *  TODO Join with org.csstudio.opibuilder.script.ScriptStoreFactory into a new org.csstudio.jython
- *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JythonSupport
+public class JythonSupport implements AutoCloseable
 {
-    private static List<String> paths = init();
+    static final boolean initialized = init();
 
     final private PythonInterpreter interpreter;
 
     /** Perform static, one-time initialization */
-    private static List<String> init()
+    private static boolean init()
     {
         final List<String> paths = new ArrayList<String>();
         try
-        {   // Add Jython's /Lib to path
-            final Bundle bundle = Platform.getBundle("org.python.jython");
-            if (bundle == null)
+        {
+            final Properties pre_props = System.getProperties();
+            final Properties props = new Properties();
+
+            // Locate the jython plugin for 'home' to allow use of /Lib in there
+            final String home = getPluginPath("org.python.jython", "/");
+            if (home == null)
                 throw new Exception("Cannot locate jython bundle");
-            // Different packaging where jython.jar is expanded, /Lib at plugin root
-            String home = FileLocator.resolve(new URL("platform:/plugin/org.python.jython")).getPath();
-            // Turn politically correct URL path digestible by jython
-            if (home.startsWith("file:/"))
-                home = home.substring(5);
-            home = home.replace(".jar!", ".jar");
-            paths.add(home + "Lib/");
+
+            // Jython 2.7(b3) needs these to set sys.prefix and sys.executable.
+            // If left undefined, initialization of Lib/site.py fails with
+            // posixpath.py", line 394, in normpath AttributeError:
+            // 'NoneType' object has no attribute 'startswith'
+            props.setProperty("python.home", home);
+            props.setProperty("python.executable", "css");
+
+            // Disable cachedir to avoid creation of cachedir folder.
+            // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+            // and http://wiki.python.org/jython/PackageScanning
+            props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
+
+            // With python.home defined, there is no more
+            // "ImportError: Cannot import site module and its dependencies: No module named site"
+            // Skipping the site import still results in faster startup
+            props.setProperty("python.import.site", "false");
+
+            // Prevent: console: Failed to install '': java.nio.charset.UnsupportedCharsetException: cp0.
+            props.setProperty("python.console.encoding", "UTF-8");
+
+            // Options: error, warning, message (default), comment, debug
+            // props.setProperty("python.verbose", "debug");
 
             // Add scan script paths
             final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
@@ -86,27 +105,17 @@ public class JythonSupport
                     paths.add(pref_path);
             }
 
-            // Disable cachedir to avoid creation of cachedir folder.
-            // See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
-            // and http://wiki.python.org/jython/PackageScanning
-            final Properties props = new Properties();
-            props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true");
+            props.setProperty("python.path", paths.stream().collect(Collectors.joining(java.io.File.pathSeparator)));
 
-            // Jython 2.7(b3) needs these to set sys.prefix and sys.executable.
-            // If left undefined, initialization of Lib/site.py fails with
-            // posixpath.py", line 394, in normpath AttributeError:
-            // 'NoneType' object has no attribute 'startswith'
-            props.setProperty("python.home", home);
-            props.setProperty("python.executable", "css");
-
-            PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
+            PythonInterpreter.initialize(pre_props, props, new String[0]);
         }
         catch (Exception ex)
         {
             Logger.getLogger(JythonSupport.class.getName()).
                 log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
+            return false;
         }
-        return paths;
+        return true;
     }
 
     /** Locate a path inside a bundle.
@@ -130,9 +139,9 @@ public class JythonSupport
        if (url == null)
            return null;
        String path = FileLocator.resolve(url).getPath();
-
-       path = path.replace("file:/", "/");
-       path = path.replace(".jar!/", ".jar/");
+       if (path.startsWith("file:/"))
+          path = path.substring(5);
+       path = path.replace(".jar!", ".jar");
 
        return path;
    }
@@ -143,10 +152,6 @@ public class JythonSupport
     public JythonSupport() throws Exception
     {
         final PySystemState state = new PySystemState();
-
-        // Path to Python standard lib, numjy, scan system
-        for (String path : paths)
-            state.path.append(new PyString(path));
 
         // Creating a PythonInterpreter is very slow.
         //
@@ -166,7 +171,7 @@ public class JythonSupport
 
     /** Load a Jython class
      *
-      *  @param type Type of the Java object to return
+     *  @param type Type of the Java object to return
      *  @param class_name Name of the Jython class,
      *                    must be in package (file) using lower case of class name
      *  @param args Arguments to pass to constructor
@@ -185,7 +190,10 @@ public class JythonSupport
         try
         {
             // Import class into Jython
-            interpreter.exec("from " + pack_name +  " import " + class_name);
+            // Debug: Print the path that's actually used
+            // final String statement = "import sys\nprint sys.path\nfrom " + pack_name +  " import " + class_name;
+            final String statement = "from " + pack_name +  " import " + class_name;
+            interpreter.exec(statement);
         }
         catch (PyException ex)
         {
@@ -234,5 +242,12 @@ public class JythonSupport
             ex.traceback.dumpStack(buf);
         }
         return buf.toString();
+    }
+
+    /** Close the interpreter, release resources */
+    @Override
+    public void close() throws Exception
+    {
+        interpreter.close();
     }
 }

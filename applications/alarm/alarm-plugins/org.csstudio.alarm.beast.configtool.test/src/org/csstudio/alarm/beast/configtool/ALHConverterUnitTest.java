@@ -23,7 +23,7 @@ public class ALHConverterUnitTest
     @Test
     public void testConverter() throws Exception
     {
-        final ALHConverter converter = new ALHConverter("alh/Demo2.alhConfig");
+        final ALHConverter converter = new ALHConverter("../org.csstudio.alarm.beast.configtool/alh/Demo2.alhConfig");
         final PrintWriter out = new PrintWriter(System.out);
         converter.getAlarmTree().writeXML(out);
         out.flush();

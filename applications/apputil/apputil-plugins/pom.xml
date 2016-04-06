@@ -13,9 +13,7 @@
     <module>org.csstudio.apputil.test</module>
     <module>org.csstudio.apputil.ui</module>
     <module>org.csstudio.apputil.ui.test</module>
-    <module>org.csstudio.remote</module>
     <module>org.csstudio.utility.adlParser</module>
-    <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.clock</module>
     <module>org.csstudio.navigator.applaunch</module>
     <module>org.csstudio.ui.menu.pvscript</module>
@@ -23,16 +21,6 @@
     <module>org.csstudio.utility.eliza</module>
     <module>org.csstudio.utility.file</module>
     <module>org.csstudio.utility.httpd</module>
-    <module>org.csstudio.utility.jms</module>
-    <module>org.csstudio.utility.jmssendcmd</module>
-    <module>org.csstudio.utility.ldap.nameSpaceBrowser</module>
-    <module>org.csstudio.utility.ldap.service</module>
-    <module>org.csstudio.utility.ldap.service.impl</module>
-    <module>org.csstudio.utility.ldap.treeconfiguration</module>
-    <module>org.csstudio.utility.ldap.ui</module>
-    <module>org.csstudio.utility.nameSpaceBrowser</module>
-    <module>org.csstudio.utility.nameSpaceSearch</module>
-    <module>org.csstudio.utility.namespace.utility</module>
     <module>org.csstudio.utility.screenshot</module>
     <module>org.csstudio.utility.speech</module>
     <module>org.csstudio.utility.sysmon</module>

@@ -88,6 +88,6 @@ public class RelativeTimeUnitTest
         assertEquals("3.14 seconds", rel.toString());
 
         rel = new RelativeTime(0.001);
-        assertEquals("0.0010 seconds", rel.toString());
+        assertEquals("0.001 seconds", rel.toString());
     }
 }

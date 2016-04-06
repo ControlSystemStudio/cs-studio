@@ -138,12 +138,12 @@ public class ScanServerImpl implements ScanServer
             throws Exception
     {
         try
+        (   // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
+        )
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
-
-            // Create Jython interpreter for this scan
-            final JythonSupport jython = new JythonSupport();
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
@@ -164,10 +164,14 @@ public class ScanServerImpl implements ScanServer
             log_out.println(simulation.getSimulationTime() + "   Total estimated execution time");
             log_out.close();
 
-            // Fetch simulation log, help GC to clear copies of log
+            // Fetch simulation log
             final String log_text = log_buf.toString();
+
+            // Help GC to clear copies of log
             log_out = null;
             log_buf = null;
+            scan.clear();
+            commands.clear();
 
             return new SimulationResult(simulation.getSimulationSeconds(), log_text);
         }
@@ -213,7 +217,7 @@ public class ScanServerImpl implements ScanServer
             final DeviceContext devices = new DeviceContext();
 
             // Submit scan to engine for execution
-            final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);
+            final ExecutableScan scan = new ExecutableScan(jython, scan_name, devices, pre_impl, main_impl, post_impl);
             scan_engine.submit(scan, queue);
             return scan.getId();
         }
