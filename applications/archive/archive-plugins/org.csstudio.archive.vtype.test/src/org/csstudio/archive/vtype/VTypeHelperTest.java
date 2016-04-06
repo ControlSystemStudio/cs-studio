@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
