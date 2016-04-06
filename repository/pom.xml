@@ -7,34 +7,6 @@
     <artifactId>maven-osgi-bundles</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <properties>
-    <!-- VERSIONS -->
-    <tycho.version>0.23.1</tycho.version>
-    <tycho-extras.version>0.23.1</tycho-extras.version>
-    <cs-studio.version>4.3</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/core/${cs-studio.version}</cs-studio-central.url>
-    <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
-    <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
-    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
-    <rap-e4-site>${eclipse.mirror.url}/rt/rap/incubator/3.0/e4/target/site</rap-e4-site>
-    <upload.root>s3://download.controlsystemstudio.org</upload.root>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-    <baselineMode>fail</baselineMode>
-    <skipTests>false</skipTests>
-    <!-- SonarQube configuration -->
-    <sonar.language>java</sonar.language>
-    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-    <sonar.junit.reportsPath>
-      ../${project.artifactId}.test/target/surefire-reports/
-    </sonar.junit.reportsPath>
-    <!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url -->
-    <!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url -->
-    <!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver -->
-    <!--sonar.jdbc.username>username</sonar.jdbc.username! -->
-    <!--sonar.jdbc.password>password</sonar.jdbc.password -->
-  </properties>
   <profiles>
     <profile>
       <id>uploadRepo</id>
