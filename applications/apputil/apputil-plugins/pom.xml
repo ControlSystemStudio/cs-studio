@@ -21,21 +21,11 @@
     <module>org.csstudio.utility.eliza</module>
     <module>org.csstudio.utility.file</module>
     <module>org.csstudio.utility.httpd</module>
-    <module>org.csstudio.utility.ldap.nameSpaceBrowser</module>
-    <module>org.csstudio.utility.ldap.service</module>
-    <module>org.csstudio.utility.ldap.service.impl</module>
-    <module>org.csstudio.utility.ldap.treeconfiguration</module>
-    <module>org.csstudio.utility.ldap.ui</module>
-    <module>org.csstudio.utility.nameSpaceBrowser</module>
-    <module>org.csstudio.utility.nameSpaceSearch</module>
-    <module>org.csstudio.utility.namespace.utility</module>
     <module>org.csstudio.utility.screenshot</module>
     <module>org.csstudio.utility.speech</module>
     <module>org.csstudio.utility.sysmon</module>
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.csstudio.servicelocator</module>
-    <module>org.csstudio.domain.common</module>
-    <module>org.csstudio.domain.common.test</module>
   </modules>
 </project>

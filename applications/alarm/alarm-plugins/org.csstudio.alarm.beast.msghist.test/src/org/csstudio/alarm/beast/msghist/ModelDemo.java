@@ -35,7 +35,7 @@ public class ModelDemo implements ModelListener
     @Test(timeout=10000)
     public void testGetMessages() throws Exception
     {
-        final Model model = new Model(MessageRDBTest.URL, MessageRDBTest.USER, MessageRDBTest.PASSWORD, MessageRDBTest.SCHEMA, 1000, null);
+        final Model model = new Model(MessageRDBIT.URL, MessageRDBIT.USER, MessageRDBIT.PASSWORD, MessageRDBIT.SCHEMA, 1000, null);
         model.addListener(this);
 
         System.out.println("Starting query");
