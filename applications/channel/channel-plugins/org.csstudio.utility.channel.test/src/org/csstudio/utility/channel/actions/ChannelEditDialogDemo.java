@@ -19,7 +19,7 @@ import static gov.bnl.channelfinder.api.Tag.Builder.tag;
  * @author Kunal Shroff
  *
  */
-public class ChannelEditDialogTest {
+public class ChannelEditDialogDemo {
 
     /**
      * @param args
