@@ -27,6 +27,7 @@
     <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     <cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
+    <upload.root>s3://download.controlsystemstudio.org</upload.root>
   </properties>
 
   <dependencies>
