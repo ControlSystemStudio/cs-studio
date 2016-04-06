@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author shroffk
  *
  */
-public class RemoveTagsJobUnitTest {
+public class RemoveTagsJobUnitIT {
 
     private static Logger logger = Logger
             .getLogger("org.csstudio.utility.channel" + "AddTagsJobUnitTest");
