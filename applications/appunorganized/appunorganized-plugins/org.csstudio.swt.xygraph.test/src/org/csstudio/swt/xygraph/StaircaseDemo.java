@@ -23,7 +23,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class StaircaseTest
+public class StaircaseDemo
 {
     private static int next_x = 1;
 

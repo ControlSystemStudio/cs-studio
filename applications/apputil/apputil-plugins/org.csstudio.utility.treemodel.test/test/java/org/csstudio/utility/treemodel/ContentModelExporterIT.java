@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
  * @version $Revision$
  * @since 05.07.2010
  */
-public class ContentModelExporterHeadlessTest {
+public class ContentModelExporterIT {
 
     private static final String TEST_EXPORT_XML = "Test_Export.xml";
     private static final String TEST_DTD = "test.dtd";
