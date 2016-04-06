@@ -27,7 +27,7 @@ import org.junit.Test;
  *  CSS code should use {@link SimplePVLayer}
  *  @author Kay Kasemir
  */
-public class PVManagerWriteUnitTest extends TestHelper
+public class PVManagerWriteIT extends TestHelper
 {
     /** Read from PV, allow waiting for desired value update */
     class TestReader extends IPVListener.Stub

@@ -32,7 +32,7 @@ import org.junit.Test;
  *  CSS code should use {@link SimplePVLayer}
  *  @author Kay Kasemir
  */
-public class PVManagerReadUnitTest extends TestHelper
+public class PVManagerReadIT extends TestHelper
 {
     final private AtomicInteger connections = new AtomicInteger();
     final private AtomicInteger changes = new AtomicInteger();

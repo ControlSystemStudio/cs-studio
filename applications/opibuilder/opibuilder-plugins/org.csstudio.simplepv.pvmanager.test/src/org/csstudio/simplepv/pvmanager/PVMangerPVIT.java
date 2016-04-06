@@ -22,7 +22,7 @@ import org.junit.Test;
  * @author Xihui Chen
  *
  */
-public class PVMangerPVTest {
+public class PVMangerPVIT {
 
 private static final String PVMANAGER = "pvmanager";
 
