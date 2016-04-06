@@ -10,6 +10,10 @@ package org.csstudio.opibuilder.converter.writer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import javax.xml.transform.TransformerException;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
@@ -20,11 +24,10 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Opi_activeGroupClassTest {
+public class Opi_activeGroupClassIT {
 
     private static final int groupAttributesCount = 4;
 
-    @Test
     public void testOpi_activeGroupClass() throws EdmException {
 
         // Prepare DOM model.
@@ -53,7 +56,6 @@ public class Opi_activeGroupClassTest {
 
         // Get objects in various places in the group hierarchy.
         Element subElement0 = (Element)root.getFirstChild();
-
 
         assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement0.getAttribute("typeId"));
         assertEquals("1.0", subElement0.getAttribute("version"));

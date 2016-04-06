@@ -20,9 +20,8 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Opi_TextupdateClassTest {
+public class Opi_TextupdateClassIT {
 
-    @Test
     public void testOpi_TextupdateClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");

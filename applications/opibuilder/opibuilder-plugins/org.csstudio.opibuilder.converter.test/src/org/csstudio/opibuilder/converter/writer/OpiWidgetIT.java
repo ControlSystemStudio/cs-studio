@@ -14,9 +14,8 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpiWidgetTest {
+public class OpiWidgetIT {
 
-    @Test
     public void testOpiWidget() throws EdmException {
 
         // init document
