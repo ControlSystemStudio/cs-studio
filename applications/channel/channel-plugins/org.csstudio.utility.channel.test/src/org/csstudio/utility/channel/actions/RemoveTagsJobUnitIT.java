@@ -5,10 +5,13 @@ package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Channel.Builder.channel;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
+import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,13 +27,14 @@ import org.junit.Test;
  * @author shroffk
  *
  */
-public class AddTagsJobUnitTest {
+public class RemoveTagsJobUnitIT {
 
     private static Logger logger = Logger
             .getLogger("org.csstudio.utility.channel" + "AddTagsJobUnitTest");
     private ChannelFinderClient client;
     private Channel.Builder ch1;
     private Channel.Builder ch2;
+    private Tag.Builder tag;
 
     /**
      * @throws java.lang.Exception
@@ -39,11 +43,12 @@ public class AddTagsJobUnitTest {
     public void setUp() throws Exception {
         try {
             client = ChannelFinder.getClient();
-            ch1 = channel("cssUnitTestChannel1").owner("css");
-            ch2 = channel("cssUnitTestChannel1").owner("css");
+            tag = tag("cssUnitTestTag", "tagOwner");
+            ch1 = channel("cssUnitTestChannel1").owner("css").with(tag);
+            ch2 = channel("cssUnitTestChannel1").owner("css").with(tag);
+            client.set(tag);
             client.set(ch1);
             client.set(ch2);
-            client.set(tag("cssUnitTestTag", "tagOwner"));
         } catch (Exception e) {
             logger.info("Failed to create the channelfinder client"
                     + e.getMessage());
@@ -52,12 +57,12 @@ public class AddTagsJobUnitTest {
     }
 
     @Test
-    public void addTagsJobTest() {
+    public void removeTagsJobTest() {
         Collection<Channel> channels = new ArrayList<Channel>();
         channels.add(ch1.build());
         channels.add(ch2.build());
-        Job job = new AddTag2ChannelsJob("addTags", channels, tag("cssUnitTestTag",
-                "tagOwner"));
+        Job job = new RemoveTagsJob("remove tags", channels,
+                ChannelUtil.getTagNames(ch1.build()));
         job.schedule();
         try {
             // TODO not have a static def for the amount of time needed to
@@ -71,8 +76,8 @@ public class AddTagsJobUnitTest {
             Collection<Channel> chs = new ArrayList<Channel>();
             chs.add(ch1.build());
             chs.add(ch2.build());
-            assertTrue("Failed to Add tags: ",
-                    client.findByTag("cssUnitTestTag").containsAll(chs));
+            assertNull("Failed to Add tags: ",
+                    client.findByTag("cssUnitTestTag"));
         }
     }
 

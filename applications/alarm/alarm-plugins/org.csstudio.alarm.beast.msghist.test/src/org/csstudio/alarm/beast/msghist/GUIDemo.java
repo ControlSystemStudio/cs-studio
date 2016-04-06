@@ -35,7 +35,7 @@ public class GUIDemo
             shell.setBounds((screen.width-WIDTHS)/2,
                     (screen.height-HEIGHT)/2, WIDTHS, HEIGHT);
 
-            final Model model = new Model(MessageRDBTest.URL, MessageRDBTest.USER, MessageRDBTest.PASSWORD, MessageRDBTest.SCHEMA, 1000, shell);
+            final Model model = new Model(MessageRDBIT.URL, MessageRDBIT.USER, MessageRDBIT.PASSWORD, MessageRDBIT.SCHEMA, 1000, shell);
             new GUI(null, shell, model);
 
             shell.open();
