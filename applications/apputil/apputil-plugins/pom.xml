@@ -27,7 +27,5 @@
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.csstudio.servicelocator</module>
-    <module>org.csstudio.domain.common</module>
-    <module>org.csstudio.domain.common.test</module>
   </modules>
 </project>
