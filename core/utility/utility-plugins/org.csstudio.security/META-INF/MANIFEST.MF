@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.equinox.security;bundle-version="1.1.1",
  org.eclipse.equinox.util;bundle-version="1.0.300",
  org.eclipse.equinox.ds;bundle-version="1.3.1",
- org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.java;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.security.SecuritySupport
