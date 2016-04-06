@@ -114,7 +114,7 @@ public class EdmColorsListParserTest {
 
         EdmColorsListParser p = new EdmColorsListParser(colorsRobust);
 
-        assertEquals("attribute_count", 4, p.getRoot().getAttributeCount());
+        assertEquals("attribute_count", 3, p.getRoot().getAttributeCount());
 
         assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("0").getValue(0));
         assertEquals("Disconn/Invalid", p.getRoot().getAttribute("0").getValue(1));
