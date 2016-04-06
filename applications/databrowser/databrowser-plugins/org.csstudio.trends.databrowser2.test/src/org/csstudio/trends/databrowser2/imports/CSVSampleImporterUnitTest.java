@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +32,7 @@ public class CSVSampleImporterUnitTest
         final SampleImporter importer = new CSVSampleImporter();
 
         final List<VType> values = importer.importValues(input);
-        assertThat(values.size(), greaterThan(0));
+        assertTrue(values.size() > 0);
         for (VType value : values)
             System.out.println(VTypeHelper.toString(value));
         final String text = VTypeHelper.toString(values.get(values.size()-1));
