@@ -131,7 +131,7 @@
       <id>uploadRepo</id>
       <properties>
         <!-- Properties relative to the distant host where to upload the repo -->
-        <ftp.url>s3://download.controlsystemstudio.org/applications/${cs-studio.version}/${project.parent.artifactId}</ftp.url>
+        <ftp.url>${upload.root}/applications/${cs-studio.version}/${project.parent.artifactId}</ftp.url>
       </properties>
       <build>
         <plugins>
