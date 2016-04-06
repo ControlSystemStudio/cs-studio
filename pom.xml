@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<prerequisites>
-		<maven>3.0</maven>
-	</prerequisites>
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
 
-	<groupId>org.csstudio</groupId>
-	<artifactId>maven-osgi-bundles</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>maven-osgi-bundles</name>
+  <groupId>org.csstudio</groupId>
+  <artifactId>maven-osgi-bundles</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>maven-osgi-bundles</name>
 
-	<properties>
-		<tycho.version>0.23.1</tycho.version>
-		<manifest-location>META-INF</manifest-location>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.3</cs-studio-central.url>
-		<epics.util.version>0.3.2</epics.util.version>
-		<epics.caj.version>1.1.14</epics.caj.version>
-		<epics.jca.version>2.3.6</epics.jca.version>
-		<graphene.version>0.8.0</graphene.version>
-		<pvdata.version>4.0.3</pvdata.version>
-		<pvaccess.version>4.0.4</pvaccess.version>
-		<csstudio.version>4.3.0-SNAPSHOT</csstudio.version>
-		<eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
-	</properties>
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>runtime</artifactId>
-			<version>${eclipse.runtime.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-	
-	
-	<repositories>
-		<repository>
-			<id>epics</id>
-			<name>EPICS Repository</name>
-			<url>http://epics.sourceforge.net/maven2/</url>
-		</repository>
-	</repositories>
+  <properties>
+    <tycho.version>0.23.1</tycho.version>
+    <manifest-location>META-INF</manifest-location>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.3</cs-studio-central.url>
+    <epics.util.version>0.3.2</epics.util.version>
+    <epics.caj.version>1.1.14</epics.caj.version>
+    <epics.jca.version>2.3.6</epics.jca.version>
+    <graphene.version>0.8.0</graphene.version>
+    <pvdata.version>4.0.3</pvdata.version>
+    <pvaccess.version>4.0.4</pvaccess.version>
+    <csstudio.version>4.3.0-SNAPSHOT</csstudio.version>
+    <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+    <cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
+  </properties>
 
-	<modules>
-		<module>epics</module>
-		<module>repository</module>
-	</modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>runtime</artifactId>
+      <version>${eclipse.runtime.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
+  <repositories>
+    <repository>
+      <id>epics</id>
+      <name>EPICS Repository</name>
+      <url>http://epics.sourceforge.net/maven2/</url>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>epics</module>
+    <module>repository</module>
+  </modules>
 
 </project>
 
