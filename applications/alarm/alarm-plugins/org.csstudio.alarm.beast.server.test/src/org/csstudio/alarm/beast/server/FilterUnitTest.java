@@ -158,7 +158,7 @@ public class FilterUnitTest implements FilterListener
 
         synchronized (this)
         {    // Last value should remain unchanged
-            assertThat(Double.isNan(last_value), equalTo(true));
+            assertThat(Double.isNaN(last_value), equalTo(true));
         }
 
         filter.stop();
