@@ -1,71 +1,105 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>maven-osgi-repository</artifactId>
-	<parent>
-		<groupId>org.csstudio</groupId>
-		<artifactId>maven-osgi-bundles</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>maven-osgi-repository</artifactId>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>maven-osgi-bundles</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <profiles>
+    <profile>
+      <id>uploadRepo</id>
+      <properties>
+        <!-- Properties relative to the distant host where to upload the repo -->
+        <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/p2repo</ftp.url>
+      </properties>
+      <build>
+        <plugins>
+          <!-- Upload the repo to the server -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>1.0-beta-4</version>
+            <executions>
+              <execution>
+                <id>upload-repo</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>upload</goal>
+                </goals>
+                <configuration>
+                  <fromDir>target/centralrepository</fromDir>
+                  <includes>**</includes>
+                  <url>${ftp.url}</url>
+                  <serverId>s3.site</serverId>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<build>
-	<plugins>
-		<plugin>
-			<groupId>lt.velykis.maven</groupId>
-			<artifactId>pde-target-maven-plugin</artifactId>
-			<version>1.0.0</version>
-			<executions>
-				<execution>
-					<id>pde-target</id>
-					<goals>
-						<goal>add-pom-dependencies</goal>
-					</goals>
-					<configuration>
-						<baseDefinition>${project.basedir}/cs-studio.target</baseDefinition>
-						<outputFile>${project.basedir}/cs-studio-pde.target</outputFile>
-						<excludeP2>false</excludeP2>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-			<plugin>
-				<groupId>org.reficio</groupId>
-				<artifactId>p2-maven-plugin</artifactId>
-				<version>1.1.1</version>
-				<executions>
-					<execution>
-						<id>default-cli</id>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<configuration>
-							<categoryFileURL>${project.basedir}/category.xml</categoryFileURL>
-							<artifacts>
-								<!-- specify your dependecies here -->
-								<!-- groupId:artifactId:version -->
-								
-								<!--  EPICS artifacts -->
-								<artifact>
-									<id>org.epics:pvDataJava:${pvdata.version}</id>
-									<source>true</source>
-								</artifact>
-								<artifact>
-									<id>org.epics:pvAccessJava:${pvaccess.version}</id>
-									<source>true</source>
-								</artifact>
-								
-								
-								<!-- Thirdparty artifacts -->
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>lt.velykis.maven</groupId>
+      <artifactId>pde-target-maven-plugin</artifactId>
+      <version>1.0.0</version>
+      <executions>
+        <execution>
+          <id>pde-target</id>
+          <goals>
+            <goal>add-pom-dependencies</goal>
+          </goals>
+          <configuration>
+            <baseDefinition>${project.basedir}/cs-studio.target</baseDefinition>
+            <outputFile>${project.basedir}/cs-studio-pde.target</outputFile>
+            <excludeP2>false</excludeP2>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+      <plugin>
+        <groupId>org.reficio</groupId>
+        <artifactId>p2-maven-plugin</artifactId>
+        <version>1.1.1</version>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <configuration>
+              <categoryFileURL>${project.basedir}/category.xml</categoryFileURL>
+              <artifacts>
+                <!-- specify your dependecies here -->
+                <!-- groupId:artifactId:version -->
+
+                <!--  EPICS artifacts -->
+                <artifact>
+                  <id>org.epics:pvDataJava:${pvdata.version}</id>
+                  <source>true</source>
+                </artifact>
+                <artifact>
+                  <id>org.epics:pvAccessJava:${pvaccess.version}</id>
+                  <source>true</source>
+                </artifact>
+
+
+                <!-- Thirdparty artifacts -->
                                                                 <artifact>
-									<id>org.codehaus.cargo:empty-jar:1.4.13</id>
-									<instructions>
-										<Bundle-Name>Batik DOM SVG bugfix</Bundle-Name>
-										<Bundle-SymbolicName>org.csstudio.batik.dom.svg.fragment</Bundle-SymbolicName>
-										<Bundle-Version>1.0.0</Bundle-Version>
-										<Fragment-Host>org.apache.batik.dom.svg;bundle-version="1.7.0"</Fragment-Host>
-										<Require-Bundle>org.apache.batik.ext.awt;bundle-version="1.7.0"</Require-Bundle>
-									</instructions>	
-								</artifact>
+                  <id>org.codehaus.cargo:empty-jar:1.4.13</id>
+                  <instructions>
+                    <Bundle-Name>Batik DOM SVG bugfix</Bundle-Name>
+                    <Bundle-SymbolicName>org.csstudio.batik.dom.svg.fragment</Bundle-SymbolicName>
+                    <Bundle-Version>1.0.0</Bundle-Version>
+                    <Fragment-Host>org.apache.batik.dom.svg;bundle-version="1.7.0"</Fragment-Host>
+                    <Require-Bundle>org.apache.batik.ext.awt;bundle-version="1.7.0"</Require-Bundle>
+                  </instructions>
+                </artifact>
                                                                 <artifact>
 									<id>org.codehaus.cargo:empty-jar:1.4.12</id>
 									<instructions>
@@ -170,146 +204,146 @@
 								<artifact>
 									<id>com.sun.jersey:jersey-bundle:1.19</id>
                                                                         <override>true</override>
-									<instructions>
-									    <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
-									    <Embed-Transitive>true</Embed-Transitive>
-									</instructions>
-								</artifact>
-								<artifact>
-									<id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
-								</artifact>
-								<artifact>
-									<id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.poi:3.11_1</id>
-									<override>true</override>
-									<instructions>
-										<Export-Package>!org.apache.xmlbeans.*,!org.etsi.*,!org.openxmlformats.*,!org.w3.*,!com.*,org.apache.poi.*,</Export-Package>
-										<Bundle-Version>3.11.1.css1</Bundle-Version>
-									</instructions>	
-								</artifact>
-								<artifact>
-									<id>org.apache.santuario:xmlsec:1.5.8</id>
-									<override>true</override>
-									<instructions>
-										<Export-Package>!javax.*,!org.apache.xml.*,org.apache.*,</Export-Package>
-										<Bundle-Version>1.5.8.css1</Bundle-Version>
-									</instructions>
-								</artifact>
+                  <instructions>
+                      <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
+                      <Embed-Transitive>true</Embed-Transitive>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
+                </artifact>
+                <artifact>
+                  <id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.poi:3.11_1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Export-Package>!org.apache.xmlbeans.*,!org.etsi.*,!org.openxmlformats.*,!org.w3.*,!com.*,org.apache.poi.*,</Export-Package>
+                    <Bundle-Version>3.11.1.css1</Bundle-Version>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.apache.santuario:xmlsec:1.5.8</id>
+                  <override>true</override>
+                  <instructions>
+                    <Export-Package>!javax.*,!org.apache.xml.*,org.apache.*,</Export-Package>
+                    <Bundle-Version>1.5.8.css1</Bundle-Version>
+                  </instructions>
+                </artifact>
 
-							        	
-								<!-- pvmanager-plugins from reactor -->
-								<artifact>
-									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>copy-artifacts-content-data-to-central-repository</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<failOnError>true</failOnError>
-							<target>
-								<mkdir dir="${project.build.directory}/centralrepository" />
-								<get src="${cs-studio-central.url}/artifacts.jar" dest="${project.build.directory}/centralrepository"
-									verbose="false" ignoreerrors="true" usetimestamp="true" />
-								<get src="${cs-studio-central.url}/content.jar" dest="${project.build.directory}/centralrepository"
-									verbose="false" ignoreerrors="true" usetimestamp="true" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-p2-extras-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<executions>
-					<execution>
-						<id>mirror-build-to-central-repository</id>
-						<phase>package</phase>
-						<goals>
-							<goal>mirror</goal>
-						</goals>
-						<configuration>
-							<source>
-								<repository>
-									<url>${project.baseUri}/target/repository</url>
-									<layout>p2</layout>
-								</repository>
-							</source>
-							<append>true</append>
-							<compress>true</compress>
-							<mirrorMetadataOnly>false</mirrorMetadataOnly>
-							<destination>${project.build.directory}/centralrepository</destination>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.5.v20120716</version>
-				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<webAppSourceDirectory>C:/tmp/p2repo</webAppSourceDirectory>
-					<webApp>
-						<contextPath>/site</contextPath>
-					</webApp>
-				</configuration>
-			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.reficio
-										</groupId>
-										<artifactId>
-											p2-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.1.1-SNAPSHOT,)
-										</versionRange>
-										<goals>
-											<goal>site</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>reficio</id>
-			<url>http://repo.reficio.org/maven/</url>
-		</pluginRepository>
-	</pluginRepositories>
+                <!-- pvmanager-plugins from reactor -->
+                <artifact>
+                  <id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>copy-artifacts-content-data-to-central-repository</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <failOnError>true</failOnError>
+              <target>
+                <mkdir dir="${project.build.directory}/centralrepository" />
+                <get src="${cs-studio-central.url}/artifacts.jar" dest="${project.build.directory}/centralrepository"
+                  verbose="false" ignoreerrors="true" usetimestamp="true" />
+                <get src="${cs-studio-central.url}/content.jar" dest="${project.build.directory}/centralrepository"
+                  verbose="false" ignoreerrors="true" usetimestamp="true" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-p2-extras-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <executions>
+          <execution>
+            <id>mirror-build-to-central-repository</id>
+            <phase>package</phase>
+            <goals>
+              <goal>mirror</goal>
+            </goals>
+            <configuration>
+              <source>
+                <repository>
+                  <url>${project.baseUri}/target/repository</url>
+                  <layout>p2</layout>
+                </repository>
+              </source>
+              <append>true</append>
+              <compress>true</compress>
+              <mirrorMetadataOnly>false</mirrorMetadataOnly>
+              <destination>${project.build.directory}/centralrepository</destination>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>8.1.5.v20120716</version>
+        <configuration>
+          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <webAppSourceDirectory>C:/tmp/p2repo</webAppSourceDirectory>
+          <webApp>
+            <contextPath>/site</contextPath>
+          </webApp>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings
+          only. It has no influence on the Maven build itself. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.reficio
+                    </groupId>
+                    <artifactId>
+                      p2-maven-plugin
+                    </artifactId>
+                    <versionRange>
+                      [1.1.1-SNAPSHOT,)
+                    </versionRange>
+                    <goals>
+                      <goal>site</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>reficio</id>
+      <url>http://repo.reficio.org/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
