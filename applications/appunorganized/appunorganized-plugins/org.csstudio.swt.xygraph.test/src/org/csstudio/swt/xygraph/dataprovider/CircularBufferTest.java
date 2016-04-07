@@ -69,13 +69,13 @@ public class CircularBufferTest {
         //test shrink
         circularBuffer.setBufferSize(5, false);
         //System.out.println(circularBuffer);
-        assertEquals("[e0, e1, e2, e3, e4]", circularBuffer.toString());
+        assertEquals("[e3, e4, e5, e6, e7]", circularBuffer.toString());
         //test add
         for(int i=0; i<2; i++){
             circularBuffer.add("e" + i);
         }
         //System.out.println(circularBuffer);
-        assertEquals("[e2, e3, e4, e0, e1]", circularBuffer.toString());
+        assertEquals("[e5, e6, e7, e0, e1]", circularBuffer.toString());
     }
 
 

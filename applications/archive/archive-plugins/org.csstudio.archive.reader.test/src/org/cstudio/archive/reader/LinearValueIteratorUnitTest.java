@@ -10,7 +10,6 @@ package org.cstudio.archive.reader;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.csstudio.utility.test.HamcrestMatchers.notANumber;
 import static org.junit.Assert.assertThat;
 
 import org.csstudio.archive.reader.LinearValueIterator;
@@ -196,7 +195,7 @@ public class LinearValueIteratorUnitTest
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.toDouble(value), is(notANumber()));
+        assertThat(Double.isNaN(VTypeHelper.toDouble(value)), equalTo(true));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(30l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
         assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));

@@ -55,15 +55,15 @@ public class Opi_activeXTextClassTest {
 
         XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", e);
 
-        XMLFileHandler.isColorElementEqual(new EdmColor(10), "color_foreground", e);
-        XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_background", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(10), "foreground_color", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(3), "background_color", e);
 
         XMLFileHandler.isElementEqual("At low", "text", e);
         XMLFileHandler.isElementEqual("true", "auto_size", e);
 
         XMLFileHandler.isElementEqual("1", "border_style", e);
         XMLFileHandler.isElementEqual("2", "border_width", e);
-        XMLFileHandler.isElementEqual("true", "transparency", e);
+        //XMLFileHandler.isElementEqual("true", "transparency", e);
 
         //XMLFileHandler.writeXML(doc);
     }

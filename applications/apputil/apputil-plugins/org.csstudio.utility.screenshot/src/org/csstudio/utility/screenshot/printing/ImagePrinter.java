@@ -22,6 +22,9 @@
 
 package org.csstudio.utility.screenshot.printing;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -34,12 +37,10 @@ import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.printing.PrinterData;
 import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ImagePrinter implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ImagePrinter.class);
+    private static final Logger LOG = Logger.getLogger(ImagePrinter.class.getCanonicalName());
 
     private Shell shell = null;
     private Image image = null;
@@ -65,7 +66,7 @@ public class ImagePrinter implements Runnable {
                 if(printImage(printer)) {
                     LOG.info(" OK - Printing");
                 } else {
-                    LOG.error(" FEHLER - Printing");
+                    LOG.log(Level.SEVERE, " FEHLER - Printing");
                 }
 
                 printer.endJob();

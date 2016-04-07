@@ -89,15 +89,20 @@ public class StringSplitter
     }
 
     /**
-     * Remove quotes from start/end of input string
-     * If there are no quotes this method has no effect
+     * Remove matching quotes from start/end of input string
+     * If there are no quotes or if the leading or trailing
+     * quotes do not match, this method has no effect.
      *
      * @param input String to parse
-     * @return String with wrapping quotes removed.
+     * @return String with any wrapping quotes removed.
      */
     static String removeQuotes(String input) {
-        final String headtailRegex = "^[" + QUOTE + "]|[" + QUOTE + "]$";
-        return input.replaceAll(headtailRegex, "");
+
+        if (input.startsWith("\"") && input.endsWith("\"") || input.startsWith("'") && input.endsWith("'")) {
+            return input.substring(1, input.length() - 1);
+        } else {
+            return input;
+        }
     }
 
     /**

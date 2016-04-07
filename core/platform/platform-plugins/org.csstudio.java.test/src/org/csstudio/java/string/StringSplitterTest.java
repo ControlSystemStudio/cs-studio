@@ -185,6 +185,15 @@ public class StringSplitterTest
     }
 
     @Test
+    public void argumentsThatContainDoubleQuotes() throws Exception {
+        final String source = "com.sun.jmx.remote.security.FileLoginModule debug=\"true\"";
+        String[] parts = StringSplitter.splitIgnoreInQuotes(source, ' ', true);
+        assertEquals(2, parts.length);
+        assertEquals("com.sun.jmx.remote.security.FileLoginModule", parts[0]);
+        assertEquals("debug=\"true\"", parts[1]);
+    }
+
+    @Test
     public void removeQuotesReturnsUnquotedStringUnchanged()
     {
         assertEquals("noQuotes", StringSplitter.removeQuotes("noQuotes"));
@@ -199,6 +208,18 @@ public class StringSplitterTest
     {
         assertEquals("doubleQuotes",
                 StringSplitter.removeQuotes("\"doubleQuotes\""));
+    }
+    @Test
+    public void testRemoveQuotesDoesNothingIfOnlyHeadQuote()
+    {
+        String leadingQuote = "\"hello";
+        assertEquals(leadingQuote, StringSplitter.removeQuotes(leadingQuote));
+    }
+    @Test
+    public void testRemoveQuotesDoesNothingIfOnlyTailQuote()
+    {
+        String trailingQuote = "hello\"";
+        assertEquals(trailingQuote, StringSplitter.removeQuotes(trailingQuote));
     }
 
     @Test
@@ -246,4 +267,5 @@ public class StringSplitterTest
                 StringSplitter.revertQuoteSubsitutions(
                         StringSplitter.substituteEscapedQuotes("my escaped \\\' singlequote")));
     }
+
 }
