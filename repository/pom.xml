@@ -40,7 +40,7 @@
                   <goal>upload</goal>
                 </goals>
                 <configuration>
-                  <fromDir>target/repository</fromDir>
+                  <fromDir>target/centralrepository</fromDir>
                   <includes>**</includes>
                   <url>${ftp.url}</url>
                   <serverId>s3.site</serverId>
