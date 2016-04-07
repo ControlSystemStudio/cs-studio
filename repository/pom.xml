@@ -18,6 +18,40 @@
   <artifactId>thirdparty-repository</artifactId>
   <version>4.0.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
+  <profiles>
+    <profile>
+      <id>uploadRepo</id>
+      <properties>
+        <!-- Properties relative to the distant host where to upload the repo -->
+        <ftp.url>${upload.root}/cs-studio-thirdparty/${cs-studio.version}/</ftp.url>
+      </properties>
+      <build>
+        <plugins>
+          <!-- Upload the repo to the server -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>1.0-beta-4</version>
+            <executions>
+              <execution>
+                <id>upload-repo</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>upload</goal>
+                </goals>
+                <configuration>
+                  <fromDir>target/centralrepository</fromDir>
+                  <includes>**</includes>
+                  <url>${ftp.url}</url>
+                  <serverId>s3.site</serverId>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>

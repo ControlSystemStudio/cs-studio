@@ -22,10 +22,12 @@
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>0.23.1</tycho-extras.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/thirdparty/4.3</cs-studio-central.url>
+    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
+    <upload.root>s3://download.controlsystemstudio.org</upload.root>
   </properties>
 
   <!-- PLUGIN REPOSITORIES -->
@@ -110,6 +112,13 @@
 
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
     <!-- PLUGIN MANAGEMENT -->
     <pluginManagement>
       <plugins>
