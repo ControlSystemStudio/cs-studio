@@ -12,7 +12,7 @@
       <id>uploadRepo</id>
       <properties>
         <!-- Properties relative to the distant host where to upload the repo -->
-        <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/p2repo</ftp.url>
+        <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/</ftp.url>
       </properties>
       <build>
         <plugins>
