@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.config.rdb;
 
+import java.time.Instant;
+
 import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.SampleMode;
-import org.diirt.util.time.Timestamp;
 
 /** RDB implementation of {@link ChannelConfig}
  *  @author Kay Kasemir
@@ -26,7 +27,7 @@ public class RDBChannelConfig extends ChannelConfig
      *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
      */
     public RDBChannelConfig(final int id, final String name, final SampleMode sample_mode,
-            final Timestamp last_sample_time)
+            final Instant last_sample_time)
     {
         super(name, sample_mode, last_sample_time);
         this.id = id;

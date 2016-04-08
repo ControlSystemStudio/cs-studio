@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.time.Instant;
+
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VString;
-import org.diirt.util.time.Timestamp;
 
 /** Archive-derived {@link VString} implementation
  *  @author Kay Kasemir
@@ -19,7 +20,7 @@ public class ArchiveVString extends ArchiveVType implements VString
 {
     final private String value;
 
-    public ArchiveVString(final Timestamp timestamp,
+    public ArchiveVString(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final String value)
     {

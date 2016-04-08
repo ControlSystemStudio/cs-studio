@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
+import java.time.Instant;
+
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.diirt.vtype.VType;
-import org.diirt.util.time.Timestamp;
 
 /** Merge values from several <code>ValueIterator</code> based on time stamps
  *  @author Kay Kasemir
@@ -45,13 +46,13 @@ public class MergingValueIterator implements ValueIterator
     private void fetchNext() throws Exception
     {
         // Find oldest time stamp
-        Timestamp time = null;
+        Instant time = null;
         int index = -1;
         for (int i=0; i<raw_data.length; ++i)
         {
             if (raw_data[i] == null)
                 continue;
-            final Timestamp sample_time = VTypeHelper.getTimestamp(raw_data[i]);
+            final Instant sample_time = VTypeHelper.getTimestamp(raw_data[i]);
             if (time == null  ||  sample_time.compareTo(time) < 0)
             {
                 time = sample_time;

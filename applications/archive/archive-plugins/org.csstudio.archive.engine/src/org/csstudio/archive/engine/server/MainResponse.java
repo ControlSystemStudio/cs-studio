@@ -8,6 +8,8 @@
 package org.csstudio.archive.engine.server;
 
 import java.net.InetAddress;
+import java.time.Duration;
+import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +20,8 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.vtype.TimestampHelper;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.Platform;
-import org.diirt.util.time.Timestamp;
 
 /** Provide web page with engine overview.
  *  @author Kay Kasemir
@@ -67,7 +69,7 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
 
         html.tableLine(new String[] { Messages.HTTP_State, model.getState().name() });
-        final Timestamp start = model.getStartTime();
+        final Instant start = model.getStartTime();
         if (start != null)
         {
             html.tableLine(new String[]
@@ -77,7 +79,7 @@ class MainResponse extends AbstractResponse
             });
 
             final double up_secs =
-                Timestamp.now().durationFrom(start).toSeconds();
+            	TimeDuration.toSecondsDouble(Duration.between(start, Instant.now()));
             html.tableLine(new String[]
             {
                 Messages.HTTP_Uptime,
@@ -138,7 +140,7 @@ class MainResponse extends AbstractResponse
              : "OK")
         });
 
-        final Timestamp last_write_time = model.getLastWriteTime();
+        final Instant last_write_time = model.getLastWriteTime();
         html.tableLine(new String[]
         {
           Messages.HTTP_LastWriteTime,

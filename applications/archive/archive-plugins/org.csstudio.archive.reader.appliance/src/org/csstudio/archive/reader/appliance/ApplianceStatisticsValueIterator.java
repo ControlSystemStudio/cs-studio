@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Iterator;
 
 import org.csstudio.archive.vtype.ArchiveVStatistics;
@@ -8,7 +9,6 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
@@ -47,7 +47,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
      */
-    public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+    public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
         int points, IteratorListener listener) throws ArchiverApplianceException, IOException {
         super(reader, name, start, end, points, listener);
     }
@@ -60,7 +60,7 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
     @Override
     protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
         super.fetchDataInternal(pvName);
-        int interval = Math.max(1, (int) ((end.getSec() - start.getSec()) / requestedPoints));
+        int interval = Math.max(1, (int) ((end.getEpochSecond() - start.getEpochSecond()) / requestedPoints));
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 

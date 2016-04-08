@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.config;
 
-import org.diirt.util.time.Timestamp;
+import java.time.Instant;
 
 /** Configuration of a channel
  *  @author Kay Kasemir
@@ -17,14 +17,14 @@ public class ChannelConfig
 {
     final private String name;
     final private SampleMode sample_mode;
-    final private Timestamp last_sample_time;
+    final private Instant last_sample_time;
 
     /** Initialize
      *  @param name Channel name
      *  @param sample_mode Sample mode
      *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
      */
-    public ChannelConfig(final String name, final SampleMode sample_mode, final Timestamp last_sample_time)
+    public ChannelConfig(final String name, final SampleMode sample_mode, final Instant last_sample_time)
     {
         this.name = name;
         this.sample_mode = sample_mode;
@@ -48,7 +48,7 @@ public class ChannelConfig
     // But changing archive(.)reader needs to be coordinated with all its
     // implementations.
     /** @return Time stamp of last sample in archive or <code>null</code> */
-    public Timestamp getLastSampleTime()
+    public Instant getLastSampleTime()
     {
         return last_sample_time;
     }

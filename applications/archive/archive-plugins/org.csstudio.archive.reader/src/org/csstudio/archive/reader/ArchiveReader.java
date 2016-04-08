@@ -8,8 +8,7 @@
 package org.csstudio.archive.reader;
 
 import java.io.Closeable;
-
-import org.diirt.util.time.Timestamp;
+import java.time.Instant;
 
 /** Interface to archive data retrieval.
  *  <p>
@@ -139,7 +138,7 @@ public interface ArchiveReader extends Closeable
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(int key, String name,
-            Timestamp start, Timestamp end) throws UnknownChannelException, Exception;
+            Instant start, Instant end) throws UnknownChannelException, Exception;
 
     /** Read optimized samples from the archive.
      *  <p>
@@ -164,7 +163,7 @@ public interface ArchiveReader extends Closeable
      *  @throws Exception on error
      */
     public ValueIterator getOptimizedValues(int key, String name,
-        Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception;
+		Instant start, Instant end, int count) throws UnknownChannelException, Exception;
 
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,

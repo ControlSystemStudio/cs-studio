@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.StatisticsAccumulator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -53,7 +55,7 @@ public class LinearValueIterator implements ValueIterator
     final private ValueIterator base;
 
     /** Interpolation interval */
-    final private TimeDuration interval;
+    final private Duration interval;
 
     /** Last value read from the base iterator */
     private VType base_value;
@@ -66,7 +68,7 @@ public class LinearValueIterator implements ValueIterator
      *  @param interval Interpolation interval
      *  @throws Exception on error
      */
-    public LinearValueIterator(final ValueIterator base, final TimeDuration interval) throws Exception
+    public LinearValueIterator(final ValueIterator base, final Duration interval) throws Exception
     {
         this.base = base;
         this.interval = interval;
@@ -109,7 +111,7 @@ public class LinearValueIterator implements ValueIterator
 
         // Have one, initial value
         final StatisticsAccumulator accumulator = new StatisticsAccumulator();
-        Timestamp t0, t1 = VTypeHelper.getTimestamp(base_value);
+        Instant t0, t1 = VTypeHelper.getTimestamp(base_value);
         double v0, v1 = VTypeHelper.toDouble(base_value);
         AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
         accumulator.add(v1);
@@ -122,7 +124,7 @@ public class LinearValueIterator implements ValueIterator
         VType last_undefined = null;
 
         // Look for values until end of current interpolation bin
-        final Timestamp end_of_bin = TimestampHelper.roundUp(t1, interval);
+        final Instant end_of_bin = TimestampHelper.roundUp(t1, interval);
         do
         {
             // Track previous value
@@ -166,10 +168,13 @@ public class LinearValueIterator implements ValueIterator
         {   // Found at least one value in this bin
             // t0, v0 are before, t1, v1 at-or-after end_of_bin
             // Linear interpolation between t0,v0 and t1,v1 onto end_of_bin time
-            final double dT = t1.durationFrom(t0).toSeconds();
+        	final double dT = TimeDuration.toSecondsDouble(Duration.between(t0, t1));        	
             final double interpol;
             if (dT > 0)
-                interpol = v0 + (v1 - v0) * (end_of_bin.durationFrom(t0).toSeconds() / dT);
+            {
+            	final double secs = TimeDuration.toSecondsDouble(Duration.between(t0, end_of_bin));
+                interpol = v0 + (v1 - v0) * (secs / dT);
+            }
             else
                 interpol = (v0 + v1)/2; // Use average?
 
