@@ -23,7 +23,6 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSample;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -181,7 +180,7 @@ public class SampleView extends DataBrowserAwareView
             public void update(final ViewerCell cell)
             {
                 final PlotSample sample = (PlotSample) cell.getElement();
-                cell.setText(TimestampHelper.format(TimeHelper.toTimestamp(sample.getPosition())));
+                cell.setText(TimestampHelper.format(sample.getPosition()));
             }
         });
         // Value column
