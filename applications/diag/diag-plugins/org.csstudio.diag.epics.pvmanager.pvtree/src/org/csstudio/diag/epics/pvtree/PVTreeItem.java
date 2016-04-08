@@ -8,8 +8,8 @@
 package org.csstudio.diag.epics.pvtree;
 
 import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -204,7 +204,7 @@ class PVTreeItem
     private PVReader<VType> createPV(final String name, final PVReaderListener<VType> listener) throws Exception
     {
         final long period_ms = Math.round(Preferences.getUpdatePeriod() * 1000);
-        return PVManager.read(vType(name)).readListener(listener).maxRate(ofMillis((int) period_ms));
+        return PVManager.read(vType(name)).readListener(listener).maxRate(Duration.ofMillis((int) period_ms));
     }
 
     /** Dispose this and all child entries. */
@@ -294,7 +294,7 @@ class PVTreeItem
     /** @return Returns the all links. */
     public PVTreeItem[] getLinks()
     {
-        return (PVTreeItem[]) links.toArray(new PVTreeItem[links.size()]);
+        return links.toArray(new PVTreeItem[links.size()]);
     }
 
     /** @return Returns <code>true</code> if this item has any links. */
