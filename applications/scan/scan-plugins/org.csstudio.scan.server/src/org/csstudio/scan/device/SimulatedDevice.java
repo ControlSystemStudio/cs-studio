@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import org.diirt.util.time.TimeDuration;
+import java.time.Duration;
+
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 
@@ -77,7 +78,7 @@ public class SimulatedDevice extends Device
 
     /** {@inheritDoc} */
     @Override
-    public void write(final Object value, final TimeDuration timeout) throws Exception
+    public void write(final Object value, final Duration timeout) throws Exception
     {
         write(value);
     }
