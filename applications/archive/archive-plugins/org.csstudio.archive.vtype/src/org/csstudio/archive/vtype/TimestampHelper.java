@@ -7,13 +7,14 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import java.text.Format;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
-import org.diirt.util.time.TimestampFormat;
 
 /** Time stamp gymnastics
  *  @author Kay Kasemir
@@ -21,33 +22,42 @@ import org.diirt.util.time.TimestampFormat;
 @SuppressWarnings("nls")
 public class TimestampHelper
 {
-    final public static String FORMAT_FULL = "yyyy/MM/dd HH:mm:ss.NNNNNNNNN";
+	final private static ZoneId zone = ZoneId.systemDefault();
+    final public static String FORMAT_FULL = "yyyy/MM/dd HH:mm:ss.nnnnnnnnn";
     final public static String FORMAT_SECONDS = "yyyy/MM/dd HH:mm:ss";
 
     /** Time stamp format */
-    final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
-
+    final private static DateTimeFormatter time_format = DateTimeFormatter.ofPattern(FORMAT_FULL);
+    
     /** @param timestamp {@link Timestamp}, may be <code>null</code>
      *  @return Time stamp formatted as string
      */
-    public static String format(final Timestamp timestamp)
+    public static String format(final Instant timestamp)
     {
         if (timestamp == null)
             return "null";
-        synchronized (time_format)
-        {
-            return time_format.format(timestamp);
-        }
+		return time_format.format(ZonedDateTime.ofInstant(timestamp, zone));
     }
+    
+    // May look like just     time_format.format(Instant)  works,
+    // but results in runtime error " java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra"
+    // because time for printing needs to be in local time
+//    public static void main(String[] args) 
+//    {
+//    	final Instant now = Instant.now();
+//    	System.out.println(format(now));
+//    	System.out.println(time_format.format(now));
+//	}
+
 
     /** @param timestamp EPICS Timestamp
      *  @return SQL Timestamp
      */
-    public static java.sql.Timestamp toSQLTimestamp(final Timestamp timestamp)
+    public static java.sql.Timestamp toSQLTimestamp(final Instant timestamp)
     {
-        final long nanoseconds = timestamp.getNanoSec();
+        final long nanoseconds = timestamp.getNano();
         // Only millisecond resolution
-        java.sql.Timestamp stamp = new java.sql.Timestamp(timestamp.getSec() * 1000  +
+        java.sql.Timestamp stamp = new java.sql.Timestamp(timestamp.getEpochSecond() * 1000  +
                              nanoseconds / 1000000);
         // Set nanoseconds (again), but this call uses the full
         // nanosecond resolution
@@ -58,18 +68,18 @@ public class TimestampHelper
     /** @param sql_time SQL Timestamp
      *  @return EPICS Timestamp
      */
-    public static Timestamp fromSQLTimestamp(final java.sql.Timestamp sql_time)
+    public static Instant fromSQLTimestamp(final java.sql.Timestamp sql_time)
     {
         final long millisecs = sql_time.getTime();
         final long seconds = millisecs/1000;
         final int nanoseconds = sql_time.getNanos();
-        return Timestamp.of(seconds,  nanoseconds);
+        return Instant.ofEpochSecond(seconds,  nanoseconds);
     }
 
     /** @param millisecs Milliseconds since 1970 epoch
      *  @return EPICS Timestamp
      */
-    public static Timestamp fromMillisecs(final long millisecs)
+    public static Instant fromMillisecs(final long millisecs)
     {
         long seconds = millisecs/1000;
         int nanoseconds = (int) (millisecs % 1000) * 1000000;
@@ -80,13 +90,13 @@ public class TimestampHelper
             seconds += pastSec;
             nanoseconds -= pastSec * 1000000000;
         }
-        return Timestamp.of(seconds,  nanoseconds);
+        return Instant.ofEpochSecond(seconds,  nanoseconds);
     }
 
     /** @param calendar Calendar
      *  @return EPICS Timestamp
      */
-    public static Timestamp fromCalendar(final Calendar calendar)
+    public static Instant fromCalendar(final Calendar calendar)
     {
         return fromMillisecs(calendar.getTimeInMillis());
     }
@@ -94,9 +104,9 @@ public class TimestampHelper
     /** @param timestamp EPICS Timestamp
      *  @return Milliseconds since 1970 epoch
      */
-    public static long toMillisecs(final Timestamp timestamp)
+    public static long toMillisecs(final Instant timestamp)
     {
-        return timestamp.getSec()*1000 + timestamp.getNanoSec()/1000000;
+        return timestamp.getEpochSecond()*1000 + timestamp.getNano()/1000000;
     }
 
     /** Round time to next multiple of given duration
@@ -104,9 +114,9 @@ public class TimestampHelper
      *  @param duration Duration to use for rounding
      *  @return Time stamp rounded up to next multiple of duration
      */
-    public static Timestamp roundUp(final Timestamp time, final TimeDuration duration)
+    public static Instant roundUp(final Instant time, final Duration duration)
     {
-        return roundUp(time, duration.getSec());
+        return roundUp(time, duration.getSeconds());
     }
 
     final public static long SECS_PER_HOUR = TimeUnit.HOURS.toSeconds(1);
@@ -118,7 +128,7 @@ public class TimestampHelper
      *  @param seconds Seconds to use for rounding
      *  @return Time stamp rounded up to next multiple of seconds
      */
-    public static Timestamp roundUp(final Timestamp time, final long seconds)
+    public static Instant roundUp(final Instant time, final long seconds)
     {
         if (seconds <= 0)
             return time;
@@ -126,12 +136,12 @@ public class TimestampHelper
         // Directly round seconds within an hour
         if (seconds <= SECS_PER_HOUR)
         {
-            long secs = time.getSec();
-            if (time.getNanoSec() > 0)
+            long secs = time.getEpochSecond();
+            if (time.getNano() > 0)
                 ++secs;
             final long periods = secs / seconds;
             secs = (periods + 1) * seconds;
-            return Timestamp.of(secs, 0);
+            return Instant.ofEpochSecond(secs, 0);
         }
 
         // When rounding "2012/01/19 12:23:14" by 2 hours,
@@ -147,9 +157,11 @@ public class TimestampHelper
         // The addition of leap seconds can further confuse matters,
         // so perform computations that go beyond an hour in local time,
         // relative to midnight of the given time stamp.
+        
+        // TODO Use new API, not Calendar
         final Calendar cal = Calendar.getInstance();
         cal.clear();
-        cal.setTime(time.toDate());
+        cal.setTime(Date.from(time));
 
         // Round the HH:MM within the day
         long secs = cal.get(Calendar.HOUR_OF_DAY) * SECS_PER_HOUR +
@@ -162,6 +174,6 @@ public class TimestampHelper
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         final long midnight = cal.getTimeInMillis() / 1000;
-        return Timestamp.of(midnight + secs, 0);
+        return Instant.ofEpochSecond(midnight + secs, 0);
     }
 }

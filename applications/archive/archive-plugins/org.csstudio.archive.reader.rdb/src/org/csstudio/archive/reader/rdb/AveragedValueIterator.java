@@ -7,13 +7,14 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.StatisticsAccumulator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VNumber;
@@ -90,8 +91,8 @@ public class AveragedValueIterator implements ValueIterator
         if (base_value == null)
             return null;
         // Determine next multiple of averaging period
-        final Timestamp average_window_start = VTypeHelper.getTimestamp(base_value);
-        final Timestamp average_window_end =
+        final Instant average_window_start = VTypeHelper.getTimestamp(base_value);
+        final Instant average_window_end =
                 TimestampHelper.roundUp(average_window_start, seconds);
         if (debug)
             System.out.println("Average until " + TimestampHelper.format(average_window_end));
@@ -144,7 +145,7 @@ public class AveragedValueIterator implements ValueIterator
         if (stats.getNSamples() <= 1)
             return last_value;
         // Create time stamp in center of averaging window ('bin')
-        final Timestamp bin_time = average_window_end.minus(TimeDuration.ofSeconds(seconds/2));
+        final Instant bin_time = average_window_end.minus(Duration.ofSeconds(seconds/2));
 
         // Return the min/max/average
         final ArchiveVStatistics result = new ArchiveVStatistics(bin_time, severity, status, display, stats);

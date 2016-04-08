@@ -11,7 +11,8 @@ import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.Statistics;
 import org.diirt.vtype.VStatistics;
-import org.diirt.util.time.Timestamp;
+
+import java.time.Instant;
 
 /** Archive-derived {@link VStatistics} implementation
  *  @author Kay Kasemir
@@ -24,7 +25,7 @@ public class ArchiveVStatistics extends ArchiveVDisplayType implements VStatisti
     final private double stddev;
     final private int count;
 
-    public ArchiveVStatistics(final Timestamp timestamp,
+    public ArchiveVStatistics(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display,
             final double average, final double min, final double max, final double stddev, final int count)
@@ -37,7 +38,7 @@ public class ArchiveVStatistics extends ArchiveVDisplayType implements VStatisti
         this.count = count;
     }
 
-    public ArchiveVStatistics(final Timestamp timestamp,
+    public ArchiveVStatistics(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display,
             final Statistics stats)

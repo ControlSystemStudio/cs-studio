@@ -12,8 +12,8 @@ import static org.diirt.datasource.ExpressionLanguage.channel;
 import static org.diirt.datasource.ExpressionLanguage.newValuesOf;
 import static org.diirt.datasource.formula.ExpressionLanguage.channelFromFormula;
 import static org.diirt.datasource.formula.ExpressionLanguage.formula;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,7 +26,6 @@ import java.util.logging.Level;
 
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
-import org.eclipse.osgi.util.NLS;
 import org.diirt.datasource.ExceptionHandler;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
@@ -39,6 +38,7 @@ import org.diirt.datasource.PVWriterEvent;
 import org.diirt.datasource.PVWriterListener;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.VType;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * An implementation of {@link IPV} using PVManager.
@@ -238,7 +238,7 @@ public class PVManagerPV implements IPV {
             if (exceptionHandler != null) {
                 pvReaderConfiguration = pvReaderConfiguration.routeExceptionsTo(exceptionHandler);
             }
-            pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(ofMillis(minUpdatePeriod));
+            pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(Duration.ofMillis(minUpdatePeriod));
         } else {
             if (isFormula) {
                 PVReaderConfiguration<VType> pvReaderConfiguration = PVManager.read(formula(name, VType.class))
@@ -247,7 +247,7 @@ public class PVManagerPV implements IPV {
                     pvReaderConfiguration = pvReaderConfiguration
                             .routeExceptionsTo(exceptionHandler);
                 }
-                pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(ofMillis(minUpdatePeriod));
+                pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(Duration.ofMillis(minUpdatePeriod));
 
             } else {
                 PVReaderConfiguration<?> pvReaderConfiguration = PVManager.read(channel(name, VType.class, VType.class))
@@ -256,7 +256,7 @@ public class PVManagerPV implements IPV {
                     pvReaderConfiguration = pvReaderConfiguration
                             .routeExceptionsTo(exceptionHandler);
                 }
-                pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(ofMillis(minUpdatePeriod));
+                pvReader = pvReaderConfiguration.readListener(pvReaderListener).maxRate(Duration.ofMillis(minUpdatePeriod));
             }
         }
 

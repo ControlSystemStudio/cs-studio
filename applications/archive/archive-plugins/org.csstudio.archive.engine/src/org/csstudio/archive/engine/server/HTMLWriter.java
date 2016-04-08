@@ -8,11 +8,11 @@
 package org.csstudio.archive.engine.server;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.diirt.util.time.Timestamp;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
@@ -63,7 +63,7 @@ public class HTMLWriter
         text("<a href=\"/version.html\">-Version-</a> ");
 
         text("<address>");
-        text(TimestampHelper.format(Timestamp.now()));
+        text(TimestampHelper.format(Instant.now()));
         text("   <i>(Use web browser's Reload to refresh this page)</i>");
         text("</address>");
 

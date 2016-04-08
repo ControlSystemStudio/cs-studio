@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** ValueIterator that runs subsequent ValuesRequests until
@@ -24,7 +25,7 @@ public class ValueRequestIterator implements ValueIterator
     final private ChannelArchiverReader reader;
     final private int key;
     final private String name;
-    final private Timestamp end;
+    final private Instant end;
     final private boolean optimized;
     final private int count;
 
@@ -42,7 +43,7 @@ public class ValueRequestIterator implements ValueIterator
      * @throws Exception on error
      */
     public ValueRequestIterator(final ChannelArchiverReader reader,
-            final int key, final String name, final Timestamp start, final Timestamp end, final boolean optimized,
+            final int key, final String name, final Instant start, final Instant end, final boolean optimized,
             final int count) throws Exception
     {
         this.reader = reader;
@@ -61,7 +62,7 @@ public class ValueRequestIterator implements ValueIterator
      *         (greater or equal to overall start time)
      *  @throws Exception on error
      */
-    private void fetch(final Timestamp fetch_start) throws Exception
+    private void fetch(final Instant fetch_start) throws Exception
     {
         index = 0;
         samples = reader.getSamples(key, name, fetch_start, end, optimized, count);

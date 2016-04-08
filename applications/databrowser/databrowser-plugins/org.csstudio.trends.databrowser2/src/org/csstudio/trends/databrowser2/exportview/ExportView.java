@@ -27,10 +27,10 @@ import org.csstudio.trends.databrowser2.export.SpreadsheetExportJob;
 import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -119,7 +119,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         start = new Text(group, SWT.BORDER);
         start.setToolTipText(Messages.StartTimeTT);
         start.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
-        start.setText(new RelativeTime(- TimeHelper.toSeconds(Preferences.getTimeSpan())).toString());
+        start.setText(new RelativeTime(- TimeDuration.toSecondsDouble(Preferences.getTimeSpan())).toString());
         start.setEnabled(false);
 
         sel_times = new Button(group, SWT.PUSH);

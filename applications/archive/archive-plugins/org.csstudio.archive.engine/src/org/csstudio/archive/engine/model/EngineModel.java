@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import org.csstudio.archive.engine.scanner.ScanThread;
 import org.csstudio.archive.engine.scanner.Scanner;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
@@ -86,7 +86,7 @@ public class EngineModel
     private volatile State state = State.IDLE;
 
     /** Start time of the model */
-    private Timestamp start_time = null;
+    private Instant start_time = null;
 
     /** Write period in seconds */
     final private static int write_period = Preferences.getWritePeriodSecs();
@@ -140,7 +140,7 @@ public class EngineModel
     }
 
     /** @return Start time of the engine or <code>null</code> if not running */
-    public Timestamp getStartTime()
+    public Instant getStartTime()
     {
         return start_time;
     }
@@ -224,7 +224,7 @@ public class EngineModel
                          final ArchiveGroup group,
                          final Enablement enablement,
                          final SampleMode sample_mode,
-                         final Timestamp last_sample_time) throws Exception
+                         final Instant last_sample_time) throws Exception
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
@@ -244,7 +244,7 @@ public class EngineModel
         // Create fake string sample with that time, using the current time
         // if we don't have a known last value resulting from the "-skip_last" option.
         final VType last_sample = last_sample_time == null
-        ? new ArchiveVString(Timestamp.now(),  AlarmSeverity.NONE, "", "Engine start time")
+        ? new ArchiveVString(Instant.now(),  AlarmSeverity.NONE, "", "Engine start time")
         : new ArchiveVString(last_sample_time, AlarmSeverity.NONE, "", "Last timestamp in archive");
 
         // Determine buffer capacity
@@ -289,7 +289,7 @@ public class EngineModel
     /** Start processing all channels and writing to archive. */
     public void start() throws Exception
     {
-        start_time = Timestamp.now();
+        start_time = Instant.now();
         state = State.RUNNING;
         writer.start(write_period, batch_size);
         for (ArchiveGroup group : groups)
@@ -305,7 +305,7 @@ public class EngineModel
     }
 
     /** @return Timestamp of end of last write run */
-    public Timestamp getLastWriteTime()
+    public Instant getLastWriteTime()
     {
         return writer.getLastWriteTime();
     }
@@ -417,7 +417,7 @@ public class EngineModel
                 final SampleMode mode = channel_config.getSampleMode();
 
                 addChannel(channel_config.getName(), group, enablement, mode,
-                        channel_config.getLastSampleTime());
+                           channel_config.getLastSampleTime());
             }
         }
     }
@@ -441,7 +441,7 @@ public class EngineModel
     @SuppressWarnings("nls")
     public void dumpDebugInfo()
     {
-        System.out.println(TimestampHelper.format(Timestamp.now()) + ": Debug info");
+        System.out.println(TimestampHelper.format(Instant.now()) + ": Debug info");
         for (int c=0; c<getChannelCount(); ++c)
         {
             final ArchiveChannel channel = getChannel(c);

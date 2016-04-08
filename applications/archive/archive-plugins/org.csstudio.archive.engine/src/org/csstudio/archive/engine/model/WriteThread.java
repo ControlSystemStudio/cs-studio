@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -16,7 +17,6 @@ import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.ArchiveWriterFactory;
 import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.util.stats.Average;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
@@ -59,7 +59,7 @@ public class WriteThread implements Runnable
     private int batch_size = 500;
 
     /** Time of end of last write run */
-    private Timestamp last_write_stamp = null;
+    private Instant last_write_stamp = null;
 
     /** Average number of values per write run */
     private Average write_count = new Average();
@@ -119,7 +119,7 @@ public class WriteThread implements Runnable
     }
 
     /** @return Timestamp of end of last write run */
-    public Timestamp getLastWriteTime()
+    public Instant getLastWriteTime()
     {
         return last_write_stamp;
     }
@@ -181,7 +181,7 @@ public class WriteThread implements Runnable
                 // for a long time...
                 final long written = write();
                 timer.stop();
-                last_write_stamp = Timestamp.now();
+                last_write_stamp = Instant.now();
                 write_count.update(written);
                 write_time.update(timer.getSeconds());
                 // How much of the scheduled delay is left after write()?
