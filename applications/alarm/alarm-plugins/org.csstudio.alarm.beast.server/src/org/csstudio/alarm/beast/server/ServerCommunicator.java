@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -265,14 +266,14 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
      *  @param value Value that triggered update
-     *  @param timestamp Time stamp for alarm severity/status
+     *  @param timestamp Instant stamp for alarm severity/status
      */
     protected void sendStateUpdate(final AlarmPV pv,
             final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         execute(new Runnable()
         {
@@ -309,12 +310,12 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
      *  @param value Value that triggered update
-     *  @param timestamp Time stamp for alarm severity/status
+     *  @param timestamp Instant for alarm severity/status
      */
     protected void sendGlobalUpdate(final AlarmPV pv,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         execute(new Runnable()
         {

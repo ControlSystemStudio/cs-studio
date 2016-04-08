@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.time.Instant;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.diirt.util.time.Timestamp;
 
@@ -163,7 +165,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
                 current_state = AlarmState.createClearState(current_state.getValue());
                 alarm_state = new AlarmState(SeverityLevel.OK,
                         Messages.AlarmMessageDisabled, "", //$NON-NLS-1$
-                        Timestamp.now());
+                        Instant.now());
                 current = current_state;
                 alarm = alarm_state;
             }

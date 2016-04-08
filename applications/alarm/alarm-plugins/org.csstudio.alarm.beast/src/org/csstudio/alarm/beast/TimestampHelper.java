@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /** Helper for dealing with time stamps
  *  @author Kay Kasemir
@@ -16,37 +17,38 @@ import java.text.SimpleDateFormat;
 @SuppressWarnings("nls")
 public class TimestampHelper
 {
-    final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+    private static final ZoneId zone = ZoneId.systemDefault();
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
 
     /** Format EPICS time stamp as string
-     *  @param timestamp {@link org.diirt.util.time.Timestamp}
+     *  @param time {@link Instant}
      *  @return {@link String}
      */
-    public static String format(org.diirt.util.time.Timestamp timestamp)
+    public static String format(Instant time)
     {
-        synchronized (format)
-        {
-            return format.format(timestamp.toDate());
+        if (time != null) {
+            return time.atZone(ZoneId.systemDefault()).format(format);
         }
+        return "null";
     }
 
     /** Convert EPICS time stamp into SQL time stamp
-     *  @param timestamp {@link org.diirt.util.time.Timestamp}
+     *  @param timestamp {@link Instant}
      *  @return {@link java.sql.Timestamp}
      */
-    public static java.sql.Timestamp toSQLTime(org.diirt.util.time.Timestamp timestamp)
+    public static java.sql.Timestamp toSQLTime(Instant timestamp)
     {
-        final java.sql.Timestamp sql = new java.sql.Timestamp(timestamp.toDate().getTime());
-        sql.setNanos(timestamp.getNanoSec());
+        final java.sql.Timestamp sql = new java.sql.Timestamp(timestamp.toEpochMilli());
+        sql.setNanos(timestamp.getNano());
         return sql;
     }
 
     /** Convert SQL time stamp into EPICS time stamp
      *  @param timestamp{@link java.sql.Timestamp}
-     *  @return {@link org.diirt.util.time.Timestamp}
+     *  @return {@link Instant}
      */
-    public static org.diirt.util.time.Timestamp toEPICSTime(java.sql.Timestamp timestamp)
+    public static Instant toEPICSTime(java.sql.Timestamp timestamp)
     {
-        return org.diirt.util.time.Timestamp.of(timestamp.getTime()/1000L, timestamp.getNanos());
+        return Instant.ofEpochSecond(timestamp.getTime()/1000L, timestamp.getNanos());
     }
 }

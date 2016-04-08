@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -20,7 +21,6 @@ import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** A PV with alarm state
@@ -93,7 +93,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             final SeverityLevel severity,
             final String message,
             final String value,
-            final Timestamp timestamp) throws Exception
+            final Instant timestamp) throws Exception
     {
         super(parent, name, id);
 
@@ -207,7 +207,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     private void pvConnectionTimeout()
     {
         final AlarmState received = new AlarmState(SeverityLevel.UNDEFINED,
-            Messages.AlarmMessageNotConnected, "", Timestamp.now());
+            Messages.AlarmMessageNotConnected, "", Instant.now());
         logic.computeNewState(received);
     }
 
@@ -223,7 +223,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     public void disconnected(final PV pv)
     {
         final AlarmState received = new AlarmState(SeverityLevel.UNDEFINED,
-                Messages.AlarmMessageDisconnected, "", Timestamp.now());
+                Messages.AlarmMessageDisconnected, "", Instant.now());
         logic.computeNewState(received);
     }
 

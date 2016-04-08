@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.time.Instant;
+
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
 
 /** Ring buffer of AlarmState entries with time stamp that
  *  can check for N errors within some time
@@ -58,9 +60,9 @@ public class AlarmStateHistory
         final int capacity = history.getCapacity();
         if (history.size() < capacity)
             return false;
-        final Timestamp oldest = history.get(0).getTime();
-        final Timestamp newest = history.get(capacity-1).getTime();
-        final double span = newest.durationFrom(oldest).toSeconds();
+        final Instant oldest = history.get(0).getTime();
+        final Instant newest = history.get(capacity-1).getTime();
+        final double span = TimeDuration. (newest.) newest.durationFrom(oldest).toSeconds();
         return span <= seconds;
     }
 
