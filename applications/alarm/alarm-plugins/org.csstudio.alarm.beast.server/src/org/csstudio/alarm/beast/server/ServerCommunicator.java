@@ -9,9 +9,6 @@ package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -38,10 +35,6 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     /** TYPE identifier used for talk messages */
     private static final String TYPE_TALK = "talk";
 
-    /** Format of time stamps */
-    private static final DateTimeFormatter date_format = DateTimeFormatter.ofPattern(JMSLogMessage.DATE_FORMAT);
-    private static final ZoneId zone = ZoneId.systemDefault();
-    
     /** Server for which we communicate */
     final private AlarmServer server;
 
@@ -292,7 +285,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(ZonedDateTime.ofInstant(timestamp, zone)));
+                    map.setString(JMSAlarmMessage.EVENTTIME, JMSAlarmMessage.formatTime(timestamp));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
                     server_producer.send(map);
@@ -331,7 +324,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(ZonedDateTime.ofInstant(timestamp, zone)));
+                    map.setString(JMSAlarmMessage.EVENTTIME, JMSAlarmMessage.formatTime(timestamp));
                     global_producer.send(map);
                 }
                 catch (Exception ex)
