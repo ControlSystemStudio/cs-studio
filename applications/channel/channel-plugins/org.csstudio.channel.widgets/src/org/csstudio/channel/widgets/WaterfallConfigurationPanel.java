@@ -1,5 +1,7 @@
 package org.csstudio.channel.widgets;
 
+import java.time.Duration;
+
 import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationPanel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -189,12 +191,12 @@ public class WaterfallConfigurationPanel extends AbstractConfigurationPanel{
         btnShowTimeAxis.setSelection(showTimeAxis);
     }
 
-    public TimeDuration getResolution() {
-        return TimeDuration.ofMillis(spPixelDuration.getSelection());
+    public Duration getResolution() {
+        return Duration.ofMillis(spPixelDuration.getSelection());
     }
 
-    public void setResolution(TimeDuration duration) {
-        spPixelDuration.setSelection((int) (duration.getNanoSec() / 1000000));
+    public void setResolution(Duration duration) {
+        spPixelDuration.setSelection((int) (duration.getNano() / 1000000));
     }
 
     public int getScrollDirection() {

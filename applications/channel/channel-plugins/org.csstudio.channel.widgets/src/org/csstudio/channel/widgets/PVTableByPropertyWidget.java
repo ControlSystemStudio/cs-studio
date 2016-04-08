@@ -5,7 +5,6 @@ import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
 import static org.diirt.datasource.vtype.ExpressionLanguage.column;
 import static org.diirt.datasource.vtype.ExpressionLanguage.vStringConstants;
 import static org.diirt.datasource.vtype.ExpressionLanguage.vTable;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -13,6 +12,7 @@ import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -175,7 +175,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
         // Increasing the notification rate will make the tooltips not work,
         // so it's limited to 500 ms.
         pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread(this))
-                .readListener(listener).maxRate(ofMillis(500));
+                .readListener(listener).maxRate(Duration.ofMillis(500));
         table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
     }
 
