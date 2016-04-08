@@ -3,7 +3,6 @@ package org.csstudio.diag.postanalyser;
 import java.time.Instant;
 import java.util.logging.Level;
 
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
@@ -105,7 +104,7 @@ public final class View extends ViewPart
                 continue;
             value[j] = dbl;
             final Instant stamp = VTypeHelper.getTimestamp(v);
-            time[j] = TimestampHelper.toMillisecs(stamp) / 1000.0;
+            time[j] = stamp.toEpochMilli() / 1000.0;
             ++j;
         }
         // Add as new channel to the model
