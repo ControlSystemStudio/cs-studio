@@ -1,5 +1,6 @@
 package org.csstudio.diag.postanalyser;
 
+import java.time.Instant;
 import java.util.logging.Level;
 
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -8,14 +9,13 @@ import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.csstudio.trends.databrowser2.ProcessVariableWithSamples;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
+import org.diirt.vtype.VType;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.diirt.util.time.Timestamp;
-import org.diirt.vtype.VType;
 
 /** Eclipse ViewPart for the post analyzer Model and GUI.
  *  @author Albert Kagarmanov
@@ -104,7 +104,7 @@ public final class View extends ViewPart
             if (Double.isNaN(dbl) || Double.isInfinite(dbl))
                 continue;
             value[j] = dbl;
-            final Timestamp stamp = VTypeHelper.getTimestamp(v);
+            final Instant stamp = VTypeHelper.getTimestamp(v);
             time[j] = TimestampHelper.toMillisecs(stamp) / 1000.0;
             ++j;
         }
