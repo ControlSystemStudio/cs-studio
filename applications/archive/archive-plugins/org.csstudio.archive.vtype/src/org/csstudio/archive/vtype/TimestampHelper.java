@@ -101,14 +101,6 @@ public class TimestampHelper
         return fromMillisecs(calendar.getTimeInMillis());
     }
 
-    /** @param timestamp EPICS Timestamp
-     *  @return Milliseconds since 1970 epoch
-     */
-    public static long toMillisecs(final Instant timestamp)
-    {
-        return timestamp.getEpochSecond()*1000 + timestamp.getNano()/1000000;
-    }
-
     /** Round time to next multiple of given duration
      *  @param time Original time stamp
      *  @param duration Duration to use for rounding

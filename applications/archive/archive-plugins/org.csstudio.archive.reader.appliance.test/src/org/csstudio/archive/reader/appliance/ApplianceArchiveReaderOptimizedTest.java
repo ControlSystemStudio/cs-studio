@@ -2,6 +2,8 @@ package org.csstudio.archive.reader.appliance;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestApplianceArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorOptimized;
@@ -9,9 +11,7 @@ import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorRaw;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -41,8 +41,8 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalWhenThereAreNotManyPoints() throws Exception{
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_double",true,1800,start,end);
         assertEquals("Number of values comparison", 10, vals.length);
 
@@ -50,7 +50,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         for (int i = 0; i < vals.length; i++) {
             val = (ArchiveVNumber)vals[i];
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmName());
         }
@@ -65,19 +65,19 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_double",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+        long startM = start.toEpochMilli();
+        long step = (end.toEpochMilli() - startM)/100;
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
-            assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -92,19 +92,19 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+    	Instant end = Instant.now();
+    	Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_float",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+        long startM = start.toEpochMilli();
+        long step = (end.toEpochMilli() - startM)/100;
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", Float.valueOf(TestGenMsgIteratorOptimized.VALUES_FLOAT[i%TestGenMsgIteratorOptimized.VALUES_FLOAT.length]),(Float)val.getValue(),0.0001);
-            assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -119,19 +119,19 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalInt() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_int",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+        long startM = start.toEpochMilli();
+        long step = (end.toEpochMilli() - startM)/100;
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", Integer.valueOf(TestGenMsgIteratorOptimized.VALUES_INT[i%TestGenMsgIteratorOptimized.VALUES_INT.length]),(Integer)val.getValue());
-            assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -146,19 +146,19 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalShort() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_short",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+        long startM = start.toEpochMilli();
+        long step = (end.toEpochMilli() - startM)/100;
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", Short.valueOf(TestGenMsgIteratorOptimized.VALUES_SHORT[i%TestGenMsgIteratorOptimized.VALUES_SHORT.length]),(Short)val.getValue());
-            assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -173,19 +173,19 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalByte() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_byte",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
-        long step = (TimestampHelper.toMillisecs(end) - startM)/100;
+        long startM = start.toEpochMilli();
+        long step = (end.toEpochMilli() - startM)/100;
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", Byte.valueOf(TestGenMsgIteratorOptimized.VALUES_BYTE[i%TestGenMsgIteratorOptimized.VALUES_BYTE.length]),(Byte)val.getValue());
-            assertEquals("Timestamp comparison", startM + i*step,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -200,8 +200,8 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalString() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVString[] vals = getValuesString("test_pv_string",true,100,start,end);
         //no optimization for the string type
         assertEquals("There should be 10 values all together", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
@@ -210,7 +210,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", "9554.0",val.getValue());
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }
@@ -225,8 +225,8 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testataRetrievalEnum() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVEnum[] vals = getValuesEnum("test_pv_enum",true,100,start,end);
         //no optimization for the enum type
         assertEquals("There should be 10 values all together", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
@@ -235,7 +235,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
             assertEquals("Value comparison", "Enum <" + TestGenMsgIteratorOptimized.VALUES_INT[i%TestGenMsgIteratorOptimized.VALUES_INT.length] + ">",val.getValue());
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
         }

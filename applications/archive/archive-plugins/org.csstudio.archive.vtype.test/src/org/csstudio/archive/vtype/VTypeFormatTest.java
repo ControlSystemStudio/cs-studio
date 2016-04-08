@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,6 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of {@link VTypeFormat}
@@ -31,7 +31,7 @@ public class VTypeFormatTest
     @Test
     public void testFormats() throws Exception
     {
-        final Timestamp now = Timestamp.now();
+        final Instant now = Instant.now();
         final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(3), 8.0, 9.0, 10.0, 0.0, 10.0);
 
         final VTypeFormat devault = new DefaultVTypeFormat();

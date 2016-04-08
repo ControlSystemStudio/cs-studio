@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Instant;
+
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.junit.Test;
 
@@ -43,12 +44,12 @@ public class WriteThreadHeadlessTest
         writer.start(5.0, 500);
 
         // Add some samples
-        final long seconds = Timestamp.now().getSec();
+        final long seconds = Instant.now().getEpochSecond();
         final AlarmSeverity severity = AlarmSeverity.NONE;
         final String status = "Test";
         for (int i=0; i<10; ++i)
         {
-            final Timestamp time = Timestamp.of(seconds, i);
+            final Instant time = Instant.ofEpochSecond(seconds, i);
             buffer.add(new ArchiveVNumber(time, severity, status, TestHelper.display, Double.valueOf(i)));
             Thread.sleep(1);
         }
