@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /** Helper for dealing with time stamps
@@ -24,12 +25,11 @@ public class TimestampHelper
      *  @param time {@link Instant}
      *  @return {@link String}
      */
-    public static String format(Instant time)
+    public static String format(final Instant time)
     {
-        if (time != null) {
-            return time.atZone(ZoneId.systemDefault()).format(format);
-        }
-        return "null";
+    	if (time == null)
+        	return "null";
+    	return format.format(ZonedDateTime.ofInstant(time, zone));
     }
 
     /** Convert EPICS time stamp into SQL time stamp

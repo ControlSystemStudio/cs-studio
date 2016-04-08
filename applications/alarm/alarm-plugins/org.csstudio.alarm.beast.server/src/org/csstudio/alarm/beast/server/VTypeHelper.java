@@ -10,7 +10,6 @@ package org.csstudio.alarm.beast.server;
 import java.time.Instant;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VEnum;

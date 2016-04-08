@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.time.Duration;
 import java.time.Instant;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
@@ -62,7 +63,7 @@ public class AlarmStateHistory
             return false;
         final Instant oldest = history.get(0).getTime();
         final Instant newest = history.get(capacity-1).getTime();
-        final double span = TimeDuration. (newest.) newest.durationFrom(oldest).toSeconds();
+        final double span = TimeDuration.toSecondsDouble(Duration.between(oldest, newest));
         return span <= seconds;
     }
 
@@ -83,9 +84,9 @@ public class AlarmStateHistory
             span = 0.0;
         else
         {
-            final Timestamp oldest = history.get(0).getTime();
-            final Timestamp newest = history.get(capacity-1).getTime();
-            span = newest.durationFrom(oldest).toSeconds();
+            final Instant oldest = history.get(0).getTime();
+            final Instant newest = history.get(capacity-1).getTime();
+            span = TimeDuration.toSecondsDouble(Duration.between(oldest, newest));
         }
         return String.format("AlarmStateHistory: %d/%d entries, span %.1f secs", //$NON-NLS-1$
                              count, capacity, span);

@@ -8,8 +8,10 @@
 package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -25,7 +27,6 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.logging.JMSLogMessage;
-import org.diirt.util.time.Timestamp;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
@@ -38,9 +39,9 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     private static final String TYPE_TALK = "talk";
 
     /** Format of time stamps */
-    final private SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-
+    private static final DateTimeFormatter date_format = DateTimeFormatter.ofPattern(JMSLogMessage.DATE_FORMAT);
+    private static final ZoneId zone = ZoneId.systemDefault();
+    
     /** Server for which we communicate */
     final private AlarmServer server;
 
@@ -291,7 +292,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(ZonedDateTime.ofInstant(timestamp, zone)));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
                     server_producer.send(map);
@@ -330,7 +331,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(ZonedDateTime.ofInstant(timestamp, zone)));
                     global_producer.send(map);
                 }
                 catch (Exception ex)
