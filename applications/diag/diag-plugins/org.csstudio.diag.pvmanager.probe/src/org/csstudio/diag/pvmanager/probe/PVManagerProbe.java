@@ -1,12 +1,13 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.swtThread;
-import static org.diirt.datasource.formula.ExpressionLanguage.*;
-import static org.diirt.util.time.TimeDuration.*;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -150,7 +151,8 @@ public class PVManagerProbe extends ViewPart {
                 .getSelection());
     }
 
-    public void createPartControl(Composite parent) {
+    @Override
+	public void createPartControl(Composite parent) {
         GridLayout gl_parent = new GridLayout(1, false);
         gl_parent.verticalSpacing = 0;
         gl_parent.marginWidth = 0;
@@ -345,7 +347,7 @@ public class PVManagerProbe extends ViewPart {
             DesiredRateReadWriteExpression<?, Object> expression = formula(pvFormula);
             pv = PVManager
                     .readAndWrite(expression)
-                    .timeout(ofMillis(5000),
+                    .timeout(Duration.ofMillis(5000),
                             Messages.Probe_retryAfterTimeout)
                     .readListener(new PVReaderListener<Object>() {
                         @Override
@@ -377,7 +379,8 @@ public class PVManagerProbe extends ViewPart {
     /**
      * Passing the focus request to the viewer's control.
      */
-    public void setFocus() {
+    @Override
+	public void setFocus() {
     }
 
     public static String createNewInstance() {
@@ -494,7 +497,8 @@ public class PVManagerProbe extends ViewPart {
 
         copyValueAction = new Action(Messages.Probe_copyValueToClipboardButtonText, SWT.NONE) {
 
-            public void runWithEvent(Event event) {
+            @Override
+			public void runWithEvent(Event event) {
                 try {
                     StringWriter writer = new StringWriter();
                     export.export(pv.getValue(), writer);
