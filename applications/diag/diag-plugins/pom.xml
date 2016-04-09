@@ -17,7 +17,7 @@
     <module>org.csstudio.diag.postanalyser.test</module>
     <module>org.csstudio.diag.probe</module>
     <module>org.csstudio.diag.pvfields</module>
-    <module>org.csstudio.diag.pvfields.test</module>
+    <!-- <module>org.csstudio.diag.pvfields.test</module> -->
     <module>org.csstudio.diag.pvmanager.probe</module>
   </modules>
 </project>
