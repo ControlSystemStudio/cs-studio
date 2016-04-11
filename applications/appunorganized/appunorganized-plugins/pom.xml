@@ -11,8 +11,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.debugging.rdbshell</module>
-    <module>org.csstudio.desy.logging.ui</module>
-    <module>org.csstudio.dummyauthorization</module>
     <module>org.csstudio.email</module>
     <module>org.csstudio.email.test</module>
     <module>org.csstudio.email.ui</module>
@@ -30,14 +28,6 @@
     <module>org.csstudio.swt.xygraph.rap</module>
     <module>org.csstudio.swt.xygraph.rcp</module>
     <module>org.csstudio.swt.xygraph.test</module>
-    <module>org.csstudio.systemopen</module>
-    <module>org.csstudio.systemopen.linux</module>
-    <module>org.csstudio.systemopen.mac</module>
-    <module>org.csstudio.systemopen.win</module>
-    <module>org.csstudio.testsuite</module>
-    <module>org.csstudio.utility.ldap.service.impl.test</module>
-    <module>org.csstudio.utility.ldap.service.test</module>
-    <module>org.csstudio.utility.pv.ui</module>
     <module>org.csstudio.pretune</module>
   </modules>
 </project>

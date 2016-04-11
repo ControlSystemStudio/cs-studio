@@ -44,6 +44,7 @@ import org.csstudio.scan.device.DeviceContextHelper;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.MemoryInfo;
 import org.csstudio.scan.server.Scan;
@@ -64,9 +65,14 @@ import org.diirt.util.time.TimeDuration;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>
+public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>, AutoCloseable
 {
     final private Logger logger = Logger.getLogger(getClass().getName());
+
+    /** Jython interpreter that some commands may use.
+     *  Owned by the ExecutableScan, see close()
+     */
+    final private JythonSupport jython;
 
     /** Commands to execute */
     final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
@@ -123,13 +129,14 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      */
     public ExecutableScan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
     {
-        this(name, devices,
+        this(new JythonSupport(), name, devices,
             Collections.<ScanCommandImpl<?>>emptyList(),
             Arrays.asList(implementations),
             Collections.<ScanCommandImpl<?>>emptyList());
     }
 
     /** Initialize
+     *  @param jython Jython support
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param pre_scan Commands to execute before the 'main' section of the scan
@@ -137,15 +144,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      *  @param post_scan Commands to execute before the 'main' section of the scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public ExecutableScan(final String name, final DeviceContext devices,
+    public ExecutableScan(final JythonSupport jython, final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
-        this(DataLogFactory.createDataLog(name), devices, pre_scan, implementations, post_scan);
+        this(jython, DataLogFactory.createDataLog(name), devices, pre_scan, implementations, post_scan);
     }
 
     /** Initialize
+     *  @param jython Jython support
      *  @param scan {@link Scan}
      *  @param devices {@link DeviceContext} to use for scan
      *  @param pre_scan Commands to execute before the 'main' section of the scan
@@ -153,12 +161,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      *  @param post_scan Commands to execute before the 'main' section of the scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public ExecutableScan(final Scan scan, final DeviceContext devices,
+    public ExecutableScan(final JythonSupport jython, final Scan scan, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         super(scan);
+        this.jython = jython;
         this.macros = new MacroContext(ScanSystemPreferences.getMacros());
         this.devices = devices;
         this.pre_scan = pre_scan;
@@ -710,5 +719,17 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     public void workPerformed(final int work_units)
     {
         work_performed.addAndGet(work_units);
+    }
+
+    /** Release resources */
+    @Override
+    public void close() throws Exception
+    {
+        jython.close();
+        pre_scan.clear();
+        pre_scan.clear();
+        implementations.clear();
+        post_scan.clear();
+        active_commands.clear();
     }
 }

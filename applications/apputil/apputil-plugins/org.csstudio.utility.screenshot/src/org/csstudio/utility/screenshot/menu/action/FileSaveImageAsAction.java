@@ -23,6 +23,8 @@
 
 package org.csstudio.utility.screenshot.menu.action;
 
+import java.util.logging.Logger;
+
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
@@ -32,13 +34,11 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.FileDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FileSaveImageAsAction extends Action {
 
     /** Logger of this class */
-    private static final Logger LOG = LoggerFactory.getLogger(FileSaveImageAsAction.class);
+    private static final Logger LOG = Logger.getLogger(FileSaveImageAsAction.class.getCanonicalName());
 
 
     /** The screenshot main class */
@@ -98,19 +98,19 @@ public class FileSaveImageAsAction extends Action {
 
                 if(indexExt != -1) {
 
-                    LOG.debug("Try to save image now...");
+                    LOG.fine("Try to save image now...");
 
                     ImageLoader loader = new ImageLoader();
                     ImageData[] imageData = new ImageData[1];
 
                     if(worker.getDisplayedImage() != null) {
-                        LOG.debug("Saving Displayed image");
+                        LOG.fine("Saving Displayed image");
                         imageData[0] = worker.getDisplayedImage().getImageData();
                     } else if(worker.getSimpleImage() != null) {
-                        LOG.debug("Saving Simple image");
+                        LOG.fine("Saving Simple image");
                         imageData[0] = worker.getSimpleImage().getImageData();
                     } else {
-                        LOG.debug("NO IMAGE!!!!");
+                        LOG.fine("NO IMAGE!!!!");
                     }
 
                     loader.data = imageData;

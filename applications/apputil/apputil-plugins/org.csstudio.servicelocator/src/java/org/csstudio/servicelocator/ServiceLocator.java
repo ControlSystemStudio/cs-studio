@@ -28,11 +28,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implements a configurable service locator.
  *
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ServiceLocator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceLocator.class);
+    private static final Logger LOG = Logger.getLogger(ServiceLocator.class.getName());
 
     /**
      * Provides the accessor function for the service implementation
@@ -231,9 +230,9 @@ public final class ServiceLocator {
                 registry = LocateRegistry.getRegistry(_rmiServer, _rmiPort);
                 result = (I) registry.lookup(_service.getCanonicalName());
             } catch (RemoteException e) {
-                LOG.error("Cannot get remote service: " + _service.getCanonicalName(), e);
+                LOG.log(Level.WARNING, "Cannot get remote service: " + _service.getCanonicalName(), e);
             } catch (NotBoundException e) {
-                LOG.error("Cannot get remote service (not bound): " + _service.getCanonicalName(), e);
+                LOG.log(Level.WARNING, "Cannot get remote service (not bound): " + _service.getCanonicalName(), e);
             }
             return result;
         }

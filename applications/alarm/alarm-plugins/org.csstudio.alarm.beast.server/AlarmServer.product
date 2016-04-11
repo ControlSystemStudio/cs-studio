@@ -50,7 +50,6 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.security"/>
-      <plugin id="org.csstudio.utility.test"/>
       <plugin id="org.csstudio.vtype.pv"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>

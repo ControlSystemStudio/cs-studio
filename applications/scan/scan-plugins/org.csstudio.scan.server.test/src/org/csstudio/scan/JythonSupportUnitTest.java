@@ -20,8 +20,8 @@ import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.log.MemoryDataLog;
 import org.csstudio.scan.server.JythonSupport;
-import org.junit.Test;
 import org.diirt.util.time.TimeDuration;
+import org.junit.Test;
 
 /** JUnit test of {@link JythonSupport}
  *  @author Kay Kasemir
@@ -82,5 +82,7 @@ public class JythonSupportUnitTest
         System.out.println("Value: " + samples.get(0));
         assertEquals(42.0, (Double) samples.get(0).getValues()[0], 0.01);
         log.close();
+
+        jython.close();
     }
 }

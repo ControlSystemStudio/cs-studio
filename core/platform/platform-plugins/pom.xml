@@ -9,8 +9,8 @@
   <artifactId>platform-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.platform.jaasAuthentication</module>
-    <module>org.csstudio.platform.ldapAuthorization</module>
+    
+    
     <module>org.csstudio.platform.libs.epics.ui</module>
     <module>org.csstudio.platform.libs.hibernate.ui</module>
     <module>org.csstudio.platform.utility.jms</module>
@@ -18,7 +18,6 @@
     <module>org.csstudio.platform.utility.jms.ui</module>
     <module>org.csstudio.platform.utility.rdb</module>
     <module>org.csstudio.platform.utility.rdb.test</module>
-    <!--     <module>org.csstudio.platform.simpledal</module> -->
     <module>org.csstudio.java</module>
     <module>org.csstudio.java.test</module>
     <module>org.csstudio.jre6.fragment</module>

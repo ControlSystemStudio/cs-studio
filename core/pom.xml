@@ -27,6 +27,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
+    <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>
