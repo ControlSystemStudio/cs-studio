@@ -199,10 +199,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
      */
     private MPlaceholder findPlaceholder()
     {
-        final IEclipseContext localContext = getViewSite().getService(IEclipseContext.class);
+        //do not remove casting - RAP 3.0 still needs it
+        final IEclipseContext localContext = (IEclipseContext)getViewSite().getService(IEclipseContext.class);
         final MPart part = localContext.get(MPart.class);
-        final EModelService service = PlatformUI.getWorkbench().getService(EModelService.class);
-        final IEclipseContext globalContext = PlatformUI.getWorkbench().getService(IEclipseContext.class);
+        final EModelService service = (EModelService)PlatformUI.getWorkbench().getService(EModelService.class);
+        final IEclipseContext globalContext = (IEclipseContext)PlatformUI.getWorkbench().getService(IEclipseContext.class);
         final MApplication app = globalContext.get(MApplication.class);
         final List<MPlaceholder> phs = service.findElements(app, null, MPlaceholder.class, null);
         for (MPlaceholder ph : phs)
