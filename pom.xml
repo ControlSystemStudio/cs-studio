@@ -23,11 +23,12 @@
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>0.23.1</tycho-extras.version>
     <cs-studio.version>4.3</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
+    <download.root>http://download.controlsystemstudio.org</download.root>
+    <cs-studio-central.url>${download.root}/thirdparty/${cs-studio.version}</cs-studio-central.url>
   </properties>
 
   <!-- PLUGIN REPOSITORIES -->
@@ -69,7 +70,7 @@
       <repositories>
         <repository>
           <id>csstudio-maven-osgi-bundles</id>
-          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.3</url>
+          <url>${download.root}/maven-osgi-bundles/4.3</url>
           <layout>p2</layout>
         </repository>
       </repositories>
