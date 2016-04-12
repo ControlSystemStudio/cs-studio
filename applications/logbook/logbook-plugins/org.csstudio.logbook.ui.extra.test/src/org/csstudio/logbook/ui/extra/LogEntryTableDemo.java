@@ -34,12 +34,12 @@ import org.eclipse.swt.widgets.Text;
  * @author shroffk
  *
  */
-public class LogEntryTableTest extends ApplicationWindow {
+public class LogEntryTableDemo extends ApplicationWindow {
     private static String MEDIUM_TEXT = "this a a text that is a bit longer, but not too long. This row should have a smaller height than row #1";
     private LogEntryTable logEntryTable;
     private Text text;
 
-    public LogEntryTableTest() {
+    public LogEntryTableDemo() {
     super(null);
     addToolBar(SWT.FLAT | SWT.WRAP);
     addMenuBar();
@@ -164,7 +164,7 @@ public class LogEntryTableTest extends ApplicationWindow {
      */
     public static void main(String args[]) {
     try {
-        LogEntryTableTest window = new LogEntryTableTest();
+        LogEntryTableDemo window = new LogEntryTableDemo();
         window.setBlockOnOpen(true);
         window.open();
         Display.getCurrent().dispose();
