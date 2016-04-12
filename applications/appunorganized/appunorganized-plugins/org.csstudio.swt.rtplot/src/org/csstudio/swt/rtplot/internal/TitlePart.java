@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Rectangle;
 /** Part for plot title
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class TitlePart extends PlotPart
 {
     /** @param name Part name

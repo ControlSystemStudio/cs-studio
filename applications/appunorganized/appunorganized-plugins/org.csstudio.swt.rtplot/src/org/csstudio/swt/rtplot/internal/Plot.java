@@ -581,8 +581,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         legend.setBounds(0,  bounds.height-legend_height, bounds.width, legend_height);
 
         // X Axis as high as desired. Width will depend on Y axes.
-//        x_axis.setLabelFont(label_font.getFontData()[0]);
-//        x_axis.setScaleFont(scale_font);
+        x_axis.setLabelFont(label_font.getFontData()[0]);
+        x_axis.setScaleFont(scale_font.getFontData()[0]);
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc);
         final int y_axis_height = bounds.height - title_height - x_axis_height - legend_height;
 
@@ -597,8 +597,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (! axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-//                axis.setLabelFont(label_font);
-//                axis.setScaleFont(scale_font);
+                axis.setLabelFont(label_font.getFontData()[0]);
+                axis.setScaleFont(scale_font.getFontData()[0]);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 axis.setBounds(axis_region);
                 total_left_axes_width += axis_region.width;
@@ -609,8 +609,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-//                axis.setLabelFont(label_font);
-//                axis.setScaleFont(scale_font);
+                axis.setLabelFont(label_font.getFontData()[0]);
+                axis.setScaleFont(scale_font.getFontData()[0]);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 total_right_axes_width += axis_region.width;
                 axis_region.x = bounds.width - total_right_axes_width;
