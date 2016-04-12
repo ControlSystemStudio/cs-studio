@@ -17,7 +17,6 @@
     <tycho.version>0.23.1</tycho.version>
     <manifest-location>META-INF</manifest-location>
     <cs-studio.version>4.3</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/${cs-studio.version}</cs-studio-central.url>
     <epics.util.version>0.3.2</epics.util.version>
     <epics.caj.version>1.1.14</epics.caj.version>
     <epics.jca.version>2.3.6</epics.jca.version>
@@ -29,6 +28,8 @@
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     <cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
+    <download.root>http://download.controlsystemstudio.org</download.root>
+    <cs-studio-central.url>${download.root}/maven-osgi-bundles/${cs-studio.version}</cs-studio-central.url>
   </properties>
 
   <dependencies>
