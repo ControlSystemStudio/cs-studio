@@ -85,6 +85,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
+    /** Opacity (0 .. 100 %) of 'area' */
+    private volatile int opacity = 20;
+
     /** Font to use for, well, title */
     private volatile Font title_font;
 
@@ -281,6 +284,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public void setBackground(final RGB color)
     {
         background = color;
+    }
+
+    /** Opacity (0 .. 100 %) of 'area' */
+    public void setOpacity(final int opacity)
+    {
+        this.opacity = opacity;
     }
 
     /** @param title Title */
@@ -654,7 +663,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             for (Trace<XTYPE> trace : y_axis.getTraces())
-                trace_painter.paint(gc, media, plot_area.getBounds(), x_transform, y_axis, trace);
+                trace_painter.paint(gc, media, plot_area.getBounds(), opacity, x_transform, y_axis, trace);
 
         // Annotations use label font
         gc.setFont(label_font);

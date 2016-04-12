@@ -132,6 +132,12 @@ public class PreferencePage extends FieldEditorPreferencePage
         linewidth.setValidRange(0, 100);
         addField(linewidth);
 
+        // Opacity: 0..100%
+        final IntegerFieldEditor opacity = new IntegerFieldEditor(Preferences.OPACITY,
+                Messages.PrefPage_TraceOpacity, parent);
+        opacity.setValidRange(0, 100);
+        addField(opacity);
+
         // Trace type options
         final TraceType trace_values[] = TraceType.values();
         final String trace_labels_and_values[][] = new String[trace_values.length][2];

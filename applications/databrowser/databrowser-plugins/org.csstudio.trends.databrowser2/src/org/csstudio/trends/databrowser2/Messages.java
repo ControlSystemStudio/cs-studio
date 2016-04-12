@@ -206,6 +206,7 @@ public class Messages extends NLS
     public static String PrefPage_TimeRange;
     public static String PrefPage_Title;
     public static String PrefPage_TraceLineWidth;
+    public static String PrefPage_TraceOpacity;
     public static String PrefPage_UpdatePeriod;
     public static String PrintSnapshot;
     public static String PromptForErrors_Label;
