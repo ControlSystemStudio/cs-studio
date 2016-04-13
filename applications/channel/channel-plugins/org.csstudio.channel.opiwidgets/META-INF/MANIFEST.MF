@@ -23,5 +23,5 @@ Bundle-Description: Set of BOY widgets that expose the channel based SWT widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Export-Package: org.csstudio.channel.opiwidgets
 Import-Package: gov.bnl.channelfinder.api,
- org.diirt.util.time,
- org.diirt.vtype
+ org.diirt.util.time;version="3.1.1",
+ org.diirt.vtype;version="3.1.1"

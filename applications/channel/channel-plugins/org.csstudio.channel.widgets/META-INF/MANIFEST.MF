@@ -15,13 +15,13 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.csdata;bundle-version="3.0.1",
  org.csstudio.utility.pvmanager.widgets,
  org.csstudio.utility.pvmanager.ui,
- org.diirt.datasource;bundle-version="3.0.1",
- org.diirt.util;bundle-version="3.0.1",
- org.diirt.vtype;bundle-version="3.0.1",
- org.diirt.graphene;bundle-version="3.0.1",
- org.diirt.datasource-extra;bundle-version="3.0.1",
- org.diirt.datasource-graphene;bundle-version="3.0.1",
- org.diirt.datasource-vtype;bundle-version="3.0.1"
+ org.diirt.datasource;bundle-version="3.1.1",
+ org.diirt.util;bundle-version="3.1.1",
+ org.diirt.vtype;bundle-version="3.1.1",
+ org.diirt.graphene;bundle-version="3.1.1",
+ org.diirt.datasource-extra;bundle-version="3.1.1",
+ org.diirt.datasource-graphene;bundle-version="3.1.1",
+ org.diirt.datasource-vtype;bundle-version="3.1.1"
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy

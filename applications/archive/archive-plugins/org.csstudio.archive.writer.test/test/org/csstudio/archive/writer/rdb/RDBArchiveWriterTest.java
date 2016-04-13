@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 import org.csstudio.apputil.test.TestProperties;
@@ -21,7 +22,6 @@ import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.writer.WriteChannel;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.ValueFactory;
@@ -101,9 +101,9 @@ public class RDBArchiveWriterTest
         System.out.println("Writing double sample for channel " + name);
         final WriteChannel channel = writer.getChannel(name);
         // Write double
-        writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
+        writer.addSample(channel, new ArchiveVNumber(Instant.now(), AlarmSeverity.NONE, "OK", display, 3.14));
         // .. double that could be int
-        writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.00));
+        writer.addSample(channel, new ArchiveVNumber(Instant.now(), AlarmSeverity.NONE, "OK", display, 3.00));
         writer.flush();
     }
 
@@ -114,7 +114,7 @@ public class RDBArchiveWriterTest
             return;
         System.out.println("Writing double array sample for channel " + array_name);
         final WriteChannel channel = writer.getChannel(array_name);
-        writer.addSample(channel, new ArchiveVNumberArray(Timestamp.now(), AlarmSeverity.NONE, "OK", display,
+        writer.addSample(channel, new ArchiveVNumberArray(Instant.now(), AlarmSeverity.NONE, "OK", display,
                 3.14, 6.28, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0));
         writer.flush();
     }
@@ -127,15 +127,15 @@ public class RDBArchiveWriterTest
         final WriteChannel channel = writer.getChannel(name);
 
         // Enum, sets enumerated meta data
-        writer.addSample(channel, new ArchiveVEnum(Timestamp.now(), AlarmSeverity.MINOR, "OK", Arrays.asList("Zero", "One"), 1));
+        writer.addSample(channel, new ArchiveVEnum(Instant.now(), AlarmSeverity.MINOR, "OK", Arrays.asList("Zero", "One"), 1));
         writer.flush();
 
         // Writing string leaves the enumerated meta data untouched
-        writer.addSample(channel, new ArchiveVString(Timestamp.now(), AlarmSeverity.MAJOR, "OK", "Hello"));
+        writer.addSample(channel, new ArchiveVString(Instant.now(), AlarmSeverity.MAJOR, "OK", "Hello"));
         writer.flush();
 
         // Integer, sets numeric meta data
-        writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.MINOR, "OK", display, 42));
+        writer.addSample(channel, new ArchiveVNumber(Instant.now(), AlarmSeverity.MINOR, "OK", display, 42));
         writer.flush();
     }
 
@@ -181,7 +181,7 @@ public class RDBArchiveWriterTest
         do
         {
             ++count;
-            writer.addSample(channel, new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, 3.14));
+            writer.addSample(channel, new ArchiveVNumber(Instant.now(), AlarmSeverity.NONE, "OK", display, 3.14));
             if (count % FLUSH_COUNT == 0)
                 writer.flush();
         }

@@ -139,7 +139,7 @@ public class ModelSampleIterator implements ValueIterator
             else
             {
                 value = samples.get(index).getVType();
-                if (VTypeHelper.getTimestamp(value).compareTo(TimeHelper.toTimestamp(end)) > 0)
+                if (VTypeHelper.getTimestamp(value).compareTo(end) > 0)
                     index = -1; // Beyond end time
             }
         }

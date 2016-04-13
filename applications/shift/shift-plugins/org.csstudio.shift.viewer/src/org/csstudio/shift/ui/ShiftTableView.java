@@ -249,24 +249,24 @@ public class ShiftTableView extends ViewPart {
                         searchParameters
                                 .get(ShiftSearchUtil.SEARCH_KEYWORD_END));
                 searchParameters.put("from",
-                        String.valueOf(timeInterval.getStart().getSec()));
+                        String.valueOf(timeInterval.getStart().getEpochSecond()));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             } else if (searchParameters
                     .containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
                 timeInterval = TimeParser.getTimeInterval(searchParameters
                         .get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
                 searchParameters.put("from",
-                        String.valueOf(timeInterval.getStart().getSec()));
+                        String.valueOf(timeInterval.getStart().getEpochSecond()));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             } else if (searchParameters
                     .containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
                 timeInterval = TimeParser.getTimeInterval("now",
                         searchParameters
                                 .get(ShiftSearchUtil.SEARCH_KEYWORD_END));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             }
         }
         return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));

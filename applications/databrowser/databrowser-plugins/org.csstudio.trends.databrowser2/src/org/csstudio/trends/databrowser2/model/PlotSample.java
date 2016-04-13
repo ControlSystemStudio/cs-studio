@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VStatistics;
@@ -91,7 +90,7 @@ public class PlotSample implements PlotDataItem<Instant>
     PlotSample(final double x, final double y)
     {
         this("Test",
-             ValueFactory.newVDouble(y, ValueFactory.newTime(Timestamp.of((long) x, 0))));
+             ValueFactory.newVDouble(y, ValueFactory.newTime(Instant.ofEpochSecond((int) x, 0))));
     }
 
     /** @param index Waveform index to plot */
@@ -113,7 +112,7 @@ public class PlotSample implements PlotDataItem<Instant>
     }
 
     /** @return Control system time stamp */
-    private Timestamp getTime()
+    private Instant getTime()
     {
         // NOT checking if time.isValid()
         // because that actually takes quite some time.
@@ -121,15 +120,14 @@ public class PlotSample implements PlotDataItem<Instant>
         // the case where the time stamp is invalid.
         if (value instanceof Time)
             return ((Time) value).getTimestamp();
-        return Timestamp.now();
+        return Instant.now();
     }
 
     /** {@inheritDoc} */
     @Override
     public Instant getPosition()
     {
-        final Timestamp time = getTime();
-        return Instant.ofEpochSecond(time.getSec(), time.getNanoSec());
+    	return getTime();
     }
 
     /** {@inheritDoc} */

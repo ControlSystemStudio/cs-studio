@@ -10,8 +10,8 @@ package org.csstudio.diag.pvfields.model;
 import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
 import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
 import static org.diirt.util.time.TimeDuration.ofSeconds;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +94,7 @@ public class EPICSDataProvider implements DataProvider
             }
         };
 
-        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
+        pv = PVManager.read(latestValueOf(vType(name))).timeout(Duration.ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
         // Wait for value from reader
         done.await();
         pv.close();

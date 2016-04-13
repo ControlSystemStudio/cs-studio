@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.time.Instant;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimestampHelper;
-import org.diirt.util.time.Timestamp;
 
 /** Alarm state combines an alarm severity with its message info,
  *  value that triggered this state, time when it happened.
@@ -25,14 +26,14 @@ public class AlarmState
     final private SeverityLevel severity;
     final private String message;
     final private String value;
-    final private Timestamp time;
+    final private Instant time;
 
     /** Initialize
      *  @param severity Initial alarm severity
      *  @param message   .. and message
      */
     public AlarmState(final SeverityLevel severity, final String message,
-            final String value, final Timestamp time)
+            final String value, final Instant time)
     {
         if (severity == null || time == null)
             throw new Error("Null arguments");
@@ -47,7 +48,7 @@ public class AlarmState
      *  @param time Time to use for the 'OK' state
      *  @return AlarmState
      */
-    public static AlarmState createClearState(final String value, final Timestamp time)
+    public static AlarmState createClearState(final String value, final Instant time)
     {
         return new AlarmState(SeverityLevel.OK,
                 SeverityLevel.OK.getDisplayName(),
@@ -59,7 +60,7 @@ public class AlarmState
      */
     public static AlarmState createClearState(final String value)
     {
-        return createClearState(value, Timestamp.now());
+        return createClearState(value, Instant.now());
     }
 
     /** Create an alarm state similar to current one but with updated severity
@@ -162,7 +163,7 @@ public class AlarmState
     }
 
     /** @return Time stamp */
-    public Timestamp getTime()
+    public Instant getTime()
     {
         return time;
     }

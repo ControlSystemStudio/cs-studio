@@ -17,8 +17,8 @@ import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -80,7 +80,7 @@ public class Preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
             return Duration.ofSeconds(60);
-        return TimeHelper.durationOfSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
+        return TimeDuration.ofSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
     }
 
     public static double getScanPeriod()

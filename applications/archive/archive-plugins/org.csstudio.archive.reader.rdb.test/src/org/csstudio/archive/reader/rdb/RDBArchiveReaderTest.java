@@ -12,6 +12,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,7 +24,6 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueUtil;
@@ -38,8 +39,8 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReaderTest
 {
-    final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
-    final private static TimeDuration WAVEFORM_TIMERANGE = TimeDuration.ofMinutes(20.0);
+    final private static Duration TIMERANGE = Duration.ofHours(10);
+    final private static Duration WAVEFORM_TIMERANGE = Duration.ofMinutes(20);
 
     final private static int BUCKETS = 50;
 
@@ -152,8 +153,8 @@ public class RDBArchiveReaderTest
         if (reader == null)
             return;
         System.out.println("Raw samples for " + name + ":");
-        final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(TIMERANGE);
+        final Instant end = Instant.now();
+        final Instant start = end.minus(TIMERANGE);
 
         final BenchmarkTimer timer = new BenchmarkTimer();
         final ValueIterator values = reader.getRawValues(0, name, start, end);
@@ -224,8 +225,8 @@ public class RDBArchiveReaderTest
         else
             System.out.println(".. using non-BLOB array table");
 
-        final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(WAVEFORM_TIMERANGE);
+        final Instant end = Instant.now();
+        final Instant start = end.minus(WAVEFORM_TIMERANGE);
 
         // Cancel after 10 secs
         // scheduleCancellation(reader, 10.0);
@@ -247,11 +248,11 @@ public class RDBArchiveReaderTest
         System.out.println("Optimized samples for " + name + ":");
         System.out.println("-- Java implementation --");
 
-        final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(TIMERANGE);
+        final Instant end = Instant.now();
+        final Instant start = end.minus(TIMERANGE);
 
         final ValueIterator raw = reader.getRawValues(0, name, start, end);
-        final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
+        final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / BUCKETS;
         System.out.println("Time range: "
                 + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)
                 + ", " + BUCKETS + " bins, "
@@ -277,8 +278,8 @@ public class RDBArchiveReaderTest
         System.out.println("Optimized samples for " + name + " (" + channel_id + "):");
         System.out.println("-- Stored procedure --");
 
-        final Timestamp end = Timestamp.now();
-        final Timestamp start = end.minus(TIMERANGE);
+        final Instant end = Instant.now();
+        final Instant start = end.minus(TIMERANGE);
         final ValueIterator values = new StoredProcedureValueIterator(reader, proc, channel_id, start, end, BUCKETS);
         while (values.hasNext())
         {

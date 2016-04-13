@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -119,7 +120,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
 
     /** Timeout for updating the status PVs */
-    final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
+    final private static Duration timeout = Duration.ofSeconds(10);
 
     /** Initialize
      *  @param name User-provided name for this scan

@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.server;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -27,7 +28,6 @@ import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.logging.JMSLogMessage;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.util.time.Timestamp;
 
 /** Alarm Server
  *
@@ -92,12 +92,12 @@ public class AlarmServer implements Runnable
         public final SeverityLevel alarmSeverity;
         public final String alarmMessage;
         public final String value;
-        public final Timestamp timestamp;
+        public final Instant timestamp;
 
         public Update(final AlarmPV pv,
                 final SeverityLevel currentSeverity, final String currentMessage,
                 final SeverityLevel alarmSeverity, final String alarmMessage,
-                final String value, final Timestamp timestamp)
+                final String value, final Instant timestamp)
         {
             this.pv = pv;
             this.currentSeverity = currentSeverity;
@@ -536,7 +536,7 @@ public class AlarmServer implements Runnable
             final String current_message,
             final SeverityLevel severity,
             final String message,
-            final String value, final Timestamp timestamp)
+            final String value, final Instant timestamp)
     {
         synchronized(queuedRDBUpdates)
         {
@@ -554,12 +554,12 @@ public class AlarmServer implements Runnable
      *  @param severity Alarm severity (highest, latched)
      *  @param message Alarm message
      *  @param value Value that triggered
-     *  @param timestamp Time of last alarm update
+     *  @param timestamp Instant of last alarm update
      */
     public void sendGlobalUpdate(final AlarmPV pv,
             final SeverityLevel severity,
             final String message,
-            final String value, final Timestamp timestamp)
+            final String value, final Instant timestamp)
     {
         synchronized (queuedRDBGlobalUpdates)
         {

@@ -9,6 +9,8 @@ package org.csstudio.archive.reader.channelarchiver;
 
 import java.net.URL;
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -22,7 +24,7 @@ import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -70,7 +72,7 @@ public class ValueRequest implements AsyncCallback
     final private ChannelArchiverReader reader;
     final private int key;
     final private String channels[];
-    final private Timestamp start, end;
+    final private Instant start, end;
     final private int how;
     final private Object parms[];
 
@@ -96,7 +98,7 @@ public class ValueRequest implements AsyncCallback
      */
     public ValueRequest(final ChannelArchiverReader reader,
             final int key, final String channel,
-            final Timestamp start, final Timestamp end, final boolean optimized, final int count)
+            final Instant start, final Instant end, final boolean optimized, final int count)
             throws Exception
     {
         this.reader = reader;
@@ -115,7 +117,7 @@ public class ValueRequest implements AsyncCallback
             }
             else
             {   // New server: Use min/max/average with seconds
-                int secs = (int) (end.durationFrom(start).toSeconds() / count);
+                int secs = (int) TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
                 if (secs < 1)
                     secs = 1;
                 how = reader.getRequestCode("average");
@@ -137,10 +139,10 @@ public class ValueRequest implements AsyncCallback
         final Vector<Object> params = new Vector<Object>(8);
         params.add(Integer.valueOf(key));
         params.add(channels);
-        params.add(Integer.valueOf((int)start.getSec()));
-        params.add(Integer.valueOf(start.getNanoSec()));
-        params.add(Integer.valueOf((int)end.getSec()));
-        params.add(Integer.valueOf(end.getNanoSec()));
+        params.add(Integer.valueOf((int)start.getEpochSecond()));
+        params.add(Integer.valueOf(start.getNano()));
+        params.add(Integer.valueOf((int)end.getEpochSecond()));
+        params.add(Integer.valueOf(end.getNano()));
         params.add(parms[0]);
         params.add(Integer.valueOf(how));
         // xmlrpc.execute("archiver.values", params);
@@ -302,7 +304,7 @@ public class ValueRequest implements AsyncCallback
             final Hashtable sample_hash = (Hashtable) value_vec.get(si);
             final long secs = (Integer)sample_hash.get("secs");
             final int nano = (Integer)sample_hash.get("nano");
-            final Timestamp time = Timestamp.of(secs, nano);
+            final Instant time = Instant.ofEpochSecond(secs, nano);
             final int stat_code = (Integer)sample_hash.get("stat");
             final int sevr_code = (Integer)sample_hash.get("sevr");
             final SeverityImpl sevr = reader.getSeverity(sevr_code);

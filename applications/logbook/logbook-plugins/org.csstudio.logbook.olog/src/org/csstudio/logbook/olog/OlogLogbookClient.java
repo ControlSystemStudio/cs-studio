@@ -168,8 +168,8 @@ public class OlogLogbookClient implements LogbookClient {
         searchParameters.remove(SEARCH_KEYWORD_START);
         if (timeInterval != null && timeInterval.getStart() != null
                 && timeInterval.getEnd() != null) {
-            searchParameters.put("start", String.valueOf(timeInterval.getStart().getSec()));
-            searchParameters.put("end", String.valueOf(timeInterval.getEnd().getSec()));
+            searchParameters.put("start", String.valueOf(timeInterval.getStart().getEpochSecond()));
+            searchParameters.put("end", String.valueOf(timeInterval.getEnd().getEpochSecond()));
         }
     }
     Collection<LogEntry> logEntries = new ArrayList<LogEntry>();

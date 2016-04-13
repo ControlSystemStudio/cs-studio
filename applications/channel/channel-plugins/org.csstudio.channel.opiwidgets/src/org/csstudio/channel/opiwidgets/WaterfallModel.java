@@ -1,5 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
+import java.time.Duration;
+
 import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
@@ -7,8 +9,8 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
-import org.eclipse.swt.SWT;
 import org.diirt.util.time.TimeDuration;
+import org.eclipse.swt.SWT;
 
 public class WaterfallModel extends AbstractChannelWidgetModel {
 
@@ -57,7 +59,7 @@ public class WaterfallModel extends AbstractChannelWidgetModel {
         return getCastedPropertyValue(SORT_PROPERTY);
     }
 
-    public TimeDuration getResolution() {
+    public Duration getResolution() {
         return TimeDuration.ofSeconds(((Double) getCastedPropertyValue(RESOLUTION)) / 1000.0);
     }
 

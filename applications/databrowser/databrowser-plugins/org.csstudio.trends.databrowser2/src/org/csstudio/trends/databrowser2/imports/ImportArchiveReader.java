@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.csstudio.archive.reader.ArchiveInfo;
@@ -16,7 +17,6 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** Archive reader that imports data from a file
@@ -83,8 +83,8 @@ public class ImportArchiveReader implements ArchiveReader
     }
 
     @Override
-    public ValueIterator getRawValues(final int key, final String name, final Timestamp start,
-            final Timestamp end) throws UnknownChannelException, Exception
+    public ValueIterator getRawValues(final int key, final String name, final Instant start,
+            final Instant end) throws UnknownChannelException, Exception
     {
         if (values == null)
         {
@@ -99,7 +99,7 @@ public class ImportArchiveReader implements ArchiveReader
 
     @Override
     public ValueIterator getOptimizedValues(int key, String name,
-            Timestamp start, Timestamp end, int count)
+    		Instant start, Instant end, int count)
             throws UnknownChannelException, Exception
     {
         // No optimization. Fall back to raw data.

@@ -159,7 +159,7 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.2</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.1.2</url>
           <layout>p2</layout>
         </repository>
         <repository>

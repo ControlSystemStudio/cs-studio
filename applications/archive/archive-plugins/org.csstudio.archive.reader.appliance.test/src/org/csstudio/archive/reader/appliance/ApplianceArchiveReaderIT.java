@@ -3,12 +3,12 @@ package org.csstudio.archive.reader.appliance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -64,8 +64,8 @@ public class ApplianceArchiveReaderIT extends AbstractArchiverReaderTesting {
      */
     @Test
     public void testRawDataRetrieval() throws Exception {
-        Timestamp end = Timestamp.now().minus(TimeDuration.ofSeconds(40));
-        Timestamp start = end.minus(TimeDuration.ofSeconds(40));
+    	Instant end = Instant.now().minus(Duration.ofSeconds(40));
+    	Instant start = end.minus(Duration.ofSeconds(40));
         ArchiveVNumber[] vals = getValuesNumber(CHANNEL, false, 1,start,end);
         //we don't know anything about the values
         assertTrue("Number of values", vals.length > 3000);
@@ -80,8 +80,8 @@ public class ApplianceArchiveReaderIT extends AbstractArchiverReaderTesting {
      */
     @Test
     public void testOptimizedDataRetrieval() throws Exception {
-        Timestamp end = Timestamp.now().minus(TimeDuration.ofSeconds(40));
-        Timestamp start = end.minus(TimeDuration.ofSeconds(39));
+    	Instant end = Instant.now().minus(Duration.ofSeconds(40));
+    	Instant start = end.minus(Duration.ofSeconds(39));
         ArchiveVNumber[] vals = getValuesNumber(CHANNEL, true, 40, start, end);
         //we don't know anything about the values, we just now how many there are
         assertEquals("Number of values", 40, vals.length);

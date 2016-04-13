@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -47,8 +47,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 
     protected final ApplianceArchiveReader reader;
     protected final String name;
-    protected final Timestamp start;
-    protected final Timestamp end;
+    protected final Instant start;
+    protected final Instant end;
 
     private final IteratorListener listener;
 
@@ -62,7 +62,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
      */
-    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
             IteratorListener listener) {
         this.reader = reader;
         this.name = name;

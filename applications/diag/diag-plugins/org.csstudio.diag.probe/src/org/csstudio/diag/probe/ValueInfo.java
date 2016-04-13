@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VEnum;
@@ -111,8 +110,7 @@ public class ValueInfo
         if (vtime == null)
             return;
 
-        final Timestamp stamp = vtime.getTimestamp();
-        final Instant new_time = Instant.ofEpochSecond(stamp.getSec(), stamp.getNanoSec());
+        final Instant new_time = vtime.getTimestamp();
         if (time != null)
         {
             final Duration duration = Duration.between(time,  new_time);
