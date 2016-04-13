@@ -31,6 +31,7 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.osgi.util.NLS;
@@ -69,6 +70,8 @@ public class ModelBasedPlot
     {
         this.display = parent.getDisplay();
         plot = new RTTimePlot(parent);
+
+        plot.setOpacity(Preferences.getOpacity());
 
         final ToolItem time_config_button =
                 plot.addToolItem(SWT.PUSH, Activator.getDefault().getImage("icons/time_range.png"), Messages.StartEndDialogTT);

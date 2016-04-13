@@ -85,6 +85,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
+    /** Opacity (0 .. 100 %) of 'area' */
+    private volatile int opacity = 20;
+
     /** Font to use for, well, title */
     private volatile Font title_font;
 
@@ -281,6 +284,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public void setBackground(final RGB color)
     {
         background = color;
+    }
+
+    /** Opacity (0 .. 100 %) of 'area' */
+    public void setOpacity(final int opacity)
+    {
+        this.opacity = opacity;
     }
 
     /** @param title Title */
@@ -572,8 +581,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         legend.setBounds(0,  bounds.height-legend_height, bounds.width, legend_height);
 
         // X Axis as high as desired. Width will depend on Y axes.
-//        x_axis.setLabelFont(label_font.getFontData()[0]);
-//        x_axis.setScaleFont(scale_font);
+        x_axis.setLabelFont(label_font.getFontData()[0]);
+        x_axis.setScaleFont(scale_font.getFontData()[0]);
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc);
         final int y_axis_height = bounds.height - title_height - x_axis_height - legend_height;
 
@@ -588,8 +597,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (! axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-//                axis.setLabelFont(label_font);
-//                axis.setScaleFont(scale_font);
+                axis.setLabelFont(label_font.getFontData()[0]);
+                axis.setScaleFont(scale_font.getFontData()[0]);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 axis.setBounds(axis_region);
                 total_left_axes_width += axis_region.width;
@@ -600,8 +609,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-//                axis.setLabelFont(label_font);
-//                axis.setScaleFont(scale_font);
+                axis.setLabelFont(label_font.getFontData()[0]);
+                axis.setScaleFont(scale_font.getFontData()[0]);
                 axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 total_right_axes_width += axis_region.width;
                 axis_region.x = bounds.width - total_right_axes_width;
@@ -654,7 +663,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             for (Trace<XTYPE> trace : y_axis.getTraces())
-                trace_painter.paint(gc, media, plot_area.getBounds(), x_transform, y_axis, trace);
+                trace_painter.paint(gc, media, plot_area.getBounds(), opacity, x_transform, y_axis, trace);
 
         // Annotations use label font
         gc.setFont(label_font);
