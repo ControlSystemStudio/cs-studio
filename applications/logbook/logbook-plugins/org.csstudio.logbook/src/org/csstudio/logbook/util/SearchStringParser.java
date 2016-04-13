@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * A helper class primary to parse a search string of the form
  *
- * some text keyword:value1,value2 anotherKeyword: value1, value2
+ * some text keyword=value1,value2 anotherKeyword= value1, value2
  *
  * @author shroffk
  *
@@ -21,7 +21,7 @@ public class SearchStringParser {
     /**
      * Given a search string of the form
      *
-     * some space separated text keyword1:valueA, ValueB keyword2: 1234, a b c
+     * some space separated text keyword1=valueA, ValueB keyword2= 1234, a b c
      * d, xyz
      *
      * returns a map with the keys mapping to the keywords (the default one
@@ -35,7 +35,7 @@ public class SearchStringParser {
     public static Map<String, String> searchParser(String string,
         String DefaultKey) {
     Map<String, String> result = new HashMap<String, String>();
-    Pattern p = Pattern.compile("([\\S]+):[.]*");
+    Pattern p = Pattern.compile("([\\S]+)=[.]*");
     Matcher m = p.matcher(string);
     int start = 0;
     int end;
