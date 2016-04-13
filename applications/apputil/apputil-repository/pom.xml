@@ -73,55 +73,6 @@
   </build>
   <profiles>
     <profile>
-      <id>csstudio-local-repo-mirror</id>
-      <activation>
-        <property>
-          <name>csstudio.local.repo</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-p2-extras-plugin</artifactId>
-            <version>${tycho.version}</version>
-            <executions>
-              <execution>
-                <id>mirror-build-to-local-repository</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>mirror</goal>
-                </goals>
-                <configuration>
-                  <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
-                  <source>
-                    <repository>
-                      <url>${project.baseUri}/target/repository</url>
-                      <layout>p2</layout>
-                    </repository>
-                  </source>
-                  <append>true</append>
-                  <compress>true</compress>
-                  <mirrorMetadataOnly>false</mirrorMetadataOnly>
-                  <destination>${csstudio.local.repo}</destination>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>tycho-p2-repository-plugin</artifactId>
-            <version>${tycho.version}</version>
-            <configuration>
-              <finalName>cs-studio-applications-${project.parent.artifactId}-${project.version}</finalName>
-              <repositoryName>cs-studio-applications-${project.parent.artifactId}</repositoryName>
-              <includeAllDependencies>true</includeAllDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>uploadRepo</id>
       <properties>
         <!-- Properties relative to the distant host where to upload the repo -->

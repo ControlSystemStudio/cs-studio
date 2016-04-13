@@ -75,55 +75,6 @@
       </properties>
     </profile>
     <profile>
-      <id>platform-luna</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>luna</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/luna</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/2.3</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
-        <platform-version>[4.3,4.4)</platform-version>
-        <swtbot-site>${eclipse.central.url}/technology/swtbot/luna/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-kepler</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>kepler</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/kepler</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.3</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/2.2</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/2.2/gef</rap-gef-site>
-        <platform-version>[4.2,4.3)</platform-version>
-        <swtbot-site>${eclipse.central.url}/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>csstudio-local-repo-enable</id>
-      <activation>
-        <file>
-          <exists>${csstudio.local.repo}/artifacts.jar</exists>
-        </file>
-      </activation>
-      <repositories>
-        <repository>
-          <id>csstudio-local-repo</id>
-          <url>file:${csstudio.local.repo}</url>
-          <layout>p2</layout>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
       <id>csstudio-composite-repo-enable</id>
       <activation>
         <property>
