@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  *
  */
-public class PropertyTreeTest extends ApplicationWindow {
+public class PropertyTreeDemo extends ApplicationWindow {
 
     private PropertyTree propertyTree;
 
@@ -38,7 +38,7 @@ public class PropertyTreeTest extends ApplicationWindow {
     private Property ticketProperty = PropertyBuilder.property("Ticket")
         .attribute("Id", "3645").attribute("URL", "www.bnl.gov").build();
 
-    public PropertyTreeTest() {
+    public PropertyTreeDemo() {
     super(null);
     addToolBar(SWT.FLAT | SWT.WRAP);
     addMenuBar();
@@ -107,7 +107,7 @@ public class PropertyTreeTest extends ApplicationWindow {
      */
     public static void main(String args[]) {
     try {
-        PropertyTreeTest window = new PropertyTreeTest();
+        PropertyTreeDemo window = new PropertyTreeDemo();
         window.setBlockOnOpen(true);
         window.open();
         Display.getCurrent().dispose();
