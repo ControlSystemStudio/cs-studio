@@ -25,6 +25,7 @@ import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.validation.core.ui.ContentProvider;
 import org.csstudio.opibuilder.validation.core.ui.TreeViewerListener;
 import org.csstudio.opibuilder.validation.ui.ResultsDialog;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -194,6 +195,12 @@ public class Validator extends AbstractValidator {
                     ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_PROBLEM, true,
                         IProject.DEPTH_INFINITE);
                     ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_ERROR, true, IProject.DEPTH_INFINITE);
+                    //This is wrong, but it is the only way to convince eclipse to forget about the existing markers
+                    //If validated opis have lots of issues, there will be a lot of markers. Because a marker contains a
+                    //reference to the failure and a failure might contain a reference to a widget model, a lot of
+                    //memory might be needed to keep track of everything. The markers are kept in the save manager
+                    //~forever(?!) and this appears to be the only way to clear them permanently and free the memory.
+                    ((Workspace)ResourcesPlugin.getWorkspace()).getSaveManager().startup(monitor);
                 } catch (CoreException e) {
                     LOGGER.log(Level.WARNING, "Could not delete opi validation markers.", e);
                 }
@@ -232,6 +239,8 @@ public class Validator extends AbstractValidator {
                             .open();
                 });
             }
+            //remove reference to the verifier, so that GC can take it
+            verifier = null;
         }
     }
 
