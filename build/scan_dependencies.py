@@ -11,7 +11,6 @@ import sys
 from optparse import OptionParser
 from ConfigParser import SafeConfigParser
 from tempfile import NamedTemporaryFile, mkstemp
-import mmap
 '''
 This Script
 
