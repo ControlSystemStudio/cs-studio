@@ -214,7 +214,7 @@ public class LogEntrySearchDialog extends Dialog {
                 updateSearch();
             }
         });
-        btnNewButton.setText("New Button");
+        btnNewButton.setText("...");
 
         Label lblTo = new Label(container, SWT.NONE);
         lblTo.setLayoutData(
@@ -240,7 +240,7 @@ public class LogEntrySearchDialog extends Dialog {
                 updateSearch();
             }
         });
-        btnNewButton_1.setText("New Button");
+        btnNewButton_1.setText("...");
         initialize();
         return container;
 
