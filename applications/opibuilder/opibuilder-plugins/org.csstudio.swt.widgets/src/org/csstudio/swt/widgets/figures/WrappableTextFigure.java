@@ -11,6 +11,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -71,6 +72,19 @@ public class WrappableTextFigure extends TextFigure{
         scrollPane.setContents(flowPage);
         scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         add(scrollPane);
+    }
+
+    @Override
+    public void setHorizontalAlignment(H_ALIGN hAlignment) {
+        super.setHorizontalAlignment(hAlignment);
+        if (hAlignment == H_ALIGN.CENTER) {
+            flowPage.setHorizontalAligment(PositionConstants.CENTER);
+            super.setHorizontalAlignment(H_ALIGN.LEFT);
+        } else if (hAlignment == H_ALIGN.LEFT) {
+            flowPage.setHorizontalAligment(PositionConstants.LEFT);
+        } else if (hAlignment == H_ALIGN.RIGHT) {
+            flowPage.setHorizontalAligment(PositionConstants.RIGHT);
+        }
     }
 
     @Override

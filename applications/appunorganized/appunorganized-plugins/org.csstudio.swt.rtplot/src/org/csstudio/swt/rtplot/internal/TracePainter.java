@@ -69,10 +69,12 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
     /** @param gc GC
      *  @param media
      *  @param bounds Clipping bounds within which to paint
+     *  @param opacity Opacity (0 .. 100 %) of 'area'
      *  @param x_transform Coordinate transform used by the x axis
      *  @param trace Trace, has reference to its value axis
      */
-    final public void paint(final GC gc, final SWTMediaPool media, final Rectangle bounds, final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis, final Trace<XTYPE> trace)
+    final public void paint(final GC gc, final SWTMediaPool media, final Rectangle bounds, final int opacity,
+                            final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis, final Trace<XTYPE> trace)
     {
         x_min = bounds.x - OUTSIDE;
         x_max = bounds.x + bounds.width + OUTSIDE;
@@ -82,6 +84,8 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
         final Color old_color = gc.getForeground();
         final Color old_bg = gc.getBackground();
         final int old_width = gc.getLineWidth();
+
+        final int alpha = (opacity * 255) / 100;
 
         final Color color = media.get(trace.getColor());
         gc.setBackground(color);
@@ -110,14 +114,14 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
             case NONE:
                 break;
             case AREA:
-                gc.setAlpha(50);
+                gc.setAlpha(alpha);
                 drawMinMaxArea(gc, x_transform, y_axis, data);
                 gc.setAlpha(255);
                 drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 drawValueStaircase(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
             case AREA_DIRECT:
-                gc.setAlpha(50);
+                gc.setAlpha(alpha);
                 drawMinMaxArea(gc, x_transform, y_axis, data);
                 gc.setAlpha(255);
                 drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
@@ -125,14 +129,14 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
                 break;
             case LINES:
                 drawMinMaxLines(gc, x_transform, y_axis, data, trace.getWidth());
-                gc.setAlpha(50);
+                gc.setAlpha(alpha);
                 drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(255);
                 drawValueStaircase(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
             case LINES_DIRECT:
                 drawMinMaxLines(gc, x_transform, y_axis, data, trace.getWidth());
-                gc.setAlpha(50);
+                gc.setAlpha(alpha);
                 drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(255);
                 drawValueLines(gc, x_transform, y_axis, data, trace.getWidth());

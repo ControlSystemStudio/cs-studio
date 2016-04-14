@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVPool;
@@ -43,7 +42,7 @@ public class MonitoredArchiveChannelUnitTest
         // Allow monitors to arrive..
         Thread.sleep(5000);
 
-        assertThat(TestHelper.dump(samples), greaterThanOrEqualTo(4));
+        assertTrue(TestHelper.dump(samples) >= 4);
 
         channel.stop();
         PVPool.releasePV(pv);

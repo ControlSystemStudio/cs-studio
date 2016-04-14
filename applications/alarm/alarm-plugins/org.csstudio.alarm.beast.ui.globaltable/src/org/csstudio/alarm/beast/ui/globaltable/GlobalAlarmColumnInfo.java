@@ -7,12 +7,13 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globaltable;
 
+import java.time.Instant;
+
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarm;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.diirt.util.time.Timestamp;
 
 /** Helper that defines the columns for a table of global alarms
  *  @author Kay Kasemir
@@ -57,8 +58,8 @@ public enum GlobalAlarmColumnInfo
             @Override
             public int compare(final GlobalAlarm a, final GlobalAlarm b)
             {
-                final Timestamp ta = a.getTimestamp();
-                final Timestamp tb = b.getTimestamp();
+                final Instant ta = a.getTimestamp();
+                final Instant tb = b.getTimestamp();
                 if (ta == null  ||  tb == null)
                     return 0;
                 return ta.compareTo(tb);

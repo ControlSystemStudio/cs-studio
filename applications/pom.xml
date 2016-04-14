@@ -19,7 +19,6 @@
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>0.23.1</tycho-extras.version>
     <cs-studio.version>4.3</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/applications/${cs-studio.version}</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
@@ -27,6 +26,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
+    <upload.root>s3://download.controlsystemstudio.org</upload.root>
+    <download.root>http://download.controlsystemstudio.org</download.root>
+    <cs-studio-central.url>${download.root}/applications/${cs-studio.version}</cs-studio-central.url>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>
@@ -73,55 +75,6 @@
       </properties>
     </profile>
     <profile>
-      <id>platform-luna</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>luna</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/luna</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/2.3</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
-        <platform-version>[4.3,4.4)</platform-version>
-        <swtbot-site>${eclipse.central.url}/technology/swtbot/luna/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-kepler</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>kepler</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/kepler</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.3</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/2.2</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/2.2/gef</rap-gef-site>
-        <platform-version>[4.2,4.3)</platform-version>
-        <swtbot-site>${eclipse.central.url}/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>csstudio-local-repo-enable</id>
-      <activation>
-        <file>
-          <exists>${csstudio.local.repo}/artifacts.jar</exists>
-        </file>
-      </activation>
-      <repositories>
-        <repository>
-          <id>csstudio-local-repo</id>
-          <url>file:${csstudio.local.repo}</url>
-          <layout>p2</layout>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
       <id>csstudio-composite-repo-enable</id>
       <activation>
         <property>
@@ -157,28 +110,28 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.2</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.1.2</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-thirdparty</id>
-          <url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</url>
+          <url>${download.root}/thirdparty/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-maven-osgi-bundles</id>
-          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/${cs-studio.version}</url>
+          <url>${download.root}/maven-osgi-bundles/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-core</id>
-          <url>http://download.controlsystemstudio.org/core/${cs-studio.version}</url>
+          <url>${download.root}/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <!-- Adding the applications repositories to allows child modules to depend on each other -->
         <repository>
           <id>csstudio-applications</id>
-          <url>http://download.controlsystemstudio.org/applications/${cs-studio.version}</url>
+          <url>${download.root}/applications/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
       </repositories>

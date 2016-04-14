@@ -11,7 +11,8 @@ import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumber;
-import org.diirt.util.time.Timestamp;
+
+import java.time.Instant;
 
 /** Archive-derived {@link VNumber} implementation
  *  @author Kay Kasemir
@@ -20,7 +21,7 @@ public class ArchiveVNumber extends ArchiveVDisplayType implements VNumber
 {
     final private Number value;
 
-    public ArchiveVNumber(final Timestamp timestamp,
+    public ArchiveVNumber(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final Number value)
     {

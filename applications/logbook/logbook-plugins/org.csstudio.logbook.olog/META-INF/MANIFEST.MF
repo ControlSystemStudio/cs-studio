@@ -15,4 +15,4 @@ Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Import-Package: com.google.common.base,
  com.google.common.collect,
  javax.ws.rs.core,
- org.diirt.util.time;version="3.0.1"
+ org.diirt.util.time;version="3.1.1"

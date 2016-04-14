@@ -12,8 +12,8 @@ package org.csstudio.archive.diirt.datasource;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 import org.diirt.datasource.ChannelHandler;
 import org.diirt.datasource.DataSource;
-import org.diirt.util.time.Timestamp;
 
 /**
  *
@@ -30,8 +29,8 @@ import org.diirt.util.time.Timestamp;
  * parameters are:
  * <ul>
  * <li>url - the URL to the archive server to use; the value can be given as a name of the archive server configured in
- * DIIRT, or as a URL to the server (does not need to be configured in DIIRT). If the URL contains a <code>&#38</code>
- * character wrap the value into quotes <code>&#34</code></li>
+ * DIIRT, or as a URL to the server (does not need to be configured in DIIRT). If the URL contains a <code>&#38;</code>
+ * character wrap the value into quotes <code>&#34;</code></li>
  * <li>url[] - same as above</li>
  * <li>startTime - the start time of the time window for which to fetch the data</li>
  * <li>endTime - the end time of the time window for which to fetch the data</li>
@@ -45,13 +44,13 @@ import org.diirt.util.time.Timestamp;
  * All parameters are optional. Examples:
  * <ul>
  * <li>archive://pvName - loads the pvName from the archive sources configured in the DIIRT configuration files</li>
- * <li>archive://pvName?url=&#60archive_source_name&#62 - loads the data for pvName from the archive source defined by
+ * <li>archive://pvName?url=&#60;archive_source_name&#62; - loads the data for pvName from the archive source defined by
  * the <code>archive_source_name</code>; the source must be defined in the DIIRT configuration, otherwise it defaults to
  * the previous option</li>
- * <li>archive://pvName?url=&#60archive_source_url&#62 - loads the pvName from the archive source defined by the
+ * <li>archive://pvName?url=&#60;archive_source_url&#62; - loads the pvName from the archive source defined by the
  * <code>archive_source_url</code>; the source does not need to be defined in the DIIRT configuration</li>
- * <li>archive://pvName?url[]=&#60archive_source1&#62&#38url[]=&#60archve_source2&#62... - loads the pvName from the
- * archive sources defined by the <code>archive_source&#42</code>; if the sources are given as names they have to be in
+ * <li>archive://pvName?url[]=&#60;archive_source1&#62;&#38;url[]=&#60;archve_source2&#62;... - loads the pvName from the
+ * archive sources defined by the <code>archive_source&#42;</code>; if the sources are given as names they have to be in
  * DIIRT configuration, if given as URLs they do not need to be defined in the DIIRT configuration</li>
  * </ul>
  * All of the above will create a channel, which can be written to. The data written to the channel are defined in
@@ -59,10 +58,10 @@ import org.diirt.util.time.Timestamp;
  * client and that client changes the parameters via write method, all clients will receive new values. If the retrieval
  * window is static or sharing of channels between clients is undesired, one can also use the following patterns:
  * <ul>
- * <li>archive://pvName?startTime=123&#38endTime=223&#38optimised=true - loads the data for the given pv for the time
+ * <li>archive://pvName?startTime=123&#38;endTime=223&#38;optimised=true - loads the data for the given pv for the time
  * window specified by the startTime and endTime parameters.</li>
  * <li>archive://pvName?time=123 - loads a single value pv at the given time</li>
- * <li>archive://pvName?time=123&#38url=&#60archive_source&#62 - loads a single value pv at the given time using only
+ * <li>archive://pvName?time=123&#38;url=&#60;archive_source&#62; - loads a single value pv at the given time using only
  * the provided archive source.</li>
  * </ul>
  * In all above cases time is given in a format <code>yyyyMMdd-HH:mm:ss.S</code> with the milliseconds being an optional
@@ -112,8 +111,8 @@ public class ArchiveDataSource extends DataSource {
             strippedChannelName = fullChannelName.substring(0, idx);
             String parameters = fullChannelName.substring(idx + 1);
             List<ArchiveSource> sources = new ArrayList<>();
-            Timestamp startTime = null;
-            Timestamp endTime = null;
+            Instant startTime = null;
+            Instant endTime = null;
             String key, value;
             while (!parameters.isEmpty()) {
                 idx = parameters.indexOf('"');
@@ -191,12 +190,12 @@ public class ArchiveDataSource extends DataSource {
      * @return the timestamp
      * @throws IllegalArgumentException if the time cannot be parsed (wrong format)
      */
-    private static Timestamp parseTime(String time) throws IllegalArgumentException {
+    private static Instant parseTime(String time) throws IllegalArgumentException {
         try {
             try {
                 // check if it is a utc number in milliseconds
                 long timestamp = Long.parseLong(time);
-                return Timestamp.of(new Date(timestamp));
+                return Instant.ofEpochMilli(timestamp);
             } catch (NumberFormatException e) {
                 // ignore
             }
@@ -206,15 +205,15 @@ public class ArchiveDataSource extends DataSource {
                     // perhaps it is Timestamp.toString
                     long seconds = Long.parseLong(time.substring(0, idx));
                     int nano = Integer.parseInt(time.substring(idx + 1));
-                    return Timestamp.of(seconds, nano);
+                    return Instant.ofEpochSecond(seconds, nano);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
                 //maybe it is a human readable timestamp with milliseconds
-                return Timestamp.of(new SimpleDateFormat(TIME_FORMAT_MILLIS).parse(time));
+                return new SimpleDateFormat(TIME_FORMAT_MILLIS).parse(time).toInstant();
             }
             //no dot can mean it is a human readable timestamp without milliseconds
-            return Timestamp.of(new SimpleDateFormat(TIME_FORMAT).parse(time));
+            return new SimpleDateFormat(TIME_FORMAT).parse(time).toInstant();
 
         } catch (ParseException e) {
             String message = "Invalid time format: " + time + ". Use " + TIME_FORMAT + " or " + TIME_FORMAT_MILLIS

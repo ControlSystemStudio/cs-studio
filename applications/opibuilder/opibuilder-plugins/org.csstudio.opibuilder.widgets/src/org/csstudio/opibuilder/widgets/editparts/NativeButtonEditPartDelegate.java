@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.figures.NativeButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
+import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.SWT;
@@ -33,6 +34,7 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
 
     private Button button;
     private ActionButtonEditPart editpart;
+    private boolean skipTraverse;
 
     public NativeButtonEditPartDelegate(ActionButtonEditPart editPart) {
         this.editpart = editPart;
@@ -48,6 +50,17 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
                 new NativeButtonFigure(editpart, style);
         button = buttonFigure.getSWTWidget();
         button.setText(model.getText());
+        button.addTraverseListener(e -> {
+            if (skipTraverse) return;
+            e.doit = false;
+            skipTraverse = true;
+            if (e.stateMask == 0) {
+                SingleSourceHelper.swtControlTraverse(button, SWT.TRAVERSE_TAB_PREVIOUS);
+            } else {
+                SingleSourceHelper.swtControlTraverse(button, SWT.TRAVERSE_TAB_NEXT);
+            }
+            skipTraverse = false;
+        });
         buttonFigure.setImagePath(model.getImagePath());
         return buttonFigure;
     }

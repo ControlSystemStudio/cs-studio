@@ -9,7 +9,7 @@ package org.csstudio.display.pvtable;
 
 import static org.csstudio.display.pvtable.FileTestUtil.linesInFile;
 import static org.csstudio.display.pvtable.FileTestUtil.matchLinesIn;
-import static org.csstudio.utility.test.HamcrestMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;

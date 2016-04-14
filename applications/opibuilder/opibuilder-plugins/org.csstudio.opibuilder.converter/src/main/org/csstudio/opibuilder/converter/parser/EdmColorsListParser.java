@@ -149,7 +149,11 @@ public class EdmColorsListParser extends EdmParser {
                         if (Pattern.matches("^\\d*$", word))
                             colorValue.append(" " + word);
                         else {
-                            log.warning("Parsing color file error.  Wrong color input at line: " + colorData);
+                            if (robust)
+                            	error = true;
+                            else
+                            	throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
+                            			               "Wrong color input at line: " + colorData, null);
                         }
                     }
                     a.appendValue(colorValue.toString());

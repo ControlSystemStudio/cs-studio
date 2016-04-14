@@ -27,6 +27,12 @@ public class BeastChannelHandler extends
     public BeastChannelHandler(String channelName, BeastDataSource beastDataSource) {
         super(channelName);
         this.datasource = beastDataSource;
+        // we do not want diirt to resend the last message when we call processConnection() only,
+        // because of the delay between the AlarmServer becoming unavailable and AlarmClientModelListener's
+        // serverTimeout() being called: during that delay, a PVs AlarmSeverity might have changed, but diirt
+        // would resend the old values
+        this.setProcessMessageOnDisconnect(false);
+        this.setProcessMessageOnReconnect(false);
     }
 
     @Override

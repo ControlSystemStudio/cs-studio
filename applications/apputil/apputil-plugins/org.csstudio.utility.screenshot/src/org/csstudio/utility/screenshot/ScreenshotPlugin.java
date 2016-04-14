@@ -24,6 +24,8 @@ package org.csstudio.utility.screenshot;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,8 +36,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class ScreenshotPlugin extends AbstractUIPlugin // implements IStartup
 {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScreenshotPlugin.class);
+    private static final Logger LOG = Logger.getLogger(ScreenshotPlugin.class.getCanonicalName());
 
     /** The plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.utility.screenshot";
@@ -109,8 +109,7 @@ public class ScreenshotPlugin extends AbstractUIPlugin // implements IStartup
                 }
             }
         } catch (IOException ioe) {
-            LOG.error(" *** IOException *** : ", ioe);
-
+            LOG.log(Level.SEVERE, " *** IOException *** : " + ioe);;
             path = null;
         }
 

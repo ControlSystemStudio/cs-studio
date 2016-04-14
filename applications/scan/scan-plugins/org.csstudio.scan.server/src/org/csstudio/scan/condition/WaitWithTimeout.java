@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
-import org.diirt.util.time.TimeDuration;
+import java.time.Duration;
 
 /** Helper for waiting with a time out
  *  <code>
@@ -28,10 +28,10 @@ public class WaitWithTimeout
     /** Initialize time out to start 'now'
      *  @param duration Overall duration of the timeout, <code>null</code> to wait 'forever'
      */
-    public WaitWithTimeout(final TimeDuration duration)
+    public WaitWithTimeout(final Duration duration)
     {
-        end_ms = (duration != null  &&  duration.isPositive())
-            ? System.currentTimeMillis() + Math.round(duration.toSeconds() * 1000.0)
+        end_ms = (duration != null  &&  duration.toMillis() > 0)
+            ? System.currentTimeMillis() + duration.toMillis()
             : 0;
     }
 

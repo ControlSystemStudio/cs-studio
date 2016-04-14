@@ -33,6 +33,8 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.JythonSupport;
+import org.csstudio.scan.server.MemoryInfo;
+import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -136,12 +138,12 @@ public class ScanServerImpl implements ScanServer
             throws Exception
     {
         try
+        (   // Create Jython interpreter for this scan
+            final JythonSupport jython = new JythonSupport();
+        )
         {   // Parse scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
-
-            // Create Jython interpreter for this scan
-            final JythonSupport jython = new JythonSupport();
 
             // Implement commands
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
@@ -162,10 +164,14 @@ public class ScanServerImpl implements ScanServer
             log_out.println(simulation.getSimulationTime() + "   Total estimated execution time");
             log_out.close();
 
-            // Fetch simulation log, help GC to clear copies of log
+            // Fetch simulation log
             final String log_text = log_buf.toString();
+
+            // Help GC to clear copies of log
             log_out = null;
             log_buf = null;
+            scan.clear();
+            commands.clear();
 
             return new SimulationResult(simulation.getSimulationSeconds(), log_text);
         }
@@ -211,7 +217,7 @@ public class ScanServerImpl implements ScanServer
             final DeviceContext devices = new DeviceContext();
 
             // Submit scan to engine for execution
-            final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);
+            final ExecutableScan scan = new ExecutableScan(jython, scan_name, devices, pre_impl, main_impl, post_impl);
             scan_engine.submit(scan, queue);
             return scan.getId();
         }
@@ -222,15 +228,35 @@ public class ScanServerImpl implements ScanServer
         }
     }
 
-    /** If memory consumption is high, remove (one) older scan */
+    /** If memory consumption is high, remove some older scans */
     private void cullScans() throws Exception
     {
         final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
-        while (getInfo().getMemoryPercentage() > threshold)
+        int count = 0;
+        final Logger logger = Logger.getLogger(getClass().getName());
+
+        MemoryInfo used = new MemoryInfo();
+        while (used.getMemoryPercentage() > threshold && count < 10)
         {
-            if (! scan_engine.removeOldestCompletedScan())
-                return;
+            ++count;
+            // Try to turn scan with commands into logged scan
+            Scan removed = scan_engine.logOldestCompletedScan();
+            if (removed != null)
+                logger.log(Level.INFO, "Culling " + count + ", replaced with log: " + removed);
+            else
+            {   // If not possible, delete oldest scan
+                removed = scan_engine.removeOldestCompletedScan();
+                if (removed != null)
+                    logger.log(Level.INFO, "Culling " + count + ", removed: " + removed);
+                else
+                    return;
+            }
+            // Log time stamps of before..after can be used to time the GC
+            logger.log(Level.INFO, "Before " + used);
             System.gc();
+            final MemoryInfo now = new MemoryInfo();
+            logger.log(Level.INFO, "Now    " + now);
+            used = now;
         }
     }
 

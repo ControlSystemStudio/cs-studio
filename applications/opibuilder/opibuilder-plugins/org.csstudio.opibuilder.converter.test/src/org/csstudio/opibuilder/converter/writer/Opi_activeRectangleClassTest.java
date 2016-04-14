@@ -53,11 +53,8 @@ public class Opi_activeRectangleClassTest {
         XMLFileHandler.isElementEqual("112", "width", e);
         XMLFileHandler.isElementEqual("43", "height", e);
 
-        XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
-        XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
-
-        XMLFileHandler.isElementEqual("9", "border_style", e);
-        XMLFileHandler.isElementEqual("2", "border_width", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(7), "line_color", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(0), "background_color", e);
 
         XMLFileHandler.isElementEqual("false", "visible", e);
 

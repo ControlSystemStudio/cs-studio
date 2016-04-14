@@ -9,8 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.workbench;bundle-version="3.7.0";resolution:=optional,
- org.eclipse.rap.ui.workbench;resolution:=optional,
- org.csstudio.utility.test;bundle-version="1.0.0";resolution:=optional
+ org.eclipse.rap.ui.workbench;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Abstraction to support both RCP and RAP

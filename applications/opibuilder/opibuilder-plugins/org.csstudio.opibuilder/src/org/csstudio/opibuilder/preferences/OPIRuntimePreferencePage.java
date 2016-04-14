@@ -122,11 +122,11 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
 
         IntegerFieldEditor pulsingMajorPeriodFieldEditor =
                 new IntegerFieldEditor(PreferencesHelper.PULSING_ALARM_MAJOR_PERIOD,
-                        "Time period of MINOR alarm if pulsing alarm selected (ms)", parent);
+                        "Time period of MAJOR alarm if pulsing alarm selected (ms)", parent);
         pulsingMajorPeriodFieldEditor.setValidRange(100, 10000);
         pulsingMajorPeriodFieldEditor.getTextControl(parent).setToolTipText(
                     "If the pulsing alarm box is checked for a widget that monitors a PV, " +
-                    "then what is the time period of the pulse with the PV is in MINOR alarm severity");
+                    "then what is the time period of the pulse with the PV is in MAJOR alarm severity");
         addField(pulsingMajorPeriodFieldEditor);
 
         String[] allPVFactories = SimplePVLayer.getAllPVFactoryExtensions();

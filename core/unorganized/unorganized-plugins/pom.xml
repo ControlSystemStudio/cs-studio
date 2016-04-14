@@ -20,12 +20,5 @@
     <module>org.csstudio.autocomplete.pvmanager.sim.test</module>
     <module>org.csstudio.autocomplete.pvmanager.sys</module>
     <module>org.csstudio.autocomplete.pvmanager.sys.test</module>
-    <module>org.csstudio.dal</module>
-    <!--     <module>org.csstudio.dal.epics</module> -->
-    <!--     <module>org.csstudio.dal.simulator</module> -->
-    <!--     <module>org.csstudio.dal.test</module> -->
-    <!--     <module>org.csstudio.dal.tine</module> -->
-    <!--     <module>org.csstudio.dal.tine.test</module> -->
-    <!--     <module>org.csstudio.dal.ui</module> -->
   </modules>
 </project>

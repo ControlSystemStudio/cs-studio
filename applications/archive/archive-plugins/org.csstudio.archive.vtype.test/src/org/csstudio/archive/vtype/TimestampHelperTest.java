@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import static org.csstudio.utility.test.HamcrestMatchers.lessThan;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
-import org.diirt.util.time.TimestampFormat;
 import org.junit.Test;
 
 /** JUnit test of {@link TimestampHelper}
@@ -27,13 +27,13 @@ public class TimestampHelperTest
     @Test
     public void testRoundUp() throws Exception
     {
-        final TimestampFormat format = new TimestampFormat(TimestampHelper.FORMAT_SECONDS);
-        final Timestamp orig = format.parse("2012/01/19 12:23:14");
+        final DateTimeFormatter format = DateTimeFormatter.ofPattern(TimestampHelper.FORMAT_SECONDS);
+        final Instant orig = ZonedDateTime.from(format.parse("2012/01/19 12:23:14")).toInstant();
         String text = format.format(orig);
         System.out.println(text);
         assertThat(text, equalTo("2012/01/19 12:23:14"));
 
-        Timestamp time;
+        Instant time;
 
         // Round within a few seconds
         time = TimestampHelper.roundUp(orig, 10);
@@ -98,17 +98,17 @@ public class TimestampHelperTest
         final Date date = new Date(-312);
         System.out.println(date);
         System.out.println(date.getTime());
-        assertThat(date.getTime(), lessThan(0));
+        assertThat(date.getTime() < 0, equalTo(true));
 
-        Timestamp timestamp = TimestampHelper.fromMillisecs(date.getTime());
+        Instant timestamp = Instant.ofEpochMilli(date.getTime());
         System.out.println(TimestampHelper.format(timestamp));
-        assertThat(timestamp.toDate(), equalTo(date));
+        assertThat(Date.from(timestamp), equalTo(date));
 
         try
         {
-            timestamp = Timestamp.of(date);
+            timestamp = date.toInstant();
             System.out.println(TimestampHelper.format(timestamp));
-            assertThat(timestamp.toDate(), equalTo(date));
+            assertThat(Date.from(timestamp), equalTo(date));
         }
         catch (IllegalArgumentException ex)
         {

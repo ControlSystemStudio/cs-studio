@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -176,7 +176,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // Oracle has nanoseconds in TIMESTAMP, other RDBs in separate column
         if (!reader.isOracle())
             stamp.setNanos(result.getInt(7));
-        final Timestamp time = TimestampHelper.fromSQLTimestamp(stamp);
+        final Instant time = TimestampHelper.fromSQLTimestamp(stamp);
 
         // Get severity/status
         final String status = reader.getStatus(result.getInt(3));
@@ -248,7 +248,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      *  @return Array with given element and maybe more.
      *  @throws Exception on error, including 'cancel'
      */
-    private double[] readArrayElements(final Timestamp stamp,
+    private double[] readArrayElements(final Instant stamp,
             final double dbl0,
             final AlarmSeverity severity) throws Exception
     {
@@ -266,7 +266,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         sel_array_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(stamp));
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
         if (! reader.isOracle())
-            sel_array_samples.setInt(3, stamp.getNanoSec());
+            sel_array_samples.setInt(3, stamp.getNano());
 
         // Assemble array of unknown size in ArrayList ....
         final ArrayList<Double> vals = new ArrayList<Double>();

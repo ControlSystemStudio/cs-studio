@@ -17,8 +17,8 @@ import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -51,6 +51,7 @@ public class Preferences
     final public static String TIME_SPAN = "time_span",
             SCAN_PERIOD = "scan_period", BUFFER_SIZE = "live_buffer_size",
             UPDATE_PERIOD = "update_period", LINE_WIDTH = "line_width",
+            OPACITY = "opacity",
             TRACE_TYPE = "trace_type",
             ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
             PLOT_BINS = "plot_bins", URLS = "urls", ARCHIVES = "archives",
@@ -80,7 +81,7 @@ public class Preferences
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) // Allow some JUnit tests without prefs
             return Duration.ofSeconds(60);
-        return TimeHelper.durationOfSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
+        return TimeDuration.ofSeconds(prefs.getDouble(Activator.PLUGIN_ID, TIME_SPAN, 60.0*60.0, null));
     }
 
     public static double getScanPeriod()
@@ -117,12 +118,20 @@ public class Preferences
         return prefs.getDouble(Activator.PLUGIN_ID, UPDATE_PERIOD, 1.0, null);
     }
 
-    public static int getLineWidths()
+    public static int getLineWidth()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
             return 2;
         return prefs.getInt(Activator.PLUGIN_ID, LINE_WIDTH, 2, null);
+    }
+
+    public static int getOpacity()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return 20;
+        return prefs.getInt(Activator.PLUGIN_ID, OPACITY, 20, null);
     }
 
     public static TraceType getTraceType()
@@ -335,4 +344,5 @@ public class Preferences
             return Boolean.TRUE;
         return prefs.getBoolean(Activator.PLUGIN_ID, USE_TRACE_NAMES, Boolean.TRUE, null);
     }
+
 }
