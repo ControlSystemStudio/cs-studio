@@ -24,9 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,14 +35,13 @@ import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
-import org.diirt.util.time.Timestamp;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class GitDataProviderTest {
     private GitDataProvider dataProvider;
     private CompletionNotifier notifier;
 
-    private Date date = new Date();
+    private Instant date = Instant.now();
     private Branch branch = new Branch();
     private Branch someBranch = new Branch("someBranch", "someBranch");
     private Branch demoBranch = new Branch("demo", "demo");
@@ -73,22 +72,21 @@ public class GitDataProviderTest {
     private SaveSet branchSaveSet2 = new SaveSet(branch, Optional.of(branchBase1),
         new String[] { "first", "foo", "bar", "second.bms" }, "someId");
     private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000),
-        "another comment", "user");
-    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
-        "user");
-    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"),
-        Arrays.asList("rb1", "rb2"), Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
-        Timestamp.now(), null);
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, date.minusMillis(5000), "another comment", "user");
+    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, date.plusMillis(5000), "new snapshot", "user");
+    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
+        Arrays.asList("d1", "d2"), "description");
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
+        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
 
     @Before
     public void setUp() throws Exception {
         GitAPIException exception = new GitAPIException("Problem") {
             private static final long serialVersionUID = 1L;
         };
-        notifier = mock(CompletionNotifier.class);
+
         GitManager grm = mock(GitManager.class);
+        notifier = mock(CompletionNotifier.class);
         dataProvider = new GitDataProvider(grm);
         dataProvider.addCompletionNotifier(notifier);
         Field field = GitDataProvider.class.getDeclaredField("initialized");
@@ -112,8 +110,7 @@ public class GitDataProviderTest {
             .thenReturn(new Result<SaveSet>(branchSaveSet, ChangeType.SAVE));
         when(grm.deleteSaveSet(branchSaveSet, "comment2"))
             .thenReturn(new Result<SaveSet>(branchSaveSet, ChangeType.PULL));
-        when(grm.deleteSaveSet(branchSaveSet, "comment4"))
-            .thenReturn(new Result<SaveSet>(null, ChangeType.NONE));
+        when(grm.deleteSaveSet(branchSaveSet, "comment4")).thenReturn(new Result<SaveSet>(null, ChangeType.NONE));
         when(grm.deleteSaveSet(branchSaveSet, "comment3")).thenThrow(exception);
         when(grm.saveSnapshot(snapshot, "comment")).thenReturn(new Result<VSnapshot>(snapshot, ChangeType.SAVE));
         when(grm.saveSnapshot(snapshot, "comment2")).thenReturn(new Result<VSnapshot>(snapshot, ChangeType.PULL));
@@ -340,48 +337,44 @@ public class GitDataProviderTest {
         assertEquals(branchSnapshot3, snapshots[0]);
 
         snapshots = dataProvider.findSnapshots("temp", branch,
-            Arrays.asList(criteria.get(0), criteria.get(1), criteria.get(2)),
-            Optional.empty(), Optional.empty());
+            Arrays.asList(criteria.get(0), criteria.get(1), criteria.get(2)), Optional.empty(), Optional.empty());
         assertEquals(2, snapshots.length);
         assertEquals(branchSnapshot3, snapshots[0]);
         assertEquals(branchSnapshot, snapshots[1]);
 
-        snapshots = dataProvider.findSnapshots("temp", branch,
-            Arrays.asList(criteria.get(3), criteria.get(1)), Optional.empty(), Optional.empty());
+        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(3), criteria.get(1)),
+            Optional.empty(), Optional.empty());
         assertEquals(2, snapshots.length);
         assertEquals(branchSnapshot3, snapshots[0]);
         assertEquals(branchSnapshot2, snapshots[1]);
 
-        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(2)),
-            Optional.empty(), Optional.empty());
+        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(2)), Optional.empty(),
+            Optional.empty());
         assertEquals(1, snapshots.length);
         assertEquals(branchSnapshot2, snapshots[0]);
     }
 
     @Test
     public void testImportData() throws DataProviderException {
-        boolean b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
-            ImportType.SAVE_SET);
+        boolean b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.SAVE_SET);
         assertTrue(b);
         verify(notifier, times(1)).dataImported(branchSaveSet, someBranch, Optional.of(someBaseLevel));
         verify(notifier, only()).dataImported(branchSaveSet, someBranch, Optional.of(someBaseLevel));
         Mockito.reset(notifier);
 
-        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
-            ImportType.LAST_SNAPSHOT);
+        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.LAST_SNAPSHOT);
         assertFalse(b);
         verify(notifier, never()).synchronised();
         Mockito.reset(notifier);
 
-        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
-            ImportType.ALL_SNAPSHOTS);
+        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.ALL_SNAPSHOTS);
         assertTrue(b);
         verify(notifier, times(1)).synchronised();
         verify(notifier, only()).synchronised();
     }
 
     @Test
-    public void testSynchronise() throws DataProviderException{
+    public void testSynchronise() throws DataProviderException {
         boolean b = dataProvider.synchronise();
         assertTrue(b);
         verify(notifier, times(1)).synchronised();

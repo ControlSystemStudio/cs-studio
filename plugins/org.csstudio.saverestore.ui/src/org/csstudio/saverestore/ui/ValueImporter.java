@@ -10,11 +10,11 @@
  */
 package org.csstudio.saverestore.ui;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 import org.csstudio.saverestore.data.VDisconnectedData;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VDouble;
 import org.diirt.vtype.VInt;
@@ -49,5 +49,5 @@ public interface ValueImporter {
      * @return a map of name value pairs, where the name is the PV name given by <code>pvNames</code> parameter and
      *         value is the PV value at given <code>timestamp</code>
      */
-    Map<String, VType> getValuesForPVs(List<String> pvNames, Timestamp timestamp);
+    Map<String, VType> getValuesForPVs(List<String> pvNames, Instant timestamp);
 }

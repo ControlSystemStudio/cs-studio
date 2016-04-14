@@ -81,7 +81,7 @@ public class SendToELogAction extends Action {
             sb.append("Save, Set & Restore\n");
             sb.append(snapshot.getSaveSet().getFullyQualifiedName());
             sb.append("\nTime: ").append(snapshot.getTimestamp() != null
-                ? Utilities.timestampToBigEndianString(snapshot.getTimestamp().toDate(), true) : "Unknown");
+                ? Utilities.timestampToBigEndianString(snapshot.getTimestamp(), true) : "Unknown");
             snapshot.getSnapshot()
                 .ifPresent(s -> sb.append("\nComment: ").append(s.getComment() == null ? "Not Saved" : s.getComment()));
             LogEntryBuilder entry = LogEntryBuilder.withText(sb.toString())

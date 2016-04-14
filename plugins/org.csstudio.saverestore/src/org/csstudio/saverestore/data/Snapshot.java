@@ -11,9 +11,9 @@
 package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +39,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     private static final long serialVersionUID = 2377640937070572130L;
     private final SaveSet set;
-    private final Date date;
+    private final Instant date;
     private final String comment;
     private final String owner;
     private final String toString;
@@ -66,7 +66,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param comment the comment provided when snapshot was stored
      * @param owner the person that created the snapshot
      */
-    public Snapshot(SaveSet set, Date date, String comment, String owner) {
+    public Snapshot(SaveSet set, Instant date, String comment, String owner) {
         this(set, date, comment, owner, null, null, new HashMap<>(0), new ArrayList<>(0));
     }
 
@@ -80,7 +80,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param tagName the name of the tag if it exists
      * @param tagMessage the tag message
      */
-    public Snapshot(SaveSet set, Date date, String comment, String owner, String tagName, String tagMessage) {
+    public Snapshot(SaveSet set, Instant date, String comment, String owner, String tagName, String tagMessage) {
         this(set, date, comment, owner, tagName, tagMessage, new HashMap<>(0), new ArrayList<>(0));
     }
 
@@ -95,7 +95,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param publicParameters specifies the list of parameter names which are considered public; only public parameters
      *            are ever displayed in the GUI, while non public are usually specific for the data provider
      */
-    public Snapshot(SaveSet set, Date date, String comment, String owner, Map<String, String> parameters,
+    public Snapshot(SaveSet set, Instant date, String comment, String owner, Map<String, String> parameters,
         List<String> publicParameters) {
         this(set, date, comment, owner, null, null, parameters, publicParameters);
     }
@@ -113,7 +113,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param publicParameters specifies the list of parameter names which are considered public; only public parameters
      *            are ever displayed in the GUI, while non public are usually specific for the data provider
      */
-    public Snapshot(SaveSet set, Date date, String comment, String owner, String tagName, String tagMessage,
+    public Snapshot(SaveSet set, Instant date, String comment, String owner, String tagName, String tagMessage,
         Map<String, String> parameters, List<String> publicParameters) {
         this.set = set;
         this.date = date;
@@ -165,7 +165,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      *
      * @return the date when the snapshot was stored
      */
-    public Date getDate() {
+    public Instant getDate() {
         return date;
     }
 

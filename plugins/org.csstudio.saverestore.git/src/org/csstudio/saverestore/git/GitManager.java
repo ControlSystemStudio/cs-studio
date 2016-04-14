@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,6 @@ import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
 import org.csstudio.ui.fx.util.Credentials;
-import org.diirt.util.time.Timestamp;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -600,7 +600,7 @@ public class GitManager {
             Map<String, String> parameters = new HashMap<>();
             parameters.put(PARAM_GIT_REVISION, revision);
             insertTagData(tags.get(revision), parameters, revision, branch);
-            Snapshot snapshot = new Snapshot(saveSet, meta.timestamp, meta.comment, meta.creator,
+            Snapshot snapshot = new Snapshot(saveSet, meta.timestamp.toInstant(), meta.comment, meta.creator,
                 parameters.remove(PARAM_TAG_NAME), parameters.remove(PARAM_TAG_MESSAGE), parameters, EMPTY_LIST);
             snapshots.add(snapshot);
         }
@@ -672,7 +672,7 @@ public class GitManager {
                     push(cp, false);
                 }
                 bsd = new SaveSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
-                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp);
+                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp.toInstant());
             }
         }
         return new Result<>(bsd, change);
@@ -731,8 +731,7 @@ public class GitManager {
      */
     public synchronized Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment)
         throws IOException, GitAPIException {
-        Timestamp t = snapshot.getTimestamp();
-        return saveSnapshot(snapshot, comment, t == null ? null : t.toDate(), null);
+        return saveSnapshot(snapshot, comment, snapshot.getTimestamp(), null);
     }
 
     /**
@@ -746,7 +745,7 @@ public class GitManager {
      * @throws IOException if writing the file failed
      * @throws GitAPIException if committing the file failed
      */
-    private Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment, Date time, String user)
+    private Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment, Instant time, String user)
         throws IOException, GitAPIException {
         VSnapshot vsnp = null;
         ChangeType change = ChangeType.NONE;
@@ -766,15 +765,15 @@ public class GitManager {
                 Snapshot descriptor = snapshot.getSnapshot().get();
                 String relativePath = convertPathToString(descriptor.getSaveSet(), FileType.SNAPSHOT);
                 writeToFile(relativePath, repositoryPath, FileType.SNAPSHOT, snapshot);
-                MetaInfo info = commit(relativePath,
-                    new MetaInfo(comment, user == null ? cp.getUsername() : user, UNKNOWN, time, null), false);
+                MetaInfo info = commit(relativePath, new MetaInfo(comment, user == null ? cp.getUsername() : user,
+                    UNKNOWN, time == null ? new Date(0) : Date.from(time), null), false);
                 if (automatic) {
                     push(cp, false);
                 }
                 Map<String, String> parameters = new HashMap<>();
                 parameters.put(PARAM_GIT_REVISION, info.revision);
-                Snapshot snp = new Snapshot(descriptor.getSaveSet(), info.timestamp, info.comment, info.creator,
-                    parameters, new ArrayList<>(0));
+                Snapshot snp = new Snapshot(descriptor.getSaveSet(), info.timestamp.toInstant(), info.comment,
+                    info.creator, parameters, new ArrayList<>(0));
                 vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                     snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                     snapshot.getTimestamp());
@@ -1215,7 +1214,7 @@ public class GitManager {
                             MetaInfo meta = getMetaInfoFromCommit(commit);
                             Map<String, String> parameters = new HashMap<>();
                             insertTagData(tag, parameters, revision, branch.getShortName());
-                            snapshots.add(new Snapshot(e, meta.timestamp, meta.comment, meta.creator,
+                            snapshots.add(new Snapshot(e, meta.timestamp.toInstant(), meta.comment, meta.creator,
                                 parameters.remove(PARAM_TAG_NAME), parameters.remove(PARAM_TAG_MESSAGE), parameters,
                                 EMPTY_LIST));
                         }));
@@ -1325,8 +1324,8 @@ public class GitManager {
                             Map<String, String> parameters = new HashMap<>();
                             parameters.put(PARAM_GIT_REVISION, mi.revision);
                             revisions.add(commit);
-                            snapshots.add(
-                                new Snapshot(e, mi.timestamp, mi.comment, mi.creator, parameters, new ArrayList<>(0)));
+                            snapshots.add(new Snapshot(e, mi.timestamp.toInstant(), mi.comment, mi.creator, parameters,
+                                new ArrayList<>(0)));
                         });
                     }
                 }
@@ -1380,15 +1379,14 @@ public class GitManager {
                     try (InputStream stream = objectLoader.openStream()) {
                         SaveSetContent bsc = FileUtilities.readFromSaveSet(stream);
                         SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getNames(), bsc.getReadbacks(),
-                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp);
+                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp.toInstant());
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
                     try (InputStream stream = objectLoader.openStream()) {
                         SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                        Timestamp snapshotTime = Timestamp.of(sc.getDate());
                         VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(),
-                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);
+                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate());
                         return type.cast(vs);
                     }
                 }

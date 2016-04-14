@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,6 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VDoubleArray;
 import org.diirt.vtype.VLongArray;
@@ -154,7 +154,7 @@ public class MasarUtilitiesTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment1", snapshot.getComment());
         assertEquals("bugsbunny", snapshot.getOwner());
-        assertEquals(date1, snapshot.getDate());
+        assertEquals(date1.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         Map<String, String> parameters = snapshot.getParameters();
@@ -165,7 +165,7 @@ public class MasarUtilitiesTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment2", snapshot.getComment());
         assertEquals("elmerfudd", snapshot.getOwner());
-        assertEquals(date2, snapshot.getDate());
+        assertEquals(date2.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -176,7 +176,7 @@ public class MasarUtilitiesTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment3", snapshot.getComment());
         assertEquals("daffyduck", snapshot.getOwner());
-        assertEquals(date3, snapshot.getDate());
+        assertEquals(date3.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -227,7 +227,7 @@ public class MasarUtilitiesTest {
             new PVUnion[] { u1, u2, u3 }, 0);
 
         Snapshot s = new Snapshot(new SaveSet());
-        Timestamp time = Timestamp.now();
+        Instant time = Instant.now();
         VSnapshot snapshot = MasarUtilities.resultToVSnapshot(struct, s, time);
 
         assertEquals(Arrays.asList("channel1", "channel2", "channel3"),snapshot.getNames());
@@ -241,7 +241,7 @@ public class MasarUtilitiesTest {
         assertEquals(3, v1.getData().getDouble(2),0);
         assertEquals(AlarmSeverity.MINOR, v1.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(1).getName(), v1.getAlarmName());
-        Timestamp t1 = Timestamp.of(1, 1);
+        Instant t1 = Instant.ofEpochSecond(1, 1);
         assertEquals(t1, v1.getTimestamp());
 
         VLongArray v2 = (VLongArray) values.get(1);
@@ -251,14 +251,14 @@ public class MasarUtilitiesTest {
         assertEquals(3, v2.getData().getLong(2),0);
         assertEquals(AlarmSeverity.MAJOR, v2.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(2).getName(), v2.getAlarmName());
-        Timestamp t2 = Timestamp.of(2, 2);
+        Instant t2 = Instant.ofEpochSecond(2, 2);
         assertEquals(t2, v2.getTimestamp());
 
         VString v3 = (VString) values.get(2);
         assertEquals("disabled", v3.getValue());
         assertEquals(AlarmSeverity.INVALID, v3.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(3).getName(), v3.getAlarmName());
-        Timestamp t3 = Timestamp.of(3,3);
+        Instant t3 = Instant.ofEpochSecond(3,3);
         assertEquals(t3, v3.getTimestamp());
    }
 }

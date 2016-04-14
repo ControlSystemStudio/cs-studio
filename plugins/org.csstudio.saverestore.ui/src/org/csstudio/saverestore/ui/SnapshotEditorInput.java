@@ -11,6 +11,7 @@
 package org.csstudio.saverestore.ui;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 import org.csstudio.saverestore.data.VSnapshot;
@@ -88,9 +89,9 @@ public class SnapshotEditorInput implements IEditorInput {
     @Override
     public String getName() {
         if (snapshot.isSaved()) {
-            Date t = snapshot.getSnapshot().get().getDate();
+            Instant t = snapshot.getSnapshot().get().getDate();
             String name = snapshot.getSaveSet().getName();
-            return name + DATE_FORMAT.get().format(t);
+            return name + DATE_FORMAT.get().format(Date.from(t));
         } else {
             return snapshot.getSaveSet().getDisplayName();
         }

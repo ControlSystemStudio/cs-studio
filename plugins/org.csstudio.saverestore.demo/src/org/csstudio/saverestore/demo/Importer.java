@@ -10,13 +10,13 @@
  */
 package org.csstudio.saverestore.demo;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.csstudio.saverestore.ui.ValueImporter;
 import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.eclipse.swt.widgets.Display;
@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
 public class Importer implements ValueImporter {
 
     @Override
-    public Map<String, VType> getValuesForPVs(List<String> pvNames, Timestamp timestamp) {
+    public Map<String, VType> getValuesForPVs(List<String> pvNames, Instant timestamp) {
         Map<String, VType> ret = new HashMap<>();
         pvNames.forEach(e -> {
             VType v = ValueFactory.newVDouble(Math.random() * 100);

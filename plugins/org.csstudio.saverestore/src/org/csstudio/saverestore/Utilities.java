@@ -11,8 +11,10 @@
 package org.csstudio.saverestore;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +39,6 @@ import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListNumber;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Array;
@@ -145,6 +146,8 @@ public final class Utilities {
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
     private static final Pattern COMMA_PATTERN = Pattern.compile("\\,");
+    private static final ThreadLocal<DecimalFormat> NANO_FORMATTER = ThreadLocal
+        .withInitial(() -> new DecimalFormat("000000000"));
 
     /**
      * Private constructor to prevent instantiation of this class.
@@ -789,12 +792,22 @@ public final class Utilities {
     }
 
     /**
+     * Converts the timestamp to seconds as a floating point (seconds.nano).
+     *
+     * @param t the timstamp to transform
+     * @return the string representation of the timestamp using the decimal format
+     */
+    public static String timestampToDecimalString(Instant t) {
+        return t.getEpochSecond() + "." + NANO_FORMATTER.get().format(t.getNano());
+    }
+
+    /**
      * Transforms the timestamp to string, using the format HH:mm:ss.SSS MMM dd.
      *
      * @param t the timestamp to transform
      * @return string representation of the timestamp using the above format
      */
-    public static String timestampToString(Timestamp t) {
+    public static String timestampToString(Instant t) {
         return timestampToLittleEndianString(t, false);
     }
 
@@ -805,12 +818,12 @@ public final class Utilities {
      * @param includeYear true if the year should included in the format
      * @return string representation of the timestamp using the above format
      */
-    public static String timestampToLittleEndianString(Timestamp t, boolean includeYear) {
+    public static String timestampToLittleEndianString(Instant t, boolean includeYear) {
         if (t == null) {
             return null;
         }
-        return includeYear ? SLE_TIMESTAMP_FORMATTER.get().format(t.toDate())
-            : LE_TIMESTAMP_FORMATTER.get().format(t.toDate());
+        return includeYear ? SLE_TIMESTAMP_FORMATTER.get().format(Date.from(t))
+            : LE_TIMESTAMP_FORMATTER.get().format(Date.from(t));
     }
 
     /**
@@ -821,11 +834,12 @@ public final class Utilities {
      * @param includeYear true if the year should be included or false otherwise
      * @return string representation of the date
      */
-    public static String timestampToBigEndianString(Date t, boolean includeYear) {
+    public static String timestampToBigEndianString(Instant t, boolean includeYear) {
         if (t == null) {
             return null;
         }
-        return includeYear ? SBE_TIMESTAMP_FORMATTER.get().format(t) : BE_TIMESTAMP_FORMATTER.get().format(t);
+        return includeYear ? SBE_TIMESTAMP_FORMATTER.get().format(Date.from(t))
+            : BE_TIMESTAMP_FORMATTER.get().format(Date.from(t));
     }
 
     /**

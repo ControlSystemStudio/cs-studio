@@ -11,6 +11,7 @@
 package org.csstudio.saverestore.masar;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +36,6 @@ import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
@@ -699,7 +699,7 @@ public class MasarClient {
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
-            return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(snapshot.getDate()));
+            return MasarUtilities.resultToVSnapshot(result, snapshot, snapshot.getDate());
         } catch (InterruptedException e) {
             throw new MasarException("Loading snapshots data aborted.", e);
         }
@@ -764,9 +764,9 @@ public class MasarClient {
                 throw new MasarResponseException(message);
             }
             Snapshot newSnap = snapshot.getSnapshot().get();
-            Date date = newSnap.getDate();
+            Instant date = newSnap.getDate();
             if (date == null) {
-                date = snapshot.getTimestamp().toDate();
+                date = snapshot.getTimestamp();
             }
             newSnap = new Snapshot(newSnap.getSaveSet(), date, comment, user, newSnap.getParameters(),
                 newSnap.getPublicParameters());
@@ -835,7 +835,7 @@ public class MasarClient {
             parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, String.valueOf(id));
             Snapshot snapshot = new Snapshot(set, null, null, null, parameters,
                 Arrays.asList(MasarConstants.PARAM_SNAPSHOT_ID));
-            return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(sec, nano));
+            return MasarUtilities.resultToVSnapshot(result, snapshot, Instant.ofEpochSecond(sec, nano));
         } catch (InterruptedException e) {
             throw new MasarException("Taking snapshot aborted.", e);
         }

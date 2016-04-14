@@ -18,22 +18,19 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.csstudio.saverestore.SaveSetContent;
-import org.csstudio.saverestore.FileUtilities;
-import org.csstudio.saverestore.SnapshotContent;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ListDouble;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
@@ -108,14 +105,14 @@ public class FileUtilitiesTest {
     public void testSnapshotData() throws IOException, ParseException {
         SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
-        Snapshot snapshot = new Snapshot(set, new Date(), "comment", "owner");
+        Snapshot snapshot = new Snapshot(set, Instant.now(), "comment", "owner");
         Date d = new Date(1455296909369L);
         Date d2 = new Date(1455296909379L);
         Alarm alarmNone = ValueFactory.alarmNone();
         Alarm alarm = ValueFactory.newAlarm(AlarmSeverity.MINOR, "HIGH");
         Display display = ValueFactory.displayNone();
-        Time time = ValueFactory.newTime(Timestamp.of(d));
-        Time time2 = ValueFactory.newTime(Timestamp.of(d2));
+        Time time = ValueFactory.newTime(d.toInstant());
+        Time time2 = ValueFactory.newTime(d2.toInstant());
 
         VDouble val1 = ValueFactory.newVDouble(5d, alarm, time, display);
         VDoubleArray val2 = ValueFactory.newVDoubleArray(new ArrayDouble(1, 2, 3), alarmNone, time2, display);
@@ -136,7 +133,7 @@ public class FileUtilitiesTest {
 
         SnapshotContent sc = FileUtilities
             .readFromSnapshot(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
-        assertEquals(time.getTimestamp().toDate(), sc.getDate());
+        assertEquals(time.getTimestamp(), sc.getDate());
         assertArrayEquals(new String[] { "pv1", "pv2" }, sc.getNames().toArray(new String[2]));
         assertArrayEquals(new String[] { "rb1", "rb2" }, sc.getReadbacks().toArray(new String[2]));
         assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, sc.getDeltas().toArray(new String[2]));
