@@ -31,7 +31,7 @@ public class SearchStringParserTest {
     assertEquals("Failed to parse " + simpleText, expectedSimpleText,
         searchParser(simpleText, defaultKey));
 
-    String textAndlogbook = "test logbook=Operations";
+    String textAndlogbook = "test logbook:Operations";
     Map<String, String> expectedTextAndlogbook = new HashMap<String, String>();
     expectedTextAndlogbook.put("text", "test");
     expectedTextAndlogbook.put("logbook", "Operations");
@@ -39,7 +39,7 @@ public class SearchStringParserTest {
         expectedTextAndlogbook,
         searchParser(textAndlogbook, defaultKey));
 
-    String textAndProperty = "test shift.Id=1";
+    String textAndProperty = "test shift.Id:1";
     Map<String, String> expectedTextAndProperty = new HashMap<String, String>();
     expectedTextAndProperty.put("text", "test");
     expectedTextAndProperty.put("shift.Id", "1");
@@ -47,7 +47,7 @@ public class SearchStringParserTest {
         expectedTextAndProperty,
         searchParser(textAndProperty, defaultKey));
 
-    String textAnd2Property = "test shift.Id=1 SignOff.signature=test";
+    String textAnd2Property = "test shift.Id:1 SignOff.signature:test";
     Map<String, String> expectedTextAnd2Property = new HashMap<String, String>();
     expectedTextAnd2Property.put("text", "test");
     expectedTextAnd2Property.put("shift.Id", "1");
@@ -56,7 +56,7 @@ public class SearchStringParserTest {
         expectedTextAnd2Property,
         searchParser(textAnd2Property, defaultKey));
 
-    String textAndlogbookAndTags = "test logbook=Operations tags=testTag";
+    String textAndlogbookAndTags = "test logbook:Operations tags:testTag";
     Map<String, String> expectedTextAndlogbookAndTags = new HashMap<String, String>();
     expectedTextAndlogbookAndTags.put("text", "test");
     expectedTextAndlogbookAndTags.put("logbook", "Operations");
@@ -65,7 +65,7 @@ public class SearchStringParserTest {
         expectedTextAndlogbookAndTags,
         searchParser(textAndlogbookAndTags, defaultKey));
 
-    String textAndlogbookAndTagsAndFrom = "test logbook=Operations tags=testTag from=5 days ago";
+    String textAndlogbookAndTagsAndFrom = "test logbook:Operations tags:testTag from:5 days ago";
     Map<String, String> expectedTextAndlogbookAndTagsAndFrom = new HashMap<String, String>();
     expectedTextAndlogbookAndTagsAndFrom.put("text", "test");
     expectedTextAndlogbookAndTagsAndFrom.put("logbook", "Operations");
@@ -75,7 +75,7 @@ public class SearchStringParserTest {
         expectedTextAndlogbookAndTagsAndFrom,
         searchParser(textAndlogbookAndTagsAndFrom, defaultKey));
 
-    String textAndlogbookAndTagsAndFrom2 = "test logbook=Operations tags=testTag from=last 5 days";
+    String textAndlogbookAndTagsAndFrom2 = "test logbook:Operations tags:testTag from:last 5 days";
     Map<String, String> expectedTextAndlogbookAndTagsAndFrom2 = new HashMap<String, String>();
     expectedTextAndlogbookAndTagsAndFrom2.put("text", "test");
     expectedTextAndlogbookAndTagsAndFrom2.put("logbook", "Operations");
@@ -85,7 +85,7 @@ public class SearchStringParserTest {
         expectedTextAndlogbookAndTagsAndFrom2,
         searchParser(textAndlogbookAndTagsAndFrom2, defaultKey));
 
-    String textAndlogbookAndTagsAndRange = "test logbook=Operations tags=testTag from=last 5 days to=now";
+    String textAndlogbookAndTagsAndRange = "test logbook:Operations tags:testTag from:last 5 days to:now";
     Map<String, String> expectedTextAndlogbookAndTagsAndRange = new HashMap<String, String>();
     expectedTextAndlogbookAndTagsAndRange.put("text", "test");
     expectedTextAndlogbookAndTagsAndRange.put("logbook", "Operations");
@@ -96,7 +96,7 @@ public class SearchStringParserTest {
         expectedTextAndlogbookAndTagsAndRange,
         searchParser(textAndlogbookAndTagsAndRange, defaultKey));
 
-    String search = "search for some text logbook=Operations, LOTO,Commissioning tags= testTag, testTag2 from=last 5 days to= now";
+    String search = "search for some text logbook:Operations, LOTO,Commissioning tags: testTag, testTag2 from:last 5 days to: now";
     Map<String, String> expectedSearch = new HashMap<String, String>();
     expectedSearch.put("text", "search for some text");
     expectedSearch.put("logbook", "Operations, LOTO,Commissioning");
@@ -105,27 +105,6 @@ public class SearchStringParserTest {
     expectedSearch.put("to", "now");
     assertEquals("Failed to parse " + search, expectedSearch,
         searchParser(search, defaultKey));
-    
-    // Test for the new absolute time format associated with the java time
-    String searchAbsoluteTime = "search for some text logbook=Operations, LOTO,Commissioning tags= testTag, testTag2 from=2016/04/12 14:11:00.000 to= now";
-    Map<String, String> expectedSearchAbsoluteTime = new HashMap<String, String>();
-    expectedSearchAbsoluteTime.put("text", "search for some text");
-    expectedSearchAbsoluteTime.put("logbook", "Operations, LOTO,Commissioning");
-    expectedSearchAbsoluteTime.put("tags", "testTag, testTag2");
-    expectedSearchAbsoluteTime.put("from", "2016/04/12 14:11:00.000");
-    expectedSearchAbsoluteTime.put("to", "now");
-    assertEquals("Failed to parse " + searchAbsoluteTime, expectedSearchAbsoluteTime,
-        searchParser(searchAbsoluteTime, defaultKey));
-    
-    searchAbsoluteTime = "search for some text logbook=Operations, LOTO,Commissioning tags= testTag, testTag2 from=-5 days 0.0 seconds to= now";
-    expectedSearchAbsoluteTime = new HashMap<String, String>();
-    expectedSearchAbsoluteTime.put("text", "search for some text");
-    expectedSearchAbsoluteTime.put("logbook", "Operations, LOTO,Commissioning");
-    expectedSearchAbsoluteTime.put("tags", "testTag, testTag2");
-    expectedSearchAbsoluteTime.put("from", "-5 days 0.0 seconds");
-    expectedSearchAbsoluteTime.put("to", "now");
-    assertEquals("Failed to parse " + searchAbsoluteTime, expectedSearchAbsoluteTime,
-        searchParser(searchAbsoluteTime, defaultKey));
-    
     }
+
 }
