@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class GlobalAlarmReader
                 final String status = result.getString(4);
                 // Not used: final String value = result.getString(5);
                 final Timestamp sql_time = result.getTimestamp(6);
-                org.diirt.util.time.Timestamp alarm_time;
+                Instant alarm_time;
                 if (result.wasNull())
                     alarm_time = null;
                 else

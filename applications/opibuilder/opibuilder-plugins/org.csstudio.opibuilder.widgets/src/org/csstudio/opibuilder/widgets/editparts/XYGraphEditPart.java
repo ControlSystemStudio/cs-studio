@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,9 +36,8 @@ import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.eclipse.draw2d.IFigure;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
+import org.eclipse.draw2d.IFigure;
 
 /**The XYGraph editpart
  * @author Xihui Chen
@@ -599,8 +599,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
     private void setYValue(Trace trace,
             CircularBufferDataProvider dataProvider, VType y_value) {
         if(VTypeHelper.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
-            Timestamp timestamp = VTypeHelper.getTimestamp(y_value);
-            long time = timestamp.getSec() * 1000 + timestamp.getNanoSec()/1000000;
+            Instant timestamp = VTypeHelper.getTimestamp(y_value);
+            long time = timestamp.toEpochMilli();
             dataProvider.setCurrentYData(VTypeHelper.getDouble(y_value), time);
         }else{
             if(VTypeHelper.getSize(y_value) > 1){

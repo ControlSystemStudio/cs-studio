@@ -1,5 +1,6 @@
 package org.csstudio.archive.reader.appliance;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 import org.csstudio.archive.reader.ArchiveReader;
@@ -9,7 +10,6 @@ import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 
 /**
@@ -35,12 +35,12 @@ public abstract class AbstractArchiverReaderTesting {
      *
      * @param pvname the name of the provided PV
      * @param count the number of requested points
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of statistical data
      * @throws Exception in case of an error
      */
-    protected ArchiveVType[] getValuesStatistics(String pvname, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVType[] getValuesStatistics(String pvname, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, true, count,start,end);
         ArrayList<ArchiveVType> vals = new ArrayList<ArchiveVType>();
         while(iterator.hasNext()) {
@@ -56,12 +56,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVNumber[] getValuesNumber(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVNumber[] getValuesNumber(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         ArrayList<ArchiveVNumber> vals = new ArrayList<ArchiveVNumber>();
         while(iterator.hasNext()) {
@@ -77,12 +77,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVNumberArray[] getValuesNumberArray(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVNumberArray[] getValuesNumberArray(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         ArrayList<ArchiveVNumberArray> vals = new ArrayList<ArchiveVNumberArray>();
         while(iterator.hasNext()) {
@@ -98,12 +98,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVType[] getValuesStringArray(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVType[] getValuesStringArray(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         //exception should occur in the next line
         iterator.next();
@@ -116,12 +116,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVString[] getValuesString(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVString[] getValuesString(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         ArrayList<ArchiveVString> vals = new ArrayList<ArchiveVString>();
         while(iterator.hasNext()) {
@@ -138,12 +138,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVType[] getValuesEnumArray(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVType[] getValuesEnumArray(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         //exception should occur in the next line
         iterator.next();
@@ -156,12 +156,12 @@ public abstract class AbstractArchiverReaderTesting {
      * @param pvname the name of the PV to load data from
      * @param optimized true if optimized data should be loaded or false otherwise
      * @param count number of points to load in case optimized retrieval is selected
-     * @param start the start timestamp of the data
-     * @param end the end timestamp of the data
+     * @param start the start Instant of the data
+     * @param end the end Instant of the data
      * @return the array of data
      * @throws Exception in case of an error
      */
-    protected ArchiveVEnum[] getValuesEnum(String pvname, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception {
+    protected ArchiveVEnum[] getValuesEnum(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         ArrayList<ArchiveVEnum> vals = new ArrayList<ArchiveVEnum>();
         while(iterator.hasNext()) {
@@ -171,7 +171,7 @@ public abstract class AbstractArchiverReaderTesting {
         return vals.toArray(new ArchiveVEnum[vals.size()]);
     }
 
-    private ValueIterator getIterator(String name, boolean optimized, int count, Timestamp start, Timestamp end) throws Exception{
+    private ValueIterator getIterator(String name, boolean optimized, int count, Instant start, Instant end) throws Exception{
         return optimized ?
                 getReader().getOptimizedValues(1, name, start, end,count) :
                 getReader().getRawValues(1, name, start, end);

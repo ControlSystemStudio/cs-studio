@@ -2,6 +2,7 @@ package org.csstudio.simplepv;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListNumber;
 import org.diirt.util.array.ListShort;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Array;
@@ -353,9 +353,9 @@ public class VTypeHelper {
      * @param obj the VType object.
      * @return the time or null if there is no time info in the object.
      */
-    public static Timestamp getTimestamp(VType obj){
+    public static Instant getTimestamp(VType obj){
         Time timeOf = ValueUtil.timeOf(obj);
-        if(timeOf !=null)
+        if(timeOf != null)
             return timeOf.getTimestamp();
         return null;
     }

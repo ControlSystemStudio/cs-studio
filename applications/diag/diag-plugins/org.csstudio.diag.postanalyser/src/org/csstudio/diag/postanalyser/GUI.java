@@ -1,6 +1,7 @@
 package org.csstudio.diag.postanalyser;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 import java.util.logging.Level;
 
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -52,7 +53,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.diirt.util.time.Timestamp;
 
 /** User interface of the post analyzer.
  *  <p>
@@ -605,7 +605,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
                     final ChartSample sample = samples.get(i);
                     if (time_axis)
                     {
-                        final Timestamp time =
+                        final Instant time =
                             TimestampHelper.fromMillisecs((long) sample.getX());
                         out.println(time.toString() + "\t" + sample.getY());
                     }

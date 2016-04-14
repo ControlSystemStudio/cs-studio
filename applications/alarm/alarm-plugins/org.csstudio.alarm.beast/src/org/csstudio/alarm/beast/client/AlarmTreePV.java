@@ -8,13 +8,13 @@
 package org.csstudio.alarm.beast.client;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.util.time.Timestamp;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,
  *  tracking the current and alarm state, value, timestamp info
@@ -196,13 +196,13 @@ public class AlarmTreePV extends AlarmTreeLeaf
      *  @param severity Alarm severity
      *  @param message Alarm message
      *  @param value Value that triggered the update
-     *  @param timestamp Time stamp for this update
+     *  @param timestamp Instant for this update
      */
     public void setAlarmState(final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel severity, final String message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         // Changing the alarm state will eventually recurse up to the root
         // to maximize the severities.

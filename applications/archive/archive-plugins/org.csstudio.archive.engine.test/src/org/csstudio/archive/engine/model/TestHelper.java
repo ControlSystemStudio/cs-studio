@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Instant;
+
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -29,7 +30,7 @@ public class TestHelper
      */
     public static VType newValue(final double value)
     {
-        return new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, value);
+        return new ArchiveVNumber(Instant.now(), AlarmSeverity.NONE, "OK", display, value);
     }
 
     /** @param samples {@link SampleBuffer} to dump

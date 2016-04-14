@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,6 @@ import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VStatistics;
@@ -162,7 +162,7 @@ public class FormulaItem extends ModelItem
             }
 
             // Compute result for each 'line in the spreadsheet'
-            Timestamp time;
+            Instant time;
             while (more_input)
             {   // Find oldest time stamp of all the inputs
                 time = null;
@@ -170,7 +170,7 @@ public class FormulaItem extends ModelItem
                 {
                     if (values[i] == null)
                         continue;
-                    final Timestamp sample_time = VTypeHelper.getTimestamp(values[i]);
+                    final Instant sample_time = VTypeHelper.getTimestamp(values[i]);
                     if (time == null  ||  sample_time.compareTo(time) < 0)
                         time = sample_time;
                 }

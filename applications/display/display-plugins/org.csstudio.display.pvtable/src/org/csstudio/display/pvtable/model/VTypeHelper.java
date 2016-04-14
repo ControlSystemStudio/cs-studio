@@ -8,12 +8,12 @@
 package org.csstudio.display.pvtable.model;
 
 import java.text.NumberFormat;
+import java.time.Instant;
 
 import org.csstudio.display.pvtable.Preferences;
 import org.diirt.util.array.IteratorInt;
 import org.diirt.util.array.IteratorNumber;
 import org.diirt.util.array.ListByte;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
@@ -40,16 +40,16 @@ public class VTypeHelper {
      *
      * @param value
      *            Value to decode
-     * @return {@link Timestamp}
+     * @return {@link Instant}
      */
-    final public static Timestamp getTimestamp(final VType value) {
+    final public static Instant getTimestamp(final VType value) {
         if (value instanceof Time) {
             final Time time = (Time) value;
             if (time.isTimeValid()) {
                 return time.getTimestamp();
             }
         }
-        return Timestamp.now();
+        return Instant.now();
     }
 
     /**

@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -23,7 +25,7 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.AlarmSeverity;
 
 /** ArchiveReader for RDB data
@@ -355,7 +357,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getRawValues(final int key, final String name,
-            final Timestamp start, final Timestamp end) throws UnknownChannelException, Exception
+            final Instant start, final Instant end) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
         return getRawValues(channel_id, start, end);
@@ -369,7 +371,7 @@ public class RDBArchiveReader implements ArchiveReader
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(final int channel_id,
-            final Timestamp start, final Timestamp end) throws Exception
+            final Instant start, final Instant end) throws Exception
     {
         return new RawSampleIterator(this, channel_id, start, end, concurrency);
     }
@@ -377,7 +379,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
-            final Timestamp start, final Timestamp end, int count) throws UnknownChannelException, Exception
+            final Instant start, final Instant end, int count) throws UnknownChannelException, Exception
     {
         // MySQL version of the stored proc. requires count > 1
         if (count <= 1)
@@ -412,7 +414,7 @@ public class RDBArchiveReader implements ArchiveReader
             return raw_data;
 
         // Else: Perform averaging to reduce sample count
-        final double seconds = end.durationFrom(start).toSeconds() / count;
+        final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
         return new AveragedValueIterator(raw_data, seconds);
     }
 

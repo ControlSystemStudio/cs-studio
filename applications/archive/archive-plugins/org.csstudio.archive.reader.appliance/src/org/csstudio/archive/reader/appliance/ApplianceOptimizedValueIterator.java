@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Iterator;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
@@ -10,7 +11,6 @@ import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
@@ -48,7 +48,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
      * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
      * @throws ArchiverApplianceException if it is not possible to load optimised data for the selected PV
      */
-    public ApplianceOptimizedValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+    public ApplianceOptimizedValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
             int points, boolean useStatistics, IteratorListener listener) throws ArchiverApplianceException,
             IOException {
         super(reader, name, start, end, listener);
@@ -80,7 +80,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
      * @throws IOException if there was an error reading data
      * @throws ArchiverApplianceInvalidTypeException if the data cannot be loaded with the optimized method
      */
-    private Display determineDisplay(ApplianceArchiveReader reader, String name, Timestamp time)
+    private Display determineDisplay(ApplianceArchiveReader reader, String name, Instant time)
             throws ArchiverApplianceInvalidTypeException, IOException {
         // to retrieve the display, request the raw data for the end timestamp
         java.sql.Timestamp timestamp = TimestampHelper.toSQLTimestamp(time);

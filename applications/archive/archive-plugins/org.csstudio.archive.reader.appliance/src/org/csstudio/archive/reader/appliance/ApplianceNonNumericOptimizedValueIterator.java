@@ -1,8 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
-
-import org.diirt.util.time.Timestamp;
+import java.time.Instant;
 
 /**
  *
@@ -33,7 +32,7 @@ public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIte
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      */
     public ApplianceNonNumericOptimizedValueIterator(ApplianceArchiveReader reader,
-            String name, Timestamp start, Timestamp end, int requestedPoints, int totalNumberOfPoints,
+            String name, Instant start, Instant end, int requestedPoints, int totalNumberOfPoints,
             IteratorListener listener) throws ArchiverApplianceException, IOException {
         super(reader,name,start,end,listener);
         this.requestedPoints = requestedPoints;

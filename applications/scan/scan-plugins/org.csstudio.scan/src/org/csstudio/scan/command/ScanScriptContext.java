@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
-import org.diirt.util.time.TimeDuration;
 
 /** Context in which a {@link ScriptCommand}'s script is executed
  *
@@ -142,5 +142,5 @@ abstract public class ScanScriptContext
      */
     abstract public void write(final String device_name, final Object value,
             final String readback, final boolean wait,
-            final double tolerance, final TimeDuration timeout) throws Exception;
+            final double tolerance, final Duration timeout) throws Exception;
 }

@@ -1,7 +1,10 @@
 package org.csstudio.utility.pvmanager.widgets;
 
 
-import org.diirt.util.time.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import org.diirt.vtype.ValueUtil;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -15,8 +18,8 @@ public class VTableCellLabelProvider extends CellLabelProvider {
         Object value = ((VTableContentProvider.VTableRow) cell.getElement()).getValue(cell.getColumnIndex());
          if (value == null || (value instanceof Double && ((Double) value).isNaN())) {
              cell.setText("");
-         } else if (value instanceof Timestamp){
-             cell.setText(ValueUtil.getDefaultTimestampFormat().format(value));
+         } else if (value instanceof Instant){
+             cell.setText(ValueUtil.getDefaultTimestampFormat().format(ZonedDateTime.ofInstant((Instant) value, ZoneId.systemDefault())));
          } else {
              cell.setText(value.toString());
          }

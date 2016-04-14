@@ -47,11 +47,11 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellAdapter;
@@ -241,7 +241,7 @@ public class Controller
                 if (scrolling)
                 {   // Scrolling, adjust relative time, i.e. width of plot
                     final Duration duration = Duration.between(start, end);
-                    start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(duration));
+                    start_spec = "-" + PeriodFormat.formatSeconds(TimeDuration.toSecondsDouble(duration));
                     end_spec = RelativeTime.NOW;
                 }
                 else

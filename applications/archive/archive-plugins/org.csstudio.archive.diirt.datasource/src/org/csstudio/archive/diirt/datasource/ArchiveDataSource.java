@@ -12,8 +12,8 @@ package org.csstudio.archive.diirt.datasource;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 import org.diirt.datasource.ChannelHandler;
 import org.diirt.datasource.DataSource;
-import org.diirt.util.time.Timestamp;
 
 /**
  *
@@ -112,8 +111,8 @@ public class ArchiveDataSource extends DataSource {
             strippedChannelName = fullChannelName.substring(0, idx);
             String parameters = fullChannelName.substring(idx + 1);
             List<ArchiveSource> sources = new ArrayList<>();
-            Timestamp startTime = null;
-            Timestamp endTime = null;
+            Instant startTime = null;
+            Instant endTime = null;
             String key, value;
             while (!parameters.isEmpty()) {
                 idx = parameters.indexOf('"');
@@ -191,12 +190,12 @@ public class ArchiveDataSource extends DataSource {
      * @return the timestamp
      * @throws IllegalArgumentException if the time cannot be parsed (wrong format)
      */
-    private static Timestamp parseTime(String time) throws IllegalArgumentException {
+    private static Instant parseTime(String time) throws IllegalArgumentException {
         try {
             try {
                 // check if it is a utc number in milliseconds
                 long timestamp = Long.parseLong(time);
-                return Timestamp.of(new Date(timestamp));
+                return Instant.ofEpochMilli(timestamp);
             } catch (NumberFormatException e) {
                 // ignore
             }
@@ -206,15 +205,15 @@ public class ArchiveDataSource extends DataSource {
                     // perhaps it is Timestamp.toString
                     long seconds = Long.parseLong(time.substring(0, idx));
                     int nano = Integer.parseInt(time.substring(idx + 1));
-                    return Timestamp.of(seconds, nano);
+                    return Instant.ofEpochSecond(seconds, nano);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
                 //maybe it is a human readable timestamp with milliseconds
-                return Timestamp.of(new SimpleDateFormat(TIME_FORMAT_MILLIS).parse(time));
+                return new SimpleDateFormat(TIME_FORMAT_MILLIS).parse(time).toInstant();
             }
             //no dot can mean it is a human readable timestamp without milliseconds
-            return Timestamp.of(new SimpleDateFormat(TIME_FORMAT).parse(time));
+            return new SimpleDateFormat(TIME_FORMAT).parse(time).toInstant();
 
         } catch (ParseException e) {
             String message = "Invalid time format: " + time + ". Use " + TIME_FORMAT + " or " + TIME_FORMAT_MILLIS

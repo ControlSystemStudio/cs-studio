@@ -10,10 +10,10 @@
  */
 package org.csstudio.archive.diirt.datasource;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.diirt.datasource.ChannelWriteCallback;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
 
 /**
@@ -37,8 +37,8 @@ import org.diirt.vtype.Time;
  */
 public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
 
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private Instant startTime;
+    private Instant endTime;
     private boolean optimised = true;
 
     /**
@@ -94,25 +94,25 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
                 }
                 optimised = opt;
             } else if (newValue instanceof Long) {
-                startTime = Timestamp.of(new Date((Long) newValue));
+                startTime = Instant.ofEpochMilli((Long) newValue);
                 endTime = startTime;
             } else if (newValue instanceof long[]) {
-                startTime = Timestamp.of(new Date(((long[]) newValue)[0]));
-                endTime = Timestamp.of(new Date(((long[]) newValue)[1]));
+                startTime = Instant.ofEpochMilli(((long[]) newValue)[0]);
+                endTime = Instant.ofEpochMilli(((long[]) newValue)[1]);
             } else if (newValue instanceof Long[]) {
-                startTime = Timestamp.of(new Date(((Long[]) newValue)[0]));
-                endTime = Timestamp.of(new Date(((Long[]) newValue)[1]));
+                startTime = Instant.ofEpochMilli(((Long[]) newValue)[0]);
+                endTime = Instant.ofEpochMilli(((Long[]) newValue)[1]);
             } else if (newValue instanceof Date) {
-                startTime = Timestamp.of((Date) newValue);
+                startTime = ((Date) newValue).toInstant();
                 endTime = startTime;
             } else if (newValue instanceof Date[]) {
-                startTime = Timestamp.of(((Date[]) newValue)[0]);
-                endTime = Timestamp.of(((Date[]) newValue)[1]);
-            } else if (newValue instanceof Timestamp) {
-                startTime = (Timestamp) newValue;
+                startTime = ((Date[]) newValue)[0].toInstant();
+                endTime = ((Date[]) newValue)[1].toInstant();
+            } else if (newValue instanceof Instant) {
+                startTime = (Instant) newValue;
                 endTime = startTime;
-            } else if (newValue instanceof Timestamp[]) {
-                Timestamp[] t = (Timestamp[]) newValue;
+            } else if (newValue instanceof Instant[]) {
+            	Instant[] t = (Instant[]) newValue;
                 if (t.length == 0) {
                     throw new IllegalArgumentException("Write value not provided.");
                 } else if (t.length == 1) {
@@ -138,17 +138,17 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
                 }
             } else if (newValue instanceof Object[] && ((Object[]) newValue).length == 3) {
                 Object[] v = (Object[]) newValue;
-                if (v[0] instanceof Timestamp && v[1] instanceof Timestamp && v[2] instanceof Boolean) {
-                    startTime = (Timestamp) v[0];
-                    endTime = (Timestamp) v[1];
+                if (v[0] instanceof Instant && v[1] instanceof Instant && v[2] instanceof Boolean) {
+                    startTime = (Instant) v[0];
+                    endTime = (Instant) v[1];
                     optimised = (Boolean) v[2];
                 } else if (v[0] instanceof Long && v[1] instanceof Long && v[2] instanceof Boolean) {
-                    startTime = Timestamp.of(new Date((Long) v[0]));
-                    endTime = Timestamp.of(new Date((Long) v[1]));
+                    startTime = Instant.ofEpochMilli((Long) v[0]);
+                    endTime = Instant.ofEpochMilli((Long) v[1]);
                     optimised = (Boolean) v[2];
                 } else if (v[0] instanceof Date && v[1] instanceof Date && v[2] instanceof Boolean) {
-                    startTime = Timestamp.of((Date) v[0]);
-                    endTime = Timestamp.of((Date) v[1]);
+                    startTime = ((Date) v[0]).toInstant();
+                    endTime = ((Date) v[1]).toInstant();
                     optimised = (Boolean) v[2];
                 } else if (v[0] instanceof Time && v[1] instanceof Time && v[2] instanceof Boolean) {
                     startTime = ((Time) v[0]).getTimestamp();

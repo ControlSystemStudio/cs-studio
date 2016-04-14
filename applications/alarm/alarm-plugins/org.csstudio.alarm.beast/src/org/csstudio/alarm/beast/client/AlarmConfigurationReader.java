@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -374,7 +375,7 @@ public class AlarmConfigurationReader
         final Timestamp sql_time = result.getTimestamp(16);
         if (!result.wasNull())
         {
-            final org.diirt.util.time.Timestamp timestamp = TimestampHelper.toEPICSTime(sql_time);
+            final Instant timestamp = TimestampHelper.toEPICSTime(sql_time);
             pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
         }
     }
