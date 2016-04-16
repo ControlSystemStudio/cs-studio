@@ -88,6 +88,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
     /**
      * @param alignment the alignment to set
      */
+    @Override
     public void setAlignment(String alignment) {
         this.alignment = alignment;
     }
@@ -95,6 +96,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
     /**
      * @return the alignment
      */
+    @Override
     public String getAlignment() {
         return alignment;
     }
@@ -116,6 +118,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
     /**
      * @param format the format to set
      */
+    @Override
     public void setFormat(String format) {
         this.format = format;
     }
@@ -123,6 +126,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
     /**
      * @return the format
      */
+    @Override
     public String getFormat() {
         return format;
     }

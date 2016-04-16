@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -222,8 +223,8 @@ public class AlarmRDB
                     final String value = result.getString(15);
 
                     final Timestamp time = result.getTimestamp(16);
-                    final org.diirt.util.time.Timestamp timestamp = result.wasNull()
-                        ? org.diirt.util.time.Timestamp.now()
+                    final Instant timestamp = result.wasNull()
+                        ? Instant.now()
                         : TimestampHelper.toEPICSTime(time);
 
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
@@ -287,7 +288,7 @@ public class AlarmRDB
      */
     private void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
             String current_message, final SeverityLevel severity, String message,
-            final String value, final org.diirt.util.time.Timestamp timestamp) throws Exception
+            final String value, final Instant timestamp) throws Exception
     {
         // Message should not be empty because Oracle treats empty strings like null
         if (message == null  ||  message.isEmpty())
@@ -344,7 +345,7 @@ public class AlarmRDB
         {
             newValue = newValue.substring(0,99);
             Activator.getLogger().log(Level.WARNING,
-                "Value truncated. Too many characters: " + pv.getName() + "; " + timestamp.toDate() + " " + value);
+                "Value truncated. Too many characters: " + pv.getName() + "; " + Date.from(timestamp) + " " + value);
         }
         updateStateStatement.setString(5, newValue);
         Timestamp sql_time = TimestampHelper.toSQLTime(timestamp);

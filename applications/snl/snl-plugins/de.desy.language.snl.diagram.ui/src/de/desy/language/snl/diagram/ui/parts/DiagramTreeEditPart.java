@@ -109,6 +109,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
      * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
      * PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final String prop = evt.getPropertyName();
         if (SNLDiagram.CHILD_ADDED_PROP.equals(prop)) {

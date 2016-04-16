@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Instant;
+
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
@@ -60,6 +61,6 @@ public class ValueButcher
     /** Create sample with status set to some info */
     private static VType createInfoSample(final String info)
     {
-        return new ArchiveVString(Timestamp.now(), AlarmSeverity.INVALID, info, info);
+        return new ArchiveVString(Instant.now(), AlarmSeverity.INVALID, info, info);
     }
 }

@@ -55,6 +55,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
                 if(pv != null){
                     if(pvLoadLimitsListener == null)
                         pvLoadLimitsListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 Display displayInfo = VTypeHelper.getDisplayInfo(value);
@@ -109,6 +110,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 registerLoadLimitsListener();
                 return false;
@@ -124,6 +126,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //enable
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if(getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -135,6 +138,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         // value
         IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -149,6 +153,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //minimum
         IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -161,6 +166,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //maximum
         IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -173,6 +179,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //page increment
         IWidgetPropertyChangeHandler pageIncrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -184,6 +191,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //step increment
         IWidgetPropertyChangeHandler stepIncrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -195,6 +203,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //bar length
         IWidgetPropertyChangeHandler barLengthHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -206,6 +215,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //value tip
         IWidgetPropertyChangeHandler valueTipHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -218,6 +228,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
         //horizontal
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

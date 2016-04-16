@@ -140,6 +140,13 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.setBackground(Objects.requireNonNull(color));
     }
 
+    /** Opacity (0 .. 100 %) of 'area' */
+    public void setOpacity(final int opacity)
+    {
+        // TODO Not implemented, only added API to match SWT version
+        // plot.setOpacity(opacity);
+    }
+
     /** @param title Title text */
     public void setTitle(final Optional<String> title)
     {

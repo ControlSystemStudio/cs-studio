@@ -41,7 +41,8 @@ public class OpiColorTest {
         // init document
         Document doc = XMLFileHandler.createDomDocument();
 
-        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        EdmAttribute a = new EdmAttribute("s");
+        a.appendValue("\"blinking purple\"");
         a.appendValue("65535 512 256");
         EdmColor c = new EdmColor(a, true);
 

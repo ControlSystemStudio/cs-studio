@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test fragment for org.csstudio.perspectives
+Bundle-SymbolicName: org.csstudio.perspectives.test
+Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
+Fragment-Host: org.csstudio.perspectives
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.mockito;bundle-version="1.9.5",
+ org.objenesis;bundle-version="1.0.0",
+ org.hamcrest;bundle-version="1.1.0"

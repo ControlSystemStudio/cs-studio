@@ -58,6 +58,7 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
 
         //Sqaure LED
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -70,6 +71,7 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
 
         //Show LED
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

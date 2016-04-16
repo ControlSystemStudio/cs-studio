@@ -26,6 +26,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<Browser> {
         super(editPart, SWT.None);
     }
 
+    @Override
     public void setUrl(String url){
         if(runmode && url.trim().length() > 0){
             if(!url.startsWith("http") && !url.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
@@ -40,7 +41,7 @@ public class WebBrowserFigure extends AbstractWebBrowserFigure<Browser> {
         return browser;
     }
 
-
+    @Override
     public Browser getBrowser() {
         return browser;
     }

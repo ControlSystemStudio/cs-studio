@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -36,16 +36,19 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
 
     private Shape sizeOnDropFeedback;
 
+    @Override
     public Command createChangeBoundsCommand(AbstractWidgetModel widgetModel,
             ChangeBoundsRequest request, Rectangle targetBounds) {
 
         return new ChangeSquareBoundsCommand(widgetModel, targetBounds, "Move/Resize");
     }
 
+    @Override
     public List<Handle> createCustomHandles(GraphicalEditPart editPart) {
         return null;
     }
 
+    @Override
     public IFigure createDragSourceFeedbackFigure(AbstractWidgetModel model,
             Rectangle initalBounds) {
         // Use a ghost rectangle for feedback
@@ -57,20 +60,24 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
         return r;
     }
 
+    @Override
     public Command createInitialBoundsCommand(AbstractWidgetModel widgetModel,
             CreateRequest request, Rectangle targetBounds) {
         return new InitialSquareBoundsCommand(widgetModel, targetBounds);
     }
 
+    @Override
     public Shape createSizeOnDropFeedback(CreateRequest createRequest) {
         return getSizeOnDropFeedback();
     }
 
     @SuppressWarnings("rawtypes")
+    @Override
     public Class getCreationTool() {
         return null;
     }
 
+    @Override
     public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
             PrecisionRectangle newBounds, IFigure feedbackFigure,
             ChangeBoundsRequest request) {
@@ -89,6 +96,7 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
         feedbackFigure.setBounds(newBounds);
     }
 
+    @Override
     public void showSizeOnDropFeedback(CreateRequest request,
             IFigure feedbackFigure, Insets insets) {
         Point p = new Point(request.getLocation().getCopy());

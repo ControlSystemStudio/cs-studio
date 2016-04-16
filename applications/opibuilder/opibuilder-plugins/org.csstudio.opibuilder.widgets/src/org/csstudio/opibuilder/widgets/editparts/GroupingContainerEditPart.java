@@ -63,6 +63,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setOpaque(!(Boolean)newValue);
@@ -73,6 +74,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
         setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 for(AbstractWidgetModel child : getWidgetModel().getChildren()){
@@ -85,6 +87,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 lockChildren((Boolean) newValue);
@@ -98,6 +101,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
         if(getWidgetModel().getParent() instanceof TabModel){
             removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_VISIBLE);
             IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
                     boolean visible = (Boolean) newValue;
                     final IFigure figure = getFigure();
@@ -109,6 +113,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
         }
 
         IWidgetPropertyChangeHandler showBarHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
                 ((GroupingContainerFigure)refreshableFigure).setShowScrollBar((Boolean)newValue);
                 return true;
@@ -117,6 +122,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
         setPropertyChangeHandler(GroupingContainerModel.PROP_SHOW_SCROLLBAR, showBarHandler);
 
         IWidgetPropertyChangeHandler fowardColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
                 if(getWidgetModel().isForwardColors())
                     forwardColors();
@@ -133,6 +139,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
                 AbstractWidgetModel.PROP_WIDTH).addPropertyChangeListener(
                         new PropertyChangeListener() {
 
+                        @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             resizeChildren((Integer)(evt.getNewValue()),
                                     (Integer)(evt.getOldValue()), true);
@@ -144,6 +151,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
                 AbstractWidgetModel.PROP_HEIGHT).addPropertyChangeListener(
                         new PropertyChangeListener() {
 
+                        @Override
                         public void propertyChange(PropertyChangeEvent evt) {
                             resizeChildren((Integer)(evt.getNewValue()),
                                     (Integer)(evt.getOldValue()), false);

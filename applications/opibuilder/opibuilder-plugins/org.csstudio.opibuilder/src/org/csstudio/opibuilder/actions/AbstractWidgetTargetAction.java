@@ -32,6 +32,7 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
         super();
     }
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }

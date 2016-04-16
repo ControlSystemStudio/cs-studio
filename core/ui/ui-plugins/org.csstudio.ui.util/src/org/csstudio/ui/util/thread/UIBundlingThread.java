@@ -71,6 +71,7 @@ public final class UIBundlingThread implements Runnable {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void run() {
         if(!tasksQueue.isEmpty())
             processQueue();

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.symbol.Preferences;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.simplepv.IPV;
@@ -23,15 +24,16 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VBoolean;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VNumber;
-import org.diirt.vtype.VType;
 
 /**
  * @author Fred Arnaud (Sopra Group)
@@ -46,6 +48,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     /**
      * Returns the casted model. This is just for convenience.
      */
+    @Override
     public CommonMultiSymbolModel getWidgetModel() {
         return (CommonMultiSymbolModel) getModel();
     }
@@ -118,6 +121,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // PV properties handlers
         registerCommonPVChangeHandlers();
+
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
     @Override
@@ -150,6 +155,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 if (pv != null) {
                     if (loadItemsFromPVListener == null)
                         loadItemsFromPVListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && value instanceof VEnum) {
@@ -171,6 +177,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerCommonPVChangeHandlers() {
         // PV_Name
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if (newValue == null || ((String) newValue).isEmpty())
@@ -184,6 +191,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if (newValue != null && newValue instanceof VType) {
@@ -191,7 +199,9 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                     if (newValue instanceof VNumber) {
                         Double doubleValue = VTypeHelper.getDouble((VType) newValue);
                         symbolFigure.setState(doubleValue);
-                    } else {
+                    }else if (newValue instanceof VBoolean) {
+                        symbolFigure.setState((VBoolean)newValue);
+                    }else {
                         String stringValue = VTypeHelper.getString((VType) newValue);
                         symbolFigure.setState(stringValue);
                     }
@@ -204,6 +214,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // Items
         IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             @SuppressWarnings("unchecked")
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
@@ -242,6 +253,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerLabelPropertyChangeHandlers() {
         // show symbol label
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
@@ -253,6 +265,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // symbol label position
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
@@ -273,6 +286,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerSymbolImagePropertyHandlers() {
         // symbol image filename property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -288,6 +302,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerImageColorPropertyHandlers() {
         // on color
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
@@ -299,6 +314,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // off color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
@@ -332,6 +348,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerImageSizePropertyHandlers() {
         // image auto-size property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -348,6 +365,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // changes to the stop animation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -359,6 +377,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // changes to the align to nearest second property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -370,6 +389,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // image size (height/width) property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -387,6 +407,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
      */
     private void registerImageBorderPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -404,6 +425,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
      */
     private void registerImageStretchPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -421,6 +443,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     public void registerImageRotationPropertyHandlers() {
         // degree rotation property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -444,6 +467,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // flip horizontal rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -451,7 +475,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
-                setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
+                setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL, newValue);
                 setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
@@ -462,6 +486,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // flip vertical rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -469,7 +494,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
-                setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
+                setPropertyValue(CommonMultiSymbolModel.PROP_FLIP_VERTICAL, newValue);
                 setPropertyValue(CommonMultiSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
@@ -485,6 +510,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     private void registerImageCropPropertyHandlers() {
         // top crop property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 if (newValue == null) {
@@ -500,6 +526,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // bottom crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -512,6 +539,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // left crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -524,6 +552,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
 
         // right crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
@@ -538,6 +567,7 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
     public void autoSizeWidget(final CommonMultiSymbolFigure imageFigure) {
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
                     Display.getDefault().timerExec(100, this);

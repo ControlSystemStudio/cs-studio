@@ -42,6 +42,7 @@ public class ArraySpinnerDirectEditPolicy
     /**
      * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
      */
+    @Override
     protected void showCurrentEditValue(DirectEditRequest request) {
         //String value = (String)request.getCellEditor().getValue();
         //((LabelFigure)getHostFigure()).setText(value);
@@ -62,6 +63,7 @@ static class ArraySpinnerEditCommand extends Command    {
     this.newIndex = newIndex;
     }
 
+    @Override
     public void execute() {
         oldIndex = arrayEditpart.getArrayFigure().getIndex();
         if(newIndex>=arrayEditpart.getArrayFigure().getArrayLength())
@@ -69,6 +71,7 @@ static class ArraySpinnerEditCommand extends Command    {
         arrayEditpart.getArrayFigure().setIndex(newIndex);
     }
 
+    @Override
     public void undo() {
         arrayEditpart.getArrayFigure().setIndex(oldIndex);
     }

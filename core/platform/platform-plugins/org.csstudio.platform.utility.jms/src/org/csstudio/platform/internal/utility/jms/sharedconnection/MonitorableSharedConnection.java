@@ -161,6 +161,7 @@ class MonitorableSharedConnection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public Session createSession(final boolean transacted, final int acknowledgeMode)
                 throws JMSException {
             return _connection.createSession(transacted, acknowledgeMode);
@@ -169,6 +170,7 @@ class MonitorableSharedConnection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void release() {
             // This implementation does not track handles and never closes the
             // shared connection.
@@ -179,6 +181,7 @@ class MonitorableSharedConnection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public boolean isActive() {
             return MonitorableSharedConnection.this.isActive();
         }
@@ -186,6 +189,7 @@ class MonitorableSharedConnection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void addMonitor(final IConnectionMonitor monitor) {
             _monitorSupport.addMonitor(monitor);
         }
@@ -193,6 +197,7 @@ class MonitorableSharedConnection {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void removeMonitor(final IConnectionMonitor monitor) {
             _monitorSupport.addMonitor(monitor);
         }

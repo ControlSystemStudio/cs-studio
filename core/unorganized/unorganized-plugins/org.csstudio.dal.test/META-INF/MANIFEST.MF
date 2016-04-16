@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: DalTest
-Bundle-SymbolicName: org.csstudio.dal.test
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
-Fragment-Host: org.csstudio.dal;bundle-version="3.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit;bundle-version="4.8.2"

@@ -7,14 +7,21 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-/** Listener to {@link PVTableItem}
- *  @author Kay Kasemir
+/**
+ * Listener to {@link PVTableItem}
+ *
+ * @author Kay Kasemir
  */
-public interface PVTableItemListener
-{
-    /** @param item Item that was selected or de-selected */
+public interface PVTableItemListener {
+    /**
+     * @param item
+     *            Item that was selected or de-selected
+     */
     void tableItemSelectionChanged(PVTableItem item);
 
-    /** @param item Item that has new value */
+    /**
+     * @param item
+     *            Item that has new value
+     */
     void tableItemChanged(PVTableItem item);
 }

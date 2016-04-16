@@ -20,14 +20,17 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
     public FixedPointsConnectionRouter() {
     }
 
+    @Override
     public Object getConstraint(Connection connection) {
         return constraints.get(connection);
     }
 
+    @Override
     public void remove(Connection connection) {
         constraints.remove(connection);
     }
 
+    @Override
     public void setConstraint(Connection connection, Object constraint) {
         constraints.put(connection, constraint);
     }

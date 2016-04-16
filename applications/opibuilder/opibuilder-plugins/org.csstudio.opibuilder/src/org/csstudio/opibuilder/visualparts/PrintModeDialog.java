@@ -29,16 +29,19 @@ public PrintModeDialog(Shell shell) {
     super(shell);
 }
 
+@Override
 protected void cancelPressed() {
     setReturnCode(-1);
     close();
 }
 
+@Override
 protected void configureShell(Shell newShell) {
     newShell.setText("Select Print Mode");
     super.configureShell(newShell);
 }
 
+@Override
 protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite)super.createDialogArea(parent);
 
@@ -59,6 +62,7 @@ protected Control createDialogArea(Composite parent) {
     return composite;
 }
 
+@Override
 protected void okPressed() {
     int returnCode = -1;
     if (tile.getSelection())

@@ -7,32 +7,72 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import java.text.Format;
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
-import org.diirt.util.time.Timestamp;
-import org.diirt.util.time.TimestampFormat;
 
-/** Time stamp gymnastics
- *  @author Kay Kasemir
+/**
+ * Time stamp gymnastics
+ *
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TimestampHelper
-{
-    final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.NNNNNNNNN";
+public class TimestampHelper {
+    final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.nnnnnnnnn";
+    final public static String FORMAT_PARSE = "yyyy-MM-dd HH:mm:ss.";
 
-    /** Time stamp format */
-    final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
+    private static ZoneId zone = ZoneId.systemDefault();
 
-    /** @param timestamp {@link Timestamp}, may be <code>null</code>
-     *  @return Time stamp formatted as string
+    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(FORMAT_FULL);
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(FORMAT_PARSE);
+
+    /**
+     * @param timestamp
+     *            {@link Instant}, may be <code>null</code>
+     * @return Time stamp formatted as string
      */
-    public static String format(final Timestamp timestamp)
-    {
-        if (timestamp == null)
+    public static String format(final Instant timestamp) {
+        if (timestamp == null) {
             return "null";
-        synchronized (time_format)
-        {
-            return time_format.format(timestamp);
         }
+        return timeFormat.format(ZonedDateTime.ofInstant(timestamp, zone));
+    }
+
+    /**
+     * Take a String and return a Timestamp Should be implemented in
+     * TimestampFormat
+     *
+     * @param sTimestamp
+     * @return
+     * @throws ParseException
+     * @author A.PHILIPPE, L.PHILIPPE GANIL/FRANCE
+     */
+    public static Instant parse(final String sTimestamp) throws ParseException {
+        if (sTimestamp == "" || sTimestamp == null) {
+            return null;
+        }
+
+        Instant t = null;
+        try {
+        	t = ZonedDateTime.parse(sTimestamp, timeFormat).toInstant();
+        }
+        catch (DateTimeParseException ex) {
+        	ex.printStackTrace();
+        }
+
+        if (t == null) {
+        	try {
+        		t = ZonedDateTime.parse(sTimestamp, dateFormat).toInstant();
+        	}
+            catch (DateTimeParseException ex) {
+            	ex.printStackTrace();
+            }
+        }
+
+        return t;
     }
 }

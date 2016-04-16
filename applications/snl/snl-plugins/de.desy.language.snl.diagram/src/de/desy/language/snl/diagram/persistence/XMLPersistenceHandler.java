@@ -39,6 +39,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
      * @require originalFilePath != null
      * @require diagram != null
      */
+    @Override
     public void store(IPath originalFilePath, SNLDiagram diagram)
             throws Exception {
         assert originalFilePath != null : "originalFilePath != null";
@@ -277,6 +278,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
      * {@inheritDoc}
      * @require originalFilePath != null
      */
+    @Override
     public Map<String, List<Point>> loadConnectionLayoutData(
             IPath originalFilePath) {
         assert originalFilePath != null : "originalFilePath != null";
@@ -292,6 +294,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
      * {@inheritDoc}
      * @require originalFilePath != null
      */
+    @Override
     public Map<String, StateLayoutData> loadStateLayoutData(
             IPath originalFilePath) {
         assert originalFilePath != null : "originalFilePath != null";

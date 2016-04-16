@@ -41,6 +41,7 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction
      *  {@code "macro1 = hello", "macro2 = hello2" -share_link /eclipse/path=/filesystem/path}
      *  @throws Exception on error
      */
+    @Override
     public void openDisplay(final String path, final String data) throws Exception
     {
         if (path == null || path.trim().isEmpty())

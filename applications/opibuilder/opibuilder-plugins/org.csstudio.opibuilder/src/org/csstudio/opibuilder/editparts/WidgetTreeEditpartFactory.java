@@ -18,6 +18,7 @@ import org.eclipse.gef.EditPartFactory;
  */
 public class WidgetTreeEditpartFactory implements EditPartFactory {
 
+    @Override
     public EditPart createEditPart(EditPart context, Object model) {
         if(model instanceof AbstractContainerModel)
             return new ContainerTreeEditpart((AbstractContainerModel) model);

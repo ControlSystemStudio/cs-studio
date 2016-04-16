@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.bool.MonitorBoolSymbolModel;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
@@ -149,6 +150,8 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
                 "Flip Horizontal", WidgetPropertyCategory.Image, false));
         addProperty(new BooleanProperty(PROP_FLIP_VERTICAL,
                 "Flip Vertical", WidgetPropertyCategory.Image, false));
+
+        FigureTransparencyHelper.addProperty(this);
 //        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
@@ -383,6 +386,10 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
     public boolean isAlignedToNearestSecond() {
         return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
                 .getPropertyValue();
+    }
+
+    public boolean isTransparency() {
+        return FigureTransparencyHelper.isTransparency(this);
     }
 
 }

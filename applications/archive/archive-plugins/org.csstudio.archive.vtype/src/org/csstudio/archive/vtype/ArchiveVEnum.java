@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VString;
-import org.diirt.util.time.Timestamp;
 
 /** Archive-derived {@link VEnum} implementation
  *  @author Kay Kasemir
@@ -24,7 +24,7 @@ public class ArchiveVEnum extends ArchiveVType implements VEnum
     final private List<String> labels;
     final private int index;
 
-    public ArchiveVEnum(final Timestamp timestamp,
+    public ArchiveVEnum(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final List<String> labels, final int index)
     {

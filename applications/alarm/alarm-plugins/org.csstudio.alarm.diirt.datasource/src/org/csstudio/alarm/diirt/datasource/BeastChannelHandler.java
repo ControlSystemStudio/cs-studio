@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
-import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.datasource.ValueCache;
@@ -28,6 +27,12 @@ public class BeastChannelHandler extends
     public BeastChannelHandler(String channelName, BeastDataSource beastDataSource) {
         super(channelName);
         this.datasource = beastDataSource;
+        // we do not want diirt to resend the last message when we call processConnection() only,
+        // because of the delay between the AlarmServer becoming unavailable and AlarmClientModelListener's
+        // serverTimeout() being called: during that delay, a PVs AlarmSeverity might have changed, but diirt
+        // would resend the old values
+        this.setProcessMessageOnDisconnect(false);
+        this.setProcessMessageOnReconnect(false);
     }
 
     @Override
@@ -85,28 +90,36 @@ public class BeastChannelHandler extends
 
     @Override
     protected void connect() {
-        // TODO Auto-generated method stub
         log.fine("connect: " + getChannelName());
         datasource.add(getChannelName(), this);
         initialize();
     }
-    
+
     protected void reconnect() {
         log.fine("reconnect: " + getChannelName());
         initialize();
     }
 
     private void initialize() {
-        log.fine("initialize: " +  getChannelName());
+        log.fine("initialize: " + getChannelName());
         AlarmTreeItem initialState;
         try {
             initialState = datasource.getState(getChannelName());
+            processConnection(new BeastConnectionPayload(datasource.isConnected())); // always send at least the connection state
             if (initialState != null) {
-                processConnection(new BeastConnectionPayload(initialState, datasource.isConnected()));
                 processMessage(new BeastMessagePayload(initialState));
             }
         } catch (Exception e) {
             reportExceptionToAllReadersAndWriters(e);
+        }
+    }
+
+    protected void connectionStateChanged(boolean connected) {
+//        log.info("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
+        try {
+            processConnection(new BeastConnectionPayload(connected));
+        } catch (Exception e) {
+            log.warning("connectionStateChange: processConnection threw an exception: " + e.toString());
         }
     }
 

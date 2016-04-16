@@ -10,43 +10,16 @@
   <artifactId>appunorganized-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <!--<module>org.csstudio.dct</module>
-    <module>org.csstudio.dct.intro</module>
-  <module>org.csstudio.dct.ui</module>-->
     <module>org.csstudio.debugging.rdbshell</module>
-    <module>org.csstudio.desy.logging.ui</module>
-    <module>org.csstudio.dummyauthorization</module>
     <module>org.csstudio.email</module>
     <module>org.csstudio.email.test</module>
     <module>org.csstudio.email.ui</module>
     <module>org.csstudio.examples</module>
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
-    <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
-    
-    
-    <!--<module>org.csstudio.sds</module>
-    <module>org.csstudio.sds.components</module>
-    <module>org.csstudio.sds.components.epics</module>
-    <module>org.csstudio.sds.components.ui</module>
-  <module>org.csstudio.sds.docu</module>
-    <module>org.csstudio.sds.importer</module>
-    <module>org.csstudio.sds.importer.ui</module>
-    <module>org.csstudio.sds.intro</module>
-    <module>org.csstudio.sds.language.script</module>
-    <module>org.csstudio.sds.language.script.ui</module>
-    <module>org.csstudio.sds.samples</module>
-    <module>org.csstudio.sds.service.pvvalidation.mkk</module>
-    <module>org.csstudio.sds.settings.desy</module>
-    <module>org.csstudio.sds.simpledal.validation.mock</module>
-  <module>org.csstudio.sds.ui</module>-->
     <module>org.csstudio.service.channelfinder</module>
-    <!--<module>org.csstudio.service.jdbcsample</module>-->
     <module>org.csstudio.service.math</module>
-    <module>org.csstudio.service.unitconversion</module>
-    
-    
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>
@@ -55,21 +28,6 @@
     <module>org.csstudio.swt.xygraph.rap</module>
     <module>org.csstudio.swt.xygraph.rcp</module>
     <module>org.csstudio.swt.xygraph.test</module>
-    <module>org.csstudio.systemopen</module>
-    <module>org.csstudio.systemopen.linux</module>
-    <module>org.csstudio.systemopen.mac</module>
-    <module>org.csstudio.systemopen.win</module>
-    <module>org.csstudio.testsuite</module>
-    <module>org.csstudio.unitconversion.ui</module>
-    <!--<module>org.csstudio.utility.adlConverter</module>
-  <module>org.csstudio.utility.adlConverter.test</module>-->
-    <module>org.csstudio.utility.ldap.service.impl.test</module>
-    <module>org.csstudio.utility.ldap.service.test</module>
-    <module>org.csstudio.utility.pv.ui</module>
-    <!--    <module>org.csstudio.utility.quickstart</module> -->
-    <!--     <module>org.csstudio.utility.speech.mbrola</module> -->
-    <!--    <module>org.csstudio.utility.tine</module> -->
-    <!--    <module>org.csstudio.utility.tine.ui</module> -->
     <module>org.csstudio.pretune</module>
   </modules>
 </project>

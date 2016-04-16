@@ -18,13 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.diirt.datasource.WriteFunction;
 import org.diirt.service.ServiceDescription;
 import org.diirt.service.ServiceMethod;
 import org.diirt.service.ServiceMethodDescription;
-import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VString;
-import org.diirt.vtype.VTable;
 import org.diirt.vtype.ValueFactory;
 
 import com.google.common.base.Function;
@@ -39,16 +36,9 @@ public class QueryServiceMethod extends ServiceMethod {
     /**
      */
     public QueryServiceMethod(ServiceMethodDescription serviceMethodDescription, ServiceDescription serviceDescription) {
-    	super(serviceMethodDescription, serviceDescription);
+        super(serviceMethodDescription, serviceDescription);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.epics.pvmanager.service.ServiceMethod#executeMethod(java.util.Map,
-     * org.epics.pvmanager.WriteFunction, org.epics.pvmanager.WriteFunction)
-     */
     @Override
     public void executeAsync(Map<String, Object> parameters,
         final Consumer<Map<String, Object>> callback,

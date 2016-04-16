@@ -7,17 +7,19 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-/** Listener to {@link PVTableModel}
- *  @author Kay Kasemir
+/**
+ * Listener to {@link PVTableModel}
+ *
+ * @author Kay Kasemir
  */
-public interface PVTableModelListener extends PVTableItemListener
-{
+public interface PVTableModelListener extends PVTableItemListener {
     /** Multiple table items have changed, need overall table refresh */
     public void tableItemsChanged();
 
-    /** Model has changed (items added, removed, renamed, values saved)
-     *
-     *  <p>The model can be considered to be 'dirty', it needs to be saved.
+    /**
+     * Model has changed (items added, removed, renamed, values saved)
+     * <p>
+     * The model can be considered to be 'dirty', it needs to be saved.
      */
     public void modelChanged();
 }

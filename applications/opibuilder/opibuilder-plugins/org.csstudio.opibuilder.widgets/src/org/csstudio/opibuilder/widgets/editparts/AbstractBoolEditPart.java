@@ -75,6 +75,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
     protected void registerCommonPropertyChangeHandlers() {
         // value
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -103,6 +104,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // bit
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -119,6 +121,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
         //data type
         final IWidgetPropertyChangeHandler    dataTypeHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
                 AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
                 if((Integer)newValue == 0)
@@ -133,6 +136,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
         getWidgetModel().getProperty(AbstractBoolWidgetModel.PROP_DATA_TYPE).
             addPropertyChangeListener(new PropertyChangeListener() {
 
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     dataTypeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }
@@ -152,6 +156,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // show bool label
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -164,6 +169,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         //  bool label position
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
@@ -175,6 +181,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // on label
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -187,6 +194,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // off label
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -199,6 +207,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // on color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -211,6 +220,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
         // off color
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

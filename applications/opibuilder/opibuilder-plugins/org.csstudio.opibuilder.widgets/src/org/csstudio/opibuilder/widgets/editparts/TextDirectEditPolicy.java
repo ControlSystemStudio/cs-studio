@@ -23,6 +23,7 @@ public class TextDirectEditPolicy
     /**
      * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
      */
+    @Override
     protected Command getDirectEditCommand(DirectEditRequest edit) {
         String labelText = (String)edit.getCellEditor().getValue();
         LabelEditCommand command = new LabelEditCommand(
@@ -33,6 +34,7 @@ public class TextDirectEditPolicy
     /**
      * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
      */
+    @Override
     protected void showCurrentEditValue(DirectEditRequest request) {
         //String value = (String)request.getCellEditor().getValue();
         //((LabelFigure)getHostFigure()).setText(value);
@@ -56,11 +58,13 @@ static class LabelEditCommand extends Command    {
         newText = "";  //$NON-NLS-1$
     }
 
+    @Override
     public void execute() {
         oldText = textModel.getText();
         textModel.setText(newText);
     }
 
+    @Override
     public void undo() {
         textModel.setText(oldText);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2015 ITER Organization.
+ * Copyright (c) 2010-2016 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,14 @@ import org.csstudio.opibuilder.validation.core.SubValidationFailure;
 import org.csstudio.opibuilder.validation.core.ValidationFailure;
 import org.csstudio.opibuilder.validation.core.Validator;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
  *
- * <code>ContentProvider</code> is meant to replace the content provider of the problems view.
- * It provides elements in a 3-level tree like structure to be able to group the sub validation
- * failures below the parent failures.
+ * <code>ContentProvider</code> is meant to replace the content provider of the problems view. It provides elements in a
+ * 3-level tree like structure to be able to group the sub validation failures below the parent failures.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -38,8 +38,7 @@ public class ContentProvider implements ITreeContentProvider {
     private ITreeContentProvider original;
     private Field markerField;
 
-    private Map<ValidationFailure,Set<Object>> markersMap = new HashMap<>();
-
+    private Map<ValidationFailure, Set<Object>> markersMap = new HashMap<>();
 
     /**
      * @param extendedMarkersView
@@ -51,8 +50,8 @@ public class ContentProvider implements ITreeContentProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
-     * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse .jface.viewers.Viewer, java.lang.Object,
+     * java.lang.Object)
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         markersMap.clear();
@@ -71,8 +70,7 @@ public class ContentProvider implements ITreeContentProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java
-     * .lang.Object)
+     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java .lang.Object)
      */
     public Object[] getChildren(Object parentElement) {
         ValidationFailure f = getValidationFailure(parentElement);
@@ -88,8 +86,7 @@ public class ContentProvider implements ITreeContentProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements
-     * (java.lang.Object)
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements (java.lang.Object)
      */
     public Object[] getElements(Object inputElement) {
         return filterElements(original.getElements(inputElement));
@@ -98,8 +95,7 @@ public class ContentProvider implements ITreeContentProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#getParent(
-     * java.lang.Object)
+     * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#getParent( java.lang.Object)
      */
     public Object getParent(Object element) {
         return original.getParent(element);
@@ -108,19 +104,21 @@ public class ContentProvider implements ITreeContentProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java
-     * .lang.Object)
+     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java .lang.Object)
      */
     public boolean hasChildren(Object element) {
         if (Activator.getInstance().isNestMarkers()) {
             ValidationFailure f = getValidationFailure(element);
-            if (f != null) return f.hasSubFailures();
+            if (f != null) {
+                return f.hasSubFailures();
+            }
             if (original.hasChildren(element)) {
                 Object[] obj = filterChildren(original.getChildren(element));
                 return obj.length > 0;
             }
             return false;
-        } return original.hasChildren(element);
+        }
+        return original.hasChildren(element);
     }
 
     private ValidationFailure getValidationFailure(Object element) {
@@ -130,10 +128,10 @@ public class ContentProvider implements ITreeContentProvider {
                     markerField = element.getClass().getDeclaredField("marker");
                     markerField.setAccessible(true);
                 }
-                IMarker m = (IMarker)markerField.get(element);
-                return (ValidationFailure)m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
-            } catch (Exception e) {
-                //ignore
+                IMarker m = (IMarker) markerField.get(element);
+                return (ValidationFailure) m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
+            } catch (RuntimeException | NoSuchFieldException | IllegalAccessException | CoreException e) {
+                // ignore
             }
         }
         return null;
@@ -144,15 +142,13 @@ public class ContentProvider implements ITreeContentProvider {
             try {
                 List<Object> list = new ArrayList<>();
                 for (Object o : categories) {
-                    if ("MarkerCategory".equals(o.getClass().getSimpleName())) {
-                        if (hasChildren(o)) {
-                            list.add(o);
-                        }
+                    if ("MarkerCategory".equals(o.getClass().getSimpleName()) && hasChildren(o)) {
+                        list.add(o);
                     }
                 }
                 return filterOut ? list.toArray(new Object[list.size()]) : categories;
-            } catch (Exception e) {
-                //ignore
+            } catch (RuntimeException e) {
+                // ignore
             }
         }
         return categories;
@@ -168,13 +164,13 @@ public class ContentProvider implements ITreeContentProvider {
                             markerField = o.getClass().getDeclaredField("marker");
                             markerField.setAccessible(true);
                         }
-                        IMarker m = (IMarker)markerField.get(o);
-                        ValidationFailure v = (ValidationFailure)m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
+                        IMarker m = (IMarker) markerField.get(o);
+                        ValidationFailure v = (ValidationFailure) m.getAttribute(Validator.ATTR_VALIDATION_FAILURE);
                         if (v instanceof SubValidationFailure) {
                             Set<Object> mlist = markersMap.get(((SubValidationFailure) v).getParent());
                             if (mlist == null) {
                                 mlist = new HashSet<>();
-                                markersMap.put(((SubValidationFailure)v).getParent(), mlist);
+                                markersMap.put(((SubValidationFailure) v).getParent(), mlist);
                             }
                             mlist.add(o);
                             continue;
@@ -183,8 +179,8 @@ public class ContentProvider implements ITreeContentProvider {
                     list.add(o);
                 }
                 return filterOut ? list.toArray(new Object[list.size()]) : markers;
-            } catch (Exception e) {
-                //ignore
+            } catch (IllegalAccessException | NoSuchFieldException | CoreException | RuntimeException e) {
+                // ignore
             }
         }
         return markers;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2015 ITER Organization.
+ * Copyright (c) 2010-2016 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  *
- * <code>SubValidationFailure</code> is a validation failure that was detected on a property, which is a subproperty
- * of a widget's property, such as actions, scripts, or rules.
+ * <code>SubValidationFailure</code> is a validation failure that was detected on a property, which is a subproperty of
+ * a widget's property, such as actions, scripts, or rules.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -29,6 +29,20 @@ public class SubValidationFailure extends ValidationFailure {
     private final IResource resource;
 
     private boolean isFixed = false;
+
+    private boolean onlyMessage = false;
+
+    /**
+     * Constructs a new sub validation failure that only displays the message without any decorations.
+     *
+     * @param path the path to the file in which the failure was detected
+     * @param message the message
+     */
+    public SubValidationFailure(IPath path, String message) {
+        this(path, null, null, null, null, null, null, null, null, ValidationRule.WRITE, false, false, message, -1,
+            null);
+        this.onlyMessage = true;
+    }
 
     /**
      * Constructs a new sub validation failure.
@@ -49,11 +63,11 @@ public class SubValidationFailure extends ValidationFailure {
      * @param model the model class that this validation failure originates from
      */
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property,
-            String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
-            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber,
-            Class<? extends AbstractWidgetModel> model) {
+        String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
+        boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber,
+        Class<? extends AbstractWidgetModel> model) {
         this(path, wuid, widgetType, widgetName, property, subPropertyTag, subPropertyDesc, expected, actual, rule,
-                isCritical, isFixable, forcedMessage, lineNumber, false, model,null);
+            isCritical, isFixable, forcedMessage, lineNumber, false, model, null);
     }
 
     /**
@@ -77,13 +91,13 @@ public class SubValidationFailure extends ValidationFailure {
      *
      */
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property,
-            String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
-            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove,
-            Class<? extends AbstractWidgetModel> model, IResource resource) {
-        super(path, wuid, widgetType, widgetName, property, expected, actual, rule,
-                isCritical, isFixable, forcedMessage, lineNumber,false,model);
-        this.subPropertyTag = subPropertyTag;
-        this.subPropertyDesc = subPropertyDesc;
+        String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
+        boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove,
+        Class<? extends AbstractWidgetModel> model, IResource resource) {
+        super(path, wuid, widgetType, widgetName, property, expected, actual, rule, isCritical, isFixable,
+            forcedMessage, lineNumber, false, model);
+        this.subPropertyTag = subPropertyTag == null ? "" : subPropertyTag;
+        this.subPropertyDesc = subPropertyDesc == null ? "" : subPropertyDesc;
         this.forcedMessage = forcedMessage;
         this.toRemove = toRemove;
         this.resource = resource;
@@ -154,6 +168,7 @@ public class SubValidationFailure extends ValidationFailure {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.opibuilder.validation.core.ValidationFailure#setLineNumber(int)
      */
     @Override
@@ -165,6 +180,7 @@ public class SubValidationFailure extends ValidationFailure {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.opibuilder.validation.core.ValidationFailure#getMessage()
      */
     @Override
@@ -172,36 +188,44 @@ public class SubValidationFailure extends ValidationFailure {
         if (forcedMessage == null) {
             if (toRemove) {
                 return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 22)
-                .append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                .append("' should be removed").toString();
+                    .append(parent.getProperty()).append(": '").append(subPropertyDesc).append("' should be removed")
+                    .toString();
             }
             if (getRule() == ValidationRule.RO) {
                 if (getActualValue() == null) {
                     return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 40)
-                            .append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                            .append("' expected to be defined, but was not").toString();
+                        .append(parent.getProperty()).append(": '").append(subPropertyDesc)
+                        .append("' expected to be defined, but was not").toString();
                 } else if (getExpectedValue() == null) {
                     return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 26)
-                            .append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                            .append("' should not be defined").toString();
+                        .append(parent.getProperty()).append(": '").append(subPropertyDesc)
+                        .append("' should not be defined").toString();
                 } else {
-                    return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + getExpected().length()
-                            + getActual().length() + 29 ).append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                            .append("': expected: '").append(getExpected()).append("' but was: '").append(getActual())
-                            .append('\'').toString();
+                    return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length()
+                        + getExpected().length() + getActual().length() + 29).append(parent.getProperty()).append(": '")
+                            .append(subPropertyDesc).append("': expected: '").append(getExpected())
+                            .append("' but was: '").append(getActual()).append('\'').toString();
                 }
             } else if (getRule() == ValidationRule.WRITE) {
                 return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length() + 40)
-                            .append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                            .append("' expected to be defined, but was not").toString();
+                    .append(parent.getProperty()).append(": '").append(subPropertyDesc)
+                    .append("' expected to be defined, but was not").toString();
             }
         } else {
-            return new StringBuilder(parent.getProperty().length() + subPropertyDesc.length()
-                    + forcedMessage.length() +6)
-                    .append(parent.getProperty()).append(": '").append(subPropertyDesc)
-                    .append("': ").append(forcedMessage).toString();
+            if (onlyMessage) {
+                return forcedMessage;
+            } else {
+                if (subPropertyDesc.isEmpty()) {
+                    return new StringBuilder(parent.getProperty().length() + forcedMessage.length() + 2)
+                        .append(parent.getProperty()).append(':').append(' ').append(forcedMessage).toString();
+                } else {
+                    return new StringBuilder(
+                        parent.getProperty().length() + subPropertyDesc.length() + forcedMessage.length() + 6)
+                            .append(parent.getProperty()).append(": '").append(subPropertyDesc).append("': ")
+                            .append(forcedMessage).toString();
+                }
+            }
         }
         return super.getMessage();
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2015 ITER Organization.
+ * Copyright (c) 2010-2016 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,13 +48,16 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR = "showMarkersInDefaultEditor";
     /** Preference if resource should be saved before validating it */
     public static final String PREF_SAVE_BEFORE_VALIDATION = "saveResourcesBeforeValidation";
+    /** Preference if an info message should be issued when a jython script is used */
+    public static final String PREF_WARN_ABOUT_JYTHON_SCRIPTS = "warnAboutJythonScripts";
 
     private static Activator instance;
 
-    private Image quickFixImage;
+    private transient Image quickFixImage;
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     @Override
@@ -65,6 +68,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
      */
     @Override
@@ -83,8 +87,8 @@ public class Activator extends AbstractUIPlugin {
      */
     public Image getQuickFixImage() {
         if (quickFixImage == null) {
-            quickFixImage = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                    OPIBuilderPlugin.PLUGIN_ID, "icons/edit.gif").createImage();
+            quickFixImage = CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/edit.gif").createImage();
         }
         return quickFixImage;
     }
@@ -143,8 +147,8 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
-     * @return true if the markers are displayed in the default editor (e.g. OPI editor) or false if the markers
-     *          are displayed in the text editor
+     * @return true if the markers are displayed in the default editor (e.g. OPI editor) or false if the markers are
+     *         displayed in the text editor
      */
     public boolean isShowMarkersInDefaultEditor() {
         return getPreferenceStore().getBoolean(PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR);
@@ -157,9 +161,16 @@ public class Activator extends AbstractUIPlugin {
         return getPreferenceStore().getBoolean(PREF_SAVE_BEFORE_VALIDATION);
     }
 
-    private static IPath getExistFileInRepoAndSearchPath(String pathString){
+    /**
+     * @return true if a warning is raised whenever jython scripts are used or false otherwise
+     */
+    public boolean isWarnAboutJythonScripts() {
+        return getPreferenceStore().getBoolean(PREF_WARN_ABOUT_JYTHON_SCRIPTS);
+    }
+
+    private static IPath getExistFileInRepoAndSearchPath(String pathString) {
         IPath originPath = ResourceUtil.getPathFromString(pathString);
-        if(originPath == null) {
+        if (originPath == null) {
             return null;
         } else if (originPath.toFile().exists()) {
             return originPath;

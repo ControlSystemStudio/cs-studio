@@ -21,7 +21,7 @@ Require-Bundle: org.apache.batik.bridge;bundle-version="1.7.0",
  org.csstudio.java
 Export-Package: org.csstudio.utility.batik
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Extra utils for apache batik
 Bundle-ClassPath: .
 Import-Package: org.w3c.dom,

@@ -44,6 +44,7 @@ public class TransferableImage implements Transferable, ClipboardOwner
    }
 
    //Returns an object which represents the data to be transferred.
+   @Override
    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException
    {
       if( flavor.equals(DataFlavor.imageFlavor) )
@@ -54,6 +55,7 @@ public class TransferableImage implements Transferable, ClipboardOwner
 
    //Returns an array of DataFlavor objects indicating the flavors
    //the data can be provided in.
+   @Override
    public DataFlavor[] getTransferDataFlavors()
    {
       return new DataFlavor[] {DataFlavor.imageFlavor} ;
@@ -61,12 +63,14 @@ public class TransferableImage implements Transferable, ClipboardOwner
 
    //Returns whether or not the specified data flavor is supported
    //for this object.
+   @Override
    public boolean isDataFlavorSupported(DataFlavor flavor)
    {
       return flavor.equals(DataFlavor.imageFlavor) ;
    }
 
    // Implementierung des Interfaces ClipboardOwner
+   @Override
    public void lostOwnership(Clipboard clipboard, Transferable contents)
    {
    }

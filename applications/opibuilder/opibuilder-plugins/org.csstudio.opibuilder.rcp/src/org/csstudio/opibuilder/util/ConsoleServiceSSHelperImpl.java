@@ -73,6 +73,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      * it is required to rerun the OPI with the Python script so that the Python interpreter
      * has a chance to reload system output.
      */
+    @Override
     public void turnOnSystemOutput(){
         if(originalSystemOut == null){
             originalSystemOut = System.out;
@@ -87,6 +88,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      * reset system output to original output.
      * <b>Warning: </b>It is required to rerun the OPI if this method is called from Python script.
      */
+    @Override
     public void turnOffSystemOutput() {
         if (originalSystemOut != null) {
             System.setOut(originalSystemOut);
@@ -113,6 +115,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     /**Write error information to the OPI console.
      * @param message the output string.
      */
+    @Override
     public void writeError(final String message){
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
@@ -125,6 +128,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
         final String output = getTimeString() + " ERROR: " + message + ENTER;
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
 
+            @Override
             public void run() {
                 if(errorStream == null){
                     errorStream = console.newOutputStream();
@@ -141,6 +145,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     /**Write warning information to the OPI console.
      * @param message the output string.
      */
+    @Override
     public void writeWarning(String message){
         final String output = getTimeString() + " WARNING: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
@@ -152,6 +157,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
         }
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
 
+            @Override
             public void run() {
                 if(warningStream == null){
                     warningStream = console.newOutputStream();
@@ -167,6 +173,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     /**Write information to the OPI console.
      * @param message the output string.
      */
+    @Override
     public void writeInfo(String message){
         final String output = getTimeString() + " INFO: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
@@ -178,6 +185,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
             break;
         }
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
+            @Override
             public void run() {
                 if(infoStream == null){
                     infoStream = console.newOutputStream();
@@ -190,8 +198,10 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 
     }
 
+    @Override
     public void writeString(final String s){
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
+            @Override
             public void run() {
                 if(infoStream == null){
                     infoStream = console.newOutputStream();
@@ -203,8 +213,10 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
         });
     }
 
+    @Override
     public void writeString(final String s, final RGB color){
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
+            @Override
             public void run() {
                 IOConsoleOutputStream stream = console.newOutputStream();
                 try {
@@ -241,6 +253,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
                     findView("org.eclipse.ui.console.ConsoleView") == null){        //$NON-NLS-1$
             UIBundlingThread.getInstance().addRunnable(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         final IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().

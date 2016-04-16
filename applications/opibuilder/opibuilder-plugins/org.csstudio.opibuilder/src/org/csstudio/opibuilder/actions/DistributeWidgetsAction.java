@@ -246,6 +246,7 @@ public class DistributeWidgetsAction extends SelectionAction {
             modelArray[i++] = model;
         }
         Arrays.sort(modelArray,new Comparator<AbstractWidgetModel>(){
+            @Override
             public int compare(AbstractWidgetModel o1, AbstractWidgetModel o2) {
                 int o1loc, o2loc;
                 if(byHorizontal){

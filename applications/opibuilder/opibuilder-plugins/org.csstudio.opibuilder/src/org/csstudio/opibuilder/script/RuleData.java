@@ -252,23 +252,28 @@ public class RuleData implements IAdaptable{
         return ruleScriptData;
     }
 
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if(adapter == IWorkbenchAdapter.class)
             return new IWorkbenchAdapter() {
 
+                @Override
                 public Object getParent(Object o) {
                     return null;
                 }
 
+                @Override
                 public String getLabel(Object o) {
                     return name;
                 }
 
+                @Override
                 public ImageDescriptor getImageDescriptor(Object object) {
                     return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                             OPIBuilderPlugin.PLUGIN_ID, "icons/js.gif");
                 }
 
+                @Override
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }

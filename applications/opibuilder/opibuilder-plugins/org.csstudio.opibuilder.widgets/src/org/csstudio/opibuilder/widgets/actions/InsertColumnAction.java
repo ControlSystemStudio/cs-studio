@@ -123,10 +123,12 @@ public class InsertColumnAction implements IObjectActionDelegate {
     public InsertColumnAction() {
     }
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
 
+    @Override
     public void run(IAction action) {
         TableEditPart tableEditPart = getSelectedWidget();
         allowedHeaders = tableEditPart.getAllowedHeaders();
@@ -144,6 +146,7 @@ public class InsertColumnAction implements IObjectActionDelegate {
 
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;

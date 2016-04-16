@@ -32,6 +32,7 @@ public abstract class SingleCharRule implements IRule {
     /**
      * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
      */
+    @Override
     public IToken evaluate(final ICharacterScanner scanner) {
         final int ch = scanner.read();
 

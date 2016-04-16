@@ -146,8 +146,10 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         action = actionRegistry.getAction(SendEMailAction.ID);
         if (action != null)
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
-                actionRegistry.getAction(ActionFactory.PRINT.getId()));
+        action = actionRegistry.getAction(ActionFactory.PRINT.getId());
+        if (action != null) {
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+        }
 
     }
 
@@ -229,6 +231,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         SingleSourcePlugin.getUIHelper().openEditor(page, path);
     }
 
+
     @Override
     protected void iOpenOPIShell(IPath path, MacrosInput input) {
         OPIShell.openOPIShell(path, input);
@@ -238,5 +241,4 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
     protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
         return OPIShell.getOPIShellForShell(shell);
     }
-
 }

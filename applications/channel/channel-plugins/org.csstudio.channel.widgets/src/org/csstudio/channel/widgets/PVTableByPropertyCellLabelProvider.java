@@ -2,7 +2,6 @@ package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

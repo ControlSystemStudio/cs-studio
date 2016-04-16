@@ -22,7 +22,7 @@ public class RedirectServlet extends HttpServlet {
 
     static void redirect(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        if (request.getPathInfo().equals("/")) {
+        if (request.getPathInfo() == null || request.getPathInfo().equals("/")) {
             response.sendRedirect(response
                     .encodeRedirectURL(WebAlarmConstants.MAIN_SERVLET_NAME));
         } else {

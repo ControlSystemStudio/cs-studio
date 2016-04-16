@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.figures.NativeButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
+import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.SWT;
@@ -33,11 +34,13 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
 
     private Button button;
     private ActionButtonEditPart editpart;
+    private boolean skipTraverse;
 
     public NativeButtonEditPartDelegate(ActionButtonEditPart editPart) {
         this.editpart = editPart;
     }
 
+    @Override
     public IFigure doCreateFigure() {
         ActionButtonModel model = editpart.getWidgetModel();
         int style=SWT.None;
@@ -47,12 +50,22 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
                 new NativeButtonFigure(editpart, style);
         button = buttonFigure.getSWTWidget();
         button.setText(model.getText());
+        button.addTraverseListener(e -> {
+            if (skipTraverse) return;
+            e.doit = false;
+            skipTraverse = true;
+            if (e.stateMask == 0) {
+                SingleSourceHelper.swtControlTraverse(button, SWT.TRAVERSE_TAB_PREVIOUS);
+            } else {
+                SingleSourceHelper.swtControlTraverse(button, SWT.TRAVERSE_TAB_NEXT);
+            }
+            skipTraverse = false;
+        });
         buttonFigure.setImagePath(model.getImagePath());
         return buttonFigure;
     }
 
-
-
+    @Override
     public void hookMouseClickAction() {
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -74,10 +87,12 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
     /**
      * {@inheritDoc}
      */
+    @Override
     public void registerPropertyChangeHandlers() {
 
         // text
         IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 button.setText(newValue.toString());
@@ -90,6 +105,7 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
 
         //image
         IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 NativeButtonFigure figure = (NativeButtonFigure) refreshableFigure;
@@ -105,6 +121,7 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
 
         // button style
         final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 editpart.updatePropSheet();
@@ -113,6 +130,7 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
         };
         editpart.getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), editpart.getFigure());
                 }
@@ -120,10 +138,12 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
     }
 
 
+    @Override
     public void setValue(Object value) {
         button.setText(value.toString());
     }
 
+    @Override
     public Object getValue() {
         return button.getText();
     }

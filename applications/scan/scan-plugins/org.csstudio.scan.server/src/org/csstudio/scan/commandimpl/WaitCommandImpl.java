@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.time.Duration;
+
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceCondition;
@@ -113,7 +115,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
-        final TimeDuration timeout = TimeDuration.ofSeconds(command.getTimeout());
+        final Duration timeout = TimeDuration.ofSeconds(command.getTimeout());
         final Object desired = command.getDesiredValue();
         if (desired instanceof Number)
         {

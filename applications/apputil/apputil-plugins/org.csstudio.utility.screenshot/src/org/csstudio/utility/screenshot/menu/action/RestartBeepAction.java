@@ -44,6 +44,7 @@ public class RestartBeepAction extends Action
         this.setEnabled(false);
     }
 
+    @Override
     public void run()
     {
         if(worker.getBeep())

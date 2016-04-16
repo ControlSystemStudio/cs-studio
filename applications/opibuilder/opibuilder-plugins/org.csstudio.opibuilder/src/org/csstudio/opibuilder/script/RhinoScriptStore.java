@@ -42,6 +42,7 @@ public class RhinoScriptStore extends AbstractScriptStore{
 
     }
 
+    @Override
     protected void initScriptEngine() throws Exception {
         scriptContext = ScriptStoreFactory.getRhinoContext();
         scriptScope = new ImporterTopLevel(scriptContext);

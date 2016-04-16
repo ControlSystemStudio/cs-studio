@@ -20,13 +20,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.apputil.time.AbsoluteTimeParser;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.RelativeTime;
-import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.Trace;
@@ -47,11 +47,11 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
-import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellAdapter;
@@ -117,6 +117,16 @@ public class Controller
 
     final private ArchiveFetchJobListener archive_fetch_listener = new ArchiveFetchJobListener()
     {
+
+        private void executeOnUIThread(Consumer<Void> consumer)
+        {
+            if (!display.isDisposed())
+                display.asyncExec(() ->
+                {
+                    if (!display.isDisposed())
+                        consumer.accept(null);
+                });
+        }
         @Override
         public void fetchCompleted(final ArchiveFetchJob job)
         {
@@ -129,48 +139,46 @@ public class Controller
             }
             // All completed. Do something to the plot?
             final ArchiveRescale rescale = model.getArchiveRescale();
-            if (rescale == ArchiveRescale.NONE)
-                return;
-            if (display == null  ||  display.isDisposed())
-                return;
-            display.asyncExec(() ->
-            {
-                if (display.isDisposed())
-                    return;
-                if (rescale == ArchiveRescale.STAGGER)
-                    plot.getPlot().stagger();
-            });
+            if (rescale == ArchiveRescale.STAGGER)
+                executeOnUIThread(e -> plot.getPlot().stagger());
+        }
+
+        private void reportError(final String displayName, final Exception error)
+        {
+            final String message = NLS.bind(Messages.ArchiveAccessMessageFmt, displayName);
+            executeOnUIThread(e -> ExceptionDetailsErrorDialog.openError(shell, Messages.Information, message, error));
         }
 
         @Override
         public void archiveFetchFailed(final ArchiveFetchJob job,
                 final ArchiveDataSource archive, final Exception error)
         {
-            final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
-                    job.getPVItem().getDisplayName());
 
             if (Preferences.doPromptForErrors())
-            {
-                if (display == null  ||  display.isDisposed())
-                    return;
-                display.asyncExec(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (display.isDisposed())
-                            return;
-                        ExceptionDetailsErrorDialog.openError(shell, Messages.Information, message, error);
-                        job.getPVItem().removeArchiveDataSource(archive);
-                    }
-                });
-            }
-            else if (error instanceof UnknownChannelException)
-                Logger.getLogger(getClass().getName()).log(Level.FINE,
-                            "No archived data for " + job.getPVItem().getDisplayName(), error);
+                reportError(job.getPVItem().getDisplayName(), error);
             else
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
                         "No archived data for " + job.getPVItem().getDisplayName(), error);
+            // always remove the problematic archive data source, but has to happen in UI thread
+            executeOnUIThread(e -> job.getPVItem().removeArchiveDataSource(archive));
+        }
+
+        @Override
+        public void channelNotFound(final ArchiveFetchJob job, final boolean channelFoundAtLeastOnce,
+            final ArchiveDataSource[] archivesThatFailed)
+        {
+            // no need to reuse this source if the channel is not in it, but it has to happen in the UI thread, because
+            // of the way the listeners of the pv item are implemented
+            executeOnUIThread(e -> job.getPVItem().removeArchiveDataSource(archivesThatFailed));
+            // if channel was found at least once, we do not need to report anything
+            if (!channelFoundAtLeastOnce)
+            {
+                if (Preferences.doPromptForErrors())
+                    reportError(job.getPVItem().getDisplayName(), null);
+                else
+                    Logger.getLogger(getClass().getName()).log(Level.FINE,
+                        "Channel " + job.getPVItem().getDisplayName() + " not found in any of the archived sources.");
+            }
         }
     };
 
@@ -233,7 +241,7 @@ public class Controller
                 if (scrolling)
                 {   // Scrolling, adjust relative time, i.e. width of plot
                     final Duration duration = Duration.between(start, end);
-                    start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(duration));
+                    start_spec = "-" + PeriodFormat.formatSeconds(TimeDuration.toSecondsDouble(duration));
                     end_spec = RelativeTime.NOW;
                 }
                 else

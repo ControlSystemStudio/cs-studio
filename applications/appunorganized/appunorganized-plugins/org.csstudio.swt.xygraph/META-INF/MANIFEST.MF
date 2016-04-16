@@ -12,11 +12,11 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.rap.ui.util;resolution:=optional
 Bundle-Vendor: Xihui Chen - SNS
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 2.0.4.qualifier
+Bundle-Version: 2.0.5.qualifier
 Bundle-Name: XYGraph Plug-in
 Bundle-Activator: org.csstudio.swt.xygraph.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: Plotting library for draw2d and SWT applications
 Bundle-SymbolicName: org.csstudio.swt.xygraph
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 

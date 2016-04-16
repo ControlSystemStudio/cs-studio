@@ -8,7 +8,7 @@ import org.diirt.datasource.DataSourceTypeAdapterSet;
 public class BeastTypeAdapterSet implements DataSourceTypeAdapterSet {
 
     private Collection<BeastTypeAdapter> beastTypeAdapter = new ArrayList<BeastTypeAdapter>();
-    
+
     public BeastTypeAdapterSet() {
         beastTypeAdapter.add(new BeastVStringAdapter());
         beastTypeAdapter.add(new BeastVBooleanAdapter());

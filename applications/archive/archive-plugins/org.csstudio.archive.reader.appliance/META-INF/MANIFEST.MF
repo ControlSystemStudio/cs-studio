@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.vtype,
  org.diirt.vtype
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Miha Novak <miha.novak@cosylab.com>
 Bundle-ClassPath: .,
  lib/protobuf-java-2.4.1.jar,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Real Time Plot
 Bundle-SymbolicName: org.csstudio.swt.rtplot
-Bundle-Version: 1.5.1.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.osgi;bundle-version="3.10.1",

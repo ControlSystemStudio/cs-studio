@@ -4,9 +4,8 @@ Bundle-Name: Servicelocator
 Bundle-SymbolicName: org.csstudio.servicelocator
 Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: registered
 Require-Bundle: org.eclipse.osgi;bundle-version="3.7.0"
 Bundle-Activator: org.csstudio.servicelocator.ServiceLocatorActivator
 Export-Package: org.csstudio.servicelocator
-Import-Package: org.slf4j

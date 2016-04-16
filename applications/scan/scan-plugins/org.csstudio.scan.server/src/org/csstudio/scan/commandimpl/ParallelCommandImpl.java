@@ -137,6 +137,12 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
             {
                 throw new Exception("Parallel time out (" + command.getTimeout() + " sec)", ex);
             }
+            finally
+            {   // In case of interruption or timeout, cancel (interrupt) all body commands.
+                // NOP if commands completed gracefully.
+                for (Future<Object> result : results)
+                    result.cancel(true);
+            }
         }
         finally
         {

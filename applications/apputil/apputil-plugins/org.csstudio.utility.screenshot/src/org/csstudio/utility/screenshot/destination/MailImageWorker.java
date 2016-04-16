@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -60,8 +62,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 
 public class MailImageWorker implements IImageWorker {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MailImageWorker.class);
+    private static final Logger LOG = Logger.getLogger(MailImageWorker.class.getCanonicalName());
 
     /** The string that is used to build the screenshot plugin menu */
     private final String MENU_ITEM_ENTRY = "eMail";
@@ -78,6 +78,7 @@ public class MailImageWorker implements IImageWorker {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
@@ -85,6 +86,7 @@ public class MailImageWorker implements IImageWorker {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void processImage(Shell parentShell, Image image) {
 
         InternetAddress addressFrom = null;
@@ -107,7 +109,7 @@ public class MailImageWorker implements IImageWorker {
                 workspaceLocation = workspaceLocation + "/";
             }
         } catch(IllegalStateException ise) {
-            LOG.warn("Workspace location could not be found. Using working directory '.'");
+            LOG.log(Level.WARNING, "Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
 

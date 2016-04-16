@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.editparts.AbstractBoolEditPart;
 import org.csstudio.opibuilder.widgets.symbol.Preferences;
 import org.csstudio.simplepv.IPV;
@@ -20,14 +21,14 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /**
  * Base edit part controller for a Boolean Symbol Image widget based on
@@ -116,6 +117,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
             if (pv != null) {
                 if (loadItemsFromPVListener == null)
                     loadItemsFromPVListener = new IPVListener.Stub() {
+                        @Override
                         public void valueChanged(IPV pv) {
                             VType value = pv.getValue();
                             if (value != null && value instanceof VEnum) {
@@ -144,6 +146,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
     public void registerSymbolImagePropertyHandlers() {
         // symbol image filename property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -157,6 +160,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // PV Name ForeColor color rule
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if (newValue == null || ((String) newValue).isEmpty())
@@ -192,6 +196,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
     public void registerImageSizePropertyHandlers() {
         // image auto-size property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -208,6 +213,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // changes to the stop animation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -219,6 +225,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // changes to the align to nearest second property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -230,6 +237,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // image size (height/width) property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -248,6 +256,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
      */
     public void registerImageBorderPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -266,6 +275,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
      */
     public void registerImageStretchPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -284,6 +294,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
     public void registerImageRotationPropertyHandlers() {
         // degree rotation property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -306,6 +317,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // flip horizontal rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -314,7 +326,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
                 setPropertyValue(CommonBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
-                setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
+                setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_HORIZONTAL, newValue);
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
                 return false;
@@ -324,6 +336,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // flip vertical rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -332,7 +345,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
                 setPropertyValue(CommonBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
-                setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
+                setPropertyValue(CommonBoolSymbolModel.PROP_FLIP_VERTICAL, newValue);
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
                 return false;
@@ -348,6 +361,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
     public void registerImageCropPropertyHandlers() {
         // top crop property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 if (newValue == null) {
@@ -363,6 +377,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // bottom crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -375,6 +390,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // left crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -387,6 +403,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
 
         // right crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 CommonBoolSymbolFigure imageFigure = (CommonBoolSymbolFigure) figure;
@@ -407,6 +424,8 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
         registerImageRotationPropertyHandlers();
         registerImageBorderPropertyHandlers();
         registerImageCropPropertyHandlers();
+
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
     /**
@@ -422,6 +441,7 @@ public abstract class CommonBoolSymbolEditpart extends AbstractBoolEditPart {
     public void autoSizeWidget(final CommonBoolSymbolFigure imageFigure) {
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
                     Display.getDefault().timerExec(100, this);

@@ -1,5 +1,16 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.archive.diirt.datasource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,12 +19,14 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.diirt.datasource.DataSourceConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -63,7 +76,7 @@ public class ArchiveDataSourceConfiguration extends DataSourceConfiguration<Arch
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException | ParserConfigurationException | SAXException | IOException e) {
             Logger.getLogger(ArchiveDataSourceConfiguration.class.getName()).log(Level.FINEST,
                 "Could not load file configuration", e);
             throw new IllegalArgumentException("Could not load file configuration", e);

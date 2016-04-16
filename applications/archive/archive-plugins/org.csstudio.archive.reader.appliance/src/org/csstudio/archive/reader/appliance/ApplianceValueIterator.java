@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -47,8 +47,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 
     protected final ApplianceArchiveReader reader;
     protected final String name;
-    protected final Timestamp start;
-    protected final Timestamp end;
+    protected final Instant start;
+    protected final Instant end;
 
     private final IteratorListener listener;
 
@@ -62,74 +62,79 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
      */
-    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Timestamp start, Timestamp end,
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
             IteratorListener listener) {
-    	this.reader = reader;
-    	this.name = name;
-    	this.start = start;
-    	this.end = end;
-    	this.listener = listener;
+        this.reader = reader;
+        this.name = name;
+        this.start = start;
+        this.end = end;
+        this.listener = listener;
     }
 
     /**
-	 * Fetches data from appliance archiver reader using the parameters provided to the constructor.
-	 *
-	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
-	 */
+     * Fetches data from appliance archiver reader using the parameters provided to the constructor.
+     *
+     * @throws ArchiverApplianceException if the data for the pv could not be loaded
+     */
     public void fetchData() throws ArchiverApplianceException {
-    	fetchDataInternal(name);
+        fetchDataInternal(name);
     }
 
-	/**
-	 * Fetches data from appliance archiver reader for the given pv name.
-	 *
-	 * @param pvName name of the PV as used in the request made to the server
-	 *
-	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
-	 */
-	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
-		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
-		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
+    /**
+     * Fetches data from appliance archiver reader for the given pv name.
+     *
+     * @param pvName name of the PV as used in the request made to the server
+     *
+     * @throws ArchiverApplianceException if the data for the pv could not be loaded
+     */
+    protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
+        java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
+        java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 
-		DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
-		mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
-		if (mainStream != null) {
-			mainIterator = mainStream.iterator();
-		} else {
-			throw new ArchiverApplianceException("Could not fetch data.");
-		}
-	}
+        DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
+        mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
+        if (mainStream != null) {
+            mainIterator = mainStream.iterator();
+        } else {
+            throw new ArchiverApplianceException("Could not fetch data.");
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.archive.reader.ValueIterator#hasNext()
-	 */
-	@Override
-	public synchronized boolean hasNext() {
-		return !closed && mainIterator != null && mainIterator.hasNext();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.archive.reader.ValueIterator#hasNext()
+     */
+    @Override
+    public synchronized boolean hasNext() {
+        return !closed && mainIterator != null && mainIterator.hasNext();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.archive.reader.ValueIterator#next()
-	 */
-	@Override
-	public VType next() throws Exception {
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.archive.reader.ValueIterator#next()
+     */
+    @Override
+    public VType next() throws Exception {
         EpicsMessage message;
-        synchronized(this) {
-            if (closed) return null;
+        synchronized (this) {
+            if (closed)
+                return null;
             message = mainIterator.next();
         }
         return extractData(message);
-	}
+    }
 
-	/**
-	 * Extracts the data from the given epics message based on the payload type.
-	 *
-	 * @param dataMessage source of data
-	 * @return the appropriate VType data object
-	 * @throws IOException
-	 */
-	protected VType extractData(EpicsMessage dataMessage) throws IOException {
-	    PayloadType type = mainStream.getPayLoadInfo().getType();
+    /**
+     * Extracts the data from the given epics message based on the payload type.
+     *
+     * @param dataMessage source of data
+     * @return the appropriate VType data object
+     * @throws IOException
+     */
+    protected VType extractData(EpicsMessage dataMessage) throws IOException {
+        PayloadType type = mainStream.getPayLoadInfo().getType();
         if (type == PayloadType.SCALAR_BYTE ||
                 type == PayloadType.SCALAR_DOUBLE ||
                 type == PayloadType.SCALAR_FLOAT ||
@@ -214,101 +219,101 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                     new ArrayByte(((ByteString)dataMessage.getMessage().getField(valDescriptor)).toByteArray()));
         }
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
-	}
+    }
 
-	/**
-	 * Extracts the descriptor for the value field so it can be reused on each iteration.
-	 *
-	 * @param message the epics message to extract the descriptor from
-	 * @return the descriptor if it was found or null if not found
-	 */
-	private FieldDescriptor getValDescriptor(EpicsMessage message) {
-		Iterator<FieldDescriptor> it = message.getMessage().getAllFields().keySet().iterator();
-		FieldDescriptor fd;
-		while(it.hasNext()) {
-			fd = it.next();
-			if (fd.getName().equalsIgnoreCase(ApplianceArchiveReaderConstants.VAL)) {
-				return fd;
-			}
-		}
-		return null;
-	}
+    /**
+     * Extracts the descriptor for the value field so it can be reused on each iteration.
+     *
+     * @param message the epics message to extract the descriptor from
+     * @return the descriptor if it was found or null if not found
+     */
+    private FieldDescriptor getValDescriptor(EpicsMessage message) {
+        Iterator<FieldDescriptor> it = message.getMessage().getAllFields().keySet().iterator();
+        FieldDescriptor fd;
+        while (it.hasNext()) {
+            fd = it.next();
+            if (fd.getName().equalsIgnoreCase(ApplianceArchiveReaderConstants.VAL)) {
+                return fd;
+            }
+        }
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.archive.reader.ValueIterator#close()
-	 */
-	@Override
-	public void close() {
-		try {
-		    synchronized(this) {
-    			if(mainStream != null) {
-    				mainStream.close();
-    			}
-    			closed = true;
-		    }
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-		listener.finished(this);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.archive.reader.ValueIterator#close()
+     */
+    @Override
+    public void close() {
+        try {
+            synchronized (this) {
+                if (mainStream != null) {
+                    mainStream.close();
+                }
+                closed = true;
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        listener.finished(this);
+    }
 
-	/**
-	 * Extract the display properties (min, max, alarm limits) from the given payloadinfo.
-	 *
-	 * @param info the info to extract the limits from
-	 * @return the display
-	 */
-	protected Display getDisplay(PayloadInfo info) {
-		Map<String, String> headers = new HashMap<String, String>();
-		for (FieldValue fieldValue : info.getHeadersList()) {
-			if (!headers.containsKey(fieldValue.getName())) {
-				headers.put(fieldValue.getName(), fieldValue.getVal());
-			}
-		}
+    /**
+     * Extract the display properties (min, max, alarm limits) from the given payloadinfo.
+     *
+     * @param info the info to extract the limits from
+     * @return the display
+     */
+    protected Display getDisplay(PayloadInfo info) {
+        Map<String, String> headers = new HashMap<String, String>();
+        for (FieldValue fieldValue : info.getHeadersList()) {
+            if (!headers.containsKey(fieldValue.getName())) {
+                headers.put(fieldValue.getName(), fieldValue.getVal());
+            }
+        }
 
-		String lopr = headers.get(ApplianceArchiveReaderConstants.LOPR);
-		String low = headers.get(ApplianceArchiveReaderConstants.LOW);
-		String lolo = headers.get(ApplianceArchiveReaderConstants.LOLO);
-		String egu = headers.get(ApplianceArchiveReaderConstants.EGU);
-		String prec = headers.get(ApplianceArchiveReaderConstants.PREC);
-		String high = headers.get(ApplianceArchiveReaderConstants.HIGH);
-		String hihi = headers.get(ApplianceArchiveReaderConstants.HIHI);
-		String hopr = headers.get(ApplianceArchiveReaderConstants.HOPR);
+        String lopr = headers.get(ApplianceArchiveReaderConstants.LOPR);
+        String low = headers.get(ApplianceArchiveReaderConstants.LOW);
+        String lolo = headers.get(ApplianceArchiveReaderConstants.LOLO);
+        String egu = headers.get(ApplianceArchiveReaderConstants.EGU);
+        String prec = headers.get(ApplianceArchiveReaderConstants.PREC);
+        String high = headers.get(ApplianceArchiveReaderConstants.HIGH);
+        String hihi = headers.get(ApplianceArchiveReaderConstants.HIHI);
+        String hopr = headers.get(ApplianceArchiveReaderConstants.HOPR);
 
-		return ValueFactory.newDisplay(
-				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
-				(low != null) ? Double.parseDouble(low) : Double.NaN,
-				(lolo != null) ? Double.parseDouble(lolo) : Double.NaN,
-				(egu != null) ? egu : "",
-				(prec != null) ? NumberFormats.format((int)Math.round(Double.parseDouble(prec))) :
-					NumberFormats.toStringFormat(),
-				(high != null) ? Double.parseDouble(high) : Double.NaN,
-				(hihi != null) ? Double.parseDouble(hihi) : Double.NaN,
-				(hopr != null) ? Double.parseDouble(hopr) : Double.NaN,
-				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
-				(hopr != null) ? Double.parseDouble(hopr) : Double.NaN
-		);
-	}
+        return ValueFactory.newDisplay(
+            (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
+            (low != null) ? Double.parseDouble(low) : Double.NaN,
+            (lolo != null) ? Double.parseDouble(lolo) : Double.NaN, (egu != null) ? egu : "",
+            (prec != null) ? NumberFormats.format((int) Math.round(Double.parseDouble(prec)))
+                : NumberFormats.toStringFormat(),
+            (high != null) ? Double.parseDouble(high) : Double.NaN,
+            (hihi != null) ? Double.parseDouble(hihi) : Double.NaN,
+            (hopr != null) ? Double.parseDouble(hopr) : Double.NaN,
+            (lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
+            (hopr != null) ? Double.parseDouble(hopr) : Double.NaN);
+    }
 
 
-	/**
-	 * Determines alarm severity from the given numerical representation.
-	 *
-	 * @param severity numerical representation of alarm severity
-	 *
-	 * @return alarm severity
-	 */
-	protected static AlarmSeverity getSeverity(int severity) {
-	   if (severity == 0) {
-		   return AlarmSeverity.NONE;
-	   } else if (severity == 1) {
-		   return AlarmSeverity.MINOR;
-	   } else if (severity == 2) {
-		   return AlarmSeverity.MAJOR;
-	   } else if (severity == 3) {
-		   return AlarmSeverity.INVALID;
-	   } else {
-		   return AlarmSeverity.UNDEFINED;
-	   }
-	}
+    /**
+     * Determines alarm severity from the given numerical representation.
+     *
+     * @param severity numerical representation of alarm severity
+     *
+     * @return alarm severity
+     */
+    protected static AlarmSeverity getSeverity(int severity) {
+        if (severity == 0) {
+            return AlarmSeverity.NONE;
+        } else if (severity == 1) {
+            return AlarmSeverity.MINOR;
+        } else if (severity == 2) {
+            return AlarmSeverity.MAJOR;
+        } else if (severity == 3) {
+            return AlarmSeverity.INVALID;
+        } else {
+            return AlarmSeverity.UNDEFINED;
+        }
+    }
 }

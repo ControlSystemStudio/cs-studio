@@ -12,10 +12,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
-import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
@@ -40,6 +41,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
      *
      * @return the casted {@link ImageModel}
      */
+    @Override
     public ImageBoolButtonModel getWidgetModel() {
         return (ImageBoolButtonModel) getModel();
     }
@@ -60,7 +62,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         sip.setAnimationDisabled(model.isStopAnimation());
         sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
-        figure.setSymbolProperties(sip);
+        figure.setSymbolProperties(sip, model);
         figure.setImageLoadedListener(new IImageListener() {
 
             @Override
@@ -71,6 +73,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         });
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE)
                     autoSizeWidget(figure);
@@ -107,6 +110,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the on image property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -125,6 +129,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the off image property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -143,6 +148,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -153,8 +159,12 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_STRETCH, handle);
 
+        FigureTransparencyHelper.addHandler(this, figure);
+
+
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -166,6 +176,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -177,6 +188,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the align to nearest second property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -188,6 +200,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -200,6 +213,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         //size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -226,6 +240,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             return;
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
                     Display.getDefault().timerExec(100, this);

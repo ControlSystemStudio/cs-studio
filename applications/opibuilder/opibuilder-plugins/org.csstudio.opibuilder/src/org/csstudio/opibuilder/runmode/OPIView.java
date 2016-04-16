@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -18,7 +20,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.model.application.MApplication;
+import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -30,6 +35,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 
@@ -72,7 +78,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     /** Memento tags */
     private static final String TAG_INPUT = "input",
-                                TAG_FACTORY_ID = "factory_id";
+                                TAG_FACTORY_ID = "factory_id",
+                                TAG_MEMENTO = "memento";
 
     protected OPIRuntimeDelegate opiRuntimeDelegate;
 
@@ -95,7 +102,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         if (opiRuntimeDelegate != null)
         {
             opiRuntimeDelegate.dispose();
@@ -110,7 +118,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void init(final IViewSite site, final IMemento memento) throws PartInitException
+    public void init(final IViewSite site, IMemento memento) throws PartInitException
     {
         super.init(site, memento);
         this.site = site;
@@ -119,9 +127,12 @@ public class OPIView extends ViewPart implements IOPIRuntime
             System.out.println(site.getId() + ":" + site.getSecondaryId() + " opened " +
                                (memento == null ? ", no memento" : "with memento"));
 
-        if (memento == null)
+        if (memento == null) {
+            memento = findMementoFromPlaceholder();
+        }
+        if (memento == null) {
             return;
-
+        }
         // Load previously displayed input from memento
         final String  factoryID = memento.getString(TAG_FACTORY_ID);
         if (factoryID == null)
@@ -139,8 +150,70 @@ public class OPIView extends ViewPart implements IOPIRuntime
         final IAdaptable element = factory.createElement(inputMem);
         if (!(element instanceof IEditorInput))
             throw new PartInitException("Instead of IEditorInput, " + factoryID + " returned " + element);
+
         // Set input, but don't persist to memento because we just read it from memento
         setOPIInput((IEditorInput)element, false);
+    }
+
+    /**
+     * Retrieve memento persisted in MPlaceholder if present.
+     * @return memento persisted in the placeholder.
+     */
+    private IMemento findMementoFromPlaceholder()
+    {
+        IMemento memento = null;
+        MPlaceholder placeholder = findPlaceholder();
+        if (placeholder != null) {
+            if (placeholder.getPersistedState().containsKey(TAG_MEMENTO))
+            {
+                String mementoString = placeholder.getPersistedState().get(TAG_MEMENTO);
+                memento = loadMemento(mementoString);
+            }
+        }
+        return memento;
+    }
+
+    /**
+     * Create memento from string.
+     * @param mementoString
+     * @return
+     */
+    private IMemento loadMemento(String mementoString)
+    {
+        StringReader reader = new StringReader(mementoString);
+        try
+        {
+            return XMLMemento.createReadRoot(reader);
+        }
+        catch (WorkbenchException e)
+        {
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to load memento", e);
+            return null;
+        }
+    }
+
+    /**
+     * Find the MPlaceholder corresponding to this MPart in the MPerspective.  This
+     * may have persisted information relevant to loading this OPIView.
+     * @return corresponding placeholder
+     */
+    private MPlaceholder findPlaceholder()
+    {
+        //do not remove casting - RAP 3.0 still needs it
+        final IEclipseContext localContext = (IEclipseContext)getViewSite().getService(IEclipseContext.class);
+        final MPart part = localContext.get(MPart.class);
+        final EModelService service = (EModelService)PlatformUI.getWorkbench().getService(EModelService.class);
+        final IEclipseContext globalContext = (IEclipseContext)PlatformUI.getWorkbench().getService(IEclipseContext.class);
+        final MApplication app = globalContext.get(MApplication.class);
+        final List<MPlaceholder> phs = service.findElements(app, null, MPlaceholder.class, null);
+        for (MPlaceholder ph : phs)
+        {
+            if (ph.getRef() == part)
+            {
+                return ph;
+            }
+        }
+        return null;
     }
 
     /** @param input Display file that this view should execute
@@ -175,8 +248,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void createPartControl(final Composite parent) {
-        if(SWT.getPlatform().startsWith("rap")){
+    public void createPartControl(final Composite parent)
+    {
+        if(SWT.getPlatform().startsWith("rap"))
+        {
             SingleSourceHelper.rapOPIViewCreatePartControl(this, parent);
             return;
         }
@@ -184,11 +259,15 @@ public class OPIView extends ViewPart implements IOPIRuntime
         createToolbarButtons();
     }
 
-    private Rectangle getBounds() {
+    private Rectangle getBounds()
+    {
         Rectangle bounds;
-        if(opiRuntimeDelegate.getDisplayModel() != null) {
+        if(opiRuntimeDelegate.getDisplayModel() != null)
+        {
             bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
-        } else {
+        }
+        else
+        {
             bounds = new Rectangle(0, 0, 800, 600);
         }
         return bounds;
@@ -201,16 +280,20 @@ public class OPIView extends ViewPart implements IOPIRuntime
      * If the model location has negative values or is (0, 0),
      * position within the parent window.
      */
-    public void positionFromModel() {
+    public void positionFromModel()
+    {
         Composite parent = getSite().getShell();
         final Rectangle bounds = getBounds();
         // Resize to that of model from OPI
         parent.getShell().setSize(bounds.width+45, bounds.height+65);
         // If OPI model specifies a location, honour it.  Otherwise
         // place within parent window.
-        if (bounds.x >= 0 && bounds.y > 1) {
+        if (bounds.x >= 0 && bounds.y > 1)
+        {
             parent.getShell().setLocation(bounds.x, bounds.y);
-        } else {
+        }
+        else
+        {
             org.eclipse.swt.graphics.Rectangle winSize = getSite()
                     .getWorkbenchWindow().getShell().getBounds();
             parent.getShell().setLocation(
@@ -221,7 +304,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
         }
     }
 
-    public void createToolbarButtons(){
+    public void createToolbarButtons()
+    {
         opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
         IActionBars bars = getViewSite().getActionBars();
         opiRuntimeToolBarDelegate.init(bars, getSite().getPage());
@@ -261,7 +345,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
         try
         {
             root.save(writer);
-            model.getPersistedState().put("memento", writer.toString());
+            model.getPersistedState().put(TAG_MEMENTO, writer.toString());
         }
         catch (Exception ex)
         {
@@ -271,12 +355,14 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void saveState(IMemento memento) {
+    public void saveState(IMemento memento)
+    {
         super.saveState(memento);
         if(input == null)
             return;
         IPersistableElement persistable = input.getPersistable();
-        if (persistable != null) {
+        if (persistable != null)
+        {
             /*
              * Store IPersistable of the IEditorInput in a separate section
              * since it could potentially use a tag already used in the parent
@@ -299,12 +385,14 @@ public class OPIView extends ViewPart implements IOPIRuntime
     }
 
     @Override
-    public void setFocus() {
+    public void setFocus()
+    {
         // NOP
     }
 
     @Override
-    public void setWorkbenchPartName(String name) {
+    public void setWorkbenchPartName(String name)
+    {
         setPartName(name);
         setTitleToolTip(getOPIInput().getToolTipText());
     }
@@ -321,23 +409,27 @@ public class OPIView extends ViewPart implements IOPIRuntime
         super.setTitleToolTip(tool_tip);
     }
 
-    public OPIRuntimeDelegate getOPIRuntimeDelegate() {
+    public OPIRuntimeDelegate getOPIRuntimeDelegate()
+    {
         return opiRuntimeDelegate;
     }
 
     @Override
-    public IEditorInput getOPIInput() {
+    public IEditorInput getOPIInput()
+    {
         return getOPIRuntimeDelegate().getEditorInput();
     }
 
     @Override
-    public DisplayModel getDisplayModel() {
+    public DisplayModel getDisplayModel()
+    {
         return getOPIRuntimeDelegate().getDisplayModel();
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(Class adapter) {
+    public Object getAdapter(Class adapter)
+    {
         if (opiRuntimeDelegate == null)
             return super.getAdapter(adapter);
         Object obj = opiRuntimeDelegate.getAdapter(adapter);
@@ -348,11 +440,13 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     }
 
-    public static boolean isOpenFromPerspective() {
+    public static boolean isOpenFromPerspective()
+    {
         return openFromPerspective;
     }
 
-    public static void setOpenFromPerspective(boolean openFromPerspective) {
+    public static void setOpenFromPerspective(boolean openFromPerspective)
+    {
         OPIView.openFromPerspective = openFromPerspective;
     }
 

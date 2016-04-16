@@ -134,6 +134,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 
     }
 
+    @Override
     public void setWorkbenchPartName(String name) {
         setPartName(name);
         setTitleToolTip(getEditorInput().getToolTipText());
@@ -143,10 +144,12 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
         return opiRuntimeDelegate;
     }
 
+    @Override
     public IEditorInput getOPIInput() {
         return getOPIRuntimeDelegate().getEditorInput();
     }
 
+    @Override
     public DisplayModel getDisplayModel() {
         return getOPIRuntimeDelegate().getDisplayModel();
     }

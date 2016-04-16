@@ -16,8 +16,9 @@ public class MenuAction extends Action
         setText(name);
     }
 
+    @Override
     public void run()
     {
-        System.out.println(name + " Ausgewählt...");
+        System.out.println(name + " Ausgewï¿½hlt...");
     }
 }

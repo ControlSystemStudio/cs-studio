@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.alarm.diirt.datasource;
 
@@ -16,7 +16,7 @@ import org.diirt.datasource.ValueCache;
 public class BeastTypeSupport extends DataSourceTypeSupport {
 
     private final BeastTypeAdapterSet adapters;
-    
+
     public BeastTypeSupport() {
         this.adapters = new BeastTypeAdapterSet();
     }

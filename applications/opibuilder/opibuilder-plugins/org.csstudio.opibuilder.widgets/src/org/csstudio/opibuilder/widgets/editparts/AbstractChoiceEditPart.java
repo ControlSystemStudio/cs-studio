@@ -61,6 +61,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
         choiceFigure.addChoiceButtonListener(new IChoiceButtonListener() {
 
+            @Override
             public void buttonPressed(int index, String value) {
                 setPVValue(AbstractChoiceModel.PROP_PVNAME, value);
             }
@@ -97,6 +98,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
                 if(pv != null){
                     if(loadItemsFromPVListener == null)
                         loadItemsFromPVListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && value instanceof VEnum){
@@ -130,6 +132,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 registerLoadItemsListener();
                 return false;
@@ -139,6 +142,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(newValue != null && newValue instanceof VType){
@@ -153,6 +157,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
         // Items
         IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
             @SuppressWarnings("unchecked")
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(newValue != null && newValue instanceof List){
@@ -169,6 +174,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
         IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 ((AbstractChoiceFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
                 return false;
@@ -179,6 +185,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
         IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 ((AbstractChoiceFigure)figure).setHorizontal((Boolean)newValue);
@@ -189,6 +196,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(AbstractChoiceModel.PROP_HORIZONTAL, horizontalHandler);
 
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if(!(Boolean)newValue)
@@ -200,6 +208,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(AbstractChoiceModel.PROP_ITEMS_FROM_PV).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }

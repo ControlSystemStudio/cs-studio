@@ -29,8 +29,8 @@ import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
 import org.csstudio.swt.widgets.util.PointsUtil;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
@@ -49,7 +49,7 @@ import org.eclipse.gef.handles.HandleBounds;
  */
 public final class PolylineFigure extends Polyline implements HandleBounds, Introspectable {
 
-    public enum ArrowType{
+    public static enum ArrowType{
         None("None"),
         From("From"),
         To("To"),
@@ -338,6 +338,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
      * @see #translate(int, int)
      * @since 2.0
      */
+    @Override
     public void primTranslate(int dx, int dy) {
         bounds.x += dx;
         bounds.y += dy;
@@ -437,6 +438,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
     /**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
      * @see org.eclipse.draw2d.IFigure#containsPoint(int, int)
      */
+    @Override
     public boolean containsPoint(int x, int y) {
         int tolerance = (int) Math.max(getLineWidthFloat() / 2.0f,
                 2);

@@ -42,18 +42,21 @@ public final class OpenScreenshotWindowAction implements IWorkbenchWindowActionD
     private IWorkbenchWindow _window;
 
     /** {@inheritDoc} */
+    @Override
     public void dispose()
     {
         // does not need to do anything at all.
     }
 
     /** {@inheritDoc} */
+    @Override
     public void init(final IWorkbenchWindow window)
     {
         _window = window;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void run(final IAction action)
     {
         // ScreenshotPlugin.getDefault().capture();
@@ -74,6 +77,7 @@ public final class OpenScreenshotWindowAction implements IWorkbenchWindowActionD
     }
 
     /** {@inheritDoc} */
+    @Override
     public void selectionChanged(final IAction action, final ISelection selection)
     {
         // does not need to do anything at all.

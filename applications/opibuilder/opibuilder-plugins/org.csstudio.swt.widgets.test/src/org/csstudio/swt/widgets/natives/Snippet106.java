@@ -49,6 +49,7 @@ public static void main (String [] args) throws IOException {
   final int index = 0;
   button.setText ("Insert Column " + index + "a");
   button.addListener (SWT.Selection, new Listener () {
+      @Override
     public void handleEvent (Event e) {
       TableColumn column = new TableColumn (table, SWT.NONE, index);
       column.setText ("Column " + index + "a");

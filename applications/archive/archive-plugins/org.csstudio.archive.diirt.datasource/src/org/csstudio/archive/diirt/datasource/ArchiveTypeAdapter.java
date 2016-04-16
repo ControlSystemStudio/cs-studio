@@ -1,3 +1,13 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.archive.diirt.datasource;
 
 import java.util.ArrayList;
@@ -22,7 +32,7 @@ import org.diirt.vtype.VString;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
-import org.diirt.vtype.next.VEnum;
+import org.diirt.vtype.VEnum;
 
 /**
  *
@@ -153,7 +163,7 @@ public class ArchiveTypeAdapter implements DataSourceTypeAdapter<Boolean, List<V
                         t = ((VEnum) v);
                         Alarm a = (Alarm) t;
                         Time ti = (Time) t;
-                        newValues.add(ValueFactory.newVEnum(t.getIndex(), t.getMetaData().getLabels(),
+                        newValues.add(ValueFactory.newVEnum(t.getIndex(), t.getLabels(),
                             ValueFactory.newAlarm(a.getAlarmSeverity(), a.getAlarmName()),
                             ValueFactory.newTime(ti.getTimestamp(), ti.getTimeUserTag(), ti.isTimeValid())));
                     }

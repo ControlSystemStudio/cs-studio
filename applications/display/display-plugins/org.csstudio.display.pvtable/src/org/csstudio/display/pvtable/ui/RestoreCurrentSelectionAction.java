@@ -18,26 +18,25 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to restore value snapshots
- *  @author Kay Kasemir
+/**
+ * {@link Action} to restore value snapshots
+ *
+ * @author Kay Kasemir
  */
-public class RestoreCurrentSelectionAction extends PVTableAction
-{
-    public RestoreCurrentSelectionAction(final TableViewer viewer)
-    {
+public class RestoreCurrentSelectionAction extends PVTableAction {
+    public RestoreCurrentSelectionAction(final TableViewer viewer) {
         super(Messages.RestoreSelection, "icons/restore.png", viewer); //$NON-NLS-1$
         setToolTipText(Messages.RestoreSelection_TT);
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         final List<PVTableItem> items = new ArrayList<>();
         final Iterator<?> selection = ((IStructuredSelection) viewer.getSelection()).iterator();
         while (selection.hasNext())
             items.add((PVTableItem) selection.next());
-        if (items.size() > 0  &&  model != null)
+        if (items.size() > 0 && model != null)
             model.restore(items);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,6 +7,8 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.notifier.util;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 
 /**
  * Alarm Notifier utilities.
@@ -96,7 +97,7 @@ public class NotifierUtils {
         final SeverityLevel current_severity = pv.getCurrentSeverity();
         final String current_message = pv.getCurrentMessage();
         final String value = pv.getValue();
-        final Timestamp timestamp = pv.getTimestamp();
+        final Instant timestamp = pv.getTimestamp();
         return new AlarmUpdateInfo(name, current_severity, current_message,
                 severity, status, value, timestamp);
     }
@@ -129,13 +130,13 @@ public class NotifierUtils {
         }
     }
 
-    public static String getDurationString(Timestamp t) {
+    public static String getDurationString(Instant t) {
         if (t == null)
             return "";
-        TimeDuration duration = Timestamp.now().durationFrom(t);
+        Duration duration = Duration.between(Instant.now(), t);
         if (duration.isNegative())
             return "";
-        double seconds = duration.toSeconds();
+        double seconds = TimeDuration.toSecondsDouble(duration);
         long h = Math.round(seconds / 3600);
         long m = Math.round((seconds % 3600) / 60);
         long s = Math.round(seconds % 60);

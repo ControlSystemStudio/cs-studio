@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Extra widgets for BOY
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.extra;singleton:=true
 Bundle-Version: 2.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0",
  org.csstudio.opibuilder.widgets;bundle-version="3.2.0",
@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface;bundle-version="3.10.0",
  org.jdom;bundle-version="1.1.0"
 Export-Package: org.csstudio.opibuilder.widgets.extra
-Import-Package: org.diirt.datasource;version="3.0.1",
+Import-Package: org.diirt.datasource,
+ org.diirt.datasource.expression,
  org.diirt.service,
  org.diirt.vtype

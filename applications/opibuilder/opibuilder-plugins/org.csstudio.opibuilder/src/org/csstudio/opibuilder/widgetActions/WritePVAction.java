@@ -145,6 +145,7 @@ public class WritePVAction extends AbstractWidgetAction {
     private void popErrorDialog(final Exception e) {
         UIBundlingThread.getInstance().addRunnable(
                 display, new Runnable() {
+                    @Override
                     public void run() {
                         String message = "Failed to write PV:" + getPVName()
                                 + "\n" +

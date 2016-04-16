@@ -24,6 +24,7 @@ public class SpinnerDirectEditPolicy
     /**
      * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
      */
+    @Override
     protected Command getDirectEditCommand(DirectEditRequest edit) {
         String labelText = (String)edit.getCellEditor().getValue();
         SpinnerEditpart spinner = (SpinnerEditpart)getHost();
@@ -34,6 +35,7 @@ public class SpinnerDirectEditPolicy
     /**
      * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
      */
+    @Override
     protected void showCurrentEditValue(DirectEditRequest request) {
         //String value = (String)request.getCellEditor().getValue();
         //((LabelFigure)getHostFigure()).setText(value);
@@ -57,11 +59,13 @@ static class SpinnerEditCommand extends Command    {
         newText = "";  //$NON-NLS-1$
     }
 
+    @Override
     public void execute() {
         oldText = label.getText();
         label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);
     }
 
+    @Override
     public void undo() {
         label.setText(oldText);
     }

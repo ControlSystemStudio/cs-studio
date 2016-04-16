@@ -17,8 +17,8 @@
     <module>org.csstudio.archive.engine.test</module>
     <module>org.csstudio.archive.rdb</module>
     <module>org.csstudio.archive.reader</module>
-    <module>org.csstudio.archive.reader.aapi</module>
-    <module>org.csstudio.archive.reader.aapi.test</module>
+    
+    
     <module>org.csstudio.archive.reader.appliance</module>
     <module>org.csstudio.archive.reader.appliance.test</module>
     <!-- <module>org.csstudio.archive.reader.archiverecord</module> Was used by DESY, not up to date -->

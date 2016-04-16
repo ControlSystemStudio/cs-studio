@@ -85,6 +85,7 @@ public class Application implements IApplication {
                           new HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]>(8);
 
     /** {@inheritDoc} */
+    @Override
     public Object start(final IApplicationContext context) throws Exception
     {
         // Check for '-version' argument.
@@ -275,6 +276,7 @@ public class Application implements IApplication {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         stopApplication();

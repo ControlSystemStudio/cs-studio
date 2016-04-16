@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
+import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
 import org.csstudio.scan.ScanSystemPreferences;
@@ -39,7 +40,7 @@ import org.diirt.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class NumericValueCondition implements DeviceCondition, DeviceListener
 {
-    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
+    protected final static Duration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
 
     /** Device to monitor */
     final private Device device;
@@ -54,7 +55,7 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
     final private double tolerance;
 
     /** Timeout in seconds, <code>null</code> to "wait forever" */
-    final private TimeDuration timeout;
+    final private Duration timeout;
 
     /** Initial value to await Comparison.INCREASE_BY/DECREASE_BY */
     private volatile double initial_value = Double.NaN;
@@ -74,7 +75,7 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
      */
     public NumericValueCondition(final Device device, final Comparison comparison,
             final double desired_value, final double tolerance,
-            final TimeDuration timeout)
+            final Duration timeout)
     {
         this.device = device;
         this.comparison = comparison;

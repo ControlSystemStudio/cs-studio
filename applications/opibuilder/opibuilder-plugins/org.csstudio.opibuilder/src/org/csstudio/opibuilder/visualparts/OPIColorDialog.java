@@ -260,6 +260,7 @@ public class OPIColorDialog extends HelpTrayDialog {
         });
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 refreshGUIOnSelection();
             }
@@ -272,6 +273,7 @@ public class OPIColorDialog extends HelpTrayDialog {
         viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
                 okPressed();
             }

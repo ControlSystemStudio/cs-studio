@@ -5,7 +5,6 @@ package org.csstudio.logbook.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.logbook.LogEntry;
@@ -23,7 +22,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author shroffk

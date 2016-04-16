@@ -163,6 +163,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
     /**
      * {@inheritDoc}
      */
+    @Override
     public void paintFigure(final Graphics graphics) {
         if (!transparent) {
             graphics.setBackgroundColor(this.getBackgroundColor());

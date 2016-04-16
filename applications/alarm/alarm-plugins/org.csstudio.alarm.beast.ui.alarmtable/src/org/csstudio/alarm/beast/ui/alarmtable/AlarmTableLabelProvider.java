@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
@@ -18,6 +19,7 @@ import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 
 /** Provider of label/color/... for the alarm table.
  *  @author Kay Kasemir
@@ -29,12 +31,12 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     final private SeverityColorProvider color_provider;
     final private SeverityColorPairProvider color_pair_provider;
     final private SeverityIconProvider icon_provider;
-    
+
     /** Whether rows' background should be painted with the alarm's severity color */
-    final private boolean background_color_alarm_sensitive = Preferences.isBackgroundColorAlarmSensitive(); 
+    final private boolean background_color_alarm_sensitive = Preferences.isBackgroundColorAlarmSensitive();
     /** Whether recovered (cleared) unacknowledged alarms should have their description drawn using reversed colors */
-    final private boolean reverse_colors = Preferences.isColorsReversed(); 
-    
+    final private boolean reverse_colors = Preferences.isColorsReversed();
+
     /** Column handled by this label provider */
     final private ColumnInfo column;
 
@@ -49,7 +51,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     public AlarmTableLabelProvider(final SeverityIconProvider icon_provider,
             final SeverityColorProvider color_provider, final ColumnInfo column)
     {
-    	this(icon_provider, color_provider, null, column);
+        this(icon_provider, color_provider, null, column);
     }
 
     /** Initialize
@@ -97,6 +99,22 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         return alarm.getToolTipText();
     }
 
+    /** @return Tooltip shift for the alarm tooltip */
+    @Override
+    public Point getToolTipShift(Object object) {
+        /* Default tooltip position is 10px right and 0px down from the current cursor position.
+         * This causes a bug on Linux (GTK) when the tooltip is longer than the available
+         * space on the right of the cursor: the tooltip window is shifted left, but is immediately
+         * removed (presumably because the mouse now hovers over the tooltip, however it doesn't
+         * happen if the tooltip is also automatically moved up and the mouse is smack in the middle
+         * of it..).
+         *
+         * Shifting the tooltip position a bit lower fixed the problem observed on Linux.
+         */
+
+        return new Point(10, 2);
+    }
+
     /** Update one cell of the table */
     @Override
     public void update(final ViewerCell cell)
@@ -124,11 +142,11 @@ public class AlarmTableLabelProvider extends CellLabelProvider
                     alarm.getSeverity().getDisplayName(), alarm.getValue(), true);
             cell.setText(annunciation);
             }
-            
+
             break;
         case TIME:
             cell.setText(formatter == null ? alarm.getTimestampText()
-                    : (alarm.getTimestamp() == null ? "" : formatter.format(alarm.getTimestamp().toDate())));
+                    : (alarm.getTimestamp() == null ? "" : formatter.format(Date.from(alarm.getTimestamp()))));
             break;
         case CURRENT_SEVERITY:
             if (alarm.getParent() == null)
@@ -172,13 +190,13 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         default:
             break;
         }
-        
+
         if (column == ColumnInfo.ICON) return;
 
-    	// If enabled, the background color will reflect the severity of the alarm (when in alarm state).
-    	// If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.    	
-    	if (!background_color_alarm_sensitive) return;
-        
+        // If enabled, the background color will reflect the severity of the alarm (when in alarm state).
+        // If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.
+        if (!background_color_alarm_sensitive) return;
+
         final SeverityLevel severity = alarm.getSeverity();
         if (severity == SeverityLevel.OK)
         {
@@ -191,16 +209,16 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         final SeverityLevel current_severity = alarm.getCurrentSeverity();
         final Color severity_color = color_provider.getColor(severity);
         final Color color_pair = color_pair_provider == null ? null : color_pair_provider.getColor(severity);
-        
+
         Color bg_color = severity_color, fg_color = color_pair;
-        
+
         if (reverse_colors && current_severity == SeverityLevel.OK)
         {
-        	// the alarm is currently cleared (recovered), and color reversal is enabled
-        	bg_color = color_pair;
-        	fg_color = severity_color;
+            // the alarm is currently cleared (recovered), and color reversal is enabled
+            bg_color = color_pair;
+            fg_color = severity_color;
         }
-        
+
         cell.setBackground(bg_color);
         cell.setForeground(fg_color);
     }

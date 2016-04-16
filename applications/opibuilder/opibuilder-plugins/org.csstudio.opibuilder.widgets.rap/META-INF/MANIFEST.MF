@@ -7,7 +7,7 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Fragment-Host: org.csstudio.opibuilder.widgets;bundle-version="1.2.0"
 Require-Bundle: org.jdom,
  org.eclipse.rap.ui.views
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.draw2d,
  org.eclipse.draw2d.graph,
  org.eclipse.gef,

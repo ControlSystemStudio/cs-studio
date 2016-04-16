@@ -248,6 +248,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
 
         cbvAddresses.getCombo().addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 addressHelper.saveSettings();
             }
@@ -407,10 +408,12 @@ public class MailSenderDialog extends Dialog implements SelectionListener {
         return result;
     }
 
+    @Override
     public void widgetDefaultSelected(SelectionEvent event) {
         widgetSelected(event);
     }
 
+    @Override
     public void widgetSelected(SelectionEvent event) {
 
         if(event.widget instanceof Button) {

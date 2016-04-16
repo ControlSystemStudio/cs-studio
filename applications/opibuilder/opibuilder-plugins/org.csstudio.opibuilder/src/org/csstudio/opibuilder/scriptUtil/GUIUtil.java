@@ -30,6 +30,7 @@ public class GUIUtil {
         InputDialog dlg = new InputDialog(Display.getCurrent()
                 .getActiveShell(), "Password Input Dialog",
                 dialogMessage, "", new IInputValidator() {
+                    @Override
                     public String isValid(String newText) {
                         if (newText.equals(password))
                             return null;
@@ -54,8 +55,7 @@ public class GUIUtil {
      * @return true if user has clicked the YES button. False otherwise.
      */
     public static boolean openConfirmDialog(final String dialogMessage){
-        MessageBox mb = new MessageBox(DisplayUtils.getDefaultShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
-                | SWT.CANCEL);
+        MessageBox mb = new MessageBox(DisplayUtils.getDefaultShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
         mb.setMessage(dialogMessage);
         mb.setText("Confirm Dialog");
         int val = mb.open();
@@ -63,8 +63,6 @@ public class GUIUtil {
             return true;
         return false;
     }
-
-
 
     /**
      * Enter or exit compact mode.

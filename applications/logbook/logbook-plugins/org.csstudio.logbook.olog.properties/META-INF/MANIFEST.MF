@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Olog Properties
 Bundle-SymbolicName: org.csstudio.logbook.olog.properties;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.csstudio.logbook.olog.properties.Activator
 Require-Bundle: org.eclipse.core.runtime,
  edu.msu.nscl.olog.api;bundle-version="2.2.1",

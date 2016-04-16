@@ -102,6 +102,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
      * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
      * PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         refreshVisuals(); // this will cause an invocation of getImage() and
         // getText(), see below

@@ -37,6 +37,7 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
                     }
         Thread t = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 while (true) {
                     count++;
@@ -54,6 +55,7 @@ public class IntensityGraphManualTest extends AbstractWidgetTest{
 //                    start=System.nanoTime();
                     Display.getDefault().asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
 //                            long nanoTime = 0;//System.nanoTime();
 

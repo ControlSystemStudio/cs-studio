@@ -13,7 +13,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.logging.Handler;
@@ -21,7 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.local.LocalPVFactory;
+import org.csstudio.vtype.pv.local.ValueHelper;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VLong;
+import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VString;
+import org.diirt.vtype.VStringArray;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueUtil;
 import org.junit.After;
@@ -50,6 +59,187 @@ public class LocalPVTest implements PVListener
     public void shutdown()
     {
         assertThat(PVPool.getPVReferences().size(), equalTo(0));
+    }
+
+    @Test
+    public void testNameParser() throws Exception
+    {
+        String[] ntv;
+        ntv = ValueHelper.parseName("name(3.14)");
+        assertThat(ntv, equalTo(new String[] {"name", null, "3.14"}));
+
+        ntv = ValueHelper.parseName("name");
+        assertThat(ntv, equalTo(new String[] {"name", null, null}));
+
+        ntv = ValueHelper.parseName("name<VDouble>(3.14)");
+        assertThat(ntv, equalTo(new String[] {"name", "VDouble", "3.14"}));
+
+        ntv = ValueHelper.parseName("name<VStringArray>(\"a\", \"b\", \"c\")");
+        assertThat(ntv, equalTo(new String[] {"name", "VStringArray", "\"a\", \"b\", \"c\""}));
+    }
+
+    @Test
+    public void testValueParser() throws Exception
+    {
+        List<String> items = ValueHelper.splitInitialItems("3.14");
+        System.out.println(items);
+
+        items = ValueHelper.splitInitialItems(" 1,  2,   3  ");
+        System.out.println(items);
+        assertThat(items.size(), equalTo(3));
+        assertThat(items.get(0), equalTo("1"));
+
+        items = ValueHelper.splitInitialItems("\"A\", \"2 Apples\"");
+        System.out.println(items);
+        assertThat(items.size(), equalTo(2));
+        assertThat(items.get(1), equalTo("\"2 Apples\""));
+
+        items = ValueHelper.splitInitialItems("\"A\", \" Apples, 2\"");
+        System.out.println(items);
+        assertThat(items.size(), equalTo(2));
+        assertThat(items.get(1), equalTo("\" Apples, 2\""));
+
+        items = ValueHelper.splitInitialItems("\"Text with \\\"Quote\\\"\", \"Text\"");
+        System.out.println(items);
+        assertThat(items.size(), equalTo(2));
+        assertThat(items.get(0), equalTo("\"Text with \\\"Quote\\\"\""));
+        assertThat(items.get(1), equalTo("\"Text\""));
+    }
+
+    @Test
+    public void testDouble() throws Exception
+    {
+        final PV pv = PVPool.getPV("name(3.14)");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VDouble.class));
+        // Accepts string that contains a number
+        pv.write("6.28");
+        // Number stays number
+        assertThat(pv.read(), instanceOf(VDouble.class));
+        assertThat(ValueUtil.numericValueOf(pv.read()), equalTo(6.28));
+        try
+        {
+            pv.write("ten");
+            fail("Allowed text for number");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testLong() throws Exception
+    {
+        final PV pv = PVPool.getPV("name<VLong>(3e2)");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VLong.class));
+        assertThat(((VLong) pv.read()).getValue(), equalTo(300L));
+
+        // Accepts string that contains a number
+        pv.write("6.28");
+        // Number stays number
+        assertThat(pv.read(), instanceOf(VLong.class));
+        assertThat(((VLong) pv.read()).getValue(), equalTo(6L));
+
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testString() throws Exception
+    {
+        final PV pv = PVPool.getPV("name(\"Fred\")");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VString.class));
+        assertThat(((VString)pv.read()).getValue(), equalTo("Fred"));
+
+        pv.write("was here");
+        System.out.println(pv.read());
+        assertThat(((VString)pv.read()).getValue(), equalTo("was here"));
+
+        pv.write("\"Quoted text\"");
+        System.out.println(pv.read());
+        assertThat(((VString)pv.read()).getValue(), equalTo("\"Quoted text\""));
+
+        // String stays a string even when value is "3.14"
+        pv.write("3.14");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VString.class));
+
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testNumberArray() throws Exception
+    {
+        final PV pv = PVPool.getPV("name(1, 2, 3)");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VNumberArray.class));
+
+        pv.write(new double[] { 10.5, 20.5, 30.5 });
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VNumberArray.class));
+        assertThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(20.5));
+
+        pv.write(Arrays.asList(1.5, 2.5, 3.5));
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VNumberArray.class));
+        assertThat(((VNumberArray)pv.read()).getData().getDouble(2), equalTo(3.5));
+
+        pv.write("100, 200, 300");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VNumberArray.class));
+        assertThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(200.0));
+
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testStringArray() throws Exception
+    {
+        final PV pv = PVPool.getPV("name(\"Nothing\", \"2 Apples\")");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VStringArray.class));
+
+        pv.write("One, two");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VStringArray.class));
+        assertThat(((VStringArray)pv.read()).getData().size(), equalTo(1));
+
+        pv.write(new String[] { "One", "two" });
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VStringArray.class));
+        assertThat(((VStringArray)pv.read()).getData().size(), equalTo(2));
+
+        pv.write(Arrays.asList("One", "two"));
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VStringArray.class));
+        assertThat(((VStringArray)pv.read()).getData().size(), equalTo(2));
+
+
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testEnum() throws Exception
+    {
+        final PV pv = PVPool.getPV("name<VEnum>(1, \"Nothing\", \"2 Apples\")");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VEnum.class));
+        assertThat(((VEnum)pv.read()).getValue(), equalTo("2 Apples"));
+
+        pv.write(0);
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VEnum.class));
+        assertThat(((VEnum)pv.read()).getValue(), equalTo("Nothing"));
+
+        pv.write("2 Apples");
+        System.out.println(pv.read());
+        assertThat(pv.read(), instanceOf(VEnum.class));
+        assertThat(((VEnum)pv.read()).getIndex(), equalTo(1));
+
+        PVPool.releasePV(pv);
     }
 
     @Test(timeout=5000)
@@ -84,29 +274,6 @@ public class LocalPVTest implements PVListener
         PVPool.releasePV(pv);
     }
 
-    @Test(timeout=5000)
-    public void testWrite() throws Exception
-    {
-        final PV pv = PVPool.getPV("x(3.14)");
-        assertThat(ValueUtil.numericValueOf(pv.read()), equalTo(3.14));
-        pv.write(47.0);
-        assertThat(ValueUtil.numericValueOf(pv.read()), equalTo(47.0));
-        PVPool.releasePV(pv);
-    }
-
-    @Test(timeout=5000)
-    public void testString() throws Exception
-    {
-        final PV pv = PVPool.getPV("name(\"Fred\")");
-        System.out.println(pv.read());
-        assertThat(pv.read(), instanceOf(VString.class));
-        assertThat(((VString)pv.read()).getValue(), equalTo("Fred"));
-        pv.write("was here");
-        System.out.println(pv.read());
-        assertThat(((VString)pv.read()).getValue(), equalTo("was here"));
-        PVPool.releasePV(pv);
-    }
-
     @Test // (timeout=5000)
     public void testCallbacks() throws Exception
     {
@@ -121,7 +288,7 @@ public class LocalPVTest implements PVListener
         System.out.println("Write-callback took " + seconds + " seconds");
         assertTrue(seconds < 0.5);
 
-        // Async write should be 'immediate'
+        // Async read should be 'immediate'
         start = System.currentTimeMillis();
         final VType value = pv.asyncRead().get();
         end = System.currentTimeMillis();

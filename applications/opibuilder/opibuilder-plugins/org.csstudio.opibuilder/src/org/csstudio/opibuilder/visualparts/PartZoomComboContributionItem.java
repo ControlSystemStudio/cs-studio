@@ -124,19 +124,23 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     protected Control createControl(Composite parent) {
         combo = new Combo(parent, SWT.DROP_DOWN);
         combo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleWidgetSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 handleWidgetDefaultSelected(e);
             }
         });
         combo.addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent e) {
                 // do nothing
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 refresh(false);
             }
@@ -152,6 +156,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     /**
      * @see org.eclipse.jface.action.ContributionItem#dispose()
      */
+    @Override
     public void dispose() {
         if (zoomManager != null) {
             zoomManager.removeZoomListener(this);
@@ -171,6 +176,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
      * @param parent
      *            The parent of the control to fill
      */
+    @Override
     public final void fill(Composite parent) {
         createControl(parent);
     }
@@ -184,6 +190,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
      * @param index
      *            Menu index
      */
+    @Override
     public final void fill(Menu parent, int index) {
         Assert.isTrue(false, "Can't add a control to a menu");//$NON-NLS-1$
     }
@@ -200,6 +207,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
      * @param index
      *            Index
      */
+    @Override
     public void fill(ToolBar parent, int index) {
         toolitem = new ToolItem(parent, SWT.SEPARATOR, index);
         Control control = createControl(parent);
@@ -270,6 +278,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
     /**
      * @see ZoomListener#zoomChanged(double)
      */
+    @Override
     public void zoomChanged(double zoom) {
         refresh(false);
     }

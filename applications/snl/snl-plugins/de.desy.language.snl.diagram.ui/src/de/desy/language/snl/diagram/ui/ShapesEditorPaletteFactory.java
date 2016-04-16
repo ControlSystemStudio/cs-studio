@@ -76,12 +76,14 @@ final class ShapesEditorPaletteFactory {
         // Add (solid-line) connection tool
         tool = new ConnectionCreationToolEntry("Solid connection",
                 "Create a solid-line connection", new CreationFactory() {
+                    @Override
                     public Object getNewObject() {
                         return null;
                     }
 
                     // see ShapeEditPart#createEditPolicies()
                     // this is abused to transmit the desired line style
+                    @Override
                     public Object getObjectType() {
                         return WhenConnection.SOLID_CONNECTION;
                     }

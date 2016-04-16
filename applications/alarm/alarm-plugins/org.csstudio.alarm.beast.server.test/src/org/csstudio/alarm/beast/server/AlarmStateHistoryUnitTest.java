@@ -8,11 +8,13 @@
 package org.csstudio.alarm.beast.server;
 
 import static org.junit.Assert.*;
+
+import java.time.Instant;
+
 import static org.hamcrest.CoreMatchers.*;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link AlarmStateHistory}
@@ -29,7 +31,7 @@ public class AlarmStateHistoryUnitTest
         assertThat(history.receivedAlarmsWithinTimerange(3.0), equalTo(false));
 
         // 1 fault at the 'start' time
-        Timestamp start = Timestamp.now();
+        final Instant start = Instant.now();
         history.add(new AlarmState(SeverityLevel.MINOR, "Low", "1", start));
         assertThat(history.receivedAlarmsWithinTimerange(3.0), equalTo(false));
 

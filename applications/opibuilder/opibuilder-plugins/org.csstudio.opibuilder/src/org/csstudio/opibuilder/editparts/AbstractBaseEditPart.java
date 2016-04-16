@@ -93,6 +93,7 @@ import org.eclipse.ui.progress.UIJob;
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart implements NodeEditPart{
 
     public class BaseEditPartActionFilter implements IActionFilter {
+        @Override
         public boolean testAttribute(Object target, String name,
                 String value) {
             if (name.equals("executionMode") && //$NON-NLS-1$
@@ -211,6 +212,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                             AbstractBaseEditPart.this, pvArray);
 
                     UIBundlingThread.getInstance().addRunnable(new Runnable() {
+                        @Override
                         public void run() {
                             if (!isActive()) {
                                 //already deactivated
@@ -237,6 +239,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         //Rap specified code
         displayDisposeListener = new Runnable() {
 
+            @Override
             public void run() {
                 deactivate();
             }
@@ -575,6 +578,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     protected void registerBasePropertyChangeHandlers() {
         IWidgetPropertyChangeHandler refreshVisualHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 refreshVisuals();
@@ -608,6 +612,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             });
 
         IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setBackgroundColor(CustomMediaFactory.getInstance()
@@ -619,6 +624,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 backColorHandler);
 
         IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setForegroundColor(CustomMediaFactory.getInstance()
@@ -630,6 +636,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 foreColorHandler);
 
         IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setFont(((OPIFont) newValue).getSWTFont());
@@ -639,6 +646,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
 
         IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 setFigureBorder(calculateBorder());
@@ -652,6 +660,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
 
         IWidgetPropertyChangeHandler labelBorderHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if (figure.getBorder() instanceof LabeledBorder)
@@ -667,6 +676,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, labelBorderHandler);
 
         IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setEnabled((Boolean) newValue);
@@ -678,6 +688,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 enableHandler);
 
         IWidgetPropertyChangeHandler tooltipHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if (newValue.toString().equals("")) //$NON-NLS-1$
@@ -694,6 +705,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 tooltipHandler);
 
         IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 boolean visible = (Boolean) newValue;

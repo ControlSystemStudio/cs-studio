@@ -70,6 +70,7 @@ public enum Keywords implements ILanguageElements {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getElementName() {
         return this._elementName;
     }

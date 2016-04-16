@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
@@ -111,6 +112,8 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
                 WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
         addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
                 WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
+
+        FigureTransparencyHelper.addProperty(this);
 
         addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
                 "Symbol Image", WidgetPropertyCategory.Display, new Path(""),
@@ -318,6 +321,10 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
     public boolean isAlignedToNearestSecond() {
         return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
                 .getPropertyValue();
+    }
+
+    public boolean isTransparency() {
+        return FigureTransparencyHelper.isTransparency(this);
     }
 
 }

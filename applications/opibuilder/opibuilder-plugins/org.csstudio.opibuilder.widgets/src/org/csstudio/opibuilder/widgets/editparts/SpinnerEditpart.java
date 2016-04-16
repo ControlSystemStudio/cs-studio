@@ -67,6 +67,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
             spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
+                @Override
                 public void manualValueChanged(double newValue) {
                     setPVValue(SpinnerModel.PROP_PVNAME, newValue);
                     getWidgetModel().setText(((SpinnerFigure)getFigure()).getLabelFigure().getText(), false);
@@ -114,6 +115,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                 if(pv != null){
                     if(pvLoadLimitsListener == null)
                         pvLoadLimitsListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 Display displayInfo = VTypeHelper.getDisplayInfo(value);
@@ -165,6 +167,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     registerLoadLimitsListener();
                     return false;
@@ -175,6 +178,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //pv value
             handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     if(newValue == null )
                         return false;
@@ -188,6 +192,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //min
             handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setMin((Double)newValue);
                     return false;
@@ -197,6 +202,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //max
             handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setMax((Double)newValue);
                     return false;
@@ -206,6 +212,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //step increment
             handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setStepIncrement((Double)newValue);
                     return false;
@@ -215,6 +222,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //page increment
             handler = new IWidgetPropertyChangeHandler() {
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setPageIncrement((Double)newValue);
                     return false;
@@ -224,6 +232,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             //font
             IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     ((SpinnerFigure)figure).getLabelFigure().
@@ -236,6 +245,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 
             handler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     ((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
@@ -245,6 +255,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
             setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
 
             handler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     ((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
@@ -255,6 +266,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 
             handler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     ((SpinnerFigure)figure).getLabelFigure().setOpaque(!(Boolean)newValue);
@@ -265,6 +277,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             handler = new IWidgetPropertyChangeHandler() {
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
                     return false;
@@ -274,6 +287,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             handler = new IWidgetPropertyChangeHandler() {
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setPrecision((Integer)newValue);
                     return false;
@@ -283,6 +297,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             handler = new IWidgetPropertyChangeHandler() {
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
                     return false;
@@ -292,6 +307,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
             handler = new IWidgetPropertyChangeHandler() {
 
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                     ((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
                     return false;
