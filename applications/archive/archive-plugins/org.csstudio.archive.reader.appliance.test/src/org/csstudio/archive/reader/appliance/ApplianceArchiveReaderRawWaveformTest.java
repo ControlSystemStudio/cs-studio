@@ -5,14 +5,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestApplianceArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorRaw;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorWaveform;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -32,15 +32,15 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for a double waveform type PV.
      *
      * @throws Exception
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+    	Instant end = Instant.now();
+    	Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -52,7 +52,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
                 array[j] = val.getData().getDouble(j);
             }
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE[i],array,0.000001);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
@@ -60,15 +60,15 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for a float waveform type pv.
      *
      * @throws Exception
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -80,7 +80,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
                 array[j] = val.getData().getFloat(j);
             }
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT[i],array,0.000001);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
@@ -88,15 +88,15 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for an int waveform type pv.
      *
      * @throws Exception
      */
     @Test
     public void testDataRetrievalInt() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -108,7 +108,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
                 array[j] = val.getData().getInt(j);
             }
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT[i],array);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
@@ -116,15 +116,15 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for a short waveform type pv.
      *
      * @throws Exception
      */
     @Test
     public void testDataRetrievalShort() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",false,0, start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -136,7 +136,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
                 array[j] = val.getData().getShort(j);
             }
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT[i],array);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
@@ -144,15 +144,15 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for a byte waveform type pv.
      *
      * @throws Exception
      */
     @Test
     public void testDataRetrievalByte() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -164,7 +164,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
                 array[j] = val.getData().getByte(j);
             }
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE[i],array);
-            assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
             assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
         }
@@ -172,7 +172,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for a string wavefdorm type pv.
      *
      * @throws Exception
@@ -180,8 +180,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
     @Test
     public void testDataRetrievalString() throws Exception {
         //this is not supported on the CSS core side
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         try {
             getValuesStringArray("test_pv_wave_string",false,0,start,end);
             fail();
@@ -192,7 +192,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     /**
      * Tests
-     * {@code ApplianceArchiveReader#getRawValues(int, String, Timestamp, Timestamp)}
+     * {@code ApplianceArchiveReader#getRawValues(int, String, Instant, Instant)}
      * method for an enum waveform type pv.
      *
      * @throws Exception
@@ -200,8 +200,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
     @Test
     public void testDataRetrievalEnum() throws Exception {
         //this doesn't seem to be supported on the IOC side
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         try {
             getValuesEnumArray("test_pv_wave_enum",false,0,start,end);
             fail();

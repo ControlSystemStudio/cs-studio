@@ -23,6 +23,8 @@ public class TestSettings
      */
     public static void init()
     {
-        System.setProperty("python.path", "test/org/csstudio/scan");
+        System.setProperty("python.path", "src/org/csstudio/scan");
+        System.setProperty("python.verbose", "debug");
+        System.setProperty("python.import.site", "false");
     }
 }

@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.emf.common.util.URI;
@@ -18,6 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Class handling loading of perspectives from .xmi files.
@@ -34,6 +37,18 @@ public class PerspectiveLoader {
 
     @Inject
     private IFileUtils fileUtils;
+
+    /**
+     * Helper method to create an instance of PerspectiveLoader using e4's
+     * dependency injection.
+     * @return new PerspectiveLoader instance
+     */
+    public static PerspectiveLoader create() {
+        IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
+        context.set(IFileUtils.class.getCanonicalName(), new FileUtils());
+        final PerspectiveLoader loader = ContextInjectionFactory.make(PerspectiveLoader.class, context);
+        return loader;
+    }
 
     /**
      * Present a FileDialog to the user to select a .xmi file.  Load file into XML

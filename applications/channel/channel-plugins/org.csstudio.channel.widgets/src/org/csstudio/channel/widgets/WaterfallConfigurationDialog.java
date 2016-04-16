@@ -1,6 +1,7 @@
 package org.csstudio.channel.widgets;
 
 import java.beans.PropertyChangeEvent;
+import java.time.Duration;
 
 import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ extends AbstractConfigurationDialog<WaterfallWidget, WaterfallConfigurationPanel
         getConfigurationComposite().setAdaptiveRange((Boolean) getInitialValues().get("adaptiveRange"));
         getConfigurationComposite().setSortProperty((String) getInitialValues().get("sortProperty"));
         getConfigurationComposite().setScrollDirection((Integer) getInitialValues().get("scrollDirection"));
-        getConfigurationComposite().setResolution((TimeDuration) getInitialValues().get("resolution"));
+        getConfigurationComposite().setResolution((Duration) getInitialValues().get("resolution"));
     }
 
     @Override

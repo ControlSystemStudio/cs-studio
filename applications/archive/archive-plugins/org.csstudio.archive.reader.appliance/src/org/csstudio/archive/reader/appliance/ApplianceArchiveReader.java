@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,7 +23,6 @@ import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.epics.archiverappliance.retrieval.client.RawDataRetrieval;
-import org.diirt.util.time.Timestamp;
 
 /**
  * Appliance archive reader which reads data from EPICS archiver appliance.
@@ -140,7 +140,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp)
      */
     @Override
-    public ApplianceValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
+    public ApplianceValueIterator getRawValues(int key, String name, Instant start, Instant end) throws UnknownChannelException, Exception {
         try {
             name = stripSchema(name);
             ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this);
@@ -155,7 +155,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * @see org.csstudio.archive.reader.ArchiveReader#getOptimizedValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, int)
      */
     @Override
-    public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
+    public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count) throws UnknownChannelException, Exception {
         boolean binningSupported = true;
         ApplianceValueIterator it = null;
         name = stripSchema(name);
@@ -290,7 +290,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * @return the number of points in the requested time window
      * @throws IOException if there was an error loading the number of points
      */
-    private int getNumberOfPoints(String pvName, Timestamp start, Timestamp end) throws IOException {
+    private int getNumberOfPoints(String pvName, Instant start, Instant end) throws IOException {
         String countName = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_NCOUNT).append('(').append(pvName).append(')').toString();
         DataRetrieval dataRetrieval = createDataRetriveal(getDataRetrievalURL());
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
@@ -323,8 +323,8 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * @return the number of points
      * @throws IOException if there was an error loading the number of points
      */
-    private int getNumberOfPointsLegacy(String pvName, Timestamp start, Timestamp end) throws IOException {
-        int interval = Math.max(1,(int)(end.getSec() - start.getSec()));
+    private int getNumberOfPointsLegacy(String pvName, Instant start, Instant end) throws IOException {
+        int interval = Math.max(1,(int)(end.getEpochSecond() - start.getEpochSecond()));
         String countName = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_COUNT).append(interval).append('(').append(pvName).append(')').toString();
         DataRetrieval dataRetrieval = createDataRetriveal(getDataRetrievalURL());
         java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);

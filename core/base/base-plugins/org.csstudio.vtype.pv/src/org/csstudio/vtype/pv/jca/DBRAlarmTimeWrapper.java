@@ -10,7 +10,8 @@ package org.csstudio.vtype.pv.jca;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
-import org.diirt.util.time.*;
+
+import java.time.Instant;
 
 import gov.aps.jca.dbr.Severity;
 import gov.aps.jca.dbr.TIME;
@@ -55,12 +56,12 @@ public class DBRAlarmTimeWrapper<T_DBR extends TIME> implements Alarm, Time
     }
 
     @Override
-    public Timestamp getTimestamp()
+    public Instant getTimestamp()
     {
         if (dbr == null)
-            return Timestamp.now();
+            return Instant.now();
         final TimeStamp epics_time = dbr.getTimeStamp();
-        return Timestamp.of(epics_time.secPastEpoch() + 631152000L,  (int) epics_time.nsec());
+        return Instant.ofEpochSecond(epics_time.secPastEpoch() + 631152000L,  (int) epics_time.nsec());
     }
 
     @Override

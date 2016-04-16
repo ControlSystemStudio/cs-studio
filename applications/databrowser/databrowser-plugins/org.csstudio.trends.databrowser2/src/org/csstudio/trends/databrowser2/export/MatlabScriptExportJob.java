@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.io.PrintStream;
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -77,7 +78,7 @@ public class MatlabScriptExportJob extends ExportJob
                 ++line_count;
                 // t(1)='2010/03/15 13:30:10.123';
                 out.println("t{" + line_count + "}='" +
-                    date_format.format(VTypeHelper.getTimestamp(value).toDate()) + "';");
+                    date_format.format(Date.from(VTypeHelper.getTimestamp(value))) + "';");
                 // v(1)=4.125;
                 final double num = VTypeHelper.toDouble(value);
                 if (Double.isNaN(num) || Double.isInfinite(num))

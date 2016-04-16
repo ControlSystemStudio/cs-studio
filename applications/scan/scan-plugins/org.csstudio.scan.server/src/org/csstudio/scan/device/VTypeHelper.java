@@ -119,12 +119,14 @@ public class VTypeHelper
         else
             return ScanSampleFactory.createSample(date, serial, toString(value));
     }
+    
+    // TODO Replace Date with LocalDateTime
 
     /** @param value {@link VType}
      *  @return {@link Date}
      */
     private static Date getDate(final VType value)
     {
-        return ValueUtil.timeOf(value).getTimestamp().toDate();
+        return Date.from(ValueUtil.timeOf(value).getTimestamp());
     }
 }

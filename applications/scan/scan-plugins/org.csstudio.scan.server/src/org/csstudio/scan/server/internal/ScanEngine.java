@@ -87,7 +87,31 @@ public class ScanEngine
         {
             // Ignore, shutting down anyway
         }
+
+        for (LoggedScan scan : scan_queue)
+            closeExecutableScan(scan);
         scan_queue.clear();
+    }
+
+    /** 'close' an executable scan
+     *  @param scan Scan, potentially an {@link ExecutableScan}
+     *  @return <code>true</code> if scan was executable, now closed
+     */
+    private boolean closeExecutableScan(final LoggedScan scan)
+    {
+        try
+        {
+            if (scan instanceof ExecutableScan)
+            {
+                ((ExecutableScan) scan).close();
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            // Ignore, shutting down anyway
+        }
+        return false;
     }
 
     /** Submit a scan to the engine for execution
@@ -159,6 +183,7 @@ public class ScanEngine
         {
             DataLogFactory.deleteDataLog(scan);
             scan_queue.remove(scan);
+            closeExecutableScan(scan);
         }
     }
 
@@ -180,6 +205,7 @@ public class ScanEngine
             if (scan.getScanState().isDone())
             {
                 scan_queue.remove(scan);
+                closeExecutableScan(scan);
                 return scan;
             }
         return null;
@@ -191,7 +217,7 @@ public class ScanEngine
     public Scan logOldestCompletedScan()
     {
         for (LoggedScan scan : scan_queue)
-            if (scan.getScanState().isDone()  &&  scan instanceof ExecutableScan)
+            if (scan.getScanState().isDone()  &&  closeExecutableScan(scan))
             {
                 final LoggedScan logged = new LoggedScan(scan);
                 final int index = scan_queue.indexOf(scan);

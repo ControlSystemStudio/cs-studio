@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,8 +19,6 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
-import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VType;
@@ -241,14 +241,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
                 else
                 {
                     trouble_sample_log.log("'" + getName() + "': Invalid time stamp ");
-                    value = VTypeHelper.transformTimestamp(value, Timestamp.now());
+                    value = VTypeHelper.transformTimestamp(value, Instant.now());
                 }
             }
             catch (RuntimeException ex)
             {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
                         "'" + getName() + "': Exception getting time stamp", ex);
-                value = VTypeHelper.transformTimestamp(value, Timestamp.now());
+                value = VTypeHelper.transformTimestamp(value, Instant.now());
             }
         }
         else
@@ -400,10 +400,10 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         {
             if (last_archived_value != null)
             {
-                final Timestamp last = VTypeHelper.getTimestamp(last_archived_value);
+                final Instant last = VTypeHelper.getTimestamp(last_archived_value);
                 if (last.compareTo(VTypeHelper.getTimestamp(value)) >= 0)
                 {   // Patch the time stamp
-                    final Timestamp next = last.plus(TimeDuration.ofMillis(100));
+                    final Instant next = last.plus(Duration.ofMillis(100));
                     value = VTypeHelper.transformTimestamp(value, next);
                 }
                 // else: value is OK as is
@@ -416,10 +416,10 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     /** @param time Timestamp to check
      *  @return <code>true</code> if time is too far into the future; better ignore.
      */
-    private boolean isFuturistic(final Timestamp time)
+    private boolean isFuturistic(final Instant time)
     {
         final long threshold = System.currentTimeMillis()/1000 + EngineModel.getIgnoredFutureSeconds();
-        return time.getSec() >= threshold;
+        return time.getEpochSecond() >= threshold;
     }
 
     /** Add given sample to buffer, performing a back-in-time check,
@@ -431,7 +431,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     final protected boolean addValueToBuffer(final VType value)
     {
         // Suppress samples that are too far in the future
-        final Timestamp time = VTypeHelper.getTimestamp(value);
+        final Instant time = VTypeHelper.getTimestamp(value);
 
         if (isFuturistic(time))
         {

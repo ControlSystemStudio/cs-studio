@@ -128,11 +128,11 @@ static 140 "blinking green"  {  0 65535 0     0 0 0 } #
 static 142 "blinking purple"  {  49344     0 49344     0 0 0 } #
 static 160 "blinking blue"    {  0 0 65535     0 0 0 } #
 static 164 "blinking yellow"  { 65535 65535 0  56026 56026 56026 } #
-static 83 "missing"       { 0 0     0 }    #
-static 84 "missing"       { 0 0     0 }    #
-static 80 "missing"       { 0 0     0 }    #
-static 101 "missing"       { 0 0     0 }    #
-static 94 "missing"       { 0 0     0 }    #
+#static 83 "missing"       { 0 0     0 }    #
+#static 84 "missing"       { 0 0     0 }    #
+#static 80 "missing"       { 0 0     0 }    #
+#static 101 "missing"       { 0 0     0 }    #
+#static 94 "missing"       { 0 0     0 }    #
 
 alarm  { 
   disconnected : "Disconn/Invalid"

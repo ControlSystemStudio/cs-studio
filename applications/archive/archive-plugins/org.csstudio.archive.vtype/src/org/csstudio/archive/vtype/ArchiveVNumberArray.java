@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.diirt.vtype.AlarmSeverity;
@@ -19,7 +20,6 @@ import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListNumber;
-import org.diirt.util.time.Timestamp;
 
 /** Archive-derived {@link VNumberArray} implementation
  *  @author Kay Kasemir
@@ -35,7 +35,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-    public ArchiveVNumberArray(final Timestamp timestamp,
+    public ArchiveVNumberArray(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final double... data)
     {
@@ -49,7 +49,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-    public ArchiveVNumberArray(final Timestamp timestamp,
+    public ArchiveVNumberArray(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final long... data)
     {
@@ -63,7 +63,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-    public ArchiveVNumberArray(final Timestamp timestamp,
+    public ArchiveVNumberArray(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final int... data)
     {
@@ -77,7 +77,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-    public ArchiveVNumberArray(final Timestamp timestamp,
+    public ArchiveVNumberArray(final Instant timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final ListNumber data)
     {

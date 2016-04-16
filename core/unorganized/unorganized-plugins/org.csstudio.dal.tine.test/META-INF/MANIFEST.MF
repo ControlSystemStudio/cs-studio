@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Test fragment of org.csstudio.dal.tine
-Bundle-SymbolicName: org.csstudio.dal.tine.test
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
-Fragment-Host: org.csstudio.dal.tine
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit;bundle-version="4.8.2"

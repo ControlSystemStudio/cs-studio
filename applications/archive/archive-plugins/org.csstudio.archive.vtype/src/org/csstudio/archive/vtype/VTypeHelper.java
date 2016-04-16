@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import java.time.Instant;
+
 import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListNumber;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
@@ -85,7 +86,7 @@ public class VTypeHelper
      *  @param value Value to decode
      *  @return {@link Timestamp}
      */
-    final public static Timestamp getTimestamp(final VType value)
+    final public static Instant getTimestamp(final VType value)
     {
         if (value instanceof Time)
         {
@@ -93,7 +94,7 @@ public class VTypeHelper
             if (time.isTimeValid())
                 return time.getTimestamp();
         }
-        return Timestamp.now();
+        return Instant.now();
     }
 
     /** @return Copy of given value with timestamp set to 'now',
@@ -101,14 +102,14 @@ public class VTypeHelper
      */
     public static VType transformTimestampToNow(final VType value)
     {
-        return transformTimestamp(value, Timestamp.now());
+        return transformTimestamp(value, Instant.now());
     }
 
     /** @return Copy of given value with updated timestamp,
      *          or <code>null</code> if value is not handled
      */
     public static VType transformTimestamp(final VType value,
-                                           final Timestamp time)
+                                           final Instant time)
     {
         if (value instanceof VNumber)
         {
@@ -138,7 +139,7 @@ public class VTypeHelper
      */
     final public static void addTimestamp(final StringBuilder buf, final VType value)
     {
-        final Timestamp stamp = getTimestamp(value);
+        final Instant stamp = getTimestamp(value);
         buf.append(TimestampHelper.format(stamp));
     }
 

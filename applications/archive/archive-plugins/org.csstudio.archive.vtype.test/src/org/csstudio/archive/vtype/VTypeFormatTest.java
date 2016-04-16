@@ -8,9 +8,10 @@
 package org.csstudio.archive.vtype;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.csstudio.utility.test.HamcrestMatchers.*;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,6 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of {@link VTypeFormat}
@@ -31,7 +31,7 @@ public class VTypeFormatTest
     @Test
     public void testFormats() throws Exception
     {
-        final Timestamp now = Timestamp.now();
+        final Instant now = Instant.now();
         final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(3), 8.0, 9.0, 10.0, 0.0, 10.0);
 
         final VTypeFormat devault = new DefaultVTypeFormat();
@@ -63,7 +63,7 @@ public class VTypeFormatTest
         assertThat(exponen.format(value), equalTo("1.0E0, 2.0E0, 3.0E0"));
         assertThat(strings.format(value), equalTo("\\u0001\\u0002\\u0003"));
 
-        //value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, 72, 101, 108, 108, 111, 32, 33, 0);
+        value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, 72, 101, 108, 108, 111, 32, 33, 0);
         assertThat(decimal.format(value), equalTo("72.00, 101.00, 108.00, 108.00, 111.00, 32.00, 33.00, 0.00"));
         assertThat(strings.format(value), equalTo("Hello !"));
 

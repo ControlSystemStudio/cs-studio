@@ -9,10 +9,10 @@ package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Instant;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** Value Iterator that reads from the SAMPLE table.
@@ -41,8 +41,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  @throws Exception on error
      */
     public RawSampleIterator(final RDBArchiveReader reader,
-            final int channel_id, final Timestamp start,
-            final Timestamp end, boolean concurrency) throws Exception
+            final int channel_id, final Instant start,
+            final Instant end, boolean concurrency) throws Exception
     {
         super(reader, channel_id);
         this.concurrency = concurrency;
@@ -66,8 +66,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  @throws Exception on error
      */
     public RawSampleIterator(final RDBArchiveReader reader,
-            final int channel_id, final Timestamp start,
-            final Timestamp end) throws Exception
+            final int channel_id, final Instant start,
+            final Instant end) throws Exception
     {
         this(reader, channel_id, start, end, false);
     }
@@ -78,7 +78,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  @param end End time
      *  @throws Exception on error, including cancellation
      */
-    private void determineInitialSample(final Timestamp start, final Timestamp end) throws Exception
+    private void determineInitialSample(final Instant start, final Instant end) throws Exception
     {
         java.sql.Timestamp start_stamp = TimestampHelper.toSQLTimestamp(start);
         final java.sql.Timestamp end_stamp = TimestampHelper.toSQLTimestamp(end);

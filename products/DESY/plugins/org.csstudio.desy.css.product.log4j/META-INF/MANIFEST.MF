@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Log4j fragment for CSS products
-Bundle-SymbolicName: org.csstudio.desy.css.product.log4j
-Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.apache.log4j;bundle-version="1.2.16"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

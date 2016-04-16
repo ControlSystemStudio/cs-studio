@@ -8,13 +8,13 @@
 package org.csstudio.alarm.beast.notifier;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.logging.JMSLogMessage;
-import org.diirt.util.time.Timestamp;
 
 /**
  * Snapshot of an {@link AlarmTreePV}.
@@ -36,7 +36,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
 
     final private SeverityLevel current_severity, severity;
     final private String current_message, message, value;
-    final private Timestamp timestamp;
+    final private Instant timestamp;
 
     /**
      * Create {@link PVSnapshot} from an {@link AlarmTreePV}
@@ -58,7 +58,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
         final SeverityLevel current_severity = pv.getCurrentSeverity();
         final String current_message = pv.getCurrentMessage();
         final String value = pv.getValue();
-        final Timestamp timestamp = pv.getTimestamp();
+        final Instant timestamp = pv.getTimestamp();
 
         return new PVSnapshot(id, name, path, parentPath, description, enabled, latching,
                 current_severity, current_message, severity, status, value,
@@ -77,7 +77,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
             final SeverityLevel severity,
             final String message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         this.id = id;
         this.name = name;
@@ -185,7 +185,7 @@ public class PVSnapshot implements Comparable<PVSnapshot> {
     }
 
     /** @return Time of alarm */
-    public Timestamp getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 

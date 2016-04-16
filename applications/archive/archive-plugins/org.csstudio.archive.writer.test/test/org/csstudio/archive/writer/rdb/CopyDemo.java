@@ -9,6 +9,7 @@ package org.csstudio.archive.writer.rdb;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.rdb.RDBArchiveConfig;
@@ -20,7 +21,6 @@ import org.csstudio.archive.reader.rdb.RDBArchiveReader;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.WriteChannel;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 import org.junit.Test;
 
@@ -61,8 +61,8 @@ public class CopyDemo
     public void demoCopy() throws Exception
     {
         final DateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        final Timestamp start = Timestamp.of(parser.parse("2013-05-17 17:00"));
-        final Timestamp end = Timestamp.of(parser.parse("2013-05-18 00:00"));
+        final Instant start = parser.parse("2013-05-17 17:00").toInstant();
+        final Instant end = parser.parse("2013-05-18 00:00").toInstant();
 
         final ArchiveReader reader = getReader();
         final ArchiveWriter writer = getWriter();

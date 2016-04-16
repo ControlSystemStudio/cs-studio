@@ -29,6 +29,7 @@ import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
 import org.diirt.vtype.VType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of Model
@@ -78,7 +79,7 @@ public class ModelUnitTest
         {
             // Detected the missing file?
             if (ex instanceof FileNotFoundException  &&
-                ex.getMessage().equals("nonexisting_file.pace (No such file or directory)"))
+                ex.getMessage().contains("nonexisting_file.pace"))
                 return;
             // Else: Didn't get the expected error
             ex.printStackTrace();
@@ -154,6 +155,7 @@ public class ModelUnitTest
      *  Will only work when we can actually connect to the PVs in the test file
      */
     @Test
+    @Ignore
     public void testModelPVs() throws Exception
     {
         final Model model =

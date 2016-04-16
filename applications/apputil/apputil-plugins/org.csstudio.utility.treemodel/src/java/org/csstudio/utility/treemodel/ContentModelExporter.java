@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -41,8 +42,6 @@ import org.jdom.output.XMLOutputter;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Exports content model to different file formats.
@@ -55,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public final class ContentModelExporter {
 
     private static final String XML_ENCODING_FORMAT = "ISO-8859-1";
-    private static final Logger LOG = LoggerFactory.getLogger(ContentModelExporter.class);
+    private static final Logger LOG = Logger.getLogger(ContentModelExporter.class.getName());
 
     /**
      * Constructor.
@@ -112,11 +111,11 @@ public final class ContentModelExporter {
 
         final Collection<INodeComponent<T>> directChildren = virtualRoot.getDirectChildren();
         if (directChildren.size() > 1) {
-            LOG.warn("Content model contains more than one root node. For DOM tree export only first root is chosen.");
+            LOG.warning("Content model contains more than one root node. For DOM tree export only first root is chosen.");
         }
         final INodeComponent<T> root = directChildren.iterator().next();
         if (root == null) {
-            LOG.warn("Content model is empty. Return empty document.");
+            LOG.warning("Content model is empty. Return empty document.");
             return new Document();
         }
 
@@ -179,17 +178,17 @@ public final class ContentModelExporter {
                 } catch (final NamingException e) {
                     final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
                     " with name " + modelNode.getName();
-                    LOG.warn(message);
+                    LOG.warning(message);
                     throw new ExportContentModelException(message, e);
                 } catch (final IllegalNameException ne) {
                     final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
                     " with name " + modelNode.getName() + ": Illegal Name";
-                    LOG.warn(message);
+                    LOG.warning(message);
                     throw new ExportContentModelException(message, ne);
                 } catch (final IllegalDataException ne) {
                     final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
                     " with name " + modelNode.getName() + ": Illegal Data";
-                    LOG.warn(message);
+                    LOG.warning(message);
                     throw new ExportContentModelException(message, ne);
                 }
             }

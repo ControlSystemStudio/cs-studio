@@ -20,7 +20,6 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** Ecipse Job for exporting data from Model to file
@@ -66,7 +65,7 @@ public class SpreadsheetExportJob extends PlainExportJob
 
         while (sheet.hasNext()  &&  !monitor.isCanceled())
         {
-            final Timestamp time = sheet.getTime();
+            final Instant time = sheet.getTime();
             final VType line[] = sheet.next();
             out.print(TimestampHelper.format(time));
 

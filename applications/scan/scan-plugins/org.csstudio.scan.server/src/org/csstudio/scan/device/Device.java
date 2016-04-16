@@ -15,10 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.VType;
 
 /** Base interface for all devices
@@ -112,7 +112,7 @@ public class Device extends DeviceInfo
      *  @return Current value of the device
      *  @throws Exception on error: Cannot read, ...
      */
-    public VType read(final TimeDuration timeout) throws Exception
+    public VType read(final Duration timeout) throws Exception
     {
         throw new Exception("Device '" + getName() + "' does not support active reading");
     }
@@ -132,7 +132,7 @@ public class Device extends DeviceInfo
      *  @param timeout Timeout for awaiting the callback, <code>null</code> to wait "forever"
      *  @throws Exception on error: Cannot write, ...
      */
-    public void write(final Object value, final TimeDuration timeout) throws Exception
+    public void write(final Object value, final Duration timeout) throws Exception
     {
         throw new Exception("Device '" + getName() + "' does not support writing with callback");
     }

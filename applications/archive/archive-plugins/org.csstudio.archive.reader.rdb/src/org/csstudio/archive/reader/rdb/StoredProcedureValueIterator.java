@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -25,7 +26,6 @@ import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
@@ -60,7 +60,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      */
     public StoredProcedureValueIterator(final RDBArchiveReader reader,
             final String stored_procedure,
-            final int channel_id, final Timestamp start, final Timestamp end,
+            final int channel_id, final Instant start, final Instant end,
             final int count) throws Exception
     {
         super(reader, channel_id);
@@ -74,7 +74,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      *  @param count Desired value count
      *  @throws Exception on error
      */
-    private void executeProcedure(final Timestamp start, final Timestamp end,
+    private void executeProcedure(final Instant start, final Instant end,
             final int count) throws Exception
     {
         final String sql;
@@ -190,7 +190,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         while (result.next())
         {
             // Time stamp
-            final Timestamp time = TimestampHelper.fromSQLTimestamp(result.getTimestamp(2));
+            final Instant time = TimestampHelper.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
             final AlarmSeverity severity;

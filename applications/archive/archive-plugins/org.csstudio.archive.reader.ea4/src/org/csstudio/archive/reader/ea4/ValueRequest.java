@@ -1,6 +1,8 @@
 package org.csstudio.archive.reader.ea4;
 
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,6 @@ import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.diirt.util.text.NumberFormats;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -53,7 +54,7 @@ public class ValueRequest {
 
     final private int key;
     final private String channels[];
-    final private Timestamp start, end;
+    final private Instant start, end;
     final private int icount;
     final private int how;
 
@@ -71,7 +72,7 @@ public class ValueRequest {
      */
     public ValueRequest(final EA4ArchiveReader reader,
             final int key, final String channel,
-            final Timestamp start, final Timestamp end,
+            final Instant start, final Instant end,
             final boolean optimized, final int count)
             throws Exception {
 
@@ -90,7 +91,7 @@ public class ValueRequest {
                 this.icount = count;
             } else {
                 // New server: Use min/max/average with seconds
-                int secs = (int) (end.durationFrom(start).toSeconds() / count);
+                int secs = (int) (Duration.between(start, end).getSeconds() / count);
                 if (secs < 1) secs = 1;
                 this.how = reader.getRequestCode("average");
                 this.icount = (int)secs ;
@@ -118,16 +119,16 @@ public class ValueRequest {
         nameArray.put(0, channels.length, channels, 0);
 
         PVInt start_secField = pvRequest.getIntField("start_sec");
-        start_secField.put((int) start.getSec());
+        start_secField.put((int) start.getEpochSecond());
 
         PVInt start_nanoField = pvRequest.getIntField("start_nano");
-        start_nanoField.put((int) start.getNanoSec());
+        start_nanoField.put((int) start.getNano());
 
         PVInt end_secField = pvRequest.getIntField("end_sec");
-        end_secField.put((int) end.getSec());
+        end_secField.put((int) end.getEpochSecond());
 
         PVInt end_nanoField = pvRequest.getIntField("end_nano");
-        end_nanoField.put((int) end.getNanoSec());
+        end_nanoField.put((int) end.getNano());
 
         PVInt countField = pvRequest.getIntField("count");
         countField.put(icount);
@@ -295,7 +296,7 @@ public class ValueRequest {
 
             final long secs = pvValue.getIntField("secs").get();
             final int nano  = pvValue.getIntField("nano").get();
-            final Timestamp time = Timestamp.of(secs, nano);
+            final Instant time = Instant.ofEpochSecond(secs, nano);
 
             final int stat_code = pvValue.getIntField("stat").get();
             final int sevr_code = pvValue.getIntField("sevr").get();

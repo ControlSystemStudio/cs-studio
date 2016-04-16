@@ -24,6 +24,8 @@ package org.csstudio.utility.screenshot.view;
 
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
@@ -62,15 +64,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Markus Moeller
  *
  */
 public class ScreenshotView extends ViewPart implements FlavorListener {
-    private static final Logger LOG = LoggerFactory.getLogger(ScreenshotView.class);
+    private static final Logger LOG = Logger.getLogger(ScreenshotView.class.getCanonicalName());
 
     private ScreenshotWorker worker;
     private IImageWorker[] imageWorker;
@@ -89,7 +89,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener {
         IConfigurationElement[] confElements = extReg
                 .getConfigurationElementsFor("org.csstudio.utility.screenshot.ImageWorker");
 
-        LOG.debug("Implementationen: {}", confElements.length);
+        LOG.fine("Implementationen: { " + confElements.length + " }");
 
         if(confElements.length > 0) {
             imageWorker = new IImageWorker[confElements.length];
@@ -99,7 +99,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener {
                     imageWorker[x] = (IImageWorker) confElements[x]
                             .createExecutableExtension("class");
                 } catch (CoreException ce) {
-                    LOG.error("*** CoreException *** : ", ce);
+                    LOG.log(Level.SEVERE, "*** CoreException *** : ", ce);
                 }
             }
         }
@@ -169,7 +169,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener {
             fileMenu.add(fileSendMenu);
             fileMenu.add(new Separator());
         } else {
-            LOG.error("Sorry, no image worker available.");
+            LOG.severe("Sorry, no image worker available.");
         }
 
         toolbarManager.add(new Separator());
