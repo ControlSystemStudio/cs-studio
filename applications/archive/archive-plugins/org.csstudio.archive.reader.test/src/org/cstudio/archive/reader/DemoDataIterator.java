@@ -7,11 +7,12 @@
  ******************************************************************************/
 package org.cstudio.archive.reader;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
-import org.diirt.util.time.Timestamp;
 
 /** Value iterator that produces demo samples 1 ... 10
  *  @author Kay Kasemir
@@ -27,7 +28,7 @@ class DemoDataIterator implements ValueIterator
     {
         final VType[] values = new VType[10];
         for (int i=0; i<10; ++i)
-            values[i] = new ArchiveVString(Timestamp.of(start_time + i + 1, 0), AlarmSeverity.NONE, "OK", name + " " + (i + 1));
+            values[i] = new ArchiveVString(Instant.ofEpochSecond(start_time + i + 1, 0), AlarmSeverity.NONE, "OK", name + " " + (i + 1));
         return new DemoDataIterator(values);
     }
 

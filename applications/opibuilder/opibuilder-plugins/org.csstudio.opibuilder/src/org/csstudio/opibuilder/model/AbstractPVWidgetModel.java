@@ -41,22 +41,27 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
         delegate.processVersionDifference(boyVersionOnFile);
     }
 
+    @Override
     public boolean isBorderAlarmSensitve(){
         return getDelegate().isBorderAlarmSensitve();
     }
 
+    @Override
     public boolean isForeColorAlarmSensitve(){
         return getDelegate().isForeColorAlarmSensitve();
     }
 
+    @Override
     public boolean isBackColorAlarmSensitve(){
         return getDelegate().isBackColorAlarmSensitve();
     }
 
+    @Override
     public boolean isAlarmPulsing(){
         return getDelegate().isAlarmPulsing();
     }
 
+    @Override
     public String getPVName(){
         return getDelegate().getPVName();
     }

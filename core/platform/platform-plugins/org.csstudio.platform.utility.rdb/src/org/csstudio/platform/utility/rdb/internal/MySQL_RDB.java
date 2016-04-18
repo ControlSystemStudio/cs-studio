@@ -29,6 +29,7 @@ import com.mysql.jdbc.ReplicationDriver;
 public class MySQL_RDB implements RDBImpl
 {
     /** {@inheritDoc} */
+    @Override
     public Dialect getDialect()
     {
         return RDBUtil.Dialect.MySQL;

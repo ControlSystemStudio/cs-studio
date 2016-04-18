@@ -128,17 +128,21 @@ public class CharacterSequence implements Iterable<Character> {
      * Creates an iterator over chars to be read. This iterator is not thread
      * safe!
      */
+    @Override
     public Iterator<Character> iterator() {
         final CharacterSequence cs = this;
         return new Iterator<Character>() {
+            @Override
             public boolean hasNext() {
                 return cs.hasMoreCharacters();
             }
 
+            @Override
             public Character next() {
                 return cs.readSingleCharacter();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException(
                         "Remove is not supported!");

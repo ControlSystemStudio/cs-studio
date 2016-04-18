@@ -12,8 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.bind.JAXB;
@@ -30,9 +32,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 /**
  *
- * <code>Application</code> verifies the opi files provided by the parameters against the provided
- * schema and validation rules. The results of validation are either printed to the console or into
- * a file specified by one of the parameters.
+ * <code>Application</code> verifies the opi files provided by the parameters against the provided schema and validation
+ * rules. The results of validation are either printed to the console or into a file specified by one of the parameters.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -57,6 +58,7 @@ public class Application implements IApplication {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     @Override
@@ -92,24 +94,28 @@ public class Application implements IApplication {
 
         if (rules == null) {
             System.err.println("Validation Rules file is not defined!");
+            Thread.sleep(300);
             printHelp();
+            Thread.sleep(1000);
             return EXIT_OK;
         } else if (schema == null) {
             System.err.println("OPI Schema is not defined!");
+            Thread.sleep(300);
             printHelp();
+            Thread.sleep(1000);
             return EXIT_OK;
         } else if (location == null) {
             location = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
         }
 
-        Path schemaPath = new Path(new File(schema).getAbsolutePath());
-        Path rulesPath = new Path(new File(rules).getAbsolutePath());
         File file = new File(location);
         if (!file.exists()) {
             System.err.println("The path '" + location + "' does not exist.");
+            Thread.sleep(1000);
             return EXIT_OK;
         }
-
+        Path schemaPath = new Path(new File(schema).getAbsolutePath());
+        Path rulesPath = new Path(new File(rules).getAbsolutePath());
         SchemaVerifier verifier = Validator.createVerifier(schemaPath, rulesPath, null);
         System.out.println("Checking for linked resources...");
         file = setUpLocation(file);
@@ -125,19 +131,35 @@ public class Application implements IApplication {
             }
         }
         System.out.println("Validation finished.");
-        StringBuilder sb = new StringBuilder();
-        sb.append("Validated files: ").append(verifier.getNumberOfAnalyzedFiles()).append('\n');
-        sb.append("Files with failures: ").append(verifier.getNumberOfFilesFailures()).append('\n');
-        sb.append("Validated widgets: ").append(verifier.getNumberOfAnalyzedWidgets()).append('\n');
-        sb.append("Widgets with failures: ").append(verifier.getNumberOfWidgetsFailures()).append('\n');
-        sb.append("Validated RO properties: ").append(verifier.getNumberOfROProperties()).append('\n');
-        sb.append("Critical RO failures: ").append(verifier.getNumberOfCriticalROFailures()).append('\n');
-        sb.append("Major RO failures: ").append(verifier.getNumberOfMajorROFailures()).append('\n');
-        sb.append("Validated WRITE properties: ").append(verifier.getNumberOfWRITEProperties()).append('\n');
-        sb.append("WRITE failures: ").append(verifier.getNumberOfWRITEFailures()).append('\n');
-        sb.append("Validated RW properties: ").append(verifier.getNumberOfRWProperties()).append('\n');
-        sb.append("RW failures: ").append(verifier.getNumberOfRWFailures()).append('\n');
-        sb.append("Deprecated properties used: ").append(verifier.getNumberOfDeprecatedFailures());
+        StringBuilder sb = new StringBuilder(1000);
+        sb.append("Validated files: ").append(verifier.getNumberOfAnalyzedFiles());
+        sb.append("\nFiles with failures: ").append(verifier.getNumberOfFilesFailures());
+        sb.append("\nValidated widgets: ").append(verifier.getNumberOfAnalyzedWidgets());
+        sb.append("\nWidgets with failures: ").append(verifier.getNumberOfWidgetsFailures());
+        sb.append("\nValidated RO properties: ").append(verifier.getNumberOfROProperties());
+        sb.append("\nCritical RO failures: ").append(verifier.getNumberOfCriticalROFailures());
+        sb.append("\nMajor RO failures: ").append(verifier.getNumberOfMajorROFailures());
+        sb.append("\nValidated WRITE properties: ").append(verifier.getNumberOfWRITEProperties());
+        sb.append("\nWRITE failures: ").append(verifier.getNumberOfWRITEFailures());
+        sb.append("\nValidated RW properties: ").append(verifier.getNumberOfRWProperties());
+        sb.append("\nRW failures: ").append(verifier.getNumberOfRWFailures());
+        sb.append("\nDeprecated properties used: ").append(verifier.getNumberOfDeprecatedFailures());
+        sb.append("\nScripts & Rules usage:");
+        sb.append("\n    Jython standalone: ").append(verifier.getNumberOfPythonStandalone()).append(' ').append('(')
+            .append(verifier.getNumberOfWidgetsWithPythonStandalone())
+            .append(verifier.getNumberOfWidgetsWithPythonStandalone() == 1 ? " widget)" : " widgets)");
+        sb.append("\n    Jython embedded: ").append(verifier.getNumberOfPythonEmbedded()).append(' ').append('(')
+            .append(verifier.getNumberOfWidgetsWithPythonEmbedded())
+            .append(verifier.getNumberOfWidgetsWithPythonEmbedded() == 1 ? " widget)" : " widgets)");
+        sb.append("\n    Javascript standalone: ").append(verifier.getNumberOfJavascriptStandalone()).append(' ')
+            .append('(').append(verifier.getNumberOfWidgetsWithJavascriptStandalone())
+            .append(verifier.getNumberOfWidgetsWithJavascriptStandalone() == 1 ? " widget)" : " widgets)");
+        sb.append("\n    Javascript embedded: ").append(verifier.getNumberOfJavascriptEmbedded()).append(' ')
+            .append('(').append(verifier.getNumberOfWidgetsWithJavascriptEmbedded())
+            .append(verifier.getNumberOfWidgetsWithJavascriptEmbedded() == 1 ? " widget)" : " widgets)");
+        sb.append("\n    Rules: ").append(verifier.getNumberOfAllRules()).append(' ').append('(')
+            .append(verifier.getNumberOfWidgetsWithRules())
+            .append(verifier.getNumberOfWidgetsWithRules() == 1 ? " widget)\n" : " widgets)\n");
 
         if (printResults) {
             System.out.println(HEADER);
@@ -149,7 +171,7 @@ public class Application implements IApplication {
 
         if (results != null) {
             System.out.println("Results printed to file '" + new File(results).getAbsolutePath() + "'.");
-            try (PrintWriter pw = new PrintWriter(new File(results))) {
+            try (PrintWriter pw = new PrintWriter(new File(results), StandardCharsets.UTF_8.name())) {
                 pw.println(HEADER);
                 for (ValidationFailure f : failures) {
                     pw.println(toMessage(f));
@@ -157,14 +179,14 @@ public class Application implements IApplication {
             }
 
             int idx = results.lastIndexOf('.');
-            String summaryFile = null;
+            String summaryFile;
             if (idx < 1) {
                 summaryFile = results + "_summary";
             } else {
-                summaryFile = results.substring(0,idx) + "_summary" + results.substring(idx);
+                summaryFile = results.substring(0, idx) + "_summary" + results.substring(idx);
             }
             System.out.println("Results summary printed to file '" + new File(summaryFile).getAbsolutePath() + "'.");
-            try (PrintWriter pw = new PrintWriter(new File(summaryFile))) {
+            try (PrintWriter pw = new PrintWriter(new File(summaryFile), StandardCharsets.UTF_8.name())) {
                 pw.println(sb.toString());
             }
         }
@@ -180,33 +202,34 @@ public class Application implements IApplication {
      */
     private String toMessage(ValidationFailure f) {
         StringBuilder sb = new StringBuilder(300);
-        sb.append(f.getPath()).append(SEPARATOR).append(f.getWidgetName()).append(SEPARATOR)
-            .append(f.getWidgetType()).append(SEPARATOR).append(f.getLineNumber()).append(SEPARATOR)
-            .append(f.getProperty()).append(SEPARATOR).append('"').append(f.getActual()).append('"').append(SEPARATOR)
-            .append('"').append(f.getExpected()).append('"');
+        sb.append(f.getPath()).append(SEPARATOR).append(f.getWidgetName()).append(SEPARATOR).append(f.getWidgetType())
+            .append(SEPARATOR).append(f.getLineNumber()).append(SEPARATOR).append(f.getProperty()).append(SEPARATOR)
+            .append('"').append(f.getActual()).append('"').append(SEPARATOR).append('"').append(f.getExpected())
+            .append('"');
         return sb.toString();
     }
 
     /**
-     * Checks the given file. If the file is a directory all its children are checked. A file is only checked
-     * if it is an opi file.
+     * Checks the given file. If the file is a directory all its children are checked. A file is only checked if it is
+     * an opi file.
      *
      * @param verifier the verifier to use for checking
      * @param file the file to check
      * @throws IllegalStateException
      * @throws IOException
      */
-    private void check(SchemaVerifier verifier, File file)
-            throws IllegalStateException, IOException {
+    private void check(SchemaVerifier verifier, File file) throws IllegalStateException, IOException {
         if (file.isDirectory()) {
-            if (skipTargetFolder && isTargetFolder(file)) return;
+            if (skipTargetFolder && isTargetFolder(file)) {
+                return;
+            }
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f : files) {
                     check(verifier, f);
                 }
             }
-        } else if (file.getAbsolutePath().toLowerCase().endsWith(".opi")) {
+        } else if (file.getAbsolutePath().toLowerCase(Locale.UK).endsWith(".opi")) {
             System.out.println("Validating file: " + file.getAbsolutePath());
             verifier.validate(new Path(file.getAbsolutePath()));
         }
@@ -215,9 +238,11 @@ public class Application implements IApplication {
     private static boolean isTargetFolder(File file) {
         if ("target".equalsIgnoreCase(file.getName())) {
             String[] siblings = file.getParentFile().list();
-            for (String s : siblings) {
-                if ("src".equalsIgnoreCase(s)) {
-                    return true;
+            if (siblings != null) {
+                for (String s : siblings) {
+                    if ("src".equalsIgnoreCase(s)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -228,26 +253,27 @@ public class Application implements IApplication {
         System.out.println("Options:");
         System.out.println(String.format("  %-30s: %s", HELP, "Print this help."));
         System.out.println(String.format("  %-30s: %s", VERSION, "Print the version number of this tool."));
-        System.out.println(String.format("  %-30s: %s", VALIDATION_RULES + " <FILE>",
-                "Path to the file with validation rules."));
+        System.out.println(
+            String.format("  %-30s: %s", VALIDATION_RULES + " <FILE>", "Path to the file with validation rules."));
         System.out.println(String.format("  %-30s: %s", SCHEMA + " <FILE>", "Path to the OPI schema file."));
         System.out.println(String.format("  %-30s: %s", OPI_LOCATION + " <PATH>",
-                "Path to the OPI file or folder to validate. If null current directory is used."));
+            "Path to the OPI file or folder to validate. If null current directory is used."));
         System.out.println(String.format("  %-30s: %s", RESULTS + " <FILE> ",
-                "Path to the file into which the results will be printed"));
-        System.out.println(String.format("  %-30s: %s", PRINT_RESULTS,"Print validation results to console."));
+            "Path to the file into which the results will be printed"));
+        System.out.println(String.format("  %-30s: %s", PRINT_RESULTS, "Print validation results to console."));
 
         try {
-            //if the application terminates too quickly, the framework is terminated before it was fully started
-            //and some annoying stack traces are printed
+            // if the application terminates too quickly, the framework is terminated before it was fully started
+            // and some annoying stack traces are printed
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // do nothing
         }
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
     @Override
@@ -260,8 +286,8 @@ public class Application implements IApplication {
 
     /**
      * Checks the file if it belongs to a project and if that project has any linked resources. If it does have linked
-     * resources, the entire structure is copied to a temp folder and the location of the file within the temp folder
-     * is returned. If there are no linked resources, the file itself is returned.
+     * resources, the entire structure is copied to a temp folder and the location of the file within the temp folder is
+     * returned. If there are no linked resources, the file itself is returned.
      *
      * @param file the file to check if it belongs to a project and if there are any linked resources
      * @return the location that should be checked instead of the given file (could be the same)
@@ -270,29 +296,30 @@ public class Application implements IApplication {
      */
     private File setUpLocation(File file) throws IOException, URISyntaxException {
         File projectFolder = traverseToProjectFolder(file.getAbsoluteFile());
-        Map<File, Link[]> links = null;
+        Map<File, Link[]> links;
         File rootToCopy = file;
         if (projectFolder == null) {
-            //this is a standalone file/folder, which certainly doesn't have any linked resources
+            // this is a standalone file/folder, which certainly doesn't have any linked resources
             if (file.isFile()) {
                 return file;
             }
 
-            //if file is a directory, search for .project files.
-            //gather all .project files that contains a linked resource
-            links = gatherLinkedResources(new HashMap<>(),file);
+            // if file is a directory, search for .project files.
+            // gather all .project files that contains a linked resource
+            links = gatherLinkedResources(new HashMap<>(), file);
             if (links.isEmpty()) {
                 return file;
             }
         } else {
-            links = gatherLinkedResources(new HashMap<>(),projectFolder);
+            links = gatherLinkedResources(new HashMap<>(), projectFolder);
             if (links.isEmpty()) {
                 return file;
             }
             rootToCopy = projectFolder;
         }
 
-        //if .project exists and at least one contains a linked resource tag, copy everything to a temp folder and validate there
+        // if .project exists and at least one contains a linked resource tag, copy everything to a temp folder and
+        // validate there
         String tempFolder = System.getProperty("java.io.tmpdir");
         File temp = new File(tempFolder, "opivalidation");
         temp = new File(temp, rootToCopy.getName());
@@ -303,14 +330,16 @@ public class Application implements IApplication {
         deleteWhenFinished = true;
 
         String absoluteLocation = rootToCopy.getAbsolutePath();
-        for (Map.Entry<File,Link[]> e : links.entrySet()) {
+        for (Map.Entry<File, Link[]> e : links.entrySet()) {
             File project = e.getKey().getParentFile();
             String absoluteProject = project.getAbsolutePath();
-            if (!absoluteProject.startsWith(absoluteLocation)) continue;
+            if (!absoluteProject.startsWith(absoluteLocation)) {
+                continue;
+            }
             String path = absoluteProject.substring(absoluteLocation.length());
             File destination = new File(temp, path);
             for (Link r : e.getValue()) {
-                File dest = new File(destination,r.getName());
+                File dest = new File(destination, r.getName());
                 try {
                     if (r.getType() == 1) {
                         FileUtils.copyFile(r.getFile(), dest);
@@ -325,7 +354,7 @@ public class Application implements IApplication {
         targetToDelete = temp;
         if (projectFolder != null) {
             String relative = file.getAbsolutePath().substring(projectFolder.getAbsolutePath().length());
-            temp = new File(temp,relative);
+            temp = new File(temp, relative);
         }
         return temp;
     }
@@ -342,9 +371,11 @@ public class Application implements IApplication {
             return null;
         } else if (file.isDirectory()) {
             String[] children = file.list();
-            for (String s : children) {
-                if (PROJECT_FILE.equals(s)) {
-                    return file;
+            if (children != null) {
+                for (String s : children) {
+                    if (PROJECT_FILE.equals(s)) {
+                        return file;
+                    }
                 }
             }
         }
@@ -356,36 +387,38 @@ public class Application implements IApplication {
      *
      * @param links the map to receive the links and should also be returned
      * @param file the base file to start the check with
-     * @return the map containing all linked resources; key is the .project file, value is the array of links defined
-     *          in that .project file
+     * @return the map containing all linked resources; key is the .project file, value is the array of links defined in
+     *         that .project file
      */
-    private static Map<File,Link[]> gatherLinkedResources(Map<File,Link[]> links, File file) {
+    private static Map<File, Link[]> gatherLinkedResources(Map<File, Link[]> links, File file) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            for (File f : files) {
-                if (f.isDirectory()) {
-                    gatherLinkedResources(links, f);
-                } else if (PROJECT_FILE.equalsIgnoreCase(f.getName())) {
-                    ArrayList<Link> linkList = new ArrayList<>();
-                    ProjectDescription pd = JAXB.unmarshal(f, ProjectDescription.class);
-                    Variable[] variables = pd.getVariables().toArray(new Variable[0]);
-                    for (Link l : pd.getLinks()) {
-                        String locURI = l.getLocationURI();
-                        String loc = l.getLocation();
-                        for (Variable v : variables) {
-                            if (locURI != null && locURI.contains(v.getName())) {
-                                locURI = locURI.replace(v.getName(), v.getValue());
+            if (files != null) {
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        gatherLinkedResources(links, f);
+                    } else if (PROJECT_FILE.equalsIgnoreCase(f.getName())) {
+                        ArrayList<Link> linkList = new ArrayList<>();
+                        ProjectDescription pd = JAXB.unmarshal(f, ProjectDescription.class);
+                        Variable[] variables = pd.getVariables().toArray(new Variable[pd.getVariables().size()]);
+                        for (Link l : pd.getLinks()) {
+                            String locURI = l.getLocationURI();
+                            String loc = l.getLocation();
+                            for (Variable v : variables) {
+                                if (locURI != null && locURI.contains(v.getName())) {
+                                    locURI = locURI.replace(v.getName(), v.getValue());
+                                }
+                                if (loc != null && loc.contains(v.getName())) {
+                                    loc = loc.replace(v.getName(), v.getValue());
+                                }
                             }
-                            if (loc != null && loc.contains(v.getName())) {
-                                loc = loc.replace(v.getName(), v.getValue());
-                            }
+                            l.setLocationURI(locURI);
+                            l.setLocation(loc);
+                            linkList.add(l);
                         }
-                        l.setLocationURI(locURI);
-                        l.setLocation(loc);
-                        linkList.add(l);
-                    }
-                    if (!linkList.isEmpty()) {
-                        links.put(f, linkList.toArray(new Link[linkList.size()]));
+                        if (!linkList.isEmpty()) {
+                            links.put(f, linkList.toArray(new Link[linkList.size()]));
+                        }
                     }
                 }
             }

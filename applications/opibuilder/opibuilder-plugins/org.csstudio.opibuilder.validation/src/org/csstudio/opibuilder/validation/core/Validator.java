@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -24,6 +25,7 @@ import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.validation.core.ui.ContentProvider;
 import org.csstudio.opibuilder.validation.core.ui.TreeViewerListener;
 import org.csstudio.opibuilder.validation.ui.ResultsDialog;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -53,8 +55,8 @@ import org.eclipse.wst.validation.ValidatorMessage;
 
 /**
  *
- * <code>Validator</code> implements the wst validation api for validating OPI files.
- * OPIs are validated by comparing their values to the ones defined in the OPI schema.
+ * <code>Validator</code> implements the wst validation api for validating OPI files. OPIs are validated by comparing
+ * their values to the ones defined in the OPI schema.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -62,11 +64,14 @@ import org.eclipse.wst.validation.ValidatorMessage;
 @SuppressWarnings("restriction")
 public class Validator extends AbstractValidator {
 
-    private static class NonNullHashMap<K,T> extends HashMap<K,T> {
+    private static class NonNullHashMap<K, T> extends HashMap<K, T> {
         private static final long serialVersionUID = 7385574868370529896L;
+
         @Override
         public T put(K key, T value) {
-            if (value == null) return null;
+            if (value == null) {
+                return null;
+            }
             return super.put(key, value);
         }
     }
@@ -84,12 +89,14 @@ public class Validator extends AbstractValidator {
 
     private SchemaVerifier verifier;
 
-    //if a rule matches this pattern it defines a property, if it doesn't match, the rule is a regex
+    // if a rule matches this pattern it defines a property, if it doesn't match, the rule is a regex
     private static final Pattern TRUE_PROPERTY_PATTERN = Pattern.compile("[0-9a-z_\\.]*");
 
     /*
      * (non-Javadoc)
-     * @see org.eclipse.wst.validation.AbstractValidator#validate(org.eclipse.core.resources.IResource, int, org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
+     *
+     * @see org.eclipse.wst.validation.AbstractValidator#validate(org.eclipse.core.resources.IResource, int,
+     * org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
      */
     @Override
     public ValidationResult validate(IResource resource, int kind, ValidationState state, IProgressMonitor monitor) {
@@ -102,7 +109,7 @@ public class Validator extends AbstractValidator {
         }
 
         try {
-            if(!Utilities.shouldContinueIfFileOpen("validation",resource)) {
+            if (!Utilities.shouldContinueIfFileOpen("validation", resource)) {
                 monitor.setCanceled(true);
                 return null;
             }
@@ -140,7 +147,7 @@ public class Validator extends AbstractValidator {
 
     private ValidatorMessage createMessage(ValidationFailure vf, IResource resource, boolean useDefaultEditor) {
         if (vf instanceof SubValidationFailure) {
-            IResource res = ((SubValidationFailure)vf).getResource();
+            IResource res = ((SubValidationFailure) vf).getResource();
             if (res != null) {
                 resource = res;
             }
@@ -160,7 +167,7 @@ public class Validator extends AbstractValidator {
                 message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
             }
         } else if (vf.getRule() == ValidationRule.RW) {
-            //Can happen in the font and colour case
+            // Can happen in the font and colour case
             message.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
         }
         message.setAttribute(IMarker.LOCATION, vf.getLocation());
@@ -184,18 +191,25 @@ public class Validator extends AbstractValidator {
         if (project == null) {
             if (Activator.getInstance().isClearMarkers()) {
                 try {
-                    //cleanup all opi validation markers
-                    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_PROBLEM, true, IProject.DEPTH_INFINITE);
+                    // cleanup all opi validation markers
+                    ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_PROBLEM, true,
+                        IProject.DEPTH_INFINITE);
                     ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(MARKER_ERROR, true, IProject.DEPTH_INFINITE);
+                    //This is wrong, but it is the only way to convince eclipse to forget about the existing markers
+                    //If validated opis have lots of issues, there will be a lot of markers. Because a marker contains a
+                    //reference to the failure and a failure might contain a reference to a widget model, a lot of
+                    //memory might be needed to keep track of everything. The markers are kept in the save manager
+                    //~forever(?!) and this appears to be the only way to clear them permanently and free the memory.
+                    ((Workspace)ResourcesPlugin.getWorkspace()).getSaveManager().startup(monitor);
                 } catch (CoreException e) {
-                    LOGGER.log(Level.WARNING, "Could not delete opi validation markers.",e);
+                    LOGGER.log(Level.WARNING, "Could not delete opi validation markers.", e);
                 }
             }
-            //bring the progress view to the top
-            showView("org.eclipse.ui.views.ProgressView",false);
-            //reload the rules, just in case they have been changed
+            // bring the progress view to the top
+            showView("org.eclipse.ui.views.ProgressView", false);
+            // reload the rules, just in case they have been changed
             IPath rulesFile = Activator.getInstance().getRulesFile();
-            verifier = createVerifier(PreferencesHelper.getSchemaOPIPath(),rulesFile,monitor);
+            verifier = createVerifier(PreferencesHelper.getSchemaOPIPath(), rulesFile, monitor);
         }
     }
 
@@ -208,28 +222,25 @@ public class Validator extends AbstractValidator {
     @Override
     public void validationFinishing(IProject project, ValidationState state, IProgressMonitor monitor) {
         if (project == null) {
-            //at the end bring the problems view to the top and if requested show the summary dialog
+            // at the end bring the problems view to the top and if requested show the summary dialog
             showView("org.eclipse.ui.views.ProblemView", true);
             if (Activator.getInstance().isShowSummaryDialog()) {
                 final SchemaVerifier sv = verifier;
                 Display.getDefault().asyncExec(() -> {
                     IWorkbenchPage page = getPage();
-                    new ResultsDialog(page.getWorkbenchWindow().getShell(),
-                            sv.getNumberOfAnalyzedFiles(),
-                            sv.getNumberOfFilesFailures(),
-                            sv.getNumberOfAnalyzedWidgets(),
-                            sv.getNumberOfWidgetsFailures(),
-                            sv.getNumberOfROProperties(),
-                            sv.getNumberOfCriticalROFailures(),
-                            sv.getNumberOfMajorROFailures(),
-                            sv.getNumberOfWRITEProperties(),
-                            sv.getNumberOfWRITEFailures(),
-                            sv.getNumberOfRWProperties(),
-                            sv.getNumberOfRWFailures(),
-                            sv.getNumberOfDeprecatedFailures())
-                        .open();
+                    new ResultsDialog(page.getWorkbenchWindow().getShell(), sv.getNumberOfAnalyzedFiles(),
+                        sv.getNumberOfFilesFailures(), sv.getNumberOfAnalyzedWidgets(), sv.getNumberOfWidgetsFailures(),
+                        sv.getNumberOfROProperties(), sv.getNumberOfCriticalROFailures(),
+                        sv.getNumberOfMajorROFailures(), sv.getNumberOfWRITEProperties(), sv.getNumberOfWRITEFailures(),
+                        sv.getNumberOfRWProperties(), sv.getNumberOfRWFailures(), sv.getNumberOfDeprecatedFailures(),
+                        sv.getNumberOfWidgetsWithRules(), sv.getNumberOfAllRules(), sv.getNumberOfWidgetsWithScripts(),
+                        sv.getNumberOfWidgetsWithPythonEmbedded(), sv.getNumberOfWidgetsWithJavascriptEmbedded(),
+                        sv.getNumberOfWidgetsWithPythonStandalone(), sv.getNumberOfWidgetsWithJavascriptStandalone())
+                            .open();
                 });
             }
+            //remove reference to the verifier, so that GC can take it
+            verifier = null;
         }
     }
 
@@ -244,17 +255,17 @@ public class Validator extends AbstractValidator {
                     }
                 }
             } catch (PartInitException e) {
-                LOGGER.log(Level.WARNING, "Could not open the view '" + view + "'.",e);
+                LOGGER.log(Level.WARNING, "Could not open the view '" + view + "'.", e);
             }
         });
     }
 
     private static void updateProblemsView(IWorkbenchPage page) {
         try {
-            ProblemsView v = (ProblemsView)page.showView("org.eclipse.ui.views.ProblemView");
+            ProblemsView v = (ProblemsView) page.showView("org.eclipse.ui.views.ProblemView");
             Field f = ExtendedMarkersView.class.getDeclaredField("viewer");
             f.setAccessible(true);
-            TreeViewer viewer = (TreeViewer)f.get(v);
+            TreeViewer viewer = (TreeViewer) f.get(v);
             ITreeContentProvider provider = (ITreeContentProvider) viewer.getContentProvider();
             if (!(provider instanceof ContentProvider)) {
                 viewer.setContentProvider(new ContentProvider(provider));
@@ -262,28 +273,28 @@ public class Validator extends AbstractValidator {
                 Listener[] col = viewer.getTree().getListeners(SWT.Collapse);
                 for (int i = 0; i < exp.length; i++) {
                     if (exp[i] instanceof TypedListener) {
-                        SWTEventListener l = ((TypedListener)exp[i]).getEventListener();
+                        SWTEventListener l = ((TypedListener) exp[i]).getEventListener();
                         if (l.getClass().getName().contains("ExtendedMarkersView")) {
                             viewer.getTree().removeListener(SWT.Expand, exp[i]);
                             viewer.getTree().addListener(SWT.Expand,
-                                    new TypedListener(new TreeViewerListener((TreeListener)l)));
+                                new TypedListener(new TreeViewerListener((TreeListener) l)));
                         }
                     }
                 }
                 for (int i = 0; i < col.length; i++) {
                     if (col[i] instanceof TypedListener) {
-                        SWTEventListener l = ((TypedListener)col[i]).getEventListener();
+                        SWTEventListener l = ((TypedListener) col[i]).getEventListener();
                         if (l.getClass().getName().contains("ExtendedMarkersView")) {
                             viewer.getTree().removeListener(SWT.Collapse, col[i]);
                             viewer.getTree().addListener(SWT.Collapse,
-                                    new TypedListener(new TreeViewerListener((TreeListener)l)));
+                                new TypedListener(new TreeViewerListener((TreeListener) l)));
                         }
                     }
                 }
             }
-        } catch (Exception e) {
-            //ignore
-            //cannot update view, we will use the original one
+        } catch (IllegalAccessException | NoSuchFieldException | RuntimeException | PartInitException e) {
+            // ignore
+            // cannot update view, we will use the original one
         }
     }
 
@@ -328,45 +339,45 @@ public class Validator extends AbstractValidator {
                 }
             }
             String ruleStr;
-            for (Entry<Object,Object> e : p.entrySet()) {
-                String key = ((String)e.getKey()).toLowerCase();
-                String value = (String)e.getValue();
+            for (Entry<Object, Object> e : p.entrySet()) {
+                String key = ((String) e.getKey()).toLowerCase(Locale.UK);
+                String value = (String) e.getValue();
                 int idx = value.indexOf('[');
                 int idxRem = value.indexOf('{');
                 String[] acceptables = null;
                 String[] removies = null;
                 if (idx > 0 || idxRem > 0) {
                     if (idx > 0 && idxRem > 0) {
-                        ruleStr = value.substring(0,Math.min(idx,idxRem)).trim();
+                        ruleStr = value.substring(0, Math.min(idx, idxRem)).trim();
                     } else if (idx > 0) {
-                        ruleStr = value.substring(0,idx).trim();
+                        ruleStr = value.substring(0, idx).trim();
                     } else {
-                        ruleStr = value.substring(0,idxRem).trim();
+                        ruleStr = value.substring(0, idxRem).trim();
                     }
                     try {
                         if (idx > 0) {
-                            acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
+                            acceptables = value.substring(idx + 1, value.indexOf(']')).split("\\;");
                             for (int i = 0; i < acceptables.length; i++) {
                                 acceptables[i] = acceptables[i].trim();
                             }
                         }
                         if (idxRem > 0) {
-                            removies = value.substring(idxRem+1, value.indexOf('}')).split("\\;");
+                            removies = value.substring(idxRem + 1, value.indexOf('}')).split("\\;");
                             for (int i = 0; i < removies.length; i++) {
                                 removies[i] = removies[i].trim();
                             }
                         }
-                    } catch (Exception ex) {
-                        //in case that acceptables cannot be parsed, just ignore them
+                    } catch (RuntimeException ex) {
+                        // in case that acceptables cannot be parsed, just ignore them
                         LOGGER.log(Level.WARNING, "The rule for property '" + key + "' is incorrectly defined."
-                                + " Check the alternative acceptable and removed values definition.");
+                            + " Check the alternative acceptable and removed values definition.");
                     }
                 } else {
                     ruleStr = value;
                 }
 
                 try {
-                    ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase());
+                    ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase(Locale.UK));
                     if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
                         rules.put(key, rule);
                         acceptableValues.put(key, acceptables);
@@ -377,12 +388,12 @@ public class Validator extends AbstractValidator {
                         acceptableValuesPatterns.put(ptrn, acceptables);
                         removedValuesPatterns.put(ptrn, removies);
                     }
-                } catch(IllegalArgumentException ex) {
+                } catch (IllegalArgumentException ex) {
                     LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
                 }
             }
         }
-        return new SchemaVerifier(schema,rules, rulePatterns, acceptableValues, acceptableValuesPatterns,
-                removedValues, removedValuesPatterns);
+        return new SchemaVerifier(schema, rules, rulePatterns, acceptableValues, acceptableValuesPatterns,
+            removedValues, removedValuesPatterns);
     }
 }

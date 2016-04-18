@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.time.Instant;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
-import org.diirt.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
@@ -220,12 +220,12 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
      */
     protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
     {
-        Timestamp time1 = pv1.getTimestamp();
-        Timestamp time2 = pv2.getTimestamp();
+        Instant time1 = pv1.getTimestamp();
+        Instant time2 = pv2.getTimestamp();
         if (time1 == null)
-            time1 = Timestamp.of(0, 0);
+            time1 = Instant.ofEpochSecond(0);
         if (time2 == null)
-            time2 = Timestamp.of(0, 0);
+            time2 = Instant.ofEpochSecond(0);
         final int cmp = time1.compareTo(time2);
         if (cmp != 0)
             return cmp;

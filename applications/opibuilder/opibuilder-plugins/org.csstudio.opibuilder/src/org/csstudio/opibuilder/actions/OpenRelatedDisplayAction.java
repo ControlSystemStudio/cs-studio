@@ -39,6 +39,7 @@ public class OpenRelatedDisplayAction extends Action
             description = desc;
         }
 
+        @Override
         public String toString()
         {
             return description;

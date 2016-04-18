@@ -12,18 +12,18 @@
 
 <p><b>Note: </b>This guide is based on Eclipse 3.7.1, RAP 1.5.0 and has also
 been tested with Eclipse 4.3.
-Equal or higher versions are required, but you may experience unpredicted 
+Equal or higher versions are required, but you may experience unpredicted
 problems with other versions.</p>
 
 <h3>Install Eclipse for RCP and RAP developers</h3>
-<p>WebOPI is developed on RAP, so you must use the 
-<code>Eclipse for RCP and RAP developers</code> IDE from 
+<p>WebOPI is developed on RAP, so you must use the
+<code>Eclipse for RCP and RAP developers</code> IDE from
 <a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>.
 </p>
 
 <h3>Get WebOPI source code</h3>
 <p>
-Read this article to get CSS source code: 
+Read this article to get CSS source code:
 <a href="https://github.com/ControlSystemStudio/cs-studio/wiki/SourceRepository">
 https://github.com/ControlSystemStudio/cs-studio/wiki/SourceRepository</a>.
 After you got the source code, you need to import the required plugins into your workspace.
@@ -106,15 +106,15 @@ If you also want to use utility_pv as the PV connection layer, add the following
 <h3>Set Target Platform</h3>
  <p>
       RAP applications need to be compiled against the RAP runtime.
-      To do so, the runtime needs to be set as the target platform in Eclipse.     
+      To do so, the runtime needs to be set as the target platform in Eclipse.
       <ol>
         <li>Open <code>org.csstudio.opibuilder.rap->webopi.target</code>.</li>
         <li>Select the local folder location, and click <code>Edit...</code> on the right.</li>
-		<li>Change it to the local physical location of 
-		<code>org.csstudio.rap.core/third_party_plugins/GEF_RAP_1.5.0</code>
+        <li>Change it to the local physical location of
+        <code>org.csstudio.rap.core/third_party_plugins/GEF_RAP_1.5.0</code>
         <li>Save and click on <code>Set as Target Platform</code> on the upper right corner.</li>
       </ol>
- 
+
     <p>
       Note: if doing this with a workspace that already contains projects that
       depend on the target, you may get compile errors. Restarting Eclipse and/or
@@ -133,16 +133,16 @@ http://www.vogella.de/articles/EclipseRAP/article.html</a>
 
 <h3>Launch WebOPI from Eclipse</h3>
 <ol>
-<li>Make corresponding changes to <code>preferences.ini</code> under <code>org.csstudio.opibuilder</code> and 
+<li>Make corresponding changes to <code>preferences.ini</code> under <code>org.csstudio.opibuilder</code> and
 <code>org.csstudio.platform.libs.epics</code> plugin. Alternatively, you can create your own
 <code>css_rap.ini</code> under your home directory.</li>
-<li>Open <code>fragment.xml</code> in <code>org.csstudio.opibuilder.rap</code> plugin and click 
+<li>Open <code>fragment.xml</code> in <code>org.csstudio.opibuilder.rap</code> plugin and click
 <code>Launch a RAP application</code>.</li>
 </ol>
 <p>
-It has been observed that this will start a web browser for 
+It has been observed that this will start a web browser for
 <code>http://127.0.0.1:10081/rap</code>, which will fail.
-Change your web browser to look at 
+Change your web browser to look at
 <code>http://127.0.0.1:10081/</code>, that is: Use the same address and port, but a root path.
 </p>
 <p>
@@ -171,16 +171,16 @@ If you still get errors to open the web page, try following steps:
 </p>
 <p>Open <code>webopi.warproduct</code> and click on <code>Validate</code> to see
 if any required bundles are missing. If you see any missing required bundles, go to
-Configuration page, click <code>Add...</code> to add the required bundles only. 
+Configuration page, click <code>Add...</code> to add the required bundles only.
 <b>Note: </b> Do not click <code>Add Required Plug-ins</code>, which may add unnecessary
 plugins and result in the deployment fail. </p>
 
-<p>After fix all problems from <code>Validate</code>, click 
+<p>After fix all problems from <code>Validate</code>, click
 <code>Eclipse WAR product export wizard</code>
 to export the WAR file. </p>
 
 <p>
-After successfully exported the WAR file, here is the last mile: 
+After successfully exported the WAR file, here is the last mile:
 to allow multiple sessions in same browser, you need to disable cookies:
 copy the folder
 <code>META-INF</code> under <code>org.csstudio.opibuilder.rap/html</code> folder to the same directory of webopi.war.
@@ -192,6 +192,6 @@ Now, you can deploy the WAR file on a tomcat server. See
 
  <br>
  <br>
- 
+
 </body>
 </html>

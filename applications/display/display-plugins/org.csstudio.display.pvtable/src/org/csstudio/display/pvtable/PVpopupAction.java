@@ -17,17 +17,16 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/** Another application sent us a PV name via its popup menu.
- *  @author Kay Kasemir
+/**
+ * Another application sent us a PV name via its popup menu.
+ *
+ * @author Kay Kasemir
  */
-public class PVpopupAction extends AbstractHandler
-{
+public class PVpopupAction extends AbstractHandler {
     @Override
-    public Object execute(final ExecutionEvent event) throws ExecutionException
-    {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
         final PVTableEditor editor = PVTableEditor.createPVTableEditor();
-        if (editor != null)
-        {
+        if (editor != null) {
             final PVTableModel model = editor.getModel();
             final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
             final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);

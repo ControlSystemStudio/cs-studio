@@ -50,6 +50,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
         super.registerPropertyChangeHandlers();
         // fill
         IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -62,6 +63,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
         // fill orientaion
         IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -74,6 +76,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
         // transparent
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -87,6 +90,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
         // line color
         IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -101,6 +105,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
         //corner width
         IWidgetPropertyChangeHandler cornerWidthHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -113,6 +118,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
         //corner height
         IWidgetPropertyChangeHandler cornerHeightHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

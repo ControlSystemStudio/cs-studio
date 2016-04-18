@@ -135,12 +135,14 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 setFigureText((String)newValue);
 
                 if(isAutoSize){
                     Display.getCurrent().timerExec(10, new Runnable() {
+                        @Override
                         public void run() {
                                 performAutoSize();
                         }
@@ -154,6 +156,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 
         IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setFont(CustomMediaFactory.getInstance().getFont(
@@ -166,9 +169,11 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 Display.getCurrent().timerExec(10, new Runnable() {
+                    @Override
                     public void run() {
                         if(getWidgetModel().isAutoSize()){
                             performAutoSize();
@@ -185,6 +190,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setOpaque(!(Boolean)newValue);
@@ -194,6 +200,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 isAutoSize = (Boolean)newValue;
@@ -207,6 +214,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_AUTOSIZE, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if(figure instanceof TextFigure)
@@ -218,6 +226,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if(figure instanceof TextFigure)
@@ -228,6 +237,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 if(newValue == null)
@@ -239,6 +249,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 format = FormatEnum.values()[(Integer)newValue];
@@ -249,6 +260,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(TextUpdateModel.PROP_FORMAT_TYPE, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 precision = (Integer)newValue;
@@ -259,6 +271,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(TextUpdateModel.PROP_PRECISION, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 isPrecisionFromDB = (Boolean)newValue;
@@ -269,6 +282,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(TextUpdateModel.PROP_PRECISION_FROM_DB, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 isShowUnits = (Boolean)newValue;
@@ -279,6 +293,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(TextUpdateModel.PROP_SHOW_UNITS, handler);
 
         handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     final IFigure figure) {
                 if(figure instanceof TextFigure)

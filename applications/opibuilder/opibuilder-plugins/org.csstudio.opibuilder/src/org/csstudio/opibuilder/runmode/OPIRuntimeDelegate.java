@@ -83,6 +83,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
     private PaintListener errorMessagePaintListener = new PaintListener() {
 
+        @Override
         public void paintControl(PaintEvent e) {
             e.gc.setForeground(CustomMediaFactory.getInstance().getColor(255,
                     0, 0));
@@ -93,6 +94,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
     private PaintListener loadingMessagePaintListener = new PaintListener() {
 
+        @Override
         public void paintControl(PaintEvent e) {
             e.gc.setForeground(CustomMediaFactory.getInstance().getColor(255,
                     0, 0));
@@ -326,6 +328,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
     private void hideCloseButton(final IWorkbenchPartSite site) {
         if (!displayModel.isShowCloseButton()) {
             Display.getCurrent().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     SingleSourcePlugin.getUIHelper().enableClose(site, false);
                 }
@@ -410,6 +413,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
                         IProgressMonitor.UNKNOWN);
                 try {
                     display.asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             if(viewer != null){
                                 SingleSourceHelper.addPaintListener(
@@ -423,6 +427,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
                             .getInputStream();
                     display.asyncExec(new Runnable() {
 
+                            @Override
                                 public void run() {
                                     try {
                                         if(viewer != null){
@@ -450,6 +455,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
                 } catch (final Exception e) {
                     display.asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             if (viewer != null && viewer.getControl() !=null) {
                                 SingleSourceHelper.removePaintListener(
@@ -481,6 +487,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
         job.schedule();
     }
 
+    @Override
     public <T> T getAdapter(Class<T> adapter) {
         if (adapter == DisplayOpenManager.class) {
             if (displayOpenManager == null)

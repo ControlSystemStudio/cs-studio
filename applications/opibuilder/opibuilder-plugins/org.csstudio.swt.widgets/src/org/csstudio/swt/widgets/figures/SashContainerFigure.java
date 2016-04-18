@@ -12,7 +12,7 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
@@ -216,7 +216,7 @@ public class SashContainerFigure extends Figure implements Introspectable {
      * @author Xihui Chen
      *
      */
-    public enum SashStyle {
+    public static enum SashStyle {
 
         /**
          * Invisible.

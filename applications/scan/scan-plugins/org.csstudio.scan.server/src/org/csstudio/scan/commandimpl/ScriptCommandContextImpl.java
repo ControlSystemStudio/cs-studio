@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.time.Duration;
 import java.util.Date;
 
 import org.csstudio.ndarray.NDArray;
@@ -34,7 +35,7 @@ import org.diirt.vtype.ValueUtil;
  */
 public class ScriptCommandContextImpl extends ScanScriptContext
 {
-    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
+    protected final static Duration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
     final private ScanContext context;
 
     /** Initialize
@@ -101,7 +102,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     /** {@inheritDoc} */
     @Override
     public void write(final String device_name, final Object value, final String readback,
-            final boolean wait, final double tolerance, final TimeDuration timeout) throws Exception
+            final boolean wait, final double tolerance, final Duration timeout) throws Exception
     {
         ScanCommandUtil.write(context, device_name, value, false, wait, readback, tolerance, timeout);
     }

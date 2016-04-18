@@ -3,11 +3,8 @@
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -28,7 +25,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.diirt.service.Service;
 import org.diirt.service.ServiceMethod;
 
-import com.google.common.base.Joiner;
 
 /**
  * @author shroffk

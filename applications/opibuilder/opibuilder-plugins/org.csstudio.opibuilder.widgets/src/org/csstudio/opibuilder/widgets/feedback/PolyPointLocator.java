@@ -80,6 +80,7 @@ public final class PolyPointLocator implements Locator {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void relocate(final IFigure target) {
         Point p = _referenceFigure.getPoints().getPoint(_pointIndex);
 

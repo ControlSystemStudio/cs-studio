@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RAP fragment for data browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2.rap;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Fragment-Host: org.csstudio.trends.databrowser2;bundle-version="3.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: fragment
 Require-Bundle: org.csstudio.rap.core;bundle-version="1.0.0",
  org.eclipse.equinox.http.registry;bundle-version="1.1.100",
- org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional
+ org.csstudio.rap.ui.util
 Import-Package: javax.servlet,
  javax.servlet.http
 Bundle-Vendor: Davy Dequidt (davy.dequidt@iter.org)

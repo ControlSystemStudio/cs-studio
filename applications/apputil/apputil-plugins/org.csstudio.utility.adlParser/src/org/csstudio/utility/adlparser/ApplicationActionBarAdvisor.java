@@ -33,6 +33,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         super(configurer);
     }
 
+    @Override
     protected void makeActions(final IWorkbenchWindow window) {
         // Creates the actions and registers them.
         // Registering is needed to ensure that key bindings work.
@@ -54,6 +55,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(preferencesAction);
     }
 
+    @Override
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&File",
                 IWorkbenchActionConstants.M_FILE);

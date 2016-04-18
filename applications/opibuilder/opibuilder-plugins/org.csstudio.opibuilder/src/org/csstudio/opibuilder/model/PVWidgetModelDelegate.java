@@ -44,30 +44,35 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
         model.setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
+    @Override
     public boolean isBorderAlarmSensitve(){
         if(model.getProperty(PROP_BORDER_ALARMSENSITIVE) == null)
             return false;
         return (Boolean)model.getCastedPropertyValue(PROP_BORDER_ALARMSENSITIVE);
     }
 
+    @Override
     public boolean isForeColorAlarmSensitve(){
         if(model.getProperty(PROP_FORECOLOR_ALARMSENSITIVE) == null)
             return false;
         return (Boolean)model.getCastedPropertyValue(PROP_FORECOLOR_ALARMSENSITIVE);
     }
 
+    @Override
     public boolean isBackColorAlarmSensitve(){
         if(model.getProperty(PROP_BACKCOLOR_ALARMSENSITIVE) == null)
             return false;
         return (Boolean)model.getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
     }
 
+    @Override
     public boolean isAlarmPulsing(){
         if(model.getProperty(PROP_ALARM_PULSING) == null)
             return false;
         return (Boolean)model.getCastedPropertyValue(PROP_ALARM_PULSING);
     }
 
+    @Override
     public String getPVName(){
         return (String)model.getCastedPropertyValue(PROP_PVNAME);
     }

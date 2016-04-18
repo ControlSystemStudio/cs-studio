@@ -1,7 +1,7 @@
 
 package org.csstudio.archive.reader.ea4;
 
-import java.net.UnknownHostException;
+import java.time.Instant;
 import java.util.Map;
 
 import org.epics.pvaccess.client.rpc.RPCClientImpl;
@@ -10,7 +10,6 @@ import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
 
 /** Main access point to the ChannelArchiver network data server.
@@ -186,7 +185,7 @@ public class EA4ArchiveReader implements ArchiveReader
      *  @throws Exception
      */
     public VType[] getSamples(final int key, final String name,
-            final Timestamp start, final Timestamp end,
+            final Instant start, final Instant end,
             final boolean optimized, final int count) throws Exception {
 
         final ValueRequest request;
@@ -216,8 +215,8 @@ public class EA4ArchiveReader implements ArchiveReader
     @Override
     public ValueIterator getRawValues(final int key,
                                       final String name,
-                                      final Timestamp start,
-                                      final Timestamp end) throws Exception {
+                                      final Instant start,
+                                      final Instant end) throws Exception {
         return new ValueRequestIterator(this, key, name, start, end, false, 10);
     }
 
@@ -225,8 +224,8 @@ public class EA4ArchiveReader implements ArchiveReader
     @Override
     public ValueIterator getOptimizedValues(final int key,
                                             final String name,
-                                            final Timestamp start,
-                                            final Timestamp end,
+                                            final Instant start,
+                                            final Instant end,
                                             final int count) throws Exception {
           // return new ValueRequestIterator(this, key, name, start, end, false, 10);
         return new ValueRequestIterator(this, key, name, start, end, true, count);

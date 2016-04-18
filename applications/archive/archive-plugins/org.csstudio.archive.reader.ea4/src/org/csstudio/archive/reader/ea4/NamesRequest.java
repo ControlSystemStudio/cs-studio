@@ -1,6 +1,5 @@
 package org.csstudio.archive.reader.ea4;
 
-
 import org.epics.pvaccess.client.rpc.RPCClientImpl;
 import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.factory.PVDataFactory;
@@ -14,7 +13,8 @@ import org.epics.pvdata.pv.PVStructureArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Structure;
 import org.epics.pvdata.pv.StructureArrayData;
-import org.diirt.util.time.Timestamp;
+
+import java.time.Instant;
 
 /** Handles the "archiver.names" request and its results. */
 @SuppressWarnings("nls")
@@ -36,8 +36,8 @@ public class NamesRequest {
     final private String pattern;
 
     private String chNames[];
-    private Timestamp starts[];
-    private Timestamp ends[];
+    private Instant starts[];
+    private Instant ends[];
 
 
     /** Create a name lookup.
@@ -70,8 +70,8 @@ public class NamesRequest {
         infos.get(0, infos.getLength(), data);
 
         this.chNames  = new String[data.data.length];
-        this.starts   = new Timestamp[data.data.length];
-        this.ends     = new Timestamp[data.data.length];
+        this.starts   = new Instant[data.data.length];
+        this.ends     = new Instant[data.data.length];
 
         for(int i=0; i < data.data.length; i++) {
 
@@ -81,11 +81,11 @@ public class NamesRequest {
 
             int start_secs = info.getIntField("start_sec").get();
             int start_nano = info.getIntField("start_nano").get();
-            starts[i] = Timestamp.of(start_secs, start_nano);
+            starts[i] = Instant.ofEpochSecond(start_secs, start_nano);
 
             int end_secs  = info.getIntField("end_sec").get();
             int end_nano  = info.getIntField("end_nano").get();
-            ends[i] = Timestamp.of(end_secs, end_nano);
+            ends[i] = Instant.ofEpochSecond(end_secs, end_nano);
         }
     }
 
@@ -94,11 +94,11 @@ public class NamesRequest {
         return chNames;
     }
 
-    public final Timestamp[] getStarts() {
+    public final Instant[] getStarts() {
         return starts;
     }
 
-    public final Timestamp[] getEnds() {
+    public final Instant[] getEnds() {
         return ends;
     }
 

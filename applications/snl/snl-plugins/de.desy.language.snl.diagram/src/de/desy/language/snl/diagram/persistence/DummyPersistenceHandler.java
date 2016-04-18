@@ -13,6 +13,7 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 public class DummyPersistenceHandler implements IPersistenceHandler {
 
+    @Override
     public void store(IPath originalFilePath, SNLDiagram diagram) {
         StringBuffer output = new StringBuffer("<file>\"");
         output.append(originalFilePath.lastSegment());
@@ -71,11 +72,13 @@ public class DummyPersistenceHandler implements IPersistenceHandler {
         System.out.println(output);
     }
 
+    @Override
     public Map<String, List<Point>> loadConnectionLayoutData(
             IPath originalFilePath) {
         return new HashMap<String, List<Point>>();
     }
 
+    @Override
     public Map<String, StateLayoutData> loadStateLayoutData(
             IPath originalFilePath) {
         return new HashMap<String, StateLayoutData>();

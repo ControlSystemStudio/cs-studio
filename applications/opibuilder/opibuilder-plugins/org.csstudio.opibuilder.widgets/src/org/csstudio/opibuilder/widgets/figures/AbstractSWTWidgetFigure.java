@@ -16,9 +16,9 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AncestorListener;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -66,6 +66,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             this.control = control;
         }
 
+        @Override
         public void mouseEnter(MouseEvent e) {
             control.setToolTipText(editPart.getWidgetModel()
                     .getTooltip());
@@ -140,6 +141,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         // the widget should has the same relative position as its parent
         // container.
         ancestorListener = new AncestorListener.Stub() {
+            @Override
             public void ancestorMoved(org.eclipse.draw2d.IFigure arg0) {
                 relocateWidget();
                 updateWidgetVisibility();
@@ -148,6 +150,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         addAncestorListener(ancestorListener);
         addFigureListener(new FigureListener() {
 
+            @Override
             public void figureMoved(IFigure source) {
                 relocateWidget();
             }
@@ -156,6 +159,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         //hook swt widget with GEF
         composite.getDisplay().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
 //                final Control swtWidget = getSWTWidget();
                 if (swtWidget == null || swtWidget.isDisposed() || !editpart.isActive()) {
@@ -284,14 +288,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
     @Override
     public Color getForegroundColor() {
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             return getSWTWidget().getForeground();
         return super.getForegroundColor();
     }
 
     @Override
     public Color getBackgroundColor() {
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             return getSWTWidget().getBackground();
         return super.getBackgroundColor();
     }
@@ -300,7 +304,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     public void setForegroundColor(Color fg) {
         if(!runmode)
             super.setForegroundColor(fg);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setForeground(fg);
     }
 
@@ -308,7 +312,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     public void setBackgroundColor(Color bg) {
         if(!runmode)
             super.setBackgroundColor(bg);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setBackground(bg);
     }
 
@@ -352,11 +356,13 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             updateFlag = true;
             if (!isDirectlyOnDisplay()) {
                 updateManagerListener = new UpdateListener() {
+                    @Override
                     public void notifyPainting(Rectangle damage,
                             @SuppressWarnings("rawtypes") Map dirtyRegions) {
                         updateWidgetVisibility();
                     }
 
+                    @Override
                     public void notifyValidating() {
                     }
 
@@ -384,6 +390,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         GUIRefreshThread.getInstance(runmode).addIgnorableTask(
                 new WidgetIgnorableUITask(this, new Runnable() {
 
+                    @Override
                     public void run() {
                         if(!getSWTWidget().isDisposed() && getParent() != null)
                             doRelocateWidget();
@@ -475,7 +482,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     @Override
     public void setFont(Font f) {
         super.setFont(f);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setFont(f);
     }
 

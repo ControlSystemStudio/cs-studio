@@ -52,6 +52,7 @@ public class SelectionWindowAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.setDisplayedImage(worker.getAllImages().getWindowImage());

@@ -1,11 +1,11 @@
 package org.csstudio.diag.postanalyser;
 
-import org.csstudio.archive.vtype.TimestampHelper;
+import java.time.Instant;
+
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.diirt.util.time.Timestamp;
 
 /** Standalone "main" test of the GUI with demo data */
 public class TestMain
@@ -83,7 +83,7 @@ public class TestMain
     /** @return Linear 'x' vector 0.0 ... 10.0 */
     private static double[] createX()
     {
-        final double start = TimestampHelper.toMillisecs(Timestamp.now());
+        final double start = Instant.now().toEpochMilli();
         // final double start = 0.0;
         final double x[] = new double[N];
         for (int i = 0; i < N; ++i)

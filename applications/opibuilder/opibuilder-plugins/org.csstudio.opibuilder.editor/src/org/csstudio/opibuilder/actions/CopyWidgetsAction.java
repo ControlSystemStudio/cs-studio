@@ -84,6 +84,7 @@ public class CopyWidgetsAction extends SelectionAction {
                 new Transfer[]{OPIWidgetsTransfer.getInstance()});
         Display.getCurrent().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 IAction pasteAction = ((ActionRegistry)((OPIEditor)getWorkbenchPart()).getAdapter(ActionRegistry.class)).
                 getAction(ActionFactory.PASTE.getId());
@@ -126,6 +127,7 @@ public class CopyWidgetsAction extends SelectionAction {
 
             Arrays.sort(modelArray, new Comparator<AbstractWidgetModel>(){
 
+                @Override
                 public int compare(AbstractWidgetModel o1,
                         AbstractWidgetModel o2) {
                     if(o1.getParent().getChildren().indexOf(o1) >

@@ -49,6 +49,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         knob.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE){
                     setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
@@ -71,6 +72,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //knob color
         IWidgetPropertyChangeHandler knobColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -84,6 +86,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //thumbColor
         IWidgetPropertyChangeHandler thumbColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -96,6 +99,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -109,6 +113,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //show value label
         IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -121,6 +126,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //Ramp gradient
         IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -136,6 +142,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 
         //increment
         IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -149,6 +156,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
         //force square size
         final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if(((Integer)newValue) < KnobModel.MINIMUM_SIZE)
                     newValue = KnobModel.MINIMUM_SIZE;
@@ -158,6 +166,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
         };
         PropertyChangeListener sizeListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
             }

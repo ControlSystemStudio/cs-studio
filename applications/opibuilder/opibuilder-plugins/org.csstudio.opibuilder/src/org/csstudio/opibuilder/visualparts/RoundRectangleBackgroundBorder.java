@@ -50,6 +50,7 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
     /**
      * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
      */
+    @Override
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
         if(lineWidth <= 0)
             return;

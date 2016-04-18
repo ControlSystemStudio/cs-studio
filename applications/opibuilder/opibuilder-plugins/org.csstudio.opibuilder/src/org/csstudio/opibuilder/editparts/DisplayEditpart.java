@@ -17,7 +17,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.csstudio.ui.util.SWTConstants;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -197,6 +197,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 figure.setBackgroundColor(((OPIColor)newValue).getSWTColor());
@@ -210,6 +211,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
         //grid
         if(getExecutionMode() == ExecutionMode.EDIT_MODE){
             IWidgetPropertyChangeHandler gridColorHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     ((ScalableFreeformRootEditPart)getViewer().getRootEditPart())
@@ -221,6 +223,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             setPropertyChangeHandler(DisplayModel.PROP_COLOR_FOREGROUND, gridColorHandler);
 
             IWidgetPropertyChangeHandler gridSpaceHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     getViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
@@ -231,6 +234,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             setPropertyChangeHandler(DisplayModel.PROP_GRID_SPACE, gridSpaceHandler);
 
             IWidgetPropertyChangeHandler showGridHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     getViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, (Boolean)newValue);
@@ -241,6 +245,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             setPropertyChangeHandler(DisplayModel.PROP_SHOW_GRID, showGridHandler);
 
             IWidgetPropertyChangeHandler showRulerHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     getViewer().setProperty(
@@ -251,6 +256,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             setPropertyChangeHandler(DisplayModel.PROP_SHOW_RULER, showRulerHandler);
 
             IWidgetPropertyChangeHandler snapGeoHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     getViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, (Boolean)newValue);
@@ -260,6 +266,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             setPropertyChangeHandler(DisplayModel.PROP_SNAP_GEOMETRY, snapGeoHandler);
 
             IWidgetPropertyChangeHandler showEditRangeHandler = new IWidgetPropertyChangeHandler(){
+                @Override
                 public boolean handleChange(Object oldValue, Object newValue,
                         IFigure figure) {
                     figure.repaint();

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o.c.ui.util RAP Suppliment
 Bundle-SymbolicName: org.csstudio.rap.ui.util
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.2.qualifier
 Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.core.runtime,
  org.eclipse.rap.jface,
@@ -10,7 +10,7 @@ Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.rap.gef,
  org.eclipse.rap.ui,
  org.csstudio.rap.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.ui.util,
  org.csstudio.ui.util.dialogs,

@@ -50,6 +50,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
     private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
             .getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
 
+    @Override
     public Menu getMenu(Control parent) {
         dispose();
         opiListMenu = new Menu(parent);
@@ -156,6 +157,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
         return topOPIs;
     }
 
+    @Override
     public void dispose() {
         if (opiListMenu != null && !opiListMenu.isDisposed()) {
             for (MenuItem m : opiListMenu.getItems())
@@ -165,10 +167,12 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
         }
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         // NOP
     }
 
+    @Override
     public void run(IAction action) {
         Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
         if (topOPIs == null || topOPIs.keySet().size() == 0) {

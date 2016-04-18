@@ -58,13 +58,13 @@ abstract public class ModelItem
     private volatile TraceType trace_type = Preferences.getTraceType();
 
     /** Line width [pixel] */
-    private volatile int line_width = Preferences.getLineWidths();
+    private volatile int line_width = Preferences.getLineWidth();
 
     /** How to display the points of the trace */
     private volatile PointType point_type = PointType.NONE;
 
     /** Point size [pixel] */
-    private volatile int point_size = Preferences.getLineWidths();
+    private volatile int point_size = Preferences.getLineWidth();
 
     /** Y-Axis */
     private volatile AxisConfig axis = null;

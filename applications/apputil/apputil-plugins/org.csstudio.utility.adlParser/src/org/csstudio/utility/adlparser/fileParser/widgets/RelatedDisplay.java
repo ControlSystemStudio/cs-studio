@@ -93,6 +93,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @param clr the foreground color
      */
+    @Override
     public void setClr(int clr) {
         this.clr = clr;
     }
@@ -100,6 +101,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @return the foreground color
      */
+    @Override
     public int getForegroundColor() {
         return clr;
     }
@@ -107,6 +109,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @param bclr the background color
      */
+    @Override
     public void setBclr (int bclr) {
         this.bclr = bclr;
     }
@@ -114,6 +117,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @return the background color
      */
+    @Override
     public int getBackgroundColor() {
         return bclr;
     }
@@ -143,6 +147,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @return the _isBackColorDefined
      */
+    @Override
     public boolean isBackColorDefined() {
         return _isBackColorDefined;
     }
@@ -159,6 +164,7 @@ public class RelatedDisplay extends ADLAbstractWidget implements IWidgetWithColo
     /**
      * @return the _isForeColorDefined
      */
+    @Override
     public boolean isForeColorDefined() {
         return _isForeColorDefined;
     }

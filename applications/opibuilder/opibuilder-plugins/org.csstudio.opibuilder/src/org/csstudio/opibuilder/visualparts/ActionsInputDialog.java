@@ -366,6 +366,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 
             private Menu menu;
 
+            @Override
             public void dispose() {
                 if (menu != null) {
                     menu.dispose();
@@ -373,6 +374,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
                 }
             }
 
+            @Override
             public Menu getMenu(final Control parent) {
                 if (menu != null) {
                     menu.dispose();
@@ -381,6 +383,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
                 return menu;
             }
 
+            @Override
             public Menu getMenu(final Menu parent) {
                 return null;
             }

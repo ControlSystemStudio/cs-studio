@@ -2,15 +2,12 @@ package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.Tag;
 
 import java.beans.ExceptionListener;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

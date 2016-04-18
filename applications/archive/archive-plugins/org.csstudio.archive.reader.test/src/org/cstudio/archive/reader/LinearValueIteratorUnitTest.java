@@ -10,8 +10,10 @@ package org.cstudio.archive.reader;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.csstudio.utility.test.HamcrestMatchers.notANumber;
 import static org.junit.Assert.assertThat;
+
+import java.time.Duration;
+import java.time.Instant;
 
 import org.csstudio.archive.reader.LinearValueIterator;
 import org.csstudio.archive.reader.ValueIterator;
@@ -19,7 +21,6 @@ import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VString;
 import org.diirt.vtype.VType;
@@ -35,7 +36,7 @@ public class LinearValueIteratorUnitTest
     /** Create test value */
     private VType testValue(final long secs, final double value, final AlarmSeverity severity, final String message)
     {
-        return new ArchiveVNumber(Timestamp.of(secs, 0), severity, message, ValueFactory.displayNone(), value);
+        return new ArchiveVNumber(Instant.ofEpochSecond(secs, 0), severity, message, ValueFactory.displayNone(), value);
     }
 
     /** Create test value */
@@ -72,21 +73,21 @@ public class LinearValueIteratorUnitTest
         VType value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(10l));
 
         // Linr.  20, 2.0
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(2.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(20l));
 
         // Last value as is
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(2.1));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(21l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(21l));
 
         // No more
         assertThat(linear.hasNext(), equalTo(false));
@@ -131,7 +132,7 @@ public class LinearValueIteratorUnitTest
         VType value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(10l));
 
         // The next interpolation bins for 20, ..., are skipped
 
@@ -140,7 +141,7 @@ public class LinearValueIteratorUnitTest
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(8.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(80l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(80l));
 
         // Dump the rest
         while (linear.hasNext())
@@ -180,7 +181,7 @@ public class LinearValueIteratorUnitTest
         VType value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(10l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.NONE));
 
         // Linr.  20, 2.0, with alarm
@@ -188,7 +189,7 @@ public class LinearValueIteratorUnitTest
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(2.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(20l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
         assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));
 
@@ -196,8 +197,8 @@ public class LinearValueIteratorUnitTest
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.toDouble(value), is(notANumber()));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(30l));
+        assertThat(Double.isNaN(VTypeHelper.toDouble(value)), equalTo(true));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(30l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
         assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));
 
@@ -206,7 +207,7 @@ public class LinearValueIteratorUnitTest
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(3.5));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(35l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(35l));
 
         assertThat(linear.hasNext(), equalTo(false));
 
@@ -228,7 +229,7 @@ public class LinearValueIteratorUnitTest
             testValue(15, 1.5),
 
             testValue(18, 1.5, AlarmSeverity.UNDEFINED, "Write_Error"),
-            new ArchiveVString(Timestamp.of(17L, 0), AlarmSeverity.UNDEFINED, "Archive_Off", "Turned off"),
+            new ArchiveVString(Instant.ofEpochSecond(17L, 0), AlarmSeverity.UNDEFINED, "Archive_Off", "Turned off"),
             // Reported with time stamp 20, UNDEFINED, Archive_Off
 
             // .. nothing for a long time, then archive back on
@@ -245,13 +246,13 @@ public class LinearValueIteratorUnitTest
         VType value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(10l));
 
         // Want to see the last UNDEFINED value in interval
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(20l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.UNDEFINED));
         assertThat(VTypeHelper.getMessage(value), equalTo("Archive_Off"));
         assertThat(value, instanceOf(VString.class));
@@ -261,7 +262,7 @@ public class LinearValueIteratorUnitTest
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(10.0));
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(100l));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(100l));
 
         // Dump the rest
         while (linear.hasNext())
@@ -274,7 +275,7 @@ public class LinearValueIteratorUnitTest
     @Test
     public void testSparse() throws Exception
     {
-        final long ten_min = TimeDuration.ofMinutes(10).getSec();
+        final long ten_min = Duration.ofMinutes(10).getSeconds();
         final VType[] data = new VType[]
         {
             testValue( 0*ten_min + 5, 0.0),
@@ -293,19 +294,19 @@ public class LinearValueIteratorUnitTest
         assertThat(linear.hasNext(), equalTo(true));
         VType value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(ten_min));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(ten_min));
 
         // Interp at 20 min
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(2*ten_min));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(2*ten_min));
 
         // Jump to 11 * 10min
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
-        assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(11*ten_min));
+        assertThat(VTypeHelper.getTimestamp(value).getEpochSecond(), equalTo(11*ten_min));
 
         // Dump the rest
         while (linear.hasNext())

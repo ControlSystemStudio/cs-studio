@@ -115,6 +115,7 @@ public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#
      * getResizeChildrenCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
      */
+    @Override
     protected Command getResizeChildrenCommand(ChangeBoundsRequest request) {
         if (request.getType().equals(REQ_MOVE_CHILDREN)
                 || request.getType().equals(REQ_ALIGN_CHILDREN)) {
@@ -138,6 +139,7 @@ public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
      * (non-Javadoc)
      * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getAddCommand(org.eclipse.gef.Request)
      */
+    @Override
     protected Command getAddCommand(Request generic) {
         ChangeBoundsRequest request = (ChangeBoundsRequest) generic;
         List<?> editParts = request.getEditParts();

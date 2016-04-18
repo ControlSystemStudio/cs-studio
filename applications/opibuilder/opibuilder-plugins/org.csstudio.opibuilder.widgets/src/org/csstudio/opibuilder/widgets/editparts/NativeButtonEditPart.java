@@ -118,6 +118,7 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 
         // text
         IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 button.setText(newValue.toString());
@@ -130,6 +131,7 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 
         //image
         IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 NativeButtonFigure figure = (NativeButtonFigure) refreshableFigure;
@@ -145,6 +147,7 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 
         // button style
         final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 updatePropSheet((Boolean) newValue);

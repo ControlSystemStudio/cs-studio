@@ -143,6 +143,7 @@ public class ConnectionHandler {
         //It will also delay the disconnect marking requested during widget activating
         //to execute after widget is fully activated.
         UIBundlingThread.getInstance().addRunnable(display, new Runnable(){
+            @Override
             public void run() {
                 figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder());
             }
@@ -167,6 +168,7 @@ public class ConnectionHandler {
         if (allConnected) {
             connected = true;
             UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+                @Override
                 public void run() {
                     if(hasNullValue)
                         figure.setBorder(

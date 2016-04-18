@@ -56,7 +56,7 @@ public class ContainerHighlightEditPolicy extends GraphicalEditPolicy {
         }
     }
 
-
+    @Override
     public void eraseTargetFeedback(Request request){
         if (revertColor != null){
             setContainerBackground(revertColor);
@@ -65,6 +65,7 @@ public class ContainerHighlightEditPolicy extends GraphicalEditPolicy {
         }
     }
 
+    @Override
     public void showTargetFeedback(Request request){
         if(request.getType().equals(RequestConstants.REQ_MOVE) ||
             request.getType().equals(RequestConstants.REQ_ADD) ||

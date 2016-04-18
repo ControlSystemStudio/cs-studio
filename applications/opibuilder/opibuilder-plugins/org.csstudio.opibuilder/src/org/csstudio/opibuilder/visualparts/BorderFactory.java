@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.ui.util.CSSSchemeBorder;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.AbstractBorder;
@@ -36,17 +37,17 @@ public class BorderFactory {
         case LINE:
             return createLineBorder(SWTConstants.LINE_SOLID, width, color);
         case RAISED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.RAISED);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.RAISED);
         case LOWERED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.LOWERED);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.LOWERED);
         case ETCHED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.ETCHED);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.ETCHED);
         case RIDGED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.RIDGED);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.RIDGED);
         case BUTTON_RAISED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.BUTTON_CONTRAST);
         case BUTTON_PRESSED:
-            return createSchemeBorder(SchemeBorder.SCHEMES.BUTTON_PRESSED);
+            return createSchemeBorder(CSSSchemeBorder.SCHEMES.BUTTON_PRESSED);
         case DASH_DOT:
             return createLineBorder(SWTConstants.LINE_DASHDOT, width, color);
         case DASHED:
@@ -78,10 +79,12 @@ public class BorderFactory {
         if (width>0) {
             return new AbstractBorder() {
 
+                @Override
                 public Insets getInsets(IFigure figure) {
                     return new Insets(width);
                 }
 
+                @Override
                 public void paint(IFigure figure, Graphics graphics, Insets insets) {
                 }
             };

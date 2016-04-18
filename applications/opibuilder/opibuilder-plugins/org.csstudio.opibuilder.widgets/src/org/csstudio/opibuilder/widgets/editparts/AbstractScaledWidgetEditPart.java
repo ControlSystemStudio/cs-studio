@@ -62,6 +62,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
     protected void registerCommonPropertyChangeHandlers() {
         // value
         IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -76,6 +77,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //minimum
         IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -88,6 +90,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //maximum
         IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -100,6 +103,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //major tick step hint
         IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -114,6 +118,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //logScale
         IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -126,6 +131,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //showScale
         IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -139,6 +145,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //showMinorTicks
         IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -151,6 +158,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
         //Transparent
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -162,6 +170,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
         setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);
 
         IWidgetPropertyChangeHandler scaleFontHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
                 AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
                 figure.getScale().setFont(((OPIFont)newValue).getSWTFont());
@@ -173,6 +182,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
         //scale format
         IWidgetPropertyChangeHandler numericFormatHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
                 setScaleFormat(scaleFigure, (String)newValue);
@@ -184,6 +194,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
         //value label format
         IWidgetPropertyChangeHandler valueFormatHandler = new IWidgetPropertyChangeHandler() {
 
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
                 setValueLabelFormat(scaleFigure, (String)newValue);

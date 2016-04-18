@@ -21,14 +21,17 @@ public class DefineConstantStatementParser extends AbstractOptimizedStatementPar
                 .getStartOffsetLastFound(), this.getEndOffsetLastFound());
     }
 
+    @Override
     protected String getPatternString() {
         return getPrePatternString() + "([\\S&&[^()]]*)(\\s+)(\\S*)([\\s&&[^\\n\\f\\r]]*)([^\\n\\f\\r]*)" + getPostPatternString();
     }
 
+    @Override
     protected String getPrePatternString() {
         return "(#define\\s+)";
     }
 
+    @Override
     protected String getPostPatternString() {
         return "([\\n\\f\\r])";
     }

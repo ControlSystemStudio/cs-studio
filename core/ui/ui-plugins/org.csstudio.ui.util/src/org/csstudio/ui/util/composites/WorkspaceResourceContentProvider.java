@@ -80,12 +80,14 @@ final class WorkspaceResourceContentProvider implements
      * The visual part that is using this content provider is about to be
      * disposed. Deallocate all allocated SWT resources.
      */
+    @Override
     public void dispose() {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getChildren(final Object element) {
         if (element instanceof IWorkspace) {
             // check if closed projects should be shown
@@ -152,6 +154,7 @@ final class WorkspaceResourceContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[] getElements(final Object element) {
         return getChildren(element);
     }
@@ -159,6 +162,7 @@ final class WorkspaceResourceContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getParent(final Object element) {
         if (element instanceof IResource) {
             return ((IResource) element).getParent();
@@ -169,6 +173,7 @@ final class WorkspaceResourceContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren(final Object element) {
         return getChildren(element).length > 0;
     }
@@ -176,6 +181,7 @@ final class WorkspaceResourceContentProvider implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
     }

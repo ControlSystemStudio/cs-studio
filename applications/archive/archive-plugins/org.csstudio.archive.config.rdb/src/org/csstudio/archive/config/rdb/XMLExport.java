@@ -8,6 +8,7 @@
 package org.csstudio.archive.config.rdb;
 
 import java.io.PrintStream;
+import java.time.Instant;
 
 import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.config.ArchiveConfig;
@@ -16,7 +17,6 @@ import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.diirt.util.time.Timestamp;
 
 /** Export engine configuration as XML (to stdout)
  *  @author Kay Kasemir
@@ -45,7 +45,7 @@ public class XMLExport
                 throw new Exception("Unknown engine '" + engine_name + "'");
             out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
             out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
-            out.println("     " + TimestampHelper.format(Timestamp.now()));
+            out.println("     " + TimestampHelper.format(Instant.now()));
             out.println(" -->");
             dumpEngine(out, config, engine);
         }

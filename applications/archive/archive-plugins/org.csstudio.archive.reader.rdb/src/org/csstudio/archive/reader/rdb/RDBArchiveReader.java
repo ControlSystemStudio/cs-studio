@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -23,7 +25,7 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.AlarmSeverity;
 
 /** ArchiveReader for RDB data
@@ -65,6 +67,8 @@ public class RDBArchiveReader implements ArchiveReader
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
 
+    private boolean concurrency = false;
+
     /** Initialize
      *  @param url Database URL
      *  @param user .. user
@@ -102,8 +106,11 @@ public class RDBArchiveReader implements ArchiveReader
         this.use_array_blob = use_array_blob;
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = ConnectionCache.get(url, user, password);
+
         // Read-only allows MySQL to use load balancing
-        rdb.getConnection().setReadOnly(true);
+        if (!rdb.getConnection().isReadOnly()) {
+            rdb.getConnection().setReadOnly(true);
+        }
 
         final Dialect dialect = rdb.getDialect();
         switch (dialect)
@@ -350,7 +357,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getRawValues(final int key, final String name,
-            final Timestamp start, final Timestamp end) throws UnknownChannelException, Exception
+            final Instant start, final Instant end) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
         return getRawValues(channel_id, start, end);
@@ -364,15 +371,15 @@ public class RDBArchiveReader implements ArchiveReader
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(final int channel_id,
-            final Timestamp start, final Timestamp end) throws Exception
+            final Instant start, final Instant end) throws Exception
     {
-        return new RawSampleIterator(this, channel_id, start, end);
+        return new RawSampleIterator(this, channel_id, start, end, concurrency);
     }
 
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
-            final Timestamp start, final Timestamp end, int count) throws UnknownChannelException, Exception
+            final Instant start, final Instant end, int count) throws UnknownChannelException, Exception
     {
         // MySQL version of the stored proc. requires count > 1
         if (count <= 1)
@@ -407,7 +414,7 @@ public class RDBArchiveReader implements ArchiveReader
             return raw_data;
 
         // Else: Perform averaging to reduce sample count
-        final double seconds = end.durationFrom(start).toSeconds() / count;
+        final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
         return new AveragedValueIterator(raw_data, seconds);
     }
 
@@ -513,5 +520,10 @@ public class RDBArchiveReader implements ArchiveReader
     {
         cancel();
         ConnectionCache.release(rdb);
+    }
+
+    @Override
+    public void enableConcurrency(boolean concurrency) {
+        this.concurrency  = concurrency;
     }
 }

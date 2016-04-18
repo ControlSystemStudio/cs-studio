@@ -30,7 +30,6 @@ import org.csstudio.scan.server.SimulationContext;
 /** Command that executes the commands in its body
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class SequenceCommandImpl extends ScanCommandImpl<SequenceCommand>
 {
     final private List<ScanCommandImpl<?>> implementation;

@@ -34,10 +34,11 @@ products/KEK/plugins/org.csstudio.kek.build/*/build.log
 # Generated jython classes
 *$py.class
 
-# ignore the .settings folder
-# should it be changed to all */.settings/* ?
+# ignore Eclipse hidden files.
 .settings/
 *.prefs
+.project
+.classpath
 
 # The rest seems to be a copy/paste of the Mercurial ingnore rules,
 # which don't work with GIT (no "syntax: regexp"...)

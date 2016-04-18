@@ -12,7 +12,7 @@
       <id>uploadRepo</id>
       <properties>
         <!-- Properties relative to the distant host where to upload the repo -->
-        <ftp.url>s3://download.controlsystemstudio.org/core/${cs-studio.version}/p2repo</ftp.url>
+        <ftp.url>${upload.root}/core/${cs-studio.version}/</ftp.url>
       </properties>
       <build>
         <plugins>
@@ -23,14 +23,39 @@
             <version>1.0-beta-4</version>
             <executions>
               <execution>
-                <id>upload-repo</id>
+                <id>upload-artifact</id>
                 <phase>verify</phase>
                 <goals>
-                  <goal>upload</goal>
+                  <goal>upload-single</goal>
                 </goals>
                 <configuration>
-                  <fromDir>.</fromDir>
-                  <includes>compositeArtifacts.xml,compositeContent.xml,p2.index</includes>
+                  <fromFile>uploadCompositeArtifacts.xml</fromFile>
+                  <toFile>compositeArtifacts.xml</toFile>
+                  <url>${ftp.url}</url>
+                  <serverId>s3.site</serverId>
+                </configuration>
+              </execution>
+              <execution>
+                <id>upload-content</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>upload-single</goal>
+                </goals>
+                <configuration>
+                  <fromFile>uploadCompositeContent.xml</fromFile>
+                  <toFile>compositeContent.xml</toFile>
+                  <url>${ftp.url}</url>
+                  <serverId>s3.site</serverId>
+                </configuration>
+              </execution>
+              <execution>
+                <id>upload-index</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>upload-single</goal>
+                </goals>
+                <configuration>
+                  <fromFile>p2.index</fromFile>
                   <url>${ftp.url}</url>
                   <serverId>s3.site</serverId>
                 </configuration>

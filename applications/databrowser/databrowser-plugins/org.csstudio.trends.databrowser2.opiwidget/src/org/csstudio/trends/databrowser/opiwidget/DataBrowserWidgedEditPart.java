@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +21,9 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
-import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
-import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
-import org.csstudio.utility.singlesource.SingleSourcePlugin;
-import org.eclipse.core.runtime.IPath;
 import org.diirt.datasource.ExpressionLanguage;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVWriter;

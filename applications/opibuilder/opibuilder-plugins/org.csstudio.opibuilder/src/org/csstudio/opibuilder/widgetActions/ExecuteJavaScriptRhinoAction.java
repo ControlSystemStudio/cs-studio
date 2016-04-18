@@ -95,6 +95,7 @@ public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
                 //compile
                 UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
+                    @Override
                     public void run() {
                         try {
                             if(isEmbedded())
@@ -116,6 +117,7 @@ public class ExecuteJavaScriptRhinoAction extends AbstractExecuteScriptAction {
 
             UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
+                @Override
                 public void run() {
 
                         try {

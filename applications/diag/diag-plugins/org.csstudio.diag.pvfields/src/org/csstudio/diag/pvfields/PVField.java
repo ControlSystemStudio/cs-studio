@@ -9,8 +9,9 @@ package org.csstudio.diag.pvfields;
 
 import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
 import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 import static org.diirt.util.time.TimeDuration.ofSeconds;
+
+import java.time.Duration;
 
 import org.csstudio.diag.pvfields.model.PVFieldListener;
 import org.diirt.datasource.PVManager;
@@ -119,7 +120,7 @@ public class PVField
                 listener.updateField(PVField.this);
             }
         };
-        pv = PVManager.read(latestValueOf(vType(name))).timeout(ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
+        pv = PVManager.read(latestValueOf(vType(name))).timeout(Duration.ofMillis(Preferences.getTimeout())).readListener(pv_listener).maxRate(ofSeconds(0.5));
     }
 
     /** Stop updates of current value, unsubscribe from control system */

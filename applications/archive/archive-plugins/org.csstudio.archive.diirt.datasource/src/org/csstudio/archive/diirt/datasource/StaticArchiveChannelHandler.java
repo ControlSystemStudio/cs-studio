@@ -1,7 +1,18 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.archive.diirt.datasource;
 
+import java.time.Instant;
+
 import org.diirt.datasource.ChannelWriteCallback;
-import org.diirt.util.time.Timestamp;
 
 /**
  *
@@ -13,8 +24,8 @@ import org.diirt.util.time.Timestamp;
  */
 public class StaticArchiveChannelHandler extends AbstractChannelHandler {
 
-    private final Timestamp startTime;
-    private final Timestamp endTime;
+    private final Instant startTime;
+    private final Instant endTime;
     private final boolean optimised;
 
     /**
@@ -27,7 +38,7 @@ public class StaticArchiveChannelHandler extends AbstractChannelHandler {
      * @param optimised true to fetch data using optimised algorithm or false for raw values
      * @param sources the sources to use
      */
-    public StaticArchiveChannelHandler(String fullChannelName, String strippedName, Timestamp timestamp, int binCount,
+    public StaticArchiveChannelHandler(String fullChannelName, String strippedName, Instant timestamp, int binCount,
         boolean optimised, ArchiveSource... sources) {
         this(fullChannelName, strippedName, timestamp, timestamp, binCount, optimised, sources);
 
@@ -44,8 +55,8 @@ public class StaticArchiveChannelHandler extends AbstractChannelHandler {
      * @param optimised true to fetch data using optimised algorithm or false for raw values
      * @param sources the archive sources to use
      */
-    public StaticArchiveChannelHandler(String fullChannelName, String strippedName, Timestamp startTime,
-        Timestamp endTime, int binCount, boolean optimised, ArchiveSource... sources) {
+    public StaticArchiveChannelHandler(String fullChannelName, String strippedName, Instant startTime,
+    		Instant endTime, int binCount, boolean optimised, ArchiveSource... sources) {
         super(fullChannelName, strippedName, binCount, sources);
         this.startTime = startTime;
         this.endTime = endTime == null || endTime.equals(startTime) ? startTime : endTime;

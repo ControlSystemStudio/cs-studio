@@ -86,15 +86,18 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             figure.addMouseListener(new MouseListener() {
+                @Override
                 public void mouseDoubleClicked(final MouseEvent me) {
                 }
 
+                @Override
                 public void mousePressed(final MouseEvent me) {
                     if (me.button == 1) {
                         me.consume();
                     }
                 }
 
+                @Override
                 public void mouseReleased(final MouseEvent me) {
                     if (me.button == 1
                             && getExecutionMode()
@@ -210,6 +213,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                 if (pv != null) {
                     if (loadActionsFromPVListener == null)
                         loadActionsFromPVListener = new IPVListener.Stub() {
+                            @Override
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null
@@ -267,7 +271,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 registerLoadActionsListener();
@@ -279,6 +283,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
         // PV_Value
         IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if (newValue != null)
@@ -291,6 +296,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
         // label
         IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ((MenuButtonFigure) refreshableFigure).setText(newValue.toString());
@@ -301,6 +307,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
         // Transparent
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ((MenuButtonFigure) refreshableFigure).setOpaque(!(Boolean) newValue);
@@ -312,6 +319,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
         // Show down arrow
         IWidgetPropertyChangeHandler downArrowHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ((MenuButtonFigure)refreshableFigure).setDownArrowVisible((boolean)newValue);
@@ -322,6 +330,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                 downArrowHandler);
 
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 updatePropSheet((Boolean) newValue);
@@ -330,6 +339,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(MenuButtonModel.PROP_ACTIONS_FROM_PV)
                 .addPropertyChangeListener(new PropertyChangeListener() {
+                    @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         handler.handleChange(evt.getOldValue(),
                                 evt.getNewValue(), getFigure());

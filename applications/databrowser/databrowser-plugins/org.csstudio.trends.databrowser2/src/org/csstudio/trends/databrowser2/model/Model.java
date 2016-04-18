@@ -33,6 +33,7 @@ import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -148,7 +149,7 @@ public class Model
             scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
             legend_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
         }
-        start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
+        start_spec = "-" + PeriodFormat.formatSeconds(TimeDuration.toSecondsDouble(time_span));
         end_spec = RelativeTime.NOW;
     }
 
@@ -701,9 +702,9 @@ public class Model
     synchronized public String getStartSpecification()
     {
         if (scroll_enabled)
-            return new RelativeTime(-TimeHelper.toSeconds(time_span)).toString();
+            return new RelativeTime(-TimeDuration.toSecondsDouble(time_span)).toString();
         else
-            return TimestampHelper.format(TimeHelper.toTimestamp(getStartTime()));
+            return TimestampHelper.format(getStartTime());
     }
 
     /** @return String representation of end time. While scrolling, this is
@@ -714,7 +715,7 @@ public class Model
         if (scroll_enabled)
             return RelativeTime.NOW;
         else
-            return TimestampHelper.format(TimeHelper.toTimestamp(end_time));
+            return TimestampHelper.format(end_time);
     }
 
     /** @return Background color */

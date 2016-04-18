@@ -11,12 +11,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
 import org.junit.Test;
 
 /** JUnit test of AlarmLogic
@@ -141,7 +143,7 @@ public class AlarmLogicUnitTest
         public void computeNewState(final String value, final SeverityLevel sevr,
                 final String msg)
         {
-            logic.computeNewState(new AlarmState(sevr, msg, value, Timestamp.now()));
+            logic.computeNewState(new AlarmState(sevr, msg, value, Instant.now()));
         }
 
         public AlarmState getAlarmState()
@@ -509,7 +511,7 @@ public class AlarmLogicUnitTest
         assertEquals("b", logic.getAlarmState().getValue());
 
         // Neither has MAJOR
-        final Timestamp now = Timestamp.now();
+        final Instant now = Instant.now();
         logic.computeNewState(new AlarmState(SeverityLevel.MAJOR, "too high", "d", now));
         logic.check(true, false, SeverityLevel.MAJOR, "too high", SeverityLevel.OK, OK);
         Thread.sleep(delay * 100);
@@ -899,7 +901,7 @@ public class AlarmLogicUnitTest
         // Initial, Minor alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        final Timestamp initial_alarm_time = logic.getAlarmState().getTime();
+        final Instant initial_alarm_time = logic.getAlarmState().getTime();
 
         // Within the 'global' delay, escalates to Major
         Thread.sleep(global_delay * 500);
@@ -916,13 +918,13 @@ public class AlarmLogicUnitTest
         // After the 'global' delay from the _initial_ (!) alarm, there should be a global update
         for (int i=0; logic.getGlobalUpdates() < 1  &&  i < global_delay * 10; ++i)
             Thread.sleep(100);
-        final Timestamp now = Timestamp.now();
+        final Instant now = Instant.now();
         logic.checkGlobalUpdates(1);
 
         System.out.println("Initial alarm      : " + initial_alarm_time);
         System.out.println("Global notification: " + now);
         // Should use global_delay from the initial alarm...
-        assertEquals(global_delay, now.durationBetween(initial_alarm_time).toSeconds(), 0.2);
+        assertEquals(global_delay, TimeDuration.toSecondsDouble(Duration.between(initial_alarm_time, now)), 0.2);
 
         // .. but reflect the most severe alarm in the notification.
         // Not really checking what was in the notification,

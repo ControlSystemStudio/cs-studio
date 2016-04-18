@@ -16,13 +16,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-/** The main plugin class to be used in the desktop.
+/**
+ * The main plugin class to be used in the desktop.
  *
- *  @author Kay Kasemir
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Plugin extends AbstractUIPlugin
-{
+public class Plugin extends AbstractUIPlugin {
     /** The plug-in ID */
     final public static String ID = "org.csstudio.display.pvtable";
 
@@ -33,48 +33,40 @@ public class Plugin extends AbstractUIPlugin
     private static Plugin plugin;
 
     /** The constructor. */
-    public Plugin()
-    {
+    public Plugin() {
         if (plugin != null)
             throw new IllegalStateException("Plugin is singleton");
         plugin = this;
     }
 
     /** @return Returns the shared instance. */
-    public static Plugin getDefault()
-    {
+    public static Plugin getDefault() {
         return plugin;
     }
 
     @Override
-    public void start(BundleContext context) throws Exception
-    {
+    public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
     }
 
-
     /** @return Logger for plugin ID */
-    public static Logger getLogger()
-    {
+    public static Logger getLogger() {
         return logger;
     }
 
-    /** @return Returns an image descriptor for the image file at the given plug-in
-     *  relative path.
-     *  @param path The path
+    /**
+     * @return Returns an image descriptor for the image file at the given
+     *         plug-in relative path.
+     * @param path
+     *            The path
      */
-    public static ImageDescriptor getImageDescriptor(String path)
-    {
-        if (plugin == null)
-        {    // Support JUnit demo without plugin context
+    public static ImageDescriptor getImageDescriptor(String path) {
+        if (plugin == null) { // Support JUnit demo without plugin context
             final File pwd = new File(".");
-            try
-            {
+            try {
                 return ImageDescriptor.createFromURL(new URL("file://" + pwd.getAbsolutePath() + "/" + path));
-            }
-            catch (MalformedURLException e)
-            {
+            } catch (MalformedURLException e) {
                 return null;
             }
         }

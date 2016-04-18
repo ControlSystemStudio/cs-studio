@@ -231,7 +231,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
 
         connectionList = displayModel.getConnectionList();
-        if(connectionList !=null && !connectionList.isEmpty()){
+        if(!connectionList.isEmpty()){
             if(originalPoints != null)
                 originalPoints.clear();
             else
@@ -239,6 +239,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         }
 
         for (ConnectionModel conn : connectionList) {
+            conn.setLoadedFromLinkedOpi(true);
             if(conn.getPoints()!=null)
                 originalPoints.put(conn, conn.getPoints().getCopy());
         }

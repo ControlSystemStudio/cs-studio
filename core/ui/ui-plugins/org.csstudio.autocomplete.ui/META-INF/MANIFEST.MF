@@ -10,7 +10,7 @@ Require-Bundle: org.csstudio.autocomplete,
  org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.autocomplete.ui,
  org.csstudio.autocomplete.ui.content,
  org.csstudio.autocomplete.ui.history,

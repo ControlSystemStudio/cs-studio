@@ -13,25 +13,23 @@ import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to select all table entries
- *  @author Kay Kasemir
+/**
+ * {@link Action} to select all table entries
+ *
+ * @author Kay Kasemir
  */
-public class SelectAllAction extends PVTableAction
-{
-    public SelectAllAction(final TableViewer viewer)
-    {
+public class SelectAllAction extends PVTableAction {
+    public SelectAllAction(final TableViewer viewer) {
         super(Messages.CheckAll, "icons/checked.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.CheckAll_TT);
     }
 
-    public void run()
-    {
+    public void run() {
         final PVTableModel model = (PVTableModel) viewer.getInput();
         if (model == null)
             return;
         final int N = model.getItemCount();
-        for (int i=0; i<N; ++i)
-        {
+        for (int i = 0; i < N; ++i) {
             final PVTableItem item = model.getItem(i);
             if (item.isSelected())
                 continue;

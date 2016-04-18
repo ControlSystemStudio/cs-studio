@@ -187,6 +187,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
         nameText.setText(ruleData.getName());
         nameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 ruleData.setName(nameText.getText());
             }
@@ -298,6 +299,7 @@ public class RuleDataEditDialog extends HelpTrayDialog {
         expressionViewer.setInput(expressionList);
         expressionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 refreshActionBarOnSelection();
             }
@@ -585,49 +587,51 @@ public class RuleDataEditDialog extends HelpTrayDialog {
     class ExpressionLabelProvider extends LabelProvider implements
                 ITableLabelProvider {
 
-            /**
-             * {@inheritDoc}
-             */
-            public Image getColumnImage(final Object element,
-                    final int columnIndex) {
-                if (columnIndex == 1 && !ruleData.isOutputExpValue() && element instanceof Expression) {
-                    Expression expression = (Expression) element;
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Image getColumnImage(final Object element,
+                final int columnIndex) {
+            if (columnIndex == 1 && !ruleData.isOutputExpValue() && element instanceof Expression) {
+                Expression expression = (Expression) element;
 
-                    if(ruleData.getProperty().getPropertyDescriptor() == null)
-                        return null;
-                    if (ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null)
-                        return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().
+                if(ruleData.getProperty().getPropertyDescriptor() == null)
+                    return null;
+                if (ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null)
+                    return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().
                             getImage(expression.getValue());
-                }
-                return null;
             }
+            return null;
+        }
 
-            /**
-             * {@inheritDoc}
-             */
-            public String getColumnText(final Object element,
-                    final int columnIndex) {
-                if (element != null && element instanceof Expression) {
-                    Expression expression = (Expression) element;
-                    if (columnIndex == 0) {
-                        return expression.getBooleanExpression();
-                    }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getColumnText(final Object element,
+                final int columnIndex) {
+            if (element != null && element instanceof Expression) {
+                Expression expression = (Expression) element;
+                if (columnIndex == 0) {
+                    return expression.getBooleanExpression();
+                }
 
-                    if (ruleData.getProperty().getPropertyDescriptor() != null
-                            && !ruleData.isOutputExpValue()
-                            && ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null) {
-                        return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().getText(
-                                expression.getValue());
-                    }else if(expression.getValue() == null)
-                        return "";
-                    else
-                        return expression.getValue().toString();
-                }
-                if (element != null) {
-                    return element.toString();
-                }
-                return "error";
+                if (ruleData.getProperty().getPropertyDescriptor() != null
+                        && !ruleData.isOutputExpValue()
+                        && ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null) {
+                    return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().getText(
+                            expression.getValue());
+                }else if(expression.getValue() == null)
+                    return "";
+                else
+                    return expression.getValue().toString();
             }
+            if (element != null) {
+                return element.toString();
+            }
+            return "error";
+        }
     }
 }
 

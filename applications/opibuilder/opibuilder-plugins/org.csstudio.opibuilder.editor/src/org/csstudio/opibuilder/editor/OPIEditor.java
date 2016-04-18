@@ -168,6 +168,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -374,6 +375,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             private IStatusLineManager statusLine =
                     ((ActionBarContributor)getEditorSite().getActionBarContributor()).
                     getActionBars().getStatusLineManager();
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateStatusLine(statusLine);
             }
@@ -550,6 +552,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     @Override
     protected PaletteViewerProvider createPaletteViewerProvider() {
         return new PaletteViewerProvider(getEditDomain()) {
+            @Override
             protected void configurePaletteViewer(PaletteViewer viewer) {
                 super.configurePaletteViewer(viewer);
                 // create a drag source listener for this palette viewer
@@ -569,6 +572,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
      */
     private TransferDropTargetListener createTransferDropTargetListener() {
         return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
+            @Override
             protected CreationFactory getFactory(Object template) {
                 return (WidgetCreationFactory)template;
             }
@@ -876,7 +880,12 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     */
     protected PropertySheetPage getPropertySheetPage(){
         if(undoablePropertySheetPage == null){
-            undoablePropertySheetPage = new PropertySheetPage();
+            undoablePropertySheetPage = new PropertySheetPage(){
+                @Override
+                protected ISaveablePart getSaveablePart() {
+                    return null;
+                }
+            };
             undoablePropertySheetPage.setRootEntry(
                     new UndoablePropertySheetEntry(getCommandStack()));
         }
@@ -888,6 +897,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     protected SelectionSynchronizer getSelectionSynchronizer() {
         if (synchronizer == null)
             synchronizer = new SelectionSynchronizer(){
+            @Override
             protected EditPart convert(EditPartViewer viewer,  EditPart part) {
                 EditPart editPart = super.convert(viewer, part);
                 if(editPart != null && editPart.isSelectable()){
@@ -1030,6 +1040,8 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
     public OutlinePage(EditPartViewer viewer){
         super(viewer);
     }
+
+    @Override
     public void init(IPageSite pageSite) {
         super.init(pageSite);
         ActionRegistry registry = getActionRegistry();
@@ -1077,9 +1089,11 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         // status line listener
         addSelectionChangedListener(new ISelectionChangedListener() {
             private IStatusLineManager statusLine =getSite().getActionBars().getStatusLineManager();
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 Display.getCurrent().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         updateStatusLine(statusLine);
 
@@ -1090,6 +1104,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
 
         IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
         showOutlineAction = new Action() {
+            @Override
             public void run() {
                 showPage(ID_OUTLINE);
             }
@@ -1100,6 +1115,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         showOutlineAction.setToolTipText("Show Tree View ");
         tbm.add(showOutlineAction);
         showOverviewAction = new Action() {
+            @Override
             public void run() {
                 showPage(ID_OVERVIEW);
             }
@@ -1112,6 +1128,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         showPage(ID_OUTLINE);
     }
 
+    @Override
     public void createControl(Composite parent){
         pageBook = new PageBook(parent, SWT.NONE);
         outline = getViewer().createControl(pageBook);
@@ -1142,6 +1159,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         initializeOutlineViewer();
     }
 
+    @Override
     public void dispose(){
         unhookOutlineViewer();
         if (thumbnail != null) {
@@ -1153,8 +1171,11 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         outlinePage = null;
     }
 
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-        if (type == ZoomManager.class)
+        if (type == ISaveablePart.class)
+            return null; // we should not return the saveable part, because the outline itself is not saveable, the editor is
+        else if (type == ZoomManager.class)
             return getGraphicalViewer().getProperty(ZoomManager.class.toString());
         else if (type == CommandStack.class)
             return getCommandStack();
@@ -1166,6 +1187,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
         return OPIEditor.this.getAdapter(type);
     }
 
+    @Override
     public Control getControl() {
         return pageBook;
     }
@@ -1188,6 +1210,7 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
             thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
             lws.setContents(thumbnail);
             disposeListener = new DisposeListener() {
+                @Override
                 public void widgetDisposed(DisposeEvent e) {
                     if (thumbnail != null) {
                         thumbnail.deactivate();

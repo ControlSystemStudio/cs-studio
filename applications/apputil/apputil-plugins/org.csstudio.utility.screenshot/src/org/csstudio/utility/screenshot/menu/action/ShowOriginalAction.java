@@ -57,6 +57,7 @@ public class ShowOriginalAction extends Action
         }
     }
 
+    @Override
     public void run()
     {
         worker.getPaintSurface().showOriginal();

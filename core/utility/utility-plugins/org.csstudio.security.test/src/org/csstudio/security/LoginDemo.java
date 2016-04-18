@@ -7,10 +7,9 @@
  ******************************************************************************/
 package org.csstudio.security;
 
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThan;
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.security.Principal;
 
@@ -62,7 +61,7 @@ public class LoginDemo
             if (p.getName().equals(current_user))
                 got_user = true;
 
-        assertThat(subject.getPrincipals().size(), greaterThanOrEqualTo(1));
+        assertTrue(subject.getPrincipals().size() >= 1);
         assertThat(got_user, equalTo(true));
 
         System.out.println("Primary user name: " +
@@ -98,7 +97,7 @@ public class LoginDemo
         login.login();
         final Subject subject = login.getSubject();
         System.out.println(subject);
-        assertThat(subject.getPrincipals().size(), greaterThan(0));
+        assertTrue(subject.getPrincipals().size() > 0);
         System.out.println("Subject name: " + SecuritySupport.getSubjectName(subject));
     }
 }

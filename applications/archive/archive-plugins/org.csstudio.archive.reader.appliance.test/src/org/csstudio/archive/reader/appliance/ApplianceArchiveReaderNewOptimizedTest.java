@@ -2,6 +2,8 @@ package org.csstudio.archive.reader.appliance;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
+
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestApplianceArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorRaw;
@@ -9,9 +11,7 @@ import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorWavef
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVType;
-import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -38,8 +38,8 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
      */
     @Test
     public void testDataRetrievalWhenThereAreNotManyPoints() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+    	Instant end = Instant.now();
+    	Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv", true, 2000, start, end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -63,12 +63,12 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-        Timestamp end = Timestamp.now();
-        Timestamp start = end.minus(TimeDuration.ofHours(24.0));
+    	Instant end = Instant.now();
+    	Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv", 10, start, end);
         assertEquals("Number of values comparison", 10, vals.length);
 
-        long startM = TimestampHelper.toMillisecs(start);
+        long startM = start.toEpochMilli();
 
         ArchiveVStatistics val = null;
         for (int i = 0; i < vals.length; i++) {
@@ -93,7 +93,7 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
                     "Count Value comparison",
                     (int)TestGenMsgIteratorWaveform.VALUE_DOUBLE[i % TestGenMsgIteratorWaveform.VALUE_DOUBLE.length][4],
                     val.getNSamples().intValue());
-            assertEquals("Timestamp comparison", startM + i, TimestampHelper.toMillisecs(val.getTimestamp()));
+            assertEquals("Timestamp comparison", startM + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorWaveform.SEVERITIES[i
                     % TestGenMsgIteratorWaveform.SEVERITIES.length]), val.getAlarmSeverity());
             assertEquals("Status",

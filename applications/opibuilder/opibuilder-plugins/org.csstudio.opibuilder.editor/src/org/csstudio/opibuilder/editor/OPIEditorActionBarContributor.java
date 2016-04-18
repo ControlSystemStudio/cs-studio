@@ -117,10 +117,12 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         a.setImageDescriptor(DistributeType.HORIZONTAL_GAP.getImageDescriptor());
         a.setMenuCreator(new IMenuCreator() {
             Menu menu;
+            @Override
             public Menu getMenu(Menu parent) {
                 return null;
             }
 
+            @Override
             public Menu getMenu(Control parent) {
                 if(menu !=null)
                     return menu;
@@ -133,6 +135,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
                 return menu;
             }
 
+            @Override
             public void dispose() {
                 if(menu != null){
                     menu.dispose();

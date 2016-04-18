@@ -4,7 +4,6 @@
 package org.csstudio.graphene.opiwidgets;
 
 import org.csstudio.graphene.ScatterGraph2DWidget;
-import org.diirt.datasource.graphene.ScatterGraph2DExpression;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.widgets.Composite;
 

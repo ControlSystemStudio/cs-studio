@@ -91,22 +91,27 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 
 
 
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         if(adapter == IWorkbenchAdapter.class)
             return new IWorkbenchAdapter() {
 
+                @Override
                 public Object getParent(Object o) {
                     return null;
                 }
 
+                @Override
                 public String getLabel(Object o) {
                     return getActionType().getDescription();
                 }
 
+                @Override
                 public ImageDescriptor getImageDescriptor(Object object) {
                     return getActionType().getIconImage();
                 }
 
+                @Override
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }

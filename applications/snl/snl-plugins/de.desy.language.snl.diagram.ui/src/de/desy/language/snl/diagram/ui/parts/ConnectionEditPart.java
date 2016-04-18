@@ -174,6 +174,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements
         return (WhenConnection) getModel();
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         refreshBendPoints();
     }

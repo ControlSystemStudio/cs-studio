@@ -4,9 +4,7 @@ import gov.bnl.shiftClient.Shift;
 import gov.bnl.shiftClient.ShiftClient;
 import gov.bnl.shiftClient.Type;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +25,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -255,24 +249,24 @@ public class ShiftTableView extends ViewPart {
                         searchParameters
                                 .get(ShiftSearchUtil.SEARCH_KEYWORD_END));
                 searchParameters.put("from",
-                        String.valueOf(timeInterval.getStart().getSec()));
+                        String.valueOf(timeInterval.getStart().getEpochSecond()));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             } else if (searchParameters
                     .containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
                 timeInterval = TimeParser.getTimeInterval(searchParameters
                         .get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
                 searchParameters.put("from",
-                        String.valueOf(timeInterval.getStart().getSec()));
+                        String.valueOf(timeInterval.getStart().getEpochSecond()));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             } else if (searchParameters
                     .containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
                 timeInterval = TimeParser.getTimeInterval("now",
                         searchParameters
                                 .get(ShiftSearchUtil.SEARCH_KEYWORD_END));
                 searchParameters.put("to",
-                        String.valueOf(timeInterval.getEnd().getSec()));
+                        String.valueOf(timeInterval.getEnd().getEpochSecond()));
             }
         }
         return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));

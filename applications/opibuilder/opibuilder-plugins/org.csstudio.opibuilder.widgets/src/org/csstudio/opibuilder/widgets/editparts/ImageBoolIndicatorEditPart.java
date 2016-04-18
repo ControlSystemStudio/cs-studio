@@ -11,9 +11,10 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
-import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
@@ -38,6 +39,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
      *
      * @return the casted {@link ImageModel}
      */
+    @Override
     public ImageBoolIndicatorModel getWidgetModel() {
         return (ImageBoolIndicatorModel) getModel();
     }
@@ -58,7 +60,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
         sip.setAnimationDisabled(model.isStopAnimation());
         sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
-        figure.setSymbolProperties(sip);
+        figure.setSymbolProperties(sip, model);
         figure.setImageLoadedListener(new IImageListener() {
 
             @Override
@@ -97,6 +99,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the on image property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -115,6 +118,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the off image property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -133,6 +137,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -145,6 +150,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -156,6 +162,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -167,6 +174,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the align to nearest second property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -178,6 +186,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -190,6 +199,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 
         //size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -200,7 +210,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
 
-
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
 
@@ -216,6 +226,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
             return;
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
                     Display.getDefault().timerExec(100, this);

@@ -216,6 +216,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
     protected void registerBasePropertyChangeHandlers() {
         super.registerBasePropertyChangeHandlers();
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 MacrosInput macrosInput = (MacrosInput)newValue;
@@ -234,6 +235,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         layout();
 
         childrenPropertyChangeListener = new PropertyChangeListener() {
+                    @Override
                     public void propertyChange(PropertyChangeEvent evt) {
 
                         if(evt.getOldValue() instanceof Integer){
@@ -257,6 +259,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
         if(getExecutionMode() == ExecutionMode.EDIT_MODE){
             selectionPropertyChangeListener = new PropertyChangeListener(){
                 @SuppressWarnings("unchecked")
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     List<AbstractWidgetModel> widgets = (List<AbstractWidgetModel>) evt.getNewValue();
                     List<EditPart> widgetEditparts = new ArrayList<EditPart>();
@@ -401,6 +404,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
     /**
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
         //make snap to G work
         if (adapter == SnapToHelper.class) {

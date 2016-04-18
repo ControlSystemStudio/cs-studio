@@ -113,6 +113,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
      *            the other anchor
      * @return <code>true</code> if equal
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof FixedPositionAnchor) {
             FixedPositionAnchor other = (FixedPositionAnchor) obj;
@@ -129,6 +130,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
      *
      * @return the hash code.
      */
+    @Override
     public int hashCode() {
         if (getOwner() != null)
             return getOwner().hashCode()^(anchorPosition.ordinal()+31);

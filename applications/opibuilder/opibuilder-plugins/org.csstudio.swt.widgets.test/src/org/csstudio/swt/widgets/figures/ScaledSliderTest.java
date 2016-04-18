@@ -17,6 +17,7 @@ public class ScaledSliderTest extends AbstractMarkedWidgetTest{
         ScaledSliderFigure slider = new ScaledSliderFigure();
         slider.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 System.out.println("slider Dragged: " + newValue);
             }

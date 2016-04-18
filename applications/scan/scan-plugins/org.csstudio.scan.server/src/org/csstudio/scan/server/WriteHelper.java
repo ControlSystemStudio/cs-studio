@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceCondition;
 import org.csstudio.scan.condition.NumericValueCondition;
@@ -14,7 +17,6 @@ import org.csstudio.scan.condition.TextValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.log.DataLog;
-import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.VType;
 
 /** Helper for writing a PV
@@ -31,7 +33,7 @@ public class WriteHelper
     private final Object value;
     private final DeviceCondition condition;
     private final boolean completion;
-    private final TimeDuration timeout;
+    private final Duration timeout;
 
     /** Thread that executes the write
      *
@@ -61,7 +63,7 @@ public class WriteHelper
                        final String device_name, final Object value,
                        final boolean completion,
                        final boolean wait,
-                       final String readback_name, final double tolerance, final TimeDuration timeout) throws Exception
+                       final String readback_name, final double tolerance, final Duration timeout) throws Exception
     {
         this.context = context;
         this.completion = completion;
@@ -80,12 +82,12 @@ public class WriteHelper
         if (wait)
         {
             // When using completion, readback needs to match "right away"
-            final TimeDuration check_timeout = completion ? TimeDuration.ofSeconds(1) : timeout;
+            final Duration check_timeout = completion ? Duration.ofSeconds(1) : timeout;
             if (value instanceof Number)
             {
                 final double desired = ((Number)value).doubleValue();
                 condition = new NumericValueCondition(readback, Comparison.EQUALS, desired,
-                        tolerance, check_timeout);
+                                                      tolerance, check_timeout);
             }
             else
             {
@@ -118,6 +120,13 @@ public class WriteHelper
             // Wait?
             if (condition != null)
                 condition.await();
+        }
+        catch (TimeoutException ex)
+        {   // Did condition really time out, or did it simply not match after completion,
+            // where the timeout is very short?
+            if (completion)
+                throw new Exception(device + " != " + value + " after completion", ex);
+            throw ex;
         }
         catch (InterruptedException ex)
         {

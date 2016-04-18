@@ -62,6 +62,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
         setActionDefinitionId(ACITON_DEFINITION_ID);
     }
 
+    @Override
     public void init(IWorkbenchWindow window)
     {
         // NOP
@@ -73,11 +74,13 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
         return true;
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection)
     {
         // NOP
     }
 
+    @Override
     public void run(IAction action)
     {
         run();
@@ -165,6 +168,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
         }
     }
 
+    @Override
     public void dispose()
     {
         // NOP

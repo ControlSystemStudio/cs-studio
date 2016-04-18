@@ -60,6 +60,7 @@ public class FullScreenAction extends Action implements
     /**
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         if (inFullScreen) {
             shell.setFullScreen(false);
@@ -102,14 +103,17 @@ public class FullScreenAction extends Action implements
         }
     }
 
+    @Override
     public void run(IAction action) {
         run();
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
 
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         setId(ID);
         this.window = window;
@@ -134,7 +138,7 @@ public class FullScreenAction extends Action implements
         return inFullScreen;
     }
 
-
+    @Override
     public void dispose() {
         WorkbenchWindowService.getInstance().unregisterFullScreenAction(window);
 

@@ -1,15 +1,12 @@
 package org.csstudio.archive.reader.ea4;
 
-import org.csstudio.archive.reader.*;
-import org.csstudio.archive.reader.ea4.EA4ArchiveReaderFactory;
-import org.epics.pvaccess.client.rpc.RPCClientImpl;
-import org.epics.pvaccess.server.rpc.RPCRequestException;
-import org.epics.pvdata.pv.PVStructure;
-import org.epics.pvdata.pv.PVStructureArray;
-import org.epics.pvdata.pv.StructureArrayData;
-import org.diirt.util.time.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+
+import org.csstudio.archive.reader.ArchiveInfo;
+import org.csstudio.archive.reader.ArchiveReaderFactory;
+import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.VType;
-import org.diirt.vtype.VTypeToString;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
@@ -53,8 +50,8 @@ public class ArchiveClient {
 
         String[] chNames   = nameRequest.getNameInfos();
 
-        Timestamp[] starts = nameRequest.getStarts();
-        Timestamp[] ends   = nameRequest.getEnds();
+        Instant[] starts = nameRequest.getStarts();
+        Instant[] ends   = nameRequest.getEnds();
 
         System.out.println("ValuesRequest: ");
 
@@ -64,10 +61,10 @@ public class ArchiveClient {
 
         for (int i = 0; i < chNames.length; i++){
 
-            Timestamp start = Timestamp.of(starts[i].getSec() + start_delta, starts[i].getNanoSec());
-              Timestamp end = Timestamp.of(ends[i].getSec() + end_delta, ends[i].getNanoSec());
+        	Instant start = starts[i].plus(TimeDuration.ofSeconds(start_delta));
+        	Instant end = ends[i].plus(TimeDuration.ofSeconds(end_delta));
 
-              int count = (int) (end.durationFrom(start).toSeconds() / secs);
+              int count = (int) (Duration.between(start, end).getSeconds() / secs);
 
             VType[] values = reader.getSamples(key, chNames[i], start, end, optimized, count);
 

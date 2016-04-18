@@ -50,6 +50,9 @@ public class PVTableItem
     /** Saved (snapshot) value */
     private volatile Optional<SavedValue> saved = Optional.empty();
 
+    /** TimeStamp Saved */
+    private volatile String time_saved = "";
+
     /** Does current value differ from saved value? */
     private volatile boolean has_changed;
 
@@ -80,9 +83,10 @@ public class PVTableItem
         @Override
         public void disconnected(final PV pv)
         {
-            updateValue(ValueFactory.newVString("Disconnected",
-                                                ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"),
-                                                ValueFactory.timeNow()));
+            updateValue(ValueFactory.newVString(
+                    "Disconnected", ValueFactory
+                            .newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"),
+                    ValueFactory.timeNow()));
         }
     };
 
@@ -98,9 +102,13 @@ public class PVTableItem
         public void valueChanged(final PV pv, final VType value)
         {
             if (value instanceof VString)
+            {
                 desc_value = ((VString) value).getValue();
+            }
             else
+            {
                 desc_value = "";
+            }
             listener.tableItemChanged(PVTableItem.this);
         }
 
@@ -111,28 +119,38 @@ public class PVTableItem
         }
     };
 
+    private boolean conf = false;
 
-    /** Initialize
+    private Measure measure = null;
+
+    /**
+     * Initialize
      *
-     *  @param name
-     *  @param tolerance
-     *  @param saved
-     *  @param listener
+     * @param name
+     * @param tolerance
+     * @param saved
+     * @param listener
      */
-    public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
+    public PVTableItem(final String name, final double tolerance,
+            final SavedValue saved, final PVTableItemListener listener)
     {
         this(name, tolerance, saved, listener,
-            ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+                ValueFactory.newVString("",
+                        ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"),
+                        ValueFactory.timeNow()));
     }
 
-    /** Initialize
+    /**
+     * Initialize
      *
-     *  @param name
-     *  @param tolerance
-     *  @param saved
-     *  @param listener
+     * @param name
+     * @param tolerance
+     * @param saved
+     * @param listener
      */
-    public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener, final VType initial_value)
+    public PVTableItem(final String name, final double tolerance,
+            final SavedValue saved, final PVTableItemListener listener,
+            final VType initial_value)
     {
         this.listener = listener;
         this.tolerance = tolerance;
@@ -142,29 +160,137 @@ public class PVTableItem
         createPVs(name);
     }
 
-    /** Set PV name and create reader/writer
-     *  @param name Primary PV name
+    /**
+     * Initialize
+     *
+     * @param name
+     * @param tolerance
+     * @param saved
+     * @param listener
+     * @param time
+     */
+    public PVTableItem(final String name, String time, final double tolerance,
+            final SavedValue saved, final PVTableItemListener listener)
+    {
+        this(name, time, tolerance, saved, listener,
+                ValueFactory.newVString("",
+                        ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"),
+                        ValueFactory.timeNow()));
+    }
+
+    /**
+     * Initialize
+     *
+     * @param name
+     * @param time
+     * @param conf
+     * @param tolerance
+     * @param saved
+     * @param listener
+     */
+    public PVTableItem(final String name, String time, boolean conf,
+            final double tolerance, final SavedValue saved,
+            final PVTableItemListener listener)
+    {
+        this(name, time, conf, null, tolerance, saved, listener,
+                ValueFactory.newVString("",
+                        ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"),
+                        ValueFactory.timeNow()));
+    }
+
+    /**
+     * Initialize
+     *
+     * @param name
+     * @param time
+     * @param conf
+     * @param measure
+     * @param tolerance
+     * @param saved
+     * @param listener
+     */
+    public PVTableItem(final String name, String time, boolean conf,
+            Measure measure, final double tolerance, final SavedValue saved,
+            final PVTableItemListener listener)
+    {
+        this(name, time, conf, measure, tolerance, saved, listener,
+                ValueFactory.newVString("",
+                        ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"),
+                        ValueFactory.timeNow()));
+    }
+
+    /**
+     * Initialize
+     *
+     * @param name
+     * @param tolerance
+     * @param saved
+     * @param listener
+     * @param time
+     * @param initial_value
+     */
+    public PVTableItem(final String name, String time, final double tolerance,
+            final SavedValue saved, final PVTableItemListener listener,
+            final VType initial_value)
+    {
+        this(name, time, false, null, tolerance, saved, listener,
+                initial_value);
+    }
+
+    /**
+     * Initialize
+     *
+     * @param name
+     * @param time
+     * @param conf
+     * @param measure
+     * @param tolerance
+     * @param saved
+     * @param listener
+     * @param initial_value
+     */
+    public PVTableItem(final String name, String time, boolean conf,
+            Measure measure, final double tolerance, final SavedValue saved,
+            final PVTableItemListener listener, final VType initial_value)
+    {
+        this.listener = listener;
+        this.time_saved = (time == null) ? "" : time;
+        this.conf = conf;
+        this.tolerance = tolerance;
+        this.saved = Optional.ofNullable(saved);
+        this.value = initial_value;
+        this.measure = measure;
+        determineIfChanged();
+        createPVs(name);
+    }
+
+    /**
+     * Set PV name and create reader/writer
+     *
+     * @param name
+     *            Primary PV name
      */
     private void createPVs(final String name)
     {
         this.name = name;
         // Ignore empty PVs or comments
-        if (name.isEmpty()  ||  isComment())
+        if (name.isEmpty() || isComment() || isMeasure())
+        {
             return;
+        }
         try
         {
             final PV new_pv = PVPool.getPV(name);
             new_pv.addListener(pv_listener);
             pv.set(new_pv);
-
             if (Preferences.showDescription())
-            {   // Determine DESC field.
+            {
+                // Determine DESC field.
                 // If name already includes a field,
                 // replace it with DESC field.
                 final int sep = name.lastIndexOf('.');
                 final String desc_name = sep >= 0
-                     ? name.substring(0, sep) + ".DESC"
-                     : name + ".DESC";
+                        ? name.substring(0, sep) + ".DESC" : name + ".DESC";
                 final PV new_desc_pv = PVPool.getPV(desc_name);
                 new_desc_pv.addListener(desc_pv_listener);
                 desc_pv.set(new_desc_pv);
@@ -172,21 +298,27 @@ public class PVTableItem
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
-            updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+            Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name,
+                    ex);
+            updateValue(ValueFactory.newVString("PV Error",
+                    ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"),
+                    ValueFactory.timeNow()));
         }
     }
 
     /** @return <code>true</code> if item is selected to be restored */
     public boolean isSelected()
     {
-        return selected  &&  !isComment();
+        return selected && !isComment() && !isMeasure();
     }
 
-    /** @param selected Should item be selected to be restored? */
+    /**
+     * @param selected
+     *            Should item be selected to be restored?
+     */
     public void setSelected(final boolean selected)
     {
-        this.selected = selected  &&  !isComment();
+        this.selected = selected && !isComment();
         listener.tableItemSelectionChanged(this);
     }
 
@@ -203,26 +335,102 @@ public class PVTableItem
         return name.substring(1).trim();
     }
 
-    /** Update PV name
+    /** @return Returns the conf header. */
+    public String getConfHeader()
+    {
+        String lowName = name.toLowerCase();
+        if (lowName.startsWith("#conf#"))
+        {
+            // If user don't add text after #conf#
+            if (lowName.contentEquals("#conf#")
+                    || lowName.contentEquals("#conf# "))
+            {
+                return lowName.substring(6).concat(" Config").trim();
+            }
+            return lowName.substring(6).trim();
+        }
+        if (lowName.startsWith("#configuration#"))
+        {
+            // If user don't add text after #conf#
+            if (lowName.contentEquals("#conf#")
+                    || lowName.contentEquals("#conf# "))
+            {
+                return lowName.substring(14).concat(" Config").trim();
+            }
+            return lowName.substring(14).trim();
+        }
+        return lowName;
+    }
+
+    /** @return Returns the measure header. */
+    public String getMeasureHeader()
+    {
+        return name.substring(8).trim();
+    }
+
+    /** @return the measure which this item is. */
+    public Measure getMeasure()
+    {
+        return measure;
+    }
+
+    /** @return Returns if the item is a conf, or not. */
+    public boolean isConf()
+    {
+        return this.conf;
+    }
+
+    /** @return Returns if the item is a measure, or not. */
+    public boolean isMeasure()
+    {
+        if (this.measure == null)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /** Set conf to true (This is a conf). */
+    public void setConf(boolean b)
+    {
+        this.conf = b;
+    }
+
+    /** Set measure to true (This is a measure). */
+    public void setMeasure(Measure measure)
+    {
+        this.measure = measure;
+    }
+
+    /**
+     * Update PV name
+     * <p>
+     * Also resets saved and current value, since it no longer applies to the
+     * new name.
      *
-     *  <p>Also resets saved and current value,
-     *  since it no longer applies to the new name.
-     *  @param new_name PV Name
-     *  @return <code>true</code> if name was indeed changed
+     * @param new_name
+     *            PV Name
+     * @return <code>true</code> if name was indeed changed
      */
     public boolean updateName(final String new_name)
     {
         if (name.equals(new_name))
+        {
             return false;
+        }
         dispose();
         saved = Optional.empty();
+        time_saved = "";
         value = null;
         has_changed = false;
         createPVs(new_name);
         return true;
     }
 
-    /** @param new_value New value of item */
+    /**
+     * @param new_value
+     *            New value of item
+     */
     protected void updateValue(final VType new_value)
     {
         value = new_value;
@@ -233,22 +441,25 @@ public class PVTableItem
     /** @return Value */
     public VType getValue()
     {
-        return isComment() ? null : value;
+        return !isMeasureHeader() && (isComment() || isMeasure()) ? null
+                : value;
     }
 
-    /** @return Description*/
+    /** @return Description */
     public String getDescription()
     {
         return desc_value;
     }
 
-    /** @return Options for current value, not <code>null</code> if not enumerated */
+    /**
+     * @return Options for current value, not <code>null</code> if not
+     *         enumerated
+     */
     public String[] getValueOptions()
     {
         final VType copy = value;
-        if (! (copy instanceof VEnum))
-            return null;
-        final List<String> options = ((VEnum)copy).getLabels();
+        if (!(copy instanceof VEnum)) return null;
+        final List<String> options = ((VEnum) copy).getLabels();
         return options.toArray(new String[options.size()]);
     }
 
@@ -256,10 +467,14 @@ public class PVTableItem
     public boolean isWritable()
     {
         final PV the_pv = pv.get();
-        return the_pv != null  &&  the_pv.isReadonly() == false  &&  !isComment();
+        return the_pv != null && the_pv.isReadonly() == false && !isComment()
+                && !isMeasure();
     }
 
-    /** @param new_value Value to write to the item's PV */
+    /**
+     * @param new_value
+     *            Value to write to the item's PV
+     */
     public void setValue(String new_value)
     {
         new_value = new_value.trim();
@@ -267,23 +482,36 @@ public class PVTableItem
         {
             final PV the_pv = pv.get();
             if (the_pv == null)
+            {
                 throw new Exception("Not connected");
+            }
             final VType pv_type = the_pv.read();
             if (pv_type instanceof VNumber)
+            {
+                if (Preferences.showUnits())
+                {   // Strip units so that only the number gets written
+                    final String units = ((VNumber)pv_type).getUnits();
+                    if (units.length() > 0  &&  new_value.endsWith(units))
+                        new_value = new_value.substring(0, new_value.length() - units.length()).trim();
+                }
                 the_pv.write(Double.parseDouble(new_value));
+            }
             else if (pv_type instanceof VEnum)
-            {   // Value is displayed as "6 = 1 second"
+            { // Value is displayed as "6 =
+              // 1 second"
                 // Locate the initial index, ignore following text
                 final int end = new_value.indexOf(' ');
                 final int index = end > 0
-                    ? Integer.valueOf(new_value.substring(0, end))
-                    : Integer.valueOf(new_value);
-                    the_pv.write(index);
+                        ? Integer.valueOf(new_value.substring(0, end))
+                        : Integer.valueOf(new_value);
+                the_pv.write(index);
             }
-            else if (pv_type instanceof VByteArray  &&  Preferences.treatByteArrayAsString())
-            {   // Write string as byte array WITH '\0' TERMINATION!
+            else if (pv_type instanceof VByteArray && Preferences.treatByteArrayAsString())
+            {
+                // Write string as byte array WITH '\0' TERMINATION!
                 final byte[] bytes = new byte[new_value.length() + 1];
-                System.arraycopy(new_value.getBytes(), 0, bytes, 0, new_value.length());
+                System.arraycopy(new_value.getBytes(), 0, bytes, 0,
+                        new_value.length());
                 bytes[new_value.length()] = '\0';
                 the_pv.write(bytes);
             }
@@ -292,8 +520,10 @@ public class PVTableItem
                 final String[] elements = new_value.split("\\s*,\\s*");
                 final int N = elements.length;
                 final double[] data = new double[N];
-                for (int i=0; i<N; ++i)
+                for (int i = 0; i < N; ++i)
+                {
                     data[i] = Double.parseDouble(elements[i]);
+                }
                 the_pv.write(data);
             }
             else if (pv_type instanceof VEnumArray)
@@ -301,8 +531,10 @@ public class PVTableItem
                 final String[] elements = new_value.split("\\s*,\\s*");
                 final int N = elements.length;
                 final int[] data = new int[N];
-                for (int i=0; i<N; ++i)
+                for (int i = 0; i < N; ++i)
+                {
                     data[i] = (int) Double.parseDouble(elements[i]);
+                }
                 the_pv.write(data);
             }
             else // Write other types as string
@@ -310,43 +542,70 @@ public class PVTableItem
         }
         catch (Throwable ex)
         {
-            Plugin.getLogger().log(Level.WARNING, "Cannot set " + getName() + " = " + new_value, ex);
+            Plugin.getLogger().log(Level.WARNING,
+                    "Cannot set " + getName() + " = " + new_value, ex);
         }
     }
 
-
-    /** Save current value as saved value */
+    /**
+     * Save current value as saved value And current timestamp as time saved
+     */
     public void save()
     {
-        if (isComment())
+        if (isComment() && !isMeasureHeader())
+        {
             return;
+        }
         try
         {
+            time_saved = (TimestampHelper
+                    .format(VTypeHelper.getTimestamp(value)));
             saved = Optional.of(SavedValue.forCurrentValue(value));
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.WARNING, "Cannot save value of " + getName(), ex);
+            Plugin.getLogger().log(Level.WARNING,
+                    "Cannot save value of " + getName(), ex);
         }
         determineIfChanged();
+    }
+
+    /** @return time_saved, the timestamp saved */
+    public String getTime_saved()
+    {
+        return this.time_saved;
+    }
+
+    /**
+     * @param time_saved,
+     *            the current value of timestamp
+     */
+    public void setTime_saved(String time_saved)
+    {
+        this.time_saved = time_saved;
     }
 
     /** Write saved value back to PV */
     public void restore()
     {
-        if (isComment())
+        if (isComment() || isMeasure())
+        {
             return;
+        }
         final PV the_pv = pv.get();
         final SavedValue the_value = saved.orElse(null);
-        if (the_pv == null  ||  ! isWritable()  || the_value == null)
+        if (the_pv == null || !isWritable() || the_value == null)
+        {
             return;
+        }
         try
         {
             the_value.restore(the_pv);
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.WARNING, "Error restoring " + getName(), ex);
+            Plugin.getLogger().log(Level.WARNING,
+                    "Error restoring " + getName(), ex);
         }
     }
 
@@ -362,7 +621,10 @@ public class PVTableItem
         return tolerance;
     }
 
-    /** @param tolerance Tolerance for comparing saved and current value */
+    /**
+     * @param tolerance
+     *            Tolerance for comparing saved and current value
+     */
     public void setTolerance(final double tolerance)
     {
         this.tolerance = tolerance;
@@ -370,10 +632,34 @@ public class PVTableItem
         listener.tableItemChanged(this);
     }
 
-    /** @return <code>true</code> if this item is a comment instead of a PV with name, value etc. */
+    /**
+     * @return <code>true</code> if this item is a comment instead of a PV with
+     *         name, value etc.
+     */
     public boolean isComment()
     {
         return name.startsWith("#");
+    }
+
+    /**
+     * @return true if this item is a config header instead of a PV with name,
+     *         value etc
+     */
+    public boolean isConfHeader()
+    {
+        String lowName = name.toLowerCase();
+        return lowName.startsWith("#conf#")
+                || lowName.startsWith("#configuration#");
+    }
+
+    /**
+     * @return true if this item is a measure header instead of a PV with name,
+     *         value etc
+     */
+    public boolean isMeasureHeader()
+    {
+        String lowName = name.toLowerCase();
+        return lowName.startsWith("#mesure#");
     }
 
     /** @return <code>true</code> if value has changed from saved value */
@@ -385,19 +671,25 @@ public class PVTableItem
     /** Update <code>has_changed</code> based on current and saved value */
     private void determineIfChanged()
     {
+        if (isMeasure())
+        {
+            has_changed = false;
+            return;
+        }
         final Optional<SavedValue> saved_value = saved;
-        if (! saved_value.isPresent())
+        if (!saved_value.isPresent())
         {
             has_changed = false;
             return;
         }
         try
         {
-            has_changed = ! saved_value.get().isEqualTo(value, tolerance);
+            has_changed = !saved_value.get().isEqualTo(value, tolerance);
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.WARNING, "Change test failed for " + getName(), ex);
+            Plugin.getLogger().log(Level.WARNING,
+                    "Change test failed for " + getName(), ex);
         }
     }
 
@@ -424,17 +716,24 @@ public class PVTableItem
     {
         final StringBuilder buf = new StringBuilder();
         buf.append(name);
-        if (! isWritable())
+        if (!isWritable())
+        {
             buf.append(" (read-only)");
+        }
         buf.append(" = ").append(VTypeHelper.toString(value));
         final Optional<SavedValue> saved_value = saved;
         if (saved_value.isPresent())
         {
             if (has_changed)
+            {
                 buf.append(" ( != ");
+            }
             else
+            {
                 buf.append(" ( == ");
-            buf.append(saved_value.get().toString()).append(" +- ").append(tolerance).append(")");
+            }
+            buf.append(saved_value.get().toString()).append(" +- ")
+                    .append(tolerance).append(")");
         }
         return buf.toString();
     }

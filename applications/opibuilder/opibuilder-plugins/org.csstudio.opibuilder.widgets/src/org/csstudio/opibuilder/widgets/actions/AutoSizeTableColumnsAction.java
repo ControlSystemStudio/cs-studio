@@ -28,15 +28,14 @@ public class AutoSizeTableColumnsAction implements IObjectActionDelegate {
     }
 
 
+    @Override
     public void run(IAction action) {
         TableEditPart tableEditPart = getSelectedWidget();
 
         tableEditPart.getTable().autoSizeColumns();
-
-
-
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;

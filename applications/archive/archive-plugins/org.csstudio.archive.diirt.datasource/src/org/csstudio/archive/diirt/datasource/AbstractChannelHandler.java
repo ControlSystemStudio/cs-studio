@@ -1,5 +1,16 @@
+/*
+ * This software is Copyright by the Board of Trustees of Michigan
+ * State University (c) Copyright 2016.
+ *
+ * Contact Information:
+ *   Facility for Rare Isotope Beam
+ *   Michigan State University
+ *   East Lansing, MI 48824-1321
+ *   http://frib.msu.edu
+ */
 package org.csstudio.archive.diirt.datasource;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +24,6 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.datasource.ValueCache;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
 
@@ -61,7 +71,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * @return the list of all found values or null if the channel was not found
      * @throws Exception if there was an error fetching the data
      */
-    private Optional<List<VType>> loadValuesForTimeWindow(Timestamp startTime, Timestamp endTime, boolean optimised)
+    private Optional<List<VType>> loadValuesForTimeWindow(Instant startTime, Instant endTime, boolean optimised)
         throws Exception {
         List<VType> values = new ArrayList<>(5000);
         boolean channelFound = false;
@@ -99,9 +109,9 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * @return the value if found or nothing if not found or null if the channel was not found
      * @throws Exception if there is an exception while fetching data from the archive
      */
-    private Optional<VType> loadValueForTime(Timestamp time) throws Exception {
+    private Optional<VType> loadValueForTime(Instant time) throws Exception {
         VType theValue = null;
-        Timestamp theTimestamp = null;
+        Instant theTimestamp = null;
         boolean channelFound = false;
         for (ArchiveSource as : sources) {
             ArchiveReader archive = ArchiveRepository.getInstance().getArchiveReader(as.url);
@@ -114,7 +124,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
             channelFound = true;
             VType temp = null;
             VType value = null;
-            Timestamp t = null;
+            Instant t = null;
             while (iterator.hasNext()) {
                 // find the first value that has a timestamp greater than start
                 temp = iterator.next();
@@ -152,7 +162,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * @param optimised true for optimised retrieval, false for raw values
      * @throws Exception in case of an error fetching the data from the archive reader
      */
-    protected void fetchData(Timestamp startTime, Timestamp endTime, boolean optimised) throws Exception {
+    protected void fetchData(Instant startTime, Instant endTime, boolean optimised) throws Exception {
         List<VType> values = null;
         boolean singleValue = startTime.equals(endTime);
         if (singleValue) {

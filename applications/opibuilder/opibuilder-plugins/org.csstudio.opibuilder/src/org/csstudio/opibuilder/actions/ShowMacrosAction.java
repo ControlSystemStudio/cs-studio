@@ -31,7 +31,7 @@ public class ShowMacrosAction implements IObjectActionDelegate {
     private IWorkbenchPart targetPart;
 
 
-
+    @Override
     public void run(IAction action) {
         AbstractWidgetModel widget = (AbstractWidgetModel) getSelectedWidget().getModel();
         String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
@@ -43,18 +43,21 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         sb.append("\n");
         sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
-        ConsoleService.getInstance().writeInfo(sb.toString());
+        //show the dialog first, because on some linux systems the console print brings the workbench window to top,
+        //blocking entire CSS
         MessageDialog.openInformation(targetPart.getSite().getShell(),
                 "Predefined Macros", sb.toString());
+        ConsoleService.getInstance().writeInfo(sb.toString());
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;
         }
     }
 
-
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }

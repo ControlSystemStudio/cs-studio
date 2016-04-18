@@ -88,6 +88,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @param _clr the _clr to set
      */
+    @Override
     public void setClr(int _clr) {
         this._clr = _clr;
     }
@@ -95,6 +96,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @return the _clr
      */
+    @Override
     public int getForegroundColor() {
         return _clr;
     }
@@ -102,6 +104,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @param _bclr the _bclr to set
      */
+    @Override
     public void setBclr(int _bclr) {
         this._bclr = _bclr;
     }
@@ -109,6 +112,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @return the _bclr
      */
+    @Override
     public int getBackgroundColor() {
         return _bclr;
     }
@@ -123,6 +127,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @return the _isBackColorDefined
      */
+    @Override
     public boolean isBackColorDefined() {
         return _isBackColorDefined;
     }
@@ -137,6 +142,7 @@ public class ShellCommand extends ADLAbstractWidget implements IWidgetWithColors
     /**
      * @return the _isForeColorDefined
      */
+    @Override
     public boolean isForeColorDefined() {
         return _isForeColorDefined;
     }

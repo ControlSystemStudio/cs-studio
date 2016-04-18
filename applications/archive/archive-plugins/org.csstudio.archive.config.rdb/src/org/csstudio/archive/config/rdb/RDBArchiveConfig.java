@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -556,7 +557,7 @@ public class RDBArchiveConfig implements ArchiveConfig
                 final int id = result.getInt(1);
                 final SampleMode sample_mode =
                     getSampleMode(result.getInt(3), result.getDouble(4), result.getDouble(5));
-                org.diirt.util.time.Timestamp last_sample_time = null;
+                Instant last_sample_time = null;
                 if (!skip_last)
                      last_sample_time = getLastSampleTime(id);
                 channels.add(new RDBChannelConfig(id, result.getString(2),
@@ -608,7 +609,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return Time stamp or <code>null</code> if not in archive, yet
      *  @throws Exception on RDB error
      */
-    private org.diirt.util.time.Timestamp getLastSampleTime(final int channel_id) throws Exception
+    private Instant getLastSampleTime(final int channel_id) throws Exception
     {
         // This statement has a surprisingly complex execution plan for partitioned
         // Oracle setups, so re-use it

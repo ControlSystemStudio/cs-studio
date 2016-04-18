@@ -60,6 +60,7 @@ public enum PredefinedTypes implements ILanguageElements {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getElementName() {
         return this._inCodeName;
     }

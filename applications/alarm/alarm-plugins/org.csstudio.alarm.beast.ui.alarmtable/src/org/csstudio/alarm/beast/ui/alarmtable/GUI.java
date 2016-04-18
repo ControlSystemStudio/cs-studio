@@ -99,53 +99,65 @@ public class GUI extends Composite implements AlarmClientModelListener
 
         void blink()
         {
-            display.timerExec(period, ()->
+            if (!display.isDisposed())
             {
-                if (active)
+                display.timerExec(period, ()->
                 {
-                    for (GUI g : guis)
+                    if (active)
                     {
-                        //if the GUI thread is this thread, blink on this thread,
-                        //otherwise delegate to the GUI's thread and wait for it to finish
-                        if (display == g.display)
-                            g.blink();
-                        else
-                            g.display.syncExec(() -> blink());
+                        for (GUI g : guis)
+                        {
+                            //if the GUI thread is this thread, blink on this thread,
+                            //otherwise delegate to the GUI's thread and wait for it to finish
+                            if (display == g.display)
+                                g.blink();
+                            else if (!g.display.isDisposed())
+                                g.display.syncExec(() -> g.blink());
+                        }
+                        blink();
                     }
-                    blink();
-                }
-            });
+                });
+            }
         }
         void reset()
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                for (GUI g : guis)
-                    g.icon_provider.reset();
-            });
+                display.syncExec(() ->
+                {
+                    for (GUI g : guis)
+                        g.icon_provider.reset();
+                });
+            }
         }
         void add(GUI gui)
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                guis.add(gui);
-                //when a new gui is added, always reset everything so that all tables are synchronised
-                reset();
-                if (!active)
+                display.syncExec(() ->
                 {
-                    active = true;
-                    blink();
-                }
-            });
+                    guis.add(gui);
+                    //when a new gui is added, always reset everything so that all tables are synchronised
+                    reset();
+                    if (!active)
+                    {
+                        active = true;
+                        blink();
+                    }
+                });
+            }
         }
         void remove(GUI gui)
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                guis.remove(gui);
-                if (guis.isEmpty())
-                    active = false;
-            });
+                display.syncExec(() ->
+                {
+                    guis.remove(gui);
+                    if (guis.isEmpty())
+                        active = false;
+                });
+            }
         }
     }
 
@@ -841,16 +853,19 @@ public class GUI extends Composite implements AlarmClientModelListener
     private void setErrorMessage(final String error)
     {
         final Table act_table = active_table_viewer.getTable();
-        if (!show_header || act_table.isDisposed())
+        if (act_table.isDisposed())
             return;
         if (error == null)
         {
             if (!have_error_message)
                 return; // msg already cleared, GUI already enabled
-            error_message.setText(""); //$NON-NLS-1$
-            error_message.setBackground(null);
-            error_message.setVisible(false);
-            error_message.getParent().layout();
+            if (show_header)
+            {
+                error_message.setText(""); //$NON-NLS-1$
+                error_message.setBackground(null);
+                error_message.setVisible(false);
+                error_message.getParent().layout();
+            }
             act_table.setEnabled(true);
             if (separate_tables)
                 acknowledged_table_viewer.getTable().setEnabled(true);
@@ -859,10 +874,13 @@ public class GUI extends Composite implements AlarmClientModelListener
         else
         {
             // Update the message
-            error_message.setText(error);
-            error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
-            error_message.setVisible(true);
-            error_message.getParent().layout();
+            if (show_header)
+            {
+                error_message.setText(error);
+                error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
+                error_message.setVisible(true);
+                error_message.getParent().layout();
+            }
             if (have_error_message)
                 return; // GUI already disabled
             act_table.setEnabled(false);
@@ -944,7 +962,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             int numberOfRawAcknowledgedAlarms, AlarmTreePV[] filteredAcknowledgedAlarms,
             AlarmTreePV[] combinedAlarms)
     {
-        if (model == null) return;
+        if (model == null || active_table_viewer.getTable().isDisposed()) return;
         //if GUI is currently busy, do not update anything, just trigger another update
         if (active_table_viewer.isBusy()) {
             gui_update.trigger();

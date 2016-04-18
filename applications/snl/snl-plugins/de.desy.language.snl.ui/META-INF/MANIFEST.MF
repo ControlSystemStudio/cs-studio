@@ -17,4 +17,4 @@ Require-Bundle: org.eclipse.ui,
  de.desy.language.editor.ui,
  org.eclipse.help
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

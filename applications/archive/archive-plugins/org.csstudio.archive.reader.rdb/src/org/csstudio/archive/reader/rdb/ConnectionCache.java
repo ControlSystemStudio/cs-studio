@@ -56,6 +56,11 @@ public class ConnectionCache
                    user.equals(other.user) &&
                    Objects.equals(password, other.password);
         }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(url,user,password);
+        }
     }
 
     /** Cached RDB connection with reference count */
@@ -144,5 +149,16 @@ public class ConnectionCache
         }
         entry.rdb.close();
         logger.log(Level.FINE, "Closed {0}", entry.id.url);
+    }
+
+    /**
+     * Clear cache content
+     */
+    public static void clean()
+    {
+        synchronized (cache)
+        {
+            cache.clear();
+        }
     }
 }

@@ -90,10 +90,12 @@ public class LabelModel extends AbstractPVWidgetModel implements ITextModel{
         return "org.csstudio.opibuilder.widgets.Label"; //$NON-NLS-1$
     }
 
+    @Override
     public String getText(){
         return (String)getCastedPropertyValue(PROP_TEXT);
     }
 
+    @Override
     public void setText(String text){
         setPropertyValue(PROP_TEXT, text);
     }

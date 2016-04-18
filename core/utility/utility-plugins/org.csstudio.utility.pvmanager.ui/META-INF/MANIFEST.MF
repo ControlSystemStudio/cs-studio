@@ -7,7 +7,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides ui elements to configure PVManager
 Export-Package: org.csstudio.utility.pvmanager.ui
