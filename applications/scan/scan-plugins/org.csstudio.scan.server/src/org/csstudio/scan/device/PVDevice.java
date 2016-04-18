@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -188,16 +189,16 @@ public class PVDevice extends Device
      *  @param timeout {@link TimeDuration}
      *  @return Milliseconds or 0
      */
-    private static long getMillisecs(final TimeDuration timeout)
+    private static long getMillisecs(final Duration timeout)
     {
-        if (timeout == null  ||  ! timeout.isPositive())
-            return 0;
-        return timeout.getSec() * 1000L  +  timeout.getNanoSec() / 1000;
+        if (timeout == null)
+        	return 0;
+        return Math.max(0, timeout.toMillis());
     }
 
     /** {@inheritDoc} */
     @Override
-    public VType read(final TimeDuration timeout) throws Exception
+    public VType read(final Duration timeout) throws Exception
     {
         final PV pv; // Copy to access PV outside of lock
         final VType orig;
@@ -291,7 +292,7 @@ public class PVDevice extends Device
      *  @throws Exception on error: Cannot write, ...
      */
     @Override
-    public void write(final Object value, final TimeDuration timeout) throws Exception
+    public void write(final Object value, final Duration timeout) throws Exception
     {
         final Object actual = wrapSentValue(value);
         final long millisec = getMillisecs(timeout);

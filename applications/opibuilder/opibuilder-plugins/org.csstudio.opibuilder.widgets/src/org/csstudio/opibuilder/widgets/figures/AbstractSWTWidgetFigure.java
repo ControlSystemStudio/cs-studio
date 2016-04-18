@@ -288,14 +288,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
     @Override
     public Color getForegroundColor() {
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             return getSWTWidget().getForeground();
         return super.getForegroundColor();
     }
 
     @Override
     public Color getBackgroundColor() {
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             return getSWTWidget().getBackground();
         return super.getBackgroundColor();
     }
@@ -304,7 +304,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     public void setForegroundColor(Color fg) {
         if(!runmode)
             super.setForegroundColor(fg);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setForeground(fg);
     }
 
@@ -312,7 +312,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     public void setBackgroundColor(Color bg) {
         if(!runmode)
             super.setBackgroundColor(bg);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setBackground(bg);
     }
 
@@ -482,7 +482,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
     @Override
     public void setFont(Font f) {
         super.setFont(f);
-        if (getSWTWidget() != null)
+        if (getSWTWidget() != null && !getSWTWidget().isDisposed())
             getSWTWidget().setFont(f);
     }
 

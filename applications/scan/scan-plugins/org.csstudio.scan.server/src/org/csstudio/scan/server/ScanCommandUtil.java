@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.time.Duration;
+
 import org.diirt.util.time.TimeDuration;
 
 /** Utilities for command implementations
@@ -40,7 +42,7 @@ public class ScanCommandUtil
      */
     public static void write(final ScanContext context,
             final String device_name, final Object value,
-            final double tolerance, final TimeDuration timeout) throws Exception
+            final double tolerance, final Duration timeout) throws Exception
     {
         write(context, device_name, value, false, true, device_name, tolerance, timeout);
     }
@@ -62,7 +64,7 @@ public class ScanCommandUtil
             final String device_name, final Object value,
             final boolean completion,
             final boolean wait,
-            final String readback_name, final double tolerance, final TimeDuration timeout) throws Exception
+            final String readback_name, final double tolerance, final Duration timeout) throws Exception
     {
         final WriteHelper write = new WriteHelper(context, device_name, value, completion, wait, readback_name, tolerance, timeout);
         write.perform();

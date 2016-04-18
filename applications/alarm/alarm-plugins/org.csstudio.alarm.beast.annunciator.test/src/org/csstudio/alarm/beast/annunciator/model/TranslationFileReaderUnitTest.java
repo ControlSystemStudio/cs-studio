@@ -27,7 +27,7 @@ public class TranslationFileReaderUnitTest
     public void testFileRead() throws Exception
     {
         final Translation translations[] =
-            TranslationFileReader.getTranslations("translations.txt");
+            TranslationFileReader.getTranslations("../org.csstudio.alarm.beast.annunciator/translations.txt");
         assertEquals(10, translations.length);
         assertEquals("mebbit Vac error", translations[2].apply("MEBT Vac error"));
         assertEquals("MEBT vacuum error", translations[5].apply("MEBT Vac error"));

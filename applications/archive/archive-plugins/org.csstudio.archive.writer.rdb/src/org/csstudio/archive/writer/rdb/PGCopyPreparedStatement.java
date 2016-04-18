@@ -43,6 +43,8 @@ public class PGCopyPreparedStatement implements PreparedStatement {
     private StringBuffer batchBuilder;
 
     private int[] columnOrderMapping;
+    
+    private String tableName;
 
     public PGCopyPreparedStatement(Connection connection, String insertSqlQuery)
             throws SQLException {
@@ -50,7 +52,7 @@ public class PGCopyPreparedStatement implements PreparedStatement {
         batchBuilder = new StringBuffer();
 
         // Analyze query string to get table name and list of column
-        String tableName = null;
+        tableName = null;
         String[] columnsArrays = null;
         Pattern p = Pattern.compile(
                 "^INSERT[ ]+INTO[ ]+([^ ]+)[ ]+\\(([^)]+)\\)",
@@ -64,7 +66,7 @@ public class PGCopyPreparedStatement implements PreparedStatement {
         // Get the column order as it's stored in database
         Map<String, Integer> postgresColumnOrderMap = new HashMap<String, Integer>();
         ResultSet columnsRs = connection.getMetaData().getColumns(
-                connection.getCatalog(), null, "sample", null);
+                connection.getCatalog(), null, tableName, null);
         while (columnsRs.next()) {
             postgresColumnOrderMap.put(columnsRs.getString("COLUMN_NAME"),
                     columnsRs.getInt("ORDINAL_POSITION"));
@@ -167,7 +169,7 @@ public class PGCopyPreparedStatement implements PreparedStatement {
             PushbackReader reader = new PushbackReader(new StringReader(""),
                     batchBuilder.length());
             reader.unread(batchBuilder.toString().toCharArray());
-            res = cpManager.copyIn("COPY sample FROM STDIN WITH CSV", reader);
+            res = cpManager.copyIn("COPY " + tableName +  " FROM STDIN WITH CSV", reader);
             batchBuilder.setLength(0);
             reader.close();
         } catch (IOException e) {

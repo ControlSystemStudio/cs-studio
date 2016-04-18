@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,6 @@ import org.csstudio.display.pvtable.model.Measure;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
-import org.diirt.util.time.Timestamp;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -108,9 +108,9 @@ public class ExportXLSAction extends PVTableAction {
                 measureHeaderCell.setCellStyle(style);
                 Cell dateMeasureCell = row.createCell(1);
                 Date dateMC = null;
-                Timestamp timeMC = null;
+                Instant timeMC = null;
                 timeMC = VTypeHelper.getTimestamp(measures.get(b).getItems().get(0).getValue());
-                dateMC = timeMC.toDate();
+                dateMC = Date.from(timeMC);
                 dateMeasureCell.setCellValue(dateMC);
                 dateMeasureCell.setCellStyle(styleDate);
                 // dateMeasureCell.setCellValue(TimestampHelper.format(VTypeHelper.getTimestamp(measures.get(b).getItems().get(0).getValue())));
@@ -133,13 +133,13 @@ public class ExportXLSAction extends PVTableAction {
                         sheet0.addMergedRegion(new CellRangeAddress(0, 0, indexMapPV, indexMapPV + 1));
                     }
                     // On ajoute les données dans la nouvelle lignes
-                    Cell cellD = row.createCell((int) measureMap.get(measures.get(b).getItems().get(d).getName()));
+                    Cell cellD = row.createCell(measureMap.get(measures.get(b).getItems().get(d).getName()));
                     Date dateC = null;
-                    Timestamp timeC = null;
+                    Instant timeC = null;
                     String timeS = null;
                     try {
                         timeC = TimestampHelper.parse(measures.get(b).getItems().get(d).getTime_saved());
-                        dateC = timeC.toDate();
+                        dateC = Date.from(timeC);
                         cellD.setCellValue(dateC);
                         cellD.setCellStyle(styleDate);
                     } catch (ParseException e) {
@@ -147,7 +147,7 @@ public class ExportXLSAction extends PVTableAction {
                         cellD.setCellValue(timeS);
                         cellD.setCellStyle(styleDate);
                     }
-                    Cell cellV = row.createCell((int) measureMap.get(measures.get(b).getItems().get(d).getName()) + 1);
+                    Cell cellV = row.createCell(measureMap.get(measures.get(b).getItems().get(d).getName()) + 1);
                     NumberFormat formatNumbI = NumberFormat.getInstance(Locale.US);
                     Number numbI = null;
                     try {
@@ -269,14 +269,14 @@ public class ExportXLSAction extends PVTableAction {
                             savedTimestamp.setCellValue("");
                         } else {
                             Date dateTS = null;
-                            Timestamp timeTS = null;
+                            Instant timeTS = null;
                             String timeS = null;
                             try {
                                 timeTS = TimestampHelper.parse(model.getItem(i).getTime_saved());
                             } catch (ParseException e) {
                                 timeS = model.getItem(i).getTime_saved();
                             }
-                            dateTS = timeTS.toDate();
+                            dateTS = Date.from(timeTS);
                             savedTimestamp.setCellValue(dateTS);
                             savedTimestamp.setCellStyle(styleDate);
                         }
@@ -287,11 +287,11 @@ public class ExportXLSAction extends PVTableAction {
                             savedTimestamp.setCellValue("");
                         } else {
                             Date dateTS = null;
-                            Timestamp timeTS = null;
+                            Instant timeTS = null;
                             String timeS = null;
                             try {
                                 timeTS = TimestampHelper.parse(model.getItem(i).getTime_saved());
-                                dateTS = timeTS.toDate();
+                                dateTS = Date.from(timeTS);
                                 savedTimestamp.setCellValue(dateTS);
                             } catch (ParseException e) {
                                 timeS = model.getItem(i).getTime_saved();

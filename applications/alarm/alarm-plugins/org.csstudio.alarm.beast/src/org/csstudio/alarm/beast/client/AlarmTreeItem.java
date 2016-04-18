@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.client;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +22,6 @@ import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.util.time.Timestamp;
 
 /** Base class for items in the <u>client's</u> alarm configuration tree.
  *  <p>
@@ -70,7 +70,7 @@ public class AlarmTreeItem extends TreeItem
     private volatile String message = SeverityLevel.OK.getDisplayName();
 
     /** Time of last configuration change */
-    private volatile transient Timestamp config_time; //it would be nice if Timestamp implemented Serializable
+    private volatile Instant config_time;
 
     /** Initialize alarm tree item
      *  @param parent Parent item or <code>null</code>
@@ -220,14 +220,14 @@ public class AlarmTreeItem extends TreeItem
     /** @return Time of last configuration change */
     public String getConfigTime()
     {
-        final Timestamp save_copy = config_time;
+        final Instant save_copy = config_time;
         if (save_copy == null)
             return Messages.Unknown;
         return TimestampHelper.format(save_copy);
     }
 
     /** @param config_time Time of last configuration change */
-    void setConfigTime(final Timestamp config_time)
+    void setConfigTime(final Instant config_time)
     {
         this.config_time = config_time;
     }

@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -24,7 +24,6 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.logging.JMSLogMessage;
-import org.diirt.util.time.Timestamp;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
@@ -35,10 +34,6 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
 {
     /** TYPE identifier used for talk messages */
     private static final String TYPE_TALK = "talk";
-
-    /** Format of time stamps */
-    final private SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
 
     /** Server for which we communicate */
     final private AlarmServer server;
@@ -265,14 +260,14 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
      *  @param value Value that triggered update
-     *  @param timestamp Time stamp for alarm severity/status
+     *  @param timestamp Instant stamp for alarm severity/status
      */
     protected void sendStateUpdate(final AlarmPV pv,
             final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         execute(new Runnable()
         {
@@ -290,7 +285,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, JMSAlarmMessage.formatTime(timestamp));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
                     server_producer.send(map);
@@ -309,12 +304,12 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param alarm_severity Alarm severity
      *  @param alarm_message Alarm message
      *  @param value Value that triggered update
-     *  @param timestamp Time stamp for alarm severity/status
+     *  @param timestamp Instant for alarm severity/status
      */
     protected void sendGlobalUpdate(final AlarmPV pv,
             final SeverityLevel alarm_severity, final String alarm_message,
             final String value,
-            final Timestamp timestamp)
+            final Instant timestamp)
     {
         execute(new Runnable()
         {
@@ -329,7 +324,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, JMSAlarmMessage.formatTime(timestamp));
                     global_producer.send(map);
                 }
                 catch (Exception ex)

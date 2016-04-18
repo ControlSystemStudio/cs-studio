@@ -11,7 +11,8 @@ import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
-import org.diirt.util.time.Timestamp;
+
+import java.time.Instant;
 
 /** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir
@@ -22,11 +23,11 @@ public class ArchiveVType implements Alarm, Time, VType
     /** Alarm status message for 'OK' */
     final public static String STATUS_OK = "NO_ALARM";
 
-    final private Timestamp timestamp;
+    final private Instant timestamp;
     final private AlarmSeverity severity;
     final private String status;
 
-    public ArchiveVType(final Timestamp timestamp,
+    public ArchiveVType(final Instant timestamp,
             final AlarmSeverity severity, final String status)
     {
         this.timestamp = timestamp;
@@ -47,7 +48,7 @@ public class ArchiveVType implements Alarm, Time, VType
     }
 
     @Override
-    public Timestamp getTimestamp()
+    public Instant getTimestamp()
     {
         return timestamp;
     }
@@ -61,7 +62,7 @@ public class ArchiveVType implements Alarm, Time, VType
     @Override
     public boolean isTimeValid()
     {
-        return timestamp.getSec() > 0;
+        return timestamp.getEpochSecond() > 0;
     }
 
     @Override

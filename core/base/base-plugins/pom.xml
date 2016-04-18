@@ -9,8 +9,8 @@
   <artifactId>base-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.auth</module>
-    <module>org.csstudio.auth.ui</module>
+    
+    
     <module>org.csstudio.csdata</module>
     <!--     <module>org.csstudio.csdata.test</module> -->
     <module>org.csstudio.vtype.pv</module>

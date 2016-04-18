@@ -15,6 +15,7 @@ import gov.bnl.channelfinder.api.Property;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,7 +109,7 @@ implements ConfigurableWidget, ISelectionProvider {
 
             @Override
             public void rangeChanged() {
-                parameters = parameters.with(pixelDuration(TimeDuration.ofNanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
+                parameters = parameters.with(pixelDuration(Duration.ofNanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
                 if (plot != null) {
                     plot.with(parameters);
                 }
@@ -229,7 +230,7 @@ implements ConfigurableWidget, ISelectionProvider {
         }
 
         // Make sure the range is consistent with the image resolution
-        rangeWidget.setDistancePerPx(parameters.getPixelDuration().toSeconds());
+        rangeWidget.setDistancePerPx(TimeDuration.toSecondsDouble(parameters.getPixelDuration()));
     }
 
     // Reconnects the pv
@@ -332,11 +333,11 @@ implements ConfigurableWidget, ISelectionProvider {
         setWaterfallPlotParameters(parameters.with(adaptiveRange(adaptiveRange)));
     }
 
-    public TimeDuration getPixelDuration() {
+    public Duration getPixelDuration() {
         return parameters.getPixelDuration();
     }
 
-    public void setPixelDuration(TimeDuration pixelDuration) {
+    public void setPixelDuration(Duration pixelDuration) {
         setWaterfallPlotParameters(parameters.with(pixelDuration(pixelDuration)));
     }
 
@@ -537,7 +538,7 @@ implements ConfigurableWidget, ISelectionProvider {
             memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
         }
         memento.putBoolean(MEMENTO_ADAPTIVE_RANGE, isAdaptiveRange());
-        memento.putInteger(MEMENTO_PIXEL_DURATION, (int) getPixelDuration().toNanosLong());
+        memento.putInteger(MEMENTO_PIXEL_DURATION, (int) getPixelDuration().toNanos());
         memento.putInteger(MEMENTO_SCROLL_DIRECTION, getScrollDirection());
         memento.putBoolean(MEMENTO_SHOW_TIME_AXIS, isShowTimeAxis());
         if (getSortProperty() != null) {
@@ -551,7 +552,7 @@ implements ConfigurableWidget, ISelectionProvider {
                 setAdaptiveRange(memento.getBoolean(MEMENTO_ADAPTIVE_RANGE));
             }
             if (memento.getInteger(MEMENTO_PIXEL_DURATION) != null) {
-                setPixelDuration(TimeDuration.ofNanos(memento.getInteger(MEMENTO_PIXEL_DURATION)));
+                setPixelDuration(Duration.ofNanos(memento.getInteger(MEMENTO_PIXEL_DURATION)));
             }
             if (memento.getInteger(MEMENTO_SCROLL_DIRECTION) != null) {
                 setScrollDirection(memento.getInteger(MEMENTO_SCROLL_DIRECTION));

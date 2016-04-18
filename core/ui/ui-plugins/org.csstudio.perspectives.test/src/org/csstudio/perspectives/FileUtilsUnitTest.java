@@ -2,6 +2,7 @@ package org.csstudio.perspectives;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
@@ -51,6 +53,13 @@ public class FileUtilsUnitTest {
     @Test(expected=NullPointerException.class)
     public void checkPathToEmfUriThrowsNullPointerExceptionIfArgumentIsNull() {
         fileUtils.pathToEmfUri(null);
+    }
+
+    @Test
+    public void checkPathToEmfUriReturnsUriIfFileDoesNotExist() {
+        Path nonexistentPath = Paths.get("/not/a/path");
+        URI nonexistentUri = fileUtils.pathToEmfUri(nonexistentPath);
+        assertNotNull(nonexistentUri);
     }
 
     @Test(expected=NullPointerException.class)

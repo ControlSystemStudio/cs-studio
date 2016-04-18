@@ -21,7 +21,8 @@ public interface IFileUtils {
     public URI urlToEmfUri(URL url);
 
     /**
-     * Create an EMF URI from a file object
+     * Create an EMF URI from a file object.  This will create a URI
+     * even if the path does not exist.
      * @param file; may not be null
      * @return uri
      */

@@ -176,6 +176,16 @@ public class ScanSystemPreferences extends SystemSettings
         return period;
     }
 
+    /** @return Show memory usage? */
+    public static boolean getShowMemoryUsage()
+    {
+        boolean show = false;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            show = service.getBoolean(Activator.ID, "show_memory_usage", show, null);
+        return show;
+    }
+
     /** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)

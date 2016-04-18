@@ -19,7 +19,6 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
@@ -61,7 +60,7 @@ public class MatlabFileExportJob extends ExportJob
         {   // Get data
             monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
             final ValueIterator iter = createValueIterator(item);
-            final List<Timestamp> times = new ArrayList<Timestamp>();
+            final List<Instant> times = new ArrayList<Instant>();
             final List<Double> values = new ArrayList<Double>();
             final List<AlarmSeverity> severities = new ArrayList<AlarmSeverity>();
             while (iter.hasNext()  &&  !monitor.isCanceled())
@@ -100,7 +99,7 @@ public class MatlabFileExportJob extends ExportJob
      *  @return {@link MLStructure}
      */
     private MLStructure createMLStruct(final int index, final String name,
-            final List<Timestamp> times,
+            final List<Instant> times,
             final List<Double> values,
             final List<AlarmSeverity> severities)
     {

@@ -7,6 +7,13 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.csstudio.logging.JMSLogMessage;
+
 /** Properties of a JMS alarm message.
  *
  *  @author Kay Kasemir
@@ -20,6 +27,10 @@ public class JMSAlarmMessage
      *  @see JMSLogMessage#TYPE
      */
     final public static String TYPE_ALARM = "alarm";
+
+    /** Format of time stamps */
+    private static final DateTimeFormatter date_format = DateTimeFormatter.ofPattern(JMSLogMessage.DATE_FORMAT);
+    private static final ZoneId zone = ZoneId.systemDefault();
 
     /** Mandatory alarm MapMessage element: time of original event */
     final public static String EVENTTIME = "EVENTTIME";
@@ -94,4 +105,13 @@ public class JMSAlarmMessage
 
     /** Value that caused the severity/message update */
     final public static String VALUE = "VALUE";
+    
+    
+    /** @param timestamp Time of alarm event
+     *  @return Time stamp formatted as used in JMS alarm messages 
+     */
+    public static String formatTime(final Instant timestamp)
+    {
+        return date_format.format(ZonedDateTime.ofInstant(timestamp, zone));
+    }
 }

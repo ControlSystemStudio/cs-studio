@@ -10,10 +10,10 @@ package org.csstudio.alarm.beast.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link DelayedAlarmUpdate}
@@ -40,7 +40,7 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
     public void testDelayedAlarmUpdate() throws Exception
     {
         final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(this);
-        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Timestamp.now());
+        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Instant.now());
         System.out.println(new Date() + ": Scheduling delayed alarm update ...");
         delay.schedule_update(state, 2);
 
@@ -68,7 +68,7 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
     public void testCancellation() throws Exception
     {
         final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(this);
-        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Timestamp.now());
+        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Instant.now());
         delay.schedule_update(state, 2);
 
         assertEquals(state, delay.getState());
@@ -104,7 +104,7 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
                 throw new Error("Simulated crash");
             }
         });
-        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Timestamp.now());
+        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, Instant.now());
         delay.schedule_update(state, 1);
 
         // Wait for delay to expire

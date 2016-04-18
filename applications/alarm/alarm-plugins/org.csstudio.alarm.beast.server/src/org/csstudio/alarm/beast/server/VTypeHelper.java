@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.time.Instant;
+
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VEnum;
@@ -100,13 +101,13 @@ public class VTypeHelper
 
     /** Decode a {@link VType}'s time stamp
      *  @param value Value to decode
-     *  @return {@link Timestamp}
+     *  @return {@link Instant}
      */
-    final public static Timestamp getTimestamp(final VType value)
+    final public static Instant getTimestamp(final VType value)
     {
         final Time time = ValueUtil.timeOf(value);
         if (time != null  &&  time.isTimeValid())
             return time.getTimestamp();
-        return Timestamp.now();
+        return Instant.now();
     }
 }

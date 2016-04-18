@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,6 @@ import java.util.regex.Pattern;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
@@ -101,7 +101,7 @@ public class CSVSampleImporter implements SampleImporter
             //First remove all grouping separators, then replace the decimal separator with a '.'
             final double number = Double.parseDouble(
                     remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
-            final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
+            final Instant time = TimestampHelper.fromMillisecs(date.getTime());
             if (statistics) {
                 final double min = Double.parseDouble(
                         remove(matcher.group(3),groupingSeparator).replace(decimalSeparator, '.'));

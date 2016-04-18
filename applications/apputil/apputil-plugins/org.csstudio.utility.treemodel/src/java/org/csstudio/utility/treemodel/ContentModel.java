@@ -29,12 +29,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
 
-    private static final Logger LOG = LoggerFactory.getLogger(ContentModel.class);
+    private static final Logger LOG = Logger.getLogger(ContentModel.class.getName());
     /**
      * A type object to give access to the type specific functionality of the tree components.
      */
@@ -90,7 +90,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
                                                     null,
                                                     null);
         } catch (final InvalidNameException e) {
-            LOG.error("Error creating root node in content model.", e);
+            LOG.log(Level.WARNING, "Error creating root node in content model.", e);
         }
     }
 

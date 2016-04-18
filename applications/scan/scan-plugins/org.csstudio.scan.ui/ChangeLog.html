@@ -9,6 +9,29 @@
 
 <p>Version numbers in here refer to the plugin org.csstudio.scan.</p>
 
+<h2>Version 4.2.9 - 2016-04-14</h2>
+<ul>
+  <li>Preference to show/hide scan monitor 'memory' status (#1756).</li>
+</ul>
+
+<h2>Version 4.2.8 - 2016-03-31</h2>
+<ul>
+  <li>Fix "Error loading Jython class.." errors (#1687).</li>
+  <li>Truncate scan names that exceed log RDB column size (#1694).</li>
+</ul>
+
+<h2>Version 4.2.7 - 2016-03-18</h2>
+<ul>
+  <li>Scan Server 'culls' scans first by turning in-memory scans
+      into logged scans, because dropping the list of commands frees the most memory.
+      Also reduced locking of scan list.
+  </li>
+  <li>Scan Server's web server no longer tries to send error message
+      to disconnected client.
+  </li>
+  <li>Parallel command aborts body commands on timeout or when it's aborted itself.</li>
+</ul>
+
 <h2>Version 4.2.6 - 2016-03-14</h2>
 <ul>
   <li>Scan Server gives more specific error message for cases

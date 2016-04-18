@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
@@ -145,7 +146,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             break;
         case TIME:
             cell.setText(formatter == null ? alarm.getTimestampText()
-                    : (alarm.getTimestamp() == null ? "" : formatter.format(alarm.getTimestamp().toDate())));
+                    : (alarm.getTimestamp() == null ? "" : formatter.format(Date.from(alarm.getTimestamp()))));
             break;
         case CURRENT_SEVERITY:
             if (alarm.getParent() == null)

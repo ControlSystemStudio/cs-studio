@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Beast DataSource</title>
+        <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" />
+    </head>
+
+    <body>
+        <h1>Beast DataSource</h1>
+    
+        <h2>Overview</h2>
+        <p>
+        The Alarm System allow users to view and handle the alarms
+        triggered by Process Variables (PVs) on front-end computers (IOCs).
+        There are a set of dedicated applications (Alarm tree, table, and panel) which display alarms 
+        and alarm related information (like guidance). These applications also provide the ability 
+        to take a set of actions needed to effectively handle an alarm.
+        </p>
+        <p>Refer to Help Contents -> CSS Applications -> Alarm System 
+        for a more detailed description of the beast alarm system</p>
+        <p>
+        The beast alarm datasource provides a subsection of the alarm information and functionality.
+        This makes it possible for user to access beast alarm information of any other cs-studio application.
+        OPI screens can now embeded information about weather of not an alarm has been acknowledged, etc..       
+        </p>
+         
+        <h2>PV syntax</h2>
+        The standard prefix for the datasource is <code>beast://</code> which can be omitted if configured as the default datasource.
+        <p>
+        'beast' pvs can be used to connect to any node or leaf from the alarm tree. 
+        The alarm tree represents the configured hierarchy of the alarm pv's, the hierarchy consists of 
+        
+        <ol>
+        <li>Area: Front end, DTL, CCL, SCL, Ring, ...</li>
+        <li>System: ICS, Cooling, Vacuum, RF, ...</li>
+        <li>Optionally sub-system: ICS/IOCs, RF/LLRF, RF/HPRF, ...</li>
+        <li>Alarm Trigger PVs on the final level.</li>
+        </ol>
+         
+        <p>
+        You can create a beast channel for any Alarm Trigger PVs or for any Area, System, Subsystem.
+        </p>
+        <pre>
+  beast://alarm_trigger_pvName
+  beast://complete_path_to_area
+  beast://complete_path_to_system
+        </pre>
+        <p>
+        <li>Example1: Connecting to a alarm pv</li>
+        <img src="alarm_pv_trigger.png" />
+        </p>
+        
+        <p>
+        <li>Example2: Connecting to a subsystem defined in the alarm tree</li>
+        <img src="alarm_system.png" />
+        </p>
+        
+        <h3>Interpreting the beast datasource result</h3>
+        <p>Each active alarm has several properties:</p>
+        <ul>
+        <li><b>PV</b>: name of the PV, Area, System.</li>
+        <li><b>AlarmSeverity</b>:The severity of the PV remembered by alarm
+            server. When the PV is configured to "latch", the alarm server
+            remembers the highest alarm severity of the PV until it is manually
+            acknowledged. Current severity of the PV might differ from alarm
+            severity when the underlying alarm PV already recovered but the alarm
+            server was configured to "latch" the alarm until operator
+            acknowledgement.</li>
+        <li><b>CurrentSeverity</b>: The current severity of the PV, like OK, MINOR, MAJOR or Invalid.</li>
+        <li><b>CurrentStatus</b>: alarm status message like HIGH_ALARM or
+            STATE_ALARM.</li>
+        <li><b>Active</b>: <code>true</code> if severity indicates an active alarm,
+                           <code>false</code> for acknowledged or OK state.</li>
+        <li><b>AlarmState</b>: Highest or latched alarm message. It would give more
+            information and more human-readable than the raw PV name. It is also
+            used for annunciation.</li>
+        <li><b>Value</b>: <br>
+                          For a alarm PV it has the Value that triggered last status/severity update.<br>
+                          For a channel connected to a area/system.<br>
+        <li><b>Enable</b>: <code>true</code> if the alarm/system/pv is enabled.</li>
+        <li><b>Type</b>: <code>node</code> if the channel is connected to an area or system, 
+                         <code>leaf</code> if the channel is connected to a pv.</li>
+        <li><b>Time</b>: The time when the alarm happened.</li>
+        </ul>
+        <h2>Using beast datasource in BOY screens</h2>
+        <p>
+        The beast datasource can be used to embed beast alarm information into opi screens.
+        The return value from the beast datasource can be easily displayed by using the VTable widget.<br>
+        The example screen below was created with the beast datasource and the VTable widget.<br>
+        Table 1.
+                PV Formula = beast://LN-RF{MOD:3}Sum-Sts<br>
+        Table 2.
+                PV Formula = beast://NSLS2_OPR/Booster
+        </p>
+        <p>
+        <img src="alarm_boy.png" />
+        </p>
+    </body>
+</html>

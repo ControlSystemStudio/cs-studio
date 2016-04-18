@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
+import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
 import org.csstudio.scan.ScanSystemPreferences;
@@ -34,7 +35,7 @@ import org.diirt.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class TextValueCondition implements DeviceCondition, DeviceListener
 {
-    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
+    protected final static Duration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
 
     /** Device to monitor */
     final private Device device;
@@ -46,7 +47,7 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     private String desired_value;
 
     /** Timeout in seconds, <code>null</code> to "wait forever" */
-    final private TimeDuration timeout;
+    final private Duration timeout;
 
     /** Updated by device listener or forced for early completion */
     private boolean is_condition_met;
@@ -62,7 +63,7 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
      */
     public TextValueCondition(final Device device, final Comparison comparison,
             final String desired_value,
-            final TimeDuration timeout)
+            final Duration timeout)
     {
         this.device = device;
         this.comparison = comparison;

@@ -1,8 +1,7 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
-
-import org.diirt.util.time.Timestamp;
+import java.time.Instant;
 
 /**
  *
@@ -29,7 +28,7 @@ public class ApplianceRawValueIterator extends ApplianceValueIterator {
      * @throws ArchiverApplianceException if the data cannot be loaded with this algorithm
      */
     public ApplianceRawValueIterator(ApplianceArchiveReader reader,
-            String name, Timestamp start, Timestamp end, IteratorListener listener)
+            String name, Instant start, Instant end, IteratorListener listener)
                     throws ArchiverApplianceException, IOException {
         super(reader,name,start,end,listener);
         fetchData();
