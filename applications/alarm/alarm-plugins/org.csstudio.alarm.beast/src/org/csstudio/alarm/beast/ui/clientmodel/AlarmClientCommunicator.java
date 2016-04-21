@@ -317,8 +317,10 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 {
                     final MapMessage map = createMapMessage(
                                                 JMSAlarmMessage.TEXT_CONFIG);
-                    if (path != null)
+                    if (path != null){
+                        map.setString(JMSAlarmMessage.CONFIG, path);
                         map.setString(JMSLogMessage.NAME, path);
+                    }
                     client_producer.send(map);
                 }
                 catch (Exception ex)
