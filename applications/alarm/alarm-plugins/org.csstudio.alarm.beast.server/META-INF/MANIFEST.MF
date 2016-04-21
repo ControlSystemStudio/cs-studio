@@ -13,9 +13,9 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
  org.csstudio.alarm.beast;bundle-version="3.2.0",
  org.csstudio.vtype.pv;bundle-version="1.0.1",
- org.diirt.util;bundle-version="3.0.3",
- org.diirt.vtype;bundle-version="3.0.3"
+ org.diirt.util;bundle-version="3.1.2",
+ org.diirt.vtype;bundle-version="3.1.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms,
- org.diirt.util.time;version="3.0.2"
+ org.diirt.util.time;version="3.1.2"

@@ -8,8 +8,10 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.net.InetAddress;
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -221,6 +223,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
     {
         final MapMessage map = createMapMessage();
         map.setString(JMSLogMessage.TYPE, JMSAlarmMessage.TYPE_ALARM);
+        map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(Date.from(Instant.now())));
         map.setString(JMSAlarmMessage.CONFIG, model.getConfigurationName());
         map.setString(JMSLogMessage.TEXT, text);
         map.setString(JMSLogMessage.APPLICATION_ID, APPLICATION);
@@ -284,6 +287,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                     final MapMessage map = createMapMessage(acknowledge
                             ? JMSAlarmMessage.TEXT_ACKNOWLEDGE
                             : JMSAlarmMessage.TEXT_UNACKNOWLEDGE);
+                    map.setString(JMSAlarmMessage.CONFIG, pv.getPathName());
                     map.setString(JMSLogMessage.NAME, pv.getName());
                     client_producer.send(map);
                 }
