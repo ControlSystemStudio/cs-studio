@@ -268,7 +268,7 @@ public class LogTreeView extends ViewPart {
     });
 
     // Add AutoComplete support, use type logEntrySearch
-    new AutoCompleteWidget(text, "LogentrySearch");
+    new AutoCompleteWidget(text, "Logbook");
 
     label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
     label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));

@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  *
  */
-public class LogEntryWidgetTest extends ApplicationWindow {
+public class LogEntryWidgetDemo extends ApplicationWindow {
 
-    public LogEntryWidgetTest() {
+    public LogEntryWidgetDemo() {
     super(null);
     addToolBar(SWT.FLAT | SWT.WRAP);
     addMenuBar();
@@ -105,7 +105,7 @@ public class LogEntryWidgetTest extends ApplicationWindow {
      */
     public static void main(String args[]) {
     try {
-        LogEntryWidgetTest window = new LogEntryWidgetTest();
+        LogEntryWidgetDemo window = new LogEntryWidgetDemo();
         window.setBlockOnOpen(true);
         window.open();
         Display.getCurrent().dispose();
