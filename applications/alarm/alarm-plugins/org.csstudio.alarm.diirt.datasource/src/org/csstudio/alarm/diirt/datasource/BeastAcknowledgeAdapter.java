@@ -7,6 +7,8 @@ import static org.diirt.vtype.ValueFactory.alarmNone;
 import static org.diirt.vtype.ValueFactory.newVBoolean;
 import static org.diirt.vtype.ValueFactory.timeNow;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.diirt.datasource.ValueCache;
@@ -20,6 +22,11 @@ public class BeastAcknowledgeAdapter extends BeastTypeAdapter {
 
     private static Logger log = Logger.getLogger(BeastAcknowledgeAdapter.class.getName());
 
+    private static Collection<String> ackMesssages = Arrays.asList(
+            org.csstudio.alarm.beast.Messages.SeverityLevel_INVALID_ACK,
+            org.csstudio.alarm.beast.Messages.SeverityLevel_MAJOR_ACK,
+            org.csstudio.alarm.beast.Messages.SeverityLevel_MINOR_ACK,
+            org.csstudio.alarm.beast.Messages.SeverityLevel_UNDEFINED_ACK);
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
         if (connection.getType().equalsIgnoreCase(Messages.Acknowledge))
@@ -30,9 +37,8 @@ public class BeastAcknowledgeAdapter extends BeastTypeAdapter {
     @Override
     public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine(Messages.Acknowledge +" ADAPTER:" + message.toString());
-        
-        VBoolean active = newVBoolean(message.isActive(), alarmNone(), timeNow());
-        cache.writeValue(active);
+        VBoolean acknowledge = newVBoolean(ackMesssages.contains(message.getAlarmSeverity()), alarmNone(), timeNow());
+        cache.writeValue(acknowledge);
         return true;
     }
 }

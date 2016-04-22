@@ -15,6 +15,7 @@ public class BeastTypeAdapterSet implements DataSourceTypeAdapterSet {
         beastTypeAdapter.add(new BeastActiveAdapter());
         beastTypeAdapter.add(new BeastAlarmSeverityAdapter());
         beastTypeAdapter.add(new BeastEnableAdapter());
+        beastTypeAdapter.add(new BeastAcknowledgeAdapter());
     }
 
     @Override

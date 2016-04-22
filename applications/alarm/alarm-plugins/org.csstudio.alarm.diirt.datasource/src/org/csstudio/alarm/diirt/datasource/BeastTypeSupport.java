@@ -20,6 +20,7 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
             Messages.Active,
             Messages.Enable,
             Messages.AlarmSeverity,
+            Messages.Acknowledge,
             "RawTable",
             "Default");
     

@@ -48,6 +48,9 @@ public class BeastChannelHandler extends
         datasource.remove(getChannelName(), this);
     }
 
+    /**
+     * TODO the newValue has only been tested with String. The handling on writing boolean objects needs to be tested.
+     */
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         log.fine("write");
