@@ -18,16 +18,15 @@ public abstract class BeastTypeAdapter implements
         DataSourceTypeAdapter<BeastConnectionPayload, BeastMessagePayload> {
 
     @Override
-    public Object getSubscriptionParameter(ValueCache<?> cache,
-            BeastConnectionPayload connection) {
-        return null;
+    public Object getSubscriptionParameter(ValueCache<?> cache, BeastConnectionPayload connection) {
+        throw new UnsupportedOperationException("Not implemented: BeastChannelHandler is multiplexed, will not use this method");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean updateCache(ValueCache cache,
             BeastConnectionPayload connection, BeastMessagePayload message) {
         // TODO Auto-generated method stub
-        System.out.println("ADAPTER:" + message.toString());
         cache.writeValue(newVString(message.toString(), alarmNone(), timeNow()));
         return true;
     }

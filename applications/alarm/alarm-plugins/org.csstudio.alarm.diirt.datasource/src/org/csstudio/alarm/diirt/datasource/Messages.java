@@ -17,6 +17,8 @@ public class Messages extends NLS
     public static String Type;
     public static String Time;
     public static String AlarmCount;
+    
+    public static String Acknowledge;
 
     static
     {

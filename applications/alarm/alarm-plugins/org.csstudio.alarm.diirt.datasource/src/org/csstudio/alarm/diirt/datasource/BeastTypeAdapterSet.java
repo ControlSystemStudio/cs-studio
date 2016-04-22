@@ -10,9 +10,11 @@ public class BeastTypeAdapterSet implements DataSourceTypeAdapterSet {
     private Collection<BeastTypeAdapter> beastTypeAdapter = new ArrayList<BeastTypeAdapter>();
 
     public BeastTypeAdapterSet() {
-        beastTypeAdapter.add(new BeastVStringAdapter());
-        beastTypeAdapter.add(new BeastVBooleanAdapter());
         beastTypeAdapter.add(new BeastVTableAdapter());
+        beastTypeAdapter.add(new BeastRawVTableAdapter());
+        beastTypeAdapter.add(new BeastActiveAdapter());
+        beastTypeAdapter.add(new BeastAlarmSeverityAdapter());
+        beastTypeAdapter.add(new BeastEnableAdapter());
     }
 
     @Override

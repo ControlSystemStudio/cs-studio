@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ import org.diirt.datasource.DataSource;
 import org.diirt.datasource.vtype.DataTypeSupport;
 
 import com.thoughtworks.xstream.InitializationException;
-
+import static org.csstudio.alarm.diirt.datasource.BeastTypeSupport.*;
 /**
  * @author Kunal Shroff
  *
@@ -36,7 +37,6 @@ public class BeastDataSource extends DataSource {
 
     private static final Logger log = Logger.getLogger(BeastDataSource.class.getName());
 
-    private final BeastTypeSupport typeSupport;
 
     // The model, activeAlarms and acknowledgedAlarms is shared by the entire
     // datasource, the benefit of does this at the datasource level instead of
@@ -47,6 +47,8 @@ public class BeastDataSource extends DataSource {
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
     private Executor executor = Executors.newScheduledThreadPool(4);
+    
+    private BeastTypeSupport typeSupport;
 
     static {
         // Install type support for the types it generates.
@@ -55,8 +57,6 @@ public class BeastDataSource extends DataSource {
 
     public BeastDataSource(BeastDataSourceConfiguration configuration) {
         super(true);
-
-        typeSupport = new BeastTypeSupport();
 
         try {
 
@@ -138,6 +138,8 @@ public class BeastDataSource extends DataSource {
                             }
                         });
                     });
+            typeSupport = new BeastTypeSupport();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,7 +161,7 @@ public class BeastDataSource extends DataSource {
 
     @Override
     protected ChannelHandler createChannel(String channelName) {
-        return new BeastChannelHandler(channelName, this);
+        return new BeastChannelHandler(getStrippedChannelName(channelName), getChannelType(channelName), this);
     }
 
     @Override
@@ -187,10 +189,6 @@ public class BeastDataSource extends DataSource {
         }
 
         return channel;
-    }
-
-    public BeastTypeSupport getTypeSupport() {
-        return typeSupport;
     }
 
     @SuppressWarnings("rawtypes")
@@ -285,5 +283,9 @@ public class BeastDataSource extends DataSource {
             for (int i=0; i<N; ++i)
                 addPVs(pvs, item.getChild(i), enable);
         }
+    }
+
+    public BeastTypeSupport getTypeSupport() {
+        return typeSupport;
     }
 }
