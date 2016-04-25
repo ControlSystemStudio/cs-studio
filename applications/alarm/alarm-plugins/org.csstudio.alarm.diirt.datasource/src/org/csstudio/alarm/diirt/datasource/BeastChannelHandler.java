@@ -124,7 +124,7 @@ public class BeastChannelHandler extends
     }
 
     protected void connectionStateChanged(boolean connected) {
-//        log.info("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
+        log.fine("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
         try {
             processConnection(new BeastConnectionPayload(connected, channelType));
         } catch (Exception e) {

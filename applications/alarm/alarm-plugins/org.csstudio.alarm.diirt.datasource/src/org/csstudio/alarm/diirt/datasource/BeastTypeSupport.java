@@ -58,6 +58,7 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
     
     /**
      * Strips out any type information in the channel name and returns the channel name alone 
+     * 
      * @param channelName
      * @return only channel name
      */

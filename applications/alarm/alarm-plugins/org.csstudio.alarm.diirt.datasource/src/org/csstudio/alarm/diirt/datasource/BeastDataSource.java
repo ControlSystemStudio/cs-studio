@@ -4,11 +4,13 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
+import static org.csstudio.alarm.diirt.datasource.BeastTypeSupport.getChannelType;
+import static org.csstudio.alarm.diirt.datasource.BeastTypeSupport.getStrippedChannelName;
+
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,6 @@ import org.diirt.datasource.DataSource;
 import org.diirt.datasource.vtype.DataTypeSupport;
 
 import com.thoughtworks.xstream.InitializationException;
-import static org.csstudio.alarm.diirt.datasource.BeastTypeSupport.*;
 /**
  * @author Kunal Shroff
  *
@@ -69,10 +70,11 @@ public class BeastDataSource extends DataSource {
 
                             @Override
                             public void newAlarmConfiguration(AlarmClientModel model) {
-                                log.config("beast  datasource: new alarm configuration");
+                                log.config("beast  datasource: new alarm configuration --- " + model);
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                             .get(channelHandlerLookupName(channelName));
+                                    
                                     channel.reconnect();
                                 }
                             }
@@ -98,32 +100,33 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void newAlarmState(AlarmClientModel alarmModel, AlarmTreePV pv, boolean parent_changed) {
                                 if (pv != null) {
-//                                    log.fine(pv.getPathName());
-                                    List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
-                                    if (pathHandlers != null) {
-                                        for (Consumer consumer : pathHandlers) {
-                                            consumer.accept(pv);
-                                        }
-                                    }
-                                    List<Consumer> pvHandlers = map.get(pv.getName());
-                                    if (pvHandlers != null) {
-                                        for (Consumer consumer : pvHandlers) {
-                                            consumer.accept(pv);
-                                        }
-                                    }
-                                    // Notify parent nodes (regardless of parent_changed - because the parents' AlarmPVsCount)
-                                    AlarmTreeItem parent = pv.getParent();
-                                    while (parent != null) {
-                                        List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
-                                        if (parentHandlers != null) {
-                                            for (Consumer consumer : parentHandlers) {
-                                                try {
-                                                    consumer.accept(getState(parent.getPathName()));
-                                                } catch (Exception e) {
-
+                                    log.fine(pv.getPathName());
+                                    map.forEach((key, pathHandlers) -> {
+                                        if(getStrippedChannelName(key).equals(pv.getPathName().substring(1)) || getStrippedChannelName(key).equals(pv.getName())){
+                                            if (pathHandlers != null) {
+                                                for (Consumer consumer : pathHandlers) {
+                                                    consumer.accept(pv);
                                                 }
                                             }
                                         }
+                                    });
+                                    // Notify parent nodes (regardless of parent_changed - because the parents' AlarmPVsCount)
+                                    AlarmTreeItem parent = pv.getParent();
+                                    while (parent != null) {
+                                        String parentPath = parent.getPathName();
+                                        map.forEach((key, pathHandlers) -> {
+                                            if(getStrippedChannelName(key).equals(parentPath.substring(1))) {
+                                                if (pathHandlers != null) {
+                                                    for (Consumer consumer : pathHandlers) {
+                                                        try {
+                                                            consumer.accept(getState(parentPath));
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
                                         parent = parent.getParent();
                                     }
                                 } else {
@@ -132,7 +135,8 @@ public class BeastDataSource extends DataSource {
                                     for (String channelName : map.keySet()) {
                                         BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                                 .get(channelHandlerLookupName(channelName));
-                                        channel.reconnect(); // will send connection state + current AlarmTreeItem state
+                                        if(channel!=null)
+                                            channel.reconnect(); // will send connection state + current AlarmTreeItem state
                                     }
                                 }
                             }
@@ -161,7 +165,7 @@ public class BeastDataSource extends DataSource {
 
     @Override
     protected ChannelHandler createChannel(String channelName) {
-        return new BeastChannelHandler(getStrippedChannelName(channelName), getChannelType(channelName), this);
+        return new BeastChannelHandler(channelName, getChannelType(channelName), this);
     }
 
     @Override
@@ -215,7 +219,7 @@ public class BeastDataSource extends DataSource {
     }
 
     protected AlarmTreeItem getState(String channelName) throws Exception {
-        URI uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
+        URI uri = URI.create(URLEncoder.encode(getStrippedChannelName(channelName), "UTF-8"));
         String pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
         if (model != null) {
             AlarmTreePV alarmTreePV = model.findPV(pvName);
@@ -262,8 +266,6 @@ public class BeastDataSource extends DataSource {
                         try {
                             model.enable(alarmTreePV, enable);
                         } catch (Exception e) {
-                            //TODO handle raising the write exception
-                            e.printStackTrace();
                             new Exception("Failed to enable/disable : " + ((AlarmTreePV) item).getName(), e);
                         }
                     }
