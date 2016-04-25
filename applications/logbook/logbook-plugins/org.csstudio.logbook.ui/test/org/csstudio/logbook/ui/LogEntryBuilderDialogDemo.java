@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  *
  */
-public class LogEntryBuilderDialogTest {
+public class LogEntryBuilderDialogDemo {
 
     /**
      * Launch the application.

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.apputil.ui.time.Messages;
+import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
@@ -42,17 +44,13 @@ public class LogbookAutoCompleteSearchProvider extends
         for (Property property : logbookClient.listProperties()) {
         properties.add(property.getName());
         }
-        List<String> timeOptions = new ArrayList<String>(Arrays.asList(
-            "lastMin", "1minAgo", "lastHour", "1hourAgo", "lastDay",
-            "1dayAgo", "lastWeek", "1weekAgo"));
         keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_LOGBOOKS,
             logbooks);
         keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_TAGS, tags);
         keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_PROPERTIES,
             properties);
-        keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_START,
-            timeOptions);
-        keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_END, timeOptions);
+        keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_START, Arrays.asList(Messages.StartEnd_StartTime_TT));
+        keyValueMap.put(LogEntrySearchUtil.SEARCH_KEYWORD_END, Arrays.asList(Messages.StartEnd_EndTime_TT));
         return keyValueMap;
     } catch (Exception e1) {
         return Collections.emptyMap();

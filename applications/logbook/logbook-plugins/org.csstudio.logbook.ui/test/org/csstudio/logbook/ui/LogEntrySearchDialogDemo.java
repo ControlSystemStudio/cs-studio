@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  *
  */
-public class LogEntrySearchDialogTest {
+public class LogEntrySearchDialogDemo {
 
     public static void main(String args[]) {
 
@@ -26,7 +26,7 @@ public class LogEntrySearchDialogTest {
         "Operations", "LOTO", "Mechanical Maintenance",
         " Timing System"));
     List<String> tags = new ArrayList<String>(Arrays.asList("testing",
-        "clean up", "shroffk"));
+        "clean up", "shroffk", "test"));
     LogEntrySearchDialog dialog = new LogEntrySearchDialog(shell, logbooks,
         tags, Collections.<String, String> emptyMap());
     dialog.setBlockOnOpen(true);

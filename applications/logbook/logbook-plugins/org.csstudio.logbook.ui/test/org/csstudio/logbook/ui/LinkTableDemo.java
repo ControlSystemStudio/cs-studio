@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Shell;
  * @author shroffk
  *
  */
-public class LinkTableTest extends ApplicationWindow {
+public class LinkTableDemo extends ApplicationWindow {
 
     private LinkTable linkTable;
 
-    public LinkTableTest() {
+    public LinkTableDemo() {
     super(null);
     addToolBar(SWT.FLAT | SWT.WRAP);
     addMenuBar();
@@ -143,7 +143,7 @@ public class LinkTableTest extends ApplicationWindow {
      */
     public static void main(String args[]) {
     try {
-        LinkTableTest window = new LinkTableTest();
+        LinkTableDemo window = new LinkTableDemo();
         window.setBlockOnOpen(true);
         window.open();
         Display.getCurrent().dispose();

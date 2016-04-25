@@ -26,7 +26,7 @@ public class SearchStringParser {
      */
     public static Map<String, String> searchParser(final String string, final String defaultKey) {
         final Map<String, String> result = new HashMap<String, String>();
-        final Pattern p = Pattern.compile("([\\S]*):[.]*");
+        final Pattern p = Pattern.compile("([^\\s\\d]+):[.]*");
         final Matcher m = p.matcher(string);
         int start = 0;
         int end;

@@ -34,12 +34,12 @@ import org.eclipse.swt.widgets.Text;
  * @author shroffk
  *
  */
-public class LogEntryTreeTest extends ApplicationWindow {
+public class LogEntryTableDemo extends ApplicationWindow {
     private static String MEDIUM_TEXT = "this a a text that is a bit longer, but not too long. This row should have a smaller height than row #1";
-    private LogEntryTree logEntryTree;
+    private LogEntryTable logEntryTable;
     private Text text;
 
-    public LogEntryTreeTest() {
+    public LogEntryTableDemo() {
     super(null);
     addToolBar(SWT.FLAT | SWT.WRAP);
     addMenuBar();
@@ -56,9 +56,9 @@ public class LogEntryTreeTest extends ApplicationWindow {
     Composite container = new Composite(parent, SWT.NONE);
     container.setLayout(new GridLayout(1, false));
 
-    logEntryTree = new LogEntryTree(container, SWT.NONE);
+    logEntryTable = new LogEntryTable(container, SWT.NONE);
 
-    logEntryTree
+    logEntryTable
         .addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -74,7 +74,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
             }
             }
         });
-    logEntryTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+    logEntryTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
         true, 1, 1));
 
     Button btnNewButton = new Button(container, SWT.NONE);
@@ -96,7 +96,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
                 .addLogbook(LogbookBuilder.logbook("test2"))
                 .build());
             }
-            logEntryTree.setLogs(logEntries);
+            logEntryTable.setLogs(logEntries);
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -138,7 +138,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
             logEntryBuilder.addText(sb.toString());
             logEntries.add(logEntryBuilder.build());
             }
-            logEntryTree.setLogs(logEntries);
+            logEntryTable.setLogs(logEntries);
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -164,7 +164,7 @@ public class LogEntryTreeTest extends ApplicationWindow {
      */
     public static void main(String args[]) {
     try {
-        LogEntryTreeTest window = new LogEntryTreeTest();
+        LogEntryTableDemo window = new LogEntryTableDemo();
         window.setBlockOnOpen(true);
         window.open();
         Display.getCurrent().dispose();
