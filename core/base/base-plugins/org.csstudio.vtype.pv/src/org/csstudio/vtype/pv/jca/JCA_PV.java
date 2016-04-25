@@ -161,7 +161,16 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             if (old_monitor != null)
             {
                 logger.log(Level.FINE, getName() + " already had a subscription");
-                old_monitor.clear();
+                try
+                {   // Try to clear old monitor and access rights list..
+                    old_monitor.clear();
+                    channel.removeAccessRightsListener(this);
+                }
+                catch (Throwable ex)
+                {   // .. and log errors, but allow to continue
+                    // with new rights listener and flush
+                    logger.log(Level.WARNING, getName() + " cannot clear old monitor", ex);
+                }
             }
             // TODO Monitor.PROPERTY subscription
 
