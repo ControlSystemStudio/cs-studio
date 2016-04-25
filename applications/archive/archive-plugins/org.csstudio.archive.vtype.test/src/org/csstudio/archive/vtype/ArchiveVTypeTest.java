@@ -13,14 +13,13 @@ import static org.junit.Assert.assertThat;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
+import org.diirt.util.text.NumberFormats;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
-import org.diirt.util.text.NumberFormats;
 import org.junit.Test;
 
 /** JUnit test of Archive {@link VType}s
