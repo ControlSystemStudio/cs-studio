@@ -14,8 +14,8 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.platform.utility.rdb;bundle-version="1.6.0",
  org.csstudio.logging;bundle-version="3.1.0",
  org.csstudio.security;bundle-version="1.0.0",
- org.diirt.util;bundle-version="3.0.1",
- org.diirt.vtype;bundle-version="3.0.1"
+ org.diirt.util;bundle-version="3.1.2",
+ org.diirt.vtype;bundle-version="3.1.2"
 Export-Package: org.csstudio.alarm.beast,
  org.csstudio.alarm.beast.client,
  org.csstudio.alarm.beast.ui.clientmodel
