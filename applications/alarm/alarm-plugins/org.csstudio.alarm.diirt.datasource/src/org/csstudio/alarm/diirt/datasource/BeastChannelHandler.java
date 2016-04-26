@@ -23,9 +23,11 @@ public class BeastChannelHandler extends
     private static final Logger log = Logger.getLogger(BeastChannelHandler.class.getName());
 
     private BeastDataSource datasource;
+    private final String channelType;
 
-    public BeastChannelHandler(String channelName, BeastDataSource beastDataSource) {
+    public BeastChannelHandler(String channelName, String channelType, BeastDataSource beastDataSource) {
         super(channelName);
+        this.channelType = channelType;
         this.datasource = beastDataSource;
         // we do not want diirt to resend the last message when we call processConnection() only,
         // because of the delay between the AlarmServer becoming unavailable and AlarmClientModelListener's
@@ -46,6 +48,9 @@ public class BeastChannelHandler extends
         datasource.remove(getChannelName(), this);
     }
 
+    /**
+     * TODO the newValue has only been tested with String. The handling on writing boolean objects needs to be tested.
+     */
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         log.fine("write");
@@ -70,7 +75,11 @@ public class BeastChannelHandler extends
                     break;
                 }
             } else if (newValue instanceof Boolean) {
-                datasource.acknowledge(getChannelName(), (boolean) newValue);
+                if(Messages.Enable.equals(channelType)){
+                    datasource.enable(getChannelName(), (boolean) newValue);
+                }else if(Messages.Acknowledge.equals(channelType)){
+                    datasource.acknowledge(getChannelName(), (boolean) newValue);
+                }
             }
         } catch (Exception e) {
             callback.channelWritten(e);
@@ -85,7 +94,7 @@ public class BeastChannelHandler extends
 
     @Override
     protected BeastTypeAdapter findTypeAdapter(ValueCache<?> cache, BeastConnectionPayload connPayload) {
-        return new BeastVTableAdapter();
+        return datasource.getTypeSupport().find(cache, connPayload);
     }
 
     @Override
@@ -105,7 +114,7 @@ public class BeastChannelHandler extends
         AlarmTreeItem initialState;
         try {
             initialState = datasource.getState(getChannelName());
-            processConnection(new BeastConnectionPayload(datasource.isConnected())); // always send at least the connection state
+            processConnection(new BeastConnectionPayload(datasource.isConnected(), channelType)); // always send at least the connection state
             if (initialState != null) {
                 processMessage(new BeastMessagePayload(initialState));
             }
@@ -115,9 +124,9 @@ public class BeastChannelHandler extends
     }
 
     protected void connectionStateChanged(boolean connected) {
-//        log.info("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
+        log.fine("connectionStateChanged called: " + getChannelName() + " (connected: " + connected + ")");
         try {
-            processConnection(new BeastConnectionPayload(connected));
+            processConnection(new BeastConnectionPayload(connected, channelType));
         } catch (Exception e) {
             log.warning("connectionStateChange: processConnection threw an exception: " + e.toString());
         }

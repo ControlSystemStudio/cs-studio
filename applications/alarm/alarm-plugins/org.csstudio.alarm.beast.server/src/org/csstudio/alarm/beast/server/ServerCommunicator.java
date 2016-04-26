@@ -281,6 +281,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                             ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
                             : JMSAlarmMessage.TEXT_STATE);
                     map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSAlarmMessage.CONFIG, pv.getPathName());
                     map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
@@ -319,7 +320,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
-                    map.setString(JMSLogMessage.NAME, pv.getPathName());
+                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSAlarmMessage.CONFIG,  pv.getPathName());
                     map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
@@ -352,6 +354,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 {
                     final MapMessage map = createAlarmMessage(text);
                     map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSAlarmMessage.CONFIG,  pv.getPathName());
                     server_producer.send(map);
                 }
                 catch (Exception ex)
