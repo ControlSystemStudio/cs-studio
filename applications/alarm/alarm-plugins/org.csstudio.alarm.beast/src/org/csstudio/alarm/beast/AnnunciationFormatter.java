@@ -68,6 +68,9 @@ public class AnnunciationFormatter
             if (value == null)
                 value = "null"; //$NON-NLS-1$
             // Use custom format
+            format = format.replace("{", "'{'");
+            format = format.replace("}", "'}'");
+            format = format.replaceAll("'\\{'([\\d]+)'\\}'", "{$1}");
             message = NLS.bind(format, severity, value);
         }
         else// Use default format
