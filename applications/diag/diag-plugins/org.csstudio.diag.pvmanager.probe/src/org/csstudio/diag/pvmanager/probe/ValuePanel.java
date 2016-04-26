@@ -2,6 +2,7 @@ package org.csstudio.diag.pvmanager.probe;
 
 import java.time.format.DateTimeFormatter;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Enum;
@@ -26,7 +27,7 @@ public class ValuePanel extends Composite {
 
     // TODO: we should take these from a default place
     private ValueFormat valueFormat = new SimpleValueFormat(3);
-    private DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.n z");
+    private DateTimeFormatter timeFormat = TimestampFormats.FULL_FORMAT;
 
     private Text valueField;
     private Text timestampField;
