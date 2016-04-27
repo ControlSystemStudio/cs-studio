@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>applications-plugins</artifactId>
+    <artifactId>alarm-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
