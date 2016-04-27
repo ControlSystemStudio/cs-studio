@@ -45,6 +45,15 @@ public class AnnunciationFormatterUnitTest
         message = AnnunciationFormatter.format("   !  *  Tank Temperature at {1} which is {0}", "MINOR", "110");
         System.out.println(message);
         assertEquals("!Tank Temperature at 110 which is MINOR", message);
+
+        // Allow the use of {, } in the alarm description and only parse {0}, {1}, {2},...
+        message = AnnunciationFormatter.format("   !  * PV SR{temp:I} at {1} which is {0}", "MINOR", "110");
+        //System.out.println(message);
+        assertEquals("!PV SR{temp:I} at 110 which is MINOR", message);
+
+        message = AnnunciationFormatter.format("   !  * PV SR{temp{wire}:I} at {1} which is {0}", "MINOR", "110");
+        //System.out.println(message);
+        assertEquals("!PV SR{temp{wire}:I} at 110 which is MINOR", message);
     }
 
     @Test
