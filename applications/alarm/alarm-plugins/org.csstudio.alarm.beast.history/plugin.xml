@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Alarm History View"
+            icon="icons/msg_hist.gif"
+            category="org.csstudio.alarm.beast.history"
+            class="org.csstudio.alarm.beast.history.views.AlarmHistoryView"
+            id="org.csstudio.alarm.beast.history.views.AlarmHistoryView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm?endof=org.csstudio.alarm.beast.alarmtable">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/msg_hist.gif"
+               label="Alarm History"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.history.views.AlarmHistoryView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+               icon="icons/msg_hist.gif"
+               label="Show Alarm History"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.csstudio.alarm.beast.history.views.AlarmHistoryView?after=additions">
+         <command
+               commandId="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryTable"
+               icon="icons/gear-16.png"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryQuery"
+               icon="icons/mail-find.png"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+            id="org.csstudio.alarm.beast.history.views.ShowAlarmHistoryCommand"
+            name="Show Alarm History">
+      </command>
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.ConfigureAlarmHistoryTable"
+            id="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryTable"
+            name="Configure Alarm History Table">
+      </command>
+      <command
+            defaultHandler="org.csstudio.alarm.beast.history.views.ConfigureAlarmHistoryQuery"
+            id="org.csstudio.alarm.beast.history.ConfigureAlarmHistoryQuery"
+            name="Configure Alarm History Query">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.csdata.ProcessVariable"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.csdata.TimestampedPV"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="[Lorg.csstudio.csdata.ProcessVariable;"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="[Lorg.csstudio.csdata.TimestampedPV;"
+            class="org.csstudio.alarm.beast.history.views.AdapterFactory">
+         <adapter
+               type="org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters">
+         </adapter>
+      </factory>
+   </extension>
+
+</plugin>

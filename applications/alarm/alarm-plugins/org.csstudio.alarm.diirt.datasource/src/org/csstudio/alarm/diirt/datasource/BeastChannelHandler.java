@@ -80,6 +80,12 @@ public class BeastChannelHandler extends
                 }else if(Messages.Acknowledge.equals(channelType)){
                     datasource.acknowledge(getChannelName(), (boolean) newValue);
                 }
+            } else if (newValue instanceof Double){
+                if(Messages.Enable.equals(channelType)){
+                    datasource.enable(getChannelName(), (Double) newValue == 1);
+                }else if(Messages.Acknowledge.equals(channelType)){
+                    datasource.acknowledge(getChannelName(), (Double) newValue == 1);
+                }
             }
         } catch (Exception e) {
             callback.channelWritten(e);
