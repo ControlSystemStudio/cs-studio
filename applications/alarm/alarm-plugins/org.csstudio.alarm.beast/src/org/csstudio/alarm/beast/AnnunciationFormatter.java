@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 public class AnnunciationFormatter
 {
     final private static Pattern priority_pattern = Pattern.compile(Messages.PriorityAnnunciationPattern);
+    final private static Pattern nls_pattern = Pattern.compile("'\\{'([\\d]+)'\\}'");
 
     /** Determine if the format describes a 'priority' message
      *  @param format Format
@@ -68,9 +69,8 @@ public class AnnunciationFormatter
             if (value == null)
                 value = "null"; //$NON-NLS-1$
             // Use custom format
-            format = format.replace("{", "'{'");
-            format = format.replace("}", "'}'");
-            format = format.replaceAll("'\\{'([\\d]+)'\\}'", "{$1}");
+            format = format.replace("{", "'{'").replace("}", "'}'");
+            format = nls_pattern.matcher(format).replaceAll("{$1}");
             message = NLS.bind(format, severity, value);
         }
         else// Use default format
