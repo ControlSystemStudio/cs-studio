@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** Very simplistic WorkQueue JUnit test
@@ -101,7 +102,7 @@ public class WorkQueueUnitTest
 
     // Meant to run in JProfiler, used to
     // determine queue performance
-    // @Ignore
+    @Ignore
     @Test
     public void profileQueuePerformance()
     {

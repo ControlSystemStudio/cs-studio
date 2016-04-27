@@ -9,11 +9,11 @@ package org.csstudio.alarm.beast.client;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit Test of AlarmTreeItem
@@ -99,7 +99,7 @@ public class AlarmTreeItemUnitTest
         assertEquals(SeverityLevel.OK, ccl.getSeverity());
         pv.setAlarmState(SeverityLevel.MINOR, "Nuissance",
                          SeverityLevel.MAJOR, "Problem",
-                         "Value", Timestamp.now());
+                         "Value", Instant.now());
         assertEquals(SeverityLevel.MINOR, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR, ccl.getSeverity());
         assertEquals("Problem", ccl.getMessage());
@@ -108,7 +108,7 @@ public class AlarmTreeItemUnitTest
         // Check propagation of alarm that clears
         pv.setAlarmState(SeverityLevel.OK, "Nuissance",
                 SeverityLevel.MAJOR_ACK, "Problem2",
-                "Value2", Timestamp.now());
+                "Value2", Instant.now());
         assertEquals(SeverityLevel.OK, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR_ACK, ccl.getSeverity());
         assertEquals("Problem2", ccl.getMessage());
