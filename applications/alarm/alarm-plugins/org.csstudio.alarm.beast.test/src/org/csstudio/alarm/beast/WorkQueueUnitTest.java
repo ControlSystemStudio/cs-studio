@@ -63,7 +63,7 @@ public class WorkQueueUnitTest
                 }
                 catch (Throwable ex)
                 {
-                    System.out.println(ex.getMessage());
+                    System.out.println("Detected: " + ex.getMessage());
                     assertTrue(ex.getMessage().contains("WrongThread"));
                 }
             }

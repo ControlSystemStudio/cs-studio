@@ -22,8 +22,7 @@
     <module>org.csstudio.alarm.beast.notifier.intro</module>
     <module>org.csstudio.alarm.beast.notifier.logbook</module>
     <module>org.csstudio.alarm.beast.notifier.test</module>
-    <!--module>org.csstudio.alarm.beast.test</module-->
-    <!-- Error in threading. Test failes to end. -->
+    <module>org.csstudio.alarm.beast.test</module>
     <module>org.csstudio.alarm.beast.server</module>
     <module>org.csstudio.alarm.beast.server.test</module>
     <module>org.csstudio.alarm.beast.ui</module>
@@ -39,6 +38,5 @@
     <module>org.csstudio.alarm.beast.ui.alarmtable.opiwidget</module>
     <module>org.csstudio.alarm.diirt.datasource</module>
     <module>org.csstudio.alarm.diirt.datasource.info</module>
-    <module>org.csstudio.alarm.beast.test</module>
   </modules>
 </project>
