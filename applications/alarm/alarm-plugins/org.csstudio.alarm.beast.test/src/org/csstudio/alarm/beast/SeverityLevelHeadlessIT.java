@@ -9,7 +9,6 @@ package org.csstudio.alarm.beast;
 
 import static org.junit.Assert.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit Plug-in test [headless] of alarm severities
@@ -17,9 +16,8 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SeverityLevelHeadlessTest
+public class SeverityLevelHeadlessIT
 {
-    @Ignore
     @Test
     public void testPreferences()
     {
