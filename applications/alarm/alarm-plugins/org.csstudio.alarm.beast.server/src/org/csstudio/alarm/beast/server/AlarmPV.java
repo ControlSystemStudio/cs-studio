@@ -298,12 +298,16 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         final StringBuilder buf = new StringBuilder();
         buf.append("'").append(getPathName()).append("' (ID ").append(getID()).append(")");
         buf.append(" [").append(description).append("] - ");
-        if (pv != null)
+
+        final PV safe_pv = pv;
+
+        if (safe_pv != null)
         {
             if (is_connected)
-                buf.append("connected - ");
+                buf.append("connected, ");
             else
-                buf.append("disconnected - ");
+                buf.append("disconnected, ");
+            buf.append(safe_pv.read()).append(" - ");
         }
         if (! logic.isEnabled())
             buf.append("disabled - ");
