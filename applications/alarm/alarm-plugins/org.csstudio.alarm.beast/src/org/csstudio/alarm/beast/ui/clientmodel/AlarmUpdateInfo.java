@@ -8,10 +8,8 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -62,17 +60,16 @@ public class AlarmUpdateInfo
         final String current_message = message.getString(JMSAlarmMessage.CURRENT_STATUS);
         final String value = message.getString(JMSAlarmMessage.VALUE);
         final String timetext = message.getString(JMSAlarmMessage.EVENTTIME);
-        Date date;
+        Instant timestamp;
         try
         {
-            date = date_format.parse(timetext);
+            timestamp = date_format.parse(timetext).toInstant();
         }
-        catch (ParseException ex)
+        catch (Throwable ex)
         {
             Activator.getLogger().log(Level.WARNING, "Received invalid time {0}", timetext);
-            date = new Date();
+            timestamp = Instant.now();
         }
-        final Instant timestamp = date.toInstant();
         return new AlarmUpdateInfo(name, current_severity, current_message,
                 severity, status, value, timestamp);
     }

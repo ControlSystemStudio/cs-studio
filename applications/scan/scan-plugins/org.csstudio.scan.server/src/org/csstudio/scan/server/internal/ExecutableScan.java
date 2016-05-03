@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LoopCommand;
@@ -54,7 +55,6 @@ import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.diirt.util.time.TimeDuration;
 
 /** Scan that can be executed: Commands, device context, state
  *
@@ -69,6 +69,9 @@ import org.diirt.util.time.TimeDuration;
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>, AutoCloseable
 {
     final private Logger logger = Logger.getLogger(getClass().getName());
+
+    /** Pattern for "java.lang.Exception: ", "java...Exception: " */
+    private final Pattern java_exception_pattern = Pattern.compile("java[.a-zA-Z]+Exception: ");
 
     /** Jython interpreter that some commands may use.
      *  Owned by the ExecutableScan, see close()
@@ -514,8 +517,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 error = Optional.of(ScanState.Aborted.name());
             else
             {
-                if (ex.getMessage() != null)
-                    error = Optional.of(ex.getMessage());
+                String message = ex.getMessage();
+                if (message != null)
+                {   // Remove initial "java..Exception: " because that tends
+                    // to misguide many users in seeing a Java problem instead of
+                    // reading the actual message.
+                    // This tends to happen with nested messages which return
+                    // the 'cause', starting with its class name.
+                    message = java_exception_pattern.matcher(message).replaceFirst("");
+                    error = Optional.of(message);
+                }
                 else
                     error = Optional.of(ex.getClass().getName());
                 state.set(ScanState.Failed);
