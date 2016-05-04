@@ -17,7 +17,6 @@ package org.csstudio.scan.data;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 
 import org.csstudio.java.time.TimestampFormats;
 
@@ -54,8 +53,8 @@ public class ScanSampleFormatter
         return Arrays.toString(values);
     }
 
-    /** Format {@link Date} to the fullest detail: Date, time, seconds, ...
-     *  @param timestamp {@link Date}
+    /** Format {@link Instant} to the fullest detail: Date, time, seconds, ...
+     *  @param timestamp {@link Instant}
      *  @return Date in preferred text format
      */
     public static String format(final Instant timestamp)
