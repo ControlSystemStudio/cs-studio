@@ -16,9 +16,9 @@
 package org.csstudio.scan.data;
 
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.csstudio.scan.util.TextTable;
@@ -52,7 +52,7 @@ public class ScanDataIterator
     final private int[] index;
 
     /** Timestamp of current spreadsheet line */
-    private Date timestamp;
+    private Instant timestamp;
 
     /** Values for current spreadsheet line */
     final private ScanSample[] value;
@@ -147,7 +147,7 @@ public class ScanDataIterator
 
             // For time stamp, use the newest valid stamp on current line
             if (value[i] != null  &&
-                (timestamp == null  ||  timestamp.before(sample.getTimestamp())))
+                (timestamp == null  ||  timestamp.isBefore(sample.getTimestamp())))
                 timestamp = sample.getTimestamp();
         }
 
@@ -155,7 +155,7 @@ public class ScanDataIterator
     }
 
     /** @return Time stamp of the current spreadsheet line */
-    public Date getTimestamp()
+    public Instant getTimestamp()
     {
         return timestamp;
     }

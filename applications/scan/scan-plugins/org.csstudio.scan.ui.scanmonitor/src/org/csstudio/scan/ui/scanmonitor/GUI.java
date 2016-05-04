@@ -18,6 +18,7 @@ package org.csstudio.scan.ui.scanmonitor;
 import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
@@ -152,7 +153,7 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.CreateTimeFmt,
-                        ScanSampleFormatter.format(info.getCreated()));
+                        TimestampFormats.formatCompactDateTime(info.getCreated()));
             }
 
             @Override
@@ -242,14 +243,14 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.FinishTimeFmt,
-                        ScanSampleFormatter.format(info.getFinishTime()));
+                    TimestampFormats.formatCompactDateTime(info.getFinishTime()));
             }
 
             @Override
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(ScanSampleFormatter.formatTime(info.getFinishTime()));
+                cell.setText(TimestampFormats.formatCompactDateTime(info.getFinishTime()));
             }
         });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()

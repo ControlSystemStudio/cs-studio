@@ -15,15 +15,16 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,15 @@ public class ScanDataIteratorUnitTest
     public void testScanDataIteratorUnitTest()
     {
         // Create simple ScanData: Devices x, y, values 0...9
-        final Date now = new Date();
+        final Instant now = Instant.now();
         final List<ScanSample> xsamples = new ArrayList<ScanSample>();
         final List<ScanSample> ysamples = new ArrayList<ScanSample>();
         for (int i=0; i<20; ++i)
         {
             if (i % 2 == 0)
-                xsamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
+                xsamples.add(ScanSampleFactory.createSample(now.plus(i, SECONDS), i, i/2));
             else
-                ysamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
+                ysamples.add(ScanSampleFactory.createSample(now.plus(i, SECONDS), i, i/2));
         }
         final Map<String, List<ScanSample>> device_data = new HashMap<String, List<ScanSample>>();
         device_data.put("x", xsamples);
@@ -67,7 +68,7 @@ public class ScanDataIteratorUnitTest
         final ScanDataIterator sheet = new ScanDataIterator(data);
         assertEquals(2, sheet.getDevices().length);
         // Check rows
-        Date last_time = null;
+        Instant last_time = null;
         for (int i=0; i<20; ++i)
         {
             assertTrue(sheet.hasNext());
@@ -75,7 +76,7 @@ public class ScanDataIteratorUnitTest
         }
         assertFalse(sheet.hasNext());
 
-        assertEquals( new Date(now.getTime() + 19*1000), last_time);
+        assertEquals( now.plus(19, SECONDS), last_time);
 
         // Dump as CVS
         new ScanDataIterator(data).printCSV(System.out);
@@ -85,27 +86,27 @@ public class ScanDataIteratorUnitTest
     public void testScanDataIteratorTimes()
     {
         // See https://github.com/ControlSystemStudio/cs-studio/issues/1779
-        final Date now = new Date();
+        final Instant now = Instant.now();
         final List<ScanSample> xsamples = new ArrayList<>();
         final List<ScanSample> ysamples = new ArrayList<>();
         final List<ScanSample> zsamples = new ArrayList<>();
 
-        final Date[] times = new Date[4];
+        final Instant[] times = new Instant[4];
         int i=0;
-        times[i] = new Date(now.getTime() + i*1000);
+        times[i] = now.plus(i, SECONDS);
         xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ++i;
-        times[i] = new Date(now.getTime() + i*1000);
+        times[i] = now.plus(i, SECONDS);
         xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ++i;
-        times[i] = new Date(now.getTime() + i*1000);
+        times[i] = now.plus(i, SECONDS);
         xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
         zsamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ++i;
-        times[i] = new Date(now.getTime() + i*1000);
+        times[i] = now.plus(i, SECONDS);
         xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
         ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
         zsamples.add(ScanSampleFactory.createSample(times[i], i, i));
@@ -125,7 +126,7 @@ public class ScanDataIteratorUnitTest
         // Devices should be in alphabetical order
         assertThat(sheet.getDevices(), equalTo(new String[] { "x", "y", "z" }));
 
-        for (Date time : times)
+        for (Instant time : times)
         {
             assertThat(sheet.hasNext(), equalTo(true));
             System.out.println(ScanSampleFormatter.format(sheet.getTimestamp()) + Arrays.toString(sheet.getSamples()));

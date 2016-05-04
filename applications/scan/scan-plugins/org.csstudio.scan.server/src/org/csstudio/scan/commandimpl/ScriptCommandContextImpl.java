@@ -8,7 +8,7 @@
 package org.csstudio.scan.commandimpl;
 
 import java.time.Duration;
-import java.util.Date;
+import java.time.Instant;
 
 import org.csstudio.ndarray.NDArray;
 import org.csstudio.scan.ScanSystemPreferences;
@@ -74,7 +74,7 @@ public class ScriptCommandContextImpl extends ScanScriptContext
             }
         }
         // Log the data
-        final Date timestamp = new Date();
+        final Instant timestamp = Instant.now();
         final IteratorNumber iter = data.getIterator();
         long serial = 0;
         while (iter.hasNext())

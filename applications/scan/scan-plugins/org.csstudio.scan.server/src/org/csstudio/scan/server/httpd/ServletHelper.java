@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server.httpd;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,9 +83,9 @@ public class ServletHelper
      *  @return XML element
      */
     public static Element createXMLElement(final Document doc,
-            final String name, final Date date)
+            final String name, final Instant date)
     {
-        return createXMLElement(doc, name, date.getTime());
+        return createXMLElement(doc, name, date.toEpochMilli());
     }
 
     /** Create XML content for scan server info
@@ -136,7 +136,7 @@ public class ServletHelper
             scan.appendChild(createXMLElement(doc, "performed_work_units", info.getPerformedWorkUnits()));
         }
 
-        final Date finish = info.getFinishTime();
+        final Instant finish = info.getFinishTime();
         if (finish != null)
             scan.appendChild(createXMLElement(doc, "finish", finish));
 

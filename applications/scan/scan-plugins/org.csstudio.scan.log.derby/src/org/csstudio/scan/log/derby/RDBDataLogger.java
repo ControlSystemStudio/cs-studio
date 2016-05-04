@@ -13,8 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +93,7 @@ abstract public class RDBDataLogger
      */
     public Scan createScan(String scan_name) throws Exception
     {
-        final Date now = new Date();
+        final Instant now = Instant.now();
         try
         (
             final PreparedStatement statement = connection.prepareStatement(
@@ -108,7 +108,7 @@ abstract public class RDBDataLogger
                 scan_name = scan_name.substring(0, max_name_length);
             }
             statement.setString(1, scan_name);
-            statement.setTimestamp(2, new Timestamp(now.getTime()));
+            statement.setTimestamp(2, Timestamp.from(now));
             statement.executeUpdate();
             final ResultSet result = statement.getGeneratedKeys();
             try
@@ -144,7 +144,7 @@ abstract public class RDBDataLogger
             if (result.next())
                 scan = new Scan(result.getLong(1),
                                 result.getString(2),
-                                result.getTimestamp(3));
+                                result.getTimestamp(3).toInstant());
             else
                 scan = null;
             result.close();
@@ -169,7 +169,7 @@ abstract public class RDBDataLogger
             while (result.next())
                 scans.add(new Scan(result.getLong(1),
                                    result.getString(2),
-                                   result.getTimestamp(3)));
+                                   result.getTimestamp(3).toInstant()));
             result.close();
         }
         return scans.toArray(new Scan[scans.size()]);
@@ -264,7 +264,7 @@ abstract public class RDBDataLogger
         insert_sample_statement.setLong(1, scan_id);
         insert_sample_statement.setInt(2, device_id);
         insert_sample_statement.setLong(3, sample.getSerial());
-        insert_sample_statement.setTimestamp(4, new Timestamp(sample.getTimestamp().getTime()));
+        insert_sample_statement.setTimestamp(4, Timestamp.from(sample.getTimestamp()));
         insert_sample_statement.setObject(5, new SampleValue(sample.getValues()));
         final int rows = insert_sample_statement.executeUpdate();
         if (rows != 1)
@@ -349,7 +349,7 @@ abstract public class RDBDataLogger
             while (result.next())
             {
                 final long serial = result.getLong(1);
-                final Date timestamp = result.getTimestamp(2);
+                final Instant timestamp = result.getTimestamp(2).toInstant();
                 final SampleValue value = (SampleValue) result.getObject(3);
                 samples.add(ScanSampleFactory.createSample(timestamp, serial, value.getValues()));
             }
