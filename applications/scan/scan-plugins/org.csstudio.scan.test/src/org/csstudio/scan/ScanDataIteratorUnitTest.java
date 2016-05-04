@@ -15,11 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.junit.Test;
 
 /** JUnit test of the {@link ScanDataIterator}
@@ -75,5 +79,58 @@ public class ScanDataIteratorUnitTest
 
         // Dump as CVS
         new ScanDataIterator(data).printCSV(System.out);
+    }
+
+    @Test
+    public void testScanDataIteratorTimes()
+    {
+        // See https://github.com/ControlSystemStudio/cs-studio/issues/1779
+        final Date now = new Date();
+        final List<ScanSample> xsamples = new ArrayList<>();
+        final List<ScanSample> ysamples = new ArrayList<>();
+        final List<ScanSample> zsamples = new ArrayList<>();
+
+        final Date[] times = new Date[4];
+        int i=0;
+        times[i] = new Date(now.getTime() + i*1000);
+        xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ++i;
+        times[i] = new Date(now.getTime() + i*1000);
+        xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ++i;
+        times[i] = new Date(now.getTime() + i*1000);
+        xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        zsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ++i;
+        times[i] = new Date(now.getTime() + i*1000);
+        xsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        ysamples.add(ScanSampleFactory.createSample(times[i], i, i));
+        zsamples.add(ScanSampleFactory.createSample(times[i], i, i));
+
+        final Map<String, List<ScanSample>> device_data = new HashMap<String, List<ScanSample>>();
+        device_data.put("x", xsamples);
+        device_data.put("y", ysamples);
+        device_data.put("z", zsamples);
+        final ScanData data = new ScanData(device_data);
+
+        // Dump as spreadsheet table
+        ScanDataIterator sheet = new ScanDataIterator(data);
+        sheet.printTable(System.out);
+
+        // Check
+        sheet = new ScanDataIterator(data);
+        // Devices should be in alphabetical order
+        assertThat(sheet.getDevices(), equalTo(new String[] { "x", "y", "z" }));
+
+        for (Date time : times)
+        {
+            assertThat(sheet.hasNext(), equalTo(true));
+            System.out.println(ScanSampleFormatter.format(sheet.getTimestamp()) + Arrays.toString(sheet.getSamples()));
+            // This was bug 1779 for the first line
+            assertThat(sheet.getTimestamp(), equalTo(time));
+        }
     }
 }

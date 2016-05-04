@@ -15,9 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,12 +29,14 @@ import java.util.Date;
 @SuppressWarnings("nls")
 public class ScanSampleFormatter
 {
+    final private static ZoneId zone = ZoneId.systemDefault();
+
     /** Suggested time format */
     final public static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    final private static DateFormat date_format = new SimpleDateFormat(DATE_FORMAT);
+    final private static DateTimeFormatter date_format = DateTimeFormatter.ofPattern(DATE_FORMAT).withZone(zone);
 
     final public static String TIME_FORMAT = "HH:mm:ss";
-    final private static DateFormat time_format = new SimpleDateFormat(TIME_FORMAT);
+    final private static DateTimeFormatter time_format = DateTimeFormatter.ofPattern(TIME_FORMAT).withZone(zone);
 
 
     /** Extract double from sample
@@ -71,10 +74,7 @@ public class ScanSampleFormatter
     {
         if (timestamp == null)
             return "?";
-        synchronized (date_format)
-        {
-            return date_format.format(timestamp);
-        }
+        return date_format.format(timestamp.toInstant());
     }
 
     /** Parse a time stamp
@@ -85,10 +85,7 @@ public class ScanSampleFormatter
      */
     public static Date parseTimestamp(final String timestamp) throws ParseException
     {
-        synchronized (date_format)
-        {
-            return date_format.parse(timestamp);
-        }
+        return Date.from(Instant.from(date_format.parse(timestamp)));
     }
 
     /** Format only the time (HH:MM:SS) of a {@link Date}
@@ -99,10 +96,7 @@ public class ScanSampleFormatter
     {
         if (timestamp == null)
             return "?";
-        synchronized (time_format)
-        {
-            return time_format.format(timestamp);
-        }
+        return time_format.format(timestamp.toInstant());
     }
 
     /** Format date and time in a 'compact' way.

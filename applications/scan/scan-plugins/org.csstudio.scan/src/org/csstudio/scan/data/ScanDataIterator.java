@@ -145,8 +145,9 @@ public class ScanDataIterator
             // else: sample[i] already points to a sample
             // _after_ the current line, so leave value[i] as is
 
-            // For time stamp, use the newest stamp on current line
-            if (timestamp == null  ||  timestamp.before(sample.getTimestamp()))
+            // For time stamp, use the newest valid stamp on current line
+            if (value[i] != null  &&
+                (timestamp == null  ||  timestamp.before(sample.getTimestamp())))
                 timestamp = sample.getTimestamp();
         }
 
