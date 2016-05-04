@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.csstudio.utility.test.HamcrestMatchers.greaterThanOrEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -34,9 +33,9 @@ public class ScanConfigReaderUnitTest
     @Test
     public void testReadLegacyFile() throws Exception
     {
-        ScanConfig config = new ScanConfig("examples/beamline.xml");
+        ScanConfig config = new ScanConfig("../org.csstudio.scan/examples/beamline.xml");
         final DeviceInfo[] devices = config.getDevices();
-        assertThat(devices.length, greaterThanOrEqualTo(4));
+        assertThat(devices.length >= 4, equalTo(true));
 
         for (DeviceInfo device : devices)
             System.out.println(device);
@@ -53,17 +52,14 @@ public class ScanConfigReaderUnitTest
         device = find(devices, "readback");
         assertThat(device, not(nullValue()));
         assertThat(device.getAlias(), equalTo("readback"));
-
-        config = new ScanConfig("examples/simulation.xml");
-        assertThat(config.getSlewRate("neutrons"), equalTo(7.0));
     }
 
     @Test
     public void testConfigFile() throws Exception
     {
-        final ScanConfig config = new ScanConfig("examples/scan_config.xml");
+        final ScanConfig config = new ScanConfig("../org.csstudio.scan/examples/scan_config.xml");
         final DeviceInfo[] devices = config.getDevices();
-        assertThat(devices.length, greaterThanOrEqualTo(4));
+        assertThat(devices.length >= 4, equalTo(true));
 
         for (DeviceInfo device : devices)
             System.out.println(device);

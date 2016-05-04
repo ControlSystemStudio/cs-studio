@@ -13,6 +13,7 @@
     <module>org.csstudio.ndarray</module>
     <module>org.csstudio.numjy</module>
     <module>org.csstudio.scan</module>
+    <module>org.csstudio.scan.test</module>
     <module>org.csstudio.scan.client</module>
     <module>org.csstudio.scan.log</module>
     <module>org.csstudio.scan.log.derby</module>
