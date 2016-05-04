@@ -29,11 +29,15 @@ import java.time.format.DateTimeFormatter;
 public class TimestampFormats
 {
     final private static ZoneId zone = ZoneId.systemDefault();
-    final private static String FULL_PATTERN = "yyyy/MM/dd HH:mm:ss.nnnnnnnnn";
-    final private static String SECONDS_PATTERN = "yyyy/MM/dd HH:mm:ss";
+    final private static String FULL_PATTERN = "yyyy-MM-dd HH:mm:ss.nnnnnnnnn";
+    final private static String MILLI_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+    final private static String SECONDS_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     /** Time stamp format for 'full' time stamp */
     final public static DateTimeFormatter FULL_FORMAT= DateTimeFormatter.ofPattern(FULL_PATTERN).withZone(zone);
+
+    /** Time stamp format for time stamp down to milliseconds */
+    final public static DateTimeFormatter MILLI_FORMAT= DateTimeFormatter.ofPattern(MILLI_PATTERN).withZone(zone);
 
     /** Time stamp format for time stamp up to seconds, but not nanoseconds */
     final public static DateTimeFormatter SECONDS_FORMAT = DateTimeFormatter.ofPattern(SECONDS_PATTERN).withZone(zone);
