@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 
 /** Scan sample for numbers
  *  @author Kay Kasemir
@@ -31,7 +31,7 @@ public class NumberScanSample extends ScanSample
      *  @param serial Serial to identify when the sample was taken
      *  @param number Number
      */
-    public NumberScanSample(final Date timestamp,
+    public NumberScanSample(final Instant timestamp,
             final long serial, final Number... values)
     {
         super(timestamp, serial);

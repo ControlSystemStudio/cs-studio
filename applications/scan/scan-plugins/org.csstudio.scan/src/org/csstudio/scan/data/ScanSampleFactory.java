@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
-import java.util.Date;
+import java.time.Instant;
 
 /** Factory for {@link ScanSample} instances
  *  @author Kay Kasemir
@@ -30,7 +30,7 @@ public class ScanSampleFactory
      *  @return {@link ScanSample}
      *  @throws IllegalArgumentException if the value type is not handled
      */
-    public static ScanSample createSample(final Date timestamp,
+    public static ScanSample createSample(final Instant timestamp,
             final long serial, final Number... numbers) throws IllegalArgumentException
     {
         if (numbers.length <= 0)
@@ -45,7 +45,7 @@ public class ScanSampleFactory
      *  @return {@link ScanSample}
      *  @throws IllegalArgumentException if the value type is not handled
      */
-    public static ScanSample createSample(final Date timestamp,
+    public static ScanSample createSample(final Instant timestamp,
             final long serial, final String... values) throws IllegalArgumentException
     {
         if (values.length <= 0)
@@ -60,7 +60,7 @@ public class ScanSampleFactory
      *  @return {@link ScanSample}
      *  @throws IllegalArgumentException if the value type is not handled
      */
-    public static ScanSample createSample(final Date timestamp,
+    public static ScanSample createSample(final Instant timestamp,
             final long serial, final Object... values) throws IllegalArgumentException
     {
         if (values.length <= 0)

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
-import java.util.Date;
+import java.time.Instant;
 
 /** A sample taken by a scan
  *
@@ -42,21 +42,21 @@ import java.util.Date;
  */
 abstract public class ScanSample
 {
-    final private Date timestamp;
+    final private Instant timestamp;
     final private long serial;
 
     /** Initialize
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
      */
-    public ScanSample(final Date timestamp, final long serial)
+    public ScanSample(final Instant timestamp, final long serial)
     {
         this.timestamp = timestamp;
         this.serial = serial;
     }
 
     /** @return Time when this sample was obtained */
-    public Date getTimestamp()
+    public Instant getTimestamp()
     {
         return timestamp;
     }

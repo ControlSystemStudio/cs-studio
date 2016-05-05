@@ -47,14 +47,7 @@ public class TimestampHelper
      */
     public static java.sql.Timestamp toSQLTimestamp(final Instant timestamp)
     {
-        final long nanoseconds = timestamp.getNano();
-        // Only millisecond resolution
-        java.sql.Timestamp stamp = new java.sql.Timestamp(timestamp.getEpochSecond() * 1000  +
-                             nanoseconds / 1000000);
-        // Set nanoseconds (again), but this call uses the full
-        // nanosecond resolution
-        stamp.setNanos((int) nanoseconds);
-        return stamp;
+        return java.sql.Timestamp.from(timestamp);
     }
 
     /** @param sql_time SQL Timestamp
@@ -62,10 +55,7 @@ public class TimestampHelper
      */
     public static Instant fromSQLTimestamp(final java.sql.Timestamp sql_time)
     {
-        final long millisecs = sql_time.getTime();
-        final long seconds = millisecs/1000;
-        final int nanoseconds = sql_time.getNanos();
-        return Instant.ofEpochSecond(seconds,  nanoseconds);
+        return sql_time.toInstant();
     }
 
     /** @param millisecs Milliseconds since 1970 epoch
