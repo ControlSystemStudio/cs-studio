@@ -23,12 +23,12 @@ public class TimestampFormatsTest
     @Test
     public void testFormatter()
     {
-        final Instant time = Instant.from(TimestampFormats.SECONDS_FORMAT.parse("2015/02/25 08:42:00"));
+        final Instant time = Instant.from(TimestampFormats.SECONDS_FORMAT.parse("2015-02-25 08:42:00"));
         final String text = TimestampFormats.SECONDS_FORMAT.format(time);
         System.out.println(time);
         System.out.println(text);
-        assertThat(text, equalTo("2015/02/25 08:42:00"));
-        assertThat(TimestampFormats.FULL_FORMAT.format(time), equalTo("2015/02/25 08:42:00.000000000"));
+        assertThat(text, equalTo("2015-02-25 08:42:00"));
+        assertThat(TimestampFormats.FULL_FORMAT.format(time), equalTo("2015-02-25 08:42:00.000000000"));
     }
 
     @Test
