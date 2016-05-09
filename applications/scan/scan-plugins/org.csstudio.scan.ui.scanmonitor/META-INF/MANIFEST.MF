@@ -8,6 +8,7 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.junit;bundle-version="4.8.0",
  org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.csstudio.java;bundle-version="3.3.0",
  org.csstudio.ui.util;bundle-version="4.0.0",
  org.csstudio.scan;bundle-version="4.2.9",
  org.csstudio.scan.client;bundle-version="1.0.0",

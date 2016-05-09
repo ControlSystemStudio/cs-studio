@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 /** Information about a Scan
@@ -124,10 +124,10 @@ public class ScanInfo extends Scan
     }
 
     /** @return (Estimated) finish time or <code>null</code> */
-    public Date getFinishTime()
+    public Instant getFinishTime()
     {
         if (finishtime_ms > 0)
-            return new Date(finishtime_ms);
+            return Instant.ofEpochMilli(finishtime_ms);
         return null;
     }
 

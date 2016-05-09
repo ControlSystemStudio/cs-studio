@@ -22,9 +22,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,7 +191,7 @@ public class ScanClient
     {
         final int id = DOMHelper.getSubelementInt(node, "id", -1);
         final String name = DOMHelper.getSubelementString(node, "name");
-        final Date created = new Date(DOMHelper.getSubelementLong(node, "created", 0));
+        final Instant created = Instant.ofEpochMilli(DOMHelper.getSubelementLong(node, "created", 0));
         final ScanState state = ScanState.valueOf(DOMHelper.getSubelementString(node, "state"));
         final Optional<String> error = Optional.ofNullable(DOMHelper.getSubelementString(node, "error", null));
         final long runtime_ms = DOMHelper.getSubelementLong(node, "runtime", 0);
@@ -221,7 +221,7 @@ public class ScanClient
                 throw new Exception("Expected <server/>");
 
             final String version = DOMHelper.getSubelementString(root_node, "version");
-            final Date start_time = new Date(DOMHelper.getSubelementLong(root_node, "start_time", 0));
+            final Instant start_time = Instant.ofEpochMilli(DOMHelper.getSubelementLong(root_node, "start_time", 0));
             String scan_config;
             try
             {

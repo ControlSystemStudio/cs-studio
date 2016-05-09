@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.csstudio.scan.PathUtil;
 import org.csstudio.scan.data.ScanSampleFormatter;
@@ -27,7 +27,7 @@ import org.csstudio.scan.data.ScanSampleFormatter;
 public class ScanServerInfo extends MemoryInfo
 {
     final private String version;
-    final private Date start_time;
+    final private Instant start_time;
     final private String scan_config;
     final private String simulation_config;
     final private String[] script_paths;
@@ -39,7 +39,7 @@ public class ScanServerInfo extends MemoryInfo
      *  @param scan_config
      *  @param simulation_config
      */
-    public ScanServerInfo(final String version, final Date start_time,
+    public ScanServerInfo(final String version, final Instant start_time,
             final String scan_config,
             final String simulation_config,
             final String[] script_paths,
@@ -64,7 +64,7 @@ public class ScanServerInfo extends MemoryInfo
      *  @param max_mem Maximum available memory (kB)
      *  @param non_heap
      */
-    public ScanServerInfo(final String version, final Date start_time,
+    public ScanServerInfo(final String version, final Instant start_time,
             final String scan_config,
             final String simulation_config,
             final String[] script_paths,
@@ -87,7 +87,7 @@ public class ScanServerInfo extends MemoryInfo
     }
 
     /** @return Start time */
-    public Date getStartTime()
+    public Instant getStartTime()
     {
         return start_time;
     }

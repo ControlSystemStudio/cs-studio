@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scandata;
 
-import java.util.Date;
+import java.time.Instant;
 
-import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFormatter;
 
 /** One row of data for a table of scan samples
  *  @author Kay Kasemir
@@ -18,7 +18,7 @@ import org.csstudio.scan.data.ScanSample;
 @SuppressWarnings("nls")
 public class ScanDataRow
 {
-    final private Date timestamp;
+    final private Instant timestamp;
 
     final private ScanSample[] samples;
 
@@ -26,14 +26,14 @@ public class ScanDataRow
      *  @param timestamp
      *  @param samples
      */
-    public ScanDataRow(final Date timestamp, final ScanSample[] samples)
+    public ScanDataRow(final Instant timestamp, final ScanSample[] samples)
     {
         this.timestamp = timestamp;
         this.samples = samples;
     }
 
     /** @return Time stamp of this row */
-    public Date getTimestamp()
+    public Instant getTimestamp()
     {
         return timestamp;
     }
