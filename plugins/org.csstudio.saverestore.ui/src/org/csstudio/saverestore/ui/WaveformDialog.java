@@ -13,6 +13,7 @@ package org.csstudio.saverestore.ui;
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,10 +86,10 @@ import javafx.util.StringConverter;
 
 /**
  *
- * <code>WaveformDialog</code> is a dialog which displays the values of an {@link Array} type PVs in a table and in
- * a simple line chart. The dialog allows user to change the individual values in the array and then either confirm
- * or cancel the changes. The change that was done is applied to the snapshot if the snapshot is still opened in
- * the controller.
+ * <code>WaveformDialog</code> is a dialog which displays the values of an {@link Array} type PVs in a table and in a
+ * simple line chart. The dialog allows user to change the individual values in the array and then either confirm or
+ * cancel the changes. The change that was done is applied to the snapshot if the snapshot is still opened in the
+ * controller.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -352,8 +353,8 @@ public class WaveformDialog extends Dialog {
 
     private Node getChartNode(Composite parent) {
         ZoomableLineChart chart = new ZoomableLineChart(
-            Optional.of(value.name + " @ " + ((Time) value.value).getTimestamp().toDate()), Optional.of("Array Index"),
-            Optional.empty());
+            Optional.of(value.name + " @ " + Date.from(((Time) value.value).getTimestamp())),
+            Optional.of("Array Index"), Optional.empty());
         series = new XYChart.Series<>();
         series.setName(value.name);
         List<Data<Number, Number>> list = series.getData();

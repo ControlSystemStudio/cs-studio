@@ -14,13 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Optional;
 
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
@@ -53,7 +53,7 @@ public class AdapterFactory implements IAdapterFactory {
                 try {
                     String[] path = file.getFullPath().segments();
                     SnapshotContent sc = FileUtilities.readFromSnapshot(file.getContents());
-                    Timestamp snapshotTime = Timestamp.of(sc.getDate());
+                    Instant snapshotTime = sc.getDate();
                     SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
@@ -70,7 +70,7 @@ public class AdapterFactory implements IAdapterFactory {
                     String absPath = uri.toString().replace('\\', '/');
                     String[] path = absPath.split("\\/");
                     SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                    Timestamp snapshotTime = Timestamp.of(sc.getDate());
+                    Instant snapshotTime = sc.getDate();
                     SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),

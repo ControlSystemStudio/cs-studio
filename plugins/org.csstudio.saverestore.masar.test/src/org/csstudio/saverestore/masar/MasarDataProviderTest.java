@@ -22,9 +22,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +32,12 @@ import org.csstudio.saverestore.CompletionNotifier;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -56,7 +55,7 @@ public class MasarDataProviderTest {
     private MasarDataProvider dataProvider;
     private CompletionNotifier notifier;
 
-    private Date date = new Date();
+    private Instant date = Instant.now();
     private Branch branch = new Branch();
     private Branch someBranch = new Branch("someBranch", "someBranch");
     private Branch demoBranch = new Branch("demo", "demo");
@@ -67,14 +66,14 @@ public class MasarDataProviderTest {
     private SaveSet branchSaveSet2 = new SaveSet(branch, Optional.of(branchBase1),
         new String[] { "first", "foo", "bar", "second.bms" }, "someId");
     private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000), "another comment",
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, date.minusMillis(5000), "another comment",
         "user");
-    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
+    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, date.plusMillis(5000), "new snapshot",
         "user");
     private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
         Arrays.asList("d1", "d2"), "description");
     private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
-        Arrays.asList(VDisconnectedData.INSTANCE), Timestamp.now(), null);
+        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
 
     @Before
     public void setUp() throws Exception {

@@ -12,9 +12,9 @@ package org.csstudio.saverestore.masar;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,6 @@ import org.diirt.util.array.ArrayFloat;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
@@ -85,7 +84,6 @@ import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.UnionArrayData;
 
-import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_Byte;
 import gov.aps.jca.dbr.DBR_Float;
 import gov.aps.jca.dbr.DBR_Short;
@@ -191,7 +189,7 @@ public final class MasarUtilities {
             Map<String, String> parameters = new HashMap<>();
             parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, String.valueOf(events.data[i]));
             parameters.put(MasarConstants.P_CONFIG_ID, String.valueOf(configs.data[i]));
-            Date date = format.parse(times.data[i]);
+            Instant date = format.parse(times.data[i]).toInstant();
             snapshots.add(new Snapshot(saveSetSupplier.apply(String.valueOf(configs.data[i])), date,
                 comments.data[i].trim(), users.data[i].trim(), parameters,
                 Arrays.asList(MasarConstants.PARAM_SNAPSHOT_ID)));
@@ -209,7 +207,7 @@ public final class MasarUtilities {
      * @param snapshotTime the time for the returned snapshot data
      * @return the VSnapshot
      */
-    static VSnapshot resultToVSnapshot(PVStructure result, Snapshot snapshot, Timestamp snapshotTime) {
+    static VSnapshot resultToVSnapshot(PVStructure result, Snapshot snapshot, Instant snapshotTime) {
         PVStringArray pvAlarmMessage = (PVStringArray) result
             .getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, ScalarType.pvString);
         PVLongArray pvSeconds = (PVLongArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_SECONDS,
@@ -255,7 +253,7 @@ public final class MasarUtilities {
         List<VType> values = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
             names.add(pvName.data[i]);
-            Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], nanos.data[i]));
+            Time time = ValueFactory.newTime(Instant.ofEpochSecond(seconds.data[i], nanos.data[i]));
             Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
                 toStatus(alarmStatus.data[i]));
             boolean isarray = data.data[i].get() instanceof PVArray;

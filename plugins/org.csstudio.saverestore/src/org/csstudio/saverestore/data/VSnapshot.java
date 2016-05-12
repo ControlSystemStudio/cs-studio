@@ -11,6 +11,7 @@
 package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,7 +23,6 @@ import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.Utilities;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ListInt;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Array;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VTable;
@@ -47,7 +47,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     private final List<String> readbackNames;
     private final transient List<VType> readbackValues;
     private final List<String> deltas;
-    private final transient Timestamp snapshotTime;
+    private final transient Instant snapshotTime;
     private final SaveSet saveSet;
     private final Snapshot snapshot;
     private String forcedName;
@@ -63,7 +63,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      *            stored)
      */
     @SuppressWarnings("unchecked")
-    public VSnapshot(Snapshot snapshot, VTable table, Timestamp snapshotTime) {
+    public VSnapshot(Snapshot snapshot, VTable table, Instant snapshotTime) {
         if (table.getColumnCount() != 6) {
             throw new IllegalArgumentException("The table parameter has incorrect number of columns. Should be 6.");
         }
@@ -122,7 +122,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      *            stored)
      */
     public VSnapshot(Snapshot snapshot, List<String> names, List<Boolean> selected, List<VType> values,
-        List<String> readbackNames, List<VType> readbackValues, List<String> deltas, Timestamp snapshotTime) {
+        List<String> readbackNames, List<VType> readbackValues, List<String> deltas, Instant snapshotTime) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
@@ -160,7 +160,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param forcedName the forcedName of this snapshot, which will supersede the any other rule when calling
      *            {@link #toString()}
      */
-    public VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Timestamp snapshotTime,
+    public VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Instant snapshotTime,
         String forcedName) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
@@ -413,7 +413,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @see org.diirt.vtype.Time#getTimestamp()
      */
     @Override
-    public Timestamp getTimestamp() {
+    public Instant getTimestamp() {
         return snapshotTime;
     }
 
@@ -424,7 +424,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public Integer getTimeUserTag() {
-        return (int) snapshotTime.getSec();
+        return (int) snapshotTime.getEpochSecond();
     }
 
     /*
@@ -478,7 +478,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
                 if (snapshotTime == null) {
                     return saveSet.getName();
                 }
-                return Utilities.timestampToBigEndianString(snapshotTime.toDate(), true);
+                return Utilities.timestampToBigEndianString(snapshotTime, true);
             }
         } else {
             return forcedName;
@@ -531,10 +531,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if equal or false otherwise
      */
     public boolean equalsExceptSnapshotOrSaveSet(VSnapshot other) {
-        boolean b = Objects.equals(forcedName, other.forcedName)
-            && Objects.equals(names, other.names) && Objects.equals(snapshotTime, other.snapshotTime)
-            && Objects.equals(selected, other.selected) && Objects.equals(readbackNames, other.readbackNames)
-            && Objects.equals(deltas, other.deltas);
+        boolean b = Objects.equals(forcedName, other.forcedName) && Objects.equals(names, other.names)
+            && Objects.equals(snapshotTime, other.snapshotTime) && Objects.equals(selected, other.selected)
+            && Objects.equals(readbackNames, other.readbackNames) && Objects.equals(deltas, other.deltas);
         if (b) {
             if (values.size() != other.values.size()) {
                 return false;

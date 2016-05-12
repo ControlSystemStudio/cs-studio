@@ -10,6 +10,7 @@
  */
 package org.csstudio.saverestore.ui;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,6 @@ import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.ui.util.SingleListenerBooleanProperty;
 import org.csstudio.saverestore.ui.util.VTypePair;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
@@ -47,7 +47,7 @@ public class TableEntry {
     private final IntegerProperty id = new SimpleIntegerProperty(this, "id");
     private final BooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
     private final StringProperty pvName = new SimpleStringProperty(this, "pvName");
-    private final ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
+    private final ObjectProperty<Instant> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private final StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private final ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
     private final ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
@@ -107,7 +107,7 @@ public class TableEntry {
     /**
      * @return the property providing the timestamp of the primary snapshot value
      */
-    public ObjectProperty<Timestamp> timestampProperty() {
+    public ObjectProperty<Instant> timestampProperty() {
         return timestamp;
     }
 

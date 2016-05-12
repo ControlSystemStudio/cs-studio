@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,7 +39,6 @@ import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VDoubleArray;
 import org.diirt.vtype.VLongArray;
@@ -226,7 +226,8 @@ public class MasarClientTest {
                         fail("Iconrrect event id sent to service");
                     }
                 } else if (MasarConstants.FC_TAKE_SNAPSHOT.equals(in.getStringField(MasarConstants.F_FUNCTION).get())) {
-                    PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_TAKE_SNAPSHOT);
+                    PVStructure struct = PVDataFactory.getPVDataCreate()
+                        .createPVStructure(Utilities.STRUCT_TAKE_SNAPSHOT);
                     ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_SECONDS, ScalarType.pvLong))
                         .put(0, 3, new long[] { 1, 2, 3 }, 0);
                     ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE,
@@ -348,7 +349,7 @@ public class MasarClientTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment1", snapshot.getComment());
         assertEquals("bugsbunny", snapshot.getOwner());
-        assertEquals(date1, snapshot.getDate());
+        assertEquals(date1.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         Map<String, String> parameters = snapshot.getParameters();
@@ -359,7 +360,7 @@ public class MasarClientTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment2", snapshot.getComment());
         assertEquals("elmerfudd", snapshot.getOwner());
-        assertEquals(date2, snapshot.getDate());
+        assertEquals(date2.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -370,7 +371,7 @@ public class MasarClientTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment3", snapshot.getComment());
         assertEquals("daffyduck", snapshot.getOwner());
-        assertEquals(date3, snapshot.getDate());
+        assertEquals(date3.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -387,7 +388,7 @@ public class MasarClientTest {
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("taz-mania rules", snapshot.getComment());
         assertEquals("taz-mania", snapshot.getOwner());
-        assertEquals(date1, snapshot.getDate());
+        assertEquals(date1.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -403,7 +404,7 @@ public class MasarClientTest {
         Snapshot snapshot = snaps.get(0);
         assertEquals("comment1", snapshot.getComment());
         assertEquals("bugsbunny", snapshot.getOwner());
-        assertEquals(date1, snapshot.getDate());
+        assertEquals(date1.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         Map<String, String> parameters = snapshot.getParameters();
@@ -413,7 +414,7 @@ public class MasarClientTest {
         snapshot = snaps.get(1);
         assertEquals("comment2", snapshot.getComment());
         assertEquals("elmerfudd", snapshot.getOwner());
-        assertEquals(date2, snapshot.getDate());
+        assertEquals(date2.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -423,7 +424,7 @@ public class MasarClientTest {
         snapshot = snaps.get(2);
         assertEquals("comment3", snapshot.getComment());
         assertEquals("daffyduck", snapshot.getOwner());
-        assertEquals(date3, snapshot.getDate());
+        assertEquals(date3.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -435,7 +436,7 @@ public class MasarClientTest {
         snapshot = s.get();
         assertEquals("taz-mania rules", snapshot.getComment());
         assertEquals("taz-mania", snapshot.getOwner());
-        assertEquals(date1, snapshot.getDate());
+        assertEquals(date1.toInstant(), snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
@@ -449,11 +450,12 @@ public class MasarClientTest {
         SaveSet set = new SaveSet(service, Optional.of(base), new String[] { "set" }, MasarDataProvider.ID);
         Map<String, String> parameters = new HashMap<>();
         parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, "42");
-        Snapshot snap = new Snapshot(set, new Date(time), "blabla", "taz-mania", parameters, new ArrayList<>(0));
+        Snapshot snap = new Snapshot(set, Instant.ofEpochMilli(time), "blabla", "taz-mania", parameters,
+            new ArrayList<>(0));
         VSnapshot snapshot = client.loadSnapshotData(snap);
 
         assertEquals(Arrays.asList("channel1", "channel2", "channel3"), snapshot.getNames());
-        assertEquals(time, snapshot.getTimestamp().toDate().getTime());
+        assertEquals(time, snapshot.getTimestamp().toEpochMilli());
         List<VType> values = snapshot.getValues();
 
         VDoubleArray v1 = (VDoubleArray) values.get(0);
@@ -463,7 +465,7 @@ public class MasarClientTest {
         assertEquals(3, v1.getData().getDouble(2), 0);
         assertEquals(AlarmSeverity.MINOR, v1.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(1).getName(), v1.getAlarmName());
-        Timestamp t1 = Timestamp.of(1, 1);
+        Instant t1 = Instant.ofEpochSecond(1, 1);
         assertEquals(t1, v1.getTimestamp());
 
         VLongArray v2 = (VLongArray) values.get(1);
@@ -473,17 +475,17 @@ public class MasarClientTest {
         assertEquals(3, v2.getData().getLong(2), 0);
         assertEquals(AlarmSeverity.MAJOR, v2.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(2).getName(), v2.getAlarmName());
-        Timestamp t2 = Timestamp.of(2, 2);
+        Instant t2 = Instant.ofEpochSecond(2, 2);
         assertEquals(t2, v2.getTimestamp());
 
         VString v3 = (VString) values.get(2);
         assertEquals("disabled", v3.getValue());
         assertEquals(AlarmSeverity.INVALID, v3.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(3).getName(), v3.getAlarmName());
-        Timestamp t3 = Timestamp.of(3, 3);
+        Instant t3 = Instant.ofEpochSecond(3, 3);
         assertEquals(t3, v3.getTimestamp());
 
-        snap = new Snapshot(set, new Date(), "blabla", "taz-mania");
+        snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania");
         try {
             client.loadSnapshotData(snap);
             fail("Exception should occur, because the event id parameter is missing");
@@ -509,7 +511,7 @@ public class MasarClientTest {
         SaveSet set = new SaveSet(service, Optional.of(base), new String[] { "set" }, MasarDataProvider.ID);
         Map<String, String> parameters = new HashMap<>();
         parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, "42");
-        Snapshot snap = new Snapshot(set, new Date(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
+        Snapshot snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
         VSnapshot snapshot = client.loadSnapshotData(snap);
 
         VSnapshot snp = client.saveSnapshot(snapshot, "saprans succotash");
@@ -519,8 +521,8 @@ public class MasarClientTest {
         assertEquals("Sylvester", snp.getSnapshot().get().getOwner());
 
         parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, "45");
-        snap = new Snapshot(set, new Date(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
-        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Timestamp.now(), null);
+        snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
+        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Instant.now(), null);
         try {
             client.saveSnapshot(snapshot, "some comment");
             fail("Service should send an error message");
@@ -528,8 +530,8 @@ public class MasarClientTest {
             assertEquals("Aw, the poor puddy tat! He fall down and go... BOOM!", e.getMessage());
         }
 
-        snap = new Snapshot(set, new Date(), "blabla", "taz-mania");
-        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Timestamp.now(), null);
+        snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania");
+        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Instant.now(), null);
         try {
             client.saveSnapshot(snapshot, "some comment");
             fail("Exception should occur, because snapshot id is missing");
@@ -541,13 +543,13 @@ public class MasarClientTest {
     @Test
     public void testTakeSnapshot() throws MasarException {
         BaseLevel base = new BaseLevel(service, "all", "all");
-        Map<String,String> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put(MasarConstants.P_CONFIG_NAME, "granny");
         SaveSet set = new SaveSet(service, Optional.of(base), new String[] { "set" }, MasarDataProvider.ID, parameters);
         VSnapshot snapshot = client.takeSnapshot(set);
 
         assertEquals(Arrays.asList("channel1", "channel2", "channel3"), snapshot.getNames());
-        assertEquals(Timestamp.of(12345, 54321), snapshot.getTimestamp());
+        assertEquals(Instant.ofEpochSecond(12345, 54321), snapshot.getTimestamp());
         assertEquals("42", snapshot.getSnapshot().get().getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID));
         List<VType> values = snapshot.getValues();
 
@@ -558,7 +560,7 @@ public class MasarClientTest {
         assertEquals(3, v1.getData().getDouble(2), 0);
         assertEquals(AlarmSeverity.MINOR, v1.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(1).getName(), v1.getAlarmName());
-        Timestamp t1 = Timestamp.of(1, 1);
+        Instant t1 = Instant.ofEpochSecond(1, 1);
         assertEquals(t1, v1.getTimestamp());
 
         VLongArray v2 = (VLongArray) values.get(1);
@@ -568,14 +570,14 @@ public class MasarClientTest {
         assertEquals(3, v2.getData().getLong(2), 0);
         assertEquals(AlarmSeverity.MAJOR, v2.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(2).getName(), v2.getAlarmName());
-        Timestamp t2 = Timestamp.of(2, 2);
+        Instant t2 = Instant.ofEpochSecond(2, 2);
         assertEquals(t2, v2.getTimestamp());
 
         VString v3 = (VString) values.get(2);
         assertEquals("disabled", v3.getValue());
         assertEquals(AlarmSeverity.INVALID, v3.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(3).getName(), v3.getAlarmName());
-        Timestamp t3 = Timestamp.of(3, 3);
+        Instant t3 = Instant.ofEpochSecond(3, 3);
         assertEquals(t3, v3.getTimestamp());
     }
 }

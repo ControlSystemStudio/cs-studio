@@ -11,9 +11,9 @@
 package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -80,7 +80,7 @@ public class SaveSetData implements Serializable {
     private final List<String> readbackList;
     private final List<String> deltaList;
     private final String storedComment;
-    private final Date storedDate;
+    private final Instant storedDate;
 
     /**
      * Constructs a new save set data object.
@@ -108,7 +108,7 @@ public class SaveSetData implements Serializable {
      * @param storedDate the creation date of the current revision of this save set
      */
     public SaveSetData(SaveSet descriptor, List<String> pvList, List<String> readbackList,
-        List<String> deltaList, String description, String storedComment, Date storedDate) {
+        List<String> deltaList, String description, String storedComment, Instant storedDate) {
         if (readbackList == null) {
             readbackList = new ArrayList<>(0);
         }
@@ -189,7 +189,7 @@ public class SaveSetData implements Serializable {
      *
      * @return the date when this revision was stored
      */
-    public Date getStoredDate() {
+    public Instant getStoredDate() {
         return storedDate;
     }
 

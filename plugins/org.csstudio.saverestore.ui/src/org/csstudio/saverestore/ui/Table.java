@@ -13,6 +13,7 @@ package org.csstudio.saverestore.ui;
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,7 +33,6 @@ import org.csstudio.saverestore.ui.util.VTypePair;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.UnfocusableCheckBox;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VType;
@@ -93,14 +93,14 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     };
 
     /**
-     * <code>TimestampTableCell</code> is a table cell for rendering the {@link Timestamp} objects in the table.
+     * <code>TimestampTableCell</code> is a table cell for rendering the {@link Instant} objects in the table.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
      */
-    private static class TimestampTableCell extends TableCell<TableEntry, Timestamp> {
+    private static class TimestampTableCell extends TableCell<TableEntry, Instant> {
         @Override
-        protected void updateItem(Timestamp item, boolean empty) {
+        protected void updateItem(Instant item, boolean empty) {
             super.updateItem(item, empty);
             if (empty) {
                 setText(null);
@@ -457,9 +457,9 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         }
 
         width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM M", null);
-        TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
+        TableColumn<TableEntry, Instant> timestampColumn = new TooltipTableColumn<>("Timestamp",
             "Timestamp of the setpoint value when the snapshot was taken", width, width, true);
-        timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
+        timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Instant>("timestamp"));
         timestampColumn.setCellFactory(c -> new TimestampTableCell());
         timestampColumn.setPrefWidth(width);
         list.add(timestampColumn);
@@ -802,12 +802,12 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             return null;
         }
         // if snapshot was found, use its timestamp and create timestamped PVs
-        Timestamp timestamp = snapshot.getTimestamp();
+        Instant timestamp = snapshot.getTimestamp();
         if (timestamp == null) {
             return new StructuredSelection(selectionModelProperty().get().getSelectedItems().stream()
                 .map(e -> new ProcessVariable(e.pvNameProperty().get())).collect(Collectors.toList()));
         } else {
-            long time = timestamp.toDate().getTime();
+            long time = timestamp.toEpochMilli();
             return new StructuredSelection(selectionModelProperty().get().getSelectedItems().stream()
                 .map(e -> new TimestampedPV(e.pvNameProperty().get(), time)).collect(Collectors.toList()));
         }

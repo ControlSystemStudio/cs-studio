@@ -23,6 +23,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,8 +64,6 @@ import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVWriter;
 import org.diirt.datasource.PVWriterEvent;
 import org.diirt.datasource.PVWriterListener;
-import org.diirt.util.time.TimeDuration;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
@@ -277,14 +277,13 @@ public class SnapshotViewerController {
                 if (pv == null) {
                     String name = e.pvNameProperty().get();
                     PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
-                        .maxRate(TimeDuration.ofMillis(100));
-                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(TimeDuration.ofMillis(2000))
-                        .async();
+                        .maxRate(Duration.ofMillis(100));
+                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(Duration.ofMillis(2000)).async();
                     String readback = e.readbackNameProperty().get();
                     PVReader<VType> readbackReader = null;
                     if (readback != null && !readback.isEmpty()) {
                         readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
-                            .maxRate(TimeDuration.ofMillis(100));
+                            .maxRate(Duration.ofMillis(100));
                     }
                     pvs.put(e, new PV(name, reader, writer, readbackReader));
                 } else {
@@ -292,7 +291,7 @@ public class SnapshotViewerController {
                         String readback = e.readbackNameProperty().get();
                         if (readback != null && !readback.isEmpty()) {
                             PVReader<VType> readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
-                                .maxRate(TimeDuration.ofMillis(100));
+                                .maxRate(Duration.ofMillis(100));
                             pv.setReadbackReader(readbackReader);
                         }
                     }
@@ -649,7 +648,7 @@ public class SnapshotViewerController {
                 }
                 // taken snapshots always belong to the save set of the master snapshot
                 taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
-                    Timestamp.now());
+                    Instant.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 receiver.addSnapshot(taken, false);
@@ -723,10 +722,9 @@ public class SnapshotViewerController {
         try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
             StringBuilder header = new StringBuilder(200);
             header.append("Setpoint PV Name,");
-            header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true)).append(',');
+            header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp(), true)).append(',');
             for (int i = 1; i < snaps.size(); i++) {
-                header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp().toDate(), true))
-                    .append(',');
+                header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp(), true)).append(',');
             }
             header.append("Live Setpoint Value,Live Setpoint Timestamp");
             if (showLiveReadback) {
@@ -747,7 +745,7 @@ public class SnapshotViewerController {
                 sb.append(',');
                 if (v instanceof Time) {
                     // sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
-                    sb.append(((Time) v).getTimestamp());
+                    sb.append(Utilities.timestampToDecimalString(((Time) v).getTimestamp()));
                 }
                 if (showLiveReadback) {
                     sb.append(',').append(e.readbackNameProperty().get());
@@ -809,12 +807,11 @@ public class SnapshotViewerController {
                 p = p.substring(idx + 1);
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
-            Timestamp snapshotTime = Timestamp.of(sc.getDate());
             SaveSet set = new SaveSet(new Branch(), Optional.empty(), p.split("\\/"), null);
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
-                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime));
+                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate()));
         } catch (IOException | RuntimeException | ParseException e) {
             ActionManager.reportException(e, receiver.getShell());
             return Optional.empty();
@@ -938,10 +935,8 @@ public class SnapshotViewerController {
                     "Not all PVs could be restored for {0}: {1}. The following errors occured:\n{2}",
                     new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get(), sb.toString() });
 
-
                 FXDetailsDialog.open(getSnapshotReceiver().getShell(), "Restore error",
-                    "There were some errors restoring the snapshot\n " + s.getSnapshot().get(),
-                    sb.toString());
+                    "There were some errors restoring the snapshot\n " + s.getSnapshot().get(), sb.toString());
             }
         } finally {
             for (Map.Entry<PV, PVWriterListener<?>> e : restorablePVs.entrySet()) {
@@ -1062,14 +1057,14 @@ public class SnapshotViewerController {
             return;
         }
         try {
-            Timestamp timestamp = getSnapshot(0).getTimestamp();
+            Instant timestamp = getSnapshot(0).getTimestamp();
             if (timestamp == null) {
-                timestamp = Timestamp.now();
+                timestamp = Instant.now();
             }
             Map<String, VType> values = importer.importer.getValuesForPVs(names, timestamp);
             if (values != null && !values.isEmpty()) {
                 SaveSet bs = new SaveSet(null, Optional.empty(), new String[] { importer.name }, importer.name);
-                Snapshot desc = new Snapshot(bs, timestamp.toDate(), "Imported from " + importer.name, importer.name);
+                Snapshot desc = new Snapshot(bs, timestamp, "Imported from " + importer.name, importer.name);
                 final List<VType> vals = names.stream().map(values::get)
                     .map(v -> v == null ? VDisconnectedData.INSTANCE : v).collect(Collectors.toList());
                 final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
@@ -1112,11 +1107,11 @@ public class SnapshotViewerController {
             final ArrayList<PVReader<VTable>> archiveReaders = new ArrayList<>();
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
-                Timestamp start = snaps.get(i).getTimestamp();
+                Instant start = snaps.get(i).getTimestamp();
                 if (start == null) {
                     continue;
                 }
-                String name = "archive://" + pvName + "?time=" + start.toString();
+                String name = "archive://" + pvName + "?time=" + Utilities.timestampToDecimalString(start);
                 PVReader<VTable> reader = PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
                     boolean handled = false;
                     if (x.isValueChanged()) {
@@ -1140,7 +1135,7 @@ public class SnapshotViewerController {
                             archiveReaders.notifyAll();
                         }
                     }
-                }).timeout(TimeDuration.ofMillis(30000)).notifyOn(UI_EXECUTOR).maxRate(TimeDuration.ofMillis(100));
+                }).timeout(Duration.ofMillis(30000)).notifyOn(UI_EXECUTOR).maxRate(Duration.ofMillis(100));
                 synchronized (archiveReaders) {
                     archiveReaders.add(reader);
                 }
@@ -1167,8 +1162,8 @@ public class SnapshotViewerController {
             }
             items.put(pvName, entry);
             PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
-                .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
-            PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
+                .readListener(x -> throttle.trigger()).maxRate(Duration.ofMillis(100));
+            PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(Duration.ofMillis(1000)).async();
             pvs.put(entry, new PV(pvName, reader, writer, null));
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {

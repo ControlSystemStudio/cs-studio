@@ -10,8 +10,8 @@
  */
 package org.csstudio.saverestore;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.csstudio.saverestore.data.SaveSetData;
@@ -31,7 +31,7 @@ public final class SnapshotContent {
     private final List<String> readbacks;
     private final List<VType> readbackData;
     private final List<String> deltas;
-    private final Date date;
+    private final Instant date;
 
     /**
      * Constructs a new snapshot content.
@@ -44,7 +44,7 @@ public final class SnapshotContent {
      * @param readbackData the stored readback values
      * @param deltas the threshold values of functions
      */
-    SnapshotContent(Date date, List<String> names, List<Boolean> selected, List<VType> data, List<String> readbacks,
+    SnapshotContent(Instant date, List<String> names, List<Boolean> selected, List<VType> data, List<String> readbacks,
         List<VType> readbackData, List<String> deltas) {
         this.data = Collections.unmodifiableList(data);
         this.readbackData = Collections.unmodifiableList(readbackData);
@@ -117,7 +117,7 @@ public final class SnapshotContent {
      *
      * @return the date
      */
-    public Date getDate() {
+    public Instant getDate() {
         return date;
     }
 

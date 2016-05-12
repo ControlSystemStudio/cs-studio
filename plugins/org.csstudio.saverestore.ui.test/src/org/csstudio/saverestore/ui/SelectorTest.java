@@ -25,8 +25,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -40,13 +40,12 @@ import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.eclipse.jface.window.IShellProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -63,7 +62,7 @@ public class SelectorTest {
 
     private Selector selector;
     private DataProviderWrapper dataProvider;
-    private Date date = new Date();
+    private Instant date = Instant.now();
 
     private Branch newBranch = new Branch("newBranch", "newBranch");
     private Branch branch = new Branch();
@@ -78,18 +77,16 @@ public class SelectorTest {
     private SaveSet someBranchSaveSet = new SaveSet(someBranch, Optional.of(someBranchBaseLevel),
         new String[] { "first", "foo", "haha", "second.bms" }, "someId");
     private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000),
-        "another comment", "user");
-    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, date.minusMillis(5000), "another comment", "user");
+    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, date.plusMillis(5000), "new snapshot", "user");
+    private Snapshot someBranchSnapshot = new Snapshot(someBranchSaveSet, date.plusMillis(5000), "new snapshot",
         "user");
-    private Snapshot someBranchSnapshot = new Snapshot(someBranchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
-        "user");
-    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"),
-        Arrays.asList("rb1", "rb2"), Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
-        Timestamp.now(), null);
-    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
-        Timestamp.now(), null);
+    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
+        Arrays.asList("d1", "d2"), "description");
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
+        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
+    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot, Arrays.asList("pv1"),
+        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
 
     @SuppressWarnings("unchecked")
     @Before
@@ -162,10 +159,9 @@ public class SelectorTest {
             return null;
         });
         when(dpr.tagSnapshot(branchSnapshot, Optional.of("name"), Optional.of("message"))).then(inv -> {
-            Snapshot snapshot = new Snapshot(branchSnapshot.getSaveSet(),branchSnapshot.getDate(),
+            Snapshot snapshot = new Snapshot(branchSnapshot.getSaveSet(), branchSnapshot.getDate(),
                 branchSnapshot.getComment(), branchSnapshot.getOwner(),
-                ((Optional<String>)inv.getArguments()[1]).get(),
-                ((Optional<String>)inv.getArguments()[2]).get());
+                ((Optional<String>) inv.getArguments()[1]).get(), ((Optional<String>) inv.getArguments()[2]).get());
             notifier[0].snapshotTagged(snapshot);
             return null;
         });
@@ -184,6 +180,7 @@ public class SelectorTest {
 
     /**
      * Test selector initialisation and default settings.
+     *
      * @throws DataProviderException
      */
     @SuppressWarnings("unchecked")
@@ -228,8 +225,7 @@ public class SelectorTest {
         assertEquals("Order of snapshots is prescribed", branchSnapshot, snapshots.get(0));
         assertEquals("Order of snapshots is prescribed", branchSnapshot2, snapshots.get(1));
         selector.selectedBaseLevelProperty().set(branchBaseLevel2);
-        assertTrue("No save sets are available for the second base level",
-            selector.saveSetsProperty().get().isEmpty());
+        assertTrue("No save sets are available for the second base level", selector.saveSetsProperty().get().isEmpty());
         assertNull("No save set is selected by default", selector.selectedSaveSetProperty().get());
         assertTrue("No snapshots are available", selector.snapshotsProperty().get().isEmpty());
     }
@@ -321,8 +317,7 @@ public class SelectorTest {
         verify(dataProvider.getProvider(), times(2)).getBranches();
         assertNull("No base level is selected after synchronisation", selector.selectedBaseLevelProperty().get());
         assertNull("No save set is selected after synchronisation", selector.selectedSaveSetProperty().get());
-        assertTrue("No save sets are available after synchronisation",
-            selector.saveSetsProperty().get().isEmpty());
+        assertTrue("No save sets are available after synchronisation", selector.saveSetsProperty().get().isEmpty());
         assertTrue("No snapshots are available after synchronisation", selector.snapshotsProperty().get().isEmpty());
     }
 
@@ -380,7 +375,7 @@ public class SelectorTest {
         assertEquals(branchSnapshot, snapshots.get(1));
         assertEquals(branchSnapshot2, snapshots.get(2));
 
-        //nothing should change because the saved snapshot is in a different save set
+        // nothing should change because the saved snapshot is in a different save set
         dataProvider.getProvider().saveSnapshot(xSnapshot, "comment");
         snapshots = selector.snapshotsProperty().get();
         assertEquals("Exactly 3 snapshots are available", 3, snapshots.size());

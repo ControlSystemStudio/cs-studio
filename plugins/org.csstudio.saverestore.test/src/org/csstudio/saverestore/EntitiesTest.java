@@ -17,18 +17,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -125,9 +124,8 @@ public class EntitiesTest {
     @Test
     public void testSnapshot() {
         Branch branch = new Branch();
-        SaveSet set = new SaveSet(branch, Optional.empty(), new String[] { "first", "second", "third" },
-            "someId");
-        Snapshot snapshot = new Snapshot(set, new Date(), "comment", "owner", "tagName", "tagMessage");
+        SaveSet set = new SaveSet(branch, Optional.empty(), new String[] { "first", "second", "third" }, "someId");
+        Snapshot snapshot = new Snapshot(set, Instant.now(), "comment", "owner", "tagName", "tagMessage");
         assertEquals("tagName", snapshot.getTagName().get());
         assertEquals("tagMessage", snapshot.getTagMessage().get());
     }
@@ -138,11 +136,10 @@ public class EntitiesTest {
     @Test
     public void testVSnapshot() {
         Branch branch = new Branch();
-        SaveSet set = new SaveSet(branch, Optional.empty(), new String[] { "first", "second", "third" },
-            "someId");
-        Snapshot snapshot = new Snapshot(set, new Date(), "comment", "owner", "tagName", "tagMessage");
-        VSnapshot vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE), Timestamp.now(),
-            null);
+        SaveSet set = new SaveSet(branch, Optional.empty(), new String[] { "first", "second", "third" }, "someId");
+        Snapshot snapshot = new Snapshot(set, Instant.now(), "comment", "owner", "tagName", "tagMessage");
+        VSnapshot vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE),
+            Instant.now(), null);
 
         assertTrue(vs.isSaved());
         assertFalse(vs.isSaveable());
@@ -158,13 +155,14 @@ public class EntitiesTest {
         assertFalse(vs.isSaveable());
 
         snapshot = new Snapshot(set);
-        vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE), Timestamp.now(), null);
+        vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(),
+            null);
         assertFalse(vs.isSaved());
         assertTrue(vs.isSaveable());
 
         try {
-            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(VDisconnectedData.INSTANCE), Timestamp.now(),
-                null);
+            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(VDisconnectedData.INSTANCE),
+                Instant.now(), null);
             fail("Should fail because the length of names and values do not match.");
         } catch (IllegalArgumentException e) {
             assertNotNull("Exception was thrown", e.getMessage());
@@ -173,7 +171,7 @@ public class EntitiesTest {
         try {
             new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
                 Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("readback"),
-                Arrays.asList(VDisconnectedData.INSTANCE), Arrays.asList("delta"), Timestamp.now());
+                Arrays.asList(VDisconnectedData.INSTANCE), Arrays.asList("delta"), Instant.now());
             fail("Should fail because the length of readbacks is different from the names.");
         } catch (IllegalArgumentException e) {
             assertNotNull("Exception was thrown", e.getMessage());
@@ -181,8 +179,10 @@ public class EntitiesTest {
 
         try {
             new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("readback", "readback2"),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta"), Timestamp.now());
+                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE),
+                Arrays.asList("readback", "readback2"),
+                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta"),
+                Instant.now());
             fail("Should fail because the length of deltas is different from the readbacks.");
         } catch (IllegalArgumentException e) {
             assertNotNull("Exception was thrown", e.getMessage());

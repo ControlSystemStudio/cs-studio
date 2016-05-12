@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -32,14 +32,13 @@ import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.array.ArrayDouble;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
@@ -191,17 +190,17 @@ public class SnapshotViewerControllerTest {
             "someId");
         Snapshot snapshot;
         if (saved) {
-            snapshot = new Snapshot(set, new Date(), "comment", "owner");
+            snapshot = new Snapshot(set, Instant.now(), "comment", "owner");
         } else {
             snapshot = new Snapshot(set);
         }
-        Date d = new Date(1455296909369L);
-        Date d2 = new Date(1455296909379L);
+        Instant d = Instant.ofEpochMilli(1455296909369L);
+        Instant d2 = Instant.ofEpochMilli(1455296909379L);
         Alarm alarmNone = ValueFactory.alarmNone();
         Alarm alarm = ValueFactory.newAlarm(AlarmSeverity.MINOR, "HIGH");
         Display display = ValueFactory.displayNone();
-        Time time = ValueFactory.newTime(Timestamp.of(d));
-        Time time2 = ValueFactory.newTime(Timestamp.of(d2));
+        Time time = ValueFactory.newTime(d);
+        Time time2 = ValueFactory.newTime(d2);
 
         VDouble val1 = ValueFactory.newVDouble(5d, alarm, time, display);
         VDoubleArray val2 = ValueFactory.newVDoubleArray(new ArrayDouble(1, 2, 3), alarmNone, time2, display);

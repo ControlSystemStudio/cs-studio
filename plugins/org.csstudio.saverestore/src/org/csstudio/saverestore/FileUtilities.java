@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,7 +45,6 @@ import org.diirt.util.array.ListFloat;
 import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListShort;
-import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
@@ -192,7 +192,7 @@ public final class FileUtilities {
         if (date == null || date.isEmpty()) {
             throw new ParseException("Snapshot does not have a date set.", 0);
         }
-        Date d = TIMESTAMP_FORMATTER.get().parse(date);
+        Instant d = TIMESTAMP_FORMATTER.get().parse(date).toInstant();
         return new SnapshotContent(d, names, selected, data, readbacks, readbackData, deltas);
     }
 
@@ -228,7 +228,7 @@ public final class FileUtilities {
         }
         String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
             : new String[] { "0", "0" };
-        Time time = ValueFactory.newTime(Timestamp.of(Long.parseLong(t[0]), Integer.parseInt(t[1])));
+        Time time = ValueFactory.newTime(Instant.ofEpochSecond(Long.parseLong(t[0]), Integer.parseInt(t[1])));
         Alarm alarm = ValueFactory.newAlarm(
             severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase(Locale.UK)), status);
         Display display = ValueFactory.newDisplay(0d, 0d, 0d, null, null, 0d, 0d, 0d, 0d, 0d);
@@ -404,11 +404,11 @@ public final class FileUtilities {
         List<VType> readbackValues = data.getReadbackValues();
         List<String> deltas = data.getDeltas();
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * names.size());
-        Timestamp timestamp = data.getTimestamp();
+        Instant timestamp = data.getTimestamp();
         if (timestamp == null) {
-            timestamp = Timestamp.now();
+            timestamp = Instant.now();
         }
-        sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(timestamp.toDate())).append('\n');
+        sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(Date.from(timestamp))).append('\n');
         sb.append(SNAPSHOT_FILE_HEADER).append('\n');
         boolean deltaEmpty = deltas.isEmpty();
         boolean noReadbacks = readbacks.isEmpty();
@@ -437,7 +437,7 @@ public final class FileUtilities {
         sb.append(name).append(',');
         sb.append(selected ? 1 : 0).append(',');
         if (data instanceof Time) {
-            sb.append(((Time) data).getTimestamp());
+            sb.append(Utilities.timestampToDecimalString(((Time) data).getTimestamp()));
         }
         sb.append(',');
         if (data instanceof Alarm) {
