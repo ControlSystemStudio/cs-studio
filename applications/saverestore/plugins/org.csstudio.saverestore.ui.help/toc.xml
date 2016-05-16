@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#display" label="Save, Set &amp; Restore">
+  <topic label="Save, Set &amp; Restore">
+    <topic label="Overview" href="help/saverestore.html"/>
+    <topic href="help/browser.html" label="Browser">
+    </topic>
+    <topic href="help/snapshotviewer.html" label="Snapshot Viewer">
+    </topic>
+    <topic href="help/saveseteditor.html" label="Save Set Editor">
+    </topic>
+    <topic href="help/preferences.html" label="Preferences">
+    </topic>
+    <anchor id="saverestore"/>
+  </topic>
+</toc>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="baselevelbrowser" name="Base Level Browser Implementation" schema="schema/baselevelbrowser.exsd"/>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.saverestore.ui.browser.BrowserView"
+            icon="icons/bookcase.png"
+            id="org.csstudio.saverestore.ui.view.browser"
+            name="Save &amp; Restore Browser"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.saverestore.ui.perspective">
+         <view
+               closeable="true"
+               id="org.csstudio.saverestore.ui.view.browser"
+               minimized="false"
+               moveable="true"
+               ratio="0.2"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ResourceNavigator"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <viewShortcut
+               id="org.csstudio.saverestore.ui.view.browser">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.csstudio.saverestore.ui.view.browser">
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.switchbranch"
+               mnemonic="S"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="org.csstudio.saverestore.branchessupported">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.newbranch"
+               mnemonic="C"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="org.csstudio.saverestore.branchessupported">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+         <separator
+               name="org.csstudio.saverestore.ui.browser.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.resetrepository"
+               mnemonic="R"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="org.csstudio.saverestore.resettablerepository">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+         <separator
+               name="org.csstudio.saverestore.ui.browser.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.dataprovider"
+               mnemonic="D"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="org.csstudio.saverestore.multipledataproviders">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.saverestore.ui.view.browser">
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.synchronise"
+               icon="icons/kaboodleloop.png"
+               style="push"
+               tooltip="Synchronise view with remote repository">
+         </command>
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.search"
+               icon="icons/search_src.png"
+               style="push"
+               tooltip="Search repository for snapshots">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.SwitchBranchCommand"
+            description="Switch to a different branch"
+            id="org.csstudio.saverestore.ui.browser.command.switchbranch"
+            name="Switch Branch...">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.CreateBranchCommand"
+            description="Create a new branch"
+            id="org.csstudio.saverestore.ui.browser.command.newbranch"
+            name="Create New Branch...">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.SynchroniseRepositoryCommand"
+            description="Synchronise repository"
+            id="org.csstudio.saverestore.ui.browser.command.synchronise"
+            name="Synchronise">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.SelectDataProviderCommand"
+            description="Select the data provider to use"
+            id="org.csstudio.saverestore.ui.browser.command.dataprovider"
+            name="Select Data Provider...">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.ResetRepository"
+            description="Reset the repository to default"
+            id="org.csstudio.saverestore.ui.browser.command.resetrepository"
+            name="Reset Repository">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.SearchForSnapshotsCommand"
+            description="Search repository for snapshots"
+            id="org.csstudio.saverestore.ui.browser.command.search"
+            name="Search">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="org.csstudio.saverestore.ui.browser.SourceProvider">
+         <variable
+               name="org.csstudio.saverestore.branchessupported"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="org.csstudio.saverestore.multipledataproviders"
+               priorityLevel="workbench">
+         </variable>
+         <variable
+               name="org.csstudio.saverestore.resettablerepository"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.activities">
+      <activity
+            id="org.csstudio.saverestore.ui.browser.activity"
+            name="Save Restore Activity">
+      </activity>
+      <activityPatternBinding
+            activityId="org.csstudio.saverestore.ui.browser.activity"
+            pattern=".*org.csstudio.logbook.ui.OpenLogEntryUpdateDialog.*">
+            <!--pattern="org.csstudio.ui.menu.popup.processvariable"-->
+      </activityPatternBinding>
+   </extension>
+
+</plugin>

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Saverestore Test
+Bundle-SymbolicName: org.csstudio.saverestore.test;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: FRIB
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Fragment-Host: org.csstudio.saverestore
+Require-Bundle: org.junit;bundle-version="4.12.0"

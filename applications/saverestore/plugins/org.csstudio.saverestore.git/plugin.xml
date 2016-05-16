@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.saverestore.dataprovider">
+      <dataprovider
+            dataprovider="org.csstudio.saverestore.git.GitDataProvider"
+            description="Uses git versioning system to store the files and track changes"
+            id="org.csstudio.saverestore.git.dataprovider"
+            name="Git">
+      </dataprovider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.saverestore.preferencespage"
+            class="org.csstudio.saverestore.git.PreferencesPage"
+            id="org.csstudio.saverestore.git.preferencespage"
+            name="Git">
+      </page>
+   </extension>
+</plugin>

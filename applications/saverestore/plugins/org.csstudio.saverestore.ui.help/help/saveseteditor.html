@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<title>Save Set Editor</title>
+</head>
+<body>
+<h2>Save Set Editor</h2>
+<p>
+Save set editor is composed of two parts:
+<ul>
+<li><i>Description area</i> displays a simple description of the save set</li>
+<li><i>PV List</i> displays the list of PVs and other information</li>
+</ul>
+</p>
+<div class='figure'><img src="saveseteditor.png"/><p>Fig. 1: Save Set Editor</p></div>
+<h3>Description</h3>
+<p>
+Save set description should be a human readable description explaining what this save set represents. In a well
+organised system this can be achieved to some extent by placing the save set into the most appropriate branch
+of the repository tree. However, additional information might be required in certain cases. There are no limitations to
+the length of the description.
+</p>
+<h3>PV List</h3>
+<p>
+PV list is actually a comma separated spreadsheet. Each entry in the spreadsheet has 3 possible values:
+<ul>
+<li><i>PV</i> is the name of the setpoint PV that will be stored into snapshots and restored when requested</li>
+<li><i>READBACK</i> is the name of the readback PV which will also be stored into snapshots but will not be restored</li>
+<li><i>DELTA</i> is a threshold value for comparison of readback to setpoint (or any other comparison). If values differ 
+for less than this threshold (in any direction) they will be considered within limits, if they differ more, they will
+be marked in the snapshot viewer.</li>
+</ul> 
+</p>
+<p>
+It is desirable that a save set provides values for all three spreadsheet columns, though it is not mandatory. The
+only mandatory column is <i>PV</i>, the other two are optional. However, <i>DELTA</i> can only be defined if <i>READBACK</i>
+is also defined. It is also mandatory that all entries follow the same pattern - all rows in the list have to have the
+same number of columns. If certain value cannot be defined for a PV, the value of that column can be left empty. For example:
+</p>
+<p>
+<code>
+PV,READBACK,DELTA<br/>
+PV1,PV1_GET,20<br/>
+PV2,PV2_GET,20<br/>
+PV3,,<br/>
+PV4,PV4_GET,<br/>
+PV5,,20
+</code>
+</p>
+<h5>DELTA</h5>
+<p>
+Delta can be given as a constant value, which means that two values will always be compared as 
+<code>
+|value1 - value2| &le; delta
+</code>
+(absolute value of the difference should be less or equal to delta). The delta can also be given in a form of a one or
+two parameter function. If the function accepts one parameter (<code>x</code>), it must return a numerical value,
+which will be used for comparison as described above. In this case the parameter will be the base value at which we 
+want to calculate the threshold. If the function accepts two parameters (<code>base</code> and <code>value</code>),
+it must return a boolean value, which indicates if the two values are within limits (<code>true</code>)
+or not (<code>false</code>). In this case the <code>value</code> is the value of the PV, which is being evaluated and
+<code>base</code> is the value which the <code>value</code> parameter is being evaluated against. The function is evaluated
+as a JavaScript function. The following operations and elementary functions are supported:
+<ul>
+<li><code>*</code>: multiplication (e.g. x*5)</li>
+<li><code>/</code>: division (e.g. x/5)</li>
+<li><code>+</code>: addition (e.g. x+5)</li>
+<li><code>-</code>: subtraction (e.g. x-5)</li>
+<li><code>Math.PI</code>: the value of &pi; (3.14159...)</li>
+<li><code>Math.E</code>: Euler's number (2.71828...)</li>
+<li><code>Math.sin(x)</code>: trigonometric sine of angle x</li>
+<li><code>Math.cos(x)</code>: trigonometric cosine of angle x</li>
+<li><code>Math.tan(x)</code>: trigonometric tangent of angle x</li>
+<li><code>Math.asin(x)</code>: arc sine of x in radians</li>
+<li><code>Math.acos(x)</code>: arc cosine of x in radians</li>
+<li><code>Math.atan(x)</code>: arc tangent of x in radians</li>
+<li><code>Math.abs(x)</code>: absolute value of x</li>  
+<li><code>Math.exp(x)</code>: Euler's number raised to the power of x</li>
+<li><code>Math.log(x)</code>: natural logarithm (base E) of x</li>
+<li><code>Math.sqrt(x)</code>: square root of x</li>
+<li><code>Math.min(x,y)</code>: minimum of x and y</li>
+<li><code>Math.max(x,y)</code>: maximum of x and y</li>
+<li><code>Math.pow(x,y)</code>: x raised to the power of y</li>
+</ul>
+Functions may also be combined. For example:
+<code>Math.min(x+5,20)+Math.sqrt(x)</code>
+</p>
+<p>
+Below are some examples of valid functions. Let's assume that we are comparing stored value <code>Z</code> against the
+live value <code>Y</code>:
+<ul>
+<li><code>x*2</code>: the values will be within limits when the following is satisfied <code>|Z-Y| &le; Y*2</code></li>  
+<li><code>Math.min(x,20)</code>: the values will be within limits when <code>|Z-Y| &le; Math.min(Y,20)</code></li>
+<li><code>(base &#62;&#61; 10 &#38;&#38; value &#62; 15) || (base &#60; 10 &#38;&#38; value &#60; 5)</code>: the values will be
+within limits when the function evaluates to <code>true</code>, meaning <code>(Y &ge; 10 and Z &#62; 15) 
+or (Y &#60; 10 and Z &#60; 5)</code></li>
+<li><code>Math.abs(base - value) &le; 20</code>: the values will be within limits when <code>|Z-Y| &le; 20</code></li>
+</ul>
+An example of the save set file with functions:
+<p>
+<code>
+PV,READBACK,DELTA<br/>
+PV1,PV1_GET,x*2<br/>
+PV2,PV2_GET,(base &#62;&#61; Math.PI &#38;&#38; value &#62; 15) || (base &#60; Math.PI &#38;&#38; value &#60; 5)<br/>
+PV3,,<br/>
+PV4,PV4_GET,"Math.pow(x,3)"<br/>
+PV5,,20
+</code>
+</p>
+NOTE: If you used one of the functions that contains the comma character (<code>,</code>), make sure that you wrap the
+entire function into double quotes (<code>"</code>).  
+
+<h4>Editor</h4>
+<p>
+The PV list editor is very simple and does not offer any fancy spreadsheet editing functionality. However, you can use
+certain common editing functions, such as cut, copy, paste, and select all. You may of course use your preferred 
+spreadsheet editor to generate the contents and then copy them as text into the editor and save it.
+</p>
+<p>
+As you change the contents the editor will constantly perform data integrity checks. If it detects that the content is
+malformed (e.g. a row is missing a column) it will paint a red border around the editor. At that time saving the save
+set will be disabled.
+</p>
+<p>
+When you are done with editing you have an option to save the contents as a new file or overwrite an existing file. You 
+may choose the appropriate action from the <i>File</i> menu. If you decide to save the set as a new file, a location 
+selector will be displayed. Use the tree in the selector to select the appropriate location (you may create new folders
+by right clicking a parent item and selecting the <i>New Folder...</i> item). After you have selected the appropriate
+location type in the name for the save set into the <i>Save Set Name</i> field. This is the name that is also
+displayed in the browser.
+</p>
+<div class='figure'><img src="savesetsaveas.png"/><p>Fig. 2: Save set Save As Location Selector</p></div>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.saverestore.git.feature"
+      label="Save Restore Git Data Provider"
+      version="1.0.0.qualifier"
+      provider-name="FRIB"
+      plugin="org.csstudio.saverestore.git">
+
+   <description>
+      org.csstudio.saverestore.git.feature provides the plugins and features that implement a git-based data provider for Save, Set, and Restore application.
+   </description>
+
+   <copyright>
+      This software is Copyright by the Board of Trustees of Michigan
+State University (c) Copyright 2016.
+Contact Information:
+Facility for Rare Isotope Beam
+Michigan State University
+East Lansing, MI 48824-1321
+http://frib.msu.edu
+   </copyright>
+
+   <license url="https://opensource.org/licenses/MIT">
+      The MIT License (MIT)
+
+Copyright (c) 2016 Board of Trustees of Michigan State University
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+   </license>
+
+   <requires>
+      <import feature="org.csstudio.saverestore.feature" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.jgit" version="4.0.3" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.saverestore.git"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
