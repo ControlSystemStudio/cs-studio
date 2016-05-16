@@ -302,7 +302,12 @@ public class WaveformDialog extends Dialog {
     }
 
     private Scene getScene(Composite parent) {
-        TabPane tabPane = new TabPane(new Tab("Chart", getChartNode(parent)), new Tab("Table", getTableNode()));
+        TabPane tabPane = new TabPane();
+        Tab chartTab = new Tab("Chart");
+        chartTab.setContent(getChartNode(parent));
+        Tab tableTab = new Tab("Table");
+        tableTab.setContent(getTableNode());
+        tabPane.getTabs().addAll(chartTab, tableTab);
         tabPane.getStylesheets()
             .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         tabPane.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
