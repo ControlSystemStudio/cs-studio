@@ -2,6 +2,8 @@
 
 langauge: java
 
+dist: trusty
+
 addons:
   apt:
     packages:
