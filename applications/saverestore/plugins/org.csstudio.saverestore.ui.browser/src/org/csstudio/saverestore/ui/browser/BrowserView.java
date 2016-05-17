@@ -308,7 +308,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         baseLevelPane.setGraphic(titleBox);
         baseLevelPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
-        filterButton.setSelected(!settings.getBoolean(SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED));
+
+        boolean selected = !settings.getBoolean(SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED);
+        filterButton.setSelected(selected);
+        defaultBaseLevelBrowser.setShowOnlyAvailable(selected);
+        if (baseLevelBrowser != null) {
+            baseLevelBrowser.setShowOnlyAvailable(selected);
+        }
 
         return baseLevelPane;
     }
