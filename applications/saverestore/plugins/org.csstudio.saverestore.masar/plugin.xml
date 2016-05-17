@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.saverestore.dataprovider">
+      <dataprovider
+            dataprovider="org.csstudio.saverestore.masar.MasarDataProvider"
+            description="Uses MASAR service to store and load the snapshot data"
+            id="org.csstudio.saverestore.masar.dataprovider"
+            name="MASAR">
+      </dataprovider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.saverestore.preferencespage"
+            class="org.csstudio.saverestore.masar.PreferencesPage"
+            id="org.csstudio.saverestore.masar.preferencespage"
+            name="MASAR">
+      </page>
+   </extension>
+</plugin>

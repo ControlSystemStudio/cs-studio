@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.saverestore.ui.browser.baselevelbrowser">
+      <browser
+            browser="org.csstudio.saverestore.ui.browser.periodictable.PeriodicTable">
+      </browser>
+   </extension>
+   <extension
+         point="org.csstudio.saverestore.ui.baselevelvalidator">
+      <validator
+            validator="org.csstudio.saverestore.ui.browser.periodictable.BaseLevelValidator">
+      </validator>
+   </extension>
+
+</plugin>

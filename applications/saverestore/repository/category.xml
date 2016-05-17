@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.csstudio.saverestore.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
+   <feature id="org.csstudio.saverestore.periodictable.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
+   <feature id="org.csstudio.saverestore.git.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
+   <feature id="org.csstudio.saverestore.masar.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
+   <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
+</site>

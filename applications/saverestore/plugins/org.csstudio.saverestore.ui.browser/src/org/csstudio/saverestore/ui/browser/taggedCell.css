@@ -1,0 +1,15 @@
+.tagged-cell {
+    -fx-background-color: #FFF8D2;
+    -fx-text-fill: black;
+}
+
+.tagged-cell:filled:selected:focused, .tagged-cell:filled:selected {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.tagged-cell:filled:selected,
+.list-view:horizontal > .virtual-flow > .clipped-container > .sheet > .tagged-cell:filled:selected {
+    -fx-background-color: lightgray;
+    -fx-text-fill: -fx-selection-bar-text;
+}
