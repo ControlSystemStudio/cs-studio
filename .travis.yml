@@ -2,6 +2,8 @@
 
 langauge: java
 
+sudo: false
+
 dist: trusty
 
 addons:
