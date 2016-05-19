@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Saverestore
+Bundle-SymbolicName: org.csstudio.saverestore.demo;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: FRIB
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.csstudio.saverestore.ui;bundle-version="1.0.0",
+ org.csstudio.ui.fx.util;bundle-version="1.0.0",
+ org.eclipse.ui;bundle-version="3.107.0",
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1",
+ org.csstudio.saverestore;bundle-version="1.0.0"

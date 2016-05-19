@@ -229,6 +229,7 @@
     <module>logbook</module>
     <module>opibuilder</module>
     <module>scan</module>
+    <module>saverestore</module>
     <module>databrowser</module>
     <module>shift</module>
     <module>diag</module>
