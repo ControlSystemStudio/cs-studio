@@ -17,8 +17,8 @@ package org.csstudio.scan.server.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +55,7 @@ public class ScanServerImpl implements ScanServer
     final private ScanEngine scan_engine = new ScanEngine();
 
     /** Time when this scan server was started */
-    private Date start_time = null;
+    private Instant start_time = null;
 
     /** Start the scan server */
     public void start() throws Exception
@@ -64,7 +64,7 @@ public class ScanServerImpl implements ScanServer
             throw new Exception("Already started");
 
         scan_engine.start(true);
-        start_time = new Date();
+        start_time = Instant.now();
     }
 
     /** Stop the scan server */

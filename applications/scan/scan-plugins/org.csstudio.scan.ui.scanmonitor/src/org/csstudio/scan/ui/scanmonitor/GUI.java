@@ -18,6 +18,8 @@ package org.csstudio.scan.ui.scanmonitor;
 import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.java.time.TimestampFormats;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.ScanSampleFormatter;
@@ -151,7 +153,7 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.CreateTimeFmt,
-                        ScanSampleFormatter.format(info.getCreated()));
+                        TimestampFormats.formatCompactDateTime(info.getCreated()));
             }
 
             @Override
@@ -241,14 +243,14 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.FinishTimeFmt,
-                        ScanSampleFormatter.format(info.getFinishTime()));
+                    TimestampFormats.formatCompactDateTime(info.getFinishTime()));
             }
 
             @Override
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(ScanSampleFormatter.formatTime(info.getFinishTime()));
+                cell.setText(TimestampFormats.formatCompactDateTime(info.getFinishTime()));
             }
         });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
@@ -320,13 +322,15 @@ public class GUI implements ScanInfoModelListener
         ColumnViewerToolTipSupport.enableFor(table_viewer);
         table_viewer.setContentProvider(new ScanInfoModelContentProvider());
 
-        Label l = new Label(parent, 0);
-        l.setText(Messages.MemInfo);
-        l.setLayoutData(new GridData());
-
-        mem_info = new Bar(parent, 0);
-        mem_info.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        mem_info.setToolTipText(Messages.MemInfoTT);
+        if (ScanSystemPreferences.getShowMemoryUsage())
+        {
+            final Label l = new Label(parent, 0);
+            l.setText(Messages.MemInfo);
+            l.setLayoutData(new GridData());
+            mem_info = new Bar(parent, 0);
+            mem_info.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+            mem_info.setToolTipText(Messages.MemInfoTT);
+        }
 
         // Publish current selection
         if (site != null)
@@ -383,7 +387,7 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void doubleClick(final DoubleClickEvent event)
             {
-                final IHandlerService handler = (IHandlerService) site.getService(IHandlerService.class);
+                final IHandlerService handler = site.getService(IHandlerService.class);
                 try
                 {
                     handler.executeCommand("org.csstudio.scan.ui.scantree.open", null);
@@ -505,7 +509,7 @@ public class GUI implements ScanInfoModelListener
     @Override
     public void scanServerUpdate(final ScanServerInfo server_info)
     {
-        if (mem_info.isDisposed())
+        if (mem_info == null  ||  mem_info.isDisposed())
             return;
         mem_info.getDisplay().asyncExec(new Runnable()
         {

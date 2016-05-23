@@ -9,12 +9,11 @@ package org.csstudio.archive.vtype;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import org.csstudio.java.time.TimestampFormats;
 
 /** Time stamp gymnastics
  *  @author Kay Kasemir
@@ -22,13 +21,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("nls")
 public class TimestampHelper
 {
-	final private static ZoneId zone = ZoneId.systemDefault();
-    final public static String FORMAT_FULL = "yyyy/MM/dd HH:mm:ss.nnnnnnnnn";
-    final public static String FORMAT_SECONDS = "yyyy/MM/dd HH:mm:ss";
-
-    /** Time stamp format */
-    final private static DateTimeFormatter time_format = DateTimeFormatter.ofPattern(FORMAT_FULL);
-    
     /** @param timestamp {@link Timestamp}, may be <code>null</code>
      *  @return Time stamp formatted as string
      */
@@ -36,13 +28,13 @@ public class TimestampHelper
     {
         if (timestamp == null)
             return "null";
-		return time_format.format(ZonedDateTime.ofInstant(timestamp, zone));
+		return TimestampFormats.FULL_FORMAT.format(timestamp);
     }
-    
+
     // May look like just     time_format.format(Instant)  works,
     // but results in runtime error " java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra"
     // because time for printing needs to be in local time
-//    public static void main(String[] args) 
+//    public static void main(String[] args)
 //    {
 //    	final Instant now = Instant.now();
 //    	System.out.println(format(now));
@@ -55,14 +47,7 @@ public class TimestampHelper
      */
     public static java.sql.Timestamp toSQLTimestamp(final Instant timestamp)
     {
-        final long nanoseconds = timestamp.getNano();
-        // Only millisecond resolution
-        java.sql.Timestamp stamp = new java.sql.Timestamp(timestamp.getEpochSecond() * 1000  +
-                             nanoseconds / 1000000);
-        // Set nanoseconds (again), but this call uses the full
-        // nanosecond resolution
-        stamp.setNanos((int) nanoseconds);
-        return stamp;
+        return java.sql.Timestamp.from(timestamp);
     }
 
     /** @param sql_time SQL Timestamp
@@ -70,10 +55,7 @@ public class TimestampHelper
      */
     public static Instant fromSQLTimestamp(final java.sql.Timestamp sql_time)
     {
-        final long millisecs = sql_time.getTime();
-        final long seconds = millisecs/1000;
-        final int nanoseconds = sql_time.getNanos();
-        return Instant.ofEpochSecond(seconds,  nanoseconds);
+        return sql_time.toInstant();
     }
 
     /** @param millisecs Milliseconds since 1970 epoch
@@ -149,7 +131,7 @@ public class TimestampHelper
         // The addition of leap seconds can further confuse matters,
         // so perform computations that go beyond an hour in local time,
         // relative to midnight of the given time stamp.
-        
+
         // TODO Use new API, not Calendar
         final Calendar cal = Calendar.getInstance();
         cal.clear();

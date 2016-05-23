@@ -17,7 +17,7 @@
   <properties>
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
-    <tycho-extras.version>0.23.1</tycho-extras.version>
+    <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.3</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>

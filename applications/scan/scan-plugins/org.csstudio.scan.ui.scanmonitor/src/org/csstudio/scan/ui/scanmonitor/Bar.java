@@ -25,7 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 @SuppressWarnings("nls")
 public class Bar extends Canvas implements PaintListener
 {
-    final private static int CRITICAL_PERCENTAGE = 75;
+    final private static int WARNING_PERCENTAGE = 75;
+    final private static int CRITICAL_PERCENTAGE = 90;
     private float percentage = 0.0f;
     private String text = "";
     private GC gc;
@@ -74,6 +75,8 @@ public class Bar extends Canvas implements PaintListener
         gc.fillRectangle(area);
         if (percentage > CRITICAL_PERCENTAGE)
             gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
+        else if (percentage > WARNING_PERCENTAGE)
+            gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_YELLOW));
         else
             gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
         gc.fillRectangle(0, 0, Math.round((area.width-1) * percentage / 100), area.height-1);

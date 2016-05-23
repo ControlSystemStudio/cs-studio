@@ -32,6 +32,7 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.SimpleScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of writing/reading a Command sequence as XML
@@ -113,6 +114,7 @@ public class CommandXMLHeadlessTest
         runReader(new XMLCommandReader(new SimpleScanCommandFactory()));
     }
 
+    @Ignore
     @Test
     public void readXMLUsingEclipseScanCommandFactory() throws Exception
     {

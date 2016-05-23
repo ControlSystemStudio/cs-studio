@@ -17,7 +17,7 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.csstudio.scan.server.Scan;
@@ -35,7 +35,7 @@ public class ScanInfoUnitTest
     public void testScanInfo()
     {
         final long runtime_ms = 1000l * (123 * 60*60 + 4*60 + 5);
-        final ScanInfo info = new ScanInfo(new Scan(42, "test", new Date()), ScanState.Running, Optional.of("Hello"), runtime_ms, 0, 5, 10, 4, "SomeCommand");
+        final ScanInfo info = new ScanInfo(new Scan(42, "test", Instant.now()), ScanState.Running, Optional.of("Hello"), runtime_ms, 0, 5, 10, 4, "SomeCommand");
 
         System.out.println(info);
         assertEquals(50, info.getPercentage());

@@ -83,6 +83,48 @@
                          <code>leaf</code> if the channel is connected to a pv.</li>
         <li><b>Time</b>: The time when the alarm happened.</li>
         </ul>
+        
+        <h3>Accessing individual fields</h3>
+        <p>In addition of the table it is also possible to create a channel directly to some of the fields
+        of the table</p>
+        <pre>
+      beast://alarm_trigger_pvName.Enable
+        </pre>
+        <li>Returns a boolean value representing if the Alarm is enabled or disabled.</li>
+        <pre>
+      beast://complete_path_to_area.Acknowledge
+        </pre>
+        <li>Returns a boolean value representing is the Alarm has been acknowledged.</li>
+        <li><code>true</code> if severity indicates an acknowledged alarm (AlarmSeverity is *-ack'ed).</li>
+        <li><code>false</code> for unacknowledged or OK state.</li>
+        <pre>
+      beast://complete_path_to_system.AlarmSeverity
+        </pre>
+        <li>
+        The severity of the PV remembered by alarm server. When the PV is configured to "latch", the alarm server
+        remembers the highest alarm severity of the PV until it is manually acknowledged. 
+        Current severity of the PV might differ from alarm severity when the underlying alarm PV already recovered 
+        but the alarm server was configured to "latch" the alarm until operator acknowledgement.
+        </li>
+        <pre>
+      beast://complete_path_to_system.Active
+        </pre>
+        <li>Creates a Channel which represents if the alarm is active.</li>
+        <li><code>true</code> if severity indicates an active alarm,</li>
+        <li><code>false</code> for acknowledged or OK state.</li>
+        <pre>
+      beast://complete_path_to_system.RawTable
+        </pre>
+        <li>Unlike the default table this table does not cast all values to String but rather creates a seperate column
+        for each alarm attribute while preserving the type (i.e. the Enable/Active column returns Boolean values)</li>
+        
+        <h3>Writing</h3>
+        <p>Writing to alarm pv's can be done by using one of the following key phrases.</p>
+        <li><b>ack</b>: acknowledge this alarm pv or node.</li>
+        <li><b>unack</b>: unacknowledge this alarm pv or node.</li>
+        <li><b>enable</b>: enable this alarm pv or node.</li>
+        <li><b>disable</b>: disenable this alarm pv or node.</li>
+        
         <h2>Using beast datasource in BOY screens</h2>
         <p>
         The beast datasource can be used to embed beast alarm information into opi screens.

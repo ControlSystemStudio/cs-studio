@@ -26,12 +26,13 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
 
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
-        return 1;
+        if (connection.getType().equalsIgnoreCase("Default"))
+            return 1;
+        return 0;
     }
 
     @Override
-    public boolean updateCache(ValueCache cache,
-            BeastConnectionPayload connection, BeastMessagePayload message) {
+    public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine("VTable ADAPTER:" + message.toString());
         
         List<String> keys = new ArrayList<String>();

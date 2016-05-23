@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.client;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class ScanDataSAXHandler extends DefaultHandler
     private long serial = -1;
 
     /** Currently assembled sample's time stamp */
-    private Date time = null;
+    private Instant time = null;
 
     /** Currently assembled sample's value */
     private Object value = null;
@@ -115,7 +115,7 @@ public class ScanDataSAXHandler extends DefaultHandler
             {
                 try
                 {
-                    time = new Date(Long.parseLong(cdata));
+                    time = Instant.ofEpochMilli(Long.parseLong(cdata));
                 }
                 catch (NumberFormatException ex)
                 {

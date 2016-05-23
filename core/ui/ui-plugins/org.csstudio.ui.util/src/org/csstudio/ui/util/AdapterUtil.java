@@ -16,6 +16,7 @@ import static org.csstudio.ui.util.ReflectUtil.*;
  *
  *  @author Gabriele Carcassi
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar
  */
 public class AdapterUtil
 {
@@ -47,16 +48,28 @@ public class AdapterUtil
      * @param clazz the desired type
      * @return an array of the desired type
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] convert(ISelection selection, Class<T> clazz) {
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection strucSelection = (IStructuredSelection) selection;
 
-            @SuppressWarnings("unchecked")
             T[] result = (T[]) convert(strucSelection.toArray(), ReflectUtil.toArrayClass(clazz.getName()));
             if (result != null)
                 return result;
+
+            //The selection might contain objects that are descendants of the requested class. In this case the above
+            //returns a null result. Check the type of the first element and try to convert. The elements are usually
+            //all of the same type. If they are of mixed type, tough luck (only those that are of the first type will
+            //be returned).
+            Class<?> selectionClass = ((IStructuredSelection) selection).getFirstElement().getClass();
+            if (clazz.isAssignableFrom(selectionClass)) {
+                Object[] s = (Object[])convert(strucSelection.toArray(),
+                    ReflectUtil.toArrayClass(selectionClass.getName()));
+                result = (T[]) Array.newInstance(clazz, s.length);
+                System.arraycopy(s, 0, result, 0, s.length);
+                return result;
+            }
         }
-        @SuppressWarnings("unchecked")
         T[] result = (T[]) Array.newInstance(clazz, 0);
         return result;
     }

@@ -35,7 +35,7 @@ public class SearchStringParser {
     public static Map<String, String> searchParser(String string,
         String DefaultKey) {
     Map<String, String> result = new HashMap<String, String>();
-    Pattern p = Pattern.compile("([\\S]+):[.]*");
+    Pattern p = Pattern.compile("([^\\s\\d]+):[.]*");
     Matcher m = p.matcher(string);
     int start = 0;
     int end;

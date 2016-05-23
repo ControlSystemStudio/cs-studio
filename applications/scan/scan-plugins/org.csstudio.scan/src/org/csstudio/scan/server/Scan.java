@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.util.Date;
+import java.time.Instant;
 
 /** Scan: ID, Name, Date
  *
@@ -32,14 +32,14 @@ public class Scan
 {
     final private long id;
     final private String name;
-    final private Date created;
+    final private Instant created;
 
     /** Initialize
      *  @param id Scan ID
      *  @param name Name
      *  @param created Time when scan was created (submitted to server)
      */
-    public Scan(final long id, final String name, final Date created)
+    public Scan(final long id, final String name, final Instant created)
     {
         this.id = id;
         this.name = name;
@@ -69,7 +69,7 @@ public class Scan
     }
 
     /** @return Time when scan was created on server */
-    public Date getCreated()
+    public Instant getCreated()
     {
         return created;
     }

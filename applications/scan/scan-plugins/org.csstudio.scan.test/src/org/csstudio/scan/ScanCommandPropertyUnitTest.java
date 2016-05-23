@@ -37,7 +37,7 @@ public class ScanCommandPropertyUnitTest
         final ScanCommandProperty[] properties2 = command.getProperties();
         for (ScanCommandProperty p : properties2)
             System.out.println(p);
-        assertEquals(7, properties2.length);
+        assertEquals(8, properties2.length);
         assertEquals("device_name", properties2[0].getID());
 
         command.setProperty("device_name", "my_device");

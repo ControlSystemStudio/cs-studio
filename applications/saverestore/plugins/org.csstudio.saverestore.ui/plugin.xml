@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="baselevelvalidator" name="baselevelvalidator" schema="schema/baselevelvalidator.exsd"/>
+   <extension-point id="valueimporter" name="valueimporter" schema="schema/valueimporter.exsd"/>
+   <extension-point id="parametersprovider" name="parametersprovider" schema="schema/parametersprovider.exsd"/>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.saverestore.ui.Perspective"
+            fixed="false"
+            icon="icons/ksnapshot.png"
+            id="org.csstudio.saverestore.ui.perspective"
+            name="Save And Restore">
+         <description>
+            Save and Restore perspective provides the tools neccessary to browse the repository of available sets and snapshots as well as to take new snapshots and restore values from existing ones.
+         </description>
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.saverestore.ui.perspective">
+         <view
+               closeable="true"
+               id="org.eclipse.ui.console.ConsoleView"
+               minimized="false"
+               moveable="true"
+               ratio="0.8"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <viewShortcut
+               id="org.eclipse.ui.console.ConsoleView">
+         </viewShortcut>
+         <viewShortcut
+               id="org.eclipse.ui.views.ResourceNavigator">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.saverestore.ui.SnapshotViewerEditor"
+            default="false"
+            filenames="*.snp"
+            icon="icons/ksnapshot.png"
+            id="org.csstudio.saverestore.ui.editor.snapshotviewer"
+            name="Snapshot Viewer">
+      </editor>
+      <editor
+            class="org.csstudio.saverestore.ui.SaveSetEditor"
+            default="false"
+            filenames="*.bms"
+            icon="icons/txt.png"
+            id="org.csstudio.saverestore.ui.editor.saveseteditor"
+            name="Save Set Editor">
+      </editor>
+   </extension>
+</plugin>

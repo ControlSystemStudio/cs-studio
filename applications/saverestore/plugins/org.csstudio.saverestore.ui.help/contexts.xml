@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+    <context id="browser" title="Save, Set &#38; Restore Browser">
+        <topic href="help/browser.html" label="Save &#38; Restore Browser" />
+        <topic href="help/saverestore.html" label="Save, Set &#38; Restore" />
+        <description>Save and Restore browser provides facilities to browse the contents of the save and restore storage and select and request a display of save sets and snapshots.</description>
+    </context>
+    <context id="snapshotviewer" title="Snapshot Viewer">
+    	<topic href="help/snapshotviewer.html" label="Snapshot Viewer" />
+        <topic href="help/saverestore.html" label="Save, Set &#38; Restore" />
+        <description>Snapshot Viewer displays the contents of a Save, Set and Restore snapshot and allows to take and store new snapshots, restore the values from an existing snapshot, export data to files etc.</description>
+    </context>
+    <context id="saveseteditor" title="Save Set Editor">
+    	<topic href="help/saveseteditor.html" label="Save Set Editor" />
+        <topic href="help/saverestore.html" label="Save, Set &#38; Restore" />
+        <description>Save Set Editor provides means for displaying and editing the contents of a save set. It allows user to edit an existing save set or to create a new one either from an existing one or from scratch.</description>
+    </context>
+</contexts>

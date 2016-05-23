@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.saverestore.ui.valueimporter">
+      <importer
+            importer="org.csstudio.saverestore.demo.Importer"
+            name="My Importer">
+      </importer>
+   </extension>
+   <extension
+         point="org.csstudio.saverestore.ui.parametersprovider">
+      <parametersprovider
+            parametersprovider="org.csstudio.saverestore.demo.Readback">
+      </parametersprovider>
+   </extension>
+
+
+</plugin>
