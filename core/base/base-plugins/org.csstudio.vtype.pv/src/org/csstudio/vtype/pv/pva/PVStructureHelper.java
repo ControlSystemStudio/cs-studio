@@ -16,6 +16,7 @@ import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VImage;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.epics.pvdata.factory.ConvertFactory;
@@ -46,30 +47,30 @@ class PVStructureHelper
     final public static Convert convert = ConvertFactory.getConvert();
 
     /** @param struct {@link PVStructure} to read
-     *  @param field Specific field to read, i.e. don't go by NT* type
-     *  @return {@link VType} for data in the structure
+     *  @param value_offset Specific field to read
+     *  @return {@link VType} for field in the structure
      *  @throws Exception on error
      */
-    public static VType getVType(final PVStructure orig_struct, final int value_offset) throws Exception
+    public static VType getVType(final PVStructure struct, final int value_offset) throws Exception
     {
-        final PVStructure struct;
+        final PVStructure actual_struct;
 
         if (value_offset <= 0)
-            struct = orig_struct;
+            actual_struct = struct;
         else
         {
             // Extract field from struct
             final PVField field;
             try
             {
-                field = orig_struct.getSubField(value_offset);
+                field = struct.getSubField(value_offset);
             }
             catch (Exception ex)
             {
-                throw new Exception("Cannot decode field offset " + value_offset + " in " + orig_struct, ex);
+                throw new Exception("Cannot decode field offset " + value_offset + " in " + struct, ex);
             }
             if (field instanceof PVStructure)
-                struct = (PVStructure) field;
+                actual_struct = (PVStructure) field;
             else if (field instanceof PVScalar)
                 return decodeScalar((PVScalar) field);
             else if (field instanceof PVScalarArray)
@@ -77,29 +78,29 @@ class PVStructureHelper
             else if (field instanceof PVUnion)
                 return decodeUnion((PVUnion) field);
             else
-                throw new Exception("Cannot decode " + field + " in " + orig_struct);
+                throw new Exception("Cannot decode " + field + " in " + struct);
         }
 
         // Handle normative types
-        final String type = struct.getStructure().getID();
+        final String type = actual_struct.getStructure().getID();
         if (type.equals("epics:nt/NTScalar:1.0"))
-            return decodeNTScalar(struct);
+            return decodeNTScalar(actual_struct);
         if (type.equals("epics:nt/NTEnum:1.0"))
-            return new VTypeForEnum(struct);
+            return new VTypeForEnum(actual_struct);
         if (type.equals("epics:nt/NTScalarArray:1.0"))
-            return decodeNTArray(struct);
+            return decodeNTArray(actual_struct);
         if (type.equals("epics:nt/NTNDArray:1.0"))
-            return decodeNTNDArray(struct);
+            return decodeNTNDArray(actual_struct);
 
         // Handle data that contains a "value", even though not marked as NT*
-        final Field value_field = struct.getStructure().getField("value");
+        final Field value_field = actual_struct.getStructure().getField("value");
         if (value_field instanceof Scalar)
-            return decodeNTScalar(struct);
+            return decodeNTScalar(actual_struct);
         else if (value_field instanceof ScalarArray)
-            return decodeNTArray(struct);
+            return decodeNTArray(actual_struct);
 
         // Create string that indicates name of unknown type
-        return ValueFactory.newVString(struct.getStructure().toString(),
+        return ValueFactory.newVString(actual_struct.getStructure().toString(),
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
                 ValueFactory.timeNow());
     }
@@ -235,6 +236,11 @@ class PVStructureHelper
         throw new Exception("Canot decode union from " + value);
     }
 
+    /** Decode 'value', 'timeStamp', 'alarm' of NTScalar
+     *  @param struct
+     *  @return
+     *  @throws Exception
+     */
     private static VType decodeNTScalar(final PVStructure struct) throws Exception
     {
         final PVScalar field = struct.getSubField(PVScalar.class, "value");
@@ -268,6 +274,11 @@ class PVStructureHelper
         }
     }
 
+    /** Decode 'value', 'timeStamp', 'alarm' of NTArray
+     *  @param struct
+     *  @return
+     *  @throws Exception
+     */
     private static VType decodeNTArray(final PVStructure struct) throws Exception
     {
         final Field field = struct.getStructure().getField("value");
@@ -301,18 +312,25 @@ class PVStructureHelper
         }
     }
 
-    private static VType decodeNTNDArray(final PVStructure struct) throws Exception
+    /** Decode image from NTNDArray
+     *  @param struct
+     *  @return
+     *  @throws Exception
+     */
+    private static VImage decodeNTNDArray(final PVStructure struct) throws Exception
     {
         final PVStructureArray dim_field = struct.getSubField(PVStructureArray.class, "dimension");
-        if (dim_field.getLength() < 2)
-            throw new Exception("Need at least 2 dimensions, got " + dim_field.getLength());
-        StructureArrayData dim = new StructureArrayData();
+        if (dim_field == null  ||  dim_field.getLength() < 2)
+            throw new Exception("Need at least 2 dimensions, got " + dim_field);
+        final StructureArrayData dim = new StructureArrayData();
         dim_field.get(0, 2, dim);
+        // Could use dim.data[0].getSubField(PVInt.class, 1).get(),
+        // but fetching by field name in case structure changes
         final int width = dim.data[0].getIntField("size").get();
         final int height = dim.data[1].getIntField("size").get();
         final int size = width * height;
 
-        final PVUnion value_field = struct.getSubField(PVUnion.class, "value");
+        final PVUnion value_field = struct.getUnionField("value");
         final PVField value = value_field.get();
         if (! (value instanceof PVScalarArray))
             throw new Exception("Expected array for NTNDArray 'value', got " + value);
