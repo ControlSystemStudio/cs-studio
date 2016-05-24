@@ -10,20 +10,26 @@ package org.csstudio.vtype.pv.pva;
 import java.util.Arrays;
 import java.util.List;
 
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayFloat;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ArrayLong;
+import org.diirt.util.array.ArrayShort;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVScalar;
+import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VType;
-import org.diirt.vtype.ValueFactory;
 
 /** Helper for reading & writing PVStructure
  *
@@ -50,7 +56,16 @@ class PVStructureHelper
         {   // Extract field from struct
             struct = orig_struct.getSubField(PVStructure.class, value_offset);
             if (struct == null)
-                throw new Exception("Cannot locate field offset " + value_offset + " in " + orig_struct);
+            {
+                // Not a struct. Try to read plain field.
+                VType vtype = decodeScalar(orig_struct, value_offset);
+                if (vtype != null)
+                    return vtype;
+                vtype = decodeArray(orig_struct, value_offset);
+                if (vtype != null)
+                    return vtype;
+            }
+            throw new Exception("Cannot decode field offset " + value_offset + " in " + orig_struct);
         }
 
         // Handle normative types
@@ -73,6 +88,139 @@ class PVStructureHelper
         return ValueFactory.newVString(struct.getStructure().toString(),
                 ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown type"),
                 ValueFactory.timeNow());
+    }
+
+    /** Attempt to decode a scalar {@link VType}
+     *  @param pv_struct {@link PVStructure}
+     *  @param value_offset Offset to desired value field
+     *  @return Value, or <code>null</code> if there is no scalar
+     *  @throws Exception on error decoding the scalar
+     */
+    private static VType decodeScalar(final PVStructure pv_struct, final int value_offset) throws Exception
+    {
+        final PVScalar field = pv_struct.getSubField(PVScalar.class, value_offset);
+        if (field == null)
+            return null;
+
+        final ScalarType type = field.getScalar().getScalarType();
+        switch (type)
+        {
+        case pvLong:
+        case pvULong:
+            return ValueFactory.newVLong(convert.toLong(field), ValueFactory.alarmNone(),
+                                         ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvDouble:
+            return ValueFactory.newVDouble(convert.toDouble(field));
+        case pvFloat:
+            return ValueFactory.newVFloat(convert.toFloat(field), ValueFactory.alarmNone(),
+                                         ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvShort:
+        case pvUShort:
+            return ValueFactory.newVShort(convert.toShort(field), ValueFactory.alarmNone(),
+                                          ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvInt:
+        case pvUInt:
+            return ValueFactory.newVInt(convert.toInt(field), ValueFactory.alarmNone(),
+                                        ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvByte:
+        case pvUByte:
+            return ValueFactory.newVByte(convert.toByte(field), ValueFactory.alarmNone(),
+                                         ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvBoolean:
+            return ValueFactory.newVBoolean(convert.toInt(field) != 0, ValueFactory.alarmNone(),
+                                            ValueFactory.timeNow());
+        case pvString:
+            return ValueFactory.newVString(convert.toString(field), ValueFactory.alarmNone(),
+                                           ValueFactory.timeNow());
+        default:
+            throw new Exception("Cannot handle " + type.name());
+        }
+    }
+
+
+    /** Attempt to decode an array {@link VType}
+     *  @param pv_struct {@link PVStructure}
+     *  @param value_offset Offset to desired value field
+     *  @return Value, or <code>null</code> if there is no array
+     *  @throws Exception on error decoding the array
+     */
+    private static VType decodeArray(final PVStructure pv_struct, final int value_offset) throws Exception
+    {
+        final PVScalarArray pv_array = pv_struct.getSubField(PVScalarArray.class, value_offset);
+        if (pv_array == null)
+            return null;
+        final Field field = pv_array.getField();
+        if (! (field instanceof ScalarArray))
+            return null;
+        final ScalarType type = ((ScalarArray) field).getElementType();
+        final int length = pv_array.getLength();
+        switch (type)
+        {
+        case pvDouble:
+        {
+            final double[] data = new double[length];
+            PVStructureHelper.convert.toDoubleArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVDoubleArray(new ArrayDouble(data), ValueFactory.alarmNone(),
+                                                ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
+        case pvLong:
+        case pvULong:
+        {
+            final long[] data = new long[length];
+            PVStructureHelper.convert.toLongArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVLongArray(new ArrayLong(data), ValueFactory.alarmNone(),
+                                              ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
+        case pvFloat:
+        {
+            final float[] data = new float[length];
+            PVStructureHelper.convert.toFloatArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVFloatArray(new ArrayFloat(data), ValueFactory.alarmNone(),
+                                               ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
+        case pvShort:
+        case pvUShort:
+        {
+            final short[] data = new short[length];
+            PVStructureHelper.convert.toShortArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVShortArray(new ArrayShort(data), ValueFactory.alarmNone(),
+                                               ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
+        case pvInt:
+        case pvUInt:
+        {
+            final int[] data = new int[length];
+            PVStructureHelper.convert.toIntArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVIntArray(new ArrayInt(data), ValueFactory.alarmNone(),
+                                             ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
+        // There is no ValueFactory.newVByteArray
+//        case pvByte:
+//        case pvUByte:
+//        {
+//            final byte[] data = new byte[length];
+//            PVStructureHelper.convert.toByteArray(pv_array, 0, length, data, 0);
+//            return ValueFactory.newVByteArray(new ArrayByte(data), ValueFactory.alarmNone(),
+//                                              ValueFactory.timeNow());
+//        }
+        // There is no  convert.toBoolArray()
+//        case pvBoolean:
+//        {
+//            final boolean[] data = new boolean[length];
+//            PVStructureHelper.convert.toBoolArray(pv_array, 0, length, data, 0);
+//            return ValueFactory.newVBooleanArray(new ArrayBoolean(data), ValueFactory.alarmNone(),
+//                                                 ValueFactory.timeNow());
+//        }
+        case pvString:
+        {
+            final String[] data = new String[length];
+            PVStructureHelper.convert.toStringArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVStringArray(Arrays.asList(data), ValueFactory.alarmNone(),
+                                                ValueFactory.timeNow());
+        }
+        default:
+            throw new Exception("Cannot handle " + type.name());
+        }
     }
 
     private static VType decodeNTScalar(final PVStructure struct) throws Exception
