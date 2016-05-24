@@ -54,7 +54,14 @@ class PVStructureHelper
             struct = orig_struct;
         else
         {   // Extract field from struct
-            struct = orig_struct.getSubField(PVStructure.class, value_offset);
+            try
+            {
+                struct = orig_struct.getSubField(PVStructure.class, value_offset);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Cannot decode field offset " + value_offset + " in " + orig_struct, ex);
+            }
             if (struct == null)
             {
                 // Not a struct. Try to read plain field.

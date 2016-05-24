@@ -36,16 +36,21 @@ public class PVNameHelper
      *  @throws Exception on error
      */
     public static PVNameHelper forName(final String pv_name) throws Exception
-    {   // Does name include "?request.."?
-        int pos = pv_name.indexOf('?');
+    {
+        // PV name that follow pvget/eget URL syntax can be
+        // "pva:///the_name" with 3 '///' to allow for a "pva://host:port/the_name".
+        // Strip the 3rd '/'
+        final String name = pv_name.startsWith("/") ? pv_name.substring(1) : pv_name;
+        // Does name include "?request.."?
+        int pos = name.indexOf('?');
         if (pos >= 0)
-            return PVNameHelper.forNameWithRequest(pv_name.substring(0, pos), pv_name.substring(pos));
+            return PVNameHelper.forNameWithRequest(name.substring(0, pos), name.substring(pos));
         // Does name include "/some/path"?
-        pos = pv_name.indexOf('/');
+        pos = name.indexOf('/');
         if (pos >= 0)
-            return PVNameHelper.forNameWithPath(pv_name.substring(0, pos), pv_name.substring(pos+1));
+            return PVNameHelper.forNameWithPath(name.substring(0, pos), name.substring(pos+1));
         // Plain channel name
-        return new PVNameHelper(pv_name, "field()", "field(value)");
+        return new PVNameHelper(name, "field()", "field(value)");
     }
 
     /** @param channel Channel name
