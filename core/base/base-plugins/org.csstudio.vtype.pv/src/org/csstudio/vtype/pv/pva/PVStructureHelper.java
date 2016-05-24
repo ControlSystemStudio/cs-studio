@@ -105,25 +105,25 @@ class PVStructureHelper
         final ScalarType type = field.getScalar().getScalarType();
         switch (type)
         {
-        case pvLong:
-        case pvULong:
-            return ValueFactory.newVLong(convert.toLong(field), ValueFactory.alarmNone(),
-                                         ValueFactory.timeNow(), ValueFactory.displayNone());
         case pvDouble:
             return ValueFactory.newVDouble(convert.toDouble(field));
         case pvFloat:
             return ValueFactory.newVFloat(convert.toFloat(field), ValueFactory.alarmNone(),
+                    ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvLong:
+        case pvUInt: // Update UInt to Long
+        case pvULong: // Keep ULong as Long
+            return ValueFactory.newVLong(convert.toLong(field), ValueFactory.alarmNone(),
                                          ValueFactory.timeNow(), ValueFactory.displayNone());
+        case pvInt:
+        case pvUShort: // Update UShort to Int
+            return ValueFactory.newVInt(convert.toInt(field), ValueFactory.alarmNone(),
+                    ValueFactory.timeNow(), ValueFactory.displayNone());
         case pvShort:
-        case pvUShort:
+        case pvUByte: // Update UByte to Short
             return ValueFactory.newVShort(convert.toShort(field), ValueFactory.alarmNone(),
                                           ValueFactory.timeNow(), ValueFactory.displayNone());
-        case pvInt:
-        case pvUInt:
-            return ValueFactory.newVInt(convert.toInt(field), ValueFactory.alarmNone(),
-                                        ValueFactory.timeNow(), ValueFactory.displayNone());
         case pvByte:
-        case pvUByte:
             return ValueFactory.newVByte(convert.toByte(field), ValueFactory.alarmNone(),
                                          ValueFactory.timeNow(), ValueFactory.displayNone());
         case pvBoolean:
@@ -163,47 +163,40 @@ class PVStructureHelper
             return ValueFactory.newVDoubleArray(new ArrayDouble(data), ValueFactory.alarmNone(),
                                                 ValueFactory.timeNow(), ValueFactory.displayNone());
         }
+        case pvFloat:
+        {
+            final float[] data = new float[length];
+            PVStructureHelper.convert.toFloatArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVFloatArray(new ArrayFloat(data), ValueFactory.alarmNone(),
+                    ValueFactory.timeNow(), ValueFactory.displayNone());
+        }
         case pvLong:
         case pvULong:
+        case pvUInt:
         {
             final long[] data = new long[length];
             PVStructureHelper.convert.toLongArray(pv_array, 0, length, data, 0);
             return ValueFactory.newVLongArray(new ArrayLong(data), ValueFactory.alarmNone(),
                                               ValueFactory.timeNow(), ValueFactory.displayNone());
         }
-        case pvFloat:
+        case pvInt:
+        case pvUShort:
         {
-            final float[] data = new float[length];
-            PVStructureHelper.convert.toFloatArray(pv_array, 0, length, data, 0);
-            return ValueFactory.newVFloatArray(new ArrayFloat(data), ValueFactory.alarmNone(),
-                                               ValueFactory.timeNow(), ValueFactory.displayNone());
+            final int[] data = new int[length];
+            PVStructureHelper.convert.toIntArray(pv_array, 0, length, data, 0);
+            return ValueFactory.newVIntArray(new ArrayInt(data), ValueFactory.alarmNone(),
+                    ValueFactory.timeNow(), ValueFactory.displayNone());
         }
         case pvShort:
-        case pvUShort:
+        case pvByte: // There is no ValueFactory.newVByteArray, so upgrade to short
+        case pvUByte:
         {
             final short[] data = new short[length];
             PVStructureHelper.convert.toShortArray(pv_array, 0, length, data, 0);
             return ValueFactory.newVShortArray(new ArrayShort(data), ValueFactory.alarmNone(),
                                                ValueFactory.timeNow(), ValueFactory.displayNone());
         }
-        case pvInt:
-        case pvUInt:
-        {
-            final int[] data = new int[length];
-            PVStructureHelper.convert.toIntArray(pv_array, 0, length, data, 0);
-            return ValueFactory.newVIntArray(new ArrayInt(data), ValueFactory.alarmNone(),
-                                             ValueFactory.timeNow(), ValueFactory.displayNone());
-        }
-        // There is no ValueFactory.newVByteArray
-//        case pvByte:
-//        case pvUByte:
-//        {
-//            final byte[] data = new byte[length];
-//            PVStructureHelper.convert.toByteArray(pv_array, 0, length, data, 0);
-//            return ValueFactory.newVByteArray(new ArrayByte(data), ValueFactory.alarmNone(),
-//                                              ValueFactory.timeNow());
-//        }
-        // There is no  convert.toBoolArray()
+        // There is no convert.toBoolArray(), and pvaSrv example has no boolArray01 example to test
 //        case pvBoolean:
 //        {
 //            final boolean[] data = new boolean[length];
