@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
@@ -25,8 +27,6 @@ import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Structure;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /** pvAccess {@link PV}
  *
@@ -161,7 +161,7 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
         }
         else
             logger.log(Level.WARNING, "Channel {0} status {1}",
-                                   new Object[] { channel.getChannelName(), status.getMessage() });
+                                   new Object[] { getName(), status.getMessage() });
     }
 
     // ChannelRequester
@@ -232,8 +232,7 @@ class PVA_PV extends PV implements ChannelRequester, MonitorRequester
             }
             catch (Exception ex)
             {
-                logger.log(Level.WARNING,
-                    "Cannot handle update for " + channel.getChannelName(), ex);
+                logger.log(Level.WARNING, "Cannot handle update for " + getName(), ex);
             }
             monitor.release(update);
         }
