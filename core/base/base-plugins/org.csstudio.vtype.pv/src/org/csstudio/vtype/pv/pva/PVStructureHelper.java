@@ -22,14 +22,18 @@ import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.PVBoolean;
+import org.epics.pvdata.pv.PVByteArray;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.PVStructureArray;
+import org.epics.pvdata.pv.PVUnion;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.StructureArrayData;
 
 /** Helper for reading & writing PVStructure
  *
@@ -83,6 +87,8 @@ class PVStructureHelper
             return new VTypeForEnum(struct);
         if (type.equals("epics:nt/NTScalarArray:1.0"))
             return decodeNTArray(struct);
+        if (type.equals("epics:nt/NTNDArray:1.0"))
+            return decodeNTNDArray(struct);
 
         // Handle data that contains a "value", even though not marked as NT*
         final Field value_field = struct.getStructure().getField("value");
@@ -287,6 +293,31 @@ class PVStructureHelper
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
                     ValueFactory.timeNow());
         }
+    }
+
+    private static VType decodeNTNDArray(final PVStructure struct) throws Exception
+    {
+        final PVStructureArray dim_field = struct.getSubField(PVStructureArray.class, "dimension");
+        if (dim_field.getLength() < 2)
+            throw new Exception("Need at least 2 dimensions, got " + dim_field.getLength());
+        StructureArrayData dim = new StructureArrayData();
+        dim_field.get(0, 2, dim);
+        final int width = dim.data[0].getIntField("size").get();
+        final int height = dim.data[1].getIntField("size").get();
+        final int size = width * height;
+
+        final PVUnion value_field = struct.getSubField(PVUnion.class, "value");
+        final PVField value = value_field.get();
+        if (! (value instanceof PVScalarArray))
+            throw new Exception("Expected array for NTNDArray 'value', got " + value);
+
+        final byte[] data = new byte[size];
+        if (value instanceof PVByteArray)
+            PVStructureHelper.convert.toByteArray((PVByteArray)value, 0, size, data, 0);
+        else
+            throw new Exception("Cannot extract byte[] from " + value);
+
+        return ValueFactory.newVImage(height, width, data);
     }
 
     /** @param structure {@link PVStructure} from which to read
