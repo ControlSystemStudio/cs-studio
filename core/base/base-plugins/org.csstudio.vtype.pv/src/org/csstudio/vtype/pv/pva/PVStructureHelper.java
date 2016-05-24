@@ -57,26 +57,27 @@ class PVStructureHelper
         if (value_offset <= 0)
             struct = orig_struct;
         else
-        {   // Extract field from struct
+        {
+            // Extract field from struct
+            final PVField field;
             try
             {
-                struct = orig_struct.getSubField(PVStructure.class, value_offset);
+                field = orig_struct.getSubField(value_offset);
             }
             catch (Exception ex)
             {
                 throw new Exception("Cannot decode field offset " + value_offset + " in " + orig_struct, ex);
             }
-            if (struct == null)
-            {
-                // Not a struct. Try to read plain field.
-                VType vtype = decodeScalar(orig_struct, value_offset);
-                if (vtype != null)
-                    return vtype;
-                vtype = decodeArray(orig_struct, value_offset);
-                if (vtype != null)
-                    return vtype;
-            }
-            throw new Exception("Cannot decode field offset " + value_offset + " in " + orig_struct);
+            if (field instanceof PVStructure)
+                struct = (PVStructure) field;
+            else if (field instanceof PVScalar)
+                return decodeScalar((PVScalar) field);
+            else if (field instanceof PVScalarArray)
+                return decodeArray((PVScalarArray) field);
+            else if (field instanceof PVUnion)
+                return decodeUnion((PVUnion) field);
+            else
+                throw new Exception("Cannot decode " + field + " in " + orig_struct);
         }
 
         // Handle normative types
@@ -104,17 +105,12 @@ class PVStructureHelper
     }
 
     /** Attempt to decode a scalar {@link VType}
-     *  @param pv_struct {@link PVStructure}
-     *  @param value_offset Offset to desired value field
-     *  @return Value, or <code>null</code> if there is no scalar
+     *  @param field {@link PVScalar}
+     *  @return Value
      *  @throws Exception on error decoding the scalar
      */
-    private static VType decodeScalar(final PVStructure pv_struct, final int value_offset) throws Exception
+    private static VType decodeScalar(final PVScalar field) throws Exception
     {
-        final PVScalar field = pv_struct.getSubField(PVScalar.class, value_offset);
-        if (field == null)
-            return null;
-
         final ScalarType type = field.getScalar().getScalarType();
         switch (type)
         {
@@ -150,18 +146,13 @@ class PVStructureHelper
         }
     }
 
-
     /** Attempt to decode an array {@link VType}
-     *  @param pv_struct {@link PVStructure}
-     *  @param value_offset Offset to desired value field
-     *  @return Value, or <code>null</code> if there is no array
+     *  @param pv_array {@link PVScalarArray}
+     *  @return Value
      *  @throws Exception on error decoding the array
      */
-    private static VType decodeArray(final PVStructure pv_struct, final int value_offset) throws Exception
+    private static VType decodeArray(final PVScalarArray pv_array) throws Exception
     {
-        final PVScalarArray pv_array = pv_struct.getSubField(PVScalarArray.class, value_offset);
-        if (pv_array == null)
-            return null;
         final Field field = pv_array.getField();
         if (! (field instanceof ScalarArray))
             return null;
@@ -227,6 +218,21 @@ class PVStructureHelper
         default:
             throw new Exception("Cannot handle " + type.name());
         }
+    }
+
+    /** Attempt to decode a {@link VType} from a union
+     *  @param pv_union {@link PVUnion}
+     *  @return Value
+     *  @throws Exception on error decoding the array
+     */
+    private static VType decodeUnion(final PVUnion pv_union) throws Exception
+    {
+        final PVField value = pv_union.get();
+        if (value instanceof PVScalar)
+            return decodeScalar((PVScalar) value);
+        if (value instanceof PVScalarArray)
+            return decodeArray((PVScalarArray) value);
+        throw new Exception("Canot decode union from " + value);
     }
 
     private static VType decodeNTScalar(final PVStructure struct) throws Exception
