@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.BOYPVFactory;
 import org.csstudio.opibuilder.util.DisplayUtils;
@@ -44,7 +45,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PVUtil{
 
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter timeFormat = TimestampFormats.FULL_FORMAT;
 
     /**Create a PV and start it. PVListener can be added to the PV to monitor its
      * value change, but please note that the listener is executed in non-UI thread.
