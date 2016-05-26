@@ -219,6 +219,9 @@
                 <artifact>
                   <id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
                 </artifact>
+                <artifact>
+                    <id>net.sf.cssbox:jstyleparser:1.22</id>
+                </artifact>
               </artifacts>
             </configuration>
           </execution>
