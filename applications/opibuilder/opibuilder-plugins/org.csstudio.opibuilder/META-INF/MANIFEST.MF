@@ -35,7 +35,10 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.python.jython;bundle-version="2.5.2",
  org.csstudio.swt.widgets;bundle-version="2.1.0",
  org.csstudio.swt.xygraph;bundle-version="2.0.4",
- org.eclipse.e4.ui.workbench
+ org.eclipse.e4.ui.workbench,
+ net.sf.cssbox.jstyleparser;bundle-version="1.22.0",
+ org.antlr.runtime;bundle-version="[3.5.2,4.0.0)",
+ org.unbescape
 Eclipse-RegisterBuddy: org.python.jython
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,

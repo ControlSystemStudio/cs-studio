@@ -36,6 +36,7 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.opibuilder.util.StyleSheetService;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.core.runtime.IPath;
@@ -86,8 +87,10 @@ public class XMLUtil {
         result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion().toString());
         List<String> propIds = new ArrayList<>(widgetModel.getAllPropertyIDs());
         Collections.sort(propIds);
+        StyleSheetService styleService = StyleSheetService.getInstance();
         for(String propId : propIds){
-            if(widgetModel.getProperty(propId).isSavable()){
+            if(widgetModel.getProperty(propId).isSavable()
+                && !styleService.isPropertyHandledByWidgetClass(widgetModel, propId)){
                 Element propElement = new Element(propId);
                 widgetModel.getProperty(propId).writeToXML(propElement);
                 result.addContent(propElement);

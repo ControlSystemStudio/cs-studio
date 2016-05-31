@@ -67,10 +67,27 @@ public class WidgetClassParser implements IContentParser {
                 desc.setValue(value);
                 desc.setStartIndex(idx + 1);
                 desc.setEndIndex(orgValue.length);
-                desc.setContentType(WidgetClassContentType.TYPE);
+                desc.setContentType(WidgetClassContentType.QUOTED);
             }
+        } else if (originalValue.charAt(0) == QUOTE) {
+            desc.setValue(originalValue.substring(1));
+            desc.setStartIndex(1);
+            desc.setEndIndex(originalValue.length());
+            desc.setContentType(WidgetClassContentType.PLAIN);
         } else {
-            desc.setContentType(WidgetClassContentType.TYPE);
+            if (originalValue.trim().isEmpty()) {
+                desc.setValue(originalValue.trim());
+                desc.setStartIndex(0);
+                desc.setEndIndex(0);
+            } else {
+                int idx = originalValue.lastIndexOf(' ');
+                if (idx > 0 && idx < originalValue.length() -1) {
+                    desc.setValue(originalValue.substring(originalValue.indexOf(' ') + 1));
+                    desc.setStartIndex(idx + 1);
+                    desc.setEndIndex(originalValue.length());
+                }
+            }
+            desc.setContentType(WidgetClassContentType.PLAIN);
         }
 
         return desc;

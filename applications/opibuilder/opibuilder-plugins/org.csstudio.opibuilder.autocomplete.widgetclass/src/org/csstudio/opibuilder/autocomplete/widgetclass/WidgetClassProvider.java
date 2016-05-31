@@ -39,7 +39,7 @@ public class WidgetClassProvider implements IAutoCompleteProvider {
      */
     @Override
     public boolean accept(ContentType type) {
-        return type == WidgetClassContentType.TYPE;
+        return type == WidgetClassContentType.QUOTED || type == WidgetClassContentType.PLAIN;
     }
 
     /*
@@ -59,12 +59,12 @@ public class WidgetClassProvider implements IAutoCompleteProvider {
         }
         final String content = desc.getValue();
         final int idx = desc.getStartIndex();
-
+        final boolean quoted = ((WidgetClassContentType)desc.getContentType()).isQuoted();
         final Set<String> accepted = new HashSet<>();
         final int contentLength = content.length();
         // first fetch only those that start with the string
         widgetClasses.stream().filter(wc -> wc.startsWith(content)).limit(limit).map(wc -> {
-            Proposal proposal = new Proposal(idx <= 0 ? wc : wc + "\"", content.equals(wc));
+            Proposal proposal = new Proposal(quoted ? wc + "\"" : wc, content.equals(wc));
             proposal.setInsertionPos(idx);
             proposal.setStartWithContent(idx <= 0);
             proposal.setFunction(idx > 0);
@@ -81,7 +81,7 @@ public class WidgetClassProvider implements IAutoCompleteProvider {
             widgetClasses.stream().filter(wc -> !accepted.contains(wc) && wc.contains(content))
                 .limit(limit - accepted.size()).map(wc -> {
                     int index = wc.indexOf(content);
-                    Proposal proposal = new Proposal(idx <= 0 ? wc : wc + "\"", false);
+                    Proposal proposal = new Proposal(quoted ? wc + "\"" : wc, false);
                     proposal.setInsertionPos(idx);
                     proposal.setStartWithContent(false);
                     proposal.setFunction(idx > 0);

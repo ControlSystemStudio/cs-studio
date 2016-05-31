@@ -21,10 +21,17 @@ import org.csstudio.autocomplete.parser.ContentType;
  */
 public final class WidgetClassContentType extends ContentType {
 
-    public static final ContentType TYPE = new WidgetClassContentType();
+    static final WidgetClassContentType QUOTED = new WidgetClassContentType(true);
+    static final WidgetClassContentType PLAIN = new WidgetClassContentType(false);
 
-    private WidgetClassContentType() {
+    private final boolean quoted;
+
+    private WidgetClassContentType(boolean quoted) {
         super("WidgetClass");
+        this.quoted = quoted;
     }
 
+    boolean isQuoted() {
+        return quoted;
+    }
 }

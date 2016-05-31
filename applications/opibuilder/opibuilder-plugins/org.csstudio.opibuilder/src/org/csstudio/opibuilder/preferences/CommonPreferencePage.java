@@ -46,6 +46,13 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
                 "Font File: ", new String[]{"def"}, parent);//$NON-NLS-2$
         addField(fontEditor);
 
+        WorkspaceFileFieldEditor widgetClassStylesheetEditor =
+            new WorkspaceFileFieldEditor(PreferencesHelper.WIDGET_CLASSES_STYLESHEET,
+                "Stylesheet Files: ", new String[]{"css"}, parent);//$NON-NLS-2$
+        widgetClassStylesheetEditor.getTextControl(parent).setToolTipText(
+                "The cascading style sheet files with widget classes definitions");
+        addField(widgetClassStylesheetEditor);
+
         StringFieldEditor opiSearchPathEditor =
                 new StringFieldEditor(PreferencesHelper.OPI_SEARCH_PATH, "OPI Search Path", parent);
         opiSearchPathEditor.getTextControl(parent).setToolTipText(
