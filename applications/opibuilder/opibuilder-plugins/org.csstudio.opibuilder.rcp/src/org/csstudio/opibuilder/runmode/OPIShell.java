@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -101,9 +102,12 @@ public final class OPIShell implements IOPIRuntime {
     // be an empty MacrosInput object.
     private MacrosInput macrosInput;
 
+    private SchemaService.SchemaListener schemaListener = () -> SchemaService.refreshModels(displayModel);
+
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
     private OPIShell(Display display, IPath path, MacrosInput macrosInput) throws Exception {
+        SchemaService.getInstance().addSchemaListener(schemaListener);
         this.path = path;
         this.macrosInput = macrosInput;
         icon = OPIBuilderPlugin.imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
@@ -386,6 +390,7 @@ public final class OPIShell implements IOPIRuntime {
 
     @Override
     public void dispose() {
+        SchemaService.getInstance().removeSchemaListener(schemaListener);
         shell.dispose();
         actionRegistry.dispose();
     }

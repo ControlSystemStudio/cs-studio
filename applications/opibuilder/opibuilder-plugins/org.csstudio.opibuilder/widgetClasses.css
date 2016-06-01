@@ -19,6 +19,11 @@ TextUpdate.green > TextUpdate.tiny {
   font: myTinyFont;
 }
 
+/* Define 2 classes: yellow and lemon, where lemon extends tiny */
+TextUpdate.yellow, TextUpdate.tiny > TextUpdate.lemon {
+  background_color: #ffff00;
+}
+
 /* Define class 'noscale', which is applicable to all widgets types */
 .noscale {
   scale_options: false false false;

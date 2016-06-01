@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -34,9 +36,15 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class SchemaService {
 
+    @FunctionalInterface
+    public static interface SchemaListener {
+        public void schemaReloaded();
+    }
+
     private static SchemaService instance;
 
     private final Map<String, AbstractWidgetModel> schemaWidgetsMap;
+    private Set<SchemaListener> listeners = Collections.newSetFromMap(new WeakHashMap<>());
 
     private SchemaService() {
         schemaWidgetsMap = new HashMap<>();
@@ -115,6 +123,17 @@ public final class SchemaService {
                 ConsoleService.getInstance().writeError(message + "\n" + e);//$NON-NLS-1$
             }
         }
+        fireReloadedEvent();
+    }
+
+    private void fireReloadedEvent() {
+        SchemaListener[] listeners;
+        synchronized(this.listeners) {
+            listeners = this.listeners.toArray(new SchemaListener[this.listeners.size()]);
+        }
+        for (SchemaListener sl : listeners) {
+            sl.schemaReloaded();
+        }
     }
 
     private void loadModelFromContainer(AbstractContainerModel containerModel) {
@@ -151,14 +170,12 @@ public final class SchemaService {
      * @param widgetModel the model to apply the schema to
      */
     public void applySchema(AbstractWidgetModel widgetModel) {
-        if (schemaWidgetsMap.isEmpty())
-            return;
-        if (schemaWidgetsMap.containsKey(widgetModel.getTypeID())) {
-            AbstractWidgetModel schemaWidgetModel = schemaWidgetsMap.get(widgetModel.getTypeID());
-            for (String id : schemaWidgetModel.getAllPropertyIDs()) {
-                widgetModel.setPropertyValue(id, schemaWidgetModel.getPropertyValue(id), false);
-            }
+        AbstractWidgetModel schemaWidgetModel = schemaWidgetsMap.get(widgetModel.getTypeID());
+        if (schemaWidgetModel != null) {
+            schemaWidgetModel.getAllPropertyIDs()
+                .forEach(id -> widgetModel.setPropertyValue(id, schemaWidgetModel.getPropertyValue(id), false));
         }
+        applyWidgetClassProperties(widgetModel);
     }
 
     /**
@@ -202,5 +219,45 @@ public final class SchemaService {
         if (typeId.equals(ConnectionModel.ID))
             return new ConnectionModel(null).getPropertyValue(propId);
         return null;
+    }
+
+    /**
+     * Add a listener which is notified when schema is reloaded, so that the widgets can be refreshed if needed.
+     * Listeners are held as weak references.
+     *
+     * @param listener the listener to add
+     */
+    public void addSchemaListener(SchemaListener listener) {
+        synchronized(listeners) {
+            listeners.add(listener);
+        }
+    }
+
+    /**
+     * Remove the listener from this service.
+     *
+     * @param listener the listener to remove
+     */
+    public void removeSchemaListener(SchemaListener listener) {
+        synchronized(listeners) {
+            listeners.remove(listener);
+        }
+    }
+
+    /**
+     * Refresh the model and its children if they have the widget class defined.
+     *
+     * @param model the model to refresh
+     */
+    public static void refreshModels(AbstractWidgetModel model) {
+        if (model == null) return;
+        if (model.hasWidgetClassValue()) {
+            SchemaService.getInstance().applyWidgetClassProperties(model);
+        }
+        if (model instanceof AbstractContainerModel) {
+            for (AbstractWidgetModel child : ((AbstractContainerModel)model).getChildren()) {
+                refreshModels(child);
+            }
+        }
     }
 }

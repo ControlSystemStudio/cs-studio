@@ -416,6 +416,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
         return String.valueOf(getPropertyValue(PROP_WIDGET_CLASS_VALUE));
     }
 
+    public boolean hasWidgetClassValue() {
+        String widgetClass = getWidgetClassValue();
+        return widgetClass != null && !widgetClass.isEmpty() && !"null".equals(widgetClass);
+    }
+
     public Set<String> getAllPropertyIDs(){
         return new HashSet<String>(propertyMap.keySet());
     }

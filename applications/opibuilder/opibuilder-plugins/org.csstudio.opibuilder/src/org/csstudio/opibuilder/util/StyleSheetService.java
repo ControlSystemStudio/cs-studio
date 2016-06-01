@@ -170,10 +170,11 @@ public class StyleSheetService {
 
     private static final Logger LOGGER = Logger.getLogger(StyleSheetService.class.getName());
 
-    private Map<String, OPIColor> colors = new HashMap<>();
-    private Map<String, OPIFont> fonts = new HashMap<>();
+    //use synchronized maps, because the reload can be called from the UI or non UI thread
+    private Map<String, OPIColor> colors =  Collections.synchronizedMap(new HashMap<>());
+    private Map<String, OPIFont> fonts =  Collections.synchronizedMap(new HashMap<>());
     // <widget type, <widget class name, <WC(property name, property value)>>>
-    private Map<String, Map<String, WidgetClass>> widgetTypeClasses = new HashMap<>();
+    private Map<String, Map<String, WidgetClass>> widgetTypeClasses = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Returns the list of all widget class names for the specified widget type ID. The widget type can be either the
@@ -184,7 +185,8 @@ public class StyleSheetService {
      * @return unmodifiable list of widget classes that can be assigned to the widget of the given type
      */
     public List<String> getAvailableClassesForWidgetType(String widgetTypeID) {
-        // strip the widget id of any prefixes: the widget type in css cannot contain any dots
+        // strip the widget id of any prefixes: the widget type in css cannot contain any dots,
+        // therefore we take only the last part of the widget id
         String wid = getId(widgetTypeID);
         // gather default classes (valid for all widget types)
         Map<String, WidgetClass> classes = widgetTypeClasses.get(DEFAULT_TYPE_CLASS);
@@ -233,7 +235,10 @@ public class StyleSheetService {
                     properties.forEach((propertyID, value) -> wc.realDefaultProperties.put(propertyID,
                         transformValueToPropertyType(value, model.getProperty(propertyID), model)));
                 }
+                //collect the class properties separately from the default properties
                 props.putAll(wc.realPropertyValues);
+                //merge default properties first and then add the class specific properties. This way class specific
+                //properties always have precedence over any default ones
                 retVal.putAll(wc.realDefaultProperties);
             }
             retVal.putAll(props);
