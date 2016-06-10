@@ -148,7 +148,6 @@ public class ValueHelper
         return strings;
     }
 
-
     /** @param items Items from <code>splitInitialItems</code>
      *  @return Numeric values for all items
      *  @throws Exception on error
@@ -224,14 +223,36 @@ public class ValueHelper
         }
 
         if (type == VTable.class)
-            return ValueFactory.newVTable(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-
+        {
+            final List<String> headers = getInitialStrings(items);
+            final List<Class<?>> types = new ArrayList<>();
+            final List<Object> values = new ArrayList<>();
+            while (headers.size() > values.size())
+            {   // Assume each column is of type string, no values
+                types.add(String.class);
+                values.add(Collections.emptyList());
+            }
+            return ValueFactory.newVTable(types, headers, values);
+        }
         throw new Exception("Cannot obtain type " + type.getSimpleName() + " from " + items);
     }
 
+    /** Adapt new value to desired type
+     *
+     *  <p>For a {@link VEnum}, this allows writing either another enum,
+     *  a number for the index, or a string for an enum label.
+     *
+     *  <p>For numbers, allows writing strings which are then parsed into numbers.
+     *
+     * @param new_value
+     * @param type
+     * @param old_value
+     * @return
+     * @throws Exception
+     */
     public static VType adapt(final Object new_value, Class<? extends VType> type, final VType old_value) throws Exception
     {
-        // Already matching VType? Or another VType
+        // Already matching VType?
         if (type.isInstance(new_value))
             return (VType) new_value;
 

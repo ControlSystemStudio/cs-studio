@@ -32,6 +32,7 @@ import org.diirt.vtype.VType;
  *  <li>loc://name&lt;VLong>(1e10), forces long integer data type
  *  <li>loc://name&lt;VEnum>(0, "a", "b", "c"), declares enumerated type with initial value and labels
  *  <li>loc://name&lt;VTable>, declares PV as table (initially empty)
+ *  <li>loc://name&lt;VTable>("X", "Y"), declares PV as table with given column names (initially empty)
  *  </ul>
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
