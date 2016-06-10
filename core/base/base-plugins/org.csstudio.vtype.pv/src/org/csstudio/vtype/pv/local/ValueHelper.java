@@ -9,6 +9,7 @@ package org.csstudio.vtype.pv.local;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VLong;
 import org.diirt.vtype.VString;
 import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 
@@ -221,13 +223,20 @@ public class ValueHelper
             return ValueFactory.newVEnum(initial, labels, ValueFactory.alarmNone(), ValueFactory.timeNow());
         }
 
+        if (type == VTable.class)
+            return ValueFactory.newVTable(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+
         throw new Exception("Cannot obtain type " + type.getSimpleName() + " from " + items);
     }
 
     public static VType adapt(final Object new_value, Class<? extends VType> type, final VType old_value) throws Exception
     {
-        // Already matching VType?
+        // Already matching VType? Or another VType
         if (type.isInstance(new_value))
+            return (VType) new_value;
+
+        // Is data already a VType (allowing a different one)?
+        if (new_value instanceof VType)
             return (VType) new_value;
 
         if (type == VDouble.class)
@@ -265,7 +274,7 @@ public class ValueHelper
         if (type == VDoubleArray.class)
         {   // Pass double[]
             if (new_value instanceof double[])
-                return ValueFactory.toVType((double[]) new_value);
+                return ValueFactory.toVType(new_value);
             // Pass List
             if (new_value instanceof List)
             {

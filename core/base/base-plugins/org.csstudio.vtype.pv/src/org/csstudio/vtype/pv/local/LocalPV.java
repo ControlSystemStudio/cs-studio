@@ -17,6 +17,7 @@ import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VLong;
 import org.diirt.vtype.VString;
 import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 
 /** Local Process Variable
@@ -30,6 +31,7 @@ import org.diirt.vtype.VType;
  *  <li>loc://name("a", "b", "c"), same as loc://name&lt;VStringArray>("a", "b", "c")
  *  <li>loc://name&lt;VLong>(1e10), forces long integer data type
  *  <li>loc://name&lt;VEnum>(0, "a", "b", "c"), declares enumerated type with initial value and labels
+ *  <li>loc://name&lt;VTable>, declares PV as table (initially empty)
  *  </ul>
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
@@ -94,6 +96,8 @@ public class LocalPV extends PV
             return VEnum.class;
         if (lower.contains("long"))
             return VLong.class;
+        if (lower.contains("table"))
+            return VTable.class;
         throw new Exception("Local PV cannot handle type '" + type + "'");
     }
 
