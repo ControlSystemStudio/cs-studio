@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.Requester;
@@ -18,8 +19,6 @@ import org.epics.pvdata.pv.Requester;
  */
 class PVRequester implements Requester
 {
-    final protected static Logger logger = Logger.getLogger(PVRequester.class.getName());
-
     @Override
     public String getRequesterName()
     {
