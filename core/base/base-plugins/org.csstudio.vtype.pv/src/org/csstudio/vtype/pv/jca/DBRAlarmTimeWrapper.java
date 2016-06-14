@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import java.time.Instant;
+
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
-
-import java.time.Instant;
 
 import gov.aps.jca.dbr.Severity;
 import gov.aps.jca.dbr.TIME;
@@ -61,6 +61,8 @@ public class DBRAlarmTimeWrapper<T_DBR extends TIME> implements Alarm, Time
         if (dbr == null)
             return Instant.now();
         final TimeStamp epics_time = dbr.getTimeStamp();
+        if (epics_time == null)
+            return Instant.now();
         return Instant.ofEpochSecond(epics_time.secPastEpoch() + 631152000L,  (int) epics_time.nsec());
     }
 
@@ -76,6 +78,6 @@ public class DBRAlarmTimeWrapper<T_DBR extends TIME> implements Alarm, Time
         if (dbr == null)
             return false;
         final TimeStamp epics_time = dbr.getTimeStamp();
-        return epics_time.secPastEpoch() > 0;
+        return epics_time != null  &&  epics_time.secPastEpoch() > 0;
     }
 }

@@ -6,9 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
+
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.epics.pvaccess.ClientFactory;
 import org.epics.pvaccess.client.ChannelProvider;
@@ -32,7 +34,7 @@ public class PVA_Context
         provider = registry.getProvider("pva");
         if (provider == null)
             throw new Exception("Tried to locate 'pva' provider, found " + Arrays.toString(registry.getProviderNames()));
-        Logger.getLogger(getClass().getName()).log(Level.CONFIG, "PVA Provider {0}", provider.getProviderName());
+        logger.log(Level.CONFIG, "PVA Provider {0}", provider.getProviderName());
     }
 
     /** @return Singleton instance */
