@@ -7,13 +7,14 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.csstudio.scan.ScanSystemPreferences;
@@ -111,8 +112,7 @@ public class JythonSupport implements AutoCloseable
         }
         catch (Exception ex)
         {
-            Logger.getLogger(JythonSupport.class.getName()).
-                log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
+            logger.log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
             return false;
         }
         return true;
@@ -183,8 +183,7 @@ public class JythonSupport implements AutoCloseable
     {
         // Get package name
         final String pack_name = class_name.toLowerCase();
-        Logger.getLogger(getClass().getName()).log(Level.FINE,
-            "Loading Jython class {0} from {1}",
+        logger.log(Level.FINE, "Loading Jython class {0} from {1}",
             new Object[] { class_name, pack_name });
 
         try
@@ -197,11 +196,9 @@ public class JythonSupport implements AutoCloseable
         }
         catch (PyException ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                "Error loading Jython class {0} from {1}",
+            logger.log(Level.WARNING, "Error loading Jython class {0} from {1}",
                 new Object[] { class_name, pack_name });
-            Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                    "Search path: {0}",interpreter.getSystemState().path);
+            logger.log(Level.WARNING, "Search path: {0}",interpreter.getSystemState().path);
 
             throw new Exception("Error loading Jython class " + class_name + ":" + getExceptionMessage(ex), ex);
         }
