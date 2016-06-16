@@ -15,13 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.ScanCommand;
@@ -113,8 +114,7 @@ public class ScanServerImpl implements ScanServer
             }
             catch (Exception ex)
             {
-                Logger.getLogger(getClass().getName()).log(Level.WARNING,
-                        "Error reading device context", ex);
+                logger.log(Level.WARNING, "Error reading device context", ex);
             }
         }
         return new Device[0];
@@ -177,7 +177,7 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan simulation failed", ex);
+            logger.log(Level.WARNING, "Scan simulation failed", ex);
             throw ex;
         }
     }
@@ -223,7 +223,7 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
+            logger.log(Level.WARNING, "Scan submission failed", ex);
             throw ex;
         }
     }
@@ -233,7 +233,6 @@ public class ScanServerImpl implements ScanServer
     {
         final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
         int count = 0;
-        final Logger logger = Logger.getLogger(getClass().getName());
 
         MemoryInfo used = new MemoryInfo();
         while (used.getMemoryPercentage() > threshold && count < 10)
@@ -429,7 +428,7 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing scan", ex);
+            logger.log(Level.WARNING, "Error removing scan", ex);
             throw new Exception("Error removing scan", ex);
         }
     }
@@ -444,7 +443,7 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing completed scans", ex);
+            logger.log(Level.WARNING, "Error removing completed scans", ex);
             throw new Exception("Error removing completed scans", ex);
         }
     }

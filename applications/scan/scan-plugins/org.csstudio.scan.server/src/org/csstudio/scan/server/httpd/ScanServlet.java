@@ -7,11 +7,12 @@
  ******************************************************************************/
 package org.csstudio.scan.server.httpd;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -56,7 +57,7 @@ public class ScanServlet extends HttpServlet
         final String format = request.getContentType();
         if (! format.contains("/xml"))
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /scan got format '" + format + "'");
+            logger.log(Level.WARNING, "POST /scan got format '" + format + "'");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan, got format '" + format + "'");
             return;
         }
@@ -95,7 +96,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /scan error", ex);
+            logger.log(Level.WARNING, "POST /scan error", ex);
             response.resetBuffer();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.println("<error>");
@@ -170,7 +171,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "PUT /scan error", ex);
+            logger.log(Level.WARNING, "PUT /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }
     }
@@ -194,7 +195,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "DELETE /scan error", ex);
+            logger.log(Level.WARNING, "DELETE /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }
     }
@@ -222,7 +223,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan error", ex);
+            logger.log(Level.WARNING, "GET /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
@@ -273,7 +274,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan error", ex);
+            logger.log(Level.WARNING, "GET /scan error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }

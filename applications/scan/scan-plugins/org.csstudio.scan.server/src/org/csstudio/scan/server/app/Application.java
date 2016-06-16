@@ -39,6 +39,9 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("nls")
 public class Application implements IApplication
 {
+    /** Suggested logger for all scan server code */
+    public static final Logger logger = Logger.getLogger("org.csstudio.scan.server");
+
     private static String bundle_version = "?";
     final private CountDownLatch run = new CountDownLatch(1);
 

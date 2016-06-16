@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.csstudio.java.time.TimestampFormats;
@@ -68,8 +69,6 @@ import org.csstudio.scan.server.ScanState;
 @SuppressWarnings("nls")
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>, AutoCloseable
 {
-    final private Logger logger = Logger.getLogger(getClass().getName());
-
     /** Pattern for "java.lang.Exception: ", "java...Exception: " */
     private final Pattern java_exception_pattern = Pattern.compile("java[.a-zA-Z]+Exception: ");
 
