@@ -13,6 +13,5 @@
   <modules>
     <module>org.csstudio.product.feature</module>
     <module>org.csstudio.product.configuration.feature</module>
-    <module>org.csstudio.product.ide.dependencies.feature</module>
   </modules>
 </project>
