@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

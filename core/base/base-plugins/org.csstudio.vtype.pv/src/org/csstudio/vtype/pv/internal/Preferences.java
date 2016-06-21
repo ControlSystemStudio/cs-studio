@@ -42,4 +42,9 @@ public class Preferences
     {
         return MonitorMask.valueOf(getString(EpicsPlugin.ID, PreferenceConstants.MONITOR, "VALUE"));
     }
+
+    public static boolean monitorProperties()
+    {
+        return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.DBE_PROPERTY_SUPPORTED, Boolean.TRUE.toString()));
+    }
 }

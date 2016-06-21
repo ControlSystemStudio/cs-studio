@@ -29,7 +29,8 @@ import org.diirt.vtype.VType;
 @SuppressWarnings("nls")
 abstract public class PV
 {
-    final private static Logger logger = Logger.getLogger(PV.class.getName());
+    /** Suggested logger for all vtype.pv packages */
+    public static final Logger logger = Logger.getLogger(PV.class.getName());
 
     final private String name;
 

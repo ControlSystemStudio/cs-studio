@@ -11,6 +11,7 @@ import org.diirt.vtype.VType;
 
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.DBR_STS_Enum;
 import gov.aps.jca.dbr.DBR_String;
 import gov.aps.jca.dbr.DBR_TIME_Byte;
 import gov.aps.jca.dbr.DBR_TIME_Double;
@@ -89,6 +90,21 @@ public class DBRHelper
             if (is_array)
                 return new VTypeForEnumArray(enum_meta, (DBR_TIME_Enum) dbr);
             return new VTypeForEnum(enum_meta, (DBR_TIME_Enum) dbr);
+        }
+
+        // Metadata monitor will provide DBR_CTRL_Enum, which is a DBR_STS_Enum, but lacks time stamp
+        if (dbr instanceof DBR_STS_Enum)
+        {
+            final DBR_STS_Enum have = (DBR_STS_Enum) dbr;
+            final DBR_TIME_Enum need = new DBR_TIME_Enum(have.getEnumValue());
+            need.setStatus(have.getStatus());
+            need.setSeverity(have.getSeverity());
+
+            final LABELS enum_meta = (metadata instanceof LABELS) ? (LABELS) metadata : null;
+
+            if (is_array)
+                return new VTypeForEnumArray(enum_meta, need);
+            return new VTypeForEnum(enum_meta, need);
         }
 
         if (dbr instanceof DBR_TIME_Float)

@@ -10,7 +10,6 @@ package org.csstudio.vtype.pv.pva;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
 import org.diirt.vtype.VEnum;
@@ -37,8 +36,6 @@ import org.epics.pvdata.pv.Structure;
 @SuppressWarnings("nls")
 class PVA_PV extends PV implements ChannelRequester, MonitorRequester
 {
-    final private static Logger logger = Logger.getLogger(PVA_PV.class.getName());
-
     final private static short priority = ChannelProvider.PRIORITY_DEFAULT;
 
     /** Request factory */

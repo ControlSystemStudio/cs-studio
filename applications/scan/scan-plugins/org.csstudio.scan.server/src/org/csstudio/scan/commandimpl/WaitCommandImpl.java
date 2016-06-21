@@ -64,7 +64,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-        final SimulatedDevice device = context.getDevice(command.getDeviceName());
+        final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
         // Estimate execution time
         final double time_estimate;
@@ -100,7 +100,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 
         // Show command
         final StringBuilder buf = new StringBuilder();
-        buf.append(context.getMacros().resolveMacros(command.toString()));
+        buf.append(command.toString());
         if (! Double.isNaN(original))
             buf.append(" [was ").append(original).append("]");
         context.logExecutionStep(buf.toString(), time_estimate);

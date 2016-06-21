@@ -12,7 +12,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
 
@@ -20,6 +19,7 @@ import org.csstudio.vtype.pv.PV;
  *
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 abstract public class SimulatedPV extends PV
 {
     /** Timer for periodic updates */
@@ -61,8 +61,7 @@ abstract public class SimulatedPV extends PV
     protected void close()
     {
         if (! task.cancel(false))
-            Logger.getLogger(getClass().getName())
-                  .log(Level.WARNING, "Cabbit cancel updates for " + getName());
+            logger.log(Level.WARNING, "Cannot cancel updates for " + getName());
         super.close();
     }
 }

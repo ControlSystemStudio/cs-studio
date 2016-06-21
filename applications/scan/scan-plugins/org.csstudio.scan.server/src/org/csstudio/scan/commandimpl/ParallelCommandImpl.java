@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ParallelCommand;
 import org.csstudio.scan.server.JythonSupport;
@@ -46,9 +47,6 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
     final private static ExecutorService executor = Executors.newCachedThreadPool(new NamedThreadFactory("ParallelCommands"));
 
     final private List<ScanCommandImpl<?>> implementation;
-
-    /** Logger for execution of sub-commands, <code>null</code> unless executing */
-    private Logger step_logger = null;
 
     /** Initialize
      *  @param command Command description
@@ -105,48 +103,40 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
     @Override
     public void execute(final ScanContext context) throws Exception
     {
-        step_logger = Logger.getLogger(getClass().getName());
+        final long end = command.getTimeout() > 0.0
+                ? Math.round(System.currentTimeMillis() + command.getTimeout()*1000)
+                : -1;
+        final List<Future<Object>> results = new ArrayList<>();
+        // Start commands in parallel
+        for (ScanCommandImpl<?> body_command : implementation)
+            results.add(launch(context, body_command));
+
+        // Wait for commands to finish
         try
         {
-            final long end = command.getTimeout() > 0.0
-                    ? Math.round(System.currentTimeMillis() + command.getTimeout()*1000)
-                    : -1;
-            final List<Future<Object>> results = new ArrayList<>();
-            // Start commands in parallel
-            for (ScanCommandImpl<?> body_command : implementation)
-                results.add(launch(context, body_command));
-
-            // Wait for commands to finish
-            try
+            for (Future<Object> result : results)
             {
-                for (Future<Object> result : results)
+                if (end > 0)
                 {
-                    if (end > 0)
-                    {
-                        final long time_left = end - System.currentTimeMillis();
-                        if (time_left <= 0)
-                            throw new TimeoutException();
-                        else
-                            result.get(time_left, TimeUnit.MILLISECONDS);
-                    }
+                    final long time_left = end - System.currentTimeMillis();
+                    if (time_left <= 0)
+                        throw new TimeoutException();
                     else
-                        result.get();
+                        result.get(time_left, TimeUnit.MILLISECONDS);
                 }
-            }
-            catch (TimeoutException ex)
-            {
-                throw new Exception("Parallel time out (" + command.getTimeout() + " sec)", ex);
-            }
-            finally
-            {   // In case of interruption or timeout, cancel (interrupt) all body commands.
-                // NOP if commands completed gracefully.
-                for (Future<Object> result : results)
-                    result.cancel(true);
+                else
+                    result.get();
             }
         }
-        finally
+        catch (TimeoutException ex)
         {
-            step_logger = null;
+            throw new Exception("Parallel time out (" + command.getTimeout() + " sec)", ex);
+        }
+        finally
+        {   // In case of interruption or timeout, cancel (interrupt) all body commands.
+            // NOP if commands completed gracefully.
+            for (Future<Object> result : results)
+                result.cancel(true);
         }
         context.workPerformed(1);
     }
@@ -158,7 +148,7 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
      */
     private Future<Object> launch(final ScanContext context, ScanCommandImpl<?> body_command)
     {
-        step_logger.log(Level.FINE, "Launching: {0}", body_command);
+        logger.log(Level.FINE, "Launching: {0}", body_command);
         return executor.submit(new Callable<Object>()
         {
             @Override

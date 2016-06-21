@@ -7,6 +7,14 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
+import java.util.logging.Level;
+
+import org.csstudio.vtype.pv.internal.Preferences;
+
+import com.cosylab.epics.caj.CAJContext;
+
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.event.ContextExceptionEvent;
@@ -15,21 +23,12 @@ import gov.aps.jca.event.ContextMessageEvent;
 import gov.aps.jca.event.ContextMessageListener;
 import gov.aps.jca.event.ContextVirtualCircuitExceptionEvent;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.csstudio.vtype.pv.internal.Preferences;
-
-import com.cosylab.epics.caj.CAJContext;
-
 /** Handler for JCA context
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class JCAContext implements ContextMessageListener, ContextExceptionListener
 {
-    final private static Logger logger = Logger.getLogger(JCAContext.class.getName());
-
     private static JCAContext instance;
 
     final private JCALibrary jca = JCALibrary.getInstance();
