@@ -28,11 +28,11 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.diirt.util.time.TimeDuration;
 
 /** Base for Eclipse Job for exporting data from Model to file
  *  @author Kay Kasemir
@@ -181,8 +181,9 @@ abstract public class ExportJob extends Job
     protected void printItemInfo(final PrintStream out, final ModelItem item)
     {
         out.println(comment + "Channel: " + item.getName());
+        // If display name differs from PV, show the _resolved_ version
         if (! item.getName().equals(item.getDisplayName()))
-            out.println(comment + "Name   : " + item.getDisplayName());
+            out.println(comment + "Name   : " + item.getResolvedDisplayName());
         if (item instanceof PVItem)
         {
             final PVItem pv = (PVItem) item;

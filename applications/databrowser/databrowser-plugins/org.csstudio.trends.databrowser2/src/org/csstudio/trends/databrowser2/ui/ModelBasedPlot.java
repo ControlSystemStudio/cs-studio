@@ -333,10 +333,15 @@ public class ModelBasedPlot
      */
     public void updateTrace(final ModelItem item)
     {
+        // Invisible items have no trace, nothing to update,
+        // and findTrace() would throw an exception
+        if (! item.isVisible())
+            return;
         final Trace<Instant> trace = findTrace(item);
         // Update Trace with item's configuration
-        if (!trace.getName().equals(item.getDisplayName()))
-            trace.setName(item.getDisplayName());
+        final String name = item.getResolvedDisplayName();
+        if (!trace.getName().equals(name))
+            trace.setName(name);
         trace.setUnits(item.getUnits());
         // These happen to not cause an immediate redraw, so
         // set even if no change
