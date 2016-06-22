@@ -376,7 +376,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                     String text = DefaultVTypeFormat.get().format(plot_sample.getVType());
                     final String units = item.getUnits();
                     if (units != null)
-                        text += " " + units;
+                        text += " " + units; //$NON-NLS-1$
                     cell.setText(text);
                 }
                 else
