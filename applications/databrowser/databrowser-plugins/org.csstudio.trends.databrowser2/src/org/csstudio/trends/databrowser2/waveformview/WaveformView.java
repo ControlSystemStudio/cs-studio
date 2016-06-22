@@ -24,6 +24,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
+import org.diirt.vtype.VType;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -38,7 +39,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
-import org.diirt.vtype.VType;
 
 /** View for inspecting Waveform (Array) Samples of the current Model
  *  @author Kay Kasemir
@@ -278,7 +278,7 @@ public class WaveformView extends DataBrowserAwareView
         waveform = new WaveformValueDataProvider();
 
         // Create trace for waveform
-        plot.addTrace(model_item.getDisplayName(), model_item.getUnits(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
+        plot.addTrace(model_item.getResolvedDisplayName(), model_item.getUnits(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
         // Enable waveform selection and update slider's range
         sample_index.setEnabled(true);
         showSelectedSample();
