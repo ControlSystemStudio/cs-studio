@@ -12,8 +12,8 @@
   <name>CS-Studio Save Set Restore UI</name>
   <description>CS-Studio save set restore process variables</description>
   <modules>
-    <module>plugins</module>
-    <module>features</module>
-    <module>repository</module>
+    <module>saverestore-plugins</module>
+    <module>saverestore-features</module>
+    <module>saverestore-repository</module>
   </modules>
 </project>

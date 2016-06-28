@@ -21,7 +21,7 @@
     <cs-studio.version>4.3</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
-    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
+    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20160221192158/repository/</orbit-site>
     <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/3.0/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>

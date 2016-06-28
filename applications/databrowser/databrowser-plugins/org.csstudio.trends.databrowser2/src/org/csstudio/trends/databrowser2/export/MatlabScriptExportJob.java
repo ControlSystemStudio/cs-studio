@@ -17,9 +17,9 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.vtype.VType;
 
 /** Eclipse Job for exporting data from Model to Matlab-format file.
  *  @author Kay Kasemir
@@ -102,7 +102,7 @@ public class MatlabScriptExportJob extends ExportJob
             out.println("clear xx idx");
             out.println(comment + "Convert into time series and plot");
             // Patch "_" in name because Matlab plot will interprete it as LaTeX sub-script
-            final String channel_name = item.getDisplayName().replace("_", "\\_");
+            final String channel_name = item.getResolvedDisplayName().replace("_", "\\_");
             out.println("channel"+count+"=timeseries(pv', pt', pq', 'IsDatenum', true, 'Name', '"+channel_name+"');");
 
             out.print("channel"+count+".QualityInfo.Code=[");

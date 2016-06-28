@@ -14,7 +14,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -237,12 +236,7 @@ public class EditItemsDialog extends Dialog
         textItem.setToolTipText(Messages.ItemNameTT);
         if (! items.isEmpty())
             textItem.setText(items.get(0).getName());
-        textItem.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyItem.setSelection(true);
-            }
-        });
+        textItem.addModifyListener((ModifyEvent e) -> chkApplyItem.setSelection(true));
         textItem.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // Display name property
@@ -257,12 +251,7 @@ public class EditItemsDialog extends Dialog
         textDisplayName.setToolTipText(Messages.TraceDisplayNameTT);
         if (! items.isEmpty())
             textDisplayName.setText(items.get(0).getDisplayName());
-        textDisplayName.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyDisplayName.setSelection(true);
-            }
-        });
+        textDisplayName.addModifyListener((ModifyEvent e) -> chkApplyDisplayName.setSelection(true));
         textDisplayName.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // Color property
@@ -314,12 +303,7 @@ public class EditItemsDialog extends Dialog
         chkApplyScan.setEnabled(enableScan);
         textScan.setEnabled(enableScan);
         textScan.addVerifyListener(new NumericalVerifyListener(textScan, true));
-        textScan.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyScan.setSelection(true);
-            }
-        });
+        textScan.addModifyListener((ModifyEvent e) -> chkApplyScan.setSelection(true));
         textScan.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // Buffer size property
@@ -342,12 +326,7 @@ public class EditItemsDialog extends Dialog
         chkApplyBufferSize.setEnabled(enableBufferSize);
         textBufferSize.setEnabled(enableBufferSize);
         textBufferSize.addVerifyListener(new NumericalVerifyListener(textBufferSize, false));
-        textBufferSize.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyBufferSize.setSelection(true);
-            }
-        });
+        textBufferSize.addModifyListener((ModifyEvent e) -> chkApplyBufferSize.setSelection(true));
         textBufferSize.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // Width property
@@ -363,12 +342,7 @@ public class EditItemsDialog extends Dialog
         if (! items.isEmpty())
             textWidth.setText(Integer.toString(items.get(0).getLineWidth()));
         textWidth.addVerifyListener(new NumericalVerifyListener(textWidth, false));
-        textWidth.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyWidth.setSelection(true);
-            }
-        });
+        textWidth.addModifyListener((ModifyEvent e) -> chkApplyWidth.setSelection(true));
         textWidth.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
 
@@ -472,12 +446,7 @@ public class EditItemsDialog extends Dialog
         if (! items.isEmpty())
             textIndex.setText(Integer.toString(items.get(0).getWaveformIndex()));
         textIndex.addVerifyListener(new NumericalVerifyListener(textIndex, false));
-        textIndex.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                chkApplyIndex.setSelection(true);
-            }
-        });
+        textIndex.addModifyListener((ModifyEvent e) -> chkApplyIndex.setSelection(true));
         textIndex.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         return composite;

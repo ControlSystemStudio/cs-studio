@@ -15,11 +15,12 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
@@ -45,9 +46,6 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     final private boolean reverse;
     final private List<ScanCommandImpl<?>> implementation;
     private int direction = 1;
-
-    /** Logger for execution of loop steps, <code>null</code> unless executing the loop */
-    private Logger step_logger = null;
 
     /** Thread that executes the loop variable write
      *
@@ -181,46 +179,38 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     @Override
     public void execute(final ScanContext context) throws Exception
     {
-        step_logger = Logger.getLogger(getClass().getName());
-        try
+        final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
+
+        // Separate read-back device, or use 'set' device?
+        final Device readback;
+        if (command.getReadback().isEmpty())
+            readback = device;
+        else
+            readback = context.getDevice(context.getMacros().resolveMacros(command.getReadback()));
+
+        //  Wait for the device to reach the value?
+        final NumericValueCondition condition;
+        if (command.getWait())
         {
-            final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
-
-            // Separate read-back device, or use 'set' device?
-            final Device readback;
-            if (command.getReadback().isEmpty())
-                readback = device;
-            else
-                readback = context.getDevice(context.getMacros().resolveMacros(command.getReadback()));
-
-            //  Wait for the device to reach the value?
-            final NumericValueCondition condition;
-            if (command.getWait())
-            {
-                // When using completion, readback needs to match "right away"
-                final double check_timeout = command.getCompletion() ? 1.0 : command.getTimeout();
-                condition = new NumericValueCondition(readback, Comparison.EQUALS,
-                            command.getStart(),
-                            command.getTolerance(),
-                            TimeDuration.ofSeconds(check_timeout));
-            }
-            else
-                condition = null;
-
-            final double start = getLoopStart();
-            final double end   = getLoopEnd();
-            final double step  = getLoopStep();
-            if (step > 0)
-                for (double value = start; value <= end; value += step)
-                    executeStep(context, device, condition, readback, value);
-            else // step is < 0, so stepping down
-                for (double value = end; value >= start; value += step)
-                    executeStep(context, device, condition, readback, value);
+            // When using completion, readback needs to match "right away"
+            final double check_timeout = command.getCompletion() ? 1.0 : command.getTimeout();
+            condition = new NumericValueCondition(readback, Comparison.EQUALS,
+                        command.getStart(),
+                        command.getTolerance(),
+                        TimeDuration.ofSeconds(check_timeout));
         }
-        finally
-        {
-            step_logger = null;
-        }
+        else
+            condition = null;
+
+        final double start = getLoopStart();
+        final double end   = getLoopEnd();
+        final double step  = getLoopStep();
+        if (step > 0)
+            for (double value = start; value <= end; value += step)
+                executeStep(context, device, condition, readback, value);
+        else // step is < 0, so stepping down
+            for (double value = end; value >= start; value += step)
+                executeStep(context, device, condition, readback, value);
     }
 
     /** Execute one step of the loop
@@ -235,7 +225,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             final NumericValueCondition condition, final Device readback, double value)
             throws Exception
     {
-        step_logger.log(Level.INFO, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
+        logger.log(Level.INFO, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
 
         // Set device to value for current step of loop
         do_skip = false;

@@ -187,7 +187,7 @@ public class Model
         {
             Activator.getLogger().log(Level.WARNING,
                     "Problem in macro {0}: {1}", new Object[] { text, ex.getMessage()});
-            return "Macro Error";
+            return text;
         }
     }
 

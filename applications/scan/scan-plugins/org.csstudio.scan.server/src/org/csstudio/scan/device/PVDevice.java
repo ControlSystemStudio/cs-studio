@@ -15,13 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
@@ -44,8 +45,6 @@ import org.diirt.vtype.ValueUtil;
 @SuppressWarnings("nls")
 public class PVDevice extends Device
 {
-    final Logger logger = Logger.getLogger(getClass().getName());
-
     /** 'compile time' option to treat byte arrays as string */
     final private static boolean TREAT_BYTES_AS_STRING = true; // TODO Make configurable
 

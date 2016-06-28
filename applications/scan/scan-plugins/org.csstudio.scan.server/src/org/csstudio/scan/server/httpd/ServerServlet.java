@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.scan.server.httpd;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,7 +51,7 @@ public class ServerServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /server error", ex);
+            logger.log(Level.WARNING, "GET /server error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
@@ -73,7 +74,7 @@ public class ServerServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /server error", ex);
+            logger.log(Level.WARNING, "GET /server error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
             return;
         }
@@ -83,7 +84,7 @@ public class ServerServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /server reply error", ex);
+            logger.log(Level.WARNING, "GET /server reply error", ex);
             // Can't send error to client because sending to client is the problem
         }
     }

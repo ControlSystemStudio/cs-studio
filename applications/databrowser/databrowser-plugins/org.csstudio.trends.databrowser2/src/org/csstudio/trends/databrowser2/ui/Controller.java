@@ -155,7 +155,7 @@ public class Controller
         {
 
             if (Preferences.doPromptForErrors())
-                reportError(job.getPVItem().getDisplayName(), error);
+                reportError(job.getPVItem().getResolvedDisplayName(), error);
             else
                 Logger.getLogger(getClass().getName()).log(Level.WARNING,
                         "No archived data for " + job.getPVItem().getDisplayName(), error);
@@ -174,10 +174,10 @@ public class Controller
             if (!channelFoundAtLeastOnce)
             {
                 if (Preferences.doPromptForErrors())
-                    reportError(job.getPVItem().getDisplayName(), null);
+                    reportError(job.getPVItem().getResolvedDisplayName(), null);
                 else
                     Logger.getLogger(getClass().getName()).log(Level.FINE,
-                        "Channel " + job.getPVItem().getDisplayName() + " not found in any of the archived sources.");
+                        "Channel " + job.getPVItem().getResolvedDisplayName() + " not found in any of the archived sources.");
             }
         }
     };
@@ -208,6 +208,7 @@ public class Controller
             {
                 //Remove Override annotation, because this method does not exist in RAP
                 //@Override
+                @Override
                 public void shellIconified(ShellEvent e)
                 {
                     window_is_iconized = true;
@@ -215,6 +216,7 @@ public class Controller
 
                 //Remove Override annotation, because this method does not exist in RAP
                 //@Override
+                @Override
                 public void shellDeiconified(ShellEvent e)
                 {
                     window_is_iconized = false;

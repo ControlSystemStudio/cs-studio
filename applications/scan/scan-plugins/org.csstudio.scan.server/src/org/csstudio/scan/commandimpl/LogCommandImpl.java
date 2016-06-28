@@ -15,8 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.LogCommand;
@@ -64,7 +65,6 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
     @Override
     public void execute(final ScanContext context) throws Exception
     {
-        final Logger logger = Logger.getLogger(getClass().getName());
         final DataLog log = context.getDataLog().get();
         // Log all devices with the same serial
         final long serial = log.getNextScanDataSerial();
