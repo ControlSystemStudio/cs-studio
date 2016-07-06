@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -59,7 +60,11 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
         private boolean canceled = false;
             @Override
             public void mousePressed(MouseEvent me) {
-                if (me.button != 1)
+                final Figure figure = (Figure) me.getSource();
+                // Check location to ignore bogus mouse clicks,
+                // see https://github.com/ControlSystemStudio/cs-studio/issues/1818
+                if (me.button != 1  ||
+                    ! figure.containsPoint(me.getLocation()))
                     return;
                 boolean isOpen = false;
                 if(runMode){
@@ -101,6 +106,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                             fireManualValueChange(true);
                             if(isOpen)
                                 Display.getCurrent().timerExec(100, new Runnable(){
+                                    @Override
                                     public void run() {
                                         fireManualValueChange(false);
                                     }
@@ -242,6 +248,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
             InputDialog dlg = new InputDialog(Display.getCurrent()
                     .getActiveShell(), "Password Input Dialog",
                     "Please input the password", "", new IInputValidator() {
+                        @Override
                         public String isValid(String newText) {
                             if (newText.equals(password))
                                 return null;
