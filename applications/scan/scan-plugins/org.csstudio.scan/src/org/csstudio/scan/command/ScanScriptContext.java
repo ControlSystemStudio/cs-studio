@@ -98,8 +98,8 @@ abstract public class ScanScriptContext
      */
     abstract public Object read(final String device_name) throws Exception;
 
-    /** Write to device, waiting for readback with default tolerance and timeout
-     *  @param device_name Name of device and readback
+    /** Write to device, not waiting for anything
+     *  @param device_name Name of device
      *  @param value Value to write to the device
      *  @throws Exception on error
      */
@@ -108,39 +108,40 @@ abstract public class ScanScriptContext
         write(device_name, value, true);
     }
 
-    /** Write to device, with or without waiting for readback
-     *  @param device_name Name of device and readback (if used)
-     *  @param value Value to write to the device
-     *  @param wait Wait for readback to match?
-     *  @throws Exception on error
-     */
-    public void write(final String device_name, final Object value, final boolean wait) throws Exception
-    {
-        write(device_name, value, device_name, wait, 0.1, null);
-    }
-
-    /** Write to device, using alternate readback device
+    /** Write to device, waiting for completion, but no readback check
      *  @param device_name Name of device
      *  @param value Value to write to the device
-     *  @param readback Readback device
+     *  @param completion Wait for completion
+     *  @throws Exception on error
+     */
+    public void write(final String device_name, final Object value, final boolean completion) throws Exception
+    {
+        write(device_name, value, completion, null, 0.1, null);
+    }
+
+    /** Write to device, waiting for readback, but not completion
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param readback Readback device (may be same as device_name)
      *  @throws Exception on error
      */
     public void write(final String device_name, final Object value,
             final String readback) throws Exception
     {
-        write(device_name, value, readback, true, 0.1, null);
+        write(device_name, value, false, readback, 0.1, null);
     }
 
     /** Write to device
      *  @param device_name Name of device
      *  @param value Value to write to the device
-     *  @param readback Readback device
-     *  @param wait Wait for readback to match?
+     *  @param completion Wait for completion?
+     *  @param readback Readback device, <code>null</code> to not wait for readback
      *  @param tolerance Numeric tolerance when checking value
      *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
      */
     abstract public void write(final String device_name, final Object value,
-            final String readback, final boolean wait,
-            final double tolerance, final Duration timeout) throws Exception;
+            final boolean completion,
+            final String readback, final double tolerance,
+            final Duration timeout) throws Exception;
 }

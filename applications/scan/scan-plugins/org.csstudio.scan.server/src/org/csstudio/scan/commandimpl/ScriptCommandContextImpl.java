@@ -101,9 +101,11 @@ public class ScriptCommandContextImpl extends ScanScriptContext
 
     /** {@inheritDoc} */
     @Override
-    public void write(final String device_name, final Object value, final String readback,
-            final boolean wait, final double tolerance, final Duration timeout) throws Exception
+    public void write(final String device_name, final Object value,
+            final boolean completion,
+            final String readback, final double tolerance,
+            final Duration timeout) throws Exception
     {
-        ScanCommandUtil.write(context, device_name, value, false, wait, readback, tolerance, timeout);
+        ScanCommandUtil.write(context, device_name, value, completion, readback != null, readback, tolerance, timeout);
     }
 }
