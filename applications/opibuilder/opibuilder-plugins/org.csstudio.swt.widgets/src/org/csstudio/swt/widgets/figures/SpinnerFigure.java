@@ -212,13 +212,13 @@ public class SpinnerFigure extends Figure implements Introspectable {
                 for (int i=0; i<precision; ++i)
                     pattern.append('#'); //$NON-NLS-1$
                 pattern.append("E0"); //$NON-NLS-1$
-            format = new DecimalFormat(pattern.toString());            //$NON-NLS-1$
+            format = new DecimalFormat(pattern.toString()); //$NON-NLS-1$
             return format.format(value);
         case HEX:
             return HEX_PREFIX + Long.toHexString((long)value);
         case DECIAML:
         default:
-            format = new DecimalFormat();
+            format = new DecimalFormat("0"); //$NON-NLS-1$
             format.setMaximumFractionDigits(precision);
             format.setMinimumFractionDigits(0);
             return format.format(value);
