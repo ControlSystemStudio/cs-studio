@@ -120,6 +120,13 @@
 									<id>mysql:mysql-connector-java:5.1.36</id>
 								</artifact>
 								<artifact>
+									<id>net.sf.py4j:py4j:0.10.2.1</id>
+									<source>true</source>
+									<instructions>
+										<Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
+									</instructions>	
+								</artifact>
+								<artifact>
 									<id>commons-beanutils:commons-beanutils:1.9.2</id>
 								</artifact>
 								<artifact>
