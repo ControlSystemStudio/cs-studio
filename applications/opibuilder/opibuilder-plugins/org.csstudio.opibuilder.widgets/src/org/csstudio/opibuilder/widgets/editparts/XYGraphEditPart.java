@@ -11,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
@@ -445,7 +446,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
     }
 
 
-    private void registerTracePropertyChangeHandlers(){
+    protected void registerTracePropertyChangeHandlers(){
         XYGraphModel model = (XYGraphModel)getModel();
         //set prop handlers and init all the potential axes
         for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++){
@@ -490,7 +491,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
     }
 
-    private void setTraceProperty(Trace trace, TraceProperty traceProperty, Object newValue, String xPVPropID, String yPVPropID){
+    protected void setTraceProperty(Trace trace, TraceProperty traceProperty, Object newValue, String xPVPropID, String yPVPropID){
         CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)trace.getDataProvider();
         switch (traceProperty) {
         case ANTI_ALIAS:
@@ -680,5 +681,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
             YBuffer[j] = dataProvider.getSample(j).getYValue();
         }
         return YBuffer;
+    }
+
+    protected List<Trace> getTraceList() {
+        return Collections.unmodifiableList(traceList);
     }
 }
