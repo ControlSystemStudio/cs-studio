@@ -76,7 +76,7 @@ public class WriteHelper
         this.value = value;
 
         // Separate read-back device, or use 'set' device?
-        if (readback_name.isEmpty()  ||  !wait)
+        if (readback_name == null  ||  readback_name.isEmpty()  ||  !wait)
             readback = device;
         else
             readback = context.getDevice(context.getMacros().resolveMacros(readback_name));
