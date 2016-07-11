@@ -7,7 +7,7 @@
     <!-- get new time w/ `date +%s000` -->
     <property name="p2.timestamp" value="1395756034000"/>
   </properties>
-  <children size="12">
+  <children size="13">
     <child location="alarm"/>
     <child location="appunorganized"/>
     <child location="apputil"/>
@@ -20,6 +20,7 @@
     <child location="opibuilder"/>
     <child location="scan"/>
     <child location="shift"/>
+    <child location="save-set-restore"/>
   </children>
 </repository>
 

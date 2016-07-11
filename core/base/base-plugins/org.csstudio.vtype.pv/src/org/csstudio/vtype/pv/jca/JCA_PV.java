@@ -11,7 +11,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.internal.Preferences;
@@ -20,6 +19,7 @@ import org.diirt.vtype.VType;
 import gov.aps.jca.CAStatus;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
+import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.event.AccessRightsEvent;
 import gov.aps.jca.event.AccessRightsListener;
@@ -38,8 +38,6 @@ import gov.aps.jca.event.PutListener;
 @SuppressWarnings("nls")
 public class JCA_PV extends PV implements ConnectionListener, MonitorListener, AccessRightsListener
 {
-    final private static Logger logger = Logger.getLogger(JCA_PV.class.getName());
-
     /** Request plain DBR type or ..TIME..? */
     final private boolean plain_dbr;
 
@@ -53,34 +51,51 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** JCA Channel */
     final private Channel channel;
 
-    private volatile Object metadata = null;
+    /** Meta data.
+     *
+     *  <p>May be
+     *  <ul>
+     *  <li>null
+     *  <li>DBR_CTRL_Double, DBR_CTRL_INT, ..BYTE, which all implement CTRL and TIME
+     *  <li>DBR_CTRL_String, DBR_CTRL_Enum which are each different
+     *  </ul>
+     */
+    private volatile DBR metadata = null;
 
-    final private GetListener meta_get_listener = new GetListener()
+    /** Listener to initial get-callback for meta data */
+    final private GetListener meta_get_listener = (GetEvent ev) ->
     {
-        @Override
-        public void getCompleted(final GetEvent ev)
+        final DBR old_metadata = metadata;
+        final Class<?> old_type = old_metadata == null ? null : old_metadata.getClass();
+        // Channels from CAS, not based on records, may fail
+        // to provide meta data
+        if (ev.getStatus().isSuccessful())
         {
-            final Object old_metadata = metadata;
-            final Class<?> old_type = old_metadata == null ? Object.class : old_metadata.getClass();
-            // Channels from CAS, not based on records, may fail
-            // to provide meta data
-            if (ev.getStatus().isSuccessful())
-            {
-                metadata = ev.getDBR();
-                logger.log(Level.FINE, "{0} received meta data: {1}", new Object[] { getName(), metadata });
-            }
-            else
-            {
-                metadata = null;
-                logger.log(Level.FINE, "{0} has no meta data: {1}", new Object[] { getName(), ev.getStatus() });
-            }
-            // If channel changed its type, cancel potentially existing subscription
-            final Class<?> new_type = metadata == null ? Object.class : metadata.getClass();
-            if (old_type != new_type)
-                unsubscribe();
-            // Subscribe, either for the first time or because type changed requires new one.
-            // NOP if channel is already subscribed.
-            subscribe();
+            metadata = ev.getDBR();
+            logger.log(Level.FINE, "{0} received meta data: {1}", new Object[] { getName(), metadata });
+        }
+        else
+        {
+            metadata = null;
+            logger.log(Level.FINE, "{0} has no meta data: {1}", new Object[] { getName(), ev.getStatus() });
+        }
+        // If channel changed its type, cancel potentially existing subscription
+        final Class<?> new_type = metadata == null ? null : metadata.getClass();
+        if (old_type != new_type)
+            unsubscribe();
+        // Subscribe, either for the first time or because type changed requires new one.
+        // NOP if channel is already subscribed.
+        subscribe();
+    };
+
+    /** Listener to meta data changes */
+    final private MonitorListener meta_change_listener = (MonitorEvent ev) ->
+    {
+        if (ev.getStatus().isSuccessful())
+        {
+            metadata = ev.getDBR();
+            logger.log(Level.FINE, "{0} received new meta data: {1}", new Object[] { getName(), metadata });
+            monitorChanged(ev);
         }
     };
 
@@ -88,6 +103,10 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
      *  Non-zero value also used to indicate access right change subscription.
      */
     private AtomicReference<Monitor> value_monitor = new AtomicReference<Monitor>();
+
+    /** Metadata update subscription */
+    private AtomicReference<Monitor> metadata_monitor = new AtomicReference<Monitor>();
+
 
     /** Initialize
      *  @param name Full name, may include "ca://"
@@ -172,8 +191,34 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                     logger.log(Level.WARNING, getName() + " cannot clear old monitor", ex);
                 }
             }
-            // TODO Monitor.PROPERTY subscription
 
+            // Subscribe to metadata changes (DBE_PROPERTY)
+            final DBRType meta_request = getRequestForMetadata((DBR)metadata);
+            if (Preferences.monitorProperties()  &&  meta_request != null)
+            {
+                Monitor old_metadata_monitor = null;
+                try
+                {
+                    old_metadata_monitor = metadata_monitor.getAndSet(
+                        channel.addMonitor(meta_request, 1, Monitor.PROPERTY, meta_change_listener));
+
+                }
+                catch (Throwable ex)
+                {
+                    logger.log(Level.WARNING, getName() + " cannot create metadata monitor", ex);
+                }
+                if (old_metadata_monitor != null)
+                {
+                    try
+                    {
+                        old_metadata_monitor.clear();
+                    }
+                    catch (Throwable ex)
+                    {
+                        logger.log(Level.WARNING, getName() + " cannot clear old metadata monitor", ex);
+                    }
+                }
+            }
             channel.addAccessRightsListener(this);
             channel.getContext().flushIO();
         }
@@ -183,25 +228,48 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         }
     }
 
+    private DBRType getRequestForMetadata(final DBR metadata)
+    {
+        if (metadata.isCTRL())
+            return metadata.getType();
+        if (metadata.isENUM())
+            return DBRType.CTRL_ENUM;
+        return null;
+    }
+
     /** Cancel subscriptions.
      *  NOP if not subscribed.
      */
     private void unsubscribe()
     {
-        final Monitor old_monitor = value_monitor.getAndSet(null);
-        if (old_monitor == null)
-            return;
-        logger.log(Level.FINE, getName() + " unsubscribes");
-        try
+        Monitor old_monitor = value_monitor.getAndSet(null);
+        if (old_monitor != null)
         {
-            channel.removeAccessRightsListener(this);
-            old_monitor.clear();
+            logger.log(Level.FINE, getName() + " unsubscribes");
+            try
+            {
+                channel.removeAccessRightsListener(this);
+                old_monitor.clear();
+            }
+            catch (Exception ex)
+            {    // This is 'normal', log only on FINE:
+                // When the channel is disconnected, CAJ cannot send
+                // an un-subscribe request to the client
+                logger.log(Level.FINE, getName() + " cannot unsubscribe", ex);
+            }
         }
-        catch (Exception ex)
-        {    // This is 'normal', log only on FINE:
-            // When the channel is disconnected, CAJ cannot send
-            // an un-subscribe request to the client
-            logger.log(Level.FINE, getName() + " cannot unsubscribe", ex);
+
+        old_monitor = metadata_monitor.getAndSet(null);
+        if (old_monitor != null)
+        {
+            try
+            {
+                old_monitor.clear();
+            }
+            catch (Throwable ex)
+            {
+                logger.log(Level.FINE, getName() + " cannot unsubscribe metadata", ex);
+            }
         }
     }
 

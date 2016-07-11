@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.VTypeHelper;
@@ -50,11 +53,12 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
     {
-        final String device_name = command.getDeviceName();
+        final List<String> names = new ArrayList<>(2);
+        names.add(macros.resolveMacros(command.getDeviceName()));
         final String readback = command.getReadback();
         if (command.getWait()  &&  readback.length() > 0)
-            return new String[] { macros.resolveMacros(device_name), macros.resolveMacros(readback) };
-        return new String[] { device_name };
+            names.add(macros.resolveMacros(readback));
+        return names.toArray(new String[names.size()]);
     }
 
     /** {@inheritDoc} */
@@ -79,10 +83,11 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         // Show command
         final StringBuilder buf = new StringBuilder();
         buf.append("Set '").append(command.getDeviceName()).append("' = ").append(command.getValue());
+        // XXX Isn't resolving macros in readback, but that's only for the simu printout
         command.appendConditionDetail(buf);
         if (! Double.isNaN(original))
             buf.append(" [was ").append(original).append("]");
-        context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
+        context.logExecutionStep(buf.toString(), time_estimate);
 
         // Set to (simulated) new value
         device.write(command.getValue());
@@ -92,10 +97,12 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     @Override
     public void execute(final ScanContext context)  throws Exception
     {
+        final MacroContext macros = context.getMacros();
         write = new WriteHelper(context,
-                                command.getDeviceName(), command.getValue(),
+                                macros.resolveMacros(command.getDeviceName()),
+                                command.getValue(),
                                 command.getCompletion(), command.getWait(),
-                                command.getReadback(),
+                                macros.resolveMacros(command.getReadback()),
                                 command.getTolerance(),
                                 TimeDuration.ofSeconds(command.getTimeout()));
         try

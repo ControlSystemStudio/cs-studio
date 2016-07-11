@@ -53,6 +53,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     private final IteratorListener listener;
 
     protected boolean closed = false;
+    
+    private static Object lock = new Object();
 
     /**
      * Constructs a new ApplianceValueIterator.
@@ -92,7 +94,9 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 
         DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
-        mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
+        synchronized(lock){
+            mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
+        }
         if (mainStream != null) {
             mainIterator = mainStream.iterator();
         } else {

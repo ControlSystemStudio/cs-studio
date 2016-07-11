@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.internal;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PVFactory;
 import org.csstudio.vtype.pv.PVPool;
@@ -28,8 +29,6 @@ public class Activator implements BundleActivator
     @Override
     public void start(final BundleContext context) throws Exception
     {
-        final Logger logger = Logger.getLogger(getClass().getName());
-
         // Configure PVPool from Eclipse registry
         final IConfigurationElement[] configs =
                 Platform.getExtensionRegistry().getConfigurationElementsFor(PVFactory.EXTENSION_POINT);

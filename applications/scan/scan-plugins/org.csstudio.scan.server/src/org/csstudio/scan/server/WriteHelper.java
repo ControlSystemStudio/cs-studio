@@ -7,8 +7,11 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceCondition;
@@ -73,7 +76,7 @@ public class WriteHelper
         this.value = value;
 
         // Separate read-back device, or use 'set' device?
-        if (readback_name.isEmpty()  ||  !wait)
+        if (readback_name == null  ||  readback_name.isEmpty()  ||  !wait)
             readback = device;
         else
             readback = context.getDevice(context.getMacros().resolveMacros(readback_name));
@@ -109,6 +112,7 @@ public class WriteHelper
         {
             thread = Thread.currentThread();
         }
+        logger.log(Level.FINE, "Writing " + device.getName() + " = " + value + (completion ? " with completion" : ""));
         try
         {
             // Perform write

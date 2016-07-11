@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.diirt.vtype.VType;
 
@@ -27,12 +28,12 @@ public class PVListenerAdapter implements PVListener
     @Override
     public void valueChanged(final PV pv, final VType value)
     {
-        Logger.getLogger(getClass().getName()).log(Level.INFO, pv.getName() + " value changed to " + value);
+        logger.log(Level.INFO, pv.getName() + " value changed to " + value);
     }
 
     @Override
     public void disconnected(final PV pv)
     {
-        Logger.getLogger(getClass().getName()).log(Level.INFO, pv.getName() + " disconnected");
+        logger.log(Level.INFO, pv.getName() + " disconnected");
     }
 }

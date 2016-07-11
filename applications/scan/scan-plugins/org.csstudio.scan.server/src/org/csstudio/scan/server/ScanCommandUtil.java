@@ -9,8 +9,6 @@ package org.csstudio.scan.server;
 
 import java.time.Duration;
 
-import org.diirt.util.time.TimeDuration;
-
 /** Utilities for command implementations
  *
  *  @author Kay Kasemir

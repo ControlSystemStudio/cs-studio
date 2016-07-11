@@ -15,8 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import static org.csstudio.scan.server.app.Application.logger;
+
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanErrorHandler;
@@ -161,8 +162,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
     public void next()
     {
         // Default implementation does not support this
-        Logger.getLogger(getClass().getName())
-              .log(Level.WARNING, "{0} does not support 'next'", command);
+        logger.log(Level.WARNING, "{0} does not support 'next'", command);
     }
 
     /** Invoke the command's error handler

@@ -16,14 +16,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
 import javax.security.auth.login.FailedLoginException;
 
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
@@ -34,6 +37,7 @@ import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.StyleSheetService;
@@ -475,6 +479,18 @@ public class XMLUtil {
         fillLinkingContainerSub(container, new ArrayList<IPath>());
     }
 
+    private static Map<String,String> buildMacroMap(AbstractContainerModel model) {
+        Map<String,String> macros = new HashMap<>();
+        if (model != null) {
+            MacrosInput input = model.getMacrosInput();
+            if (input.isInclude_parent_macros()) {
+                macros.putAll(buildMacroMap(model.getParent()));
+            }
+            macros.putAll(input.getMacrosMap());
+        }
+        return macros;
+    }
+
     private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)
         throws Exception {
 
@@ -491,6 +507,11 @@ public class XMLUtil {
 
             IPath path = container.getOPIFilePath();
             if(path != null && !path.isEmpty()) {
+                final Map<String,String> macroMap = PreferencesHelper.getMacros();
+                macroMap.putAll(buildMacroMap(container));
+                String resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> macroMap.get(s));
+                path = ResourceUtil.getPathFromString(resolvedPath);
+
                 final DisplayModel inside = new DisplayModel(path);
                 inside.setDisplayID(container.getRootDisplayModel(false).getDisplayID());
 
