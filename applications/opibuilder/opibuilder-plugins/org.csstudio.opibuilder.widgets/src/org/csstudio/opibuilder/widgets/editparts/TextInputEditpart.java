@@ -63,6 +63,10 @@ public class TextInputEditpart extends TextUpdateEditPart {
         return (TextInputModel) getModel();
     }
 
+    protected void setDelegate(ITextInputEditPartDelegate delegate) {
+        this.delegate = delegate;
+    }
+
     @Override
     protected IFigure doCreateFigure() {
         initFields();
@@ -70,11 +74,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
         if(shouldBeTextInputFigure()){
             TextInputFigure textInputFigure = (TextInputFigure) createTextFigure();
             initTextFigure(textInputFigure);
-            delegate = new Draw2DTextInputEditpartDelegate(
-                    this, getWidgetModel(), textInputFigure);
+            setDelegate(new Draw2DTextInputEditpartDelegate(
+                    this, getWidgetModel(), textInputFigure));
 
         }else{
-            delegate = new NativeTextEditpartDelegate(this, getWidgetModel());
+            setDelegate(new NativeTextEditpartDelegate(this, getWidgetModel()));
         }
 
         getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
@@ -86,7 +90,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     /**
      * @return true if it should use Draw2D {@link TextInputFigure}.
      */
-    private boolean shouldBeTextInputFigure(){
+    protected boolean shouldBeTextInputFigure(){
         TextInputModel model = getWidgetModel();
         if(model.getStyle() == Style.NATIVE)
             return false;
