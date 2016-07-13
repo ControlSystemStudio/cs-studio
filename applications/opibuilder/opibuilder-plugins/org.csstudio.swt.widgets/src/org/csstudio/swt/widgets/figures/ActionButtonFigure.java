@@ -23,11 +23,11 @@ import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
-import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.ui.util.SWTConstants;
-import org.csstudio.ui.util.Draw2dSingletonUtil;
-import org.eclipse.core.runtime.IPath;
 import org.csstudio.ui.util.ColorConstants;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
+import org.csstudio.ui.util.SWTConstants;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FocusEvent;
@@ -128,6 +128,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
              *
              * @param graphics Graphics handle for painting
              */
+            @Override
             protected void paintBorder(Graphics graphics) {
                 super.paintBorder(graphics);
                 if (ActionButtonFigure.this.hasFocus()) {
@@ -270,6 +271,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
      * @param graphics  Graphics handle for painting
      * @since 2.0
      */
+    @Override
     protected void paintClientArea(Graphics graphics) {
         if (isSelected()) {
             graphics.translate(1, 1);
@@ -359,6 +361,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
             this.imagePath = path;
             ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
 
+                @Override
                 public void handleError(Exception exception) {
                     image = null;
                     Activator.getLogger().log(Level.WARNING,
@@ -416,6 +419,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
     /**
      * @return the label text.
      */
+    @Override
     public String getText(){
         return label.getText();
     }
@@ -480,12 +484,14 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
     }
 
     // Need this as label has repaint bug so it doesn't always change colour when its parent does
+    @Override
     public void setBackgroundColor(Color bg) {
         label.setBackgroundColor(bg);
         super.setBackgroundColor(bg);
         repaint();
     }
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new ActionButtonIntrospector().getBeanInfo(this.getClass());
     }
@@ -556,6 +562,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
          * @return  The insets for this border
          * @since 2.0
          */
+        @Override
         protected Insets calculateInsets() {
             int br = 1 + Math.max(getShadow().length, getHighlightPressed().length);
             int tl = Math.max(getHighlight().length, getShadowPressed().length);
@@ -580,6 +587,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
          * @return  The opaque state of this border
          * @since 2.0
          */
+        @Override
         protected boolean calculateOpaque() {
             if (!super.calculateOpaque())
                 return false;
@@ -665,6 +673,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
      * @param graphics The graphics used for painting
      * @param insets The insets
      */
+    @Override
     public void paint(IFigure figure, Graphics graphics, Insets insets) {
 
         ButtonScheme colorScheme = (ButtonScheme)getScheme();
@@ -691,10 +700,12 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
     {
 
         private int mouseState;
+        @Override
         public void focusGained(FocusEvent fe) {
             repaint();
         }
 
+        @Override
         public void focusLost(FocusEvent fe) {
             repaint();
             setArmed(false);
@@ -705,6 +716,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
                 setSelected(false);
         }
 
+        @Override
         public void keyPressed(KeyEvent ke) {
             if (ke.character == ' ' || ke.character == '\r') {
                 setArmed(true);
@@ -712,6 +724,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
             }
         }
 
+        @Override
         public void keyReleased(KeyEvent ke) {
             if (ke.character == ' ' || ke.character == '\r') {
                 if(isArmed()){
@@ -726,8 +739,10 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
 
         }
 
+        @Override
         public void mouseDoubleClicked(MouseEvent me) {}
 
+        @Override
         public void mouseDragged(MouseEvent me) {
             if (isArmed()) {
                 if(!containsPoint(me.getLocation())){
@@ -741,8 +756,13 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
             }
         }
 
+        @Override
         public void mousePressed(MouseEvent me) {
             if (me.button != 1)
+                return;
+            // Ignore bogus mouse clicks,
+            // see https://github.com/ControlSystemStudio/cs-studio/issues/1818
+            if (! containsPoint(me.getLocation()))
                 return;
             mouseState = me.getState();
             requestFocus();
@@ -752,8 +772,13 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
             me.consume();
         }
 
+        @Override
         public void mouseReleased(MouseEvent me) {
             if (me.button != 1)
+                return;
+            // Ignore bogus mouse clicks,
+            // see https://github.com/ControlSystemStudio/cs-studio/issues/1818
+            if (! containsPoint(me.getLocation()))
                 return;
             if(isArmed()){
                 if(isToggleStyle()){
@@ -783,13 +808,5 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
                 label.setBackgroundColor(getBackgroundColor());
 
         }
-
     }
-
-
-
-
-
-
-
 }
