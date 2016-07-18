@@ -92,16 +92,18 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
                 @Override
                 public void mousePressed(final MouseEvent me) {
-                    if (me.button == 1) {
+                    if (me.button == 1  &&
+                        figure.containsPoint(me.getLocation()))
                         me.consume();
-                    }
                 }
 
                 @Override
                 public void mouseReleased(final MouseEvent me) {
-                    if (me.button == 1
-                            && getExecutionMode()
-                                    .equals(ExecutionMode.RUN_MODE)) {
+                    // Check location to ignore bogus mouse clicks,
+                    // see https://github.com/ControlSystemStudio/cs-studio/issues/1818
+                    if (me.button == 1  &&
+                        getExecutionMode().equals(ExecutionMode.RUN_MODE)  &&
+                        figure.containsPoint(me.getLocation())) {
                         final org.eclipse.swt.graphics.Point cursorLocation = Display
                                 .getCurrent().getCursorLocation();
                         showMenu(me.getLocation(), cursorLocation.x,
