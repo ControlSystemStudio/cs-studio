@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.scan.diirt.datasource.feature"
-      label="Alarm datasource"
+      label="Scan datasource"
       version="0.0.1.qualifier">
 
    <description>
-      Provides the set of plugins needed to support the alarm datasource
+      Provides the set of plugins needed to support the scan datasource
    </description>
 
    <plugin
