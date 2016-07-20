@@ -96,7 +96,7 @@ public class ScanDataSource extends DataSource {
                 }
                 Matcher devicesPathMatcher = devicesPath.matcher(uri.getPath());
                 if(devicesPathMatcher.matches()) {
-                    // scan://server/1/devices  Devices used in scan (VString)
+                    // scan://server/1/devices  Devices used in scan (VTable)
                     Long id = Long.valueOf(devicesPathMatcher.group(1));
                     log.fine("Creating Channel: "+channelName+" with id: "+String.valueOf(id));
                     return new ScanChannelHandler(this,uri,id, REQUEST_TYPE.SCAN_DEVICES);

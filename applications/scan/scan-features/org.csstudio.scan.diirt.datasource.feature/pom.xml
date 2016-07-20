@@ -8,5 +8,5 @@
   <groupId>org.csstudio.scan.diirt.datasource.feature</groupId>
   <artifactId>org.csstudio.scan.diirt.datasource.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <name>Alarm diirt datasource</name>
+  <name>Scan diirt datasource</name>
 </project>
