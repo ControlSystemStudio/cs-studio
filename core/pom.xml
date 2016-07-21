@@ -18,7 +18,7 @@
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
-    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio.version>4.4</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20160221192158/repository/</orbit-site>
