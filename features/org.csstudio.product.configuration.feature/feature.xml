@@ -17,5 +17,11 @@
    <license url="http://www.eclipse.org/legal/epl-v10.html">
       Eclipse Public License.
    </license>
-   
+
+   <plugin
+         id="org.eclipse.draw2d"
+         download-size="0"
+         install-size="0"
+         version="3.9.101.201408150207"
+         unpack="false"/> 
 </feature>
