@@ -16,7 +16,7 @@
   <properties>
     <tycho.version>0.23.1</tycho.version>
     <manifest-location>META-INF</manifest-location>
-    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio.version>4.4</cs-studio.version>
     <epics.util.version>0.3.2</epics.util.version>
     <epics.caj.version>1.1.14</epics.caj.version>
     <epics.jca.version>2.3.6</epics.jca.version>
