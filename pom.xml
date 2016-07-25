@@ -70,7 +70,7 @@
       <repositories>
         <repository>
           <id>csstudio-maven-osgi-bundles</id>
-          <url>${download.root}/maven-osgi-bundles/4.3</url>
+          <url>${download.root}/maven-osgi-bundles/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
       </repositories>
