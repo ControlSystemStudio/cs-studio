@@ -37,6 +37,15 @@ import org.csstudio.scan.server.ScanServerInfo;
 @SuppressWarnings("nls")
 public class ScanDataModel implements ScanInfoModelListener
 {
+    private static final ScanData UNKNOWN_SCAN;
+
+    static
+    {
+        final Map<String, List<ScanSample>> unknown = new HashMap<>();
+        unknown.put("Unknown Scan", Collections.emptyList());
+        UNKNOWN_SCAN = new ScanData(unknown);
+    }
+
     /** ID of scan that we monitor */
     final private long scan_id;
 
@@ -44,7 +53,7 @@ public class ScanDataModel implements ScanInfoModelListener
     final private ScanInfoModel scan_info_model;
 
     /** Most recent scan data */
-    private ScanData scan_data = null;
+    private volatile ScanData scan_data = null;
 
     /** Last sample serial of scan data */
     private long last_scan_data_serial = -1;
@@ -80,7 +89,7 @@ public class ScanDataModel implements ScanInfoModelListener
     }
 
     /** @return most recent scan data. May be <code>null</code> */
-    public synchronized ScanData getScanData()
+    public ScanData getScanData()
     {
         return scan_data;
     }
@@ -102,19 +111,10 @@ public class ScanDataModel implements ScanInfoModelListener
                 return;
 
             // Get data
-            final ScanData data;
-            if (serial == ScanClient.UNKNOWN_SCAN_SERIAL)
-            {
-                Map<String, List<ScanSample>> unknown = new HashMap<>();
-                unknown.put("Unknown Scan", Collections.emptyList());
-                data = new ScanData(unknown);
-            }
-            else
-                data = client.getScanData(scan_id);
-            synchronized (this)
-            {
-                scan_data = data;
-            }
+            final ScanData data = serial == ScanClient.UNKNOWN_SCAN_SERIAL
+                                ? UNKNOWN_SCAN
+                                : client.getScanData(scan_id);
+            scan_data = data;
             last_scan_data_serial = serial;
             // Update listener
             listener.updateScanData(data);
