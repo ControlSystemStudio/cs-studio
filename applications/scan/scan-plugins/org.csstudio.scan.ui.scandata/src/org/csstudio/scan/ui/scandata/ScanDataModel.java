@@ -7,14 +7,18 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scandata;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 
@@ -85,6 +89,10 @@ public class ScanDataModel implements ScanInfoModelListener
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
+        // Skip querying a scan once server indicated that it's unknown
+        if (last_scan_data_serial == ScanClient.UNKNOWN_SCAN_SERIAL)
+            return;
+
         try
         {
             // Any change in the data?
@@ -94,7 +102,15 @@ public class ScanDataModel implements ScanInfoModelListener
                 return;
 
             // Get data
-            final ScanData data = client.getScanData(scan_id);
+            final ScanData data;
+            if (serial == ScanClient.UNKNOWN_SCAN_SERIAL)
+            {
+                Map<String, List<ScanSample>> unknown = new HashMap<>();
+                unknown.put("Unknown Scan", Collections.emptyList());
+                data = new ScanData(unknown);
+            }
+            else
+                data = client.getScanData(scan_id);
             synchronized (this)
             {
                 scan_data = data;
