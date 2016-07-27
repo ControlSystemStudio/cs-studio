@@ -59,6 +59,12 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class ScanClient
 {
+    /** Serial returned if there is no data, yet */
+    public static final long NO_DATA_SERIAL = -1;
+
+    /** Serial returned if scan ID is unknown */
+    public static final long UNKNOWN_SCAN_SERIAL = -2;
+
     final private String host;
     final private int port;
 
@@ -346,7 +352,7 @@ public class ScanClient
      *  that should be fetched via <code>getScanData()</code>
      *
      *  @param id ID that uniquely identifies a scan
-     *  @return Serial of last sample in scan data or -1 if nothing has been logged
+     *  @return Serial of last sample in scan data, -1 if nothing has been logged, -2 if scan ID not known
      *  @throws Exception on error
      *  @see #getScanData(long)
      */
@@ -360,6 +366,13 @@ public class ScanClient
             if (! "serial".equals(root_node.getNodeName()))
                 throw new Exception("Expected <serial/>");
             return Long.parseLong(root_node.getFirstChild().getNodeValue());
+        }
+        catch (Exception ex)
+        {
+            final String error = ex.getMessage();
+            if (error != null  &&  error.contains("Unknown scan ID"))
+                return UNKNOWN_SCAN_SERIAL;
+            else throw ex;
         }
         finally
         {
