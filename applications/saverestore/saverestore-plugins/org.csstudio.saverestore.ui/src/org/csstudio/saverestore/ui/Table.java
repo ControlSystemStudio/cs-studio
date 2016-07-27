@@ -801,6 +801,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         if (snapshot == null) {
             return null;
         }
+        //if there is no PV selected, return null selection
+        if (selectionModelProperty().get().getSelectedItems().isEmpty()) {
+            return null;
+        }
         // if snapshot was found, use its timestamp and create timestamped PVs
         Instant timestamp = snapshot.getTimestamp();
         if (timestamp == null) {

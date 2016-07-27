@@ -61,13 +61,17 @@ public class AdapterUtil
             //returns a null result. Check the type of the first element and try to convert. The elements are usually
             //all of the same type. If they are of mixed type, tough luck (only those that are of the first type will
             //be returned).
-            Class<?> selectionClass = ((IStructuredSelection) selection).getFirstElement().getClass();
-            if (clazz.isAssignableFrom(selectionClass)) {
-                Object[] s = (Object[])convert(strucSelection.toArray(),
-                    ReflectUtil.toArrayClass(selectionClass.getName()));
-                result = (T[]) Array.newInstance(clazz, s.length);
-                System.arraycopy(s, 0, result, 0, s.length);
-                return result;
+            Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+            if (firstElement != null) {
+                //null check must be made, because null is a legitimate value in this case
+                Class<?> selectionClass = firstElement.getClass();
+                if (clazz.isAssignableFrom(selectionClass)) {
+                    Object[] s = (Object[])convert(strucSelection.toArray(),
+                        ReflectUtil.toArrayClass(selectionClass.getName()));
+                    result = (T[]) Array.newInstance(clazz, s.length);
+                    System.arraycopy(s, 0, result, 0, s.length);
+                    return result;
+                }
             }
         }
         T[] result = (T[]) Array.newInstance(clazz, 0);
