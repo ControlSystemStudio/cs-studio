@@ -42,38 +42,16 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
     private JCAContext() throws Exception
     {
-        // Code for version check based on diirt JCADataSourceConfiguration#isVarArraySupported()
-        if (Preferences.usePureJava())
+        final boolean use_caj = Preferences.usePureJava();
+        if (use_caj)
         {
             logger.log(Level.CONFIG, "Using Pure Java CAJ");
             context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
-            CAJContext jca = (CAJContext) context;
-            final Version version = jca.getVersion();
-            // Variable array support was added to CAJ 1.1.10
-            is_var_array_supported = ! (version.getMajorVersion() <= 1 &&
-                                        version.getMinorVersion() <= 1 &&
-                                        version.getMaintenanceVersion() <=9);
         }
         else
         {
             logger.log(Level.CONFIG, "Using JNI JCA");
             context = jca.createContext(JCALibrary.JNI_THREAD_SAFE);
-            // Variable array support was added to EPICS 3.14.12
-            boolean supported;
-            try
-            {
-                final Class<?> jni = Class.forName("gov.aps.jca.jni.JNI");
-                final int version = invokePrivateMethod(jni, "_ca_getVersion");
-                final int ref = invokePrivateMethod(jni, "_ca_getRevision");
-                final int mod = invokePrivateMethod(jni, "_ca_getModification");
-                supported = ! (version <= 3  && ref <= 14 && mod <= 11);
-            }
-            catch (Exception ex)
-            {
-                logger.log(Level.SEVERE, "Couldn't detect varArraySupported", ex);
-                supported = false;
-            }
-            is_var_array_supported = supported;
         }
 
         // PVPool will try to re-use channels, but
@@ -86,27 +64,61 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
         context.addContextMessageListener(this);
         context.addContextExceptionListener(this);
+
+        // Potentially check version for variable array support,
+        // based on diirt JCADataSourceConfiguration#isVarArraySupported().
+        Boolean supported = Preferences.isVarArraySupported();
+        if (supported == null)
+        {
+            if (use_caj)
+            {   // Variable array support was added to CAJ 1.1.10
+                final Version version = ((CAJContext)context).getVersion();
+                logger.log(Level.CONFIG, "Using Pure Java CAJ, " + version);
+                supported = ! (version.getMajorVersion() <= 1 &&
+                               version.getMinorVersion() <= 1 &&
+                               version.getMaintenanceVersion() <=9);
+            }
+            else
+            {   // Variable array support was added to EPICS 3.14.12
+                try
+                {   // For JNI calls require that native jca lib was loaded,
+                    // which is the case after the above addContext*Listener() calls.
+                    final Class<?> jni = Class.forName("gov.aps.jca.jni.JNI");
+                    final int version = invokePrivateMethod(jni, "_ca_getVersion");
+                    final int ref = invokePrivateMethod(jni, "_ca_getRevision");
+                    final int mod = invokePrivateMethod(jni, "_ca_getModification");
+                    logger.log(Level.CONFIG, "JCA version " + version + "." + ref + "." + mod);
+                    supported = ! (version <= 3  && ref <= 14 && mod <= 11);
+                }
+                catch (Exception ex)
+                {
+                    logger.log(Level.SEVERE, "Couldn't detect JCA JNI version", ex);
+                    supported = false;
+                }
+            }
+        }
+        is_var_array_supported = supported;
     }
 
     /** Invoke a private(!) static method
      *  @param clazz Class on which to invoke the method
-     *  @param method Method name, must return Integer
+     *  @param method_name Method name, must return Integer
      *  @return Result of method call
      *  @throws Exception on error
      */
-    private static int invokePrivateMethod(final Class<?> clazz, final String method) throws Exception
+    private static int invokePrivateMethod(final Class<?> clazz, final String method_name) throws Exception
     {
-        final Method get_ver = clazz.getDeclaredMethod(method, new Class<?>[0]);
+        final Method method = clazz.getDeclaredMethod(method_name, new Class<?>[0]);
         AccessController.doPrivileged(new PrivilegedAction<Object>()
         {
             @Override
             public Object run()
             {
-                get_ver.setAccessible(true);
+                method.setAccessible(true);
                 return null;
             }
         });
-        final Integer value = (Integer) get_ver.invoke(null, new Object[0]);
+        final Integer value = (Integer) method.invoke(null, (Object[])null);
         return value.intValue();
     }
 
