@@ -19,17 +19,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    private static String getString(final String plugin, final String setting, final String default_value)
+    public static String defaultType()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
-            return default_value;
-        return service.getString(plugin, setting, default_value, null);
-    }
+            return JCA_PVFactory.TYPE;
+        return service.getString(Activator.ID, "default_type", JCA_PVFactory.TYPE, null);
 
-    public static String defaultType()
-    {
-        return getString(Activator.ID, "default_type", JCA_PVFactory.TYPE);
     }
 
     public static boolean usePureJava()
@@ -51,5 +47,14 @@ public class Preferences
     public static Boolean isVarArraySupported()
     {
         return EpicsPlugin.getDefault().getVarArraySupported();
+    }
+
+    public static int largeArrayThreshold()
+    {
+        int threshold = 100000;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            threshold = service.getInt(Activator.ID, "large_array_threshold", threshold, null);
+        return threshold;
     }
 }

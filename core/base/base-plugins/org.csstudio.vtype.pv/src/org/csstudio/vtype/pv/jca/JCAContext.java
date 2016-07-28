@@ -12,6 +12,7 @@ import static org.csstudio.vtype.pv.PV.logger;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.internal.Preferences;
@@ -73,7 +74,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
             if (use_caj)
             {   // Variable array support was added to CAJ 1.1.10
                 final Version version = ((CAJContext)context).getVersion();
-                logger.log(Level.CONFIG, "Using Pure Java CAJ, " + version);
+                logger.log(Level.CONFIG, Objects.toString(version));
                 supported = ! (version.getMajorVersion() <= 1 &&
                                version.getMinorVersion() <= 1 &&
                                version.getMaintenanceVersion() <=9);
