@@ -172,8 +172,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         {
             logger.log(Level.FINE, getName() + " subscribes");
             final int mask = Preferences.monitorMask().getMask();
-            // Since EPICS 3.14.12, subscribing to zero elements requests update with current array size
-            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), 0, mask, this);
+            final int request_count = JCAContext.getInstance().getRequestCount(channel);
+            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), request_count, mask, this);
 
             final Monitor old_monitor = value_monitor.getAndSet(new_monitor);
             // Could there have been another subscription while we established this one?
@@ -200,7 +200,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                 try
                 {
                     old_metadata_monitor = metadata_monitor.getAndSet(
-                        channel.addMonitor(meta_request, 1, Monitor.PROPERTY, meta_change_listener));
+                        channel.addMonitor(meta_request, request_count, Monitor.PROPERTY, meta_change_listener));
 
                 }
                 catch (Throwable ex)

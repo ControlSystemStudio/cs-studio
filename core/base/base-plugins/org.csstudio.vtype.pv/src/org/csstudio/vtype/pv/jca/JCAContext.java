@@ -9,14 +9,19 @@ package org.csstudio.vtype.pv.jca;
 
 import static org.csstudio.vtype.pv.PV.logger;
 
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.internal.Preferences;
 
 import com.cosylab.epics.caj.CAJContext;
 
+import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Version;
 import gov.aps.jca.event.ContextExceptionEvent;
 import gov.aps.jca.event.ContextExceptionListener;
 import gov.aps.jca.event.ContextMessageEvent;
@@ -33,21 +38,43 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
     final private JCALibrary jca = JCALibrary.getInstance();
     final private Context context;
+    final private boolean is_var_array_supported;
 
     private JCAContext() throws Exception
     {
-        final String type;
+        // Code for version check based on diirt JCADataSourceConfiguration#isVarArraySupported()
         if (Preferences.usePureJava())
         {
-            type = JCALibrary.CHANNEL_ACCESS_JAVA;
             logger.log(Level.CONFIG, "Using Pure Java CAJ");
+            context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+            CAJContext jca = (CAJContext) context;
+            final Version version = jca.getVersion();
+            // Variable array support was added to CAJ 1.1.10
+            is_var_array_supported = ! (version.getMajorVersion() <= 1 &&
+                                        version.getMinorVersion() <= 1 &&
+                                        version.getMaintenanceVersion() <=9);
         }
         else
         {
-            type = JCALibrary.JNI_THREAD_SAFE;
             logger.log(Level.CONFIG, "Using JNI JCA");
+            context = jca.createContext(JCALibrary.JNI_THREAD_SAFE);
+            // Variable array support was added to EPICS 3.14.12
+            boolean supported;
+            try
+            {
+                final Class<?> jni = Class.forName("gov.aps.jca.jni.JNI");
+                final int version = invokePrivateMethod(jni, "_ca_getVersion");
+                final int ref = invokePrivateMethod(jni, "_ca_getRevision");
+                final int mod = invokePrivateMethod(jni, "_ca_getModification");
+                supported = ! (version <= 3  && ref <= 14 && mod <= 11);
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, "Couldn't detect varArraySupported", ex);
+                supported = false;
+            }
+            is_var_array_supported = supported;
         }
-        context = jca.createContext(type);
 
         // PVPool will try to re-use channels, but
         // if user creates the same PV with and without prefix,
@@ -59,6 +86,28 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
         context.addContextMessageListener(this);
         context.addContextExceptionListener(this);
+    }
+
+    /** Invoke a private(!) static method
+     *  @param clazz Class on which to invoke the method
+     *  @param method Method name, must return Integer
+     *  @return Result of method call
+     *  @throws Exception on error
+     */
+    private static int invokePrivateMethod(final Class<?> clazz, final String method) throws Exception
+    {
+        final Method get_ver = clazz.getDeclaredMethod(method, new Class<?>[0]);
+        AccessController.doPrivileged(new PrivilegedAction<Object>()
+        {
+            @Override
+            public Object run()
+            {
+                get_ver.setAccessible(true);
+                return null;
+            }
+        });
+        final Integer value = (Integer) get_ver.invoke(null, new Object[0]);
+        return value.intValue();
     }
 
     public static synchronized JCAContext getInstance() throws Exception
@@ -73,6 +122,22 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
     public Context getContext()
     {
         return context;
+    }
+
+    /** Determine how many array elements to request
+     *  @param channel
+     *  @return Array request count
+     */
+    public int getRequestCount(final Channel channel)
+    {
+        final int actual = channel.getElementCount();
+        // For scalar, get that one element
+        if (actual == 1)
+            return 1;
+        // For arrays, try to use variable size
+        if (is_var_array_supported)
+            return 0;
+        return actual;
     }
 
     @Override
