@@ -180,9 +180,9 @@ abstract public class ExportJob extends Job
      */
     protected void printItemInfo(final PrintStream out, final ModelItem item)
     {
-        out.println(comment + "Channel: " + item.getName());
+        out.println(comment + "Channel: " + item.getResolvedName());
         // If display name differs from PV, show the _resolved_ version
-        if (! item.getName().equals(item.getDisplayName()))
+        if (! item.getResolvedName().equals(item.getResolvedDisplayName()))
             out.println(comment + "Name   : " + item.getResolvedDisplayName());
         if (item instanceof PVItem)
         {
@@ -223,10 +223,10 @@ abstract public class ExportJob extends Job
                 ValueIterator iter;
                 if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
                     iter = reader.getOptimizedValues(archive.getKey(),
-                            item.getName(), start, end, (int)optimize_parameter);
+                            item.getResolvedName(), start, end, (int)optimize_parameter);
                 else
                 {
-                    iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                    iter = reader.getRawValues(archive.getKey(), item.getResolvedName(), start, end);
                     if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
                         iter = new LinearValueIterator(iter, TimeDuration.ofSeconds(optimize_parameter));
                 }
@@ -235,7 +235,7 @@ abstract public class ExportJob extends Job
             }
             catch (Exception ex)
             {
-                Logger.getLogger(getClass().getName()).log(Level.FINE, "Export error for " + item.getName(), ex);
+                Logger.getLogger(getClass().getName()).log(Level.FINE, "Export error for " + item.getResolvedName(), ex);
                 if (error == null)
                     error = ex;
             }
