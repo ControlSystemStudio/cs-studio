@@ -18,9 +18,9 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.vtype.VType;
 
 /** Ecipse Job for exporting data from Model to file
  *  @author Kay Kasemir
@@ -49,14 +49,14 @@ public class SpreadsheetExportJob extends PlainExportJob
         // Spreadsheet Header
         out.print("# " + Messages.TimeColumn);
         for (ModelItem item : model.getItems())
-            out.print(Messages.Export_Delimiter + item.getName() + " " + formatter.getHeader());
+            out.print(Messages.Export_Delimiter + item.getResolvedName() + " " + formatter.getHeader());
         out.println();
 
         // Create speadsheet interpolation
         final List<ValueIterator> iters = new ArrayList<>();
         for (ModelItem item : model.getItems())
         {
-            monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
+            monitor.subTask(NLS.bind("Fetching data for {0}", item.getResolvedName()));
             iters.add(createValueIterator(item));
         }
         final SpreadsheetIterator sheet = new SpreadsheetIterator(iters.toArray(new ValueIterator[iters.size()]));
