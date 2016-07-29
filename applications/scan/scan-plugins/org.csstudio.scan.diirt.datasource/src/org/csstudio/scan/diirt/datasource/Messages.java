@@ -9,6 +9,14 @@ public class Messages extends NLS
     public static String Pause;
     public static String Resume;
     public static String Abort;
+    public static String Id;
+    public static String Created;
+    public static String Name;
+    public static String CurrentCommand;
+    public static String FinishTime;
+    public static String Percentage;
+    public static String State;
+    public static String Error;
 
     static
     {

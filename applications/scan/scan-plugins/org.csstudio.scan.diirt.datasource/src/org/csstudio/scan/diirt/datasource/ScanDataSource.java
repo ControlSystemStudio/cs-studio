@@ -64,6 +64,11 @@ public class ScanDataSource extends DataSource {
     }
 
     @Override
+    public boolean isWriteable() {
+        return true;
+    }
+    
+    @Override
     public void close() {
         exec.shutdown();
         super.close();

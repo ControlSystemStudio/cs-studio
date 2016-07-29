@@ -5,8 +5,6 @@
 package org.csstudio.scan.diirt.datasource;
 
 import static org.diirt.vtype.ValueFactory.alarmNone;
-import static org.diirt.vtype.ValueFactory.displayNone;
-import static org.diirt.vtype.ValueFactory.newVDoubleArray;
 import static org.diirt.vtype.ValueFactory.newVStringArray;
 import static org.diirt.vtype.ValueFactory.timeNow;
 import static org.diirt.vtype.table.VTableFactory.column;
@@ -17,14 +15,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.csstudio.java.time.TimestampFormats;
 import org.csstudio.scan.client.ScanClient;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
@@ -32,10 +29,10 @@ import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.diirt.datasource.ScanDataSource.REQUEST_TYPE;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanState;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayInt;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.table.Column;
 
@@ -216,9 +213,21 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
         }
     }
     
+    // This is awful
     private VTable executeDataQuery(ScanClient scanClient) throws Exception{
         ScanData scanData = scanClient.getScanData(id);
-        List<Column> columns = new ArrayList<Column>();
+        final Comparator<ScanSample> comp = (p1, p2) -> p1.getTimestamp().compareTo(p2.getTimestamp());;
+        
+        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
+
+        if(scanData.getDevices().length>0) {
+            types.add(Instant.class);
+            names.add("timestamp");
+            List<Instant> timestamps = scanData.getSamples(scanData.getDevices()[0]).stream().map(sample-> sample.getTimestamp()).collect(Collectors.toList());
+            values.add(timestamps);
+        }
         int min = 0;
         for(String device : scanData.getDevices()){
             List<ScanSample> samples = scanData.getSamples(device);
@@ -232,9 +241,12 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             if(min!=sampleData.length){
                 sampleData = Arrays.copyOf(sampleData, min);
             }
-            columns.add(column(device, newVDoubleArray(new ArrayDouble(sampleData), alarmNone(), timeNow(),displayNone())));
+            types.add(Double.TYPE);
+            names.add(device);
+            values.add(new ArrayDouble(sampleData));
         }
-        return newVTable(columns.toArray(new Column[columns.size()]));
+        
+        return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
     
     private VTable executeDevicesQuery(ScanClient scanClient) throws Exception{
@@ -255,61 +267,112 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     
     private VTable executeScanInfoQuery(ScanClient scanClient) throws Exception{
         ScanInfo scanInfo = scanClient.getScanInfo(id);
-        List<Column> columns = new ArrayList<Column>();
+
+        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
         
-        long scanId = scanInfo.getId();
-        Instant created = scanInfo.getCreated();
-        String name = scanInfo.getName();
-        String currentCommand = scanInfo.getCurrentCommand();
-        Instant finishTime = scanInfo.getFinishTime();
-        int percentage = scanInfo.getPercentage();
-        ScanState state = scanInfo.getState();
-        Optional<String> error = scanInfo.getError();
+        // id - possible overflow from long
+        types.add(Integer.TYPE);
+        names.add(Messages.Id);
+        values.add(new ArrayInt((int)scanInfo.getId()));
         
-        columns.add(column("id", newVStringArray(Arrays.asList(String.valueOf(scanId)), alarmNone(),timeNow())));
-        columns.add(column("created", newVStringArray(Arrays.asList(TimestampFormats.SECONDS_FORMAT.format(created)), alarmNone(),timeNow())));
-        columns.add(column("name", newVStringArray(Arrays.asList(name), alarmNone(),timeNow())));
-        columns.add(column("currentCommand", newVStringArray(Arrays.asList(currentCommand), alarmNone(),timeNow())));
-        columns.add(column("finishTime", newVStringArray(Arrays.asList(finishTime==null?"":TimestampFormats.SECONDS_FORMAT.format(finishTime)), alarmNone(),timeNow())));
-        columns.add(column("percentage", newVStringArray(Arrays.asList(String.valueOf(percentage)), alarmNone(),timeNow())));
-        columns.add(column("state", newVStringArray(Arrays.asList(state.toString()), alarmNone(),timeNow())));
-        columns.add(column("error", newVStringArray(Arrays.asList(error.isPresent()?error.get():""), alarmNone(),timeNow())));
+        // created
+        types.add(Instant.class);
+        names.add(Messages.Created);
+        values.add(Arrays.asList(scanInfo.getCreated()));
         
-        return newVTable(columns.toArray(new Column[columns.size()]));
+        // name
+        types.add(String.class);
+        names.add(Messages.Name);
+        values.add(Arrays.asList(scanInfo.getName()));
+        
+        // currentCommand
+        types.add(String.class);
+        names.add(Messages.CurrentCommand);
+        values.add(Arrays.asList(scanInfo.getCurrentCommand()));
+        
+        // finishTime
+        types.add(Instant.class);
+        names.add(Messages.FinishTime);
+        values.add(Arrays.asList(scanInfo.getFinishTime()));
+        
+        // percentage
+        types.add(Integer.TYPE);
+        names.add(Messages.Percentage);
+        values.add(new ArrayInt(scanInfo.getPercentage()));
+        
+        // state
+        types.add(String.class);
+        names.add(Messages.State);
+        values.add(Arrays.asList(scanInfo.getState().toString()));
+        
+        // error
+        types.add(String.class);
+        names.add(Messages.Error);
+        values.add(Arrays.asList(scanInfo.getError().isPresent()?scanInfo.getError().get():""));
+        
+        return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
     
     private VTable executeServerInfoQuery(ScanClient scanClient) throws Exception{
         List<ScanInfo> scanInfos = scanClient.getScanInfos();
-        List<Column> columns = new ArrayList<Column>();
-        
 
         int maxSize = Integer.parseInt(queryMap.getOrDefault("max", "1000"));
         
-        List<String> scanIds = scanInfos.stream().limit(maxSize).map(scanInfo -> String.valueOf(scanInfo.getId())).collect(Collectors.toList());
-        columns.add(column("id", newVStringArray(scanIds, alarmNone(),timeNow())));
+        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
         
-        List<String> createds = scanInfos.stream().limit(maxSize).map(scanInfo -> TimestampFormats.SECONDS_FORMAT.format(scanInfo.getCreated())).collect(Collectors.toList());   
-        columns.add(column("created", newVStringArray(createds, alarmNone(),timeNow())));
+        // id - possible overflow from long
+        types.add(Integer.TYPE);
+        names.add(Messages.Id);
+        int[] scanIds = scanInfos.stream().limit(maxSize).map(scanInfo -> (int)scanInfo.getId()).mapToInt(i -> i).toArray();
+        values.add(new ArrayInt(scanIds));
         
-        List<String> names = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getName()).collect(Collectors.toList());
-        columns.add(column("name", newVStringArray(names, alarmNone(),timeNow())));
+        // created
+        types.add(Instant.class);
+        names.add(Messages.Created);
+        List<Instant> createds = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getCreated()).collect(Collectors.toList());
+        values.add(createds);
         
+        // name
+        types.add(String.class);
+        names.add(Messages.Name);
+        List<String> scan_names = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getName()).collect(Collectors.toList());
+        values.add(scan_names);
+        
+        // currentCommand
+        types.add(String.class);
+        names.add(Messages.CurrentCommand);
         List<String> currentCommands = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getCurrentCommand()).collect(Collectors.toList());
-        columns.add(column("currentCommand", newVStringArray(currentCommands, alarmNone(),timeNow())));
+        values.add(currentCommands);
         
-        List<String> finishTimes = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getFinishTime()==null?"":TimestampFormats.SECONDS_FORMAT.format(scanInfo.getFinishTime())).collect(Collectors.toList());
-        columns.add(column("finishTime", newVStringArray(finishTimes, alarmNone(),timeNow())));
+        // finishTime
+        types.add(Instant.class);
+        names.add(Messages.FinishTime);
+        List<Instant> finishTimes = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getFinishTime()).collect(Collectors.toList());
+        values.add(finishTimes);
         
-        List<String> percentages = scanInfos.stream().limit(maxSize).map(scanInfo -> String.valueOf(scanInfo.getPercentage())).collect(Collectors.toList());
-        columns.add(column("percentage", newVStringArray(percentages, alarmNone(),timeNow())));
+        // percentage
+        types.add(Integer.TYPE);
+        names.add(Messages.Percentage);
+        int[] percentages = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getPercentage()).mapToInt(i -> i).toArray();;
+        values.add(new ArrayInt(percentages));
         
+        // state
+        types.add(String.class);
+        names.add(Messages.State);
         List<String> states = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getState().toString()).collect(Collectors.toList());
-        columns.add(column("state", newVStringArray(states, alarmNone(),timeNow())));
+        values.add(states);
         
+        // error
+        types.add(String.class);
+        names.add(Messages.Error);
         List<String> errors = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getError().isPresent()?scanInfo.getError().get():"").collect(Collectors.toList());
-        columns.add(column("error", newVStringArray(errors, alarmNone(),timeNow())));
+        values.add(errors);
         
-        return newVTable(columns.toArray(new Column[columns.size()]));
+        return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
     
     private void pause (ScanClient scanClient) throws Exception {
