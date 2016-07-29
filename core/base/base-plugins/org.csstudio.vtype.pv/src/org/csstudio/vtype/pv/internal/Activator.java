@@ -24,7 +24,7 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("nls")
 public class Activator implements BundleActivator
 {
-    final public static String ID = "org.csstudio.utility.pv.vtype";
+    final public static String ID = "org.csstudio.vtype.pv";
 
     @Override
     public void start(final BundleContext context) throws Exception
