@@ -17,10 +17,10 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 import com.jmatio.io.MatFileIncrementalWriter;
 import com.jmatio.types.MLCell;
@@ -58,7 +58,7 @@ public class MatlabFileExportJob extends ExportJob
         int i = 0;
         for (ModelItem item : model.getItems())
         {   // Get data
-            monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
+            monitor.subTask(NLS.bind("Fetching data for {0}", item.getResolvedName()));
             final ValueIterator iter = createValueIterator(item);
             final List<Instant> times = new ArrayList<Instant>();
             final List<Double> values = new ArrayList<Double>();
@@ -70,10 +70,10 @@ public class MatlabFileExportJob extends ExportJob
                 values.add(VTypeHelper.toDouble(value));
                 severities.add(VTypeHelper.getSeverity(value));
                 if (values.size() % PROGRESS_UPDATE_LINES == 0)
-                    monitor.subTask(NLS.bind("{0}: Obtained {1} samples", item.getName(), values.size()));
+                    monitor.subTask(NLS.bind("{0}: Obtained {1} samples", item.getResolvedName(), values.size()));
             }
             // Add to Matlab file
-            final MLStructure struct = createMLStruct(i++, item.getName(), times, values, severities);
+            final MLStructure struct = createMLStruct(i++, item.getResolvedName(), times, values, severities);
             writer.write(struct);
         }
 
