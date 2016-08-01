@@ -9,7 +9,6 @@ package org.csstudio.vtype.pv.internal;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
-import org.csstudio.platform.libs.epics.PreferenceConstants;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -20,31 +19,42 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    private static String getString(final String plugin, final String setting, final String default_value)
+    public static String defaultType()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
-            return default_value;
-        return service.getString(plugin, setting, default_value, null);
-    }
+            return JCA_PVFactory.TYPE;
+        return service.getString(Activator.ID, "default_type", JCA_PVFactory.TYPE, null);
 
-    public static String defaultType()
-    {
-        return getString(Activator.ID, "default_type", JCA_PVFactory.TYPE);
     }
 
     public static boolean usePureJava()
     {
-        return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.PURE_JAVA, Boolean.TRUE.toString()));
+        return EpicsPlugin.getDefault().usePureJava();
     }
 
     public static MonitorMask monitorMask()
     {
-        return MonitorMask.valueOf(getString(EpicsPlugin.ID, PreferenceConstants.MONITOR, "VALUE"));
+        return EpicsPlugin.getDefault().getMonitorMask();
     }
 
     public static boolean monitorProperties()
     {
-        return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.DBE_PROPERTY_SUPPORTED, Boolean.TRUE.toString()));
+        return EpicsPlugin.getDefault().isDbePropertySupported();
+    }
+
+    /** @return Support var array, don't support, or use auto-detect (<code>null</code>) */
+    public static Boolean isVarArraySupported()
+    {
+        return EpicsPlugin.getDefault().getVarArraySupported();
+    }
+
+    public static int largeArrayThreshold()
+    {
+        int threshold = 100000;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            threshold = service.getInt(Activator.ID, "large_array_threshold", threshold, null);
+        return threshold;
     }
 }
