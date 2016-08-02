@@ -25,6 +25,7 @@ import org.csstudio.scan.server.internal.PathStreamTool;
 @SuppressWarnings("nls")
 public class SimulationContext
 {
+    private final SimulationHook hook;
     final private ScanConfig simulation_info;
 
     /** Macros for resolving device names */
@@ -38,10 +39,12 @@ public class SimulationContext
 
     /** Initialize
      *  @param log_stream Stream for simulation progress log
+     *  @param hook {@link SimulationHook}, may be <code>null</code>
      *  @throws Exception on error while initializing {@link SimulationInfo}
      */
-    public SimulationContext(final PrintStream log_stream) throws Exception
+    public SimulationContext(final PrintStream log_stream, final SimulationHook hook) throws Exception
     {
+        this.hook = hook;
         final InputStream config_stream = PathStreamTool.openStream(ScanSystemPreferences.getSimulationConfigPath());
         this.simulation_info = new ScanConfig(config_stream);
         this.macros = new MacroContext(ScanSystemPreferences.getMacros());
@@ -107,6 +110,7 @@ public class SimulationContext
     public void simulate(final List<ScanCommandImpl<?>> scan) throws Exception
     {
         for (ScanCommandImpl<?> impl : scan)
-            impl.simulate(this);
+            if (hook == null  ||  ! hook.handle(impl.getCommand(), this))
+                impl.simulate(this);
     }
 }
