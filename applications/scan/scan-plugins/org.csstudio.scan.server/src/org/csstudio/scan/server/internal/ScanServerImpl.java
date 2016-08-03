@@ -43,10 +43,8 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.SimulationContext;
-import org.csstudio.scan.server.SimulationHook;
 import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.server.app.Application;
-import org.python.core.PyException;
 
 /** Implementation of the {@link ScanServer}
  *  @author Kay Kasemir
@@ -158,17 +156,7 @@ public class ScanServerImpl implements ScanServer
             log_out.println("--------");
 
             // Simulate
-            final SimulationHook hook;
-            try
-            {
-                hook = jython.loadClass(SimulationHook.class, "SimulationHookDemo");
-            }
-            catch (PyException ex)
-            {
-                throw new Exception(JythonSupport.getExceptionMessage(ex), ex);
-            }
-
-            final SimulationContext simulation = new SimulationContext(log_out, hook);
+            final SimulationContext simulation = new SimulationContext(jython, log_out);
             simulation.simulate(scan);
 
             // Close log

@@ -17,6 +17,11 @@ class SimulationHookDemo(SimulationHook):
         """
         print("Simulating " + str(command))
         cmd = command.getCommandID()
+
+        if cmd == "comment":
+            # Suppress command commands where comment starts with "#"
+            comment = command.getProperty("comment")
+            return comment.startswith("#")
         
         if cmd == "log":
             # Ignore log commands in simulation
@@ -28,7 +33,7 @@ class SimulationHookDemo(SimulationHook):
                 # Changing rate always takes a fixed amount of time
                 value = command.getProperty("value")
                 context.logExecutionStep("Set beam rate to %g Hz" % value, 5.0);
-                # Do update the simulated device
+                # Do update the simulated device!
                 context.getDevice("rate").write(value)
                 return True
         
@@ -41,7 +46,7 @@ class SimulationHookDemo(SimulationHook):
                 rate = self.getRate(context)
                 time = 60.0*60.0 * charge * 60/rate
                                 
-                context.logExecutionStep("Wait for %.2g Coulomb at %.0g Hz" % (charge, rate), time);
+                context.logExecutionStep("Wait for %.2f Coulomb at %.0f Hz" % (charge, rate), time);
                 return True
 
         # For commands not specifically handled, use default simulation

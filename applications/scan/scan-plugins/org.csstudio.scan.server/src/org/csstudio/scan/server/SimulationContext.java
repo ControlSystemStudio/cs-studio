@@ -18,6 +18,7 @@ import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.device.ScanConfig;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.internal.PathStreamTool;
+import org.python.core.PyException;
 
 /** Context used for the simulation of {@link ScanCommandImpl}
  *  @author Kay Kasemir
@@ -25,7 +26,6 @@ import org.csstudio.scan.server.internal.PathStreamTool;
 @SuppressWarnings("nls")
 public class SimulationContext
 {
-    private final SimulationHook hook;
     final private ScanConfig simulation_info;
 
     /** Macros for resolving device names */
@@ -35,20 +35,34 @@ public class SimulationContext
 
     final private PrintStream log_stream;
 
+    private final SimulationHook hook;
+
     private double simulation_seconds = 0.0;
 
     /** Initialize
+     *  @param jython {@link JythonSupport}
      *  @param log_stream Stream for simulation progress log
-     *  @param hook {@link SimulationHook}, may be <code>null</code>
      *  @throws Exception on error while initializing {@link SimulationInfo}
      */
-    public SimulationContext(final PrintStream log_stream, final SimulationHook hook) throws Exception
+    public SimulationContext(final JythonSupport jython, final PrintStream log_stream) throws Exception
     {
-        this.hook = hook;
         final InputStream config_stream = PathStreamTool.openStream(ScanSystemPreferences.getSimulationConfigPath());
-        this.simulation_info = new ScanConfig(config_stream);
-        this.macros = new MacroContext(ScanSystemPreferences.getMacros());
+        simulation_info = new ScanConfig(config_stream);
+        macros = new MacroContext(ScanSystemPreferences.getMacros());
         this.log_stream = log_stream;
+
+        final String hook_name = simulation_info.getSimulationHook();
+        if (hook_name.isEmpty())
+            hook = null;
+        else
+            try
+            {
+                hook = jython.loadClass(SimulationHook.class, hook_name);
+            }
+            catch (PyException ex)
+            {
+                throw new Exception(JythonSupport.getExceptionMessage(ex), ex);
+            }
     }
 
     /** @return Macro support */

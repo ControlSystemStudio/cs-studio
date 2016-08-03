@@ -33,8 +33,8 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/ScanErrorHandler.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ParallelCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/csstudio/scan/command/ScanCommand.html" target="_top">Frames</a></li>
@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a>, <a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a>, <a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a>, <a href="../../../../org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a>, <a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</a>, <a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command">LoopCommand</a>, <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a>, <a href="../../../../org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a>, <a href="../../../../org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dd>
+<dd><a href="../../../../org/csstudio/scan/command/CommentCommand.html" title="class in org.csstudio.scan.command">CommentCommand</a>, <a href="../../../../org/csstudio/scan/command/ConfigLogCommand.html" title="class in org.csstudio.scan.command">ConfigLogCommand</a>, <a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command">DelayCommand</a>, <a href="../../../../org/csstudio/scan/command/IncludeCommand.html" title="class in org.csstudio.scan.command">IncludeCommand</a>, <a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command">LogCommand</a>, <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a>, <a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command">ScriptCommand</a>, <a href="../../../../org/csstudio/scan/command/SetCommand.html" title="class in org.csstudio.scan.command">SetCommand</a>, <a href="../../../../org/csstudio/scan/command/WaitCommand.html" title="class in org.csstudio.scan.command">WaitCommand</a></dd>
 </dl>
 <hr>
 <br>
@@ -167,9 +167,23 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></strong>(org.w3c.dom.Document&nbsp;dom,
+              org.w3c.dom.Element&nbsp;command_element)</code>
+<div class="block">Add XML elements for command (and its sub-commands) to document.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a></strong>()</code>
 <div class="block">Address of this command within the command sequence</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandID()">getCommandID</a></strong>()</code>
+<div class="block">A command with implementing class "DoSomeThingCommand"
+  has an ID of "do_some_thing"</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -202,7 +216,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
@@ -219,14 +233,14 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty, java.lang.Object)">setProperty</a></strong>(ScanCommandProperty&nbsp;property,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty,%20java.lang.Object)">setProperty</a></strong>(ScanCommandProperty&nbsp;property,
            java.lang.Object&nbsp;value)</code>
 <div class="block">Set a command's property</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String, java.lang.Object)">setProperty</a></strong>(java.lang.String&nbsp;property_id,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String,%20java.lang.Object)">setProperty</a></strong>(java.lang.String&nbsp;property_id,
            java.lang.Object&nbsp;value)</code>
 <div class="block">Set a command's property</div>
 </td>
@@ -237,9 +251,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></strong>(java.io.PrintStream&nbsp;out,
-        int&nbsp;level)</code>
-<div class="block">Write the command (and its sub-commands) in an XML format.</div>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(org.w3c.dom.Document,%20org.w3c.dom.Element)">writeXML</a></strong>(org.w3c.dom.Document&nbsp;dom,
+        org.w3c.dom.Element&nbsp;root)</code>
+<div class="block">Write the command (and its sub-commands) to XML document.</div>
 </td>
 </tr>
 </table>
@@ -290,6 +304,18 @@ extends java.lang.Object</pre>
 <h4>getCommandName</h4>
 <pre>public final&nbsp;java.lang.String&nbsp;getCommandName()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Name of the command, which is the base of the class name</dd></dl>
+</li>
+</ul>
+<a name="getCommandID()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCommandID</h4>
+<pre>public final&nbsp;java.lang.String&nbsp;getCommandID()</pre>
+<div class="block">A command with implementing class "DoSomeThingCommand"
+  has an ID of "do_some_thing"</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>ID of this command</dd></dl>
 </li>
 </ul>
 <a name="getAddress()">
@@ -427,23 +453,38 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>error_handler</code> - Name of the error handler class</dd></dl>
 </li>
 </ul>
-<a name="writeXML(java.io.PrintStream, int)">
+<a name="writeXML(org.w3c.dom.Document, org.w3c.dom.Element)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>writeXML</h4>
-<pre>public&nbsp;void&nbsp;writeXML(java.io.PrintStream&nbsp;out,
-            int&nbsp;level)</pre>
-<div class="block">Write the command (and its sub-commands) in an XML format.
+<pre>public final&nbsp;void&nbsp;writeXML(org.w3c.dom.Document&nbsp;dom,
+            org.w3c.dom.Element&nbsp;root)</pre>
+<div class="block">Write the command (and its sub-commands) to XML document.
 
-  <p>A command called AbcCommand should write itself as a tag "abc"
+  <p>A command called AbcCommand writes itself as a tag "abc"
   so that the <code>XMLCommandReader</code> can later determine
   which class to use for reading the command back from XML.
 
-  <p>Derived classes must call base class implementation
-  to write inherited properties.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>out</code> - <code>PrintStream</code></dd><dd><code>level</code> - Indentation level</dd></dl>
+  <p>This method creates the overall XML element for the command
+  and calls <code>addXMLElements()</code> for the content.
+  Derived classes should update <code>addXMLElements()</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>dom</code> - <code>Document</code></dd><dd><code>root</code> - Where to add content for this command</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/command/ScanCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)"><code>addXMLElements(Document, Element)</code></a></dd></dl>
+</li>
+</ul>
+<a name="addXMLElements(org.w3c.dom.Document, org.w3c.dom.Element)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addXMLElements</h4>
+<pre>public&nbsp;void&nbsp;addXMLElements(org.w3c.dom.Document&nbsp;dom,
+                  org.w3c.dom.Element&nbsp;command_element)</pre>
+<div class="block">Add XML elements for command (and its sub-commands) to document.
+
+  <p>Derived classes should call parent implementation.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>dom</code> - <code>Document</code></dd><dd><code>command_element</code> - DOM <code>Element</code> for this command</dd></dl>
 </li>
 </ul>
 <a name="readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">
@@ -504,8 +545,8 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/ScanErrorHandler.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ParallelCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/csstudio/scan/command/ScanCommand.html" target="_top">Frames</a></li>

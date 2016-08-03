@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>ScanSample (Scan System API)</title>
+<title>SimulationHook (Scan System API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ScanSample (Scan System API)";
+        parent.document.title="SimulationHook (Scan System API)";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationContext.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/data/ScanSample.html" target="_top">Frames</a></li>
-<li><a href="ScanSample.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/server/SimulationHook.html" target="_top">Frames</a></li>
+<li><a href="SimulationHook.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,48 +76,30 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.csstudio.scan.data</div>
-<h2 title="Class ScanSample" class="title">Class ScanSample</h2>
+<div class="subTitle">org.csstudio.scan.server</div>
+<h2 title="Class SimulationHook" class="title">Class SimulationHook</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.csstudio.scan.data.ScanSample</li>
+<li>org.csstudio.scan.server.SimulationHook</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a>, <a href="../../../../org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dd>
-</dl>
 <hr>
 <br>
-<pre>public abstract class <span class="strong">ScanSample</span>
+<pre>public class <span class="strong">SimulationHook</span>
 extends java.lang.Object</pre>
-<div class="block">A sample taken by a scan
+<div class="block">Hook for simulation customization
 
-  <p>All samples have a time stamp.
-
-  <p>A serial number is used to track the sequence
-  in which samples were acquired within a scan.
-  The time stamps alone can <u>not</u> dependably correlate
-  samples for several reasons:
-
-  <ul>
-  <li>Time stamps can be the actual control system time stamps.
-      If a value has not changed for a while, the 'old' time stamp
-      would reflect that.
-  <li>A scan can run faster than the resolution of the time stamp.
-  <li>Samples are meant to be logged "together", for example by one
-      log command within a loop, but their actual time stamps
-      don't reflect that.
-  </ul></div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data"><code>NumberScanSample</code></a></dd></dl>
+  <p>The scan configuration file has a <code>&ltsimulation_hook></code>
+  entry to provide the name of a Jython class that implements
+  a custom simulation hook.</div>
 </li>
 </ul>
 </div>
@@ -136,10 +118,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#ScanSample(Instant,%20long)">ScanSample</a></strong>(Instant&nbsp;timestamp,
-          long&nbsp;serial)</code>
-<div class="block">Initialize</div>
-</td>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationHook.html#SimulationHook()">SimulationHook</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -157,22 +136,11 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>Instant</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getTimestamp()">getTimestamp</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>abstract java.lang.Object[]</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getValues()">getValues</a></strong>()</code>
-<div class="block">Get raw values of the sample</div>
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationHook.html#handle(org.csstudio.scan.command.ScanCommand,%20org.csstudio.scan.server.SimulationContext)">handle</a></strong>(<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&nbsp;command,
+      <a href="../../../../org/csstudio/scan/server/SimulationContext.html" title="class in org.csstudio.scan.server">SimulationContext</a>&nbsp;context)</code>
+<div class="block">Called for each command to allow custom simulation</div>
 </td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -180,7 +148,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>equals, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
+<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -196,16 +164,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ScanSample(Instant, long)">
+<a name="SimulationHook()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>ScanSample</h4>
-<pre>public&nbsp;ScanSample(Instant&nbsp;timestamp,
-          long&nbsp;serial)</pre>
-<div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd></dl>
+<h4>SimulationHook</h4>
+<pre>public&nbsp;SimulationHook()</pre>
 </li>
 </ul>
 </li>
@@ -216,50 +181,24 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getTimestamp()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getTimestamp</h4>
-<pre>public&nbsp;Instant&nbsp;getTimestamp()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Time when this sample was obtained</dd></dl>
-</li>
-</ul>
-<a name="getSerial()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getSerial</h4>
-<pre>public&nbsp;long&nbsp;getSerial()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Serial number of this sample</dd></dl>
-</li>
-</ul>
-<a name="getValues()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getValues</h4>
-<pre>public abstract&nbsp;java.lang.Object[]&nbsp;getValues()</pre>
-<div class="block">Get raw values of the sample
-  <p>Derived classes can implement access to
-  the value by other means</div>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Values of the sample. Will be an array of <code>Number</code> or ...</dd></dl>
-</li>
-</ul>
-<a name="toString()">
+<a name="handle(org.csstudio.scan.command.ScanCommand, org.csstudio.scan.server.SimulationContext)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
+<h4>handle</h4>
+<pre>public&nbsp;boolean&nbsp;handle(<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&nbsp;command,
+             <a href="../../../../org/csstudio/scan/server/SimulationContext.html" title="class in org.csstudio.scan.server">SimulationContext</a>&nbsp;context)</pre>
+<div class="block">Called for each command to allow custom simulation
+
+  <p>Implementation should either return <code>false</code>
+  to request default simulation of the command,
+  or perform its own simulation,
+  typically calling <code>SimulationContext#logExecutionStep("text", seconds")</code>
+  with the result, and then return <code>true</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>command</code> - <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><code>ScanCommand</code></a> to simulate</dd><dd><code>context</code> - <a href="../../../../org/csstudio/scan/server/SimulationContext.html" title="class in org.csstudio.scan.server"><code>SimulationContext</code></a></dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if hook handled the simulation of the command,
+         <code>false</code> if default simulation should be used</dd></dl>
 </li>
 </ul>
 </li>
@@ -287,12 +226,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationContext.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/data/ScanSample.html" target="_top">Frames</a></li>
-<li><a href="ScanSample.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/server/SimulationHook.html" target="_top">Frames</a></li>
+<li><a href="SimulationHook.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
