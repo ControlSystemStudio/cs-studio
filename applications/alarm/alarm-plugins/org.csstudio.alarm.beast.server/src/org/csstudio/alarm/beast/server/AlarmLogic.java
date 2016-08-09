@@ -277,10 +277,12 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             }
             // Remember what used to be the 'current' severity
             final SeverityLevel previous_severity = current_state.getSeverity();
+            final String previous_message = current_state.getMessage();
             // Update current severity.
             current_state = received_state;
-            // If there's no change to the current severity, we're done.
-            if (received_state.getSeverity() == previous_severity)
+            // If there's no change to the current severity and message, we're done.
+            if (received_state.getSeverity() == previous_severity  &&
+                received_state.getMessage().equals(previous_message))
                 return;
 
             // Does this 'clear' an acknowledged severity? -> OK
