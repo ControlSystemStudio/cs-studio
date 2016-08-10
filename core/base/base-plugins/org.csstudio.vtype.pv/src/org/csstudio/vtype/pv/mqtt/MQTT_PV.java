@@ -40,13 +40,29 @@ public class MQTT_PV extends PV implements MqttCallback
     //Random integer in case
     final static Integer randInt = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
 
+    final protected static String SEPARATOR = " ";
+
     //volatile private String userName, passWord;
+
+    private void analyzeName(final String name)
+    {
+        final int sep = name.indexOf(SEPARATOR);
+        if (sep > 0)
+        {
+            brokerURL = name.substring(0, sep);
+            topicStr = name.substring(sep+SEPARATOR.length());
+        }
+        else
+        {
+            brokerURL=name;
+            topicStr = "mqttpv";
+        }
+    }
 
     protected MQTT_PV(final String name, final String base_name) throws Exception
     {
         super(name);
-
-        brokerURL = base_name;
+        analyzeName(base_name);
 
         try
         {
@@ -86,7 +102,6 @@ public class MQTT_PV extends PV implements MqttCallback
             e.printStackTrace();
         }
 
-        topicStr = "mqttpv/test";
 
         try {
             int subQoS = 0;
@@ -102,6 +117,9 @@ public class MQTT_PV extends PV implements MqttCallback
     {
         if (new_value == null)
             throw new Exception(getName() + " got null");
+
+        if (!myClient.isConnected())
+            throw new Exception(getName() + " not connected to " + brokerURL);
 
         MqttTopic topic = myClient.getTopic(topicStr);
 
@@ -146,12 +164,18 @@ public class MQTT_PV extends PV implements MqttCallback
         }
     }
 
+
+    /**
+     * Called when connection to broker is lost
+     * @see org.eclipse.paho.client.mqttv3.MqttCallback#connectionLost(java.lang.Throwable)
+     */
     @Override
     public void connectionLost(Throwable arg0)
     {
         logger.log(Level.FINE, "Disconnected from MQTT broker " + brokerURL);
 
         // Connect to Broker
+        // TODO: attempt reconnect repeatedly in background thread with timer backoff and eventual timeout
         try {
             myClient.connect(connOpt);
         } catch (MqttException e) {
@@ -161,6 +185,11 @@ public class MQTT_PV extends PV implements MqttCallback
     }
 
 
+
+    /**
+     * Called when message at QoS 1 or 2 acknowledges arrival at broker (QoS 0 will never ack)
+     * @see org.eclipse.paho.client.mqttv3.MqttCallback#deliveryComplete(org.eclipse.paho.client.mqttv3.IMqttDeliveryToken)
+     */
     @Override
     public void deliveryComplete(IMqttDeliveryToken arg0)
     {
@@ -169,10 +198,13 @@ public class MQTT_PV extends PV implements MqttCallback
     }
 
 
+    /**
+     * Called when a message arrives from a subscribed topic
+     * @see org.eclipse.paho.client.mqttv3.MqttCallback#messageArrived(java.lang.String, org.eclipse.paho.client.mqttv3.MqttMessage)
+     */
     @Override
     public void messageArrived(String arg0, MqttMessage arg1) throws Exception
     {
-        // TODO Auto-generated method stub
-
+        System.out.println("Message arrived: " + arg0 + " : " + arg1.toString());
     }
 }

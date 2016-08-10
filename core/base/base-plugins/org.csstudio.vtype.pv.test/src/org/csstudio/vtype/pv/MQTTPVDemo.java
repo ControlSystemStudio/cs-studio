@@ -87,8 +87,8 @@ public class MQTTPVDemo implements PVListener
     @Test
     public void testConnect() throws Exception
     {
-        final PV pv1 = PVPool.getPV("mqtt://" + BROKER_URL);
-        final PV pv2 = PVPool.getPV("mqtt://" + BROKER_URL);
+        final PV pv1 = PVPool.getPV("mqtt://" + BROKER_URL + " MQTTPVDemo/pv1");
+        final PV pv2 = PVPool.getPV("mqtt://" + BROKER_URL + " MQTTPVDemo/pv2 ");
         //System.out.println(pv.read());
         try
         {
