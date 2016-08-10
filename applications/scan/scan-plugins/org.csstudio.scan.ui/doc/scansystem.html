@@ -834,11 +834,12 @@ from various sources:
 <ul>
 <li>Dedicated <a href="#editor">Scan editor</a>.
 </li>
-<li>CSS 'BOY' operator interface panels.
+<li>Operator interface panels, typically using Jython scripts.
 </li>
-<li>Jython script, i.e. using the Python language,
-    either edited, executed and debugged from within CSS,
+<li>Python scripts, either edited, executed and debugged from within CSS,
     or from the command line.
+    Python as well as Jython scripts best use the PyScanClient library,
+    see <a href="https://github.com/PythonScanClient/PyScanClient">https://github.com/PythonScanClient/PyScanClient</a>
 </li>
 <li>Any Java tool, including applications that interface to Java like Matlab.
 </li>
@@ -846,10 +847,16 @@ from various sources:
 
 <p>This provides a lot of options to programmers.
 At the same time, the details can be hidden behind
-for example a 'BOY' operator interface panel,
+for example an operator interface panel,
 so even users with no programming experience can
 then configure and execute scans for common beamline
 tasks that have prepared interface panels.
+</p>
+
+<p>Jython scripts are also used for
+the <a href="#ScriptCommand">Script Command</a>,
+the <a href="java/org/csstudio/scan/command/ScanErrorHandler.html">ScanErrorHandler</a>
+and the <a href="java/org/csstudio/scan/server/SimulationHook.html">SimulationHook</a>.
 </p>
 
 <p>For details refer to the examples

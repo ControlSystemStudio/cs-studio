@@ -119,9 +119,9 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
-              java.util.Date&nbsp;start_time,
-              java.lang.String&nbsp;beamline_config,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String,%20Instant,%20java.lang.String,%20java.lang.String,%20java.lang.String[],%20java.lang.String)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
+              Instant&nbsp;start_time,
+              java.lang.String&nbsp;scan_config,
               java.lang.String&nbsp;simulation_config,
               java.lang.String[]&nbsp;script_paths,
               java.lang.String&nbsp;macros)</code>
@@ -129,14 +129,15 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
-              java.util.Date&nbsp;start_time,
-              java.lang.String&nbsp;beamline_config,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#ScanServerInfo(java.lang.String,%20Instant,%20java.lang.String,%20java.lang.String,%20java.lang.String[],%20java.lang.String,%20long,%20long,%20long)">ScanServerInfo</a></strong>(java.lang.String&nbsp;version,
+              Instant&nbsp;start_time,
+              java.lang.String&nbsp;scan_config,
               java.lang.String&nbsp;simulation_config,
               java.lang.String[]&nbsp;script_paths,
               java.lang.String&nbsp;macros,
               long&nbsp;used_mem,
-              long&nbsp;max_mem)</code>
+              long&nbsp;max_mem,
+              long&nbsp;non_heap)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -157,11 +158,11 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getBeamlineConfig()">getBeamlineConfig</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getScanConfig()">getScanConfig</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
@@ -172,7 +173,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getSimulationConfig()">getSimulationConfig</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Date</code></td>
+<td class="colFirst"><code>Instant</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getStartTime()">getStartTime</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -189,7 +190,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.csstudio.scan.server.<a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server">MemoryInfo</a></h3>
-<code><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMaxMem()">getMaxMem</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMemoryInfo()">getMemoryInfo</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMemoryPercentage()">getMemoryPercentage</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getUsedMem()">getUsedMem</a></code></li>
+<code><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMaxMem()">getMaxMem</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMemoryInfo()">getMemoryInfo</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getMemoryPercentage()">getMemoryPercentage</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getNonHeapUsedMem()">getNonHeapUsedMem</a>, <a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getUsedMem()">getUsedMem</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -212,38 +213,39 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">
+<a name="ScanServerInfo(java.lang.String, Instant, java.lang.String, java.lang.String, java.lang.String[], java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>ScanServerInfo</h4>
 <pre>public&nbsp;ScanServerInfo(java.lang.String&nbsp;version,
-              java.util.Date&nbsp;start_time,
-              java.lang.String&nbsp;beamline_config,
+              Instant&nbsp;start_time,
+              java.lang.String&nbsp;scan_config,
               java.lang.String&nbsp;simulation_config,
               java.lang.String[]&nbsp;script_paths,
               java.lang.String&nbsp;macros)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>beamline_config</code> - </dd><dd><code>simulation_config</code> - </dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>scan_config</code> - </dd><dd><code>simulation_config</code> - </dd></dl>
 </li>
 </ul>
-<a name="ScanServerInfo(java.lang.String, java.util.Date, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long)">
+<a name="ScanServerInfo(java.lang.String, Instant, java.lang.String, java.lang.String, java.lang.String[], java.lang.String, long, long, long)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ScanServerInfo</h4>
 <pre>public&nbsp;ScanServerInfo(java.lang.String&nbsp;version,
-              java.util.Date&nbsp;start_time,
-              java.lang.String&nbsp;beamline_config,
+              Instant&nbsp;start_time,
+              java.lang.String&nbsp;scan_config,
               java.lang.String&nbsp;simulation_config,
               java.lang.String[]&nbsp;script_paths,
               java.lang.String&nbsp;macros,
               long&nbsp;used_mem,
-              long&nbsp;max_mem)</pre>
+              long&nbsp;max_mem,
+              long&nbsp;non_heap)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>beamline_config</code> - </dd><dd><code>simulation_config</code> - </dd><dd><code>used_mem</code> - Used memory (kB)</dd><dd><code>max_mem</code> - Maximum available memory (kB)</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - </dd><dd><code>start_time</code> - </dd><dd><code>scan_config</code> - </dd><dd><code>simulation_config</code> - </dd><dd><code>script_paths</code> - </dd><dd><code>macros</code> - </dd><dd><code>used_mem</code> - Used memory (kB)</dd><dd><code>max_mem</code> - Maximum available memory (kB)</dd><dd><code>non_heap</code> - </dd></dl>
 </li>
 </ul>
 </li>
@@ -270,18 +272,18 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <ul class="blockList">
 <li class="blockList">
 <h4>getStartTime</h4>
-<pre>public&nbsp;java.util.Date&nbsp;getStartTime()</pre>
+<pre>public&nbsp;Instant&nbsp;getStartTime()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Start time</dd></dl>
 </li>
 </ul>
-<a name="getBeamlineConfig()">
+<a name="getScanConfig()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getBeamlineConfig</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getBeamlineConfig()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Beam line configuration path</dd></dl>
+<h4>getScanConfig</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getScanConfig()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Scan configuration path</dd></dl>
 </li>
 </ul>
 <a name="getSimulationConfig()">
@@ -291,7 +293,7 @@ extends <a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="cl
 <li class="blockList">
 <h4>getSimulationConfig</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getSimulationConfig()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Simulation configuration path</dd></dl>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Simulation configuration path (since originally that was a separate file)</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/server/ScanServerInfo.html#getScanConfig()"><code>getScanConfig()</code></a></dd></dl>
 </li>
 </ul>
 <a name="getScriptPaths()">

@@ -148,7 +148,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>abstract void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#logData(java.lang.String, java.lang.Object)">logData</a></strong>(java.lang.String&nbsp;device,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#logData(java.lang.String,%20java.lang.Object)">logData</a></strong>(java.lang.String&nbsp;device,
        java.lang.Object&nbsp;data)</code>
 <div class="block">Add data for a device to the log.</div>
 </td>
@@ -161,36 +161,36 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object)">write</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String,%20java.lang.Object)">write</a></strong>(java.lang.String&nbsp;device_name,
      java.lang.Object&nbsp;value)</code>
-<div class="block">Write to device, waiting for readback with default tolerance and timeout</div>
+<div class="block">Write to device, not waiting for anything</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, boolean)">write</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String,%20java.lang.Object,%20boolean)">write</a></strong>(java.lang.String&nbsp;device_name,
      java.lang.Object&nbsp;value,
-     boolean&nbsp;wait)</code>
-<div class="block">Write to device, with or without waiting for readback</div>
+     boolean&nbsp;completion)</code>
+<div class="block">Write to device, waiting for completion, but no readback check</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String)">write</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colFirst"><code>abstract void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String,%20java.lang.Object,%20boolean,%20java.lang.String,%20double,%20Duration)">write</a></strong>(java.lang.String&nbsp;device_name,
      java.lang.Object&nbsp;value,
-     java.lang.String&nbsp;readback)</code>
-<div class="block">Write to device, using alternate readback device</div>
+     boolean&nbsp;completion,
+     java.lang.String&nbsp;readback,
+     double&nbsp;tolerance,
+     Duration&nbsp;timeout)</code>
+<div class="block">Write to device</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>abstract void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">write</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String,%20java.lang.Object,%20java.lang.String)">write</a></strong>(java.lang.String&nbsp;device_name,
      java.lang.Object&nbsp;value,
-     java.lang.String&nbsp;readback,
-     boolean&nbsp;wait,
-     double&nbsp;tolerance,
-     TimeDuration&nbsp;timeout)</code>
-<div class="block">Write to device</div>
+     java.lang.String&nbsp;readback)</code>
+<div class="block">Write to device, waiting for readback, but not completion</div>
 </td>
 </tr>
 </table>
@@ -319,8 +319,8 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
          java.lang.Object&nbsp;value)
            throws java.lang.Exception</pre>
-<div class="block">Write to device, waiting for readback with default tolerance and timeout</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device and readback</dd><dd><code>value</code> - Value to write to the device</dd>
+<div class="block">Write to device, not waiting for anything</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
@@ -333,10 +333,10 @@ extends java.lang.Object</pre>
 <h4>write</h4>
 <pre>public&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
          java.lang.Object&nbsp;value,
-         boolean&nbsp;wait)
+         boolean&nbsp;completion)
            throws java.lang.Exception</pre>
-<div class="block">Write to device, with or without waiting for readback</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device and readback (if used)</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>wait</code> - Wait for readback to match?</dd>
+<div class="block">Write to device, waiting for completion, but no readback check</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>completion</code> - Wait for completion</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
@@ -351,13 +351,13 @@ extends java.lang.Object</pre>
          java.lang.Object&nbsp;value,
          java.lang.String&nbsp;readback)
            throws java.lang.Exception</pre>
-<div class="block">Write to device, using alternate readback device</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd>
+<div class="block">Write to device, waiting for readback, but not completion</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device (may be same as device_name)</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
 </ul>
-<a name="write(java.lang.String, java.lang.Object, java.lang.String, boolean, double, TimeDuration)">
+<a name="write(java.lang.String, java.lang.Object, boolean, java.lang.String, double, Duration)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -365,13 +365,13 @@ extends java.lang.Object</pre>
 <h4>write</h4>
 <pre>public abstract&nbsp;void&nbsp;write(java.lang.String&nbsp;device_name,
          java.lang.Object&nbsp;value,
+         boolean&nbsp;completion,
          java.lang.String&nbsp;readback,
-         boolean&nbsp;wait,
          double&nbsp;tolerance,
-         TimeDuration&nbsp;timeout)
+         Duration&nbsp;timeout)
                     throws java.lang.Exception</pre>
 <div class="block">Write to device</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>readback</code> - Readback device</dd><dd><code>wait</code> - Wait for readback to match?</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, <code>null</code> as "forever"</dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device_name</code> - Name of device</dd><dd><code>value</code> - Value to write to the device</dd><dd><code>completion</code> - Wait for completion?</dd><dd><code>readback</code> - Readback device, <code>null</code> to not wait for readback</dd><dd><code>tolerance</code> - Numeric tolerance when checking value</dd><dd><code>timeout</code> - Timeout in seconds, <code>null</code> as "forever"</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>

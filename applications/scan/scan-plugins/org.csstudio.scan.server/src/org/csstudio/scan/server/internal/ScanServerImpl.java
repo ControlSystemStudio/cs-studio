@@ -156,7 +156,7 @@ public class ScanServerImpl implements ScanServer
             log_out.println("--------");
 
             // Simulate
-            final SimulationContext simulation = new SimulationContext(log_out);
+            final SimulationContext simulation = new SimulationContext(jython, log_out);
             simulation.simulate(scan);
 
             // Close log

@@ -34,7 +34,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ParallelCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/csstudio/scan/command/LoopCommand.html" target="_top">Frames</a></li>
@@ -87,7 +87,12 @@
 <li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">org.csstudio.scan.command.ScanCommand</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">org.csstudio.scan.command.ScanCommandWithBody</a></li>
+<li>
+<ul class="inheritance">
 <li>org.csstudio.scan.command.LoopCommand</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -99,7 +104,7 @@
 <hr>
 <br>
 <pre>public class <span class="strong">LoopCommand</span>
-extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></pre>
+extends <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></pre>
 <div class="block">Command that performs a loop
 
   <p>The loop steps from a start to an end value
@@ -144,7 +149,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String, double, double, double, java.util.List)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String,%20double,%20double,%20double,%20java.util.List)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
            double&nbsp;start,
            double&nbsp;end,
            double&nbsp;stepsize,
@@ -153,7 +158,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String, double, double, double, org.csstudio.scan.command.ScanCommand...)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String,%20double,%20double,%20double,%20org.csstudio.scan.command.ScanCommand...)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
            double&nbsp;start,
            double&nbsp;end,
            double&nbsp;stepsize,
@@ -162,7 +167,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String, double, double, double, org.csstudio.scan.command.ScanCommand)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#LoopCommand(java.lang.String,%20double,%20double,%20double,%20org.csstudio.scan.command.ScanCommand)">LoopCommand</a></strong>(java.lang.String&nbsp;device_name,
            double&nbsp;start,
            double&nbsp;end,
            double&nbsp;stepsize,
@@ -187,11 +192,14 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#appendConditionDetail(java.lang.StringBuilder)">appendConditionDetail</a></strong>(java.lang.StringBuilder&nbsp;buf)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></strong>(org.w3c.dom.Document&nbsp;dom,
+              org.w3c.dom.Element&nbsp;command_element)</code>
+<div class="block">Add XML elements for command (and its sub-commands) to document.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#getBody()">getBody</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#appendConditionDetail(java.lang.StringBuilder)">appendConditionDetail</a></strong>(java.lang.StringBuilder&nbsp;buf)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -231,21 +239,10 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#setAddress(long)">setAddress</a></strong>(long&nbsp;address)</code>
-<div class="block">Set address of loop as well as body commands
-  Set the address of this command.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#setBody(java.util.List)">setBody</a></strong>(java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;body)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -287,20 +284,20 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#toString()">toString</a></strong>()</code></td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/LoopCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></strong>(java.io.PrintStream&nbsp;out,
-        int&nbsp;level)</code>
-<div class="block">Write the command (and its sub-commands) in an XML format.</div>
-</td>
-</tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.csstudio.scan.command.ScanCommandWithBody">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.csstudio.scan.command.<a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></h3>
+<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#getBody()">getBody</a>, <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#setAddress(long)">setAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#setBody(java.util.List)">setBody</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.csstudio.scan.command.ScanCommand">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.csstudio.scan.command.<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></h3>
-<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty, java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String, java.lang.Object)">setProperty</a></code></li>
+<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandID()">getCommandID</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(org.w3c.dom.Document,%20org.w3c.dom.Element)">writeXML</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -393,27 +390,6 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="setAddress(long)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setAddress</h4>
-<pre>public&nbsp;long&nbsp;setAddress(long&nbsp;address)</pre>
-<div class="block">Set address of loop as well as body commands
-  Set the address of this command.
-
-  <p>To be called by scan system, not end user code.
-  Derived commands, i.e. custom commands that wrap a
-  "body" of commands need to override and forward
-  the address update to their embedded commands.</div>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#setAddress(long)">setAddress</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>address</code> - Address of this command within command sequence</dd>
-<dt><span class="strong">Returns:</span></dt><dd>Address of next command</dd></dl>
-</li>
-</ul>
 <a name="getDeviceName()">
 <!--   -->
 </a>
@@ -596,46 +572,21 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>timeout</code> - Time out in seconds</dd></dl>
 </li>
 </ul>
-<a name="getBody()">
+<a name="addXMLElements(org.w3c.dom.Document, org.w3c.dom.Element)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getBody</h4>
-<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;getBody()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Descriptions for loop body</dd></dl>
-</li>
-</ul>
-<a name="setBody(java.util.List)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;setBody(java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;body)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>body</code> - Loop body commands</dd></dl>
-</li>
-</ul>
-<a name="writeXML(java.io.PrintStream, int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>writeXML</h4>
-<pre>public&nbsp;void&nbsp;writeXML(java.io.PrintStream&nbsp;out,
-            int&nbsp;level)</pre>
-<div class="block">Write the command (and its sub-commands) in an XML format.
+<h4>addXMLElements</h4>
+<pre>public&nbsp;void&nbsp;addXMLElements(org.w3c.dom.Document&nbsp;dom,
+                  org.w3c.dom.Element&nbsp;command_element)</pre>
+<div class="block">Add XML elements for command (and its sub-commands) to document.
 
-  <p>A command called AbcCommand should write itself as a tag "abc"
-  so that the <code>XMLCommandReader</code> can later determine
-  which class to use for reading the command back from XML.
-
-  <p>Derived classes must call base class implementation
-  to write inherited properties.</div>
+  <p>Derived classes should call parent implementation.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>out</code> - <code>PrintStream</code></dd><dd><code>level</code> - Indentation level</dd></dl>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>dom</code> - <code>Document</code></dd><dd><code>command_element</code> - DOM <code>Element</code> for this command</dd></dl>
 </li>
 </ul>
 <a name="readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">
@@ -653,7 +604,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
   to read inherited properties.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>factory</code> - ScanCommandFactory to use in case inner scan commands,
                  for example a loop body, need to be created</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -680,7 +631,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
 <dt><span class="strong">Returns:</span></dt><dd>Debug representation.
           Derived classes should provide their command name with properties</dd></dl>
 </li>
@@ -711,7 +662,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ParallelCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/csstudio/scan/command/LoopCommand.html" target="_top">Frames</a></li>
