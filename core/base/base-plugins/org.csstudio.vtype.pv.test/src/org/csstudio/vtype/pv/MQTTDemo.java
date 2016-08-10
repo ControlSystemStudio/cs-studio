@@ -14,12 +14,13 @@ public class MQTTDemo implements MqttCallback {
     MqttClient myClient;
     MqttConnectOptions connOpt;
 
-    static final String BROKER_URL = "tcp://q.m2m.io:1883";
-    static final String M2MIO_DOMAIN = "<Insert m2m.io domain here>";
+    //static final String BROKER_URL = "tcp://q.m2m.io:1883";
+    static final String BROKER_URL = "tcp://localhost:1883";
+    static final String M2MIO_DOMAIN = "MyDomain"; //"<Insert m2m.io domain here>";
     static final String M2MIO_STUFF = "things";
-    static final String M2MIO_THING = "<Unique device ID>";
-    static final String M2MIO_USERNAME = "<m2m.io username>";
-    static final String M2MIO_PASSWORD_MD5 = "<m2m.io password (MD5 sum of password)>";
+    static final String M2MIO_THING = "MQTTDemo"; //"<Unique device ID>";
+    static final String M2MIO_USERNAME = "usr"; //"<m2m.io username>";
+    static final String M2MIO_PASSWORD_MD5 = "md5"; //"<m2m.io password (MD5 sum of password)>";
 
     // the following two flags control whether this example is a publisher, a subscriber or both
     static final Boolean subscriber = true;
@@ -87,9 +88,9 @@ public class MQTTDemo implements MqttCallback {
      */
     public static void main(String[] args) {
         MQTTDemo smc = new MQTTDemo();
-        //smc.runClient();
+        smc.runClient();
 
-        smc.simpleDemo();
+        //smc.simpleDemo();
     }
 
     /**

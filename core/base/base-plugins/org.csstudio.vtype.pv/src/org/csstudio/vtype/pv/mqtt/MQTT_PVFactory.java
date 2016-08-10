@@ -16,7 +16,7 @@ import org.csstudio.vtype.pv.PVFactory;
 @SuppressWarnings("nls")
 public class MQTT_PVFactory implements PVFactory
 {
-    final public static String TYPE = "loc";
+    final public static String TYPE = "mqtt";
 
     @Override
     public String getType()
