@@ -15,7 +15,8 @@ public class MQTTDemo implements MqttCallback {
     MqttConnectOptions connOpt;
 
     //static final String BROKER_URL = "tcp://q.m2m.io:1883";
-    static final String BROKER_URL = "tcp://localhost:1883";
+    //static final String BROKER_URL = "tcp://localhost:1883";
+    static final String BROKER_URL = "tcp://diane:1883";
     static final String M2MIO_DOMAIN = "MyDomain"; //"<Insert m2m.io domain here>";
     static final String M2MIO_STUFF = "things";
     static final String M2MIO_THING = "MQTTDemo"; //"<Unique device ID>";

@@ -10,6 +10,7 @@ package org.csstudio.vtype.pv.mqtt;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
 import org.diirt.vtype.VType;
@@ -81,8 +82,8 @@ public class MQTT_PV extends PV implements MqttCallback
             myClient.setCallback(this);
             myClient.connect(connOpt);
         } catch (MqttException e) {
+            logger.log(Level.SEVERE, "Could not connect to MQTT broker " + brokerURL);
             e.printStackTrace();
-            System.exit(-1);
         }
 
         topicStr = "mqttpv/test";
@@ -129,12 +130,34 @@ public class MQTT_PV extends PV implements MqttCallback
 
     }
 
+    @Override
+    protected void close()
+    {
+        if (myClient.isConnected())
+        {
+            try {
+                // wait to ensure subscribed messages are delivered
+                Thread.sleep(100);
+                myClient.disconnect();
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Failed to disconnect from MQTT broker " + brokerURL);
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void connectionLost(Throwable arg0)
     {
-        // TODO Auto-generated method stub
+        logger.log(Level.FINE, "Disconnected from MQTT broker " + brokerURL);
 
+        // Connect to Broker
+        try {
+            myClient.connect(connOpt);
+        } catch (MqttException e) {
+            logger.log(Level.SEVERE, "Could not reconnect to MQTT broker " + brokerURL);
+            e.printStackTrace();
+        }
     }
 
 

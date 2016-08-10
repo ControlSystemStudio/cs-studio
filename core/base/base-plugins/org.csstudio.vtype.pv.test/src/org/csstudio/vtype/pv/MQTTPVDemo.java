@@ -9,8 +9,6 @@ package org.csstudio.vtype.pv;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Handler;
@@ -29,6 +27,9 @@ import org.junit.Test;
 public class MQTTPVDemo implements PVListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
+
+    //static final String BROKER_URL = "tcp://localhost:1883";
+    static final String BROKER_URL = "tcp://diane:1883";
 
     @Before
     public void setup()
@@ -86,14 +87,13 @@ public class MQTTPVDemo implements PVListener
     @Test
     public void testConnect() throws Exception
     {
-        final PV pv1 = PVPool.getPV("mqtt://tcp://localhost:1883");
-        final PV pv2 = PVPool.getPV("mqtt://tcp://localhost:1883");
+        final PV pv1 = PVPool.getPV("mqtt://" + BROKER_URL);
+        final PV pv2 = PVPool.getPV("mqtt://" + BROKER_URL);
         //System.out.println(pv.read());
         try
         {
             pv1.write("1: " + LocalDateTime.now());
             pv2.write("2: " + LocalDateTime.now());
-            fail("Allowed text for number");
         }
         catch (Exception ex)
         {
