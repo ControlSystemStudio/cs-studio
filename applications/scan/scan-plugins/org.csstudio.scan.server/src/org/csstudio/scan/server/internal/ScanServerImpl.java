@@ -78,7 +78,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public ScanServerInfo getInfo() throws Exception
     {
-        return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
+        return new ScanServerInfo(Application.getBundleVersion(),
                 start_time,
                 ScanSystemPreferences.getScanConfigPath(),
                 ScanSystemPreferences.getSimulationConfigPath(),
