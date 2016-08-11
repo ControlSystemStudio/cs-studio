@@ -157,13 +157,12 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
     public void contextException(final ContextExceptionEvent ev)
     {
         //Ignore warnings for DBE_PROPERTY from old CAJ.
-        if(ev != null && "event add req with mask=0X8\n".equals(ev.getMessage())){ //$NON-NLS-1$
-             logger.log(Level.FINE, "Ignored Message from {0}: {1}",
-                     new Object[] { ev.getSource(), ev.getMessage()});
-             return;
-        }
-        logger.log(Level.WARNING, "Channel Access Exception from {0}: {1}",
-                new Object[] { ev.getSource(), ev.getMessage() });
+        if(ev != null && "event add req with mask=0X8\n".equals(ev.getMessage()))
+            logger.log(Level.FINE, "Ignored Exception from {0} for channel {1}: {2}",
+                       new Object[] { ev.getSource(), ev.getChannel(), ev.getMessage() });
+        else
+            logger.log(Level.WARNING, "Channel Access Exception from {0} for channel {1}: {2}",
+                       new Object[] { ev.getSource(), ev.getChannel(), ev.getMessage() });
     }
 
     @Override
