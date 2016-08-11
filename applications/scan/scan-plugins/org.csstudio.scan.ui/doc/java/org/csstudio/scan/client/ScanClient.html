@@ -59,13 +59,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -106,6 +106,33 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#NO_DATA_SERIAL">NO_DATA_SERIAL</a></strong></code>
+<div class="block">Serial returned if there is no data, yet</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#UNKNOWN_SCAN_SERIAL">UNKNOWN_SCAN_SERIAL</a></strong></code>
+<div class="block">Serial returned if scan ID is unknown</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -123,7 +150,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#ScanClient(java.lang.String, int)">ScanClient</a></strong>(java.lang.String&nbsp;host,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#ScanClient(java.lang.String,%20int)">ScanClient</a></strong>(java.lang.String&nbsp;host,
           int&nbsp;port)</code>
 <div class="block">Initialize</div>
 </td>
@@ -193,47 +220,54 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#patchScan(long, long, java.lang.String, java.lang.Object)">patchScan</a></strong>(long&nbsp;id,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#nextCommand(long)">nextCommand</a></strong>(long&nbsp;id)</code>
+<div class="block">Request transition to next command</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#patchScan(long,%20long,%20java.lang.String,%20java.lang.Object)">patchScan</a></strong>(long&nbsp;id,
          long&nbsp;address,
          java.lang.String&nbsp;property,
          java.lang.Object&nbsp;value)</code>
 <div class="block">Submit patch to running scan</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#pauseScan(long)">pauseScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Put running scan into paused state</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#removeCompletedScans()">removeCompletedScans</a></strong>()</code>
 <div class="block">Remove all completed scans</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#removeScan(long)">removeScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Remove a completed scan</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#resumeScan(long)">resumeScan</a></strong>(long&nbsp;id)</code>
 <div class="block">Resume a paused scan</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/SimulationResult.html" title="class in org.csstudio.scan.server">SimulationResult</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#simulateScan(java.lang.String)">simulateScan</a></strong>(java.lang.String&nbsp;xml_commands)</code>
 <div class="block">Submit a scan for simulation</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#submitScan(java.lang.String, java.lang.String)">submitScan</a></strong>(java.lang.String&nbsp;name,
-          java.lang.String&nbsp;xml_commands)</code>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/client/ScanClient.html#submitScan(java.lang.String,%20java.lang.String,%20boolean)">submitScan</a></strong>(java.lang.String&nbsp;name,
+          java.lang.String&nbsp;xml_commands,
+          boolean&nbsp;queue)</code>
 <div class="block">Submit a scan for execution</div>
 </td>
 </tr>
@@ -253,6 +287,36 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="NO_DATA_SERIAL">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>NO_DATA_SERIAL</h4>
+<pre>public static final&nbsp;long NO_DATA_SERIAL</pre>
+<div class="block">Serial returned if there is no data, yet</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.csstudio.scan.client.ScanClient.NO_DATA_SERIAL">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="UNKNOWN_SCAN_SERIAL">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>UNKNOWN_SCAN_SERIAL</h4>
+<pre>public static final&nbsp;long UNKNOWN_SCAN_SERIAL</pre>
+<div class="block">Serial returned if scan ID is unknown</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.csstudio.scan.client.ScanClient.UNKNOWN_SCAN_SERIAL">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -375,7 +439,7 @@ extends java.lang.Object</pre>
   <p>Can be used to determine if there are new samples
   that should be fetched via <code>getScanData()</code></div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>id</code> - ID that uniquely identifies a scan</dd>
-<dt><span class="strong">Returns:</span></dt><dd>Serial of last sample in scan data or -1 if nothing has been logged</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Serial of last sample in scan data, -1 if nothing has been logged, -2 if scan ID not known</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/client/ScanClient.html#getScanData(long)"><code>getScanData(long)</code></a></dd></dl>
 </li>
@@ -395,17 +459,18 @@ extends java.lang.Object</pre>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
 </ul>
-<a name="submitScan(java.lang.String, java.lang.String)">
+<a name="submitScan(java.lang.String, java.lang.String, boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>submitScan</h4>
 <pre>public&nbsp;long&nbsp;submitScan(java.lang.String&nbsp;name,
-              java.lang.String&nbsp;xml_commands)
+              java.lang.String&nbsp;xml_commands,
+              boolean&nbsp;queue)
                 throws java.lang.Exception</pre>
 <div class="block">Submit a scan for execution</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the new scan</dd><dd><code>xml_commands</code> - XML commands of the scan to submit</dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the new scan</dd><dd><code>xml_commands</code> - XML commands of the scan to submit</dd><dd><code>queue</code> - Submit to queue or for immediate execution?</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Scan ID</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
@@ -422,6 +487,20 @@ extends java.lang.Object</pre>
 <div class="block">Submit a scan for simulation</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>xml_commands</code> - XML commands of the scan to submit</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Scan ID</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error</dd></dl>
+</li>
+</ul>
+<a name="nextCommand(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextCommand</h4>
+<pre>public&nbsp;void&nbsp;nextCommand(long&nbsp;id)
+                 throws java.lang.Exception</pre>
+<div class="block">Request transition to next command</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>id</code> - ID that uniquely identifies a scan (within JVM of the scan engine)</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - on error</dd></dl>
 </li>
@@ -563,13 +642,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>

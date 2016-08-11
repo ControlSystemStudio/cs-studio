@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>IncludeCommand (Scan System API)</title>
+<title>ParallelCommand (Scan System API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="IncludeCommand (Scan System API)";
+        parent.document.title="ParallelCommand (Scan System API)";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/command/IncludeCommand.html" target="_top">Frames</a></li>
-<li><a href="IncludeCommand.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/command/ParallelCommand.html" target="_top">Frames</a></li>
+<li><a href="ParallelCommand.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,7 +77,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.csstudio.scan.command</div>
-<h2 title="Class IncludeCommand" class="title">Class IncludeCommand</h2>
+<h2 title="Class ParallelCommand" class="title">Class ParallelCommand</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -87,7 +87,12 @@
 <li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">org.csstudio.scan.command.ScanCommand</a></li>
 <li>
 <ul class="inheritance">
-<li>org.csstudio.scan.command.IncludeCommand</li>
+<li><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">org.csstudio.scan.command.ScanCommandWithBody</a></li>
+<li>
+<ul class="inheritance">
+<li>org.csstudio.scan.command.ParallelCommand</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -98,9 +103,9 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">IncludeCommand</span>
-extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></pre>
-<div class="block">Command that includes existing *.scn file with macros</div>
+<pre>public class <span class="strong">ParallelCommand</span>
+extends <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></pre>
+<div class="block">Command that performs command it its body in parallel</div>
 </li>
 </ul>
 </div>
@@ -119,13 +124,17 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#IncludeCommand()">IncludeCommand</a></strong>()</code>
-<div class="block">Initialize with example values</div>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#ParallelCommand()">ParallelCommand</a></strong>()</code>
+<div class="block">Initialize with empty body</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#IncludeCommand(java.lang.String,%20java.lang.String)">IncludeCommand</a></strong>(java.lang.String&nbsp;scan_file,
-              java.lang.String&nbsp;macros)</code>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#ParallelCommand(java.util.List)">ParallelCommand</a></strong>(java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;body)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#ParallelCommand(org.csstudio.scan.command.ScanCommand...)">ParallelCommand</a></strong>(<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>...&nbsp;body)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -146,45 +155,44 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></strong>(org.w3c.dom.Document&nbsp;dom,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></strong>(org.w3c.dom.Document&nbsp;dom,
               org.w3c.dom.Element&nbsp;command_element)</code>
 <div class="block">Add XML elements for command (and its sub-commands) to document.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#getTimeout()">getTimeout</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#getScanFile()">getScanFile</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#setMacros(java.lang.String)">setMacros</a></strong>(java.lang.String&nbsp;macros)</code>&nbsp;</td>
-</tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#setScanFile(java.lang.String)">setScanFile</a></strong>(java.lang.String&nbsp;scan_file)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#setTimeout(java.lang.Double)">setTimeout</a></strong>(java.lang.Double&nbsp;timeout)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/IncludeCommand.html#toString()">toString</a></strong>()</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/ParallelCommand.html#toString()">toString</a></strong>()</code></td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.csstudio.scan.command.ScanCommandWithBody">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.csstudio.scan.command.<a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></h3>
+<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#getBody()">getBody</a>, <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#setAddress(long)">setAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#setBody(java.util.List)">setBody</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.csstudio.scan.command.ScanCommand">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.csstudio.scan.command.<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></h3>
-<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandID()">getCommandID</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setAddress(long)">setAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(org.w3c.dom.Document,%20org.w3c.dom.Element)">writeXML</a></code></li>
+<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandID()">getCommandID</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(org.w3c.dom.Document,%20org.w3c.dom.Element)">writeXML</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -207,26 +215,36 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="IncludeCommand()">
+<a name="ParallelCommand()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>IncludeCommand</h4>
-<pre>public&nbsp;IncludeCommand()</pre>
-<div class="block">Initialize with example values</div>
+<h4>ParallelCommand</h4>
+<pre>public&nbsp;ParallelCommand()</pre>
+<div class="block">Initialize with empty body</div>
 </li>
 </ul>
-<a name="IncludeCommand(java.lang.String, java.lang.String)">
+<a name="ParallelCommand(org.csstudio.scan.command.ScanCommand...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ParallelCommand</h4>
+<pre>public&nbsp;ParallelCommand(<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>...&nbsp;body)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>body</code> - Body commands</dd></dl>
+</li>
+</ul>
+<a name="ParallelCommand(java.util.List)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>IncludeCommand</h4>
-<pre>public&nbsp;IncludeCommand(java.lang.String&nbsp;scan_file,
-              java.lang.String&nbsp;macros)</pre>
+<h4>ParallelCommand</h4>
+<pre>public&nbsp;ParallelCommand(java.util.List&lt;<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a>&gt;&nbsp;body)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>comment</code> - Comment</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>body</code> - Body commands</dd></dl>
 </li>
 </ul>
 </li>
@@ -237,44 +255,24 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getScanFile()">
+<a name="getTimeout()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getScanFile</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getScanFile()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Scan File</dd></dl>
+<h4>getTimeout</h4>
+<pre>public&nbsp;double&nbsp;getTimeout()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Timeout in seconds</dd></dl>
 </li>
 </ul>
-<a name="setScanFile(java.lang.String)">
+<a name="setTimeout(java.lang.Double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setScanFile</h4>
-<pre>public&nbsp;void&nbsp;setScanFile(java.lang.String&nbsp;scan_file)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan_file</code> - Desired scan file</dd></dl>
-</li>
-</ul>
-<a name="getMacros()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getMacros</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getMacros()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Macros</dd></dl>
-</li>
-</ul>
-<a name="setMacros(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setMacros</h4>
-<pre>public&nbsp;void&nbsp;setMacros(java.lang.String&nbsp;macros)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>macros</code> - Macros</dd></dl>
+<h4>setTimeout</h4>
+<pre>public&nbsp;void&nbsp;setTimeout(java.lang.Double&nbsp;timeout)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timeout</code> - Time out in seconds</dd></dl>
 </li>
 </ul>
 <a name="addXMLElements(org.w3c.dom.Document, org.w3c.dom.Element)">
@@ -290,7 +288,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
   <p>Derived classes should call parent implementation.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>dom</code> - <code>Document</code></dd><dd><code>command_element</code> - DOM <code>Element</code> for this command</dd></dl>
 </li>
 </ul>
@@ -309,7 +307,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
   to read inherited properties.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>factory</code> - ScanCommandFactory to use in case inner scan commands,
                  for example a loop body, need to be created</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -325,7 +323,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommandWithBody.html" title="class in org.csstudio.scan.command">ScanCommandWithBody</a></code></dd>
 <dt><span class="strong">Returns:</span></dt><dd>Debug representation.
           Derived classes should provide their command name with properties</dd></dl>
 </li>
@@ -355,12 +353,12 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/DelayCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/command/LogCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/LoopCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/command/IncludeCommand.html" target="_top">Frames</a></li>
-<li><a href="IncludeCommand.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/command/ParallelCommand.html" target="_top">Frames</a></li>
+<li><a href="ParallelCommand.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>Scan (Scan System API)</title>
+<title>SimulationContext (Scan System API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Scan (Scan System API)";
+        parent.document.title="SimulationContext (Scan System API)";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationHook.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/server/Scan.html" target="_top">Frames</a></li>
-<li><a href="Scan.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/server/SimulationContext.html" target="_top">Frames</a></li>
+<li><a href="SimulationContext.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,35 +77,25 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.csstudio.scan.server</div>
-<h2 title="Class Scan" class="title">Class Scan</h2>
+<h2 title="Class SimulationContext" class="title">Class SimulationContext</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.csstudio.scan.server.Scan</li>
+<li>org.csstudio.scan.server.SimulationContext</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</a></dd>
-</dl>
 <hr>
 <br>
-<pre>public class <span class="strong">Scan</span>
+<pre>public class <span class="strong">SimulationContext</span>
 extends java.lang.Object</pre>
-<div class="block">Scan: ID, Name, Date
-
-  <p>The ID uniquely identifies a scan within a scan engine.
-  If the scan engine is backed by a persistent log (RDB, ...),
-  then the ID may persist through restarts of the scan engine.
-  With a simple in-memory log, the IDs are only unique within
-  one Scan Engine JVM, and get re-used as the scan engine restarts.</div>
+<div class="block">Context used for the simulation of <code>ScanCommandImpl</code></div>
 </li>
 </ul>
 </div>
@@ -124,9 +114,8 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#Scan(long,%20java.lang.String,%20Instant)">Scan</a></strong>(long&nbsp;id,
-    java.lang.String&nbsp;name,
-    Instant&nbsp;created)</code>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#SimulationContext(JythonSupport,%20java.io.PrintStream)">SimulationContext</a></strong>(JythonSupport&nbsp;jython,
+                 java.io.PrintStream&nbsp;log_stream)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -146,34 +135,31 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#equals(java.lang.Object)">equals</a></strong>(java.lang.Object&nbsp;obj)</code>
-<div class="block">Compare all elements
-  </div>
-</td>
+<td class="colFirst"><code><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html" title="class in org.csstudio.scan.device">SimulatedDevice</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#getDevice(java.lang.String)">getDevice</a></strong>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>Instant</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#getCreated()">getCreated</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/csstudio/scan/server/MacroContext.html" title="class in org.csstudio.scan.server">MacroContext</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#getMacros()">getMacros</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#getId()">getId</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#getSimulationSeconds()">getSimulationSeconds</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#getName()">getName</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#getSimulationTime()">getSimulationTime</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#hashCode()">hashCode</a></strong>()</code>
-<div class="block">Hash on ID
-  </div>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#logExecutionStep(java.lang.String,%20double)">logExecutionStep</a></strong>(java.lang.String&nbsp;info,
+                double&nbsp;seconds)</code>
+<div class="block">Log information about the currently simulated command</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#toString()">toString</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/SimulationContext.html#simulate(java.util.List)">simulate</a></strong>(java.util.List&lt;<any>&gt;&nbsp;scan)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -181,7 +167,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>getClass, notify, notifyAll, wait, wait, wait</code></li>
+<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -197,17 +183,19 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="Scan(long, java.lang.String, Instant)">
+<a name="SimulationContext(JythonSupport, java.io.PrintStream)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>Scan</h4>
-<pre>public&nbsp;Scan(long&nbsp;id,
-    java.lang.String&nbsp;name,
-    Instant&nbsp;created)</pre>
+<h4>SimulationContext</h4>
+<pre>public&nbsp;SimulationContext(JythonSupport&nbsp;jython,
+                 java.io.PrintStream&nbsp;log_stream)
+                  throws java.lang.Exception</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>id</code> - Scan ID</dd><dd><code>name</code> - Name</dd><dd><code>created</code> - Time when scan was created (submitted to server)</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>jython</code> - <code>JythonSupport</code></dd><dd><code>log_stream</code> - Stream for simulation progress log</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error while initializing <code>SimulationInfo</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -218,77 +206,73 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getId()">
+<a name="getMacros()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getId</h4>
-<pre>public&nbsp;long&nbsp;getId()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Unique scan identifier (within JVM of the scan engine)</dd></dl>
+<h4>getMacros</h4>
+<pre>public&nbsp;<a href="../../../../org/csstudio/scan/server/MacroContext.html" title="class in org.csstudio.scan.server">MacroContext</a>&nbsp;getMacros()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Macro support</dd></dl>
 </li>
 </ul>
-<a name="getName()">
+<a name="getSimulationSeconds()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getName</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getName()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Name of the scan</dd></dl>
+<h4>getSimulationSeconds</h4>
+<pre>public&nbsp;double&nbsp;getSimulationSeconds()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Current time of simulation in seconds</dd></dl>
 </li>
 </ul>
-<a name="getCreated()">
+<a name="getSimulationTime()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getCreated</h4>
-<pre>public&nbsp;Instant&nbsp;getCreated()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Time when scan was created on server</dd></dl>
+<h4>getSimulationTime</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getSimulationTime()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Current time of simulation, "HH:MM:SS"</dd></dl>
 </li>
 </ul>
-<a name="hashCode()">
+<a name="getDevice(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;hashCode()</pre>
-<div class="block">Hash on ID
-  </div>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
+<h4>getDevice</h4>
+<pre>public&nbsp;<a href="../../../../org/csstudio/scan/device/SimulatedDevice.html" title="class in org.csstudio.scan.device">SimulatedDevice</a>&nbsp;getDevice(java.lang.String&nbsp;name)
+                          throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Device name</dd>
+<dt><span class="strong">Returns:</span></dt><dd><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html" title="class in org.csstudio.scan.device"><code>SimulatedDevice</code></a></dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error in macro handling</dd></dl>
 </li>
 </ul>
-<a name="equals(java.lang.Object)">
+<a name="logExecutionStep(java.lang.String, double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;obj)</pre>
-<div class="block">Compare all elements
-  </div>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
+<h4>logExecutionStep</h4>
+<pre>public&nbsp;void&nbsp;logExecutionStep(java.lang.String&nbsp;info,
+                    double&nbsp;seconds)</pre>
+<div class="block">Log information about the currently simulated command</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>info</code> - End-user readable description what the command would do when executed</dd><dd><code>seconds</code> - Estimated time in seconds that the command would take if executed</dd></dl>
 </li>
 </ul>
-<a name="toString()">
+<a name="simulate(java.util.List)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>String representation for GUI</dd></dl>
+<h4>simulate</h4>
+<pre>public&nbsp;void&nbsp;simulate(java.util.List&lt;<any>&gt;&nbsp;scan)
+              throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan</code> - Scan implementations to simulate</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -316,12 +300,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/server/MemoryInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/server/SimulationHook.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/server/Scan.html" target="_top">Frames</a></li>
-<li><a href="Scan.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/server/SimulationContext.html" target="_top">Frames</a></li>
+<li><a href="SimulationContext.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

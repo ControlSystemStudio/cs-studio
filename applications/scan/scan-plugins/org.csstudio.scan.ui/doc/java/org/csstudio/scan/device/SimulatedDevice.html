@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>ScanSample (Scan System API)</title>
+<title>SimulatedDevice (Scan System API)</title>
 <link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ScanSample (Scan System API)";
+        parent.document.title="SimulatedDevice (Scan System API)";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/device/ScanConfig.html" title="class in org.csstudio.scan.device"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/device/VTypeHelper.html" title="class in org.csstudio.scan.device"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/data/ScanSample.html" target="_top">Frames</a></li>
-<li><a href="ScanSample.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/device/SimulatedDevice.html" target="_top">Frames</a></li>
+<li><a href="SimulatedDevice.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,48 +76,31 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.csstudio.scan.data</div>
-<h2 title="Class ScanSample" class="title">Class ScanSample</h2>
+<div class="subTitle">org.csstudio.scan.device</div>
+<h2 title="Class SimulatedDevice" class="title">Class SimulatedDevice</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.csstudio.scan.data.ScanSample</li>
+<li>Device</li>
+<li>
+<ul class="inheritance">
+<li>org.csstudio.scan.device.SimulatedDevice</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data">NumberScanSample</a>, <a href="../../../../org/csstudio/scan/data/StringScanSample.html" title="class in org.csstudio.scan.data">StringScanSample</a></dd>
-</dl>
 <hr>
 <br>
-<pre>public abstract class <span class="strong">ScanSample</span>
-extends java.lang.Object</pre>
-<div class="block">A sample taken by a scan
-
-  <p>All samples have a time stamp.
-
-  <p>A serial number is used to track the sequence
-  in which samples were acquired within a scan.
-  The time stamps alone can <u>not</u> dependably correlate
-  samples for several reasons:
-
-  <ul>
-  <li>Time stamps can be the actual control system time stamps.
-      If a value has not changed for a while, the 'old' time stamp
-      would reflect that.
-  <li>A scan can run faster than the resolution of the time stamp.
-  <li>Samples are meant to be logged "together", for example by one
-      log command within a loop, but their actual time stamps
-      don't reflect that.
-  </ul></div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data"><code>NumberScanSample</code></a></dd></dl>
+<pre>public class <span class="strong">SimulatedDevice</span>
+extends Device</pre>
+<div class="block">Simulated device</div>
 </li>
 </ul>
 </div>
@@ -136,8 +119,13 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#ScanSample(Instant,%20long)">ScanSample</a></strong>(Instant&nbsp;timestamp,
-          long&nbsp;serial)</code>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#SimulatedDevice(java.lang.String)">SimulatedDevice</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block">Initialize</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#SimulatedDevice(java.lang.String,%20org.csstudio.scan.device.ScanConfig)">SimulatedDevice</a></strong>(java.lang.String&nbsp;name,
+               <a href="../../../../org/csstudio/scan/device/ScanConfig.html" title="class in org.csstudio.scan.device">ScanConfig</a>&nbsp;simulation_info)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -157,22 +145,23 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>Instant</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getTimestamp()">getTimestamp</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>abstract java.lang.Object[]</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getValues()">getValues</a></strong>()</code>
-<div class="block">Get raw values of the sample</div>
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#getChangeTimeEstimate(double)">getChangeTimeEstimate</a></strong>(double&nbsp;desired_value)</code>
+<div class="block">Estimate how long a device will need to reach a desired value</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#toString()">toString</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>VType</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#read()">read</a></strong>()</code></td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#write(java.lang.Object)">write</a></strong>(java.lang.Object&nbsp;value)</code></td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/device/SimulatedDevice.html#write(java.lang.Object,%20Duration)">write</a></strong>(java.lang.Object&nbsp;value,
+     Duration&nbsp;timeout)</code></td>
 </tr>
 </table>
 <ul class="blockList">
@@ -180,7 +169,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>equals, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
+<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -196,16 +185,27 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ScanSample(Instant, long)">
+<a name="SimulatedDevice(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SimulatedDevice</h4>
+<pre>public&nbsp;SimulatedDevice(java.lang.String&nbsp;name)</pre>
+<div class="block">Initialize</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the simulated device</dd></dl>
+</li>
+</ul>
+<a name="SimulatedDevice(java.lang.String, org.csstudio.scan.device.ScanConfig)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>ScanSample</h4>
-<pre>public&nbsp;ScanSample(Instant&nbsp;timestamp,
-          long&nbsp;serial)</pre>
+<h4>SimulatedDevice</h4>
+<pre>public&nbsp;SimulatedDevice(java.lang.String&nbsp;name,
+               <a href="../../../../org/csstudio/scan/device/ScanConfig.html" title="class in org.csstudio.scan.device">ScanConfig</a>&nbsp;simulation_info)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the simulated device</dd><dd><code>simulation_info</code> - Simulation info</dd></dl>
 </li>
 </ul>
 </li>
@@ -216,50 +216,56 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getTimestamp()">
+<a name="getChangeTimeEstimate(double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getTimestamp</h4>
-<pre>public&nbsp;Instant&nbsp;getTimestamp()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Time when this sample was obtained</dd></dl>
+<h4>getChangeTimeEstimate</h4>
+<pre>public&nbsp;double&nbsp;getChangeTimeEstimate(double&nbsp;desired_value)
+                             throws java.lang.Exception</pre>
+<div class="block">Estimate how long a device will need to reach a desired value</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>device</code> - Device where change in value should be simulated</dd><dd><code>desired_value</code> - Desired value of the device</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Estimated time in seconds for changing the device</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - on error getting current value from the device</dd></dl>
 </li>
 </ul>
-<a name="getSerial()">
+<a name="read()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getSerial</h4>
-<pre>public&nbsp;long&nbsp;getSerial()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Serial number of this sample</dd></dl>
+<h4>read</h4>
+<pre>public&nbsp;VType&nbsp;read()
+           throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd></dl>
 </li>
 </ul>
-<a name="getValues()">
+<a name="write(java.lang.Object)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getValues</h4>
-<pre>public abstract&nbsp;java.lang.Object[]&nbsp;getValues()</pre>
-<div class="block">Get raw values of the sample
-  <p>Derived classes can implement access to
-  the value by other means</div>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Values of the sample. Will be an array of <code>Number</code> or ...</dd></dl>
+<h4>write</h4>
+<pre>public&nbsp;void&nbsp;write(java.lang.Object&nbsp;value)
+           throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd></dl>
 </li>
 </ul>
-<a name="toString()">
+<a name="write(java.lang.Object, Duration)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
+<h4>write</h4>
+<pre>public&nbsp;void&nbsp;write(java.lang.Object&nbsp;value,
+         Duration&nbsp;timeout)
+           throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -287,12 +293,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/data/ScanDataIterator.html" title="class in org.csstudio.scan.data"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/csstudio/scan/data/ScanSampleFactory.html" title="class in org.csstudio.scan.data"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/device/ScanConfig.html" title="class in org.csstudio.scan.device"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/device/VTypeHelper.html" title="class in org.csstudio.scan.device"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/csstudio/scan/data/ScanSample.html" target="_top">Frames</a></li>
-<li><a href="ScanSample.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/csstudio/scan/device/SimulatedDevice.html" target="_top">Frames</a></li>
+<li><a href="SimulatedDevice.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

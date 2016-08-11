@@ -36,6 +36,11 @@
         <include name="org.csstudio.scan/src/org/csstudio/scan/server/*.java"/>
         <include name="org.csstudio.scan.custom/src/**/*.java"/>
         <include name="org.csstudio.scan.client/src/org/csstudio/scan/client/*.java"/>
+        <include name="org.csstudio.scan.server/src/org/csstudio/scan/device/SimulatedDevice.java"/>
+        <include name="org.csstudio.scan.server/src/org/csstudio/scan/device/VTypeHelper.java"/>
+        <include name="org.csstudio.scan.server/src/org/csstudio/scan/server/MacroContext.java"/>
+        <include name="org.csstudio.scan.server/src/org/csstudio/scan/server/SimulationContext.java"/>
+        <include name="org.csstudio.scan.server/src/org/csstudio/scan/server/SimulationHook.java"/>
         <exclude name="**/SimpleScanCommandFactory.java"/>
         <exclude name="**/ScanDataSAXHandler.java"/>
         <exclude name="**/ScanCommandFactory.java"/>

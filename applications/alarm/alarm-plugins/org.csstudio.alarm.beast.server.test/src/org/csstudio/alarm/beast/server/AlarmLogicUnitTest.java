@@ -210,9 +210,9 @@ public class AlarmLogicUnitTest
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
         assertEquals("c", logic.getAlarmState().getValue());
 
-        // No updates when state stays
+        // Same severity, so no annuncuation, but alarm message still triggers update
         logic.computeNewState("d", SeverityLevel.MAJOR, "ignored");
-        logic.check(false, false, SeverityLevel.MAJOR, "ignored", SeverityLevel.MAJOR, "very high");
+        logic.check(true, false, SeverityLevel.MAJOR, "ignored", SeverityLevel.MAJOR, "very high");
         assertEquals("c", logic.getAlarmState().getValue());
 
         // Ack'
@@ -617,6 +617,25 @@ public class AlarmLogicUnitTest
         System.out.println("Final alarm to get count of " + count);
         logic.computeNewState("g", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+    }
+
+    @Test
+    public void testShadesOfInvalid() throws Exception
+    {
+        System.out.println("* Invalid/disconnected, Invalid/Timeout");
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
+        logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+
+        logic.computeNewState("a", SeverityLevel.INVALID, "Disconnected");
+        logic.check(true, true, SeverityLevel.INVALID, "Disconnected", SeverityLevel.INVALID, "Disconnected");
+
+        // Different message
+        logic.computeNewState("b", SeverityLevel.INVALID, "Timeout");
+        logic.check(true, false, SeverityLevel.INVALID, "Timeout", SeverityLevel.INVALID, "Disconnected");
+
+        // Same message
+        logic.computeNewState("c", SeverityLevel.INVALID, "Timeout");
+        logic.check(false, false, SeverityLevel.INVALID, "Timeout", SeverityLevel.INVALID, "Disconnected");
     }
 
     @Test
