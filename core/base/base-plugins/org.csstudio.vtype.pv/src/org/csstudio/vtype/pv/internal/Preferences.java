@@ -11,6 +11,7 @@ import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.platform.libs.epics.PreferenceConstants;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
+import org.csstudio.vtype.pv.mqtt.MQTT_PVFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -32,6 +33,12 @@ public class Preferences
     {
         return getString(Activator.ID, "default_type", JCA_PVFactory.TYPE);
     }
+
+    public static String getMQTTBroker()
+    {
+        return getString(Activator.ID, "mqtt_broker", MQTT_PVFactory.BROKER_URL);
+    }
+
 
     public static boolean usePureJava()
     {

@@ -15,8 +15,8 @@ public class MQTTDemo implements MqttCallback {
     MqttConnectOptions connOpt;
 
     //static final String BROKER_URL = "tcp://q.m2m.io:1883";
-    //static final String BROKER_URL = "tcp://localhost:1883";
-    static final String BROKER_URL = "tcp://diane:1883";
+    static final String BROKER_URL = "tcp://localhost:1883";
+    //static final String BROKER_URL = "tcp://diane:1883";
     static final String M2MIO_DOMAIN = "MyDomain"; //"<Insert m2m.io domain here>";
     static final String M2MIO_STUFF = "things";
     static final String M2MIO_THING = "MQTTDemo"; //"<Unique device ID>";
@@ -185,6 +185,6 @@ public class MQTTDemo implements MqttCallback {
     public void messageArrived(String arg0, MqttMessage arg1) throws Exception
     {
         // TODO Auto-generated method stub
-
+        System.out.println("The message arrived: " + arg0 + " : " + arg1.toString());
     }
 }

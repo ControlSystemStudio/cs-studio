@@ -8,18 +8,24 @@
 package org.csstudio.vtype.pv;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.mqtt.MQTT_PVFactory;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 
 /** JUnit tests
  *  @author Kay Kasemir
@@ -31,13 +37,16 @@ public class MQTTPVDemo implements PVListener
     //static final String BROKER_URL = "tcp://localhost:1883";
     static final String BROKER_URL = "tcp://diane:1883";
 
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
+
     @Before
     public void setup()
     {
         final Logger root = Logger.getLogger("");
-        root.setLevel(Level.FINE);
+        root.setLevel(Level.INFO);
         for (Handler handler : root.getHandlers())
-            handler.setLevel(Level.FINE);
+            handler.setLevel(Level.INFO);
 
         PVPool.addPVFactory(new MQTT_PVFactory());
     }
@@ -45,60 +54,96 @@ public class MQTTPVDemo implements PVListener
     @After
     public void shutdown()
     {
-        assertThat(PVPool.getPVReferences().size(), equalTo(0));
+        collector.checkThat(PVPool.getPVReferences().size(), equalTo(0));
     }
 
     @Test
-    public void testNameParser() throws Exception
+    public void testDouble() throws Exception
     {
-        //String[] ntv;
-        //ntv = ValueHelper.parseName("name(3.14)");
-        //assertThat(ntv, equalTo(new String[] {"name", null, "3.14"}));
+        final PV pv = PVPool.getPV("mqtt://testDouble(3.14)");
+
+        try
+        {
+            System.out.println(pv.read());
+            collector.checkThat(pv.read(), instanceOf(VDouble.class));
+            // Accepts string that contains a number
+            pv.write("6.28");
+            // Number stays number
+            collector.checkThat(pv.read(), instanceOf(VDouble.class));
+            collector.checkThat(ValueUtil.numericValueOf(pv.read()), equalTo(6.28));
+            try
+            {
+                pv.write("ten");
+                collector.addError(new Throwable("Allowed text for number"));
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        catch (Exception e)
+        {
+            collector.addError(new Throwable("testDouble pv read/write failure"));
+            e.printStackTrace();
+        }
+
+        PVPool.releasePV(pv);
     }
 
-    /*    @Test
-    public void testValueParser() throws Exception
+    @Test
+    public void testNumberArray() throws Exception
     {
-        List<String> items = ValueHelper.splitInitialItems("3.14");
-        System.out.println(items);
+        final PV pv = PVPool.getPV("mqtt://testNumArray(1, 2, 3)");
 
-        items = ValueHelper.splitInitialItems(" 1,  2,   3  ");
-        System.out.println(items);
-        assertThat(items.size(), equalTo(3));
-        assertThat(items.get(0), equalTo("1"));
+        try
+        {
+            System.out.println(pv.read());
+            collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
 
-        items = ValueHelper.splitInitialItems("\"A\", \"2 Apples\"");
-        System.out.println(items);
-        assertThat(items.size(), equalTo(2));
-        assertThat(items.get(1), equalTo("\"2 Apples\""));
+            pv.write(new double[] { 10.5, 20.5, 30.5 });
+            System.out.println(pv.read());
+            collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
+            collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(20.5));
 
-        items = ValueHelper.splitInitialItems("\"A\", \" Apples, 2\"");
-        System.out.println(items);
-        assertThat(items.size(), equalTo(2));
-        assertThat(items.get(1), equalTo("\" Apples, 2\""));
+            pv.write(Arrays.asList(1.5, 2.5, 3.5));
+            System.out.println(pv.read());
+            collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
+            collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(2), equalTo(3.5));
 
-        items = ValueHelper.splitInitialItems("\"Text with \\\"Quote\\\"\", \"Text\"");
-        System.out.println(items);
-        assertThat(items.size(), equalTo(2));
-        assertThat(items.get(0), equalTo("\"Text with \\\"Quote\\\"\""));
-        assertThat(items.get(1), equalTo("\"Text\""));
-    }*/
+            pv.write("100, 200, 300");
+            System.out.println(pv.read());
+            collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
+            collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(200.0));
+        }
+        catch (Exception e)
+        {
+            collector.addError(new Throwable("testNumberArray pv read/write failure"));
+            e.printStackTrace();
+        }
+
+        PVPool.releasePV(pv);
+    }
 
     @Test
     public void testConnect() throws Exception
     {
-        final PV pv1 = PVPool.getPV("mqtt://" + BROKER_URL + " MQTTPVDemo/pv1");
-        final PV pv2 = PVPool.getPV("mqtt://" + BROKER_URL + " MQTTPVDemo/pv2 ");
+        //Double Value
+        final PV pv1 = PVPool.getPV("mqtt://MQTTPVDemo/pv1");
+        //String Value
+        final PV pv2 = PVPool.getPV("mqtt://MQTTPVDemo/pv2<VString>");
         //System.out.println(pv.read());
+
         try
         {
-            pv1.write("1: " + LocalDateTime.now());
+            pv1.write("3.14");
             pv2.write("2: " + LocalDateTime.now());
         }
         catch (Exception ex)
         {
+            collector.addError(new Throwable("testConnect pv read/write failure"));
             ex.printStackTrace();
         }
+
         PVPool.releasePV(pv1);
         PVPool.releasePV(pv2);
     }

@@ -9,12 +9,21 @@ package org.csstudio.vtype.pv.mqtt;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.internal.Preferences;
+import org.csstudio.vtype.pv.local.ValueHelper;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VLong;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
-import org.diirt.vtype.ValueFactory;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -33,37 +42,22 @@ public class MQTT_PV extends PV implements MqttCallback
     MqttClient myClient;
     MqttConnectOptions connOpt;
 
+    //TODO: broker connection fail: AlarmSeverity.UNDEFINED
+    // client device never sent anything or sent LWT: AlarmSeverity.INVALID
+
     volatile private String brokerURL;
     volatile private String clientID;
     volatile private String topicStr;
 
+    private Class<? extends VType> type;
+
     //Random integer in case
     final static Integer randInt = ThreadLocalRandom.current().nextInt(0, 1000000 + 1);
 
-    final protected static String SEPARATOR = " ";
-
     //volatile private String userName, passWord;
 
-    private void analyzeName(final String name)
+    private void generateClientID()
     {
-        final int sep = name.indexOf(SEPARATOR);
-        if (sep > 0)
-        {
-            brokerURL = name.substring(0, sep);
-            topicStr = name.substring(sep+SEPARATOR.length());
-        }
-        else
-        {
-            brokerURL=name;
-            topicStr = "mqttpv";
-        }
-    }
-
-    protected MQTT_PV(final String name, final String base_name) throws Exception
-    {
-        super(name);
-        analyzeName(base_name);
-
         try
         {
             NetworkInterface nwi = NetworkInterface.getByIndex(0);
@@ -84,13 +78,34 @@ public class MQTT_PV extends PV implements MqttCallback
 
         //System MAC address (or hostname) + random integer + object hash... hopefully unique?
         clientID += "-" + System.identityHashCode(this);
+    }
 
+
+    private void setOptions()
+    {
         connOpt = new MqttConnectOptions();
 
         connOpt.setCleanSession(true);
         connOpt.setKeepAliveInterval(30);
         //connOpt.setUserName(userName);
         //connOpt.setPassword(passWord.toCharArray());
+        //TODO: Look up best practices for reconnect
+        //connOpt.setAutomaticReconnect(true);
+    }
+
+
+    protected MQTT_PV(final String name, final String base_name) throws Exception
+    {
+        super(name);
+        parseNameTypeValue(base_name);
+
+        //TODO: Change to have single client connection for all PVs
+
+        brokerURL = Preferences.getMQTTBroker();
+        topicStr = base_name;
+
+        generateClientID();
+        setOptions();
 
         // Connect to Broker
         try {
@@ -102,7 +117,6 @@ public class MQTT_PV extends PV implements MqttCallback
             e.printStackTrace();
         }
 
-
         try {
             int subQoS = 0;
             myClient.subscribe(topicStr, subQoS);
@@ -111,7 +125,82 @@ public class MQTT_PV extends PV implements MqttCallback
         }
     }
 
+    private void parseNameTypeValue(final String base_name) throws Exception
+    {
+        final String[] ntv = ValueHelper.parseName(base_name);
+        final VType initial_value;
 
+        if (ntv[1] != null)
+            type = parseType(ntv[1]);
+
+        if (ntv[2] == null)
+        {
+            if (ntv[1] == null)
+                type = VDouble.class;
+
+            initial_value = null;
+        }
+        else
+        {
+            final List<String> initial_value_items = ValueHelper.splitInitialItems(ntv[2]);
+            if (ntv[1] == null)
+                type = determineValueType(initial_value_items);
+
+            initial_value = ValueHelper.getInitialValue(initial_value_items, type);
+        }
+
+        if (initial_value == null)
+        {
+            notifyListenersOfDisconnect();
+        }
+        else
+        {
+            notifyListenersOfValue(initial_value);
+        }
+    }
+
+    private Class<? extends VType> parseType(final String type) throws Exception
+    {   // Lenient check, ignore case and allow partial match
+        final String lower = type.toLowerCase();
+        if (lower.contains("doublearray"))
+            return VDoubleArray.class;
+        if (lower.contains("double"))
+            return VDouble.class;
+        if (lower.contains("stringarray"))
+            return VStringArray.class;
+        if (lower.contains("string"))
+            return VString.class;
+        if (lower.contains("enum"))
+            return VEnum.class;
+        if (lower.contains("long"))
+            return VLong.class;
+        if (lower.contains("table"))
+            return VTable.class;
+        throw new Exception("Local PV cannot handle type '" + type + "'");
+    }
+
+    private Class<? extends VType> determineValueType(final List<String> items) throws Exception
+    {
+        if (ValueHelper.haveInitialStrings(items))
+        {
+            if (items.size() == 1)
+                return VString.class;
+            else
+                return VStringArray.class;
+        }
+        else
+        {
+            if (items.size() == 1)
+                return VDouble.class;
+            else
+                return VDoubleArray.class;
+        }
+    }
+
+    /**
+     * This is QoS 0 with retention (fire and forget)
+     * @see org.csstudio.vtype.pv.PV#write(java.lang.Object)
+     */
     @Override
     public void write(final Object new_value) throws Exception
     {
@@ -121,16 +210,17 @@ public class MQTT_PV extends PV implements MqttCallback
         if (!myClient.isConnected())
             throw new Exception(getName() + " not connected to " + brokerURL);
 
-        MqttTopic topic = myClient.getTopic(topicStr);
+        String pubMsg = new_value.toString();
+        parseAndNotify(pubMsg);
 
-        String pubMsg = "The PV is writing: " + new_value;
+        MqttTopic topic = myClient.getTopic(topicStr);
         int pubQoS = 0;
         MqttMessage message = new MqttMessage(pubMsg.getBytes());
         message.setQos(pubQoS);
         message.setRetained(false);
 
         // Publish the message
-        System.out.println("Publishing to topic \"" + topic + "\" qos " + pubQoS);
+        System.out.println("Publishing \"" + pubMsg + "\" to topic \"" + topic + "\" qos " + pubQoS);
         MqttDeliveryToken token = null;
         try {
             // publish message to broker
@@ -138,10 +228,6 @@ public class MQTT_PV extends PV implements MqttCallback
             // Wait until the message has been delivered to the broker
             token.waitForCompletion();
             Thread.sleep(100);
-
-            final VType value = ValueFactory.newVDouble(0.0);
-            notifyListenersOfValue(value);
-
         } catch (Exception ex) {
             throw new Exception("Failed to write '" + new_value + "' to " + getName(), ex);
         }
@@ -203,8 +289,31 @@ public class MQTT_PV extends PV implements MqttCallback
      * @see org.eclipse.paho.client.mqttv3.MqttCallback#messageArrived(java.lang.String, org.eclipse.paho.client.mqttv3.MqttMessage)
      */
     @Override
-    public void messageArrived(String arg0, MqttMessage arg1) throws Exception
+    public void messageArrived(String topic, MqttMessage msg) throws Exception
     {
-        System.out.println("Message arrived: " + arg0 + " : " + arg1.toString());
+        final String new_value = msg.toString();
+        System.out.println("Message arrived: " + topic + " : " + msg.toString());
+
+        if (!topic.equals(topicStr))
+        {
+            logger.log(Level.SEVERE, "Got message with topic " + topic + " != " + topicStr);
+            throw new Exception(getName() + " topic mismatch");
+        }
+
+        parseAndNotify(new_value);
+    }
+
+
+    private void parseAndNotify(final String new_value) throws Exception
+    {
+        try
+        {
+            final VType value = ValueHelper.adapt(new_value, type, read());
+            notifyListenersOfValue(value);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to parse message '" + new_value + "' to " + getName(), ex);
+        }
     }
 }
