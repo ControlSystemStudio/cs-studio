@@ -97,13 +97,10 @@ public class MQTT_PV extends PV implements MqttCallback
     protected MQTT_PV(final String name, final String base_name) throws Exception
     {
         super(name);
-        parseNameTypeValue(base_name);
+        final String initial_value = parseTopicValue(base_name);
 
         //TODO: Change to have single client connection for all PVs
-
         brokerURL = Preferences.getMQTTBroker();
-        topicStr = base_name;
-
         generateClientID();
         setOptions();
 
@@ -117,28 +114,41 @@ public class MQTT_PV extends PV implements MqttCallback
             e.printStackTrace();
         }
 
+        if (initial_value == null)
+        {
+            notifyListenersOfDisconnect();
+        }
+        else
+        {
+            write(initial_value);
+        }
+
         try {
             int subQoS = 0;
             myClient.subscribe(topicStr, subQoS);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    private void parseNameTypeValue(final String base_name) throws Exception
+    private String parseTopicValue(final String base_name) throws Exception
     {
         final String[] ntv = ValueHelper.parseName(base_name);
-        final VType initial_value;
+        //final VType initial_value;
+        topicStr = ntv[0];
 
-        if (ntv[1] != null)
+        if (ntv[1] != null) {
+            topicStr += ntv[1];
             type = parseType(ntv[1]);
+        }
 
         if (ntv[2] == null)
         {
             if (ntv[1] == null)
                 type = VDouble.class;
 
-            initial_value = null;
+            //initial_value = null;
         }
         else
         {
@@ -146,17 +156,10 @@ public class MQTT_PV extends PV implements MqttCallback
             if (ntv[1] == null)
                 type = determineValueType(initial_value_items);
 
-            initial_value = ValueHelper.getInitialValue(initial_value_items, type);
+            //initial_value = ValueHelper.getInitialValue(initial_value_items, type);
         }
 
-        if (initial_value == null)
-        {
-            notifyListenersOfDisconnect();
-        }
-        else
-        {
-            notifyListenersOfValue(initial_value);
-        }
+        return ntv[2];
     }
 
     private Class<? extends VType> parseType(final String type) throws Exception
@@ -211,13 +214,14 @@ public class MQTT_PV extends PV implements MqttCallback
             throw new Exception(getName() + " not connected to " + brokerURL);
 
         String pubMsg = new_value.toString();
-        parseAndNotify(pubMsg);
+        parseAndNotify(new_value);
 
+        //TODO: Does this require querying the client? Probably should set this once on (re)connect...
         MqttTopic topic = myClient.getTopic(topicStr);
         int pubQoS = 0;
         MqttMessage message = new MqttMessage(pubMsg.getBytes());
         message.setQos(pubQoS);
-        message.setRetained(false);
+        message.setRetained(true);
 
         // Publish the message
         System.out.println("Publishing \"" + pubMsg + "\" to topic \"" + topic + "\" qos " + pubQoS);
@@ -304,7 +308,7 @@ public class MQTT_PV extends PV implements MqttCallback
     }
 
 
-    private void parseAndNotify(final String new_value) throws Exception
+    private void parseAndNotify(final Object new_value) throws Exception
     {
         try
         {

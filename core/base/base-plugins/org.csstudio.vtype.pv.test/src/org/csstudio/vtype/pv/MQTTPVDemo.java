@@ -34,9 +34,6 @@ public class MQTTPVDemo implements PVListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
 
-    //static final String BROKER_URL = "tcp://localhost:1883";
-    static final String BROKER_URL = "tcp://diane:1883";
-
     @Rule
     public ErrorCollector collector = new ErrorCollector();
 
