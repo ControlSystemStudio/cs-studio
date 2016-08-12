@@ -128,6 +128,20 @@ public class ScanEngine
         scan_queue.add(scan);
     }
 
+    /** Check if there are any scans executing or waiting to be executed
+     *  @return Number of pending scans
+     */
+    public boolean hasPendingScans()
+    {
+        // Ideally, would check from _end_ because pending scans
+        // are added to end of queue.
+        // To be thread-safe, using plain COWList iteration.
+        for (LoggedScan scan : scan_queue)
+            if (! scan.getScanState().isDone())
+                return true;
+        return false;
+    }
+
     /** @return List of scans */
     public List<LoggedScan> getScans()
     {

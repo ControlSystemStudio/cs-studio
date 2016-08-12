@@ -78,7 +78,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public ScanServerInfo getInfo() throws Exception
     {
-        return new ScanServerInfo("V" + ScanServer.VERSION + " (" + Application.getBundleVersion() + ")",
+        return new ScanServerInfo(Application.getBundleVersion(),
                 start_time,
                 ScanSystemPreferences.getScanConfigPath(),
                 ScanSystemPreferences.getSimulationConfigPath(),
@@ -217,7 +217,7 @@ public class ScanServerImpl implements ScanServer
             final DeviceContext devices = new DeviceContext();
 
             // Submit scan to engine for execution
-            final ExecutableScan scan = new ExecutableScan(jython, scan_name, devices, pre_impl, main_impl, post_impl);
+            final ExecutableScan scan = new ExecutableScan(scan_engine, jython, scan_name, devices, pre_impl, main_impl, post_impl);
             scan_engine.submit(scan, queue);
             return scan.getId();
         }

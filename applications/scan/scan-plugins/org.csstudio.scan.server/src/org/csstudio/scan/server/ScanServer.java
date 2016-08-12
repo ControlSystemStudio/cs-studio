@@ -26,12 +26,8 @@ import org.csstudio.scan.device.DeviceInfo;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public interface ScanServer
 {
-    /** Version */
-    final public static String VERSION = "4.2";
-
     /** @return Info about the scan server
      *  @throws Exception on error
      */
