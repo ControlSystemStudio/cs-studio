@@ -103,7 +103,7 @@
             category="org.eclipse.ui.preferencePages.Workbench"
             class="org.eclipse.ui.internal.intro.universal.WelcomeCustomizationPreferencePage"
             id="org.csstudio.product.introCustomization"
-            name="introCustomizationPreference">
+            name="%introCustomizationPreference.name">
       </page>
    </extension>
 
