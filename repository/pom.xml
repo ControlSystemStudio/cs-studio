@@ -80,6 +80,10 @@
 
                 <!--  EPICS artifacts -->
                 <artifact>
+                  <id>com.diffplug.osgi:com.diffplug.osgi.extension.sun.misc:0.0.0</id>
+                  <source>true</source>
+                </artifact>
+                <artifact>
                   <id>org.epics:pvDataJava:${pvdata.version}</id>
                   <source>true</source>
                 </artifact>
@@ -206,6 +210,10 @@
                 </artifact>
                 <artifact>
                   <id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
+                </artifact>
+                <artifact>
+                  <id>org.jfxtras:jfxtras-agenda:8.0-r5</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
                   <id>org.apache.servicemix.bundles:org.apache.servicemix.bundles.poi:3.11_1</id>
