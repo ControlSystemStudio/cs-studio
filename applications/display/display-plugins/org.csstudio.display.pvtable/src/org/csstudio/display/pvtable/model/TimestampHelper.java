@@ -58,18 +58,18 @@ public class TimestampHelper {
 
         Instant t = null;
         try {
-        	t = ZonedDateTime.parse(sTimestamp, timeFormat).toInstant();
+            t = ZonedDateTime.parse(sTimestamp, timeFormat).toInstant();
         }
         catch (DateTimeParseException ex) {
-        	ex.printStackTrace();
+            ex.printStackTrace();
         }
 
         if (t == null) {
-        	try {
-        		t = ZonedDateTime.parse(sTimestamp, dateFormat).toInstant();
-        	}
+            try {
+                t = ZonedDateTime.parse(sTimestamp, dateFormat).toInstant();
+            }
             catch (DateTimeParseException ex) {
-            	ex.printStackTrace();
+                ex.printStackTrace();
             }
         }
 

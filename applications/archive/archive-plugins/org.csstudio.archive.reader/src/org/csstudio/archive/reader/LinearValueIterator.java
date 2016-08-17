@@ -168,11 +168,11 @@ public class LinearValueIterator implements ValueIterator
         {   // Found at least one value in this bin
             // t0, v0 are before, t1, v1 at-or-after end_of_bin
             // Linear interpolation between t0,v0 and t1,v1 onto end_of_bin time
-        	final double dT = TimeDuration.toSecondsDouble(Duration.between(t0, t1));        	
+            final double dT = TimeDuration.toSecondsDouble(Duration.between(t0, t1));
             final double interpol;
             if (dT > 0)
             {
-            	final double secs = TimeDuration.toSecondsDouble(Duration.between(t0, end_of_bin));
+                final double secs = TimeDuration.toSecondsDouble(Duration.between(t0, end_of_bin));
                 interpol = v0 + (v1 - v0) * (secs / dT);
             }
             else

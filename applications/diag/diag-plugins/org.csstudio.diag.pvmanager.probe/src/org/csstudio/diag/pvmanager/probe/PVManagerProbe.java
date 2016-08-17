@@ -152,7 +152,7 @@ public class PVManagerProbe extends ViewPart {
     }
 
     @Override
-	public void createPartControl(Composite parent) {
+    public void createPartControl(Composite parent) {
         GridLayout gl_parent = new GridLayout(1, false);
         gl_parent.verticalSpacing = 0;
         gl_parent.marginWidth = 0;
@@ -380,7 +380,7 @@ public class PVManagerProbe extends ViewPart {
      * Passing the focus request to the viewer's control.
      */
     @Override
-	public void setFocus() {
+    public void setFocus() {
     }
 
     public static String createNewInstance() {
@@ -498,7 +498,7 @@ public class PVManagerProbe extends ViewPart {
         copyValueAction = new Action(Messages.Probe_copyValueToClipboardButtonText, SWT.NONE) {
 
             @Override
-			public void runWithEvent(Event event) {
+            public void runWithEvent(Event event) {
                 try {
                     StringWriter writer = new StringWriter();
                     export.export(pv.getValue(), writer);

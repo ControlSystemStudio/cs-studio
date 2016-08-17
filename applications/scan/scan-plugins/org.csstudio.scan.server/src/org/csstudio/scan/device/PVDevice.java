@@ -191,7 +191,7 @@ public class PVDevice extends Device
     private static long getMillisecs(final Duration timeout)
     {
         if (timeout == null)
-        	return 0;
+            return 0;
         return Math.max(0, timeout.toMillis());
     }
 

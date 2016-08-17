@@ -14,7 +14,7 @@ import org.diirt.util.time.TimeInterval;
 /**
  * List of query parameters to be used to Query the Alarm message history
  * service.
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -40,12 +40,12 @@ public class AlarmHistoryQueryParameters {
 
         private AlarmHistoryQueryBuilder() {
         }
-        
+
         public AlarmHistoryQueryBuilder forPVs(List<ProcessVariable> pvs){
             this.pvs = pvs;
             return this;
         }
-        
+
         public AlarmHistoryQueryBuilder forTimeStampedPVs(List<TimestampedPV> timestampedPVs){
             // Add received items, tracking their start..end time
             long start_ms = Long.MAX_VALUE,  end_ms = 0;
@@ -63,18 +63,18 @@ public class AlarmHistoryQueryParameters {
             this.end = Instant.ofEpochMilli(end_ms);
             return this;
         }
-        
+
         public AlarmHistoryQueryBuilder forTimeInterval(TimeInterval interval){
             this.start = Instant.ofEpochSecond(interval.getStart().getSec(), interval.getStart().getNanoSec());
             this.end = Instant.ofEpochSecond(interval.getEnd().getSec(), interval.getEnd().getNanoSec());
             return this;
         }
-        
+
         public AlarmHistoryQueryBuilder size(int size){
             this.size = size;
             return this;
         }
-        
+
         public AlarmHistoryQueryParameters build(){
             return new AlarmHistoryQueryParameters(pvs, start, end, size);
         }
@@ -108,7 +108,7 @@ public class AlarmHistoryQueryParameters {
      * 1. list of all the pv's OR'ed
      * 2. with a time range if specified
      * 3. and the result limited to the size defined
-     * 
+     *
      * @return
      */
     public String getQueryString() {
@@ -119,17 +119,17 @@ public class AlarmHistoryQueryParameters {
         // Currently this effort has been limited by the inability to add and
         // use third party libraries easily. resulting in the rather ugly string
         // concatenated query
-        
-        
+
+
         /**example query
         {"size" : 100,
           "query" : {
             "bool" : {
               "must" : {
-                "terms" : { "NAME" : ["XF:31IDA-OP{Tbl-Ax:X1}Mtr", "XF:31IDA-OP{Tbl-Ax:X2}Mtr"] }     
-              }, 
+                "terms" : { "NAME" : ["XF:31IDA-OP{Tbl-Ax:X1}Mtr", "XF:31IDA-OP{Tbl-Ax:X2}Mtr"] }
+              },
               "should" :{
-                "range" : { "EVENTTIME": 
+                "range" : { "EVENTTIME":
                             {"gte":"2014-01-01 00:00:00.000",
                             "lte": "now"}
                           }
