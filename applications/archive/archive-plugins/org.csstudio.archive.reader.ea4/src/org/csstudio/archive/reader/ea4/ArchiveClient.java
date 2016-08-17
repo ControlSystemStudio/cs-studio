@@ -61,10 +61,10 @@ public class ArchiveClient {
 
         for (int i = 0; i < chNames.length; i++){
 
-        	Instant start = starts[i].plus(TimeDuration.ofSeconds(start_delta));
-        	Instant end = ends[i].plus(TimeDuration.ofSeconds(end_delta));
+            Instant start = starts[i].plus(TimeDuration.ofSeconds(start_delta));
+            Instant end = ends[i].plus(TimeDuration.ofSeconds(end_delta));
 
-              int count = (int) (Duration.between(start, end).getSeconds() / secs);
+            int count = (int) (Duration.between(start, end).getSeconds() / secs);
 
             VType[] values = reader.getSamples(key, chNames[i], start, end, optimized, count);
 

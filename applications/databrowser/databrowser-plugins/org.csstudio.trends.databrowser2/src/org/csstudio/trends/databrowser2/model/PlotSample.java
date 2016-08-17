@@ -127,7 +127,7 @@ public class PlotSample implements PlotDataItem<Instant>
     @Override
     public Instant getPosition()
     {
-    	return getTime();
+        return getTime();
     }
 
     /** {@inheritDoc} */

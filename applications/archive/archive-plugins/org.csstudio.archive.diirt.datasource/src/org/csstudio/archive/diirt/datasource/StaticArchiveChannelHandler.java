@@ -56,7 +56,7 @@ public class StaticArchiveChannelHandler extends AbstractChannelHandler {
      * @param sources the archive sources to use
      */
     public StaticArchiveChannelHandler(String fullChannelName, String strippedName, Instant startTime,
-    		Instant endTime, int binCount, boolean optimised, ArchiveSource... sources) {
+            Instant endTime, int binCount, boolean optimised, ArchiveSource... sources) {
         super(fullChannelName, strippedName, binCount, sources);
         this.startTime = startTime;
         this.endTime = endTime == null || endTime.equals(startTime) ? startTime : endTime;

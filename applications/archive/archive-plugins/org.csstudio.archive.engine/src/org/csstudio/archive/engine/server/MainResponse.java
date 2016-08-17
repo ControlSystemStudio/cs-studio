@@ -79,7 +79,7 @@ class MainResponse extends AbstractResponse
             });
 
             final double up_secs =
-            	TimeDuration.toSecondsDouble(Duration.between(start, Instant.now()));
+            TimeDuration.toSecondsDouble(Duration.between(start, Instant.now()));
             html.tableLine(new String[]
             {
                 Messages.HTTP_Uptime,
