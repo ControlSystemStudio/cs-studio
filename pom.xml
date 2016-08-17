@@ -18,11 +18,11 @@
     <manifest-location>META-INF</manifest-location>
     <cs-studio.version>4.4</cs-studio.version>
     <epics.util.version>0.3.2</epics.util.version>
-    <epics.caj.version>1.1.14</epics.caj.version>
+    <epics.caj.version>1.1.15</epics.caj.version>
     <epics.jca.version>2.3.6</epics.jca.version>
     <graphene.version>0.8.0</graphene.version>
-    <pvdata.version>4.0.3</pvdata.version>
-    <pvaccess.version>4.0.4</pvaccess.version>
+    <pvdata.version>5.0.3</pvdata.version>
+    <pvaccess.version>4.1.3</pvaccess.version>
     <csstudio.version>4.3.0-SNAPSHOT</csstudio.version>
     <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
