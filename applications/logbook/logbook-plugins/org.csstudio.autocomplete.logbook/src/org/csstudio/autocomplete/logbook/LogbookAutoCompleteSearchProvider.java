@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.apputil.ui.time.Messages;
-import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
