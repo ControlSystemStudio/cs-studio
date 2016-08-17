@@ -15,7 +15,6 @@ import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.internal.Preferences;
-import org.csstudio.vtype.pv.local.ValueHelper;
 import org.diirt.vtype.VDouble;
 import org.diirt.vtype.VDoubleArray;
 import org.diirt.vtype.VEnum;
@@ -134,12 +133,11 @@ public class MQTT_PV extends PV implements MqttCallback
 
     private String parseTopicValue(final String base_name) throws Exception
     {
-        final String[] ntv = ValueHelper.parseName(base_name);
-        //final VType initial_value;
+        final String[] ntv = parseName(base_name);
         topicStr = ntv[0];
 
         if (ntv[1] != null) {
-            topicStr += ntv[1];
+            //topicStr += ntv[1];
             type = parseType(ntv[1]);
         }
 
@@ -147,19 +145,54 @@ public class MQTT_PV extends PV implements MqttCallback
         {
             if (ntv[1] == null)
                 type = VDouble.class;
-
-            //initial_value = null;
         }
         else
         {
-            final List<String> initial_value_items = ValueHelper.splitInitialItems(ntv[2]);
+            final List<String> initial_value_items = VTypePickle.splitStringList(ntv[2]);
             if (ntv[1] == null)
-                type = determineValueType(initial_value_items);
-
-            //initial_value = ValueHelper.getInitialValue(initial_value_items, type);
+                type = VTypePickle.determineValueType(initial_value_items);
         }
 
         return ntv[2];
+    }
+
+    /** Parse PV name
+     *  @param base_name "name", "name(value)" or "name&lt;type>(value)"
+     *  @return Name, type-or-null, value-or-null
+     *  @throws Exception on error
+     */
+    public static String[] parseName(final String base_name) throws Exception
+    {
+        // Could use regular expression, but this allows more specific error messages
+        String name=null, type=null, value=null;
+
+        // Locate type
+        int sep = base_name.indexOf('<');
+        if (sep >= 0)
+        {
+            final int end = base_name.indexOf('>', sep+1);
+            if (end <= sep)
+                throw new Exception("Missing '>' to define type in " + base_name);
+            name = base_name.substring(0, sep);
+            type = base_name.substring(sep+1, end);
+        }
+
+        // Locate value
+        sep = base_name.indexOf('(');
+        if (sep > 0)
+        {
+            final int end = base_name.lastIndexOf(')');
+            if (end <= sep)
+                throw new Exception("Missing ')' of initial value in " + base_name);
+            value = base_name.substring(sep+1, end);
+            if (name == null)
+                name = base_name.substring(0, sep);
+        }
+
+        if (name == null)
+            name = base_name.trim();
+
+        return new String[] { name, type, value };
     }
 
     private Class<? extends VType> parseType(final String type) throws Exception
@@ -179,26 +212,10 @@ public class MQTT_PV extends PV implements MqttCallback
             return VLong.class;
         if (lower.contains("table"))
             return VTable.class;
-        throw new Exception("Local PV cannot handle type '" + type + "'");
+        throw new Exception("MQTT PV cannot handle type '" + type + "'");
     }
 
-    private Class<? extends VType> determineValueType(final List<String> items) throws Exception
-    {
-        if (ValueHelper.haveInitialStrings(items))
-        {
-            if (items.size() == 1)
-                return VString.class;
-            else
-                return VStringArray.class;
-        }
-        else
-        {
-            if (items.size() == 1)
-                return VDouble.class;
-            else
-                return VDoubleArray.class;
-        }
-    }
+
 
     /**
      * This is QoS 0 with retention (fire and forget)
@@ -213,8 +230,17 @@ public class MQTT_PV extends PV implements MqttCallback
         if (!myClient.isConnected())
             throw new Exception(getName() + " not connected to " + brokerURL);
 
-        String pubMsg = new_value.toString();
-        parseAndNotify(new_value);
+        //final String pubMsg = new_value.toString();
+        final String pubMsg;
+        try
+        {
+            final VType value = VTypePickle.convert(new_value, type, read());
+            pubMsg = VTypePickle.Pickle(value);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to adapt object '" + new_value + "' to " + getName(), ex);
+        }
 
         //TODO: Does this require querying the client? Probably should set this once on (re)connect...
         MqttTopic topic = myClient.getTopic(topicStr);
@@ -304,20 +330,19 @@ public class MQTT_PV extends PV implements MqttCallback
             throw new Exception(getName() + " topic mismatch");
         }
 
-        parseAndNotify(new_value);
-    }
-
-
-    private void parseAndNotify(final Object new_value) throws Exception
-    {
         try
         {
-            final VType value = ValueHelper.adapt(new_value, type, read());
+            final VType value = VTypePickle.convert(new_value, type, read());
             notifyListenersOfValue(value);
         }
         catch (Exception ex)
         {
-            throw new Exception("Failed to parse message '" + new_value + "' to " + getName(), ex);
+            logger.log(Level.SEVERE, "Could not parse message: '" + new_value + "' to " + getName());
+            ex.printStackTrace();
+            //throw new Exception("Failed to parse message", ex);
         }
     }
+
+
+
 }
