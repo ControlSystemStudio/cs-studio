@@ -17,5 +17,5 @@ Export-Package: org.csstudio.vtype.pv,
  org.csstudio.vtype.pv.local,
  org.csstudio.vtype.pv.sim
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.csstudio.vtype.pv.internal.Activator
+Bundle-Activator: org.csstudio.vtype.pv.PVPlugin
 Import-Package: com.cosylab.epics.caj

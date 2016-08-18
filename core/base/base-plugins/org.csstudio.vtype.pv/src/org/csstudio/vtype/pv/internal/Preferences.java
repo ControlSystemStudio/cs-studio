@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.internal;
 
+import org.csstudio.vtype.pv.PVPlugin;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -22,7 +23,7 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return JCA_PVFactory.TYPE;
-        return service.getString(Activator.ID, "default_type", JCA_PVFactory.TYPE, null);
+        return service.getString(PVPlugin.ID, "default_type", JCA_PVFactory.TYPE, null);
 
     }
 }
