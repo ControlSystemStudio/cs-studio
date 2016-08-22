@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.vtype.pv</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>4.0.3-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
