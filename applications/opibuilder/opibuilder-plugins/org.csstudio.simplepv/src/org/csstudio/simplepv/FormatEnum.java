@@ -36,7 +36,11 @@ public enum FormatEnum {
      * based on the value digits to make sure the string won't be too long. The recommended
      * digits is 4.
      */
-    COMPACT("Compact");
+    COMPACT("Compact"),
+    /**
+     * Engineering format (exponent is power of three). For example, 20.23E9
+     */
+    ENG("Engineering");
 
     private String description;
     private FormatEnum(String description) {
