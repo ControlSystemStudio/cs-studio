@@ -31,11 +31,100 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 
 /** JUnit tests
- *  @author Kay Kasemir
+ *  @author Megan Grodowitz
  */
+
 public class MQTTPVDemo implements PVListener
 {
-    final private CountDownLatch updates = new CountDownLatch(1);
+
+    public class StatusListener implements PVListener
+    {
+        private volatile boolean is_online;
+
+        StatusListener() { is_online = false; }
+
+        @Override
+        public void permissionsChanged(PV pv, boolean readonly)
+        {
+            System.out.println("Permissions");
+        }
+
+        @Override
+        public void valueChanged(PV pv, VType value)
+        {
+            if (!(value instanceof VString))
+            {
+                System.out.println("Got value with Vtype not VString: " + value.getClass().getName());
+                return;
+            }
+
+            final String msg = ((VString)value).getValue();
+
+            synchronized(this) {
+                if (msg.equals("online"))
+                {
+                    is_online = true;
+                    notify();
+                }
+                else if (msg.equals("offline"))
+                {
+                    is_online = false;
+                }
+            }
+        }
+
+        public void wait_for_online()
+        {
+            synchronized(this)
+            {
+                while (!is_online)
+                {
+                    try
+                    {
+                        wait();
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        public boolean is_online() { return is_online; }
+
+        @Override
+        public void disconnected(PV pv)
+        {
+            synchronized(this)
+            {
+                is_online = false;
+            }
+        }
+
+    };
+
+
+    private CountDownLatch updates = new CountDownLatch(1);
+
+    @Override
+    public void permissionsChanged(PV pv, boolean readonly)
+    {
+        System.out.println("Permissions");
+    }
+
+    @Override
+    public void valueChanged(PV pv, VType value)
+    {
+        System.out.println("Update: " + value);
+        updates.countDown();
+    }
+
+    @Override
+    public void disconnected(PV pv)
+    {
+        System.out.println("Disconnected");
+    }
 
     @Rule
     public ErrorCollector collector = new ErrorCollector();
@@ -61,6 +150,10 @@ public class MQTTPVDemo implements PVListener
     public void testDouble() throws Exception
     {
         final PV pv = PVPool.getPV("mqtt://testDouble(3.14)");
+        pv.addListener(this);
+        updates.await();
+
+        updates = new CountDownLatch(1);
 
         try
         {
@@ -68,6 +161,7 @@ public class MQTTPVDemo implements PVListener
             collector.checkThat(pv.read(), instanceOf(VDouble.class));
             // Accepts string that contains a number
             pv.write("6.28");
+            updates.await();
             // Number stays number
             collector.checkThat(pv.read(), instanceOf(VDouble.class));
             collector.checkThat(ValueUtil.numericValueOf(pv.read()), equalTo(6.28));
@@ -87,6 +181,7 @@ public class MQTTPVDemo implements PVListener
             e.printStackTrace();
         }
 
+        pv.removeListener(this);
         PVPool.releasePV(pv);
     }
 
@@ -94,6 +189,9 @@ public class MQTTPVDemo implements PVListener
     public void testNumberArray() throws Exception
     {
         final PV pv = PVPool.getPV("mqtt://testNumArray(1, 2, 3)");
+        pv.addListener(this);
+        updates.await();
+        updates = new CountDownLatch(1);
 
         try
         {
@@ -101,16 +199,21 @@ public class MQTTPVDemo implements PVListener
             collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
 
             pv.write(new double[] { 10.5, 20.5, 30.5 });
+            updates.await();
             System.out.println(pv.read());
             collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
             collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(20.5));
 
+            updates = new CountDownLatch(1);
             pv.write(Arrays.asList(1.5, 2.5, 3.5));
+            updates.await();
             System.out.println(pv.read());
             collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
             collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(2), equalTo(3.5));
 
+            updates = new CountDownLatch(1);
             pv.write("100, 200, 300");
+            updates.await();
             System.out.println(pv.read());
             collector.checkThat(pv.read(), instanceOf(VNumberArray.class));
             collector.checkThat(((VNumberArray)pv.read()).getData().getDouble(1), equalTo(200.0));
@@ -121,6 +224,7 @@ public class MQTTPVDemo implements PVListener
             e.printStackTrace();
         }
 
+        pv.removeListener(this);
         PVPool.releasePV(pv);
     }
 
@@ -128,6 +232,8 @@ public class MQTTPVDemo implements PVListener
     public void testLong() throws Exception
     {
         final PV pv = PVPool.getPV("mqtt://testLong<VLong>(3e2)");
+        pv.addListener(this);
+        updates.await();
 
         try
         {
@@ -136,7 +242,9 @@ public class MQTTPVDemo implements PVListener
             collector.checkThat(((VLong) pv.read()).getValue(), equalTo(300L));
 
             // Accepts string that contains a number
+            updates = new CountDownLatch(1);
             pv.write("6.28");
+            updates.await();
             // Number stays number
             collector.checkThat(pv.read(), instanceOf(VLong.class));
             collector.checkThat(((VLong) pv.read()).getValue(), equalTo(6L));
@@ -147,6 +255,7 @@ public class MQTTPVDemo implements PVListener
             e.printStackTrace();
         }
 
+        pv.removeListener(this);
         PVPool.releasePV(pv);
     }
 
@@ -154,22 +263,37 @@ public class MQTTPVDemo implements PVListener
     public void testString() throws Exception
     {
         final PV pv = PVPool.getPV("mqtt://testString(\"Fred\")");
+        pv.addListener(this);
+        updates.await();
+
         try
         {
             System.out.println(pv.read());
             collector.checkThat(pv.read(), instanceOf(VString.class));
             collector.checkThat(((VString)pv.read()).getValue(), equalTo("Fred"));
 
-            pv.write("was here");
+            updates = new CountDownLatch(1);
+            pv.write("was, here");
+            updates.await();
             System.out.println(pv.read());
-            collector.checkThat(((VString)pv.read()).getValue(), equalTo("was here"));
+            collector.checkThat(((VString)pv.read()).getValue(), equalTo("was, here"));
 
+            updates = new CountDownLatch(1);
+            pv.write("\"was\", \"here\"");
+            updates.await();
+            System.out.println(pv.read());
+            collector.checkThat(((VString)pv.read()).getValue(), equalTo("was\", \"here"));
+
+            updates = new CountDownLatch(1);
             pv.write("\"Quoted text\"");
+            updates.await();
             System.out.println(pv.read());
             collector.checkThat(((VString)pv.read()).getValue(), equalTo("\"Quoted text\""));
 
             // String stays a string even when value is "3.14"
+            updates = new CountDownLatch(1);
             pv.write("3.14");
+            updates.await();
             System.out.println(pv.read());
             collector.checkThat(pv.read(), instanceOf(VString.class));
         }
@@ -179,6 +303,7 @@ public class MQTTPVDemo implements PVListener
             e.printStackTrace();
         }
 
+        pv.removeListener(this);
         PVPool.releasePV(pv);
     }
 
@@ -245,45 +370,34 @@ public class MQTTPVDemo implements PVListener
     }
 
     @Test
-    public void testConnect() throws Exception
+    public void testDevice() throws Exception
     {
-        //Double Value
-        final PV pv1 = PVPool.getPV("mqtt://test");
-        //String Value
-        //final PV pv2 = PVPool.getPV("mqtt://MQTTPVDemo/pv2<VString>");
+        final PV pv1 = PVPool.getPV("mqtt://dev/servo/rotation");
+        final PV pv2 = PVPool.getPV("mqtt://dev/servo/status<VString>");
         //System.out.println(pv.read());
+        final StatusListener stat = new StatusListener();
+        pv2.addListener(stat);
 
-        try
+
+        for (int deg = 0; deg <= 180; deg += 20)
         {
-            pv1.write("73.14");
-            //pv2.write("2: " + LocalDateTime.now());
-        }
-        catch (Exception ex)
-        {
-            collector.addError(new Throwable("testConnect pv read/write failure"));
-            ex.printStackTrace();
+            stat.wait_for_online();
+            try
+            {
+                pv1.write(deg);
+                //pv2.write("2: " + LocalDateTime.now());
+            }
+            catch (Exception ex)
+            {
+                collector.addError(new Throwable("testConnect pv read/write failure"));
+                ex.printStackTrace();
+            }
+            Thread.sleep(5000);
         }
 
         PVPool.releasePV(pv1);
-        //PVPool.releasePV(pv2);
+        PVPool.releasePV(pv2);
     }
 
-    @Override
-    public void permissionsChanged(PV pv, boolean readonly)
-    {
-        System.out.println("Permissions");
-    }
 
-    @Override
-    public void valueChanged(PV pv, VType value)
-    {
-        System.out.println("Update: " + value);
-        updates.countDown();
-    }
-
-    @Override
-    public void disconnected(PV pv)
-    {
-        System.out.println("Disconnected");
-    }
 }

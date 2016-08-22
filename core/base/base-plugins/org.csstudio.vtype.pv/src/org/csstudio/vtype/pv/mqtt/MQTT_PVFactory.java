@@ -17,7 +17,7 @@ import org.csstudio.vtype.pv.PVFactory;
 public class MQTT_PVFactory implements PVFactory
 {
     final public static String TYPE = "mqtt";
-    final public static String BROKER_URL = "tcp://localhost:1883";
+    final public static String BROKER_URL = "tcp://diane:1883";
 
     @Override
     public String getType()
