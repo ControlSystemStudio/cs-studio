@@ -504,13 +504,7 @@ public class VTypeHelper {
                     return Double.toString(numValue.doubleValue());
                 }
 
-                numberFormat = formatCacheMap.get(precision);
-                if (numberFormat == null) {
-                    numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
-                    numberFormat.setMinimumFractionDigits(precision);
-                    numberFormat.setMaximumFractionDigits(precision);
-                    formatCacheMap.put(precision, numberFormat);
-                }
+                numberFormat = getDecimalFormat(precision);
                 return numberFormat.format(numValue.doubleValue());
             }
 
@@ -537,18 +531,8 @@ public class VTypeHelper {
         case EXP:
             // Assert positive precision
             precision = getPrecision(numValue, precision);
-            precision = Math.abs(precision);
             // Exponential notation identified as 'negative' precision in cached
-            numberFormat = formatCacheMap.get(-precision);
-            if (numberFormat == null) {
-                final StringBuffer pattern = new StringBuffer(10);
-                pattern.append("0."); //$NON-NLS-1$
-                for (int i = 0; i < precision; ++i)
-                    pattern.append('0');
-                pattern.append("E0"); //$NON-NLS-1$
-                numberFormat = new DecimalFormat(pattern.toString());
-                formatCacheMap.put(-precision, numberFormat);
-            }
+            numberFormat = getExponentialFormat(precision);
             return numberFormat.format(numValue.doubleValue());
 
         case HEX:
@@ -560,22 +544,53 @@ public class VTypeHelper {
         }
     }
 
-    /** Convert an unset precision to the default value
+    /** Return decimal number format.
+     *
+     *  The formats is created if it has not previously been used.
+     *  Constructed formats are cached.
      *
      * @param precision
      * @return
      */
+    private static NumberFormat getDecimalFormat(int precision) {
+        int absPrecision = Math.abs(precision);
+        NumberFormat numberFormat = formatCacheMap.get(absPrecision);
+        if (numberFormat == null) {
+            numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
+            numberFormat.setMinimumFractionDigits(absPrecision);
+            numberFormat.setMaximumFractionDigits(absPrecision);
+            formatCacheMap.put(absPrecision, numberFormat);
+        }
+        return numberFormat;
+    }
+
+    /** Return exponential  number format.
+     *
+     *  The formats is created if it has not previously been used.
+     *  Constructed formats are cached.
+     *
+     * @param precision
+     * @return
+     */
+    private static NumberFormat getExponentialFormat(int precision) {
+        int absPrecision = Math.abs(precision);
+        NumberFormat numberFormat = formatCacheMap.get(-absPrecision);
+        if (numberFormat == null) {
+            final StringBuffer pattern = new StringBuffer(10);
+            pattern.append("0."); //$NON-NLS-1$
+            for (int i = 0; i < precision; ++i)
+                pattern.append('0');
+            pattern.append("E0"); //$NON-NLS-1$
+            numberFormat = new DecimalFormat(pattern.toString());
+            formatCacheMap.put(-absPrecision, numberFormat);
+        }
+        return numberFormat;
+    }
+
     private static int handleUnsetPrecision(int precision) {
         return (precision == UNSET_PRECISION) ? DEFAULT_PRECISION : precision;
     }
 
-    /** Convert an unset precision to the correct display precision or
-     *  default value
-     *
-     * @param numValue
-     * @param precision
-     * @return
-     */
     private static int getPrecision(Number numValue, int precision) {
         if (precision == UNSET_PRECISION && numValue instanceof Display) {
             precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
