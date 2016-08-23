@@ -480,6 +480,8 @@ public class VTypeHelper {
 
         NumberFormat numberFormat;
 
+        int displayPrecision = calculatePrecision(pmValue, precision);
+
         switch (formatEnum) {
         case DECIMAL:
         case DEFAULT:
@@ -488,7 +490,7 @@ public class VTypeHelper {
                 if (pmValue instanceof Display && ((Display) pmValue).getFormat() != null) {
                     return ((Display) pmValue).getFormat().format(((Number) numValue).doubleValue());
                 } else {
-                    return formatScalarNumber(FormatEnum.COMPACT, numValue, precision);
+                    return formatScalarNumber(FormatEnum.COMPACT, numValue, displayPrecision);
                 }
 
             } else {
@@ -512,27 +514,24 @@ public class VTypeHelper {
             double dValue = numValue.doubleValue();
             if (((dValue > 0.0001) && (dValue < 10000))
                     || ((dValue < -0.0001) && (dValue > -10000)) || dValue == 0.0) {
-                return formatScalarNumber(FormatEnum.DECIMAL, numValue, handleUnsetPrecision(precision));
+                return formatScalarNumber(FormatEnum.DECIMAL, numValue, displayPrecision);
             } else {
-                return formatScalarNumber(FormatEnum.EXP, numValue, handleUnsetPrecision(precision));
+                return formatScalarNumber(FormatEnum.EXP, numValue, displayPrecision);
             }
 
         case ENG:
             double value = numValue.doubleValue();
             if (value == 0) {
-                return formatScalarNumber(FormatEnum.EXP, numValue, handleUnsetPrecision(precision));
+                return formatScalarNumber(FormatEnum.EXP, numValue, displayPrecision);
             }
 
-            precision = getPrecision(numValue, precision);
             double log10 = Math.log10(Math.abs(value));
             int power = 3 * (int) Math.floor(log10 / 3);
-            return String.format("%." + precision + "fE%d", value / Math.pow(10, power), power);
+            return String.format("%." + displayPrecision + "fE%d", value / Math.pow(10, power), power);
 
         case EXP:
-            // Assert positive precision
-            precision = getPrecision(numValue, precision);
             // Exponential notation identified as 'negative' precision in cached
-            numberFormat = getExponentialFormat(precision);
+            numberFormat = getExponentialFormat(displayPrecision);
             return numberFormat.format(numValue.doubleValue());
 
         case HEX:
@@ -546,7 +545,7 @@ public class VTypeHelper {
 
     /** Return decimal number format.
      *
-     *  The formats is created if it has not previously been used.
+     *  The formats are created if it has not previously been used.
      *  Constructed formats are cached.
      *
      * @param precision
@@ -564,9 +563,9 @@ public class VTypeHelper {
         return numberFormat;
     }
 
-    /** Return exponential  number format.
+    /** Return exponential number format.
      *
-     *  The formats is created if it has not previously been used.
+     *  The formats are created if it has not previously been used.
      *  Constructed formats are cached.
      *
      * @param precision
@@ -587,15 +586,26 @@ public class VTypeHelper {
         return numberFormat;
     }
 
-    private static int handleUnsetPrecision(int precision) {
-        return (precision == UNSET_PRECISION) ? DEFAULT_PRECISION : precision;
-    }
+    /** Find the display precision for the value:
+     *  - if a precision is specified use that (precision != UNSET)
+     *  - if precision is UNSET, find the precision from the passed VType value
+     *  - if no suitable value passed use the default
+     *
+     * @param pmValue
+     * @param precision
+     * @return
+     */
+    private static int calculatePrecision(Object pmValue, int precision) {
+        int displayPrecision = DEFAULT_PRECISION;
 
-    private static int getPrecision(Number numValue, int precision) {
-        if (precision == UNSET_PRECISION && numValue instanceof Display) {
-            precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
+        if (precision != UNSET_PRECISION) {
+            displayPrecision = precision;
         }
-        return handleUnsetPrecision(precision);
+        else if (pmValue instanceof Display) {
+            displayPrecision = ((Display) pmValue).getFormat().getMinimumFractionDigits();
+        }
+
+        return displayPrecision;
     }
 
     private static double[] ListNumberToDoubleArray(ListNumber listNumber) {
