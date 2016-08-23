@@ -402,16 +402,18 @@ public class VTypeHelper {
         } else {
             if (data.size() <= 0)
                 return "[]"; //$NON-NLS-1$
+
+            int displayPrecision = calculatePrecision(pmArray, precision);
+
             StringBuilder sb = new StringBuilder(data.size());
-            sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
+            sb.append(formatScalarNumber(formatEnum, data.getDouble(0), displayPrecision));
             for (int i = 1; i < data.size(); i++) {
                 sb.append(ARRAY_ELEMENT_SEPARATOR);
-                sb.append(formatScalarNumber(formatEnum, data.getDouble(i), precision));
+                sb.append(formatScalarNumber(formatEnum, data.getDouble(i), displayPrecision));
                 if (i >= MAX_FORMAT_VALUE_COUNT) {
                     sb.append(ARRAY_ELEMENT_SEPARATOR);
                     sb.append("..."); //$NON-NLS-1$
-                    sb.append(formatScalarNumber(formatEnum, data.getDouble(data.size() - 1),
-                            precision));
+                    sb.append(formatScalarNumber(formatEnum, data.getDouble(data.size() - 1), displayPrecision));
                     sb.append(" "); //$NON-NLS-1$
                     sb.append("["); //$NON-NLS-1$
                     sb.append(data.size());
