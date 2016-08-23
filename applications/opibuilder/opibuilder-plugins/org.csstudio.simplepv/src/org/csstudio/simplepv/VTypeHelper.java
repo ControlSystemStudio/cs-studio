@@ -59,7 +59,8 @@ public class VTypeHelper {
     public final static int MAX_FORMAT_VALUE_COUNT = 100;
     final public static String ARRAY_ELEMENT_SEPARATOR = ", "; //$NON-NLS-1$
 
-    private static Map<Integer, NumberFormat> formatCacheMap = new HashMap<Integer, NumberFormat>();
+    private static Map<Integer, NumberFormat> expFormatCacheMap = new HashMap<Integer, NumberFormat>();
+    private static Map<Integer, NumberFormat> decimalFormatCacheMap = new HashMap<Integer, NumberFormat>();
 
     /**
      * Format a VType value to string.
@@ -553,12 +554,12 @@ public class VTypeHelper {
      */
     private static NumberFormat getDecimalFormat(int precision) {
         int absPrecision = Math.abs(precision);
-        NumberFormat numberFormat = formatCacheMap.get(absPrecision);
+        NumberFormat numberFormat = decimalFormatCacheMap.get(absPrecision);
         if (numberFormat == null) {
             numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
             numberFormat.setMinimumFractionDigits(absPrecision);
             numberFormat.setMaximumFractionDigits(absPrecision);
-            formatCacheMap.put(absPrecision, numberFormat);
+            decimalFormatCacheMap.put(absPrecision, numberFormat);
         }
         return numberFormat;
     }
@@ -573,7 +574,7 @@ public class VTypeHelper {
      */
     private static NumberFormat getExponentialFormat(int precision) {
         int absPrecision = Math.abs(precision);
-        NumberFormat numberFormat = formatCacheMap.get(-absPrecision);
+        NumberFormat numberFormat = expFormatCacheMap.get(absPrecision);
         if (numberFormat == null) {
             final StringBuffer pattern = new StringBuffer(10);
             pattern.append("0."); //$NON-NLS-1$
@@ -581,7 +582,7 @@ public class VTypeHelper {
                 pattern.append('0');
             pattern.append("E0"); //$NON-NLS-1$
             numberFormat = new DecimalFormat(pattern.toString());
-            formatCacheMap.put(-absPrecision, numberFormat);
+            expFormatCacheMap.put(absPrecision, numberFormat);
         }
         return numberFormat;
     }
