@@ -579,9 +579,13 @@ public class VTypeHelper {
         NumberFormat numberFormat = expFormatCacheMap.get(absPrecision);
         if (numberFormat == null) {
             final StringBuffer pattern = new StringBuffer(10);
-            pattern.append("0."); //$NON-NLS-1$
-            for (int i = 0; i < precision; ++i)
+            pattern.append("0"); //$NON-NLS-1$
+            if (precision > 0) {
+                pattern.append(".");
+            }
+            for (int i = 0; i < precision; ++i) {
                 pattern.append('0');
+            }
             pattern.append("E0"); //$NON-NLS-1$
             numberFormat = new DecimalFormat(pattern.toString());
             expFormatCacheMap.put(absPrecision, numberFormat);
