@@ -56,8 +56,8 @@ public class VTypeHelper {
      * The max count of values to be formatted into string. The value beyond
      * this count will be omitted.
      */
-    public final static int MAX_FORMAT_VALUE_COUNT = 100;
-    final public static String ARRAY_ELEMENT_SEPARATOR = ", "; //$NON-NLS-1$
+    public static final int MAX_FORMAT_VALUE_COUNT = 100;
+    public static final String ARRAY_ELEMENT_SEPARATOR = ", "; //$NON-NLS-1$
 
     private static Map<Integer, NumberFormat> expFormatCacheMap = new HashMap<Integer, NumberFormat>();
     private static Map<Integer, NumberFormat> decimalFormatCacheMap = new HashMap<Integer, NumberFormat>();
