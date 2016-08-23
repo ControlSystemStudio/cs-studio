@@ -15,7 +15,7 @@ exit -1
 fi
 
 echo ::: Prepare splash :::
-java -jar $BUILD_DIR/ImageLabeler-1.0.jar $VERSION 462 53 plugins/org.csstudio.product/splash-template.bmp plugins/org.csstudio.product/splash.bmp
+java -jar $BUILD_DIR/ImageLabeler-2.0.jar $VERSION 462 53 plugins/org.csstudio.product/splash-template.bmp plugins/org.csstudio.product/splash.bmp "Community Edition" 19 151
 echo ::: Change about dialog version :::
 echo 0=$VERSION > plugins/org.csstudio.product/about.mappings
 
