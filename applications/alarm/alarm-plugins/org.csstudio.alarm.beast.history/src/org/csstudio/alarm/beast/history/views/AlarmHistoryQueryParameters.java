@@ -145,7 +145,7 @@ public class AlarmHistoryQueryParameters {
         if(pvs.isEmpty()){
             sb.append("{ \"must\" : { \"match_all\" : { } }");
         }else{
-            sb.append("{ \"must\" : { \"terms\" : { \"NAME\" : ["); 
+            sb.append("{ \"must\" : { \"terms\" : { \"NAME\" : [");
             sb.append(String.join(",",
                     pvs.stream().map(ProcessVariable::getName).map(e -> "\"" + e + "\"").collect(Collectors.toList())));
             sb.append("] } }");

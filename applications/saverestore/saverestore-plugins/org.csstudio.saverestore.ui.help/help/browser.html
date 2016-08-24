@@ -19,26 +19,26 @@
 
 <h3><a name="branch">Branch Selector</a></h3>
 <p>
-Branch selector is only displayed if the selected storage provider supports branches. Selector is available from the 
+Branch selector is only displayed if the selected storage provider supports branches. Selector is available from the
 browser view drop down menu and is composed of two menu items:
 <ul>
-<li><i>Switch Branch</i> allows selecting any available branch and switching the entire browsing view to use that 
+<li><i>Switch Branch</i> allows selecting any available branch and switching the entire browsing view to use that
 branch</li>
 <li><i>Create New Branch</i> allows creating a new branch</li>
 </ul>
-Branches are most commonly used when the user needs to switch to entirely different set of save sets and snapshots. 
-Branches are also a convenient way to perform tests, because in most cases they can be completely removed by your 
+Branches are most commonly used when the user needs to switch to entirely different set of save sets and snapshots.
+Branches are also a convenient way to perform tests, because in most cases they can be completely removed by your
 administrator.
 </p>
 <h3><a name="base">Base Level Browser</a></h3>
 <p>
 Base level browser is only displayed if the selected storage provider supports base levels and is always the top most
 part of the SSR Browser view. The presentation part of this browser is pluggable, which means that different instances
-of Control System Studio can provide different ways how to browse the base levels. A default browser is also provided 
+of Control System Studio can provide different ways how to browse the base levels. A default browser is also provided
 and will be shown if no additional base level browser is plugged-in to your application.
 </p>
-<p> 
-At any time user also has an option to switch to the default view, by clicking on the bookshelf icon 
+<p>
+At any time user also has an option to switch to the default view, by clicking on the bookshelf icon
 <img src="Bookshelf16.gif"/>. The default browser lists all base levels in a list. User can select an item from the list
 and press the <b>Select</b> button. This will trigger the loading of all save sets for the selected base level.
 Whenever a new item is selected in the list the <b>Select</b> button will be red, denoting that the currently save
@@ -49,7 +49,7 @@ sets do not match the base level selected in the list.
 </div>
 <p>
 By default the base level browser only allows to select those base levels, which actually exist in the storage provider.
-When a non-existent base level needs to be selected, you can click on the filter button <img src="filter_ps.png"/>. 
+When a non-existent base level needs to be selected, you can click on the filter button <img src="filter_ps.png"/>.
 Depending on the implementation of the browser you should then be able to select any base level that is applicable for
 your system. If using the default browser you will notice that the text field below the list (next to the select button)
 has become editable. You may enter any acceptable name for your base level and press the <b>Select</b> button.
@@ -58,10 +58,10 @@ has become editable. You may enter any acceptable name for your base level and p
 <p>
 The contents of the save set browser is defined by the selected base level. All available save sets are ordered
 hierarchically and displayed in a tree-like view. You are free to browse the view by clicking on different nodes in the
-tree; a down pointing arrow <img src="downarrow.png"/> describes an expanded node, a right pointing arrow 
-<img src="rightarrow.png"/> describes a collapsed node and a paper icon <img src="txt.png"/> represents a save sets. 
-Clicking the arrows will either expand or collapse the node, while clicking on the save set node will trigger 
-loading of the snapshots for that save set. 
+tree; a down pointing arrow <img src="downarrow.png"/> describes an expanded node, a right pointing arrow
+<img src="rightarrow.png"/> describes a collapsed node and a paper icon <img src="txt.png"/> represents a save sets.
+Clicking the arrows will either expand or collapse the node, while clicking on the save set node will trigger
+loading of the snapshots for that save set.
 </p>
 <div class='figure'>
    <img src="saveSetBrowser.png"/>
@@ -70,9 +70,9 @@ loading of the snapshots for that save set.
 <p>
 There are four buttons in the title bar of the save set browser:
 <ul>
-<li><b>Import</b> opens a dialog, where user can select any existing branch, base level, save set, or group of 
-save sets, which (s)he wants to import into the currently selected base level. Upon confirming the selection in the 
-dialog, the user has an option to also import (latest or all) existing snapshots that belong to the imported save 
+<li><b>Import</b> opens a dialog, where user can select any existing branch, base level, save set, or group of
+save sets, which (s)he wants to import into the currently selected base level. Upon confirming the selection in the
+dialog, the user has an option to also import (latest or all) existing snapshots that belong to the imported save
 sets.</li>
 <li><b>New</b> opens a new blank Save Set Editor and allows user to create and store a new save set.</li>
 <li><b>Edit</b> opens the selected save set in the Save Set Editor and allows user to edit the contents of the
@@ -86,9 +86,9 @@ Should one wish to delete a save set from the repository, an option is provided 
 </p>
 <h3><a name="snapshot">Snapshot Browser</a></h3>
 <p>
-The contents of the snapshot browser is defined by the selected save set. When a save set is selected, all 
+The contents of the snapshot browser is defined by the selected save set. When a save set is selected, all
 snapshots for that save set are loaded and displayed in the list. The snapshots are ordered chronologically, with
-the latest snapshot on top. The snapshot browser displays the date when the snapshot was created, the person that 
+the latest snapshot on top. The snapshot browser displays the date when the snapshot was created, the person that
 created the snapshot and a message/comment that is associated with that snapshot. If a snapshot has a tag, the tag name
 and beginning of the tag message will also be displayed. All tagged snapshots are also marked with a yellowish colour.
 </p>
@@ -114,8 +114,8 @@ If at any time a tag needs to be deleted, an option is provided in the context m
 </p>
 <h3><a name="other">Other Options</a></h3>
 <p>
-Besides the aforementioned features the Browser View provides several additional options, most of them being available 
-via the view toolbar. Some features are provided as toolbar buttons, others are only available from the drop down menu.  
+Besides the aforementioned features the Browser View provides several additional options, most of them being available
+via the view toolbar. Some features are provided as toolbar buttons, others are only available from the drop down menu.
 </p>
 <ul>
 <li>
@@ -124,18 +124,18 @@ all other browser by clicking on the titles of those browsers.
 </li>
 <li>
 <img src="kaboodleloop.png"/> button executes a repository refresh action. The data in the central repository might be
-changed by more than one user at a time. However, the changes made by other users are not visible on your screen until you 
+changed by more than one user at a time. However, the changes made by other users are not visible on your screen until you
 refresh your repository. Repository is usually automatically refreshed when you store a new save set or snapshot.
 </li>
 <li>
-<img src="search_src.png"/> button opens a dialog allowing user to search for snapshots based on selected criteria. The main 
+<img src="search_src.png"/> button opens a dialog allowing user to search for snapshots based on selected criteria. The main
 search criterion is always a set of characters which the browser will search for in all available snapshots. There are
-three different locations where the characters will be searched for: the snapshot comment, tag name, and tag message. 
+three different locations where the characters will be searched for: the snapshot comment, tag name, and tag message.
 The results of the search will be displayed in the snapshot browser. Selecting another save set will remove the
 search results.
 </li>
 <li>
-<i>Reset Repository</i> is available from the drop down menu. Some storage providers work in a way that the entire 
+<i>Reset Repository</i> is available from the drop down menu. Some storage providers work in a way that the entire
 repository is duplicated on the local machine. In case that something went wrong you may need to dispose of the local
 instance. <i>Reset Repository</i> wipes clean the local copy and creates a fresh duplicate of the central repository.
 </li>
@@ -145,8 +145,8 @@ is registered with the current CS-Studio. The commands brings up a dialog, where
 will be used.
 </li>
 <li>
-Snapshot Browser provides a context menu (accessible via right click), which allows you to open that snapshot in 
-numerous applications that can work with process variables. In any of the options is selected, a list of all PVs in 
+Snapshot Browser provides a context menu (accessible via right click), which allows you to open that snapshot in
+numerous applications that can work with process variables. In any of the options is selected, a list of all PVs in
 that snapshot will be sent to that application.
 </ul>
 </body>

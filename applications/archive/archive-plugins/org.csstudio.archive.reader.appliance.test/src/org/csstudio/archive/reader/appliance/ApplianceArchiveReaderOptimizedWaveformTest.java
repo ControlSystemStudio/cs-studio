@@ -67,8 +67,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_float",true,5, start, end);
         assertEquals("Number of values comparison", 5, vals.length);
 
@@ -95,8 +95,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
      */
     @Test
     public void testDataRetrievalInt() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_int",true,5, start, end);
         assertEquals("Number of values comparison", 5, vals.length);
 
@@ -123,8 +123,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
      */
     @Test
     public void testDataRetrievalShort() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_short",true,5, start,end);
         assertEquals("Number of values comparison", 5, vals.length);
 
@@ -151,8 +151,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
      */
     @Test
     public void testDataRetrievalByte() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_byte",true,5,start,end);
         assertEquals("Number of values comparison", 5, vals.length);
 
@@ -179,8 +179,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
      */
     @Test
     public void testDataRetrievalString() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         try {
             getValuesStringArray("test_pv_wave_string",true,5,start,end);
             fail();
@@ -199,8 +199,8 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
     @Test
     public void testDataRetrievalEnum() throws Exception {
         //this doesn't seem to be supported on the IOC side
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         try {
             getValuesEnumArray("test_pv_wave_enum",true,5,start,end);
             fail();

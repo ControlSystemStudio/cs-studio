@@ -12,7 +12,7 @@
 <h2><a name="overview">Overview</a></h2>
 <p>
 Save, Set & Restore provides facilities to simultaneously monitor several PVs, store their values, compare the live or
-stored values with the values at other times, and restore the previously stored values. Application also provides 
+stored values with the values at other times, and restore the previously stored values. Application also provides
 mechanisms to browse and manage the stored sets as well as to export the values to standard file formats.
 </p>
 
@@ -21,13 +21,13 @@ mechanisms to browse and manage the stored sets as well as to export the values 
 The two main entities of the Save, Set & Restore application (SSR) are <b>Save Set</b> and <b>Snapshot</b>. Save
 Set defines the list of PV names, which can be loaded into the spreadsheet, while the Snapshot is a recording of PV values
 defined by the Save Set at one specific time. Snapshot always belong to a particular Save Set, which is also the
-way how the entities are made available in the SSR Browser. 
+way how the entities are made available in the SSR Browser.
 </p>
 <p>
 The user interface of SSR is composed of three different parts: <a href="#browser"><b>Save & Restore Browser</b></a> <i>(view)</i>,
 <a href="#viewer"><b>Snapshot Viewer</b></a> <i>(Editor)</i>, and <a href="#editor"><b>Save Set Editor</b></a> </i>(Editor)</i>.
 Browser provides mechanisms to browse and select Save Sets and Snapshots, while the two editors provide facilities,
-to create or display the contents of the SSR entities. 
+to create or display the contents of the SSR entities.
 </p>
 <h2><a name="browser">Browser</a></h2>
 <p>
@@ -39,7 +39,7 @@ snapshots (and base levels if supported).</li>
 <li><b>Base Level Browser</b> <i>(Optional)</i> is available as the top most part of the browser view. The base level
 defines a distinctive set of Save sets, for example for one particular experiment</li>
 <li><b>Save Set Browser</b> provides a list of all available Save Sets for the selected branch and base level.
-If branches and base levels are not supported, the Save Set Browser is the top most selector that is available. The 
+If branches and base levels are not supported, the Save Set Browser is the top most selector that is available. The
 save sets are ordered hierarchically and are displayed in a tree-like view.</li>
 <li><b>Snapshot Browser</b> provides a list of all available Snapshots for the selected Save Set. The snapshots are
 order by time (latest on top) and are displayed together with the creation date, creator name and message/description.
@@ -52,19 +52,19 @@ The details of each browser part are described <a href="browser.html">here</a>.
 <h2><a name="viewer">Snapshot Viewer</a></h2>
 <p>
 Snapshot Viewer provides facilities to display the contents of any existing snapshot as well as to take and save new
-snapshots. The main part of the Snapshot viewer is the table displaying the PVs, their stored and live values. Above the 
-table one can find the common controls (restore, take and save snapshot) an common properties of the snapshot (comment, 
+snapshots. The main part of the Snapshot viewer is the table displaying the PVs, their stored and live values. Above the
+table one can find the common controls (restore, take and save snapshot) an common properties of the snapshot (comment,
 timestamp, creator and tag). At the very top of the viewer a toolbar is located which provides additional options for
-viewing the data and exporting/importing data. 
+viewing the data and exporting/importing data.
 </p>
 <p>
 The details of the snapshot viewer are described <a href="snapshotviewer.html">here</a>.
 </p>
 <h2><a name="editor">Save Set Editor</a></h2>
 <p>
-Save Set editor allows to create and edit Save set files. Save sets are composed of just two pieces of 
-information: description and pvlist. Editor provides the means to edit these and to save (see the <i>File</i> menu) 
-them by either overwriting the existing save set or into a new file.  
+Save Set editor allows to create and edit Save set files. Save sets are composed of just two pieces of
+information: description and pvlist. Editor provides the means to edit these and to save (see the <i>File</i> menu)
+them by either overwriting the existing save set or into a new file.
 </p>
 <p>
 The details of the save set editor are described <a href="saveseteditor.html">here</a>.

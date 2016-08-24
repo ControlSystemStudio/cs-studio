@@ -66,8 +66,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_double",100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -99,8 +99,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_float",100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -133,8 +133,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalInt() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_int",100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -167,8 +167,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalShort() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_short",100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -201,8 +201,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalByte() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_byte",100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -235,8 +235,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalString() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_string",100,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -260,8 +260,8 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
      */
     @Test
     public void testDataRetrievalEnum() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv_enum",100,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 

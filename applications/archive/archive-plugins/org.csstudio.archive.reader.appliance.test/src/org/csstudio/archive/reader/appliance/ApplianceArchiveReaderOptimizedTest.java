@@ -92,8 +92,8 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_float",true,100,start,end);
         assertEquals("Number of values comparison", 100, vals.length);
 

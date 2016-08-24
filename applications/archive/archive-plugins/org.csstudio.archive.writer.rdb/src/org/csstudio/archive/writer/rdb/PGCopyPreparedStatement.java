@@ -43,7 +43,7 @@ public class PGCopyPreparedStatement implements PreparedStatement {
     private StringBuffer batchBuilder;
 
     private int[] columnOrderMapping;
-    
+
     private String tableName;
 
     public PGCopyPreparedStatement(Connection connection, String insertSqlQuery)
