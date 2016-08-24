@@ -38,7 +38,7 @@ import org.diirt.vtype.ValueFactory;
  *  @author Kay Kasemir, Megan Grodowitz
  */
 @SuppressWarnings("nls")
-public class VTypePickle
+public class VTypeToFromString
 {
     private static final NumberFormat nf = NumberFormats.toStringFormat();
 
@@ -89,7 +89,7 @@ public class VTypePickle
         return sb;
     }
 
-    public static String Pickle( Object value ) throws Exception
+    public static String ToString( Object value ) throws Exception
     {
         if (value instanceof VNumberArray)
         {
@@ -172,27 +172,27 @@ public class VTypePickle
             return VStringArray.class;
     }
 
-    public static VType UnPickle ( String text ) throws Exception
+    public static VType FromString ( String text ) throws Exception
     {
         List<String> items = splitStringList(text);
 
         Class<? extends VType> type = determineValueType(items);
 
-        return UnPickle (text, type);
+        return FromString (text, type);
     }
 
-    public static VType UnPickle ( final String text, Class<? extends VType> type ) throws Exception
+    public static VType FromString ( final String text, Class<? extends VType> type ) throws Exception
     {
         if (type == VDouble.class)
-            return UnPickleVDouble(text);
+            return FromStringVDouble(text);
         if (type == VString.class)
-            return UnPickleVString(text);
+            return FromStringVString(text);
 
         throw new Exception("Unhandled class: " + type.getCanonicalName());
 
     }
 
-    public static VType UnPickleVDouble(final String text) throws Exception
+    public static VType FromStringVDouble(final String text) throws Exception
     {
         try
         {
@@ -204,7 +204,7 @@ public class VTypePickle
         }
     }
 
-    public static VType UnPickleVLong(final String text) throws Exception
+    public static VType FromStringVLong(final String text) throws Exception
     {
         try
         {
@@ -216,19 +216,19 @@ public class VTypePickle
         }
     }
 
-    public static VType UnPickleVString(final String text)
+    public static VType FromStringVString(final String text)
     {
         return ValueFactory.newVString(stripQuotes(text), ValueFactory.alarmNone(), ValueFactory.timeNow());
     }
 
-    public static VType UnPickleVDoubleArray(final String text) throws Exception
+    public static VType FromStringVDoubleArray(final String text) throws Exception
     {
         final List<String> items = splitStringList(text);
         final double[] numbers = parseDoubles(items);
         return ValueFactory.toVType(numbers);
     }
 
-    public static VType UnPickleVStringArray(final String text) throws Exception
+    public static VType FromStringVStringArray(final String text) throws Exception
     {
         final List<String> strings = new ArrayList<>();
         final List<String> items = splitStringList(text);
@@ -387,7 +387,7 @@ public class VTypePickle
             if (new_value instanceof Number)
                 return ValueFactory.newVDouble( ((Number)new_value).doubleValue());
 
-            return UnPickleVDouble(Objects.toString(new_value));
+            return FromStringVDouble(Objects.toString(new_value));
         }
 
         if (type == VLong.class)
@@ -395,11 +395,11 @@ public class VTypePickle
             if (new_value instanceof Number)
                 return ValueFactory.toVType(((Number)new_value).longValue());
 
-            return UnPickleVLong(Objects.toString(new_value));
+            return FromStringVLong(Objects.toString(new_value));
         }
 
         if (type == VString.class)
-            return UnPickleVString(Objects.toString(new_value));
+            return FromStringVString(Objects.toString(new_value));
 
         if (type == VDoubleArray.class)
         {   // Pass double[]
@@ -411,7 +411,7 @@ public class VTypePickle
                 final double[] numbers = parseDoubles((List<?>)new_value);
                 return ValueFactory.toVType(numbers);
             }
-            return UnPickleVDoubleArray(Objects.toString(new_value));
+            return FromStringVDoubleArray(Objects.toString(new_value));
         }
 
         if (type == VStringArray.class)
@@ -426,7 +426,7 @@ public class VTypePickle
                     strings.add(Objects.toString(item));
                 return ValueFactory.newVStringArray(strings, ValueFactory.alarmNone(), ValueFactory.timeNow());
             }
-            return UnPickleVStringArray(Objects.toString(new_value));
+            return FromStringVStringArray(Objects.toString(new_value));
         }
 
         if (type == VEnum.class)

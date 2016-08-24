@@ -147,6 +147,52 @@ public class MQTTPVDemo implements PVListener
     }
 
     @Test
+    public void testMulti() throws Exception
+    {
+        updates = new CountDownLatch(4);
+
+        final PV pv0 = PVPool.getPV("mqtt://testDoubleA(3.14)");
+        final PV pv1 = PVPool.getPV("mqtt://testDoubleB(42)");
+        final PV pv2 = PVPool.getPV("mqtt://testDoubleC(1.0101)");
+        final PV pv3 = PVPool.getPV("mqtt://testDoubleD(2.0202)");
+
+        pv0.addListener(this);
+        pv1.addListener(this);
+        pv2.addListener(this);
+        pv3.addListener(this);
+
+        updates.await();
+
+        try
+        {
+            System.out.println(pv0.read());
+            System.out.println(pv1.read());
+            System.out.println(pv2.read());
+            System.out.println(pv3.read());
+
+            collector.checkThat(ValueUtil.numericValueOf(pv0.read()), equalTo(3.14));
+            collector.checkThat(ValueUtil.numericValueOf(pv1.read()), equalTo(42));
+            collector.checkThat(ValueUtil.numericValueOf(pv2.read()), equalTo(1.0101));
+            collector.checkThat(ValueUtil.numericValueOf(pv3.read()), equalTo(2.0202));
+        }
+        catch (Exception e)
+        {
+            collector.addError(new Throwable("testDouble pv read/write failure"));
+            e.printStackTrace();
+        }
+
+        pv0.removeListener(this);
+        pv1.removeListener(this);
+        pv2.removeListener(this);
+        pv3.removeListener(this);
+
+        PVPool.releasePV(pv0);
+        PVPool.releasePV(pv1);
+        PVPool.releasePV(pv2);
+        PVPool.releasePV(pv3);
+    }
+
+    @Test
     public void testDouble() throws Exception
     {
         final PV pv = PVPool.getPV("mqtt://testDouble(3.14)");
