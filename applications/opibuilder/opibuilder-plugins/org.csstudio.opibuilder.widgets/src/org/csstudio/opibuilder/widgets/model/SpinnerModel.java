@@ -45,7 +45,7 @@ public class SpinnerModel extends LabelModel {
 
     public static final String PROP_HORIZONTAL_BUTTONS_LAYOUT= "horizontal_buttons_layout";    //$NON-NLS-1$
 
-
+    public static final String PROP_SHOW_TEXTBOX = "show_textbox";    //$NON-NLS-1$
 
     /**
      * The Format of the value.
@@ -104,6 +104,8 @@ public class SpinnerModel extends LabelModel {
         addProperty(new BooleanProperty(PROP_HORIZONTAL_BUTTONS_LAYOUT, "Horizontal Buttons Layout",
                 WidgetPropertyCategory.Display, false));
 
+        addProperty(new BooleanProperty(PROP_SHOW_TEXTBOX, "Show text",
+                WidgetPropertyCategory.Display, true));
 
     }
 
@@ -123,9 +125,9 @@ public class SpinnerModel extends LabelModel {
         return (Double) getProperty(PROP_MAX).getPropertyValue();
     }
 
-
-
-
+    public boolean showText(){
+        return (Boolean)getPropertyValue(PROP_SHOW_TEXTBOX);
+    }
 
     /**
      * @return the step increment
