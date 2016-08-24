@@ -5,12 +5,18 @@ import static org.junit.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.*;
 
+import org.diirt.util.text.NumberFormats;
+import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.junit.Test;
 
 
 public class VTypeFormatTest {
+
+    Display displayFiveDp = ValueFactory.newDisplay(Double.NaN, Double.NaN,
+            Double.NaN, "%", NumberFormats.format(5), Double.NaN, Double.NaN,
+            Double.NaN, Double.NaN, Double.NaN);
 
     VType longValue = ValueFactory.newVLong(Long.valueOf(4294906129L), ValueFactory.alarmNone(),
             ValueFactory.timeNow(), ValueFactory.displayNone());
@@ -19,15 +25,16 @@ public class VTypeFormatTest {
     VType intForStringValue = ValueFactory.newVInt(97, ValueFactory.alarmNone(),
             ValueFactory.timeNow(), ValueFactory.displayNone());
     VType smallDoubleValue =  ValueFactory.newVDouble(1.234567e-7);
+    VType smallDoubleValueFiveDp =  ValueFactory.newVDouble(1.234567e-7, displayFiveDp);
     VType doubleNaNValue =  ValueFactory.newVDouble(Double.NaN);
     VType doubleInfValue =  ValueFactory.newVDouble(Double.POSITIVE_INFINITY);
     VType smallNegativeDoubleValue =  ValueFactory.newVDouble(-1.234567e-7);
-    VType bigDoubleValue =  ValueFactory.newVDouble(6.54321e23);
-    VType orderTenDoubleValue =  ValueFactory.newVDouble(21.251235);
+    VType bigDoubleValueNoFormat =  ValueFactory.newVDouble(6.54321e23);
+    VType orderTenDoubleValueFiveDp =  ValueFactory.newVDouble(21.251235, displayFiveDp);
 
     @Test
-    public void expFormatValueOfSmallDoubleWithPrecisionMinus1IsExpWith4dp() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, smallDoubleValue, -1), is("1.2346E-7"));
+    public void expFormatValueOfSmallDoubleWithPrecisionMinus1WithDisplayIsExpWithFormatDp() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, smallDoubleValueFiveDp, -1), is("1.23457E-7"));
     }
 
     @Test
@@ -37,12 +44,12 @@ public class VTypeFormatTest {
 
     @Test
     public void expFormatValueOfDoubleHasCharacteristicLtTen() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, orderTenDoubleValue, -1), is("2.1251E1"));
+        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, orderTenDoubleValueFiveDp, 4), is("2.1251E1"));
     }
 
     @Test
     public void expFormatValueOfBigDoubleHasCorrectPositiveExponent() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, bigDoubleValue, -1), is("6.5432E23"));
+        assertThat(VTypeHelper.formatValue(FormatEnum.EXP, bigDoubleValueNoFormat, 2), is("6.54E23"));
     }
 
     @Test
@@ -67,7 +74,7 @@ public class VTypeFormatTest {
 
     @Test
     public void engFormatValueOfSmallDoubleWithDefaultPrecisionHasCharacteristicLtThousand() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.ENG, smallDoubleValue, -1), is("123.4567E-9"));
+        assertThat(VTypeHelper.formatValue(FormatEnum.ENG, smallDoubleValue, 4), is("123.4567E-9"));
     }
 
     @Test
@@ -107,7 +114,7 @@ public class VTypeFormatTest {
 
     @Test
     public void decFormatValueOfbigDoubleHasPrecisionDecimalPlaces() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.DECIMAL, bigDoubleValue, 3), is("654321000000000000000000.000"));
+        assertThat(VTypeHelper.formatValue(FormatEnum.DECIMAL, bigDoubleValueNoFormat, 3), is("654321000000000000000000.000"));
     }
 
     @Test
@@ -117,6 +124,6 @@ public class VTypeFormatTest {
 
     @Test
     public void decFormatValueOfDoubleHasFullValueForUnsetPrecision() {
-        assertThat(VTypeHelper.formatValue(FormatEnum.DECIMAL, orderTenDoubleValue, -1), is("21.251235"));
+        assertThat(VTypeHelper.formatValue(FormatEnum.DECIMAL, orderTenDoubleValueFiveDp, -1), is("21.25124"));
     }
 }
