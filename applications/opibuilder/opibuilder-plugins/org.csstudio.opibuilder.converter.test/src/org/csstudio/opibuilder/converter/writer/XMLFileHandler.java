@@ -50,11 +50,11 @@ public class XMLFileHandler {
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-        transformer.transform(new DOMSource(doc), 
+        transformer.transform(new DOMSource(doc),
              new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
-	
-	
+
+
     public static Document createDomDocument() throws EdmException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

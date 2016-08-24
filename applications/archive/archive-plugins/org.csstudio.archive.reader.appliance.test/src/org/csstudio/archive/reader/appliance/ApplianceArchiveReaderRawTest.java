@@ -61,8 +61,8 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
      */
     @Test
     public void testDataRetrievalFloat() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_float",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -85,8 +85,8 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
      */
     @Test
     public void testDataRetrievalInt() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_int",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -109,8 +109,8 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
      */
     @Test
     public void testDataRetrievalShort() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_short",false,0, start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -133,8 +133,8 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
      */
     @Test
     public void testDataRetrievalByte() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv_byte",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 
@@ -157,8 +157,8 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
      */
     @Test
     public void testDataRetrievalString() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVString[] vals = getValuesString("test_pv_string",false,0,start,end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 

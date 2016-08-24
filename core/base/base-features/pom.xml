@@ -9,7 +9,7 @@
   <artifactId>base-features</artifactId>
   <packaging>pom</packaging>
   <modules>
-    
+
     <module>org.csstudio.core.base.feature</module>
   </modules>
   <build>

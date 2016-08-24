@@ -105,7 +105,7 @@ public class SearchStringParserTest {
     expectedSearch.put("to", "now");
     assertEquals("Failed to parse " + search, expectedSearch,
         searchParser(search, defaultKey));
-    
+
     // Test for the new absolute time format associated with the java time
     String searchAbsoluteTime = "search for some text logbook:Operations, LOTO,Commissioning tags: testTag, testTag2 from:2016/04/12 14:11:00.000 to: now";
     Map<String, String> expectedSearchAbsoluteTime = new HashMap<String, String>();
@@ -116,7 +116,7 @@ public class SearchStringParserTest {
     expectedSearchAbsoluteTime.put("to", "now");
     assertEquals("Failed to parse " + searchAbsoluteTime, expectedSearchAbsoluteTime,
         searchParser(searchAbsoluteTime, defaultKey));
-    
+
     searchAbsoluteTime = "search for some text logbook:Operations, LOTO,Commissioning tags: testTag, testTag2 from:2016/04/12 14:11:00.000 to: 2016/04/12 15:11";
     expectedSearchAbsoluteTime = new HashMap<String, String>();
     expectedSearchAbsoluteTime.put("text", "search for some text");
@@ -126,7 +126,7 @@ public class SearchStringParserTest {
     expectedSearchAbsoluteTime.put("to", "2016/04/12 15:11");
     assertEquals("Failed to parse " + searchAbsoluteTime, expectedSearchAbsoluteTime,
         searchParser(searchAbsoluteTime, defaultKey));
-    
+
     searchAbsoluteTime = "search for some text logbook:Operations, LOTO,Commissioning tags: testTag, testTag2 from:14:11 to:15:11";
     expectedSearchAbsoluteTime = new HashMap<String, String>();
     expectedSearchAbsoluteTime.put("text", "search for some text");
@@ -136,7 +136,7 @@ public class SearchStringParserTest {
     expectedSearchAbsoluteTime.put("to", "15:11");
     assertEquals("Failed to parse " + searchAbsoluteTime, expectedSearchAbsoluteTime,
         searchParser(searchAbsoluteTime, defaultKey));
-    
+
     String searchRelativeTime = "search for some text logbook:Operations, LOTO,Commissioning tags: testTag, testTag2 from:-5 days 0.0 seconds to: now";
     Map<String, String> expectedRelativeAbsoluteTime = new HashMap<String, String>();
     expectedRelativeAbsoluteTime.put("text", "search for some text");
@@ -146,7 +146,7 @@ public class SearchStringParserTest {
     expectedRelativeAbsoluteTime.put("to", "now");
     assertEquals("Failed to parse " + searchRelativeTime, expectedRelativeAbsoluteTime,
         searchParser(searchRelativeTime, defaultKey));
-    
+
     }
 
 }

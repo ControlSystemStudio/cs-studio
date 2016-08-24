@@ -38,8 +38,8 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
      */
     @Test
     public void testDataRetrievalWhenThereAreNotManyPoints() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumber[] vals = getValuesNumber("test_pv", true, 2000, start, end);
         assertEquals("Number of values comparison", 100, vals.length);
 
@@ -63,8 +63,8 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVType[] vals = getValuesStatistics("test_pv", 10, start, end);
         assertEquals("Number of values comparison", 10, vals.length);
 

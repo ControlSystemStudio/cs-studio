@@ -30,7 +30,7 @@ public class BeastActiveAdapter extends BeastTypeAdapter {
     @Override
     public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine(Messages.Active +" ADAPTER:" + message.toString());
-        
+
         VBoolean active = newVBoolean(message.isActive(), alarmNone(), timeNow());
         cache.writeValue(active);
         return true;

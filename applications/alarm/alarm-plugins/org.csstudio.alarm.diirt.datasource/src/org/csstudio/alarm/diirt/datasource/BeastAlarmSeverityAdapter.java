@@ -30,7 +30,7 @@ public class BeastAlarmSeverityAdapter extends BeastTypeAdapter {
     @Override
     public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine(Messages.Active +" ADAPTER:" + message.toString());
-        
+
         VString alarmSeverity = newVString(message.getAlarmSeverity(), alarmNone(), timeNow());
         cache.writeValue(alarmSeverity);
         return true;

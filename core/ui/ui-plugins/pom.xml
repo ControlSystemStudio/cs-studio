@@ -27,7 +27,7 @@
     <module>org.csstudio.csdata.clipboard</module>
     <module>org.csstudio.perspectives</module>
     <module>org.csstudio.perspectives.test</module>
-    
-    
+
+
   </modules>
 </project>

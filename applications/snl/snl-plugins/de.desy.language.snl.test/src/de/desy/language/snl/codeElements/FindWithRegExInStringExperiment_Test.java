@@ -13,12 +13,12 @@ public class FindWithRegExInStringExperiment_Test extends TestCase {
             + "        printf(\"sncExample: Startup delay over\n\");"
             + "    } state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
             + "    state low {" + "        when (v > 50.0) {"
-            + "	        printf(\"sncExample: Changing to high\n\");" + "/* +++"
+            + "            printf(\"sncExample: Changing to high\n\");" + "/* +++"
             + "*/        } state high" + "       " + "       when ( delay(1.0) )"
             + "       {" + "       } state low" + "   }" + "    state high {"
             + "when (v <= 50.0) {"
-            + "	    printf(\"sncExample: Changing to low\n\");"
-            + "	} state low" + "        when ( delay(1.0) ) {"
+            + "        printf(\"sncExample: Changing to low\n\");"
+            + "    } state low" + "        when ( delay(1.0) ) {"
             + "       } state high" + "   }" + "}";
 
     public void testFindWithRegEx() {

@@ -70,7 +70,7 @@ public class OpiDisplayTest {
 
         //XMLFileHandler.writeXML(doc);
     }
-    
+
     @Test
     public void testOptionality() throws EdmException {
 
@@ -86,11 +86,11 @@ public class OpiDisplayTest {
 
         new OpiDisplay(doc, d, edlFile);
         //try {
-		//	XMLFileHandler.printDocument(doc, System.out);
-		//} catch (IOException | TransformerException e1) {
-			// TODO Auto-generated catch block
-		//	e1.printStackTrace();
-		//}
+        //    XMLFileHandler.printDocument(doc, System.out);
+        //} catch (IOException | TransformerException e1) {
+            // TODO Auto-generated catch block
+        //    e1.printStackTrace();
+        //}
 
         Element e = (Element)doc.getElementsByTagName("display").item(0);
         assertEquals("org.csstudio.opibuilder.Display", e.getAttribute("typeId"));
