@@ -43,7 +43,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class SpinnerFigure extends Figure implements Introspectable {
     public static enum NumericFormatType {
-        DECIAML("Decimal"),
+        DECIMAL("Decimal"),
         EXP("Exponential"),
         HEX("Hex");
 
@@ -89,7 +89,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
     private int precision = 3;
 
     public SpinnerFigure() {
-        formatType = NumericFormatType.DECIAML;
+        formatType = NumericFormatType.DECIMAL;
         spinnerListeners = new ArrayList<IManualValueChangeListener>();
         setRequestFocusEnabled(true);
         setFocusTraversable(true);
@@ -216,7 +216,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
             return format.format(value);
         case HEX:
             return HEX_PREFIX + Long.toHexString((long)value);
-        case DECIAML:
+        case DECIMAL:
         default:
             format = new DecimalFormat("0"); //$NON-NLS-1$
             format.setMaximumFractionDigits(precision);
