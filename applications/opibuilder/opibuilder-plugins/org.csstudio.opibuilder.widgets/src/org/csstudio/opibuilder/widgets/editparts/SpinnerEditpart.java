@@ -64,6 +64,8 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
         spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
         spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
+        spinner.showText(getWidgetModel().showText());
+
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
             spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
@@ -315,6 +317,14 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
             };
             setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
 
+            handler = new IWidgetPropertyChangeHandler() {
+                @Override
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).showText((Boolean)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_SHOW_TEXTBOX, handler);
 
     }
 
