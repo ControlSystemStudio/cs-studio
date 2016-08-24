@@ -346,10 +346,8 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
     @Override
     public void performRequest(Request request){
-        if (getFigure().isEnabled()
-                &&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
-                getExecutionMode() != ExecutionMode.RUN_MODE)||
-                request.getType() == RequestConstants.REQ_OPEN))
+        if (getFigure().isEnabled() && ((SpinnerModel)getWidgetModel()).showText()
+                && ((request.getType() == RequestConstants.REQ_DIRECT_EDIT && getExecutionMode() != ExecutionMode.RUN_MODE) || request.getType() == RequestConstants.REQ_OPEN))
             performDirectEdit();
     }
 
