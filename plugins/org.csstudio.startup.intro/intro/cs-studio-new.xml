@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-  	<extensionContent id="org.csstudio.startup.whatsnew" style="css/sample.css" name="CS-Studio WhatsNew" path="whatsnew/@">
+  	<extensionContent id="org.csstudio.startup.whatsnew" style="css_intro.css" name="CS-Studio WhatsNew" path="whatsnew/@">
 		<group style-id="content-group" id="org.csstudio.startup.whatsnew-group">
        		<link label=" Whats New in CS-Studio"
        		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.startup.intro/html/changelog.html" 
