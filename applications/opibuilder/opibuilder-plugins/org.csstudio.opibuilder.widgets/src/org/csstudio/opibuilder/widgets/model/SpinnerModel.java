@@ -67,7 +67,6 @@ public class SpinnerModel extends LabelModel {
         setBorderStyle(BorderStyle.LOWERED);
     }
 
-
     @Override
     protected void configureProperties() {
         pvModel = true;
@@ -106,9 +105,7 @@ public class SpinnerModel extends LabelModel {
 
         addProperty(new BooleanProperty(PROP_SHOW_TEXT, "Show text",
                 WidgetPropertyCategory.Display, true));
-
     }
-
 
     /**
      * @return the minimum value
@@ -116,7 +113,6 @@ public class SpinnerModel extends LabelModel {
     public Double getMinimum() {
         return (Double) getProperty(PROP_MIN).getPropertyValue();
     }
-
 
     /**
      * @return the maximum value
@@ -163,7 +159,6 @@ public class SpinnerModel extends LabelModel {
     public String getTypeID() {
         return ID;
     }
-
 
     public NumericFormatType getFormat() {
         int i = (Integer)getPropertyValue(PROP_FORMAT);
