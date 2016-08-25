@@ -514,7 +514,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
 
     public void showText(boolean isVisible) {
         labelFigure.setVisible(isVisible);
-        labelFigure.setEnabled(isVisible);
         repaint();
     }
 
