@@ -394,8 +394,6 @@
         <version>${tycho.version}</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
-          <!--Some tests fail right now -->
-          <testFailureIgnore>true</testFailureIgnore>
           <failIfNoTests>false</failIfNoTests>
         </configuration>
       </plugin>
