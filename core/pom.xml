@@ -28,6 +28,7 @@
     <baselineMode>fail</baselineMode>
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
+    <diirt.version>3.1.5</diirt.version>
     <cs-studio-central.url>${download.root}/core/${cs-studio.version}</cs-studio-central.url>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
@@ -110,7 +111,7 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.1.2</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
