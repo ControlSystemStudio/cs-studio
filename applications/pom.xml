@@ -29,6 +29,7 @@
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
     <cs-studio-central.url>${download.root}/applications/${cs-studio.version}</cs-studio-central.url>
+    <diirt.version>3.1.5</diirt.version>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>
@@ -110,7 +111,7 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.1.2</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
