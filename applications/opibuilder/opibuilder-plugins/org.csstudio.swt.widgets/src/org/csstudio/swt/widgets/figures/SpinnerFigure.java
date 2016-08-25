@@ -42,10 +42,14 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class SpinnerFigure extends Figure implements Introspectable {
+
+
     public static enum NumericFormatType {
-        DECIAML("Decimal"),
+        DECIMAL("Decimal"),
         EXP("Exponential"),
         HEX("Hex");
+
+        private String description;
 
         public static String[] stringValues(){
             String[] result = new String[values().length];
@@ -55,7 +59,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
             }
             return result;
         }
-        private String description;
 
         private NumericFormatType(String description) {
             this.description = description;
@@ -66,6 +69,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
             return description;
         }
     }
+
     private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 
     private double min = -100;
@@ -89,38 +93,39 @@ public class SpinnerFigure extends Figure implements Introspectable {
     private int precision = 3;
 
     public SpinnerFigure() {
-        formatType = NumericFormatType.DECIAML;
+        formatType = NumericFormatType.DECIMAL;
         spinnerListeners = new ArrayList<IManualValueChangeListener>();
         setRequestFocusEnabled(true);
         setFocusTraversable(true);
-            addKeyListener(new KeyListener() {
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(ke.keycode == SWT.ARROW_DOWN)
+                    stepDown();
+                else if(ke.keycode == SWT.ARROW_UP)
+                    stepUp();
+                else if(ke.keycode == SWT.PAGE_UP)
+                    pageUp();
+                else if(ke.keycode == SWT.PAGE_DOWN)
+                    pageDown();
+            }
 
-                public void keyPressed(KeyEvent ke) {
-                    if(ke.keycode == SWT.ARROW_DOWN)
-                        stepDown();
-                    else if(ke.keycode == SWT.ARROW_UP)
-                        stepUp();
-                    else if(ke.keycode == SWT.PAGE_UP)
-                        pageUp();
-                    else if(ke.keycode == SWT.PAGE_DOWN)
-                        pageDown();
-                }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+            }
+        });
 
-                public void keyReleased(KeyEvent ke) {
-                }
-            });
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent fe) {
+                repaint();
+            }
 
-            addFocusListener(new FocusListener() {
-
-                public void focusGained(FocusEvent fe) {
-                    repaint();
-                }
-
-                public void focusLost(FocusEvent fe) {
-                    repaint();
-                }
-            });
-
+            @Override
+            public void focusLost(FocusEvent fe) {
+                repaint();
+            }
+        });
 
         labelFigure = new TextFigure(){
             /**
@@ -128,6 +133,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
              *
              * @param graphics Graphics handle for painting
              */
+            @Override
             protected void paintBorder(Graphics graphics) {
                 super.paintBorder(graphics);
                 if (SpinnerFigure.this.hasFocus()) {
@@ -136,10 +142,10 @@ public class SpinnerFigure extends Figure implements Introspectable {
 
                     Rectangle area = getClientArea();
                     graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
-
                 }
             }
         };
+
         labelFigure.setText(format(value));
         labelFigure.addMouseListener(new MouseListener.Stub(){
             @Override
@@ -158,6 +164,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
         buttonUp.setDirection(Orientable.NORTH);
         buttonUp.setFiringMethod(Clickable.REPEAT_FIRING);
         buttonUp.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 stepUp();
                 if(!hasFocus())
@@ -171,6 +178,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
         buttonDown.setDirection(Orientable.SOUTH);
         buttonDown.setFiringMethod(Clickable.REPEAT_FIRING);
         buttonDown.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 stepDown();
                 if(!hasFocus())
@@ -178,9 +186,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
             }
         });
         add(buttonDown);
-
-
-
     }
 
     public void addManualValueChangeListener(IManualValueChangeListener listener){
@@ -201,7 +206,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
             }
     }
 
-
     private String format(double value){
         DecimalFormat format;
         switch (formatType) {
@@ -216,7 +220,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
             return format.format(value);
         case HEX:
             return HEX_PREFIX + Long.toHexString((long)value);
-        case DECIAML:
+        case DECIMAL:
         default:
             format = new DecimalFormat("0"); //$NON-NLS-1$
             format.setMaximumFractionDigits(precision);
@@ -264,7 +268,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
         return min;
     }
 
-
     public double getPageIncrement() {
         return pageIncrement;
     }
@@ -275,7 +278,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
     public int getPrecision() {
         return precision;
     }
-
 
     /**
      * @return the stepIncrement
@@ -308,41 +310,61 @@ public class SpinnerFigure extends Figure implements Introspectable {
     @Override
     protected void layout() {
         Rectangle clientArea = getClientArea();
-        if(arrowButtonsOnLeft){
-            if(arrowButtonsHorizontal){
-                labelFigure.setBounds(new Rectangle(clientArea.x+1 + 2 * buttonWidth, clientArea.y,
-                        clientArea.width - 2 * buttonWidth-1, clientArea.height));
-                buttonUp.setBounds(new Rectangle(clientArea.x,
-                        clientArea.y, buttonWidth, clientArea.height));
-                buttonDown.setBounds(new Rectangle(clientArea.x + buttonWidth,
-                        clientArea.y, buttonWidth, clientArea.height));
-            }
-            else{
-                labelFigure.setBounds(new Rectangle(clientArea.x+1 + buttonWidth, clientArea.y,
-                        clientArea.width - buttonWidth-1, clientArea.height));
-                buttonUp.setBounds(new Rectangle(clientArea.x,
-                        clientArea.y, buttonWidth, clientArea.height/2));
-                buttonDown.setBounds(new Rectangle(clientArea.x,
-                        clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
-            }
-        }else{
-            if(arrowButtonsHorizontal){
-                labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y,
-                        clientArea.width - 2 * buttonWidth, clientArea.height));
-                buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - 2 * buttonWidth,
-                        clientArea.y, buttonWidth, clientArea.height));
-                buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
-                        clientArea.y, buttonWidth, clientArea.height));
-            }
-            else{
-                labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y,
-                        clientArea.width - buttonWidth, clientArea.height));
-                buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
-                        clientArea.y, buttonWidth, clientArea.height/2));
-                buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
-                        clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+
+        if (labelFigure.isVisible()) {
+
+            if(arrowButtonsOnLeft){
+                if(arrowButtonsHorizontal){
+                    labelFigure.setBounds(new Rectangle(clientArea.x+1 + 2 * buttonWidth, clientArea.y,
+                            clientArea.width - 2 * buttonWidth-1, clientArea.height));
+                    buttonUp.setBounds(new Rectangle(clientArea.x,
+                            clientArea.y, buttonWidth, clientArea.height));
+                    buttonDown.setBounds(new Rectangle(clientArea.x + buttonWidth,
+                            clientArea.y, buttonWidth, clientArea.height));
+                }
+                else{
+                    labelFigure.setBounds(new Rectangle(clientArea.x+1 + buttonWidth, clientArea.y,
+                            clientArea.width - buttonWidth-1, clientArea.height));
+                    buttonUp.setBounds(new Rectangle(clientArea.x,
+                            clientArea.y, buttonWidth, clientArea.height/2));
+                    buttonDown.setBounds(new Rectangle(clientArea.x,
+                            clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+                }
+            }else{
+                if(arrowButtonsHorizontal){
+                    labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y,
+                            clientArea.width - 2 * buttonWidth, clientArea.height));
+                    buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - 2 * buttonWidth,
+                            clientArea.y, buttonWidth, clientArea.height));
+                    buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+                            clientArea.y, buttonWidth, clientArea.height));
+                }
+                else{
+                    labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y,
+                            clientArea.width - buttonWidth, clientArea.height));
+                    buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+                            clientArea.y, buttonWidth, clientArea.height/2));
+                    buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+                            clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
+                }
             }
         }
+        else {
+
+            if(arrowButtonsHorizontal){
+                buttonUp.setBounds(new Rectangle(clientArea.x,
+                        clientArea.y, clientArea.width/2, clientArea.height));
+                buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width/2,
+                        clientArea.y, clientArea.width/2, clientArea.height));
+            }
+            else{
+                buttonUp.setBounds(new Rectangle(clientArea.x,
+                        clientArea.y, clientArea.width, clientArea.height/2));
+                buttonDown.setBounds(new Rectangle(clientArea.x,
+                        clientArea.y + clientArea.height/2, clientArea.width, clientArea.height/2));
+            }
+        }
+
         super.layout();
     }
 
@@ -441,7 +463,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
         this.pageIncrement = pageIncrement;
     }
 
-
     /**
      * @param precision the precision to set
      */
@@ -472,7 +493,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
         labelFigure.setText(format(value));
     }
 
-
     /**
      * Cause the spinner to decrease its value by its step increment;
      */
@@ -489,11 +509,19 @@ public class SpinnerFigure extends Figure implements Introspectable {
             fireManualValueChange(getValue());
     }
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
 
-
-
-
+    /**
+     * Show or hide the 'text' of the spinner. If False the spinner just
+     * shows the 'up' and 'down' buttons.
+     *
+     * @param isVisible
+     */
+    public void showText(boolean isVisible) {
+        labelFigure.setVisible(isVisible);
+        repaint();
+    }
 }
