@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.csstudio</groupId>
-  <artifactId>org.csstudio.vtype.pv</artifactId>
-  <version>4.0.3-SNAPSHOT</version>
+  <artifactId>org.csstudio.vtype.pv.ui</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

@@ -12,9 +12,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
-import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.internal.Preferences;
+import org.csstudio.vtype.pv.jca.JCA_Preferences.MonitorMask;
 import org.diirt.vtype.VType;
 
 import gov.aps.jca.CAStatus;
@@ -42,10 +41,10 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** Threshold above which arrays use a lower channel priority
      *  (idea from PVManager)
      */
-    private static final int LARGE_ARRAY_THRESHOLD = Preferences.largeArrayThreshold();
+    private static final int LARGE_ARRAY_THRESHOLD = JCA_Preferences.getInstance().largeArrayThreshold();
 
     /** Priority to use for channel */
-    private static final short base_priority = Preferences.monitorMask() == MonitorMask.VALUE
+    private static final short base_priority = JCA_Preferences.getInstance().getMonitorMask() == MonitorMask.VALUE
                                              ? Channel.PRIORITY_OPI
                                              : Channel.PRIORITY_ARCHIVE;
 
@@ -213,7 +212,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         try
         {
             logger.log(Level.FINE, getName() + " subscribes");
-            final int mask = Preferences.monitorMask().getMask();
+            final int mask = JCA_Preferences.getInstance().getMonitorMask().getMask();
             final int request_count = JCAContext.getInstance().getRequestCount(channel);
             final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), request_count, mask, this);
 
@@ -236,7 +235,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
 
             // Subscribe to metadata changes (DBE_PROPERTY)
             final DBRType meta_request = getRequestForMetadata((DBR)metadata);
-            if (Preferences.monitorProperties()  &&  meta_request != null)
+            if (JCA_Preferences.getInstance().isDbePropertySupported()  &&  meta_request != null)
             {
                 Monitor old_metadata_monitor = null;
                 try
@@ -541,7 +540,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
                                     + new_value.getClass().getName());
         // When performing many consecutive writes,
         // sending them in 'bulk' would be more efficient,
-        // but in most case it's probably better to perform each write ASAP
+        // but in most cases it's probably better to perform each write ASAP
         channel.getContext().flushIO();
     }
 
