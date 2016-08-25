@@ -324,7 +324,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                     return false;
                 }
             };
-            setPropertyChangeHandler(SpinnerModel.PROP_SHOW_TEXTBOX, handler);
+            setPropertyChangeHandler(SpinnerModel.PROP_SHOW_TEXT, handler);
 
     }
 
