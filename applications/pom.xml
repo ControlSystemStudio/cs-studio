@@ -424,8 +424,6 @@
             <exclude>**/*Demo.java</exclude>
           </excludes>
           <skipTests>${skipTests}</skipTests>
-          <!--Some tests fail right now -->
-          <testFailureIgnore>true</testFailureIgnore>
           <failIfNoTests>false</failIfNoTests>
           <!--UI tests. -->
           <!--useUIHarness>true</useUIHarness> <useUIThread>false</useUIThread -->
