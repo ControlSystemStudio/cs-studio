@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.undo;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.csstudio.swt.rtplot.Axis;
 import org.csstudio.swt.rtplot.AxisRange;
@@ -26,6 +28,7 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableA
     final private List<YAxisImpl<XTYPE>> yaxes;
     final private List<AxisRange<Double>> original_yranges;
     final private List<AxisRange<Double>> new_yranges;
+    final private List<Boolean> original_autoscale;
 
     /** @param plot Plot
      *  @param name Name of the action
@@ -55,11 +58,14 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableA
         this.new_yranges = new_y_ranges;
         if (yaxes != null)
         {
+            this.original_autoscale = y_axes.stream().map(YAxisImpl<XTYPE>::isAutoscale).collect(Collectors.toList());
             if (y_axes.size() != original_y_ranges.size())
                 throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + original_y_ranges.size() + " orig. ranges");
             if (y_axes.size() != new_y_ranges.size())
                 throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + new_y_ranges.size() + " new ranges");
         }
+        else
+            this.original_autoscale = Collections.<Boolean>emptyList();
     }
 
     /** @param plot Plot
@@ -112,7 +118,19 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableA
                 plot.fireXAxisChange();
         }
         if (yaxes != null)
+        {
             setRange(original_yranges);
+            for(int i=0; i<yaxes.size(); i++)
+            {
+                YAxisImpl<XTYPE> axis = yaxes.get(i);
+                boolean autoscale = original_autoscale.get(i);
+                if(axis.isAutoscale() != autoscale)
+                {
+                    axis.setAutoscale(autoscale);
+                    plot.fireAutoScaleChange(axis);
+                }
+            }
+        }
     }
 
     private void setRange(final List<AxisRange<Double>> ranges)
