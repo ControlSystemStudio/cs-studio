@@ -87,7 +87,6 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
             if(effect3D && support3D){
                 graphics.setBackgroundColor(WHITE_COLOR);
                 graphics.fillOval(clientArea);
-//                graphics.fillRectangle(new Rectangle());
                 Pattern pattern;
                 int a = clientArea.width/2;
                 int b = clientArea.height/2;
@@ -488,4 +487,20 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
         squareButtonFigure.setVisible(squareButton);
         squareButtonFigure.setEnabled(squareButton);
     }
+
+
+
+    /**
+     * @param offLabel the offLabel to set
+     */
+    public void setOffLabel(String offLabel) {
+        if(this.offLabel != null && this.offLabel.equals(offLabel))
+            return;
+        this.offLabel = offLabel;
+        if(!booleanValue)
+            boolLabel.setText(offLabel);
+
+    }
+
+
 }

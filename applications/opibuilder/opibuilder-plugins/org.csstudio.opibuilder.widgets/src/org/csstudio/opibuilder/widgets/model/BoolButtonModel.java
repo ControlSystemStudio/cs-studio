@@ -21,8 +21,6 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class BoolButtonModel extends AbstractBoolControlModel {
 
-
-
     /** True if the widget is drawn with advanced graphics. In some platforms,
      * advance graphics may not be available, in which case the widget will not be drawn
      * with advanced graphics even this is set to true.*/
@@ -33,6 +31,9 @@ public class BoolButtonModel extends AbstractBoolControlModel {
 
     /** True if the LED indicator is visible.*/
     public static final String PROP_SHOW_LED = "show_led"; //$NON-NLS-1$
+
+    /** True if PV ONAM, ZNAM used instead of OnLabel and OffLabel */
+    public static final String PROP_LABELS_FROM_PV = "labels_from_pv"; //$NON-NLS-1$
 
     /** The default value of the height property. */
     private static final int DEFAULT_HEIGHT = 50;
@@ -61,10 +62,13 @@ public class BoolButtonModel extends AbstractBoolControlModel {
         addProperty(new BooleanProperty(PROP_SHOW_LED, "Show LED",
                 WidgetPropertyCategory.Display, true));
 
+        addProperty(new BooleanProperty(PROP_LABELS_FROM_PV, "Labels From PV",
+                WidgetPropertyCategory.Display, false));
+
         removeProperty(PROP_ACTIONS);
         addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
                 WidgetPropertyCategory.Behavior, false));
-        //setPropertyDescription(PROP_PVNAME, "Readback PV");
+
         setPropertyVisible(PROP_BOOL_LABEL_POS, false);
     }
     /**
@@ -97,4 +101,36 @@ public class BoolButtonModel extends AbstractBoolControlModel {
     public boolean isShowLED() {
         return (Boolean) getProperty(PROP_SHOW_LED).getPropertyValue();
     }
+
+    /**
+     * @return true if on/off labels will be load from DB, false otherwise
+     */
+    public boolean isLabelsFromPV() {
+        return (Boolean) getProperty(PROP_LABELS_FROM_PV).getPropertyValue();
+    }
+
+
+    /**
+     * @return the on label
+     */
+    @Override
+    public String getOnLabel() {
+        String label;
+        if (isLabelsFromPV()) {
+            label = "TODO: Read from PV";
+        }
+        else {
+            label = (String) getProperty(PROP_ON_LABEL).getPropertyValue();
+        }
+        return label;
+    }
+
+    /**
+     * @return the off label
+     */
+    @Override
+    public String getOffLabel() {
+        return (String) getProperty(PROP_OFF_LABEL).getPropertyValue();
+    }
+
 }
