@@ -294,13 +294,13 @@ public class GitManagerTest {
     public void testGetBaseLevels() throws GitAPIException, IOException {
         List<BaseLevel> baseLevels = manager.getBaseLevels(branch);
         assertEquals(2, baseLevels.size());
-        assertEquals(branchBase, baseLevels.get(0));
-        assertEquals(branchBase2, baseLevels.get(1));
+        assertTrue(baseLevels.contains(branchBase));
+        assertTrue(baseLevels.contains(branchBase2));
         baseLevels = manager.getBaseLevels(secondBranch);
         assertEquals(3, baseLevels.size());
-        assertEquals(new BaseLevel(secondBranch, branchBase), baseLevels.get(0));
-        assertEquals(new BaseLevel(secondBranch, branchBase2), baseLevels.get(1));
-        assertEquals(new BaseLevel(secondBranch, secondBase), baseLevels.get(2));
+        assertTrue(baseLevels.contains(new BaseLevel(secondBranch, branchBase)));
+        assertTrue(baseLevels.contains(new BaseLevel(secondBranch, branchBase2)));
+        assertTrue(baseLevels.contains(new BaseLevel(secondBranch, secondBase)));
     }
 
     @Test
