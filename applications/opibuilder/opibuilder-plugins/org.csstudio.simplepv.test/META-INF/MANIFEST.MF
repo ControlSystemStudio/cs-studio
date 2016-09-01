@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Fragment of org.csstudio.simplepv
-Bundle-SymbolicName: org.csstudio.simplepv.pvmanager.test
+Bundle-SymbolicName: org.csstudio.simplepv.test
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Xihui Chen <chenx1@ornl.gov>
 Fragment-Host: org.csstudio.simplepv;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit
+Import-Package: org.csstudio.simplepv

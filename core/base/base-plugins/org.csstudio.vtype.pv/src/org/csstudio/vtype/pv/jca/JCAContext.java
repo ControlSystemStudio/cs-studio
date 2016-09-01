@@ -15,8 +15,6 @@ import java.security.PrivilegedAction;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import org.csstudio.vtype.pv.internal.Preferences;
-
 import com.cosylab.epics.caj.CAJContext;
 
 import gov.aps.jca.Channel;
@@ -43,11 +41,14 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
     private JCAContext() throws Exception
     {
-        final boolean use_caj = Preferences.usePureJava();
+        final boolean use_caj = JCA_Preferences.getInstance().usePureJava();
         if (use_caj)
         {
             logger.log(Level.CONFIG, "Using Pure Java CAJ");
-            context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+            // API used to be jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA),
+            // but JCA plugin cannot locate CAJContext in separate CAJ plugin.
+            // This plugin, however, can see both and thus create a CAJContext.
+            context = new CAJContext();
         }
         else
         {
@@ -68,7 +69,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
         // Potentially check version for variable array support,
         // based on diirt JCADataSourceConfiguration#isVarArraySupported().
-        Boolean supported = Preferences.isVarArraySupported();
+        Boolean supported = JCA_Preferences.getInstance().isVarArraySupported();
         if (supported == null)
         {
             if (use_caj)

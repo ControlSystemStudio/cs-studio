@@ -6,7 +6,6 @@ import java.time.Duration;
 import org.csstudio.utility.pvmanager.widgets.AbstractConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.diirt.util.time.TimeDuration;
 
 /**
  * Dialog used by the waterfall widget to modify the WaterfallWidget.

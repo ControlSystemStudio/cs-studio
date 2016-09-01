@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -17,7 +18,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GUIUpdateThrottleUnitTest
+public class GUIUpdateThrottleDemo
 {
     private static final long INITIAL = 100;
     private static final long SUPPRESS = 1000;
@@ -32,8 +33,8 @@ public class GUIUpdateThrottleUnitTest
             @Override
             protected void fire()
             {
-                System.out.println("got event");
-                events.incrementAndGet();
+                System.out.println(Instant.now() + " - got event " + events.incrementAndGet());
+
             }
         };
         throttle.start();
@@ -42,17 +43,20 @@ public class GUIUpdateThrottleUnitTest
         assertEquals(0, events.get());
 
         // One event goes through after small delay
+        System.out.println(Instant.now() + " - Trigger");
         throttle.trigger();
         Thread.sleep(2*INITIAL);
         assertEquals(1, events.get());
 
         // Later, another one goes through
         Thread.sleep(2*SUPPRESS);
+        System.out.println(Instant.now() + " - Trigger");
         throttle.trigger();
         Thread.sleep(2*INITIAL);
         assertEquals(2, events.get());
 
         // But the next N are delayed
+        System.out.println(Instant.now() + " - Many Triggers..");
         for (int i=0; i<50; ++i)
             throttle.trigger();
         assertEquals(2, events.get());
@@ -62,6 +66,7 @@ public class GUIUpdateThrottleUnitTest
         assertEquals(3, events.get());
 
         // Later, another one goes through
+        System.out.println(Instant.now() + " - Trigger");
         throttle.trigger();
         Thread.sleep(2*INITIAL);
         assertEquals(4, events.get());

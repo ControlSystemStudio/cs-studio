@@ -43,9 +43,9 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.base.Joiner;
 
 /**
- * 
+ *
  * A dialog box listing logbook, tags, start/end times and other search conditions for log entries
- * 
+ *
  * @author shroffk
  *
  */
@@ -203,7 +203,7 @@ public class LogEntrySearchDialog extends Dialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 final StartEndDialog dlg = new StartEndDialog(getShell(),
-                        textFrom.getText(), 
+                        textFrom.getText(),
                         textTo.getText());
                 if (dlg.open() != Window.OK)
                     return;
@@ -228,8 +228,8 @@ public class LogEntrySearchDialog extends Dialog {
         btnNewButton_1.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                final StartEndDialog dlg = new StartEndDialog(getShell(), 
-                        textFrom.getText(), 
+                final StartEndDialog dlg = new StartEndDialog(getShell(),
+                        textFrom.getText(),
                         textTo.getText());
                 if (dlg.open() != Window.OK)
                     return;

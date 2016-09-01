@@ -64,6 +64,8 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
         spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
         spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
+        spinner.showText(getWidgetModel().showText());
+
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
             spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
@@ -78,12 +80,10 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         return spinner;
     }
 
-
     @Override
     public SpinnerModel getWidgetModel() {
         return (SpinnerModel)getModel();
     }
-
 
     @Override
     protected void createEditPolicies() {
@@ -103,17 +103,13 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         registerLoadLimitsListener();
     }
 
-
-    /**
-     *
-     */
     private void registerLoadLimitsListener() {
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
             final SpinnerModel model = getWidgetModel();
             if(model.isLimitsFromPV() || model.isPrecisionFromPV()){
                 IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
                 if(pv != null){
-                    if(pvLoadLimitsListener == null)
+                    if(pvLoadLimitsListener == null){
                         pvLoadLimitsListener = new IPVListener.Stub() {
                             @Override
                             public void valueChanged(IPV pv) {
@@ -133,6 +129,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                                 }
                             }
                         };
+                    }
                     pv.addListener(pvLoadLimitsListener);
                 }
             }
@@ -141,181 +138,179 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
     @Override
     protected void registerPropertyChangeHandlers() {
-            //text
-            IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
-                public boolean handleChange(Object oldValue, Object newValue,
-                        IFigure figure) {
-                    String text = (String)newValue;
-                    try {
-                        text = text.replace("e", "E"); //$NON-NLS-1$ //$NON-NLS-2$
-                        double value = new DecimalFormat().parse(text).doubleValue();
-                        //coerce value in range
-                        value = Math.max(((SpinnerFigure)figure).getMin(),
-                                Math.min(((SpinnerFigure)figure).getMax(), value));
-                        ((SpinnerFigure)figure).setValue(value);
-                        if(getExecutionMode() == ExecutionMode.RUN_MODE)
-                            setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
-                        getWidgetModel().setText(
-                                ((SpinnerFigure)figure).getLabelFigure().getText(), false);
-                        return false;
-                    } catch (Exception e) {
-                        return false;
-                    }
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
-
-            IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    registerLoadLimitsListener();
+        //text
+        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                String text = (String)newValue;
+                try {
+                    text = text.replace("e", "E"); //$NON-NLS-1$ //$NON-NLS-2$
+                    double value = new DecimalFormat().parse(text).doubleValue();
+                    //coerce value in range
+                    value = Math.max(((SpinnerFigure)figure).getMin(),
+                            Math.min(((SpinnerFigure)figure).getMax(), value));
+                    ((SpinnerFigure)figure).setValue(value);
+                    if(getExecutionMode() == ExecutionMode.RUN_MODE)
+                        setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
+                    getWidgetModel().setText(
+                            ((SpinnerFigure)figure).getLabelFigure().getText(), false);
+                    return false;
+                } catch (Exception e) {
                     return false;
                 }
-            };
-            setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
 
+        IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                registerLoadLimitsListener();
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
-            //pv value
-            handler = new IWidgetPropertyChangeHandler() {
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    if(newValue == null )
-                        return false;
-                    double value = VTypeHelper.getDouble((VType) newValue);
-                    ((SpinnerFigure)figure).setDisplayValue(value);
-                    getWidgetModel().setText(((SpinnerFigure)figure).getLabelFigure().getText(), false);
+        //pv value
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                if(newValue == null )
                     return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_PVVALUE, handler);
+                double value = VTypeHelper.getDouble((VType) newValue);
+                ((SpinnerFigure)figure).setDisplayValue(value);
+                getWidgetModel().setText(((SpinnerFigure)figure).getLabelFigure().getText(), false);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_PVVALUE, handler);
 
-            //min
-            handler = new IWidgetPropertyChangeHandler() {
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setMin((Double)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_MIN, handler);
+        //min
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setMin((Double)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_MIN, handler);
 
-            //max
-            handler = new IWidgetPropertyChangeHandler() {
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setMax((Double)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_MAX, handler);
+        //max
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setMax((Double)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_MAX, handler);
 
-            //step increment
-            handler = new IWidgetPropertyChangeHandler() {
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setStepIncrement((Double)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_STEP_INCREMENT, handler);
+        //step increment
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setStepIncrement((Double)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_STEP_INCREMENT, handler);
 
-            //page increment
-            handler = new IWidgetPropertyChangeHandler() {
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setPageIncrement((Double)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_PAGE_INCREMENT, handler);
+        //page increment
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setPageIncrement((Double)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_PAGE_INCREMENT, handler);
 
-            //font
-            IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue,
-                        IFigure figure) {
-                    ((SpinnerFigure)figure).getLabelFigure().
-                        setFont(CustomMediaFactory.getInstance().getFont(
-                            ((OPIFont)newValue).getFontData()));
-                    return true;
-                }
-            };
-            setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+        //font
+        IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((SpinnerFigure)figure).getLabelFigure().
+                    setFont(CustomMediaFactory.getInstance().getFont(
+                        ((OPIFont)newValue).getFontData()));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 
+        handler = new IWidgetPropertyChangeHandler(){
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
 
-            handler = new IWidgetPropertyChangeHandler(){
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue,
-                        IFigure figure) {
-                    ((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
-                    return true;
-                }
-            };
-            setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
+        handler = new IWidgetPropertyChangeHandler(){
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 
-            handler = new IWidgetPropertyChangeHandler(){
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue,
-                        IFigure figure) {
-                    ((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
-                    return true;
-                }
-            };
-            setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
+        handler = new IWidgetPropertyChangeHandler(){
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((SpinnerFigure)figure).getLabelFigure().setOpaque(!(Boolean)newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
 
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
 
-            handler = new IWidgetPropertyChangeHandler(){
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue,
-                        IFigure figure) {
-                    ((SpinnerFigure)figure).getLabelFigure().setOpaque(!(Boolean)newValue);
-                    return true;
-                }
-            };
-            setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setPrecision((Integer)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
 
-            handler = new IWidgetPropertyChangeHandler() {
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
 
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
 
-            handler = new IWidgetPropertyChangeHandler() {
-
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setPrecision((Integer)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
-
-            handler = new IWidgetPropertyChangeHandler() {
-
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
-
-            handler = new IWidgetPropertyChangeHandler() {
-
-                @Override
-                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                    ((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
-                    return false;
-                }
-            };
-            setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
-
-
+        handler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((SpinnerFigure)figure).showText((Boolean)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(SpinnerModel.PROP_SHOW_TEXT, handler);
     }
 
     public DragTracker getDragTracker(Request request) {
@@ -336,10 +331,8 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
     @Override
     public void performRequest(Request request){
-        if (getFigure().isEnabled()
-                &&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
-                getExecutionMode() != ExecutionMode.RUN_MODE)||
-                request.getType() == RequestConstants.REQ_OPEN))
+        if (getFigure().isEnabled() && ((SpinnerModel)getWidgetModel()).showText()
+                && ((request.getType() == RequestConstants.REQ_DIRECT_EDIT && getExecutionMode() != ExecutionMode.RUN_MODE) || request.getType() == RequestConstants.REQ_OPEN))
             performDirectEdit();
     }
 
@@ -361,14 +354,12 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                 pv.removeListener(pvLoadPrecisionListener);
             }
         }
-
     }
 
     @Override
     public Double getValue() {
         return ((SpinnerFigure)getFigure()).getValue();
     }
-
 
     @Override
     public void setValue(Object value) {
@@ -378,8 +369,6 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
             super.setValue(value);
     }
 
-
-
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class key) {
@@ -388,6 +377,4 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
         return super.getAdapter(key);
     }
-
-
 }

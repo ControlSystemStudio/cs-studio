@@ -1,11 +1,8 @@
 package org.csstudio.alarm.beast.history.views;
 
-import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -21,7 +18,7 @@ public class ConfigureAlarmHistoryQuery extends AbstractHandler{
 
         IWorkbenchPage page = window.getActivePage();
         AlarmHistoryView alarmHistoryView = (AlarmHistoryView) page.findView(AlarmHistoryView.ID);
-        
+
         AlarmHistoryQueryParametersDialog dialog = new AlarmHistoryQueryParametersDialog(
                 window.getShell(), alarmHistoryView.getAlarmHistoryQueryParameters(),
                 "Configure Alarm History Query");

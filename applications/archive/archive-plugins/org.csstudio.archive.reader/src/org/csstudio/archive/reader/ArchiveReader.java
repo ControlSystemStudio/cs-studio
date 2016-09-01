@@ -163,7 +163,7 @@ public interface ArchiveReader extends Closeable
      *  @throws Exception on error
      */
     public ValueIterator getOptimizedValues(int key, String name,
-		Instant start, Instant end, int count) throws UnknownChannelException, Exception;
+        Instant start, Instant end, int count) throws UnknownChannelException, Exception;
 
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,

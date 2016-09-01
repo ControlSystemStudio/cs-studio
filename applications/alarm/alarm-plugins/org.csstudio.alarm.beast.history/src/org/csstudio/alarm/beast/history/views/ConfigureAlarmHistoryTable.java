@@ -3,8 +3,6 @@ import org.csstudio.ui.util.dialogs.StringListSelectionDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -21,7 +19,7 @@ public class ConfigureAlarmHistoryTable extends AbstractHandler {
 
         IWorkbenchPage page = window.getActivePage();
         AlarmHistoryView alarmHistoryView = (AlarmHistoryView) page.findView(AlarmHistoryView.ID);
-        
+
         StringListSelectionDialog dialog = new StringListSelectionDialog(
                 window.getShell(), AlarmHistoryView.getColumnname(), alarmHistoryView
                         .getVisibleColumns(),

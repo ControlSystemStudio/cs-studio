@@ -112,7 +112,7 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
                 startTime = (Instant) newValue;
                 endTime = startTime;
             } else if (newValue instanceof Instant[]) {
-            	Instant[] t = (Instant[]) newValue;
+                Instant[] t = (Instant[]) newValue;
                 if (t.length == 0) {
                     throw new IllegalArgumentException("Write value not provided.");
                 } else if (t.length == 1) {

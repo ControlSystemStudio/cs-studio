@@ -27,9 +27,9 @@ public class TimestampHelper
      */
     public static String format(final Instant time)
     {
-    	if (time == null)
-        	return "null";
-    	return format.format(ZonedDateTime.ofInstant(time, zone));
+        if (time == null)
+            return "null";
+        return format.format(ZonedDateTime.ofInstant(time, zone));
     }
 
     /** Convert EPICS time stamp into SQL time stamp

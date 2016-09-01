@@ -28,7 +28,7 @@ public class TimestampHelper
     {
         if (timestamp == null)
             return "null";
-		return TimestampFormats.FULL_FORMAT.format(timestamp);
+        return TimestampFormats.FULL_FORMAT.format(timestamp);
     }
 
     // May look like just     time_format.format(Instant)  works,
@@ -36,10 +36,10 @@ public class TimestampHelper
     // because time for printing needs to be in local time
 //    public static void main(String[] args)
 //    {
-//    	final Instant now = Instant.now();
-//    	System.out.println(format(now));
-//    	System.out.println(time_format.format(now));
-//	}
+//      final Instant now = Instant.now();
+//      System.out.println(format(now));
+//      System.out.println(time_format.format(now));
+//    }
 
 
     /** @param timestamp EPICS Timestamp

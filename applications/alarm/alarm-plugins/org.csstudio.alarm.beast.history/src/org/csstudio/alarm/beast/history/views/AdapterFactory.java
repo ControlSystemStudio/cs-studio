@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 /**
  * An adapter factory to convert ProcessVariable, ProcessVariable[], TimestampedPV, TimestampedPV[] into a
  * single AlarmHistoryQueryParameters object
- * 
+ *
  * @author Kunal Shroff
  *
  */
