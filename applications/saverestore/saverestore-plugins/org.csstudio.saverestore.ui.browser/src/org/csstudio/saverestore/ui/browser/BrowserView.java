@@ -263,6 +263,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         } else {
             content.setCenter(baseLevelBrowser.getFXContent());
         }
+        if (browser == null) {
+            browser = defaultBaseLevelBrowser;
+        }
         baseLevelPane = new TitledPane(browser.getTitleFor(Optional.empty(), Optional.empty()), content);
         baseLevelPane.setMaxHeight(Double.MAX_VALUE);
 
