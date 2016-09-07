@@ -153,6 +153,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     private AxisRange<XTYPE> mouse_start_x_range;
     private List<AxisRange<Double>> mouse_start_y_ranges = new ArrayList<>();
     private int mouse_y_axis = -1;
+    private boolean pre_pan_auto_scale = false;
 
     // Annotation-related info. If mouse_annotation is set, the rest should be set.
     private Optional<AnnotationImpl<XTYPE>> mouse_annotation = Optional.empty();
@@ -902,6 +903,11 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 {
                     mouse_y_axis = i;
                     mouse_mode = MouseMode.PAN_Y;
+
+                    // Store the auto scale state during mouse actions,
+                    // we can use it later to create an un-doable action.
+                    pre_pan_auto_scale = axis.isAutoscale();
+                    axis.lazySetAutoScale(false);
                     return;
                 }
             }
@@ -1063,10 +1069,16 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         {
             mouseMove(e);
             final YAxisImpl<XTYPE> y_axis = y_axes.get(mouse_y_axis);
+            // Put the auto scale value back on the axis after panning, but before creating the un-doable action.
+            y_axis.lazySetAutoScale(pre_pan_auto_scale);
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan_Y,
                     Arrays.asList(y_axis),
                     Arrays.asList(mouse_start_y_ranges.get(mouse_y_axis)),
                     Arrays.asList(y_axis.getValueRange())));
+            if(pre_pan_auto_scale) {
+                y_axis.lazySetAutoScale(false);
+                fireAutoScaleChange(y_axis);
+            }
             fireYAxisChange(y_axis);
             mouse_mode = MouseMode.PAN;
         }

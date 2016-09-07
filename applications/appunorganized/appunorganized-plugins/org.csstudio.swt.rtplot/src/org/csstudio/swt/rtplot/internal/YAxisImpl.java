@@ -131,6 +131,16 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         requestRefresh();
     }
 
+    /** Configure the axis to auto scale or not, but
+     *  don't update the listeners.
+     *
+     * @param do_autoscale
+     */
+    public void lazySetAutoScale(boolean do_autoscale)
+    {
+        autoscale = do_autoscale;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isAutoscale()
