@@ -910,6 +910,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     // we can use it later to create an un-doable action.
                     pre_pan_auto_scale = axis.isAutoscale();
                     axis.lazySetAutoScale(false);
+                    fireAutoScaleChange(axis);
                     return;
                 }
             }
@@ -918,6 +919,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 for (YAxisImpl<XTYPE> axis : y_axes) {
                     pre_pan_auto_scales.push(axis.isAutoscale());
                     axis.lazySetAutoScale(false);
+                    fireAutoScaleChange(axis);
                 }
             }
             else if (x_axis.getBounds().contains(current))
@@ -1082,10 +1084,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     Arrays.asList(y_axis),
                     Arrays.asList(mouse_start_y_ranges.get(mouse_y_axis)),
                     Arrays.asList(y_axis.getValueRange())));
-            if(pre_pan_auto_scale) {
-                y_axis.lazySetAutoScale(false);
-                fireAutoScaleChange(y_axis);
-            }
+            y_axis.lazySetAutoScale(false);
             fireYAxisChange(y_axis);
             mouse_mode = MouseMode.PAN;
         }
@@ -1103,7 +1102,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             fireXAxisChange();
             for (YAxisImpl<XTYPE> axis : y_axes) {
                 axis.lazySetAutoScale(false);
-                fireAutoScaleChange(axis);
                 fireYAxisChange(axis);
             }
             mouse_mode = MouseMode.PAN;
