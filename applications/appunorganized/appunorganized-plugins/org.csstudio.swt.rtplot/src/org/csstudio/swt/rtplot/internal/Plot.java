@@ -154,6 +154,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     private List<AxisRange<Double>> mouse_start_y_ranges = new ArrayList<>();
     private int mouse_y_axis = -1;
     private boolean pre_pan_auto_scale = false;
+    private List<Boolean> pre_pan_auto_scales = new ArrayList<Boolean>();
 
     // Annotation-related info. If mouse_annotation is set, the rest should be set.
     private Optional<AnnotationImpl<XTYPE>> mouse_annotation = Optional.empty();
@@ -911,8 +912,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     return;
                 }
             }
-            if (plot_area.getBounds().contains(current))
+            if (plot_area.getBounds().contains(current)) {
                 mouse_mode = MouseMode.PAN_PLOT;
+                for (YAxisImpl<XTYPE> axis : y_axes) {
+                    pre_pan_auto_scales.add(axis.isAutoscale());
+                    axis.lazySetAutoScale(false);
+                }
+            }
             else if (x_axis.getBounds().contains(current))
                 mouse_mode = MouseMode.PAN_X;
         }
@@ -1086,14 +1092,19 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         {
             mouseMove(e);
             List<AxisRange<Double>> current_y_ranges = new ArrayList<>();
-            for (YAxisImpl<XTYPE> axis : y_axes)
+            for (YAxisImpl<XTYPE> axis : y_axes) {
                 current_y_ranges.add(axis.getValueRange());
+                axis.lazySetAutoScale(pre_pan_auto_scales.remove(pre_pan_auto_scales.size() - 1));
+            }
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan,
                     x_axis, mouse_start_x_range, x_axis.getValueRange(),
                     y_axes, mouse_start_y_ranges, current_y_ranges));
             fireXAxisChange();
-            for (YAxisImpl<XTYPE> axis : y_axes)
+            for (YAxisImpl<XTYPE> axis : y_axes) {
+                axis.lazySetAutoScale(false);
+                fireAutoScaleChange(axis);
                 fireYAxisChange(axis);
+            }
             mouse_mode = MouseMode.PAN;
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_X)
