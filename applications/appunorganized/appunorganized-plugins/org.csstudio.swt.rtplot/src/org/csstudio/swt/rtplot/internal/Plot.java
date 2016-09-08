@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -154,7 +155,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     private List<AxisRange<Double>> mouse_start_y_ranges = new ArrayList<>();
     private int mouse_y_axis = -1;
     private boolean pre_pan_auto_scale = false;
-    private List<Boolean> pre_pan_auto_scales = new ArrayList<Boolean>();
+    private Stack<Boolean> pre_pan_auto_scales = new Stack<Boolean>();
 
     // Annotation-related info. If mouse_annotation is set, the rest should be set.
     private Optional<AnnotationImpl<XTYPE>> mouse_annotation = Optional.empty();
@@ -915,7 +916,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (plot_area.getBounds().contains(current)) {
                 mouse_mode = MouseMode.PAN_PLOT;
                 for (YAxisImpl<XTYPE> axis : y_axes) {
-                    pre_pan_auto_scales.add(axis.isAutoscale());
+                    pre_pan_auto_scales.push(axis.isAutoscale());
                     axis.lazySetAutoScale(false);
                 }
             }
@@ -1094,7 +1095,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             List<AxisRange<Double>> current_y_ranges = new ArrayList<>();
             for (YAxisImpl<XTYPE> axis : y_axes) {
                 current_y_ranges.add(axis.getValueRange());
-                axis.lazySetAutoScale(pre_pan_auto_scales.remove(pre_pan_auto_scales.size() - 1));
+                axis.lazySetAutoScale(pre_pan_auto_scales.pop());
             }
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan,
                     x_axis, mouse_start_x_range, x_axis.getValueRange(),
