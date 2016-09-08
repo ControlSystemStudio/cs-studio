@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/SequenceCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/command/UnknownScanCommandPropertyException.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -124,20 +124,20 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String,%20java.lang.Object)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value)</code>
 <div class="block">Initialize for readback with default tolerance and timeout</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, boolean)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String,%20java.lang.Object,%20boolean)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value,
           boolean&nbsp;wait)</code>
 <div class="block">Initialize with default tolerance and timeout</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, boolean, java.lang.String, boolean, double, double)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String,%20java.lang.Object,%20boolean,%20java.lang.String,%20boolean,%20double,%20double)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value,
           boolean&nbsp;completion,
           java.lang.String&nbsp;readback,
@@ -148,7 +148,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String, java.lang.Object, java.lang.String)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#SetCommand(java.lang.String,%20java.lang.Object,%20java.lang.String)">SetCommand</a></strong>(java.lang.String&nbsp;device_name,
           java.lang.Object&nbsp;value,
           java.lang.String&nbsp;readback)</code>
 <div class="block">Initialize</div>
@@ -171,81 +171,81 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#appendConditionDetail(java.lang.StringBuilder)">appendConditionDetail</a></strong>(java.lang.StringBuilder&nbsp;buf)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></strong>(org.w3c.dom.Document&nbsp;dom,
+              org.w3c.dom.Element&nbsp;command_element)</code>
+<div class="block">Add XML elements for command (and its sub-commands) to document.</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#appendConditionDetail(java.lang.StringBuilder)">appendConditionDetail</a></strong>(java.lang.StringBuilder&nbsp;buf)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getCompletion()">getCompletion</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getDeviceName()">getDeviceName</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getReadback()">getReadback</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getTimeout()">getTimeout</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getTolerance()">getTolerance</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getValue()">getValue</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#getWait()">getWait</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></strong>(SimpleScanCommandFactory&nbsp;factory,
        org.w3c.dom.Element&nbsp;element)</code>
 <div class="block">Read command parameters from XML element</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setCompletion(java.lang.Boolean)">setCompletion</a></strong>(java.lang.Boolean&nbsp;completion)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setDeviceName(java.lang.String)">setDeviceName</a></strong>(java.lang.String&nbsp;device_name)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setReadback(java.lang.String)">setReadback</a></strong>(java.lang.String&nbsp;readback)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setTimeout(java.lang.Double)">setTimeout</a></strong>(java.lang.Double&nbsp;timeout)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setTolerance(java.lang.Double)">setTolerance</a></strong>(java.lang.Double&nbsp;tolerance)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setValue(java.lang.Object)">setValue</a></strong>(java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#setWait(java.lang.Boolean)">setWait</a></strong>(java.lang.Boolean&nbsp;wait)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#toString()">toString</a></strong>()</code></td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/command/SetCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></strong>(java.io.PrintStream&nbsp;out,
-        int&nbsp;level)</code>
-<div class="block">Write the command (and its sub-commands) in an XML format.</div>
-</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -253,7 +253,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.csstudio.scan.command.<a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></h3>
-<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setAddress(long)">setAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty, java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String, java.lang.Object)">setProperty</a></code></li>
+<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#getAddress()">getAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandID()">getCommandID</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getCommandName()">getCommandName</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperties()">getProperties</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(ScanCommandProperty)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getProperty(java.lang.String)">getProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#getPropertyDescription(java.lang.String)">getPropertyDescription</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setAddress(long)">setAddress</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setErrorHandler(java.lang.String)">setErrorHandler</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(ScanCommandProperty,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#setProperty(java.lang.String,%20java.lang.Object)">setProperty</a>, <a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(org.w3c.dom.Document,%20org.w3c.dom.Element)">writeXML</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -489,26 +489,21 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>timeout</code> - Time out in seconds</dd></dl>
 </li>
 </ul>
-<a name="writeXML(java.io.PrintStream, int)">
+<a name="addXMLElements(org.w3c.dom.Document, org.w3c.dom.Element)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>writeXML</h4>
-<pre>public&nbsp;void&nbsp;writeXML(java.io.PrintStream&nbsp;out,
-            int&nbsp;level)</pre>
-<div class="block">Write the command (and its sub-commands) in an XML format.
+<h4>addXMLElements</h4>
+<pre>public&nbsp;void&nbsp;addXMLElements(org.w3c.dom.Document&nbsp;dom,
+                  org.w3c.dom.Element&nbsp;command_element)</pre>
+<div class="block">Add XML elements for command (and its sub-commands) to document.
 
-  <p>A command called AbcCommand should write itself as a tag "abc"
-  so that the <code>XMLCommandReader</code> can later determine
-  which class to use for reading the command back from XML.
-
-  <p>Derived classes must call base class implementation
-  to write inherited properties.</div>
+  <p>Derived classes should call parent implementation.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#writeXML(java.io.PrintStream, int)">writeXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>out</code> - <code>PrintStream</code></dd><dd><code>level</code> - Indentation level</dd></dl>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#addXMLElements(org.w3c.dom.Document,%20org.w3c.dom.Element)">addXMLElements</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>dom</code> - <code>Document</code></dd><dd><code>command_element</code> - DOM <code>Element</code> for this command</dd></dl>
 </li>
 </ul>
 <a name="readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">
@@ -526,7 +521,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
   to read inherited properties.</div>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory, org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
+<dd><code><a href="../../../../org/csstudio/scan/command/ScanCommand.html#readXML(SimpleScanCommandFactory,%20org.w3c.dom.Element)">readXML</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="class in org.csstudio.scan.command">ScanCommand</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>factory</code> - ScanCommandFactory to use in case inner scan commands,
                  for example a loop body, need to be created</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -583,7 +578,7 @@ extends <a href="../../../../org/csstudio/scan/command/ScanCommand.html" title="
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/csstudio/scan/command/ScriptCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/csstudio/scan/command/SequenceCommand.html" title="class in org.csstudio.scan.command"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/command/UnknownScanCommandPropertyException.html" title="class in org.csstudio.scan.command"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">

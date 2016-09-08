@@ -9,6 +9,22 @@
      in the scan tree editor.
   -->
 <scan_config>
+
+   <!-- Jython class that implements the
+        org.csstudio.scan.server.SimulationHook
+
+        May be empty,
+        or provide the name of a Jython class,
+        placed in a file with the lower-case name.
+
+        Example:
+        Class SimulationHookDemo must be
+        implemented in file simulationhookdemo.py,
+        located on the path provided by the script_paths
+        preference.
+     -->
+   <simulation_hook>SimulationHookDemo</simulation_hook>
+
    <!-- Simulation information for a PV
 
         Slew rate is in [units of the device] / second

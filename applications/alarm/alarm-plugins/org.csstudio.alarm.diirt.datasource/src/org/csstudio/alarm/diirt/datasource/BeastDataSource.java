@@ -48,7 +48,7 @@ public class BeastDataSource extends DataSource {
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
     private Executor executor = Executors.newScheduledThreadPool(4);
-    
+
     private BeastTypeSupport typeSupport;
 
     static {
@@ -74,7 +74,7 @@ public class BeastDataSource extends DataSource {
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                             .get(channelHandlerLookupName(channelName));
-                                    
+
                                     channel.reconnect();
                                 }
                             }
@@ -143,7 +143,7 @@ public class BeastDataSource extends DataSource {
                         });
                     });
             typeSupport = new BeastTypeSupport();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }

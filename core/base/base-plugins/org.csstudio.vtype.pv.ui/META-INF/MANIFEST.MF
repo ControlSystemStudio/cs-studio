@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PV Preference UI
+Bundle-SymbolicName: org.csstudio.vtype.pv.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Localization: plugin
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.ui;bundle-version="3.107.0",
+ org.csstudio.vtype.pv;bundle-version="4.0.3"
+

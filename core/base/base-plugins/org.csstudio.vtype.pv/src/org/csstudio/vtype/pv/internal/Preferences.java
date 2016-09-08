@@ -7,9 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.internal;
 
-import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
-import org.csstudio.platform.libs.epics.PreferenceConstants;
+import org.csstudio.vtype.pv.PVPlugin;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.csstudio.vtype.pv.mqtt.MQTT_PVFactory;
 import org.eclipse.core.runtime.Platform;
@@ -31,27 +29,13 @@ public class Preferences
 
     public static String defaultType()
     {
-        return getString(Activator.ID, "default_type", JCA_PVFactory.TYPE);
+        return getString(PVPlugin.ID, "default_type", JCA_PVFactory.TYPE);
+
     }
 
     public static String getMQTTBroker()
     {
-        return getString(Activator.ID, "mqtt_broker", MQTT_PVFactory.BROKER_URL);
+        return getString(PVPlugin.ID, "mqtt_broker", MQTT_PVFactory.BROKER_URL);
     }
 
-
-    public static boolean usePureJava()
-    {
-        return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.PURE_JAVA, Boolean.TRUE.toString()));
-    }
-
-    public static MonitorMask monitorMask()
-    {
-        return MonitorMask.valueOf(getString(EpicsPlugin.ID, PreferenceConstants.MONITOR, "VALUE"));
-    }
-
-    public static boolean monitorProperties()
-    {
-        return Boolean.parseBoolean(getString(EpicsPlugin.ID, PreferenceConstants.DBE_PROPERTY_SUPPORTED, Boolean.TRUE.toString()));
-    }
 }

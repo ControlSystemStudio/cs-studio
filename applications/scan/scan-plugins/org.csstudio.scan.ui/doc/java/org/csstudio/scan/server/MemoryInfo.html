@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
+<li><a href="../../../../org/csstudio/scan/server/MacroContext.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -123,8 +123,9 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#MemoryInfo(long, long)">MemoryInfo</a></strong>(long&nbsp;used_mem,
-          long&nbsp;max_mem)</code>
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#MemoryInfo(long,%20long,%20long)">MemoryInfo</a></strong>(long&nbsp;used_mem,
+          long&nbsp;max_mem,
+          long&nbsp;non_heap)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -157,9 +158,13 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getUsedMem()">getUsedMem</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getNonHeapUsedMem()">getNonHeapUsedMem</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#getUsedMem()">getUsedMem</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/MemoryInfo.html#toString()">toString</a></strong>()</code></td>
 </tr>
@@ -195,16 +200,17 @@ extends java.lang.Object</pre>
 <div class="block">Initialize with memory usage of this JVM</div>
 </li>
 </ul>
-<a name="MemoryInfo(long, long)">
+<a name="MemoryInfo(long, long, long)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>MemoryInfo</h4>
 <pre>public&nbsp;MemoryInfo(long&nbsp;used_mem,
-          long&nbsp;max_mem)</pre>
+          long&nbsp;max_mem,
+          long&nbsp;non_heap)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>used_mem</code> - Used memory (kB)</dd><dd><code>max_mem</code> - Maximum available memory (kB)</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>used_mem</code> - Used memory (kB)</dd><dd><code>max_mem</code> - Maximum available memory (kB)</dd><dd><code>non_heap</code> - Used non-heap memory (kB)</dd></dl>
 </li>
 </ul>
 </li>
@@ -243,6 +249,16 @@ extends java.lang.Object</pre>
 <h4>getMemoryPercentage</h4>
 <pre>public&nbsp;double&nbsp;getMemoryPercentage()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Memory usage in percent of max: 0..100</dd></dl>
+</li>
+</ul>
+<a name="getNonHeapUsedMem()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNonHeapUsedMem</h4>
+<pre>public&nbsp;long&nbsp;getNonHeapUsedMem()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Used non-heap memory (kB)</dd></dl>
 </li>
 </ul>
 <a name="getMemoryInfo()">
@@ -293,7 +309,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
+<li><a href="../../../../org/csstudio/scan/server/MacroContext.html" title="class in org.csstudio.scan.server"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">

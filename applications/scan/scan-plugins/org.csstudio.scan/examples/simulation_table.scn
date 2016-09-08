@@ -1,0 +1,54 @@
+<commands>
+  <comment>
+    <text># Compare simulation with</text>
+  </comment>
+  <comment>
+    <text># &lt;simulation_hook&gt; in scan_config.xml</text>
+  </comment>
+  <comment>
+    <text># set to SimulationHookDemo as well as empty</text>
+  </comment>
+  <comment>
+    <text>#</text>
+  </comment>
+  <comment>
+    <text>=========== High Rate ============</text>
+  </comment>
+  <set>
+    <device>rate</device>
+    <value>60.0</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <wait>
+    <device>charge</device>
+    <value>1.0</value>
+    <comparison>AT_LEAST</comparison>
+    <tolerance>0.1</tolerance>
+  </wait>
+  <log>
+    <devices>
+      <device>neutrons</device>
+    </devices>
+  </log>
+  <comment>
+    <text>=========== Low Rate ============</text>
+  </comment>
+  <set>
+    <device>rate</device>
+    <value>30.0</value>
+    <wait>false</wait>
+    <tolerance>0.1</tolerance>
+  </set>
+  <wait>
+    <device>charge</device>
+    <value>1.0</value>
+    <comparison>AT_LEAST</comparison>
+    <tolerance>0.1</tolerance>
+  </wait>
+  <log>
+    <devices>
+      <device>neutrons</device>
+    </devices>
+  </log>
+</commands>

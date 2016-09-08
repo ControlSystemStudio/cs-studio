@@ -64,7 +64,7 @@ public class MatlabScriptExportJob extends ExportJob
                 out.println();
             printItemInfo(out, item);
             // Get data
-            monitor.subTask(NLS.bind("Fetching data for {0}", item.getName()));
+            monitor.subTask(NLS.bind("Fetching data for {0}", item.getResolvedName()));
             final ValueIterator values = createValueIterator(item);
             // Dump all values
             MatlabQualityHelper qualities = new MatlabQualityHelper();
@@ -88,7 +88,7 @@ public class MatlabScriptExportJob extends ExportJob
                 // q(1)=0;
                 out.println("q(" + line_count + ")=" + qualities.getQualityCode(VTypeHelper.getSeverity(value), VTypeHelper.getMessage(value)) +";");
                 if (line_count % PROGRESS_UPDATE_LINES == 0)
-                    monitor.subTask(NLS.bind("{0}: Wrote {1} samples", item.getName(), line_count));
+                    monitor.subTask(NLS.bind("{0}: Wrote {1} samples", item.getResolvedName(), line_count));
             }
 
             out.println(comment + "Convert time stamps into 'date numbers'");

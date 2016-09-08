@@ -150,10 +150,10 @@ public class EdmColorsListParser extends EdmParser {
                             colorValue.append(" " + word);
                         else {
                             if (robust)
-                            	error = true;
+                                error = true;
                             else
-                            	throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
-                            			               "Wrong color input at line: " + colorData, null);
+                                throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
+                                        "Wrong color input at line: " + colorData, null);
                         }
                     }
                     a.appendValue(colorValue.toString());

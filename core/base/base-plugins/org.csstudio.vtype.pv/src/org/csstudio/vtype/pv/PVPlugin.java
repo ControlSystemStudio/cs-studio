@@ -5,14 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.vtype.pv.internal;
+package org.csstudio.vtype.pv;
 
 import static org.csstudio.vtype.pv.PV.logger;
 
 import java.util.logging.Level;
 
-import org.csstudio.vtype.pv.PVFactory;
-import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.internal.Preferences;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
@@ -22,9 +21,9 @@ import org.osgi.framework.BundleContext;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Activator implements BundleActivator
+public class PVPlugin implements BundleActivator
 {
-    final public static String ID = "org.csstudio.utility.pv.vtype";
+    final public static String ID = "org.csstudio.vtype.pv";
 
     @Override
     public void start(final BundleContext context) throws Exception

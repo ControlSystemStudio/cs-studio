@@ -105,10 +105,10 @@ public class JMSAlarmMessage
 
     /** Value that caused the severity/message update */
     final public static String VALUE = "VALUE";
-    
-    
+
+
     /** @param timestamp Time of alarm event
-     *  @return Time stamp formatted as used in JMS alarm messages 
+     *  @return Time stamp formatted as used in JMS alarm messages
      */
     public static String formatTime(final Instant timestamp)
     {

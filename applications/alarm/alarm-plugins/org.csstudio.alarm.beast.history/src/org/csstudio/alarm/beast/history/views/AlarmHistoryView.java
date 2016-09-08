@@ -1,38 +1,19 @@
 package org.csstudio.alarm.beast.history.views;
 
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.core.MediaType;
-
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters.AlarmHistoryQueryBuilder;
 import org.csstudio.alarm.beast.history.views.PeriodicAlarmHistoryQuery.AlarmHistoryResult;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -42,12 +23,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -58,7 +35,7 @@ import static org.csstudio.alarm.beast.history.views.AlarmHistoryQueryParameters
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 /**
- * 
+ *
  */
 
 public class AlarmHistoryView extends ViewPart {
@@ -81,7 +58,7 @@ public class AlarmHistoryView extends ViewPart {
             "CONFIG", "STATUS", "APPLICATION-ID", "CURRENT_STATUS", "CURRENT_SEVERITY", "TYPE", "SEVERITY");
     private List<String> visibleColumns = Arrays.asList("EVENTTIME", "NAME", "TEXT", "USER", "STATUS",
             "SEVERITY");
-    
+
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 
@@ -96,7 +73,7 @@ public class AlarmHistoryView extends ViewPart {
      * it.
      */
     public void createPartControl(Composite parent) {
-        createUI(parent);        
+        createUI(parent);
         changeSupport.addPropertyChangeListener((evt) -> {
             switch (evt.getPropertyName()) {
             case "alarmHistoryQueryParameters":
@@ -115,7 +92,7 @@ public class AlarmHistoryView extends ViewPart {
         });
         initialize();
     }
-    
+
     private void createUI(Composite parent) {
         parent.setLayout(new GridLayout(1, false));
         viewer = new TableViewer(parent,
@@ -139,7 +116,7 @@ public class AlarmHistoryView extends ViewPart {
     }
     /*
      * Example of the data coming from the alarm message server
-     * 
+     *
      * {"EVENTTIME":"2016-02-25 17:15:29.000",
      * "HOST":"training",
      * "TEXT":"STATE",
@@ -214,7 +191,7 @@ public class AlarmHistoryView extends ViewPart {
             });
         }
     };
-    
+
     /**
      * create rest client and jobs using preferences
      */
@@ -243,7 +220,7 @@ public class AlarmHistoryView extends ViewPart {
      */
     public void setFocus() {
         viewer.getControl().setFocus();
-    }    
+    }
 
     public List<String> getVisibleColumns() {
         return this.visibleColumns;
@@ -262,7 +239,7 @@ public class AlarmHistoryView extends ViewPart {
     public AlarmHistoryQueryParameters getAlarmHistoryQueryParameters() {
         return alarmHistoryQueryParameters;
     }
-    
+
     public void setAlarmHistoryQueryParameters(AlarmHistoryQueryParameters parameters) {
         Object oldValue = this.alarmHistoryQueryParameters;
         this.alarmHistoryQueryParameters = parameters;

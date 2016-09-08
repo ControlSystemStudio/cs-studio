@@ -41,11 +41,14 @@ public class ScanConfig
 {
     final private static String XML_SCAN_CONFIG = "scan_config";
     final private static String XML_BEAMLINE = "beamline";
+    final private static String XML_SIMULATION_HOOK = "simulation_hook";
     final private static String XML_PV = "pv";
     final private static String XML_NAME = "name";
     final private static String XML_NAME_PATTERN = "name_pattern";
     final private static String XML_ALIAS = "alias";
     final private static String XML_SLEW_RATE = "slew_rate";
+
+    private String simulation_hook = "";
 
     /** Predefined devices, maybe with alias */
     final private DeviceInfo[] devices;
@@ -95,6 +98,12 @@ public class ScanConfig
         devices = read(stream);
     }
 
+    /** @return Jython class to use for simulation hook. May be empty */
+    public String getSimulationHook()
+    {
+        return simulation_hook;
+    }
+
     /** @return {@link DeviceInfo}s read from file */
     public DeviceInfo[] getDevices()
     {
@@ -138,6 +147,10 @@ public class ScanConfig
             else
                 throw new Exception("Got " + root_name + " instead of " + XML_SCAN_CONFIG);
         }
+
+        final NodeList hooks = root_node.getElementsByTagName(XML_SIMULATION_HOOK);
+        if (hooks.getLength() == 1)
+            simulation_hook = XMLUtil.getString(hooks.item(0), "");
 
         // Loop over <pv>s, being very lenient where they are in the document.
         // This allows both <scan_config> and legacy <beamline>.
