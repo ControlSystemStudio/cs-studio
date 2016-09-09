@@ -1168,7 +1168,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     original_autoscale_values.add(axis.isAutoscale());
                     new_autoscale_values.add(Boolean.FALSE);
                 }
-                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In, x_axis, original_x_range, new_x_range, y_axes, original_y_ranges, new_y_ranges));
+                undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In, x_axis, original_x_range, new_x_range, y_axes, original_y_ranges, new_y_ranges, original_autoscale_values, new_autoscale_values));
             }
             mouse_mode = MouseMode.ZOOM_IN;
         }
