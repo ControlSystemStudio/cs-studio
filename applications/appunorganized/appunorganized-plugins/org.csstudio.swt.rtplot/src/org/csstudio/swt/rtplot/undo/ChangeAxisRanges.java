@@ -68,6 +68,11 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableA
                 throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + original_y_ranges.size() + " orig. ranges");
             if (y_axes.size() != new_y_ranges.size())
                 throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + new_y_ranges.size() + " new ranges");
+
+            if (original_autoscale != null && y_axes.size() != original_autoscale.size())
+                throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + original_autoscale.size() + " original autoscale");
+            if (new_autoscale != null && y_axes.size() != new_autoscale.size())
+                throw new IllegalArgumentException(y_axes.size() + " Y axes, but " + new_autoscale.size() + " new autoscale");
         }
     }
 
