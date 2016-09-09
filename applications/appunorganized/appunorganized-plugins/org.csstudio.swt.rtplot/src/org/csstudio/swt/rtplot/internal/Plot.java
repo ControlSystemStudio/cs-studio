@@ -964,15 +964,20 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 // .. and Y axes
                 final List<AxisRange<Double>> old_range = new ArrayList<>(y_axes.size()),
                                               new_range = new ArrayList<>(y_axes.size());
+                final List<Boolean> original_autoscale = new ArrayList<>(y_axes.size()),
+                                    new_autoscale = new ArrayList<>(y_axes.size());
                 for (YAxisImpl<XTYPE> axis : y_axes)
                 {
+                      original_autoscale.add(axis.isAutoscale());
+                      new_autoscale.add(Boolean.FALSE);
                       old_range.add(axis.getValueRange());
                       axis.zoom(current.y, ZOOM_FACTOR);
                       new_range.add(axis.getValueRange());
                       fireYAxisChange(axis);
                 }
                 undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out,
-                        x_axis, orig_x, x_axis.getValueRange(), y_axes, old_range, new_range));
+                        x_axis, orig_x, x_axis.getValueRange(), y_axes, old_range, new_range,
+                        original_autoscale, new_autoscale));
             }
             else
             {   // Zoom out of Y axis
