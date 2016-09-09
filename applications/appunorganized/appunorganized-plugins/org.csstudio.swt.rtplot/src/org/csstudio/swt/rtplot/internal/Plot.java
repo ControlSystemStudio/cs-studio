@@ -1128,7 +1128,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In_Y,
                         Arrays.asList(axis),
                         Arrays.asList(axis.getValueRange()),
-                        Arrays.asList(new AxisRange<Double>(axis.getValue(low), axis.getValue(high)))));
+                        Arrays.asList(new AxisRange<Double>(axis.getValue(low), axis.getValue(high))),
+                        Arrays.asList(axis.isAutoscale()), Arrays.asList(Boolean.FALSE)));
             }
             mouse_mode = MouseMode.ZOOM_IN;
         }
