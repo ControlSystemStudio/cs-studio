@@ -975,17 +975,21 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                         x_axis, orig_x, x_axis.getValueRange(), y_axes, old_range, new_range));
             }
             else
-            {
+            {   // Zoom out of Y axis
                 for (YAxisImpl<XTYPE> axis : y_axes)
                     if (axis.getBounds().contains(current))
                     {
                         final AxisRange<Double> orig = axis.getValueRange();
+                        final Boolean original_autoscale = axis.isAutoscale();
+                        axis.setAutoscale(false);
+                        fireAutoScaleChange(axis);
                         axis.zoom(current.y, ZOOM_FACTOR);
                         fireYAxisChange(axis);
                         undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_Out_Y,
                                 Arrays.asList(axis),
                                 Arrays.asList(orig),
-                                Arrays.asList(axis.getValueRange())));
+                                Arrays.asList(axis.getValueRange()),
+                                Arrays.asList(original_autoscale), Arrays.asList(Boolean.FALSE)));
                         break;
                     }
             }
