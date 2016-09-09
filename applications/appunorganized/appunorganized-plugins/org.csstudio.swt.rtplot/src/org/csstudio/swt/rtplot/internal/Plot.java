@@ -964,10 +964,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 x_axis.zoom(current.x, ZOOM_FACTOR);
                 fireXAxisChange();
                 // .. and Y axes
-                final List<AxisRange<Double>> old_range = new ArrayList<>(y_axes.size()),
-                                              new_range = new ArrayList<>(y_axes.size());
-                final List<Boolean> original_autoscale = new ArrayList<>(y_axes.size()),
-                                    new_autoscale = new ArrayList<>(y_axes.size());
+                final List<AxisRange<Double>> old_range = new ArrayList<>(y_axes.size());
+                final List<AxisRange<Double>> new_range = new ArrayList<>(y_axes.size());
+                final List<Boolean> original_autoscale = new ArrayList<>(y_axes.size());
+                final List<Boolean> new_autoscale = new ArrayList<>(y_axes.size());
                 for (YAxisImpl<XTYPE> axis : y_axes)
                 {
                       original_autoscale.add(axis.isAutoscale());
@@ -996,7 +996,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                                 Arrays.asList(axis),
                                 Arrays.asList(orig),
                                 Arrays.asList(axis.getValueRange()),
-                                Arrays.asList(original_autoscale), Arrays.asList(Boolean.FALSE)));
+                                Arrays.asList(original_autoscale),
+                                Arrays.asList(Boolean.FALSE)));
                         break;
                     }
             }
@@ -1095,7 +1096,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     Arrays.asList(y_axis),
                     Arrays.asList(mouse_start_y_ranges.get(mouse_y_axis)),
                     Arrays.asList(y_axis.getValueRange()),
-                    pre_pan_auto_scales, new_autoscales));
+                    pre_pan_auto_scales,
+                    new_autoscales));
             pre_pan_auto_scales = new Stack<Boolean>();  // Clear cache of autoscales
             fireYAxisChange(y_axis);
             mouse_mode = MouseMode.PAN;
@@ -1110,7 +1112,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             Collections.fill(new_autoscales, Boolean.FALSE);
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan,
                     x_axis, mouse_start_x_range, x_axis.getValueRange(),
-                    y_axes, mouse_start_y_ranges, current_y_ranges, pre_pan_auto_scales, new_autoscales));
+                    y_axes, mouse_start_y_ranges, current_y_ranges,
+                    pre_pan_auto_scales, new_autoscales));
             pre_pan_auto_scales = new Stack<Boolean>();  // Clear cache of autoscales
             fireXAxisChange();
             for (YAxisImpl<XTYPE> axis : y_axes)
@@ -1140,7 +1143,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                         Arrays.asList(axis),
                         Arrays.asList(axis.getValueRange()),
                         Arrays.asList(new AxisRange<Double>(axis.getValue(low), axis.getValue(high))),
-                        Arrays.asList(axis.isAutoscale()), Arrays.asList(Boolean.FALSE)));
+                        Arrays.asList(axis.isAutoscale()),
+                        Arrays.asList(Boolean.FALSE)));
             }
             mouse_mode = MouseMode.ZOOM_IN;
         }

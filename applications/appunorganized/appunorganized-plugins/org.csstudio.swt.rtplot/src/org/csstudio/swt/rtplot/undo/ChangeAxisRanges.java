@@ -157,8 +157,10 @@ public class ChangeAxisRanges<XTYPE extends Comparable<XTYPE>> extends UndoableA
     public void undo()
     {
         if (x_axis != null)
+        {
             if (x_axis.setValueRange(original_x_range.getLow(), original_x_range.getHigh()))
                 plot.fireXAxisChange();
+        }
         if (yaxes != null)
         {
             setAutoscale(original_autoscale);
