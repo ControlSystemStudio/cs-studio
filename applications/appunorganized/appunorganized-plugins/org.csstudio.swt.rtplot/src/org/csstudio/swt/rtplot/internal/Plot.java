@@ -1146,12 +1146,16 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 // Mouse 'y' increases going _down_ the screen
                 final List<AxisRange<Double>> original_y_ranges = new ArrayList<>();
                 final List<AxisRange<Double>> new_y_ranges = new ArrayList<>();
+                final List<Boolean> original_autoscale_values = new ArrayList<>();
+                final List<Boolean> new_autoscale_values = new ArrayList<>();
                 high = Math.min(start.y, current.y);
                 low = Math.max(start.y, current.y);
                 for (YAxisImpl<XTYPE> axis : y_axes)
                 {
                     original_y_ranges.add(axis.getValueRange());
                     new_y_ranges.add(new AxisRange<Double>(axis.getValue(low), axis.getValue(high)));
+                    original_autoscale_values.add(axis.isAutoscale());
+                    new_autoscale_values.add(Boolean.FALSE);
                 }
                 undo.execute(new ChangeAxisRanges<XTYPE>(this, Messages.Zoom_In, x_axis, original_x_range, new_x_range, y_axes, original_y_ranges, new_y_ranges));
             }
