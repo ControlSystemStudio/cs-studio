@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -154,7 +155,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     private AxisRange<XTYPE> mouse_start_x_range;
     private List<AxisRange<Double>> mouse_start_y_ranges = new ArrayList<>();
     private int mouse_y_axis = -1;
-    private boolean pre_pan_auto_scale = false;
     private Stack<Boolean> pre_pan_auto_scales = new Stack<Boolean>();
 
     // Annotation-related info. If mouse_annotation is set, the rest should be set.
@@ -908,8 +908,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
                     // Store the auto scale state during mouse actions,
                     // we can use it later to create an un-doable action.
-                    pre_pan_auto_scale = axis.isAutoscale();
-                    axis.lazySetAutoScale(false);
+                    pre_pan_auto_scales.push(axis.isAutoscale());
+                    axis.setAutoscale(false);
                     fireAutoScaleChange(axis);
                     return;
                 }
@@ -918,7 +918,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                 mouse_mode = MouseMode.PAN_PLOT;
                 for (YAxisImpl<XTYPE> axis : y_axes) {
                     pre_pan_auto_scales.push(axis.isAutoscale());
-                    axis.lazySetAutoScale(false);
+                    axis.setAutoscale(false);
                     fireAutoScaleChange(axis);
                 }
             }
@@ -1078,13 +1078,14 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         {
             mouseMove(e);
             final YAxisImpl<XTYPE> y_axis = y_axes.get(mouse_y_axis);
-            // Put the auto scale value back on the axis after panning, but before creating the un-doable action.
-            y_axis.lazySetAutoScale(pre_pan_auto_scale);
+            List<Boolean> new_autoscales = Arrays.asList(new Boolean[y_axes.size()]);
+            Collections.fill(new_autoscales, Boolean.FALSE);
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan_Y,
                     Arrays.asList(y_axis),
                     Arrays.asList(mouse_start_y_ranges.get(mouse_y_axis)),
-                    Arrays.asList(y_axis.getValueRange())));
-            y_axis.lazySetAutoScale(false);
+                    Arrays.asList(y_axis.getValueRange()),
+                    pre_pan_auto_scales, new_autoscales));
+            pre_pan_auto_scales = new Stack<Boolean>();  // Clear cache of autoscales
             fireYAxisChange(y_axis);
             mouse_mode = MouseMode.PAN;
         }
@@ -1092,18 +1093,17 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         {
             mouseMove(e);
             List<AxisRange<Double>> current_y_ranges = new ArrayList<>();
-            for (YAxisImpl<XTYPE> axis : y_axes) {
+            for (YAxisImpl<XTYPE> axis : y_axes)
                 current_y_ranges.add(axis.getValueRange());
-                axis.lazySetAutoScale(pre_pan_auto_scales.pop());
-            }
+            List<Boolean> new_autoscales = Arrays.asList(new Boolean[y_axes.size()]);
+            Collections.fill(new_autoscales, Boolean.FALSE);
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan,
                     x_axis, mouse_start_x_range, x_axis.getValueRange(),
-                    y_axes, mouse_start_y_ranges, current_y_ranges));
+                    y_axes, mouse_start_y_ranges, current_y_ranges, pre_pan_auto_scales, new_autoscales));
+            pre_pan_auto_scales = new Stack<Boolean>();  // Clear cache of autoscales
             fireXAxisChange();
-            for (YAxisImpl<XTYPE> axis : y_axes) {
-                axis.lazySetAutoScale(false);
+            for (YAxisImpl<XTYPE> axis : y_axes)
                 fireYAxisChange(axis);
-            }
             mouse_mode = MouseMode.PAN;
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_X)
