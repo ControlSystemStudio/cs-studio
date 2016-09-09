@@ -914,9 +914,11 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
                     return;
                 }
             }
-            if (plot_area.getBounds().contains(current)) {
+            if (plot_area.getBounds().contains(current))
+            {
                 mouse_mode = MouseMode.PAN_PLOT;
-                for (YAxisImpl<XTYPE> axis : y_axes) {
+                for (YAxisImpl<XTYPE> axis : y_axes)
+                {
                     pre_pan_auto_scales.push(axis.isAutoscale());
                     axis.setAutoscale(false);
                     fireAutoScaleChange(axis);
