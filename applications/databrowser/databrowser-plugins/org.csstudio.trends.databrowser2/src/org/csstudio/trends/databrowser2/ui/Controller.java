@@ -540,7 +540,7 @@ public class Controller
     {
         if (archive_fetch_delay_task != null)
             archive_fetch_delay_task.cancel(true);
-        archive_fetch_delay_task = update_timer.schedule(this::getArchivedData, archive_fetch_delay, TimeUnit.MILLISECONDS);
+        archive_fetch_delay_task = update_timer.schedule(() -> getArchivedData(), archive_fetch_delay, TimeUnit.MILLISECONDS);
     }
 
     /** Start model items and initiate scrolling/updates
