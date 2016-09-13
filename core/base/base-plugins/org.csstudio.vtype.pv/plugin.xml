@@ -8,5 +8,6 @@
       <PVFactory name="epics" class="org.csstudio.vtype.pv.jca.JCA_PVFactory"/>
       <PVFactory name="loc" class="org.csstudio.vtype.pv.local.LocalPVFactory"/>
       <PVFactory name="sim" class="org.csstudio.vtype.pv.sim.SimPVFactory"/>
+      <PVFactory name="mqtt" class="org.csstudio.vtype.pv.mqtt.MQTT_PVFactory"/>
    </extension>
 </plugin>
