@@ -15,6 +15,7 @@ package org.csstudio.opibuilder.widgets.model;
  * @deprecated the native button is not used anymore. Instead use Style property of Action Button.
  *
  */
+@Deprecated
 public final class NativeButtonModel extends ActionButtonModel{
 
 

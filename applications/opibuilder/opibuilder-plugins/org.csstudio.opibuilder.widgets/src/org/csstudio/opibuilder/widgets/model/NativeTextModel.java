@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
  *
  * @deprecated not used anymore. Only leave this here in case we need to reverse back.
  */
+@Deprecated
 public final class NativeTextModel extends TextInputModel {
 
     public static final String PROP_SHOW_NATIVE_BORDER = "show_native_border"; //$NON-NLS-1$
