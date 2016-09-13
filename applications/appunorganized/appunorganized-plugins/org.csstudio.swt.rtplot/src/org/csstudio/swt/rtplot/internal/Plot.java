@@ -1252,9 +1252,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             listener.changedToolbar(show);
     }
 
-	public void fireAutoScaleChange(YAxisImpl<XTYPE> axis)
-	{
+    public void fireAutoScaleChange(YAxisImpl<XTYPE> axis)
+    {
         for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedAutoScale(axis);
-	}
+    }
 }
