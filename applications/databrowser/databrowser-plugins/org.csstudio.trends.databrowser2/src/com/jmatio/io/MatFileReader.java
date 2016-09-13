@@ -1,5 +1,21 @@
 package com.jmatio.io;
 
+import com.jmatio.common.MatDataTypes;
+import com.jmatio.types.ByteStorageSupport;
+import com.jmatio.types.MLArray;
+import com.jmatio.types.MLCell;
+import com.jmatio.types.MLChar;
+import com.jmatio.types.MLDouble;
+import com.jmatio.types.MLEmptyArray;
+import com.jmatio.types.MLInt64;
+import com.jmatio.types.MLInt8;
+import com.jmatio.types.MLNumericArray;
+import com.jmatio.types.MLSingle;
+import com.jmatio.types.MLSparse;
+import com.jmatio.types.MLStructure;
+import com.jmatio.types.MLUInt64;
+import com.jmatio.types.MLUInt8;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -19,22 +35,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.InflaterInputStream;
-
-import com.jmatio.common.MatDataTypes;
-import com.jmatio.types.ByteStorageSupport;
-import com.jmatio.types.MLArray;
-import com.jmatio.types.MLCell;
-import com.jmatio.types.MLChar;
-import com.jmatio.types.MLDouble;
-import com.jmatio.types.MLEmptyArray;
-import com.jmatio.types.MLInt64;
-import com.jmatio.types.MLInt8;
-import com.jmatio.types.MLNumericArray;
-import com.jmatio.types.MLSingle;
-import com.jmatio.types.MLSparse;
-import com.jmatio.types.MLStructure;
-import com.jmatio.types.MLUInt64;
-import com.jmatio.types.MLUInt8;
 
 /**
  * MAT-file reader. Reads MAT-file into <code>MLArray</code> objects.
@@ -396,6 +396,7 @@ public class MatFileReader
      * @deprecated use <code>getContent</code> which returns a Map to provide
      *             easier access to <code>MLArray</code>s contained in MAT-file
      */
+    @Deprecated
     public ArrayList<MLArray> getData()
     {
         return new ArrayList<MLArray>( data.values() );
