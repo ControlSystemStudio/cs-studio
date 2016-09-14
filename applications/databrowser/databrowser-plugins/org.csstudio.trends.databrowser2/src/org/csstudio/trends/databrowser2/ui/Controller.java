@@ -387,6 +387,14 @@ public class Controller
             {
                 model.setLegendVisible(visible);
             }
+
+            @Override
+            public void autoScaleChanged(int index, boolean autoScale)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                if (axis != null)
+                    display.asyncExec(() -> axis.setAutoScale(autoScale));
+            }
         });
 
 

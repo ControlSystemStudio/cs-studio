@@ -71,13 +71,13 @@ public class ChangeAxisConfigCommand extends UndoableAction
             axis.setOnRight(config.isOnRight());
         if (! axis.getColor().equals(config.getColor()))
             axis.setColor(config.getColor());
+        if (axis.isAutoScale() != config.isAutoScale())
+            axis.setAutoScale(config.isAutoScale());
         if (axis.getMin() != config.getMin()  ||
             axis.getMax() != config.getMax())
             axis.setRange(config.getMin(), config.getMax());
         if (axis.isGridVisible() != config.isGridVisible())
             axis.setGridVisible(config.isGridVisible());
-        if (axis.isAutoScale() != config.isAutoScale())
-            axis.setAutoScale(config.isAutoScale());
         if (axis.isLogScale() != config.isLogScale())
             axis.setLogScale(config.isLogScale());
         if (axis.getLabelFont().equals(config.getLabelFont()))
