@@ -91,18 +91,6 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
         };
         setPropertyChangeHandler(BoolButtonModel.PROP_SHOW_LED, handler);
 
-        //labels from PVs
-        handler = new IWidgetPropertyChangeHandler() {
-            @Override
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue,
-                    final IFigure refreshableFigure) {
-                BoolButtonFigure btn = (BoolButtonFigure) refreshableFigure;
-                btn.setEffect3D((Boolean) newValue);
-                return true;
-            }
-        };
-        setPropertyChangeHandler(BoolButtonModel.PROP_EFFECT3D, handler);
 
         //load labels from PV
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
