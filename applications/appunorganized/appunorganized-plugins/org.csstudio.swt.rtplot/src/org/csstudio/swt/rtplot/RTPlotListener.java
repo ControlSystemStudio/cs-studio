@@ -21,6 +21,9 @@ public interface RTPlotListener<XTYPE extends Comparable<XTYPE>>
     /** Invoked when the Y axis range has changed */
     default public void changedYAxis(YAxis<XTYPE> y_axis) {};
 
+    /** Invoked when auto scale is disabled by user interaction */
+    default public void changedAutoScale(YAxis<XTYPE> y_axis) {};
+
     /** Invoked when Annotations have been changed */
     default public void changedAnnotations() {};
 
