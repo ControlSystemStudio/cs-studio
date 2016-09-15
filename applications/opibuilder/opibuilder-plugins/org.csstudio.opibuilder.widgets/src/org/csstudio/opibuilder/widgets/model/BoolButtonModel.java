@@ -109,21 +109,4 @@ public class BoolButtonModel extends AbstractBoolControlModel {
         return (Boolean) getProperty(PROP_LABELS_FROM_PV).getPropertyValue();
     }
 
-
-    /**
-     * @return the on label
-     */
-    @Override
-    public String getOnLabel() {
-        return(String) getProperty(PROP_ON_LABEL).getPropertyValue();
-    }
-
-    /**
-     * @return the off label
-     */
-    @Override
-    public String getOffLabel() {
-        return (String) getProperty(PROP_OFF_LABEL).getPropertyValue();
-    }
-
 }
