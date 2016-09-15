@@ -488,19 +488,4 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
         squareButtonFigure.setEnabled(squareButton);
     }
 
-
-
-    /**
-     * @param offLabel the offLabel to set
-     */
-    public void setOffLabel(String offLabel) {
-        if(this.offLabel != null && this.offLabel.equals(offLabel))
-            return;
-        this.offLabel = offLabel;
-        if(!booleanValue)
-            boolLabel.setText(offLabel);
-
-    }
-
-
 }
