@@ -16,7 +16,6 @@ import org.csstudio.opibuilder.widgets.model.BoolButtonModel;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.swt.widgets.figures.BoolButtonFigure;
-import org.diirt.vtype.VBoolean;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
@@ -46,6 +45,15 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
     @Override
     public BoolButtonModel getWidgetModel() {
         return (BoolButtonModel)getModel();
+    }
+
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        // Must be called after the PV objects are created and
+        // so cannot be called in the registerPropertyChangeHandlers()
+        // method.
+        registerLoadLabelsListener();
     }
 
     @Override
@@ -90,9 +98,13 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
             }
         };
         setPropertyChangeHandler(BoolButtonModel.PROP_SHOW_LED, handler);
+    }
 
-
-        //load labels from PV
+    /**
+     * Load the button labels from the PV object.
+     * This must be called after the PV objects are created.
+     */
+    private void registerLoadLabelsListener() {
         if(getExecutionMode() == ExecutionMode.RUN_MODE){
             if(getWidgetModel().isLabelsFromPV()){
                 IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
@@ -103,14 +115,10 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
                             public void valueChanged(IPV pv) {
                                 VType value = pv.getValue();
                                 if (value != null && value instanceof VEnum){
-                                    List<String> new_meta = ((VEnum)value).getLabels();
-                                    for (String val : new_meta) {
-                                        System.out.println(val);
-                                    }
-                                }
-                                if (value != null && value instanceof VBoolean){
-
-                                    System.out.println(value);
+                                    List<String> enumLabels = ((VEnum)value).getLabels();
+                                    // This is a bool button so we require exactly two labels.
+                                    getWidgetModel().setPropertyValue(BoolButtonModel.PROP_ON_LABEL, enumLabels.get(0));
+                                    getWidgetModel().setPropertyValue(BoolButtonModel.PROP_OFF_LABEL, enumLabels.get(1));
                                 }
                             }
                         };
