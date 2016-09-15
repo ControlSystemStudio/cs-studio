@@ -37,7 +37,7 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
     public static final String PROP_CONFIRM_TIP = "confirm_message"; //$NON-NLS-1$
 
 
-    public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";
+    public static final String DEFAULT_CONFIRM_TIP = "Are you sure you want to do this?";
 
     /**
      * The action which will be executed when widget is pushed. It is the index the actions in
