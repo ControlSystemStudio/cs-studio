@@ -115,14 +115,7 @@ public class BoolButtonModel extends AbstractBoolControlModel {
      */
     @Override
     public String getOnLabel() {
-        String label;
-        if (isLabelsFromPV()) {
-            label = "TODO: Read from PV";
-        }
-        else {
-            label = (String) getProperty(PROP_ON_LABEL).getPropertyValue();
-        }
-        return label;
+        return(String) getProperty(PROP_ON_LABEL).getPropertyValue();
     }
 
     /**

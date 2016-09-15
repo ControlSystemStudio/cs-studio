@@ -117,8 +117,12 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
                                 if (value != null && value instanceof VEnum){
                                     List<String> enumLabels = ((VEnum)value).getLabels();
                                     // This is a bool button so we require exactly two labels.
-                                    getWidgetModel().setPropertyValue(BoolButtonModel.PROP_ON_LABEL, enumLabels.get(0));
-                                    getWidgetModel().setPropertyValue(BoolButtonModel.PROP_OFF_LABEL, enumLabels.get(1));
+                                    if (enumLabels.size() > 0) {
+                                        getWidgetModel().setPropertyValue(BoolButtonModel.PROP_OFF_LABEL, enumLabels.get(0));
+                                    }
+                                    if (enumLabels.size() > 1) {
+                                        getWidgetModel().setPropertyValue(BoolButtonModel.PROP_ON_LABEL, enumLabels.get(1));
+                                    }
                                 }
                             }
                         };
