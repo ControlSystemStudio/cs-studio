@@ -72,7 +72,7 @@ public class UpdateThrottleTest
         throttle.trigger();
         TimeUnit.MILLISECONDS.sleep(100);
         assertThat(updates.get(), equalTo(3));
-        TimeUnit.MILLISECONDS.sleep(300);
+        TimeUnit.MILLISECONDS.sleep(1000);
         assertThat(updates.get(), equalTo(4));
     }
 }
