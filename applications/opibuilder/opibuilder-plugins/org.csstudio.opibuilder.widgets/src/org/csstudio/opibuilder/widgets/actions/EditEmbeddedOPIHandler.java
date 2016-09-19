@@ -3,7 +3,6 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
-import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,7 +27,6 @@ import org.eclipse.ui.part.FileEditorInput;
 public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler {
 
     private static final String OPI_EDITOR_ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
-    private static final String OPI_EDITOR_PERSPECTIVE_ID = "org.csstudio.opibuilder.opieditor"; //$NON-NLS-1$
 
     /**
      * Determine the widget that was the object of the mouse click.
@@ -75,9 +73,6 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
                         // eclipse choosing an OPIRunner instance
                         page.openEditor(editorInput, OPI_EDITOR_ID, true,
                                 IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT);
-                        // force switch to edit perspective
-                        PerspectiveHelper.showPerspective(
-                                OPI_EDITOR_PERSPECTIVE_ID, page);
                     } catch (PartInitException ex) {
                         System.err.println("Error starting OPI Editor"
                                 + ex.toString());
