@@ -40,7 +40,7 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
         IPath path = null;
         LinkingContainerEditpart linkingContainer = null;
 
-        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             Object o = structuredSelection.getFirstElement();
