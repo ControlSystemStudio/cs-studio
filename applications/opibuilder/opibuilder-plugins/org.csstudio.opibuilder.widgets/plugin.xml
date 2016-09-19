@@ -709,6 +709,7 @@
          <command
                commandId="org.csstudio.opibuilder.commands.editembeddedopi"
                label="Edit Embedded OPI"
+               icon="platform:/plugin/org.csstudio.opibuilder.editor/icons/edit.gif"
                style="push">
             <visibleWhen>
               <with variable="activeMenuSelection">
