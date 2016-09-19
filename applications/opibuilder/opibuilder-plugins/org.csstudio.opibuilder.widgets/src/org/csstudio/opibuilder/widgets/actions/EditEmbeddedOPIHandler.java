@@ -61,8 +61,6 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
                         // by Eclipse.
                         if (!ResourceUtil.isExistingWorkspaceFile(path)
                                 && ResourceUtil.isExistingLocalFile(path)) {
-                            // IEditorInput editorInput = new
-                            // FileStoreEditorInput(file);
                             IFileStore fileStore = EFS.getLocalFileSystem()
                                     .getStore(file.getFullPath());
                             editorInput = new FileStoreEditorInput(fileStore);
