@@ -30,10 +30,11 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
     private static final String OPI_EDITOR_ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
     private static final String OPI_EDITOR_PERSPECTIVE_ID = "org.csstudio.opibuilder.opieditor"; //$NON-NLS-1$
 
-    /** EditOPI action
-     *  - if selected part is an OPIShell open this in the main CSS window in edit mode
-     *  - if the selected part is in the CSS window  as an OPIView open as an editor
-     *  - if the selected part is in the CSS in run mode, open in edit mode
+    /**
+     * Determine the widget that was the object of the mouse click.
+     * If it can be established to be a LinkingContainerEditpart, extract
+     * the path of the embedded opi and request opening an OPIEditor with this file.
+     * Warning: this shares code with EditOPIHandler in the org.csstudio.opibuilder.editor plugin.
      */
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
