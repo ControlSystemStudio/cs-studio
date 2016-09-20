@@ -715,9 +715,7 @@
               <with variable="activeMenuSelection">
                 <iterate ifEmpty="false">
                   <adapt type="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
-                    <not>
-                      <test property="org.csstudio.opibuilder.isNoEdit" />
-                    </not>
+                    <test property="org.csstudio.opibuilder.isEditable" />
                   </adapt>
                 </iterate>
               </with>
@@ -734,10 +732,10 @@
    </extension>
    <extension point="org.eclipse.core.expressions.propertyTesters">
      <propertyTester
-          class="org.csstudio.opibuilder.widgets.actions.NoEditPropertyTester"
-          id="org.csstudio.opibuilder.NoEditPropertyTester"
+          class="org.csstudio.opibuilder.widgets.actions.EditableLinkingContainerPropertyTester"
+          id="org.csstudio.opibuilder.EditableLinkingContainerPropertyTester"
           namespace="org.csstudio.opibuilder"
-          properties="isNoEdit"
+          properties="isEditable"
           type="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
    </propertyTester>
  </extension>
