@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart;
-import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -45,7 +44,7 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
             Object o = structuredSelection.getFirstElement();
             if (o instanceof LinkingContainerEditpart) {
                 linkingContainer = (LinkingContainerEditpart) o;
-                path = ((LinkingContainerModel) linkingContainer.getModel()).getOPIFilePath();
+                path = linkingContainer.getWidgetModel().getOPIFilePath();
             }
         }
 
