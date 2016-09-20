@@ -723,20 +723,19 @@
          </command>
       </menuContribution>
    </extension>
-         <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.csstudio.opibuilder.widgets.actions.EditEmbeddedOPIHandler"
-            commandId="org.csstudio.opibuilder.commands.editembeddedopi">
-      </handler>
+   <extension point="org.eclipse.ui.handlers">
+     <handler
+           class="org.csstudio.opibuilder.widgets.actions.EditEmbeddedOPIHandler"
+           commandId="org.csstudio.opibuilder.commands.editembeddedopi">
+     </handler>
    </extension>
    <extension point="org.eclipse.core.expressions.propertyTesters">
      <propertyTester
-          class="org.csstudio.opibuilder.widgets.actions.EditableLinkingContainerPropertyTester"
-          id="org.csstudio.opibuilder.EditableLinkingContainerPropertyTester"
-          namespace="org.csstudio.opibuilder"
-          properties="isEditable"
-          type="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
+           class="org.csstudio.opibuilder.widgets.actions.EditableLinkingContainerPropertyTester"
+           id="org.csstudio.opibuilder.EditableLinkingContainerPropertyTester"
+           namespace="org.csstudio.opibuilder"
+           properties="isEditable"
+           type="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
    </propertyTester>
  </extension>
 </plugin>
