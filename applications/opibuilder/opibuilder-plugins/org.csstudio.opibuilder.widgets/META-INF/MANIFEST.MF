@@ -25,9 +25,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.diirt.util;bundle-version="0.3.2",
  org.csstudio.csdata;bundle-version="3.2.0",
  org.jdom,
- org.eclipse.ui.ide,
- org.eclipse.core.resources,
- org.eclipse.core.filesystem,
  org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

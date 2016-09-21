@@ -6,10 +6,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -19,8 +15,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 
 
 public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler {
@@ -49,23 +43,12 @@ public class EditEmbeddedOPIHandler extends AbstractHandler implements IHandler 
         }
 
         if (path != null) {
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
             IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (window != null) {
                 IWorkbenchPage page = window.getActivePage();
                 if (page != null) {
                     try {
-                        IEditorInput editorInput = null;
-                        // Files outside the workspace are handled differently
-                        // by Eclipse.
-                        if (!ResourceUtil.isExistingWorkspaceFile(path)
-                                && ResourceUtil.isExistingLocalFile(path)) {
-                            IFileStore fileStore = EFS.getLocalFileSystem()
-                                    .getStore(file.getFullPath());
-                            editorInput = new FileStoreEditorInput(fileStore);
-                        } else {
-                            editorInput = new FileEditorInput(file);
-                        }
+                        IEditorInput editorInput =  ResourceUtil.editorInputFromPath(path);
                         // Need to match on both Editor ID and file to prevent
                         // eclipse choosing an OPIRunner instance
                         page.openEditor(editorInput, OPI_EDITOR_ID, true,
