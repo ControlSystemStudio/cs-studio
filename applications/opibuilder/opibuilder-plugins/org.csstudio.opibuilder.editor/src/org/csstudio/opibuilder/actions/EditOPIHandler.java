@@ -55,13 +55,9 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
                 if (page != null) {
                     try {
                         IEditorInput editorInput = ResourceUtil.editorInputFromPath(path);
-                        // Need to match on both Editor ID and file to prevent
-                        // eclipse choosing an OPIRunner instance
                         page.openEditor(editorInput, OPI_EDITOR_ID, true,
                                 IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT);
                     } catch (PartInitException ex) {
-                        System.err.println("Error starting OPI Editor"
-                                + ex.toString());
                         ErrorHandlerUtil.handleError(
                                 "Failed to open current OPI in editor", ex);
                     }

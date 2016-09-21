@@ -8,6 +8,21 @@ import org.eclipse.core.runtime.Path;
 
 public class EditableLinkingContainerPropertyTester extends PropertyTester {
 
+    /**
+     * Establish if the receiver object is a LinkingContainer widget suitable
+     * for editing in OPIEditor.
+     *
+     * If:
+     * <ul>
+     *  <li>OPIBuilder is in no-edit mode
+     *  <li>the receiver is not a linking container
+     *  <li>no path can be extracted from the widget
+     *  <li>the embedding panel is served over HTTP
+     *  <li>the embedded panel is served over HTTP
+     * </ul>
+     *  return false
+     *
+     */
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         IPath displayPath = null;
