@@ -13,11 +13,11 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.csstudio.ui.util.SWTConstants;
 import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -29,9 +29,11 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
@@ -129,11 +131,10 @@ public class DisplayEditpart extends AbstractContainerEditpart {
                         //org.eclipse.rwt.internal.textsize.TextSizeRecalculation.enlargeShell(Shell shell)
                         if(OPIBuilderPlugin.isRAP() && (size.x - oldSize.x) == 1000 && (size.y - oldSize.y) == 1000)
                             return;
-                        if (size.x * size.y > 0)
-                            ((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoomAsText(
-                                    Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+                        if (size.x * size.y > 0) {
+                            getZoomManager().setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+                        }
                         oldSize = size;
-
                     }
                 };
             UIBundlingThread.getInstance().addRunnable(new Runnable() {
@@ -160,7 +161,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
         final Control control = getViewer().getControl();
         if (getViewer() != null && !control.isDisposed()) {
             //This needs to be executed in UI Thread
-            final ZoomManager zoomManager = ((ScalableFreeformRootEditPart) getRoot()).getZoomManager();
+            final ZoomManager zoomManager = getZoomManager();
             control.getDisplay().asyncExec(new Runnable() {
 
                 @Override
@@ -313,8 +314,6 @@ public class DisplayEditpart extends AbstractContainerEditpart {
         figure.repaint();
     }
 
-
-
     @Override
     public EditPart getWidget(String name) throws Exception {
         try {
@@ -327,6 +326,16 @@ public class DisplayEditpart extends AbstractContainerEditpart {
             }
             throw e;
         }
+    }
+
+    private ZoomManager getZoomManager() {
+        RootEditPart editpart = getRoot();
+        if (editpart instanceof ScalableFreeformRootEditPart) {
+            return ((ScalableFreeformRootEditPart)editpart).getZoomManager();
+        } else if (editpart instanceof ScalableRootEditPart) {
+            return ((ScalableRootEditPart)editpart).getZoomManager();
+        }
+        return null;
     }
 
 }
