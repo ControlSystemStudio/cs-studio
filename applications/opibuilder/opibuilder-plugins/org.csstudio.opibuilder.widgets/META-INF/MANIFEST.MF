@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.simplepv;bundle-version="1.0.0",
  org.diirt.util;bundle-version="0.3.2",
  org.csstudio.csdata;bundle-version="3.2.0",
- org.jdom
+ org.jdom,
+ org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.widgets,
