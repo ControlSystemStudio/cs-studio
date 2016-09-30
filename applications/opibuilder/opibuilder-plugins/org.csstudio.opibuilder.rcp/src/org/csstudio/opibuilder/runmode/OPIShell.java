@@ -27,18 +27,15 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellEvent;
@@ -47,8 +44,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -124,7 +119,7 @@ public final class OPIShell implements IOPIRuntime {
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
 
-        ScalableRootEditPart root = new ScalableRootEditPart() {
+        viewer.setRootEditPart(new ScalableRootEditPart() {
             @Override
             public DragTracker getDragTracker(Request req) {
                 return new DragEditPartsTracker(this);
@@ -133,8 +128,7 @@ public final class OPIShell implements IOPIRuntime {
             public boolean isSelectable() {
                 return false;
             }
-        };
-        viewer.setRootEditPart(root);
+        });
 
         EditDomain editDomain = new EditDomain() {
             @Override
@@ -185,16 +179,7 @@ public final class OPIShell implements IOPIRuntime {
                 }
             }
         });
-        shell.addListener(SWT.Resize, new Listener() {
 
-            @Override
-            public void handleEvent(Event event) {
-                ZoomManager zoomManager = root.getZoomManager();
-                zoomManager.setZoom(1.0);  // what's this about?
-                zoomManager.getScalableFigure().setPreferredSize(new Dimension(displayModel.getWidth(), displayModel.getHeight()));
-                zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
-            }
-        });
         /*
          * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
          * Wait until the window is open, then call shell.setFocus() in the activated listener.

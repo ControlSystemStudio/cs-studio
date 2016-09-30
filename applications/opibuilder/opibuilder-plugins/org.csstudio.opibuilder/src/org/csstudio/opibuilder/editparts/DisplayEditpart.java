@@ -132,6 +132,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
                         if(OPIBuilderPlugin.isRAP() && (size.x - oldSize.x) == 1000 && (size.y - oldSize.y) == 1000)
                             return;
                         if (size.x * size.y > 0) {
+                            DisplayModel displayModel = (DisplayModel)getModel();
+                            getZoomManager().getScalableFigure().setPreferredSize(displayModel.getSize());
                             getZoomManager().setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
                         }
                         oldSize = size;
