@@ -33,7 +33,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
@@ -119,7 +119,8 @@ public final class OPIShell implements IOPIRuntime {
         viewer = new GraphicalViewerImpl();
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
-        viewer.setRootEditPart(new ScalableFreeformRootEditPart() {
+
+        viewer.setRootEditPart(new ScalableRootEditPart() {
             @Override
             public DragTracker getDragTracker(Request req) {
                 return new DragEditPartsTracker(this);
