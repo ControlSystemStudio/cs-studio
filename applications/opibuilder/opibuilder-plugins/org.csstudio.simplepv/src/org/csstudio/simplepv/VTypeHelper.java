@@ -609,7 +609,9 @@ public class VTypeHelper {
             displayPrecision = precision;
         }
         else if (pmValue instanceof Display) {
-            displayPrecision = ((Display) pmValue).getFormat().getMinimumFractionDigits();
+            final NumberFormat format = ((Display) pmValue).getFormat();
+            if (format != null)
+                displayPrecision = format.getMinimumFractionDigits();
         }
 
         return displayPrecision;
