@@ -25,7 +25,6 @@ import gov.aps.jca.dbr.TIME;
 public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTimeWrapper<T_DBR> implements Display
 {
     final private GR metadata;
-    private NumberFormat format = null;
 
     public DBRAlarmTimeDisplayWrapper(final GR metadata, final T_DBR dbr)
     {
@@ -76,19 +75,14 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public synchronized NumberFormat getFormat()
     {
-        if (format  == null)
+        if (metadata instanceof PRECISION)
         {
-            if (metadata instanceof PRECISION)
-            {
-                final int precision = ((PRECISION) metadata).getPrecision();
-                if (precision >= 0)
-                    format = NumberFormats.format(precision);
-                else
-                    format = NumberFormats.toStringFormat();
-            }
-
+            final int precision = ((PRECISION) metadata).getPrecision();
+            if (precision >= 0)
+                return NumberFormats.format(precision);
+            return NumberFormats.toStringFormat();
         }
-        return format;
+        return NumberFormats.format(0);
     }
 
     @Override

@@ -18,6 +18,7 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -32,7 +33,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
@@ -118,7 +119,8 @@ public final class OPIShell implements IOPIRuntime {
         viewer = new GraphicalViewerImpl();
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
-        viewer.setRootEditPart(new ScalableFreeformRootEditPart() {
+
+        viewer.setRootEditPart(new ScalableRootEditPart() {
             @Override
             public DragTracker getDragTracker(Request req) {
                 return new DragEditPartsTracker(this);
@@ -142,7 +144,6 @@ public final class OPIShell implements IOPIRuntime {
 
         shell.setLayout(new FillLayout());
         shell.addShellListener(new ShellListener() {
-            private boolean firstRun = true;
             @Override
             public void shellIconified(ShellEvent e) {}
             @Override
@@ -158,19 +159,9 @@ public final class OPIShell implements IOPIRuntime {
                 sendUpdateCommand();
             }
             @Override
-            public void shellActivated(ShellEvent e) {
-                if (firstRun) {
-                    // Resize the shell after it's open, so we can take into account different window borders.
-                    // Do this only the first time it's activated.
-                    resizeToContents();
-                    shell.setFocus();
-                    firstRun = false;
-                }
-                activeShell = OPIShell.this;
-            }
+            public void shellActivated(ShellEvent e) {}
         });
         shell.addDisposeListener(new DisposeListener() {
-
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 if (!icon.isDisposed()) {
@@ -178,6 +169,7 @@ public final class OPIShell implements IOPIRuntime {
                 }
             }
         });
+
         /*
          * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
          * Wait until the window is open, then call shell.setFocus() in the activated listener.
@@ -191,6 +183,14 @@ public final class OPIShell implements IOPIRuntime {
             shell.setLocation(displayModel.getLocation().getSWTPoint());
         }
         shell.setVisible(true);
+
+        // Resize shell correctly after opening.
+        UIBundlingThread.getInstance().addRunnable(new Runnable() {
+            @Override
+            public void run() {
+                resizeToContents();
+            }
+        });
 
     }
 
