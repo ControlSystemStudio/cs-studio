@@ -240,4 +240,11 @@ public class TimeTicks implements Ticks<Instant>
             return config.start_formatter.format(local);
         return config.formatter.format(local);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String formatDetailed(final Instant tick)
+    {
+        return format(tick);
+    }
 }
