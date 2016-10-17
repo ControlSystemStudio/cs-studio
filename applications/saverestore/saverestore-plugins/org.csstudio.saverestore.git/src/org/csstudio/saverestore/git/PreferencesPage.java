@@ -68,6 +68,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
             @Override
             protected boolean doCheckState() {
                 String txt = getTextControl().getText();
+                if (txt.isEmpty()) return true;
                 try {
                     URL url = new URL(txt);
                     return !url.getHost().isEmpty() && !url.getPath().isEmpty();
