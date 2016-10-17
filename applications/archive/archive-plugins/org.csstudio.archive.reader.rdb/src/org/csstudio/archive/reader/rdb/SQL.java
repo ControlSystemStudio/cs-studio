@@ -86,11 +86,14 @@ public class SQL
 
         // 'sample' table
         if (dialect == RDBUtil.Dialect.Oracle)
-        {
-            sample_sel_initial_time =
-                "SELECT smpl_time FROM (SELECT smpl_time FROM " +
+        {   // For Oracle, the stored procedure package
+            // also includes a function for determining
+            // the initial sample time
+            sample_sel_initial_time = Preferences.getStarttimeFunction().isEmpty()
+              ? "SELECT smpl_time FROM (SELECT smpl_time FROM " +
                 prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
-                " ORDER BY smpl_time DESC) WHERE ROWNUM=1";
+                " ORDER BY smpl_time DESC) WHERE ROWNUM=1"
+              : Preferences.getStarttimeFunction();
             sample_sel_by_id_start_end =
                 "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val FROM " + prefix + "sample"+
                 "   WHERE channel_id=?" +

@@ -91,6 +91,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         {
             statement.setInt(1, channel_id);
             statement.setTimestamp(2, start_stamp);
+            if (statement.getParameterMetaData().getParameterCount() == 3)
+                statement.setTimestamp(3, end_stamp);
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {

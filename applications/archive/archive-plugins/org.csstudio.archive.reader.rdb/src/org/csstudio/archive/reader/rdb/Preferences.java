@@ -24,6 +24,7 @@ public class Preferences
 {
     final public static String FETCH_SIZE = "fetch_size";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
+    final public static String STARTTIME_FUNCTION = "use_starttime_function";
 
     public static int getFetchSize()
     {
@@ -37,6 +38,11 @@ public class Preferences
     public static String getStoredProcedure()
     {
         return getString(STORED_PROCEDURE, "");
+    }
+
+    public static String getStarttimeFunction()
+    {
+        return getString(STARTTIME_FUNCTION, "");
     }
 
     /** Get string preference
