@@ -22,7 +22,8 @@ import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPart;
@@ -86,7 +87,7 @@ public class ActionManager {
         try {
             return Optional.ofNullable(provider.getSnapshotContent(descriptor));
         } catch (DataProviderException e) {
-            reportException(e, owner.getSite().getShell());
+            reportException(e, owner.getSite());
         }
         return Optional.empty();
     }
@@ -152,7 +153,7 @@ public class ActionManager {
                     }
                 });
             } catch (DataProviderException e) {
-                reportException(e, owner.getSite().getShell());
+                reportException(e, owner.getSite());
             }
         });
     }
@@ -181,7 +182,7 @@ public class ActionManager {
                     }
                 });
             } catch (DataProviderException e) {
-                reportException(e, owner.getSite().getShell());
+                reportException(e, owner.getSite());
             }
         });
     }
@@ -191,10 +192,10 @@ public class ActionManager {
      * The call can be made by any thread. The thread will be blocked until the message dialog is closed.
      *
      * @param e the exception to report
-     * @param shell the shell to use for the message dialog parent (cannot be null)
+     * @param shellProvider provides the shell to use for the message dialog parent (cannot be null)
      */
-    public static void reportException(Exception e, Shell shell) {
-        reportException(e, null, shell);
+    public static void reportException(Exception e, IShellProvider shellProvider) {
+        reportException(e, null, shellProvider);
     }
 
     /**
@@ -203,11 +204,11 @@ public class ActionManager {
      *
      * @param e the exception to report
      * @param additionalMessage the message which will be appended to the dialog message
-     * @param shell the shell to use for the message dialog parent (cannot be null)
+     * @param shellProvider the shellProvider provides the shell to use for the message dialog parent (cannot be null)
      */
-    public static void reportException(Exception e, String additionalMessage, Shell shell) {
+    public static void reportException(Exception e, String additionalMessage, IShellProvider shellProvider) {
         SaveRestoreService.LOGGER.log(Level.FINE, "Error accessing data storage", e);
-        shell.getDisplay().syncExec(() -> {
+        Display.getDefault().syncExec(() -> {
             StringBuilder sb = new StringBuilder();
             sb.append(e.getMessage());
             if (e.getCause() != null) {
@@ -216,7 +217,7 @@ public class ActionManager {
             if (additionalMessage != null) {
                 sb.append('\n').append('\n').append(additionalMessage);
             }
-            FXMessageDialog.openError(shell, "Error accessing data storage", sb.toString());
+            FXMessageDialog.openError(shellProvider.getShell(), "Error accessing data storage", sb.toString());
         });
     }
 }

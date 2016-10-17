@@ -106,7 +106,7 @@ public class BrowserActionManager extends ActionManager {
                         new Object[] { source.getFullyQualifiedName() });
                 }
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -135,7 +135,7 @@ public class BrowserActionManager extends ActionManager {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully tagged snapshot {0}: {1}.",
                     new Object[] { snapshot.getSaveSet().getFullyQualifiedName(), snapshot.getDate() });
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -197,7 +197,7 @@ public class BrowserActionManager extends ActionManager {
                     }
                 }
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -224,7 +224,7 @@ public class BrowserActionManager extends ActionManager {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted the tag from {0}: {1}.",
                     new Object[] { snapshot.getSaveSet().getFullyQualifiedName(), snapshot.getDate() });
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -249,7 +249,7 @@ public class BrowserActionManager extends ActionManager {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully created branch {0}.",
                     new Object[] { branchName });
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -267,7 +267,7 @@ public class BrowserActionManager extends ActionManager {
                     SaveRestoreService.LOGGER.log(Level.FINE, "Failed to synchronise repository.");
                 }
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -288,7 +288,7 @@ public class BrowserActionManager extends ActionManager {
                     SaveRestoreService.LOGGER.log(Level.FINE, "Failed to reinitialise repository.");
                 }
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }
@@ -315,7 +315,7 @@ public class BrowserActionManager extends ActionManager {
                 Snapshot[] searchResult = provider.findSnapshots(expression, branch, criteria, start, end);
                 Platform.runLater(() -> consumer.accept(Arrays.asList(searchResult)));
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite());
             }
         });
     }

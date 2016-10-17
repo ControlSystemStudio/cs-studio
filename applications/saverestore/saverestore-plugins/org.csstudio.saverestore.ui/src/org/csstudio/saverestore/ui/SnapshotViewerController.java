@@ -107,8 +107,8 @@ public class SnapshotViewerController {
         final PVReader<VType> reader;
         final PVWriter<Object> writer;
         PVReader<VType> readback;
-        VType value = VDisconnectedData.INSTANCE;
-        VType readbackValue = VDisconnectedData.INSTANCE;
+        volatile VType value = VDisconnectedData.INSTANCE;
+        volatile VType readbackValue = VDisconnectedData.INSTANCE;
 
         PV(String pvName, PVReader<VType> reader, PVWriter<Object> writer, PVReader<VType> readback) {
             this.pvName = pvName;
@@ -600,18 +600,20 @@ public class SnapshotViewerController {
                 try {
                     taken = provider.getProvider().takeSnapshot(set);
                 } catch (UnsupportedActionException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.getName()
-                        + " claims that it can take snapshots, but does not implement the action.");
+                    SaveRestoreService.LOGGER.log(Level.SEVERE,e,
+                            () -> String.format(
+                                    "The provider '%s' claims that it can take snapshots, but does not implement the action.",
+                                    provider.getName()));
                 } catch (DataProviderException e) {
                     if (SaveRestoreService.getInstance().isCurrentJobCancelled()) {
                         // if cancelled display the message and return
-                        ActionManager.reportException(e, receiver.getShell());
+                        ActionManager.reportException(e, receiver);
                         return;
                     } else {
                         // notify the user about the exception and continue taking the snapshot normally
                         ActionManager.reportException(e,
                             "Snapshot will be taken locally, but it might not be possible to save it.",
-                            receiver.getShell());
+                            receiver);
                     }
                 }
             }
@@ -629,6 +631,8 @@ public class SnapshotViewerController {
                     name = t.pvNameProperty().get();
                     names.add(name);
                     pv = pvs.get(t);
+                    //there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is 
+                    //suspended and the value could not change while suspended
                     values.add(pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value);
                     selected.add(t.selectedProperty().get());
                     String readback = readbacks.get(name);
@@ -699,7 +703,7 @@ public class SnapshotViewerController {
             }
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            ActionManager.reportException(ex, receiver.getShell());
+            ActionManager.reportException(ex, receiver);
         }
     }
 
@@ -760,7 +764,7 @@ public class SnapshotViewerController {
                 pw.println(sb.toString());
             });
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         } finally {
             resume();
         }
@@ -788,7 +792,7 @@ public class SnapshotViewerController {
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
             return snapshot;
         } catch (Exception e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
             return null;
         }
     }
@@ -813,7 +817,7 @@ public class SnapshotViewerController {
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
                 sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate()));
         } catch (IOException | RuntimeException | ParseException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
             return Optional.empty();
         }
     }
@@ -848,7 +852,7 @@ public class SnapshotViewerController {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved Snapshot {0}: {1}.", new Object[] {
                     snapshot.getSaveSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
             } catch (DataProviderException ex) {
-                ActionManager.reportException(ex, receiver.getShell());
+                ActionManager.reportException(ex, receiver);
             }
             return s;
         } finally {
@@ -1071,7 +1075,7 @@ public class SnapshotViewerController {
                 UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
-            ActionManager.reportException(ex, receiver.getShell());
+            ActionManager.reportException(ex, receiver);
         }
     }
 
@@ -1167,7 +1171,7 @@ public class SnapshotViewerController {
             pvs.put(entry, new PV(pvName, reader, writer, null));
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         }
     }
 
@@ -1197,7 +1201,7 @@ public class SnapshotViewerController {
             }
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         }
     }
 

@@ -793,7 +793,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                         try {
                             addSnapshot(provider.getSnapshotContent(s));
                         } catch (DataProviderException ex) {
-                            ActionManager.reportException(ex, getSite().getShell());
+                            ActionManager.reportException(ex, getSite());
                         }
                     });
                 }
