@@ -631,7 +631,7 @@ public class SnapshotViewerController {
                     name = t.pvNameProperty().get();
                     names.add(name);
                     pv = pvs.get(t);
-                    //there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is 
+                    //there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is
                     //suspended and the value could not change while suspended
                     values.add(pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value);
                     selected.add(t.selectedProperty().get());

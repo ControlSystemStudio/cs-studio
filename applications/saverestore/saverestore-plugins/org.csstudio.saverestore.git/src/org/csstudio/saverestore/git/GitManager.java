@@ -176,7 +176,7 @@ public class GitManager {
     synchronized boolean isLocalOnly() {
         return localOnly;
     }
-    
+
     private synchronized void checkInitialised() throws IllegalStateException {
         if (git == null) {
             throw new IllegalStateException("Git has not been initialised.");

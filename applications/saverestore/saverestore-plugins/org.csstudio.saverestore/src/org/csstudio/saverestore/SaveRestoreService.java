@@ -284,20 +284,20 @@ public class SaveRestoreService {
             support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
         }
     }
-    
+
     /**
-     * Reselect the previously selected data provider. Use this method to reinitialise the existing data provider when 
+     * Reselect the previously selected data provider. Use this method to reinitialise the existing data provider when
      * one of the key properties changed (e.g. central repository url).
      */
     public void reselectDataProvider() {
         reselectDataProvider(Optional.empty());
     }
-    
+
     /**
      * Reselect the currently selected data provider by reinitialising it and firing a property change event. If the
-     * <code>oldSelectedValue</code> is provided it is used as the old value for the change event, otherwise a null 
+     * <code>oldSelectedValue</code> is provided it is used as the old value for the change event, otherwise a null
      * value is used.
-     * 
+     *
      * @param oldSelectedValue the data provider which is used as the old value in the property change event
      */
     private void reselectDataProvider(Optional<DataProviderWrapper> oldSelectedValue) {
@@ -310,13 +310,13 @@ public class SaveRestoreService {
                     IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
                     Shell shell = window == null ? null : window.getShell();
                     FXMessageDialog.openError(shell, "Save Restore Initialisation", e.getMessage());
-                    LOGGER.log(Level.SEVERE, e, 
+                    LOGGER.log(Level.SEVERE, e,
                             () -> String.format("%s data provider initialisation failed.",provider.getId()));
                 }
             });
             LOGGER.log(Level.FINE, "Selected data provider: {0}.",
                 new Object[] { selectedDataProvider.getPresentationName() });
-            
+
             DataProviderWrapper oldValue = oldSelectedValue.orElse(null);
             support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
         }
