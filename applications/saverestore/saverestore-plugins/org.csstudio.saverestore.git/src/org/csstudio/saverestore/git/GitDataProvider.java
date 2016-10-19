@@ -29,9 +29,9 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
@@ -73,6 +73,12 @@ public class GitDataProvider implements DataProvider {
     public GitDataProvider(GitManager grm) {
         notifiers = new ArrayList<>();
         this.grm = grm;
+        Activator.getInstance().getPreferenceStore().addPropertyChangeListener(e -> {
+            String property = e.getProperty();
+            if (Activator.PREF_URL.equals(property) || Activator.PREF_DESTINATION.equals(property)) {
+                SaveRestoreService.getInstance().reselectDataProvider();
+            }
+        });
     }
 
     /*
@@ -483,7 +489,7 @@ public class GitDataProvider implements DataProvider {
 
     private void checkInitialised() throws DataProviderException {
         if (!initialized) {
-            throw new DataProviderException("Git Data Provider hase not been initialised.");
+            throw new DataProviderException("Git Data Provider has not been initialised.");
         }
     }
 

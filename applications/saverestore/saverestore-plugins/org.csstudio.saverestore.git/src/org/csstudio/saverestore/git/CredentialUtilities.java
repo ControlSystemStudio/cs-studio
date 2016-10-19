@@ -126,7 +126,7 @@ public final class CredentialUtilities {
         if (username == null) {
             return Optional.empty();
         }
-        String user = forUser.orElse(System.getProperty(SYSTEM_PROPERTY_USER_NAME));
+        final String user = forUser.orElse(System.getProperty(SYSTEM_PROPERTY_USER_NAME));
         try {
             byte[] val = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user).node(username)
                 .getByteArray(PREF_PASSWORD, null);
@@ -136,7 +136,7 @@ public final class CredentialUtilities {
             }
         } catch (StorageException | IOException e) {
             SaveRestoreService.LOGGER.log(Level.WARNING, e,
-                () -> "Could not read the password for '" + forUser + "' from secured storage.");
+                () -> String.format("Could not read the password for '%s' from secured storage.",user));
         }
         return Optional.empty();
     }

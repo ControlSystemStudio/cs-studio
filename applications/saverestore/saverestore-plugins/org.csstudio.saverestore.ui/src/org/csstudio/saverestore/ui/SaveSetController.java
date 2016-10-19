@@ -65,7 +65,7 @@ public class SaveSetController {
                     new Object[] { data.getDescriptor().getFullyQualifiedName() });
                 return dd;
             } catch (DataProviderException ex) {
-                ActionManager.reportException(ex, owner.getSite().getShell());
+                ActionManager.reportException(ex, owner.getSite());
                 return null;
             }
         });
