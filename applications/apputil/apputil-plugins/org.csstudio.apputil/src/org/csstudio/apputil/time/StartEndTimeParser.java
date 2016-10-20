@@ -13,7 +13,7 @@ import java.util.Calendar;
  *  from strings.
  *  <p>
  *  The time strings can contain absolute date and time info according to
- *  the format <code>YYYY/MM/DD hh:mm:ss.sss</code> used by the
+ *  the format <code>YYYY-MM-DD hh:mm:ss.sss</code> used by the
  *  {@link AbsoluteTimeParser}.
  *  When only certain pieces of the full date and time are provided,
  *  the omitted information is obtained from the current wallclock.

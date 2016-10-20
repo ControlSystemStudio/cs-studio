@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.apputil.time;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class TimeParserUnitTest extends TestCase
 {
-    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter format = TimestampFormats.SECONDS_FORMAT;
 
     @Test
     public void testAbsoluteTimeParser() throws Exception
@@ -172,8 +172,8 @@ public class TimeParserUnitTest extends TestCase
         String start = "2006-01-02 03:04:05";
         String end = "2007-05-06 07:08:09";
         StartEndTimeParser start_end = new StartEndTimeParser(start, end);
-        String start_time = format.format(start_end.getStart().getTime());
-        String end_time = format.format(start_end.getEnd().getTime());
+        String start_time = format.format(start_end.getStart().toInstant());
+        String end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals(start, start_time);
@@ -183,8 +183,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-2 month +10 min";
         end = "2007-05-06 23:45:09";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2007-03-06 23:55:09", start_time);
@@ -194,8 +194,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-2 days 08:15";
         end = "2007-05-06 23:45:09";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2007-05-04 08:15:00", start_time);
@@ -205,8 +205,8 @@ public class TimeParserUnitTest extends TestCase
         start = "2006-01-29 12:00:00";
         end = "6M 12h";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2006-01-29 12:00:00", start_time);
@@ -216,8 +216,8 @@ public class TimeParserUnitTest extends TestCase
         start = "2006-01-29 12:00:00";
         end = "now";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2006-01-29 12:00:00", start_time);
@@ -229,8 +229,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-6h";
         end = "-2h";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -244,8 +244,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-60 days";
         end = "+60 days";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -263,8 +263,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-6h";
         end = "now";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -278,8 +278,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-6h";
         end = "";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -293,8 +293,8 @@ public class TimeParserUnitTest extends TestCase
         start = "-30 days";
         end = "";
         start_end = new StartEndTimeParser(start, end);
-        start_time = format.format(start_end.getStart().getTime());
-        end_time = format.format(start_end.getEnd().getTime());
+        start_time = format.format(start_end.getStart().getTime().toInstant());
+        end_time = format.format(start_end.getEnd().getTime().toInstant());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
