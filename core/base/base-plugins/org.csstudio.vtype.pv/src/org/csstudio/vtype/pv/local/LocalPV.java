@@ -7,17 +7,10 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.local;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
-import org.diirt.vtype.VDouble;
-import org.diirt.vtype.VDoubleArray;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VLong;
-import org.diirt.vtype.VString;
-import org.diirt.vtype.VStringArray;
-import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 
 /** Local Process Variable
@@ -39,67 +32,38 @@ import org.diirt.vtype.VType;
 @SuppressWarnings("nls")
 public class LocalPV extends PV
 {
-    private Class<? extends VType> type;
+    private final Class<? extends VType> type;
+    private final List<String> initial_value;
 
-    protected LocalPV(final String name, final String base_name) throws Exception
+    protected LocalPV(final String actual_name, final Class<? extends VType> type, final List<String> initial_value) throws Exception
     {
-        super(name);
-
-        final String[] ntv = ValueHelper.parseName(base_name);
-
-        // Info for initial value, default to "0"
-        final List<String> initial_value_items;
-        if (ntv[2] == null)
-            initial_value_items = Arrays.asList("0");
-        else
-            initial_value_items = ValueHelper.splitInitialItems(ntv[2]);
-
-        // Determine type from initial value or use given type
-        if (ntv[1] == null)
-            type = determineValueType(initial_value_items);
-        else
-            type = parseType(ntv[1]);
+        super(actual_name);
+        this.type = type;
+        this.initial_value = initial_value;
 
         // Set initial value
-        notifyListenersOfValue(ValueHelper.getInitialValue(initial_value_items, type));
+        notifyListenersOfValue(ValueHelper.getInitialValue(initial_value, type));
     }
 
-    private Class<? extends VType> determineValueType(final List<String> items) throws Exception
+    protected void checkInitializer(final Class<? extends VType> type, final List<String> initial_value)
     {
-        if (ValueHelper.haveInitialStrings(items))
-        {
-            if (items.size() == 1)
-                return VString.class;
-            else
-                return VStringArray.class;
-        }
-        else
-        {
-            if (items.size() == 1)
-                return VDouble.class;
-            else
-                return VDoubleArray.class;
-        }
+        if (type != this.type  ||  !initial_value.equals(this.initial_value))
+            logger.log(Level.WARNING, "PV " + getName() + " was initialized as " + formatInit(this.type, this.initial_value) +
+                    " and is now requested as " +  formatInit(type, initial_value));
     }
 
-    private Class<? extends VType> parseType(final String type) throws Exception
-    {   // Lenient check, ignore case and allow partial match
-        final String lower = type.toLowerCase();
-        if (lower.contains("doublearray"))
-            return VDoubleArray.class;
-        if (lower.contains("double"))
-            return VDouble.class;
-        if (lower.contains("stringarray"))
-            return VStringArray.class;
-        if (lower.contains("string"))
-            return VString.class;
-        if (lower.contains("enum"))
-            return VEnum.class;
-        if (lower.contains("long"))
-            return VLong.class;
-        if (lower.contains("table"))
-            return VTable.class;
-        throw new Exception("Local PV cannot handle type '" + type + "'");
+    private String formatInit(Class<? extends VType> type, List<String> value)
+    {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("<").append(type.getSimpleName()).append(">(");
+        for (int i=0; i<value.size(); ++i)
+        {
+            if (i > 0)
+                buf.append(",");
+            buf.append(value.get(i));
+        }
+        buf.append(")");
+        return buf.toString();
     }
 
     @Override
@@ -118,4 +82,11 @@ public class LocalPV extends PV
             throw new Exception("Failed to write '" + new_value + "' to " + getName(), ex);
         }
      }
+
+    @Override
+    protected void close()
+    {
+        super.close();
+        LocalPVFactory.releasePV(this);
+    }
 }
