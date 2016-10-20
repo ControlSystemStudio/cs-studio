@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.csstudio.saverestore.Utilities;
-import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.Threshold;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayDouble;
@@ -340,7 +338,7 @@ public class UtilitiesTest {
 
         VType val1 = ValueFactory.newVDouble(5d,alarm,time,display);
         VType val2 = ValueFactory.newVDouble(6d,alarm,time,display);
-        VTypeComparison result = Utilities.valueToCompareString(val1, val2, threshold);
+        Utilities.VTypeComparison result = Utilities.valueToCompareString(val1, val2, threshold);
         assertEquals("5.0 \u0394-1.0", result.getString());
         assertTrue(result.getValuesEqual() < 0);
         assertTrue(result.isWithinThreshold());
