@@ -11,9 +11,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
+
+import junit.framework.TestCase;
 
 /** JUnit tests of the TimeParser
  *
@@ -25,8 +25,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class TimeParserUnitTest extends TestCase
 {
-    private final DateFormat format =
-                      new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Test
     public void testAbsoluteTimeParser() throws Exception
@@ -34,7 +33,7 @@ public class TimeParserUnitTest extends TestCase
         Calendar cal;
 
         // Full time with nanoseconds
-        cal = AbsoluteTimeParser.parse("2007/06/01 14:00:24.156959772");
+        cal = AbsoluteTimeParser.parse("2007-06-01 14:00:24.156959772");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
         assertEquals( 6, cal.get(Calendar.MONTH) + 1); // Jan == 0
@@ -45,7 +44,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(156, cal.get(Calendar.MILLISECOND));
 
         // Full time, with extra spaces
-        cal = AbsoluteTimeParser.parse("   2007/01/18    12:10:13.123     ");
+        cal = AbsoluteTimeParser.parse("   2007-01-18    12:10:13.123     ");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
         assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
@@ -64,7 +63,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(cal, cal3);
 
         // Only date, no time
-        cal = AbsoluteTimeParser.parse("2007/01/18");
+        cal = AbsoluteTimeParser.parse("2007-01-18");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
         assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
@@ -101,7 +100,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(156, cal2.get(Calendar.MILLISECOND));
 
         // Only month and day, but no year
-        cal = AbsoluteTimeParser.parse(cal, "02/15 13:45");
+        cal = AbsoluteTimeParser.parse(cal, "02-15 13:45");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
         assertEquals( 2, cal.get(Calendar.MONTH) + 1); // Jan == 0
@@ -170,8 +169,8 @@ public class TimeParserUnitTest extends TestCase
     public void testTimeParser() throws Exception
     {
         // abs, abs
-        String start = "2006/01/02 03:04:05";
-        String end = "2007/05/06 07:08:09";
+        String start = "2006-01-02 03:04:05";
+        String end = "2007-05-06 07:08:09";
         StartEndTimeParser start_end = new StartEndTimeParser(start, end);
         String start_time = format.format(start_end.getStart().getTime());
         String end_time = format.format(start_end.getEnd().getTime());
@@ -182,46 +181,46 @@ public class TimeParserUnitTest extends TestCase
 
         // rel, abs
         start = "-2 month +10 min";
-        end = "2007/05/06 23:45:09";
+        end = "2007-05-06 23:45:09";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
-        assertEquals("2007/03/06 23:55:09", start_time);
-        assertEquals("2007/05/06 23:45:09", end_time);
+        assertEquals("2007-03-06 23:55:09", start_time);
+        assertEquals("2007-05-06 23:45:09", end_time);
 
         // rel, abs with an absolute time in the relative part
         start = "-2 days 08:15";
-        end = "2007/05/06 23:45:09";
+        end = "2007-05-06 23:45:09";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
-        assertEquals("2007/05/04 08:15:00", start_time);
-        assertEquals("2007/05/06 23:45:09", end_time);
+        assertEquals("2007-05-04 08:15:00", start_time);
+        assertEquals("2007-05-06 23:45:09", end_time);
 
         // abs, rel. Also hours that roll over into next day.
-        start = "2006/01/29 12:00:00";
+        start = "2006-01-29 12:00:00";
         end = "6M 12h";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
-        assertEquals("2006/01/29 12:00:00", start_time);
-        assertEquals("2006/07/30 00:00:00", end_time);
+        assertEquals("2006-01-29 12:00:00", start_time);
+        assertEquals("2006-07-30 00:00:00", end_time);
 
         // abs, rel==now
-        start = "2006/01/29 12:00:00";
+        start = "2006-01-29 12:00:00";
         end = "now";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
-        assertEquals("2006/01/29 12:00:00", start_time);
+        assertEquals("2006-01-29 12:00:00", start_time);
         long now = Calendar.getInstance().getTimeInMillis() / 1000;
         double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(0.0, end_diff_sec, 10.0);

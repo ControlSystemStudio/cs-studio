@@ -25,11 +25,11 @@ public class AbsoluteTimeParser
     /** The accepted date formats for absolute times. */
     private static final DateFormat[] parsers = new SimpleDateFormat[]
     {   // Most complete version first
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"),
-        new SimpleDateFormat("yyyy/MM/dd HH:mm"),
-        new SimpleDateFormat("yyyy/MM/dd HH"),
-        new SimpleDateFormat("yyyy/MM/dd")
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+        new SimpleDateFormat("yyyy-MM-dd HH:mm"),
+        new SimpleDateFormat("yyyy-MM-dd HH"),
+        new SimpleDateFormat("yyyy-MM-dd")
     };
 
     /** Like parse(), using a base calendar of 'now', 'current time zone'.
@@ -76,19 +76,19 @@ public class AbsoluteTimeParser
         final Calendar result = Calendar.getInstance();
 
         // Provide missing year from given cal
-        int datesep = cooked.indexOf('/');
+        int datesep = cooked.indexOf('-');
         if (datesep < 0) // No date at all provided? Use the one from cal.
-            cooked = String.format("%04d/%02d/%02d %s",
+            cooked = String.format("%04d-%02d-%02d %s",
                                    cal.get(Calendar.YEAR),
                                    cal.get(Calendar.MONTH) + 1,
                                    cal.get(Calendar.DAY_OF_MONTH),
                                    cooked);
         else
         {   // Are there two date separators?
-            datesep = cooked.indexOf('/', datesep + 1);
-            // If not, assume that we have MM/DD, and add the YYYY.
+            datesep = cooked.indexOf('-', datesep + 1);
+            // If not, assume that we have MM-DD, and add the YYYY.
             if (datesep < 0)
-                cooked = String.format("%04d/%s",
+                cooked = String.format("%04d-%s",
                                        cal.get(Calendar.YEAR), cooked);
         }
         // In case the text includes the ITimestamp up to nanoseconds:
