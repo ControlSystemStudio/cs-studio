@@ -7,72 +7,59 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import java.text.ParseException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
+import org.csstudio.java.time.TimestampFormats;
 
-/**
- * Time stamp gymnastics
+/** Time stamp gymnastics
  *
- * @author Kay Kasemir
+ *  <p>Shortcut for {@link TimestampFormats}
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TimestampHelper {
-    final public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.nnnnnnnnn";
-    final public static String FORMAT_PARSE = "yyyy-MM-dd HH:mm:ss.";
-
-    private static ZoneId zone = ZoneId.systemDefault();
-
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(FORMAT_FULL);
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(FORMAT_PARSE);
-
-    /**
-     * @param timestamp
-     *            {@link Instant}, may be <code>null</code>
-     * @return Time stamp formatted as string
+public class TimestampHelper
+{
+    /** @param timestamp {@link Instant}, may be <code>null</code>
+     *  @return Time stamp formatted as string
      */
-    public static String format(final Instant timestamp) {
-        if (timestamp == null) {
+    public static String format(final Instant timestamp)
+    {
+        if (timestamp == null)
             return "null";
-        }
-        return timeFormat.format(ZonedDateTime.ofInstant(timestamp, zone));
+        return TimestampFormats.FULL_FORMAT.format(timestamp);
     }
 
-    /**
-     * Take a String and return a Timestamp Should be implemented in
-     * TimestampFormat
+    /** Take a String and return a time stamp
      *
-     * @param sTimestamp
-     * @return
-     * @throws ParseException
-     * @author A.PHILIPPE, L.PHILIPPE GANIL/FRANCE
+     *  @param sTimestamp
+     *  @return
+     *  @throws Exception on error
+     *  @author A.PHILIPPE, L.PHILIPPE GANIL/FRANCE
      */
-    public static Instant parse(final String sTimestamp) throws ParseException {
-        if (sTimestamp == "" || sTimestamp == null) {
+    public static Instant parse(final String sTimestamp) throws Exception
+    {
+        if (sTimestamp == "" || sTimestamp == null)
             return null;
+
+        Exception error = null;
+        try
+        {
+            return Instant.from(TimestampFormats.FULL_FORMAT.parse(sTimestamp));
+        }
+        catch (Exception ex)
+        {
+            error = ex;
         }
 
-        Instant t = null;
-        try {
-            t = ZonedDateTime.parse(sTimestamp, timeFormat).toInstant();
+        try
+        {
+            return Instant.from(TimestampFormats.SECONDS_FORMAT.parse(sTimestamp));
         }
-        catch (DateTimeParseException ex) {
-            ex.printStackTrace();
+        catch (Exception ex)
+        {
+            error = ex;
         }
-
-        if (t == null) {
-            try {
-                t = ZonedDateTime.parse(sTimestamp, dateFormat).toInstant();
-            }
-            catch (DateTimeParseException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return t;
+        // Reports the last error. Could also use the first one...
+        throw error;
     }
 }
