@@ -7,22 +7,26 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
+import org.csstudio.vtype.pv.local.LocalPV;
 import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.csstudio.vtype.pv.local.ValueHelper;
 import org.diirt.vtype.VDouble;
@@ -40,9 +44,12 @@ import org.junit.Test;
 /** JUnit tests
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LocalPVTest implements PVListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
+
+    private String last_message;
 
     @Before
     public void setup()
@@ -51,6 +58,26 @@ public class LocalPVTest implements PVListener
         root.setLevel(Level.FINE);
         for (Handler handler : root.getHandlers())
             handler.setLevel(Level.FINE);
+        root.addHandler(new Handler()
+        {
+            @Override
+            public void publish(LogRecord record)
+            {
+                last_message = record.getMessage();
+            }
+
+            @Override
+            public void flush()
+            {
+                // NOP
+            }
+
+            @Override
+            public void close() throws SecurityException
+            {
+                // NOP
+            }
+        });
 
         PVPool.addPVFactory(new LocalPVFactory());
     }
@@ -58,7 +85,16 @@ public class LocalPVTest implements PVListener
     @After
     public void shutdown()
     {
-        assertThat(PVPool.getPVReferences().size(), equalTo(0));
+        final Collection<LocalPV> locs = LocalPVFactory.getLocalPVs();
+        if (! locs.isEmpty())
+            System.out.println("Local PVs at shutdown: " + locs);
+
+        final Collection<ReferencedEntry<PV>> pvs = PVPool.getPVReferences();
+        if (! pvs.isEmpty())
+            System.out.println("PVs at shutdown: " + pvs);
+
+        assertThat(locs.size(), equalTo(0));
+        assertThat(pvs.size(), equalTo(0));
     }
 
     @Test
@@ -245,18 +281,25 @@ public class LocalPVTest implements PVListener
     @Test(timeout=5000)
     public void testReferences() throws Exception
     {
+        // No initialization is same as <VDouble>(0)
         final PV pv1 = PVPool.getPV("x(0)");
-        final PV pv2 = PVPool.getPV("x(0)");
+        final PV pv2 = PVPool.getPV("x<VDouble>(0)");
         assertThat(pv1, sameInstance(pv2));
         PVPool.releasePV(pv2);
 
-        // Different initial value means different PV
+        // Different initial value still results in same PV
+        last_message = null;
         final PV pv3 = PVPool.getPV("x(1)");
-        assertThat(pv3, not(sameInstance(pv1)));
+        assertThat(pv3, sameInstance(pv1));
+        // Check that warning was issued
+        assertThat(last_message, containsString("was initialized as"));
 
         pv1.write(10);
-        pv3.write(30);
         assertThat(ValueUtil.numericValueOf(pv1.read()), equalTo(10.0));
+        assertThat(ValueUtil.numericValueOf(pv3.read()), equalTo(10.0));
+
+        pv3.write(30);
+        assertThat(ValueUtil.numericValueOf(pv1.read()), equalTo(30.0));
         assertThat(ValueUtil.numericValueOf(pv3.read()), equalTo(30.0));
 
         PVPool.releasePV(pv3);
