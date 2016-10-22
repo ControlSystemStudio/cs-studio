@@ -142,7 +142,7 @@ public class ExportXLSAction extends PVTableAction {
                         dateC = Date.from(timeC);
                         cellD.setCellValue(dateC);
                         cellD.setCellStyle(styleDate);
-                    } catch (ParseException e) {
+                    } catch (Exception e) {
                         timeS = measures.get(b).getItems().get(d).getTime_saved();
                         cellD.setCellValue(timeS);
                         cellD.setCellStyle(styleDate);
@@ -273,7 +273,7 @@ public class ExportXLSAction extends PVTableAction {
                             String timeS = null;
                             try {
                                 timeTS = TimestampHelper.parse(model.getItem(i).getTime_saved());
-                            } catch (ParseException e) {
+                            } catch (Exception e) {
                                 timeS = model.getItem(i).getTime_saved();
                             }
                             dateTS = Date.from(timeTS);
@@ -293,7 +293,7 @@ public class ExportXLSAction extends PVTableAction {
                                 timeTS = TimestampHelper.parse(model.getItem(i).getTime_saved());
                                 dateTS = Date.from(timeTS);
                                 savedTimestamp.setCellValue(dateTS);
-                            } catch (ParseException e) {
+                            } catch (Exception e) {
                                 timeS = model.getItem(i).getTime_saved();
                                 savedTimestamp.setCellValue(timeS);
                             }

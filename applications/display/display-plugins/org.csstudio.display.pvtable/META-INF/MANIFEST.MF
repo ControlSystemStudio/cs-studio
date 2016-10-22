@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PVTable Plug-in
 Bundle-SymbolicName: org.csstudio.display.pvtable;singleton:=true
-Bundle-Version: 4.3.2.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: org.csstudio.display.pvtable.Plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -20,5 +20,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  org.csstudio.apputil;bundle-version="3.0.2",
  org.csstudio.utility.singlesource;bundle-version="4.0.0",
  org.eclipse.core.runtime,
- org.apache.servicemix.bundles.poi;bundle-version="3.11.1"
+ org.apache.servicemix.bundles.poi;bundle-version="3.11.1",
+ org.csstudio.java;bundle-version="3.3.0"
 Export-Package: org.csstudio.display.pvtable
