@@ -47,7 +47,7 @@ public class PVPool
      *  those are unlikely to contain "://" themselves, while
      *  just ":" for example is likely to be inside the PV name
      */
-    final protected static String SEPARATOR = "://";
+    final public static String SEPARATOR = "://";
 
     /** Map of PV type prefixes to PV factories */
     final private static Map<String, PVFactory> factories = new HashMap<>();
@@ -123,12 +123,16 @@ public class PVPool
     {
         PV pv;
         synchronized (pool)
-        {
+        {   // Try to locate PV in pool
             pv = pool.get(name);
             if (pv == null)
             {
                 pv = createPV(name);
-                pool.put(name, pv);
+                // Actual name may differ from the provided name.
+                // For example, "loc://x(2)", "loc://x" and "loc://x<VDouble>(4)"
+                // will be the same PV "loc://x" in the pool.
+                if (pool.get(pv.getName()) == null) // Increment reference?
+                    pool.put(pv.getName(), pv);     // Add new PV
             }
         }
         return pv;

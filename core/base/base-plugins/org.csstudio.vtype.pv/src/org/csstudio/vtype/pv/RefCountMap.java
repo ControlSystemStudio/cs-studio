@@ -57,6 +57,12 @@ public class RefCountMap<K, E>
         {
             return --references;
         }
+
+        @Override
+        public String toString()
+        {
+            return entry.toString() + " (" + references + " references)";
+        }
     }
 
     final private Map<K, ReferencedEntry<E>> map = new HashMap<>();
