@@ -118,7 +118,7 @@
                 <artifact>
                   <id>org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0</id>
                 </artifact>
-		<artifact>
+				<artifact>
                   <id>com.google.guava:guava:18.0</id>
                 </artifact>
                 <artifact>
@@ -139,6 +139,9 @@
                 </artifact>
                 <artifact>
                   <id>commons-beanutils:commons-beanutils:1.9.2</id>
+                </artifact>
+                <artifact>
+				  <id>commons-io:commons-io:2.5</id>
                 </artifact>
                 <artifact>
                   <id>org.apache.ant:ant:1.9.4</id>
@@ -199,6 +202,9 @@
                   <id>xmlunit:xmlunit:1.5</id>
                 </artifact>
                 <artifact>
+                  <id>org.apache.commons:commons-collections4:4.1</id>
+                </artifact>
+                <artifact>
                   <id>org.apache.commons:commons-csv:1.2</id>
                 </artifact>
                 <artifact>
@@ -233,6 +239,13 @@
                   <instructions>
                     <Export-Package>!javax.*,!org.apache.xml.*,org.apache.*,</Export-Package>
                     <Bundle-Version>1.5.8.css1</Bundle-Version>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>eu.hansolo:Medusa:6.0</id>
+                  <override>true</override>
+                  <instructions>
+                    <Bundle-SymbolicName>eu.hansolo.medusa</Bundle-SymbolicName>
                   </instructions>
                 </artifact>
 
