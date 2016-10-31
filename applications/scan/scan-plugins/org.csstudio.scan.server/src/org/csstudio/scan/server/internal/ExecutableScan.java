@@ -121,7 +121,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      */
     private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
 
-    /** Timeout for updating the status PVs */
+    /** Timeout for updating the state PV
+     *
+     *  <p>Scan state PV is always updated awaiting completion,
+     *  using this timeout.
+     *
+     *  <p>This allows additional database logic to for example
+     *  latch scan failures, or to conditionally update a scan alarm PV.
+     *  Scans can check the scan alarm PV in the pre-scan
+     *  to prohibit further scans until alarm has been cleared.
+     */
     final private static Duration timeout = Duration.ofSeconds(10);
 
     /** Initialize
@@ -442,6 +451,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Execute commands
         try
         {
+            // Start all devices, which includes the optional device_state etc.
+            // This means device_state is not updated until all connect,
+            // which is probably OK because not really "Running" until they do.
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
 
             // Initialize scan status PVs. Error will prevent scan from starting.
@@ -524,7 +536,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (device_active.isPresent())
                 {
                     getDevice(device_status.get()).write("");
-                    ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+                    ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
                     getDevice(device_finish.get()).write(TimestampFormats.MILLI_FORMAT.format(Instant.now()));
                     ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0));
                     // Update to "anything else running?"
@@ -662,7 +674,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             try
             {
-                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
             }
             catch (Exception ex)
             {
@@ -681,7 +693,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             try
             {
-                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
             }
             catch (Exception ex)
             {
