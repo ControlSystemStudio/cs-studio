@@ -208,6 +208,9 @@
                   <id>org.apache.commons:commons-csv:1.2</id>
                 </artifact>
                 <artifact>
+                  <id>org.apache.commons:commons-lang3:3.5</id>
+                </artifact>
+                <artifact>
                   <id>org.epics.channelfinder:cf-client-api:3.0.3</id>
                 </artifact>
                 <artifact>
