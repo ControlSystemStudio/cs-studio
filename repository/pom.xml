@@ -251,6 +251,9 @@
                     <Bundle-SymbolicName>eu.hansolo.medusa</Bundle-SymbolicName>
                   </instructions>
                 </artifact>
+                <artifact>
+                  <id>org.controlsfx:controlsfx:8.40.12</id>
+                </artifact>
 
 
                 <!-- pvmanager-plugins from reactor -->
