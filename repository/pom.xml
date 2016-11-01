@@ -245,11 +245,7 @@
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>eu.hansolo:Medusa:6.0</id>
-                  <override>true</override>
-                  <instructions>
-                    <Bundle-SymbolicName>eu.hansolo.medusa</Bundle-SymbolicName>
-                  </instructions>
+                  <id>eu.hansolo:Medusa:6.1</id>
                 </artifact>
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.12</id>
