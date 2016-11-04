@@ -98,10 +98,10 @@ public final class DIIRTPreferencesHandler {
 	}
 
 	/**
-	 * @return {@code false} when all getters (but not the {@link #isOverride()}
-	 *         one) will return the value read from the files configuration or
-	 *         the default one if no files exist, {@code true} when the values
-	 *         of the corresponding fields are returned.
+	 * @return {@code false} when all getters will return the value read from
+	 *         the files configuration or the default one if no files exist,
+	 *         {@code true} when the values of the corresponding fields are
+	 *         returned.
 	 * @see #setOverride(boolean)
 	 */
 	public boolean isOverride() {
@@ -144,10 +144,9 @@ public final class DIIRTPreferencesHandler {
 	 * Tell the handler what the getters will return. The property is bounded and
 	 * constrained allowing, for example, to control who can change the value.
 	 *
-	 * @param override If {@code false}, then all getters (but not the
-	 *                 {@link #isOverride()} one) will return the value read
-	 *                 from the files configuration or the default one if no
-	 *                 files exist. If {@code true}, then the values of the
+	 * @param override If {@code false}, then all getters will return the value
+	 *                 read from the files configuration or the default one if
+	 *                 no files exist. If {@code true}, then the values of the
 	 *                 corresponding fields are returned.
 	 * @throws PropertyVetoException If one of the registered
 	 *                               {@link VetoableChangeListener} has vetoed
