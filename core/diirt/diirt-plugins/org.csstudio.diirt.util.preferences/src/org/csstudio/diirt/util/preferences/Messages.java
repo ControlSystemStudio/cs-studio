@@ -59,6 +59,7 @@ public class Messages extends NLS {
     public static String DSPP_delimiterText_text;
     public static String DSPP_description;
     public static String DSPP_directoryCaption_text;
+    public static String DSPP_overrideCheckBox_text;
     public static String DSPP_title;
 
     static {

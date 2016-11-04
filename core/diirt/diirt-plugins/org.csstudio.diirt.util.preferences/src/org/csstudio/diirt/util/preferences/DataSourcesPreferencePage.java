@@ -8,6 +8,7 @@
  */
 package org.csstudio.diirt.util.preferences;
 
+
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -25,16 +26,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 
 /**
- * @author claudiorosati, European Spallation Source ERIC
+ * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 3 Nov 2016
- *
  */
 public class DataSourcesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+
     private Text directoryText;
     private Text delimiterText;
+    private TreeViewer treeViewer;
 
     /**
      * Create the preference page.
@@ -46,10 +49,12 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
 
     /**
      * Create contents of the preference page.
+     *
      * @param parent
      */
     @Override
     public Control createContents ( Composite parent ) {
+
         Composite container = new Composite(parent, SWT.NULL);
         container.setLayout(new FormLayout());
 
@@ -59,6 +64,8 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
         directoryCaption.setText(Messages.DSPP_directoryCaption_text);
 
         directoryText = new Text(container, SWT.BORDER);
+        directoryText.setBackground(SWTResourceManager.getColor(SWT.COLOR_INFO_BACKGROUND));
+        directoryText.setEditable(false);
         fd_directoryCaption.top = new FormAttachment(directoryText, 3, SWT.TOP);
         fd_directoryCaption.right = new FormAttachment(directoryText, -6);
         directoryText.setText("");
@@ -83,55 +90,63 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
         fd_treeComposite.right = new FormAttachment(browseButton, 0, SWT.RIGHT);
         treeComposite.setLayoutData(fd_treeComposite);
 
-        TreeViewer treeViewer = new TreeViewer(treeComposite, SWT.BORDER);
+        treeViewer = new TreeViewer(treeComposite, SWT.BORDER);
         Tree tree = treeViewer.getTree();
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
 
-        Group cdsGroup = new Group(container, SWT.NONE);
-        fd_treeComposite.bottom = new FormAttachment(100, -131);
-        cdsGroup.setText(Messages.DSPP_cdsGroup_text);
-        cdsGroup.setLayout(new FormLayout());
-        FormData fd_cdsGroup = new FormData();
-        fd_cdsGroup.bottom = new FormAttachment(treeComposite, 110, SWT.BOTTOM);
-        fd_cdsGroup.top = new FormAttachment(treeComposite, 21);
-        fd_cdsGroup.right = new FormAttachment(browseButton, 0, SWT.RIGHT);
-        fd_cdsGroup.left = new FormAttachment(directoryCaption, 0, SWT.LEFT);
-        cdsGroup.setLayoutData(fd_cdsGroup);
+                Group cdsGroup = new Group(container, SWT.NONE);
+                cdsGroup.setText(Messages.DSPP_cdsGroup_text);
+                cdsGroup.setLayout(new FormLayout());
+                FormData fd_cdsGroup = new FormData();
+                fd_cdsGroup.bottom = new FormAttachment(100, -21);
+                fd_cdsGroup.right = new FormAttachment(browseButton, 0, SWT.RIGHT);
+                fd_cdsGroup.left = new FormAttachment(directoryCaption, 0, SWT.LEFT);
+                cdsGroup.setLayoutData(fd_cdsGroup);
 
-        Label defaultDataSourceCaption = new Label(cdsGroup, SWT.NONE);
-        defaultDataSourceCaption.setAlignment(SWT.RIGHT);
-        FormData fd_defaultDataSourceCaption = new FormData();
-        fd_defaultDataSourceCaption.top = new FormAttachment(0, 14);
-        defaultDataSourceCaption.setLayoutData(fd_defaultDataSourceCaption);
-        defaultDataSourceCaption.setText(Messages.DSPP_defaultDataSourceCaption_text);
+                        Label defaultDataSourceCaption = new Label(cdsGroup, SWT.NONE);
+                        defaultDataSourceCaption.setAlignment(SWT.RIGHT);
+                        FormData fd_defaultDataSourceCaption = new FormData();
+                        fd_defaultDataSourceCaption.top = new FormAttachment(0, 14);
+                        defaultDataSourceCaption.setLayoutData(fd_defaultDataSourceCaption);
+                        defaultDataSourceCaption.setText(Messages.DSPP_defaultDataSourceCaption_text);
 
-        Combo defaultDataSourceCombo = new Combo(cdsGroup, SWT.NONE);
-        fd_defaultDataSourceCaption.right = new FormAttachment(defaultDataSourceCombo, -6);
-        FormData fd_defaultDataSourceCombo = new FormData();
-        fd_defaultDataSourceCombo.right = new FormAttachment(0, 291);
-        fd_defaultDataSourceCombo.left = new FormAttachment(0, 129);
-        fd_defaultDataSourceCombo.top = new FormAttachment(0, 10);
-        defaultDataSourceCombo.setLayoutData(fd_defaultDataSourceCombo);
+                                Combo defaultDataSourceCombo = new Combo(cdsGroup, SWT.NONE);
+                                fd_defaultDataSourceCaption.right = new FormAttachment(defaultDataSourceCombo, -6);
+                                FormData fd_defaultDataSourceCombo = new FormData();
+                                fd_defaultDataSourceCombo.right = new FormAttachment(0, 291);
+                                fd_defaultDataSourceCombo.left = new FormAttachment(0, 129);
+                                fd_defaultDataSourceCombo.top = new FormAttachment(0, 10);
+                                defaultDataSourceCombo.setLayoutData(fd_defaultDataSourceCombo);
 
-        Label delimiterCaption = new Label(cdsGroup, SWT.NONE);
-        delimiterCaption.setAlignment(SWT.RIGHT);
-        FormData fd_delimiterCaption = new FormData();
-        fd_delimiterCaption.top = new FormAttachment(defaultDataSourceCaption, 9);
-        fd_delimiterCaption.right = new FormAttachment(defaultDataSourceCaption, 0, SWT.RIGHT);
-        fd_delimiterCaption.left = new FormAttachment(defaultDataSourceCaption, 0, SWT.LEFT);
-        delimiterCaption.setLayoutData(fd_delimiterCaption);
-        delimiterCaption.setText(Messages.DSPP_delimiterCaption_text);
+                                        Label delimiterCaption = new Label(cdsGroup, SWT.NONE);
+                                        delimiterCaption.setAlignment(SWT.RIGHT);
+                                        FormData fd_delimiterCaption = new FormData();
+                                        fd_delimiterCaption.top = new FormAttachment(defaultDataSourceCaption, 9);
+                                        fd_delimiterCaption.right = new FormAttachment(defaultDataSourceCaption, 0, SWT.RIGHT);
+                                        fd_delimiterCaption.left = new FormAttachment(defaultDataSourceCaption, 0, SWT.LEFT);
+                                        delimiterCaption.setLayoutData(fd_delimiterCaption);
+                                        delimiterCaption.setText(Messages.DSPP_delimiterCaption_text);
 
-        delimiterText = new Text(cdsGroup, SWT.BORDER);
-        delimiterText.setText(Messages.DSPP_delimiterText_text);
-        FormData fd_delimiterText = new FormData();
-        fd_delimiterText.right = new FormAttachment(defaultDataSourceCombo, 0, SWT.RIGHT);
-        fd_delimiterText.left = new FormAttachment(delimiterCaption, 6);
-        fd_delimiterText.top = new FormAttachment(defaultDataSourceCaption, 6);
-        delimiterText.setLayoutData(fd_delimiterText);
+                                                delimiterText = new Text(cdsGroup, SWT.BORDER);
+                                                delimiterText.setText(Messages.DSPP_delimiterText_text);
+                                                FormData fd_delimiterText = new FormData();
+                                                fd_delimiterText.right = new FormAttachment(defaultDataSourceCombo, 0, SWT.RIGHT);
+                                                fd_delimiterText.left = new FormAttachment(delimiterCaption, 6);
+                                                fd_delimiterText.top = new FormAttachment(defaultDataSourceCaption, 6);
+                                                delimiterText.setLayoutData(fd_delimiterText);
+
+        Button overrideCheckBox = new Button(container, SWT.CHECK);
+        fd_treeComposite.bottom = new FormAttachment(overrideCheckBox, -18);
+        fd_cdsGroup.top = new FormAttachment(overrideCheckBox, 6);
+        FormData fd_overrideCheckBox = new FormData();
+        fd_overrideCheckBox.left = new FormAttachment(0, 10);
+        fd_overrideCheckBox.bottom = new FormAttachment(100, -116);
+        overrideCheckBox.setLayoutData(fd_overrideCheckBox);
+        overrideCheckBox.setText(Messages.DSPP_overrideCheckBox_text);
 
         return container;
+
     }
 
     /**
