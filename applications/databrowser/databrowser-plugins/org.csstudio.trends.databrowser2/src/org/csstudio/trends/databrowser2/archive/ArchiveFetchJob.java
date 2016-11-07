@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
@@ -44,8 +43,6 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class ArchiveFetchJob extends Job
 {
-    private static final Logger logger = Activator.getLogger();
-
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
 
@@ -100,7 +97,7 @@ public class ArchiveFetchJob extends Job
         @Override
         public void run()
         {
-            logger.log(Level.FINE, "Starting {0}", ArchiveFetchJob.this);
+            Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this);
             final BenchmarkTimer timer = new BenchmarkTimer();
             long samples = 0;
             final int bins = Preferences.getPlotBins();
@@ -181,7 +178,7 @@ public class ArchiveFetchJob extends Job
             timer.stop();
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
-            logger.log(Level.FINE,
+            Activator.getLogger().log(Level.FINE,
                     "Ended {0} with {1} samples in {2}",
                     new Object[] { ArchiveFetchJob.this, samples, timer });
         }
