@@ -53,10 +53,6 @@ import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.diirt.util.time.TimeDuration;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellAdapter;
@@ -704,6 +700,7 @@ public class Controller
 
         // Determine ongoing jobs for this item
         final List<ArchiveFetchJob> ongoing = new ArrayList<>();
+        final ArchiveFetchJob new_job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
         synchronized (archive_fetch_jobs)
         {
             for (Iterator<ArchiveFetchJob> iter = archive_fetch_jobs.iterator();  iter.hasNext();  /**/)
@@ -715,36 +712,27 @@ public class Controller
                     iter.remove();
                 }
             }
+            // Track new job
+            archive_fetch_jobs.add(new_job);
         }
 
-        // In background, stop ongoing jobs and then start new one
-        new Job("Data Browser Schedule")
+        Activator.getThreadPool().execute(() ->
         {
-            @Override
-            protected IStatus run(final IProgressMonitor monitor)
+            // In background, stop ongoing jobs
+            for (ArchiveFetchJob running : ongoing)
             {
-                for (ArchiveFetchJob running : ongoing)
+                try
                 {
-                    try
-                    {
-                        running.cancel();
-                        running.join(10000, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        Activator.getLogger().log(Level.WARNING, "Cannot cancel " + running, ex);
-                    }
+                    running.cancel();
+                    running.join(10000, null);
                 }
-
-                // Start new job
-                final ArchiveFetchJob job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
-                synchronized (archive_fetch_jobs)
+                catch (Exception ex)
                 {
-                    archive_fetch_jobs.add(job);
+                    Activator.getLogger().log(Level.WARNING, "Cannot cancel " + running, ex);
                 }
-                job.schedule();
-                return Status.OK_STATUS;
             }
-        }.schedule();
+            // .. then start new one
+            new_job.schedule();
+        });
     }
 }
