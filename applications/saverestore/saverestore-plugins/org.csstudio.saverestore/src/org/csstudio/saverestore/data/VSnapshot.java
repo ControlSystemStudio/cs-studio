@@ -1,12 +1,6 @@
 /*
- * This software is Copyright by the Board of Trustees of Michigan
- * State University (c) Copyright 2016.
- *
- * Contact Information:
- *   Facility for Rare Isotope Beam
- *   Michigan State University
- *   East Lansing, MI 48824-1321
- *   http://frib.msu.edu
+ * This software is Copyright by the Board of Trustees of Michigan State University (c) Copyright 2016. Contact
+ * Information: Facility for Rare Isotope Beam Michigan State University East Lansing, MI 48824-1321 http://frib.msu.edu
  */
 package org.csstudio.saverestore.data;
 
@@ -30,17 +24,14 @@ import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 
 /**
- *
  * <code>VSnapshot</code> describes the snapshot data. It contains the list of pv names together with their values at a
  * specific time.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
- *
  */
 public class VSnapshot implements VType, Time, Array, Serializable {
 
     private static final long serialVersionUID = 2676226155070688049L;
-
     private final List<String> names;
     private final transient List<VType> values;
     private final List<Boolean> selected;
@@ -48,6 +39,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     private final transient List<VType> readbackValues;
     private final List<String> deltas;
     private final transient Instant snapshotTime;
+    private final List<Boolean> readOnlyFlags;
     private final SaveSet saveSet;
     private final Snapshot snapshot;
     private String forcedName;
@@ -60,7 +52,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param snapshot the descriptor
      * @param table the table providing the data
      * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when the snapshot was
-     *            stored)
+     *        stored)
      */
     @SuppressWarnings("unchecked")
     public VSnapshot(Snapshot snapshot, VTable table, Instant snapshotTime) {
@@ -73,32 +65,34 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         List<String> r = new ArrayList<>(0);
         List<VType> rv = new ArrayList<>(0);
         List<String> dt = new ArrayList<>(0);
+        List<Boolean> ro = new ArrayList<>(0);
         for (int i = 0; i < 3; i++) {
             String name = table.getColumnName(i);
             if (FileUtilities.H_PV_NAME.equals(name)) {
-                n = (List<String>) table.getColumnData(i);
+                n = (List<String>)table.getColumnData(i);
             } else if (FileUtilities.H_SELECTED.equals(name)) {
-                s = (List<Boolean>) table.getColumnData(i);
+                s = (List<Boolean>)table.getColumnData(i);
             } else if (FileUtilities.H_VALUE.equals(name)) {
-                d = (List<VType>) table.getColumnData(i);
+                d = (List<VType>)table.getColumnData(i);
             } else if (FileUtilities.H_READBACK.equals(name)) {
-                r = (List<String>) table.getColumnData(i);
+                r = (List<String>)table.getColumnData(i);
             } else if (FileUtilities.H_READBACK_VALUE.equals(name)) {
-                rv = (List<VType>) table.getColumnData(i);
+                rv = (List<VType>)table.getColumnData(i);
             } else if (FileUtilities.H_DELTA.equals(name)) {
-                dt = (List<String>) table.getColumnData(i);
+                dt = (List<String>)table.getColumnData(i);
+            } else if (FileUtilities.H_READ_ONLY.equals(name)) {
+                ro = (List<Boolean>)table.getColumnData(i);
             }
         }
         if (n == null) {
             throw new IllegalArgumentException(
-                "The table does not contain the column " + FileUtilities.H_PV_NAME + ".");
+                    "The table does not contain the column " + FileUtilities.H_PV_NAME + ".");
         } else if (s == null) {
             throw new IllegalArgumentException(
-                "The table does not contain the column " + FileUtilities.H_SELECTED + ".");
+                    "The table does not contain the column " + FileUtilities.H_SELECTED + ".");
         } else if (d == null) {
             throw new IllegalArgumentException("The table does not contain the column " + FileUtilities.H_VALUE + ".");
         }
-
         this.names = new ArrayList<>(n);
         this.selected = new ArrayList<>(s);
         this.values = new ArrayList<>(d);
@@ -108,6 +102,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.readbackNames = new ArrayList<>(r);
         this.readbackValues = new ArrayList<>(rv);
         this.deltas = new ArrayList<>(dt);
+        this.readOnlyFlags = new ArrayList<>(ro);
     }
 
     /**
@@ -116,27 +111,36 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param snapshot the descriptor
      * @param names the names of PVs
      * @param selected flags indicating if the corresponding PVs are selected in the snapshot or not (only selected ones
-     *            are restored)
+     *        are restored)
      * @param values the values of the PVs
+     * @param readbackNames the names of the readback PV values
+     * @param readbackValues the values of the readback PVs
+     * @param deltas the allowed delta between the live and stored value
+     * @param readOnlyFlags the flags whether the PV is read only or read and write (read only PV cannot be restored)
      * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when the snapshot was
-     *            stored)
+     *        stored)
      */
     public VSnapshot(Snapshot snapshot, List<String> names, List<Boolean> selected, List<VType> values,
-        List<String> readbackNames, List<VType> readbackValues, List<String> deltas, Instant snapshotTime) {
+            List<String> readbackNames, List<VType> readbackValues, List<String> deltas, List<Boolean> readOnlyFlags,
+            Instant snapshotTime) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
         if (!readbackNames.isEmpty() && readbackNames.size() != names.size()) {
             throw new IllegalArgumentException(
-                "The number of readback pv names does not match the number of setpoint pv names.");
+                    "The number of readback pv names does not match the number of setpoint pv names.");
         }
         if (readbackValues.size() != readbackNames.size()) {
             throw new IllegalArgumentException(
-                "The number of readbacks PV names does not match the number of readback values");
+                    "The number of readbacks PV names does not match the number of readback values");
         }
         if (!deltas.isEmpty() && deltas.size() != names.size()) {
             throw new IllegalArgumentException(
-                "The number of delta values does not match the number of setpoint pv names.");
+                    "The number of delta values does not match the number of setpoint pv names.");
+        }
+        if (!readOnlyFlags.isEmpty() && readOnlyFlags.size() != names.size()) {
+            throw new IllegalArgumentException(
+                    "The number of read only flags does not match the number of setpoint pv names.");
         }
         this.readbackNames = new ArrayList<>(readbackNames);
         this.readbackValues = new ArrayList<>(readbackValues);
@@ -144,6 +148,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.names = new ArrayList<>(names);
         this.selected = new ArrayList<>(selected);
         this.values = new ArrayList<>(values);
+        this.readOnlyFlags = new ArrayList<>(readOnlyFlags);
         this.snapshotTime = snapshotTime;
         this.saveSet = snapshot.getSaveSet();
         this.snapshot = snapshot;
@@ -156,12 +161,12 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param names the names of pvs
      * @param values the values of the pvs
      * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when the snapshot was
-     *            stored)
+     *        stored)
      * @param forcedName the forcedName of this snapshot, which will supersede the any other rule when calling
-     *            {@link #toString()}
+     *        {@link #toString()}
      */
     public VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Instant snapshotTime,
-        String forcedName) {
+            String forcedName) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
@@ -172,6 +177,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.readbackValues = new ArrayList<>(0);
         this.deltas = new ArrayList<>(0);
         this.values = new ArrayList<>(values);
+        this.readOnlyFlags = new ArrayList<>(0);
         this.snapshotTime = snapshotTime;
         this.saveSet = snapshot.getSaveSet();
         this.snapshot = snapshot;
@@ -185,21 +191,28 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param names the names of setpoint PVs
      * @param readbacks the name readback PVs (the size has to be 0 or match the size of the setpoint PV names)
      * @param deltas the threshold values or functions for comparison of readbacks and setpoints (the size has to be 0
-     *            or match the size of the setpoint PV names)
+     *        or match the size of the setpoint PV names)
+     * @param readOnlyFlags the list of flags indicating if individual PVs are read only or read and write
      */
-    public VSnapshot(SaveSet set, List<String> names, List<String> readbacks, List<String> deltas) {
+    public VSnapshot(SaveSet set, List<String> names, List<String> readbacks, List<String> deltas,
+            List<Boolean> readOnlyFlags) {
         if (!readbacks.isEmpty() && readbacks.size() != names.size()) {
             throw new IllegalArgumentException(
-                "The number of readback pv names does not match the number of setpoint pv names.");
+                    "The number of readback pv names does not match the number of setpoint pv names.");
         }
         if (!deltas.isEmpty() && deltas.size() != names.size()) {
             throw new IllegalArgumentException(
-                "The number of delta values does not match the number of setpoint pv names.");
+                    "The number of delta values does not match the number of setpoint pv names.");
+        }
+        if (!readOnlyFlags.isEmpty() && readOnlyFlags.size() != names.size()) {
+            throw new IllegalArgumentException(
+                    "The number of read only flags does not match the number of setpoint pv names.");
         }
         this.names = new ArrayList<>(names);
         this.readbackNames = new ArrayList<>(readbacks);
         this.readbackValues = new ArrayList<>(readbacks.size());
         this.deltas = new ArrayList<>(deltas);
+        this.readOnlyFlags = new ArrayList<>(readOnlyFlags);
         this.values = new ArrayList<>(names.size());
         this.selected = new ArrayList<>(names.size());
         this.names.forEach(e -> {
@@ -224,6 +237,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.readbackNames = new ArrayList<>(0);
         this.readbackValues = new ArrayList<>(0);
         this.deltas = new ArrayList<>(0);
+        this.readOnlyFlags = new ArrayList<>(0);
         this.snapshotTime = null;
         this.saveSet = set;
         this.snapshot = null;
@@ -308,6 +322,15 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     }
 
     /**
+     * Returns the list of read only flags, which indicate if the individual PVs are read only or read and write.
+     *
+     * @return read only flags list
+     */
+    public List<Boolean> getReadOnlyFlags() {
+        return Collections.unmodifiableList(readOnlyFlags);
+    }
+
+    /**
      * Returns the delta value for the given pv name.
      *
      * @param pvName the name of the pv for which the delta is requested
@@ -356,10 +379,11 @@ public class VSnapshot implements VType, Time, Array, Serializable {
                 this.readbackNames.add("");
                 this.readbackValues.add(VNoData.INSTANCE);
                 this.deltas.add("");
+                this.readOnlyFlags.add(false);
             }
         } else {
-            this.selected.set(idx, selected);
-            this.values.set(idx, value);
+            this.selected.set(idx,selected);
+            this.values.set(idx,value);
         }
         dirty = true;
         return idx < 0;
@@ -381,6 +405,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
                 this.readbackNames.remove(idx);
                 this.readbackValues.remove(idx);
                 this.deltas.remove(idx);
+                this.readOnlyFlags.remove(idx);
             }
         }
         dirty = true;
@@ -389,27 +414,24 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     /*
      * (non-Javadoc)
-     *
      * @see org.diirt.vtype.Array#getData()
      */
     @Override
     public Object getData() {
-        return Collections.unmodifiableList(Arrays.asList(names, selected, values));
+        return Collections.unmodifiableList(Arrays.asList(names,selected,values));
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see org.diirt.vtype.Array#getSizes()
      */
     @Override
     public ListInt getSizes() {
-        return new ArrayInt(3, names.size());
+        return new ArrayInt(3,names.size());
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see org.diirt.vtype.Time#getTimestamp()
      */
     @Override
@@ -419,17 +441,15 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     /*
      * (non-Javadoc)
-     *
      * @see org.diirt.vtype.Time#getTimeUserTag()
      */
     @Override
     public Integer getTimeUserTag() {
-        return (int) snapshotTime.getEpochSecond();
+        return (int)snapshotTime.getEpochSecond();
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see org.diirt.vtype.Time#isTimeValid()
      */
     @Override
@@ -466,19 +486,18 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     /*
      * (non-Javadoc)
-     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         if (forcedName == null) {
             if (isSaved()) {
-                return Utilities.timestampToBigEndianString(snapshot.getDate(), true);
+                return Utilities.timestampToBigEndianString(snapshot.getDate(),true);
             } else {
                 if (snapshotTime == null) {
                     return saveSet.getName();
                 }
-                return Utilities.timestampToBigEndianString(snapshotTime, true);
+                return Utilities.timestampToBigEndianString(snapshotTime,true);
             }
         } else {
             return forcedName;
@@ -487,18 +506,16 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     /*
      * (non-Javadoc)
-     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return Objects.hash(saveSet, snapshot, names, selected, snapshotTime, values, readbackNames, readbackValues,
-            deltas, forcedName);
+        return Objects.hash(saveSet,snapshot,names,selected,snapshotTime,values,readbackNames,readbackValues,deltas,
+                readOnlyFlags,forcedName);
     }
 
     /*
      * (non-Javadoc)
-     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -510,8 +527,8 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         } else if (getClass() != obj.getClass()) {
             return false;
         }
-        VSnapshot other = (VSnapshot) obj;
-        return Objects.equals(snapshot, other.snapshot) && equalsExceptSnapshot(other);
+        VSnapshot other = (VSnapshot)obj;
+        return Objects.equals(snapshot,other.snapshot) && equalsExceptSnapshot(other);
     }
 
     /**
@@ -521,7 +538,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if equal or false otherwise
      */
     public boolean equalsExceptSnapshot(VSnapshot other) {
-        return Objects.equals(saveSet, other.saveSet) && equalsExceptSnapshotOrSaveSet(other);
+        return Objects.equals(saveSet,other.saveSet) && equalsExceptSnapshotOrSaveSet(other);
     }
 
     /**
@@ -531,9 +548,10 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if equal or false otherwise
      */
     public boolean equalsExceptSnapshotOrSaveSet(VSnapshot other) {
-        boolean b = Objects.equals(forcedName, other.forcedName) && Objects.equals(names, other.names)
-            && Objects.equals(snapshotTime, other.snapshotTime) && Objects.equals(selected, other.selected)
-            && Objects.equals(readbackNames, other.readbackNames) && Objects.equals(deltas, other.deltas);
+        boolean b = Objects.equals(forcedName,other.forcedName) && Objects.equals(names,other.names)
+                && Objects.equals(snapshotTime,other.snapshotTime) && Objects.equals(selected,other.selected)
+                && Objects.equals(readbackNames,other.readbackNames) && Objects.equals(deltas,other.deltas)
+                && Objects.equals(readOnlyFlags,other.readOnlyFlags);
         if (b) {
             if (values.size() != other.values.size()) {
                 return false;
@@ -543,13 +561,13 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             }
             List<VType> val = other.values;
             for (int i = 0; i < val.size(); i++) {
-                if (!Utilities.areVTypesIdentical(val.get(i), values.get(i), true)) {
+                if (!Utilities.areVTypesIdentical(val.get(i),values.get(i),true)) {
                     return false;
                 }
             }
             val = other.readbackValues;
             for (int i = 0; i < val.size(); i++) {
-                if (!Utilities.areVTypesIdentical(val.get(i), readbackValues.get(i), false)) {
+                if (!Utilities.areVTypesIdentical(val.get(i),readbackValues.get(i),false)) {
                     return false;
                 }
             }
@@ -564,12 +582,12 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return {@link VTable} instance which contains the data
      */
     public VTable toVTable() {
-        List<Class<?>> classes = Arrays.asList(String.class, Boolean.class, VType.class, String.class, VType.class,
-            String.class);
-        List<Object> tableValues = Arrays.asList(getNames(), getSelected(), getValues(), getReadbackNames(),
-            getReadbackValues(), getDeltas());
-        List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME, FileUtilities.H_SELECTED, FileUtilities.H_VALUE,
-            FileUtilities.H_READBACK, FileUtilities.H_READBACK_VALUE, FileUtilities.H_DELTA);
-        return ValueFactory.newVTable(classes, columns, tableValues);
+        List<Class<?>> classes = Arrays.asList(String.class,Boolean.class,VType.class,String.class,VType.class,
+                String.class);
+        List<Object> tableValues = Arrays.asList(getNames(),getSelected(),getValues(),getReadbackNames(),
+                getReadbackValues(),getDeltas());
+        List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME,FileUtilities.H_SELECTED,FileUtilities.H_VALUE,
+                FileUtilities.H_READBACK,FileUtilities.H_READBACK_VALUE,FileUtilities.H_DELTA);
+        return ValueFactory.newVTable(classes,columns,tableValues);
     }
 }

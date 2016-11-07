@@ -80,10 +80,10 @@ public class FileUtilitiesTest {
         SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
         SaveSetData bsd = new SaveSetData(set, Arrays.asList("pv1", "pv2"), Arrays.asList("rb1", "rb2"),
-            Arrays.asList("d1", "Math.pow(x,3)"), "some description");
+            Arrays.asList("d1", "Math.pow(x,3)"), Arrays.asList(Boolean.TRUE, Boolean.FALSE), "some description");
         String content = FileUtilities.generateSaveSetContent(bsd);
         assertEquals(
-            "# Description:\n# some description\n#\nPV,READBACK,DELTA\npv1,rb1,d1\npv2,rb2,\"Math.pow(x,3)\"\n",
+            "# Description:\n# some description\n#\nPV,READBACK,DELTA,READ_ONLY\npv1,rb1,d1,true\npv2,rb2,\"Math.pow(x,3)\",false\n",
             content);
 
         SaveSetContent bsc = FileUtilities
@@ -92,6 +92,7 @@ public class FileUtilitiesTest {
         assertArrayEquals(new String[] { "pv1", "pv2" }, bsc.getNames().toArray(new String[2]));
         assertArrayEquals(new String[] { "rb1", "rb2" }, bsc.getReadbacks().toArray(new String[2]));
         assertArrayEquals(new String[] { "d1", "Math.pow(x,3)" }, bsc.getDeltas().toArray(new String[2]));
+        assertArrayEquals(new Boolean[] { true, false }, bsc.getReadOnlyFlags().toArray(new Boolean[2]));
     }
 
     /**
@@ -121,14 +122,14 @@ public class FileUtilitiesTest {
 
         VSnapshot vs = new VSnapshot(snapshot, Arrays.asList("pv1", "pv2"), Arrays.asList(true, false),
             Arrays.asList(val1, val2), Arrays.asList("rb1", "rb2"), Arrays.asList(rval1, rval2),
-            Arrays.asList("50", "Math.min(x,3)"), time.getTimestamp());
+            Arrays.asList("50", "Math.min(x,3)"),Arrays.asList(Boolean.TRUE,Boolean.FALSE), time.getTimestamp());
 
         String content = FileUtilities.generateSnapshotFileContent(vs);
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(d);
         String CONTENT = "# Date: " + date + "\n"
-            + "PV,SELECTED,TIMESTAMP,STATUS,SEVERITY,VALUE_TYPE,VALUE,READBACK,READBACK_VALUE,DELTA\n"
-            + "pv1,1,1455296909.369000000,HIGH,MINOR,double,\"5.0\",rb1,\"6.0\",50\n"
-            + "pv2,0,1455296909.379000000,NONE,NONE,double_array,\"[1.0;2.0;3.0]\",rb2,\"[1.0;1.0;1.0]\",\"Math.min(x,3)\"\n";
+            + "PV,SELECTED,TIMESTAMP,STATUS,SEVERITY,VALUE_TYPE,VALUE,READBACK,READBACK_VALUE,DELTA,READ_ONLY\n"
+            + "pv1,1,1455296909.369000000,HIGH,MINOR,double,\"5.0\",rb1,\"6.0\",50,true\n"
+            + "pv2,0,1455296909.379000000,NONE,NONE,double_array,\"[1.0;2.0;3.0]\",rb2,\"[1.0;1.0;1.0]\",\"Math.min(x,3)\",false\n";
         assertEquals(CONTENT, content);
 
         SnapshotContent sc = FileUtilities
@@ -138,6 +139,7 @@ public class FileUtilitiesTest {
         assertArrayEquals(new String[] { "rb1", "rb2" }, sc.getReadbacks().toArray(new String[2]));
         assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, sc.getDeltas().toArray(new String[2]));
         assertArrayEquals(new Boolean[] { true, false }, sc.getSelected().toArray(new Boolean[2]));
+        assertArrayEquals(new Boolean[] { true, false}, sc.getReadOnlyFlags().toArray(new Boolean[2]));
 
         // compare values
         List<VType> data = sc.getData();

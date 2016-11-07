@@ -172,7 +172,8 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Open save set", () -> {
             try {
                 SaveSetData data = provider.getSaveSetContent(set);
-                final VSnapshot s = new VSnapshot(set, data.getPVList(), data.getReadbackList(), data.getDeltaList());
+                final VSnapshot s = new VSnapshot(set, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
+                        data.getReadOnlyFlagsList());
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {
                         owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);

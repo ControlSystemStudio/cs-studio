@@ -30,3 +30,8 @@
 .tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
 }
+
+.check-box-table-cell-disabled > .check-box > .box {
+	-fx-background-color: #E0E0E0;    
+}
+

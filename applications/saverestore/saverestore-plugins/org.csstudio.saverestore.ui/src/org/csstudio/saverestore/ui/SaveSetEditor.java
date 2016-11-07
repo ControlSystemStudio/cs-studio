@@ -165,6 +165,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         List<String> pvList = new ArrayList<>(content.length);
         List<String> readbacksList = new ArrayList<>(content.length);
         List<String> deltasList = new ArrayList<>(content.length);
+        List<Boolean> readOnlyList = new ArrayList<>(content.length);
         for (String s : content) {
             s = s.trim();
             if (s.isEmpty()) {
@@ -188,10 +189,13 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             if (d.length > 2) {
                 deltasList.add(d[2].trim());
             }
+            if (d.length > 3) {
+                readOnlyList.add(Boolean.valueOf(d[3].trim()));
+            }
         }
         Optional<SaveSetData> bsd = controller.getSavedSaveSetData();
         SaveSet descriptor = bsd.isPresent() ? bsd.get().getDescriptor() : new SaveSet();
-        return new SaveSetData(descriptor, pvList, readbacksList, deltasList, description);
+        return new SaveSetData(descriptor, pvList, readbacksList, deltasList, readOnlyList, description);
     }
 
     /*
@@ -218,7 +222,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
                 .ifPresent(saveSet -> SaveRestoreService.getInstance().execute("Save Save Set",
                     () -> controller
                         .save(new SaveSetData(saveSet, data.getPVList(), data.getReadbackList(),
-                            data.getDeltaList(), data.getDescription()))
+                            data.getDeltaList(), data.getReadOnlyFlagsList(), data.getDescription()))
                     .ifPresent(d -> getSite().getShell().getDisplay()
                         .asyncExec(() -> setInput(new SaveSetEditorInput(d))))));
         }

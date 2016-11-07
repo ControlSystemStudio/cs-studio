@@ -147,7 +147,8 @@ public class EntitiesTest {
         assertFalse(vs.isSaved());
         assertTrue(vs.isSaveable());
 
-        vs = new VSnapshot(set, Arrays.asList("name"), Arrays.asList("readback"), Arrays.asList("delta"));
+        vs = new VSnapshot(set, Arrays.asList("name"), Arrays.asList("readback"), Arrays.asList("delta"),
+                Arrays.asList(Boolean.FALSE));
         assertFalse(vs.isSaved());
         assertFalse(vs.isSaveable());
         vs.addOrSetPV("tralala", true, VDisconnectedData.INSTANCE);
@@ -171,7 +172,9 @@ public class EntitiesTest {
         try {
             new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
                 Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("readback"),
-                Arrays.asList(VDisconnectedData.INSTANCE), Arrays.asList("delta"), Instant.now());
+                Arrays.asList(VDisconnectedData.INSTANCE), Arrays.asList("delta", "delta"),
+                Arrays.asList(Boolean.FALSE, Boolean.FALSE),
+                Instant.now());
             fail("Should fail because the length of readbacks is different from the names.");
         } catch (IllegalArgumentException e) {
             assertNotNull("Exception was thrown", e.getMessage());
@@ -182,7 +185,18 @@ public class EntitiesTest {
                 Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE),
                 Arrays.asList("readback", "readback2"),
                 Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta"),
-                Instant.now());
+                Arrays.asList(Boolean.FALSE, Boolean.FALSE), Instant.now());
+            fail("Should fail because the length of deltas is different from the readbacks.");
+        } catch (IllegalArgumentException e) {
+            assertNotNull("Exception was thrown", e.getMessage());
+        }
+
+        try {
+            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
+                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE),
+                Arrays.asList("readback", "readback2"),
+                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta","delta"),
+                Arrays.asList(Boolean.FALSE), Instant.now());
             fail("Should fail because the length of deltas is different from the readbacks.");
         } catch (IllegalArgumentException e) {
             assertNotNull("Exception was thrown", e.getMessage());

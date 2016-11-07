@@ -54,6 +54,7 @@ import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
 import org.csstudio.saverestore.ui.util.VTypePair;
@@ -114,20 +115,24 @@ public class SnapshotViewerController {
             this.pvName = pvName;
             this.reader = reader;
             this.writer = writer;
-            this.reader.addPVReaderListener(e -> {
-                synchronized (SnapshotViewerController.this) {
-                    if (suspend.get() > 0) {
-                        return;
+            if (this.reader == null) {
+                this.value = VNoData.INSTANCE;
+            } else {
+                this.reader.addPVReaderListener(e -> {
+                    synchronized (SnapshotViewerController.this) {
+                        if (suspend.get() > 0) {
+                            return;
+                        }
                     }
-                }
-                if (e.isExceptionChanged()) {
-                    SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
-                        e.getPvReader().lastException());
-                }
-                value = e.getPvReader().isConnected() ? e.getPvReader().getValue() : VDisconnectedData.INSTANCE;
-                throttle.trigger();
-            });
-            this.value = reader.getValue();
+                    if (e.isExceptionChanged()) {
+                        SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
+                            e.getPvReader().lastException());
+                    }
+                    value = e.getPvReader().isConnected() ? e.getPvReader().getValue() : VDisconnectedData.INSTANCE;
+                    throttle.trigger();
+                });
+                this.value = reader.getValue();
+            }
             setReadbackReader(readback);
         }
 
@@ -149,17 +154,19 @@ public class SnapshotViewerController {
         }
 
         void resume() {
-            this.value = reader.getValue();
+            if (reader != null) {
+                this.value = reader.getValue();
+            }
             if (readback != null) {
                 readbackValue = readback.getValue();
             }
         }
 
         void dispose() {
-            if (!reader.isClosed()) {
+            if (reader != null && !reader.isClosed()) {
                 reader.close();
             }
-            if (!writer.isClosed()) {
+            if (writer != null && !writer.isClosed()) {
                 writer.close();
             }
             if (readback != null && !readback.isClosed()) {
@@ -276,11 +283,15 @@ public class SnapshotViewerController {
                 }
                 if (pv == null) {
                     String name = e.pvNameProperty().get();
-                    PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
-                        .maxRate(Duration.ofMillis(100));
-                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(Duration.ofMillis(2000)).async();
-                    String readback = e.readbackNameProperty().get();
+                    PVReader<VType> reader = null;
+                    PVWriter<Object> writer = null;
                     PVReader<VType> readbackReader = null;
+                    if (!name.isEmpty() && name != null) {
+                        reader = PVManager.read(channel(name, VType.class, VType.class))
+                            .maxRate(Duration.ofMillis(100));
+                        writer = PVManager.write(channel(name)).timeout(Duration.ofMillis(2000)).async();
+                    }
+                    String readback = e.readbackNameProperty().get();
                     if (readback != null && !readback.isEmpty()) {
                         readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
                             .maxRate(Duration.ofMillis(100));
@@ -332,6 +343,7 @@ public class SnapshotViewerController {
         List<Boolean> selected = data.getSelected();
         List<String> rbs = data.getReadbackNames();
         List<VType> rbValues = data.getReadbackValues();
+        List<Boolean> readOnly = data.getReadOnlyFlags();
         synchronized (snapshots) {
             snapshots.add(data);
         }
@@ -353,6 +365,9 @@ public class SnapshotViewerController {
             if (rbs.size() > i && (s == null || s.isEmpty())) {
                 readbacks.put(name, rbs.get(i));
                 e.readbackNameProperty().set(rbs.get(i));
+            }
+            if (readOnly.size() > i) {
+                e.readOnlyProperty().set(readOnly.get(i));
             }
         }
         connectPVs();
@@ -380,6 +395,7 @@ public class SnapshotViewerController {
             List<VType> values = data.getValues();
             List<String> rbs = data.getReadbackNames();
             List<VType> rbValues = data.getReadbackValues();
+            List<Boolean> readOnly = data.getReadOnlyFlags();
             boolean update = false;
             String n;
             TableEntry e;
@@ -402,6 +418,9 @@ public class SnapshotViewerController {
                 e.setSnapshotValue(values.get(i), numberOfSnapshots);
                 if (rbValues.size() > i) {
                     e.setStoredReadbackValue(rbValues.get(i), numberOfSnapshots);
+                }
+                if (readOnly.size() > i) {
+                    e.readOnlyProperty().set(readOnly.get(i));
                 }
                 withoutValue.remove(e);
             }
@@ -624,6 +643,7 @@ public class SnapshotViewerController {
                 List<String> readbackNames = new ArrayList<>(items.size());
                 List<VType> readbackValues = new ArrayList<>(items.size());
                 List<String> deltas = new ArrayList<>(items.size());
+                List<Boolean> readOnlyFlags = new ArrayList<>(items.size());
                 PV pv;
                 String name;
                 String delta = null;
@@ -649,10 +669,11 @@ public class SnapshotViewerController {
                         delta = EMPTY_STRING;
                     }
                     deltas.add(delta);
+                    readOnlyFlags.add(t.readOnlyProperty().get());
                 }
                 // taken snapshots always belong to the save set of the master snapshot
                 taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
-                    Instant.now());
+                    readOnlyFlags, Instant.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 receiver.addSnapshot(taken, false);
@@ -815,7 +836,7 @@ public class SnapshotViewerController {
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
-                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate()));
+                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getReadOnlyFlags(), sc.getDate()));
         } catch (IOException | RuntimeException | ParseException e) {
             ActionManager.reportException(e, receiver);
             return Optional.empty();
@@ -876,17 +897,19 @@ public class SnapshotViewerController {
             for (int i = 0; i < names.size(); i++) {
                 final TableEntry e = items.get(names.get(i));
                 // only restore the value if the entry is in the filtered list as well
-                if (filteredList.contains(e) && e.selectedProperty().get()) {
+                if (filteredList.contains(e) && e.selectedProperty().get() && !e.readOnlyProperty().get()) {
                     final PV pv = pvs.get(e);
-                    PVWriterListener<?> l = w -> {
-                        restoredPVs.put(pv, w);
-                        synchronized (restoredPVs) {
-                            restoredPVs.notifyAll();
-                        }
-                    };
-                    restorablePVs.put(pv, l);
-                    pv.writer.addPVWriterListener(l);
-                    pv.writer.write(Utilities.toRawValue(values.get(i)));
+                    if (pv.writer != null) {
+                        PVWriterListener<?> l = w -> {
+                            restoredPVs.put(pv, w);
+                            synchronized (restoredPVs) {
+                                restoredPVs.notifyAll();
+                            }
+                        };
+                        restorablePVs.put(pv, l);
+                        pv.writer.addPVWriterListener(l);
+                        pv.writer.write(Utilities.toRawValue(values.get(i)));
+                    }
                 }
             }
             try {
@@ -1108,7 +1131,7 @@ public class SnapshotViewerController {
             entry.selectedProperty().set(false);
 
             // Hard reference is required, otherwise diirt might flush the reader, before the value even arrives.
-            final ArrayList<PVReader<VTable>> archiveReaders = new ArrayList<>();
+            final List<PVReader<VTable>> archiveReaders = new ArrayList<>();
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
                 Instant start = snaps.get(i).getTimestamp();

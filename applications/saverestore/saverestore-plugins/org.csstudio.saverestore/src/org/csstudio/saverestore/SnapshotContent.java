@@ -31,6 +31,7 @@ public final class SnapshotContent {
     private final List<String> readbacks;
     private final List<VType> readbackData;
     private final List<String> deltas;
+    private final List<Boolean> readOnlyFlags;
     private final Instant date;
 
     /**
@@ -43,15 +44,17 @@ public final class SnapshotContent {
      * @param readbacks the readback PV names
      * @param readbackData the stored readback values
      * @param deltas the threshold values of functions
+     * @param readOnlyFlags the flags indicating if the PV is a read only PV or a read and write PV
      */
     SnapshotContent(Instant date, List<String> names, List<Boolean> selected, List<VType> data, List<String> readbacks,
-        List<VType> readbackData, List<String> deltas) {
+        List<VType> readbackData, List<String> deltas, List<Boolean> readOnlyFlags) {
         this.data = Collections.unmodifiableList(data);
         this.readbackData = Collections.unmodifiableList(readbackData);
         this.readbacks = Collections.unmodifiableList(readbacks);
         this.deltas = Collections.unmodifiableList(deltas);
         this.selected = Collections.unmodifiableList(selected);
         this.names = Collections.unmodifiableList(names);
+        this.readOnlyFlags = Collections.unmodifiableList(readOnlyFlags);
         this.date = date;
     }
 
@@ -110,6 +113,16 @@ public final class SnapshotContent {
      */
     public List<String> getDeltas() {
         return deltas;
+    }
+
+    /**
+     * Returns the list of read only flags. PV which has the flag set to true is a read only PV and could never be
+     * restored. If the value is false, the PV is a read and write type PV.
+     *
+     * @return the list of read only flags
+     */
+    public List<Boolean> getReadOnlyFlags() {
+        return readOnlyFlags;
     }
 
     /**

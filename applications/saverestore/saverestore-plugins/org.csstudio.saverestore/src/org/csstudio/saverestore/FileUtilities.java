@@ -77,11 +77,12 @@ public final class FileUtilities {
     public static final String H_SEVERITY = "SEVERITY";
     public static final String H_VALUE_TYPE = "VALUE_TYPE";
     public static final String H_VALUE = "VALUE";
+    public static final String H_READ_ONLY = "READ_ONLY";
     // the complete snapshot file header
     public static final String SNAPSHOT_FILE_HEADER = H_PV_NAME + "," + H_SELECTED + "," + H_TIMESTAMP + "," + H_STATUS
         + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE + "," + H_READBACK + "," + H_READBACK_VALUE + ","
-        + H_DELTA;
-    public static final String SAVE_SET_HEADER = H_PV_NAME + "," + H_READBACK + "," + H_DELTA;
+        + H_DELTA + "," + H_READ_ONLY;
+    public static final String SAVE_SET_HEADER = H_PV_NAME + "," + H_READBACK + "," + H_DELTA + "," + H_READ_ONLY;
     // delimiter of array values
     private static final String ARRAY_SPLITTER = "\\;";
     // delimiter of enum value and enum constants
@@ -117,6 +118,7 @@ public final class FileUtilities {
         List<String> readbacks = new ArrayList<>();
         List<VType> readbackData = new ArrayList<>();
         List<String> deltas = new ArrayList<>();
+        List<Boolean> readOnlyFlags = new ArrayList<>();
         String line;
         String[] header = null;
         Map<String, Integer> headerMap = new HashMap<>();
@@ -164,6 +166,8 @@ public final class FileUtilities {
                 String readbackValue = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_DELTA);
                 String delta = idx == null || idx > length ? "" : trim(split[idx]);
+                idx = headerMap.get(H_READ_ONLY);
+                Boolean readOnly = idx == null || idx > length ? Boolean.FALSE : Boolean.valueOf(trim(split[idx]));
 
                 try {
                     data.add(piecesToVType(timestamp, status, severity, value, valueType));
@@ -187,13 +191,14 @@ public final class FileUtilities {
                     // ignore
                 }
                 selected.add(s);
+                readOnlyFlags.add(readOnly);
             }
         }
         if (date == null || date.isEmpty()) {
             throw new ParseException("Snapshot does not have a date set.", 0);
         }
         Instant d = TIMESTAMP_FORMATTER.get().parse(date).toInstant();
-        return new SnapshotContent(d, names, selected, data, readbacks, readbackData, deltas);
+        return new SnapshotContent(d, names, selected, data, readbacks, readbackData, deltas, readOnlyFlags);
     }
 
     /**
@@ -403,6 +408,7 @@ public final class FileUtilities {
         List<String> readbacks = data.getReadbackNames();
         List<VType> readbackValues = data.getReadbackValues();
         List<String> deltas = data.getDeltas();
+        List<Boolean> readOnlyFlags = data.getReadOnlyFlags();
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * names.size());
         Instant timestamp = data.getTimestamp();
         if (timestamp == null) {
@@ -412,10 +418,11 @@ public final class FileUtilities {
         sb.append(SNAPSHOT_FILE_HEADER).append('\n');
         boolean deltaEmpty = deltas.isEmpty();
         boolean noReadbacks = readbacks.isEmpty();
+        boolean readOnlyFlagsEmpty = readOnlyFlags.isEmpty();
         for (int i = 0; i < names.size(); i++) {
             sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i),
                 noReadbacks ? null : readbacks.get(i), noReadbacks ? null : readbackValues.get(i),
-                deltaEmpty ? null : deltas.get(i))).append('\n');
+                deltaEmpty ? null : deltas.get(i), readOnlyFlagsEmpty ? false : readOnlyFlags.get(i))).append('\n');
         }
         return sb.toString();
     }
@@ -429,10 +436,11 @@ public final class FileUtilities {
      * @param readbackName the name of the readback pv
      * @param readbackValue the readback pv value
      * @param delta the threshold value or function
+     * @param isReadOnly a flag indicating if the PV is a readonly pv or a read and write PV
      * @return into string converted given snapshot entry data.
      */
     private static String createSnapshotFileEntry(String name, boolean selected, VType data, String readbackName,
-        VType readbackValue, String delta) {
+        VType readbackValue, String delta, boolean isReadOnly) {
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH);
         sb.append(name).append(',');
         sb.append(selected ? 1 : 0).append(',');
@@ -464,6 +472,8 @@ public final class FileUtilities {
                 sb.append(delta);
             }
         }
+        sb.append(',');
+        sb.append(isReadOnly);
         String s = sb.toString();
         if (s.indexOf('\n') > -1) {
             s = LINE_BREAK_PATTERN.matcher(s).replaceAll(" ");
@@ -483,6 +493,7 @@ public final class FileUtilities {
         List<String> names = new ArrayList<>();
         List<String> readbacks = new ArrayList<>();
         List<String> deltas = new ArrayList<>();
+        List<Boolean> readOnlyFlags = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         boolean isDescriptionLine = false;
         String line;
@@ -490,6 +501,7 @@ public final class FileUtilities {
         int namesIndex = -1;
         int readbackIndex = -1;
         int deltaIndex = -1;
+        int readOnlyIndex = -1;
         while ((line = reader.readLine()) != null) {
             line = line.trim();
             if (line.isEmpty()) {
@@ -514,6 +526,8 @@ public final class FileUtilities {
                         readbackIndex = i;
                     } else if (H_DELTA.equals(header[i])) {
                         deltaIndex = i;
+                    } else if (H_READ_ONLY.equals(header[i])) {
+                        readOnlyIndex = i;
                     }
                 }
             } else {
@@ -533,9 +547,12 @@ public final class FileUtilities {
                 if (deltaIndex != -1) {
                     deltas.add(trim(split[deltaIndex]));
                 }
+                if (readOnlyIndex != -1) {
+                    readOnlyFlags.add(Boolean.valueOf(trim(split[readOnlyIndex])));
+                }
             }
         }
-        return new SaveSetContent(description.toString().trim(), names, readbacks, deltas);
+        return new SaveSetContent(description.toString().trim(), names, readbacks, deltas, readOnlyFlags);
     }
 
     /**
@@ -551,36 +568,63 @@ public final class FileUtilities {
         List<String> pvs = data.getPVList();
         List<String> readbacks = data.getReadbackList();
         List<String> deltas = data.getDeltaList();
+        List<Boolean> readOnly =data.getReadOnlyFlagsList();
         final StringBuilder sb = new StringBuilder(BSD_ENTRY_LENGTH * pvs.size());
         sb.append('#').append(' ').append(DESCRIPTION_TAG).append("\n# ");
         sb.append(description).append("\n#\n");
-        if (readbacks.isEmpty() && deltas.isEmpty()) {
+        if (readbacks.isEmpty() && deltas.isEmpty() && readOnly.isEmpty()) {
             sb.append(H_PV_NAME).append('\n');
             pvs.forEach(e -> sb.append(e).append('\n'));
-        } else if (readbacks.isEmpty()) {
+        } else if (readbacks.isEmpty() && readOnly.isEmpty()) {
             sb.append(H_PV_NAME).append(',').append(H_DELTA).append('\n');
             for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(deltas.get(i)).append('\n');
+                sb.append(pvs.get(i)).append(',').append(getDelta(deltas.get(i))).append('\n');
             }
-        } else if (deltas.isEmpty()) {
+        } else if (deltas.isEmpty() && readOnly.isEmpty()) {
             sb.append(H_PV_NAME).append(',').append(H_READBACK).append('\n');
             for (int i = 0; i < pvs.size(); i++) {
                 sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append('\n');
             }
-        } else {
+        } else if (readbacks.isEmpty() && deltas.isEmpty()) {
+            sb.append(H_PV_NAME).append(',').append(H_READ_ONLY).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(readOnly.get(i)).append('\n');
+            }
+        } else if (readbacks.isEmpty()) {
+            sb.append(H_PV_NAME).append(',').append(H_DELTA).append(',').append(H_READ_ONLY).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(getDelta(deltas.get(i))).append(',').append(readOnly.get(i))
+                        .append('\n');
+            }
+        } else if (deltas.isEmpty()) {
+            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_READ_ONLY).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(readOnly.get(i))
+                        .append('\n');
+            }
+        } else if (readOnly.isEmpty()) {
             sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append('\n');
             for (int i = 0; i < pvs.size(); i++) {
-                String delta = deltas.get(i);
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',');
-                if (delta.indexOf(',') > -1) {
-                    sb.append('"').append(delta).append('"');
-                } else {
-                    sb.append(delta);
-                }
-                sb.append('\n');
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(getDelta(deltas.get(i)))
+                        .append('\n');
+            }
+        } else {
+            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append(',')
+                    .append(H_READ_ONLY).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(getDelta(deltas.get(i)))
+                        .append(',').append(readOnly.get(i)).append('\n');
             }
         }
         return sb.toString();
+    }
+
+    private static String getDelta(String delta) {
+        if (delta.indexOf(',') > -1) {
+            return new StringBuilder(delta.length() + 2) .append('"').append(delta).append('"').toString();
+        } else {
+            return delta;
+        }
     }
 
     /**

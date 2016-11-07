@@ -27,6 +27,7 @@ public final class SaveSetContent {
     private final List<String> names;
     private final List<String> readbacks;
     private final List<String> deltas;
+    private final List<Boolean> readOnlyFlags;
     private final String description;
 
     /**
@@ -36,17 +37,23 @@ public final class SaveSetContent {
      * @param names the list of PV names
      * @param readbacks the list of save values
      * @param deltas the list of delta values
+     * @param readOnlyFlags the list of flags describing if the PV in the name list is read only or not
      */
-    SaveSetContent(String description, List<String> names, List<String> readbacks, List<String> deltas) {
+    SaveSetContent(String description, List<String> names, List<String> readbacks, List<String> deltas,
+            List<Boolean> readOnlyFlags) {
         if (!readbacks.isEmpty() && readbacks.size() != names.size()) {
             throw new IllegalArgumentException("The number of readbacks does not match the number of pv names.");
         }
         if (!deltas.isEmpty() && deltas.size() != names.size()) {
             throw new IllegalArgumentException("The number of deltas does not match the number of pv names.");
         }
+        if (!readOnlyFlags.isEmpty() && readOnlyFlags.size() != names.size()) {
+            throw new IllegalArgumentException("The number of read only flags does not match the number of pv names.");
+        }
         this.names = Collections.unmodifiableList(names);
         this.readbacks = Collections.unmodifiableList(readbacks);
         this.deltas = Collections.unmodifiableList(deltas);
+        this.readOnlyFlags = Collections.unmodifiableList(readOnlyFlags);
         this.description = description;
     }
 
@@ -83,6 +90,17 @@ public final class SaveSetContent {
     }
 
     /**
+     * Returns the list of all read only flags. The flags define whether the PV specified in the names list
+     * ({@link #getNames()} is a read only PV or a read and write PV. Read only PVs have the read only flag set to true,
+     * read and write PVs have the flag set to false.
+     *
+     * @return the list of read only flags
+     */
+    public List<Boolean> getReadOnlyFlags() {
+        return readOnlyFlags;
+    }
+
+    /**
      * Return the description of the save set.
      *
      * @return the description
@@ -90,5 +108,4 @@ public final class SaveSetContent {
     public String getDescription() {
         return description;
     }
-
 }

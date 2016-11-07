@@ -75,7 +75,7 @@ public class GitDataProviderTest {
     private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, date.minusMillis(5000), "another comment", "user");
     private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, date.plusMillis(5000), "new snapshot", "user");
     private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
-        Arrays.asList("d1", "d2"), "description");
+        Arrays.asList("d1", "d2"), Arrays.asList(Boolean.FALSE, Boolean.FALSE), "description");
     private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
         Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
 

@@ -770,9 +770,9 @@ public class MasarClient {
             }
             newSnap = new Snapshot(newSnap.getSaveSet(), date, comment, user, newSnap.getParameters(),
                 newSnap.getPublicParameters());
-            return new VSnapshot(newSnap, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
-                snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
-                snapshot.getTimestamp());
+            return new VSnapshot(newSnap,snapshot.getNames(),snapshot.getSelected(),snapshot.getValues(),
+                    snapshot.getReadbackNames(),snapshot.getReadbackValues(),snapshot.getDeltas(),
+                    snapshot.getReadOnlyFlags(),snapshot.getTimestamp());
         } catch (InterruptedException e) {
             throw new MasarException("Saving snapshot aborted.", e);
         }
@@ -859,6 +859,6 @@ public class MasarClient {
         } else {
             snapshot = loadSnapshotData(snapshots.get(0));
         }
-        return new SaveSetData(set, snapshot.getNames(), null, null, null);
+        return new SaveSetData(set, snapshot.getNames(), null, null, null, null);
     }
 }

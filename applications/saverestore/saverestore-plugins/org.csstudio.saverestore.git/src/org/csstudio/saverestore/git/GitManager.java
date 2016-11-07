@@ -444,7 +444,7 @@ public class GitManager {
         SaveSetData data = loadSaveSetData(source, Optional.empty());
         SaveSet newSet = new SaveSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
         SaveSetData newData = new SaveSetData(newSet, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
-            data.getDescription());
+            data.getReadOnlyFlagsList(),data.getDescription());
         String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
         saveSaveSet(newData, comment, cred);
@@ -455,7 +455,7 @@ public class GitManager {
                 VSnapshot snp = loadSnapshotData(snapshot);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
                     snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                    snp.getReadOnlyFlags(), snp.getTimestamp());
                 saveSnapshot(newSnp, snapshot.getComment(), snapshot.getDate(), snapshot.getOwner());
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
@@ -465,7 +465,7 @@ public class GitManager {
                 VSnapshot snp = loadSnapshotData(s);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
                     snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                    snp.getReadOnlyFlags(), snp.getTimestamp());
                 saveSnapshot(newSnp, s.getComment(), s.getDate(), s.getOwner());
             }
         }
@@ -684,8 +684,8 @@ public class GitManager {
                 if (automatic) {
                     push(cp, false);
                 }
-                bsd = new SaveSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
-                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp.toInstant());
+                bsd = new SaveSetData(data.getDescriptor(),data.getPVList(),data.getReadbackList(),data.getDeltaList(),
+                        data.getReadOnlyFlagsList(),data.getDescription(),info.comment,info.timestamp.toInstant());
             }
         }
         return new Result<>(bsd, change);
@@ -791,7 +791,7 @@ public class GitManager {
                     info.creator, parameters, new ArrayList<>(0));
                 vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                     snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
-                    snapshot.getTimestamp());
+                    snapshot.getReadOnlyFlags(), snapshot.getTimestamp());
             }
         }
         return new Result<>(vsnp, change);
@@ -1394,15 +1394,17 @@ public class GitManager {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
                         SaveSetContent bsc = FileUtilities.readFromSaveSet(stream);
-                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getNames(), bsc.getReadbacks(),
-                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp.toInstant());
+                        SaveSetData bsd = new SaveSetData((SaveSet)descriptor,bsc.getNames(),bsc.getReadbacks(),
+                                bsc.getDeltas(),bsc.getReadOnlyFlags(),bsc.getDescription(),meta.comment,
+                                meta.timestamp.toInstant());
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
                     try (InputStream stream = objectLoader.openStream()) {
                         SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
                         VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(),
-                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate());
+                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(),
+                            sc.getReadOnlyFlags(), sc.getDate());
                         return type.cast(vs);
                     }
                 }

@@ -155,7 +155,7 @@ public class BrowserActionManager extends ActionManager {
             SaveSet set = new SaveSet(branch, Optional.ofNullable(base), new String[] { "SaveSet" },
                 dataProvider);
             SaveSetData data = new SaveSetData(set, new ArrayList<>(0), new ArrayList<>(0), new ArrayList<>(0),
-                "");
+                new ArrayList<>(0),"");
             owner.getSite().getShell().getDisplay().asyncExec(() -> {
                 try {
                     owner.getSite().getPage().openEditor(new SaveSetEditorInput(data), SaveSetEditor.ID);
