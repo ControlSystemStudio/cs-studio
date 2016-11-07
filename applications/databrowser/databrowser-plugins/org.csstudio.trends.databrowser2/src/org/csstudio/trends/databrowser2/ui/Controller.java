@@ -692,6 +692,24 @@ public class Controller
         if (pv_item.getArchiveDataSources().length <= 0)
             return;
 
+        // Assert non-UI thread
+        if (Display.getCurrent() == null)
+            stopOngoingAndStartNewRetrieval(pv_item, start, end);
+        else
+            update_timer.execute(() -> stopOngoingAndStartNewRetrieval(pv_item, start, end));
+    }
+
+    /** Stop ongoing retrieval for an item and schedule new one
+     *
+     *  <p>Must not be called on UI thread because call will
+     *  block until ongoing retrieval has completed.
+     *
+     *  @param pv_item PV Item
+     *  @param start Start time
+     *  @param end End time
+     */
+    private void stopOngoingAndStartNewRetrieval(final PVItem pv_item, final Instant start, final Instant end)
+    {
         ArchiveFetchJob job;
 
         // Stop ongoing jobs for this item
@@ -702,8 +720,17 @@ public class Controller
                 job = archive_fetch_jobs.get(i);
                 if (job.getPVItem() != pv_item)
                     continue;
-                // System.out.println("Request for " + item.getName() + " cancels " + job);
+
+                System.out.println("Request for " + pv_item.getName() + " cancels " + job);
                 job.cancel();
+                try
+                {
+                    job.join(30000, null);
+                }
+                catch (Exception ex)
+                {
+                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot cancel " + job, ex);
+                }
                 archive_fetch_jobs.remove(job);
             }
             // Start new job

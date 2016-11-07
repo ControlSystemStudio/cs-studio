@@ -11,7 +11,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
@@ -25,12 +27,12 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.RequestType;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.diirt.vtype.VType;
 
 /** Eclipse Job for fetching archived data.
  *  <p>
@@ -39,8 +41,11 @@ import org.diirt.vtype.VType;
  *  thread to cancel.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ArchiveFetchJob extends Job
 {
+    private static final Logger logger = Activator.getLogger();
+
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
 
@@ -66,13 +71,13 @@ public class ArchiveFetchJob extends Job
      */
     class WorkerThread implements Runnable
     {
-        private String message = ""; //$NON-NLS-1$
+        private String message = "";
         private volatile boolean cancelled = false;
 
         /** Archive reader that's currently queried.
          *  Synchronize 'this' on access.
          */
-        private ArchiveReader reader = null;
+        private volatile ArchiveReader reader = null;
 
         /** @return Message that somehow indicates progress */
         public synchronized String getMessage()
@@ -95,7 +100,7 @@ public class ArchiveFetchJob extends Job
         @Override
         public void run()
         {
-            Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this); //$NON-NLS-1$
+            logger.log(Level.FINE, "Starting {0}", ArchiveFetchJob.this);
             final BenchmarkTimer timer = new BenchmarkTimer();
             long samples = 0;
             final int bins = Preferences.getPlotBins();
@@ -176,12 +181,11 @@ public class ArchiveFetchJob extends Job
             timer.stop();
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
-            Activator.getLogger().log(Level.FINE,
-                    "Ended {0} with {1} samples in {2}",        //$NON-NLS-1$
+            logger.log(Level.FINE,
+                    "Ended {0} with {1} samples in {2}",
                     new Object[] { ArchiveFetchJob.this, samples, timer });
         }
 
-        @SuppressWarnings("nls")
         @Override
         public String toString()
         {
@@ -238,23 +242,26 @@ public class ArchiveFetchJob extends Job
         if (item == null)
             return Status.OK_STATUS;
 
+        System.out.println(Instant.now() + " >>  start " + getName()); // TODO
+
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
-        Future<?> done = Activator.getThreadPool().submit(worker);
+        final Future<?> done = Activator.getThreadPool().submit(worker);
         // Poll worker and progress monitor
-        long seconds = 0;
+        long start = System.currentTimeMillis();
         while (!done.isDone())
-        {
+        {   // Wait until worker is done, or time out to update info message
             try
             {
-                Thread.sleep(POLL_PERIOD_MS);
+                done.get(POLL_PERIOD_MS, TimeUnit.MILLISECONDS);
             }
-            catch (InterruptedException ex)
+            catch (Exception ex)
             {
                 // Ignore
             }
+            final long seconds = (System.currentTimeMillis() - start) / 1000;
             final String info = NLS.bind(Messages.ArchiveFetchProgressFmt,
-                    worker.getMessage(), ++seconds);
+                                         worker.getMessage(), seconds);
             monitor.subTask(info);
             // Try to cancel the worker in response to user's cancel request.
             // Continues to cancel the worker until isDone()
@@ -262,6 +269,8 @@ public class ArchiveFetchJob extends Job
                 worker.cancel();
         }
         monitor.done();
+
+        System.out.println(Instant.now() + " <<  end   " + getName() + (monitor.isCanceled() ? " -- cancelled" : "")); // TODO
 
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
