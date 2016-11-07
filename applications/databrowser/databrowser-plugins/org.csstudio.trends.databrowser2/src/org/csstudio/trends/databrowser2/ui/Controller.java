@@ -14,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -52,6 +53,10 @@ import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.diirt.util.time.TimeDuration;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellAdapter;
@@ -140,7 +145,9 @@ public class Controller
             // All completed. Do something to the plot?
             final ArchiveRescale rescale = model.getArchiveRescale();
             if (rescale == ArchiveRescale.STAGGER)
-                executeOnUIThread(e -> plot.getPlot().stagger());
+                plot.getPlot().stagger();
+            else
+                doUpdate();
         }
 
         private void reportError(final String displayName, final Exception error)
@@ -546,8 +553,11 @@ public class Controller
      */
     public void scheduleArchiveRetrieval()
     {
+        // Cancel pending request, but don't interrupt if already ongoing.
+        // A follow-up request will cancel ongoing archive fetch jobs and
+        // allow smoother shutdown of active statements.
         if (archive_fetch_delay_task != null)
-            archive_fetch_delay_task.cancel(true);
+            archive_fetch_delay_task.cancel(false);
         archive_fetch_delay_task = update_timer.schedule(() -> getArchivedData(), archive_fetch_delay, TimeUnit.MILLISECONDS);
     }
 
@@ -692,51 +702,49 @@ public class Controller
         if (pv_item.getArchiveDataSources().length <= 0)
             return;
 
-        // Assert non-UI thread
-        if (Display.getCurrent() == null)
-            stopOngoingAndStartNewRetrieval(pv_item, start, end);
-        else
-            update_timer.execute(() -> stopOngoingAndStartNewRetrieval(pv_item, start, end));
-    }
-
-    /** Stop ongoing retrieval for an item and schedule new one
-     *
-     *  <p>Must not be called on UI thread because call will
-     *  block until ongoing retrieval has completed.
-     *
-     *  @param pv_item PV Item
-     *  @param start Start time
-     *  @param end End time
-     */
-    private void stopOngoingAndStartNewRetrieval(final PVItem pv_item, final Instant start, final Instant end)
-    {
-        ArchiveFetchJob job;
-
-        // Stop ongoing jobs for this item
+        // Determine ongoing jobs for this item
+        final List<ArchiveFetchJob> ongoing = new ArrayList<>();
         synchronized (archive_fetch_jobs)
         {
-            for (int i=0; i<archive_fetch_jobs.size(); ++i)
+            for (Iterator<ArchiveFetchJob> iter = archive_fetch_jobs.iterator();  iter.hasNext();  /**/)
             {
-                job = archive_fetch_jobs.get(i);
-                if (job.getPVItem() != pv_item)
-                    continue;
-
-                System.out.println("Request for " + pv_item.getName() + " cancels " + job);
-                job.cancel();
-                try
+                final ArchiveFetchJob job = iter.next();
+                if (job.getPVItem() == pv_item)
                 {
-                    job.join(30000, null);
+                    ongoing.add(job);
+                    iter.remove();
                 }
-                catch (Exception ex)
-                {
-                    Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot cancel " + job, ex);
-                }
-                archive_fetch_jobs.remove(job);
             }
-            // Start new job
-            job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
-            archive_fetch_jobs.add(job);
         }
-        job.schedule();
+
+        // In background, stop ongoing jobs and then start new one
+        new Job("Data Browser Schedule")
+        {
+            @Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+                for (ArchiveFetchJob running : ongoing)
+                {
+                    try
+                    {
+                        running.cancel();
+                        running.join(10000, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        Activator.getLogger().log(Level.WARNING, "Cannot cancel " + running, ex);
+                    }
+                }
+
+                // Start new job
+                final ArchiveFetchJob job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
+                synchronized (archive_fetch_jobs)
+                {
+                    archive_fetch_jobs.add(job);
+                }
+                job.schedule();
+                return Status.OK_STATUS;
+            }
+        }.schedule();
     }
 }

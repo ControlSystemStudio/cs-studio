@@ -242,8 +242,6 @@ public class ArchiveFetchJob extends Job
         if (item == null)
             return Status.OK_STATUS;
 
-        System.out.println(Instant.now() + " >>  start " + getName()); // TODO
-
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
         final Future<?> done = Activator.getThreadPool().submit(worker);
@@ -269,8 +267,6 @@ public class ArchiveFetchJob extends Job
                 worker.cancel();
         }
         monitor.done();
-
-        System.out.println(Instant.now() + " <<  end   " + getName() + (monitor.isCanceled() ? " -- cancelled" : "")); // TODO
 
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
