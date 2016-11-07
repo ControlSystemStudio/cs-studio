@@ -25,6 +25,7 @@ import java.util.logging.Logger;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 4 Nov 2016
  */
+@SuppressWarnings( "FinalClass" )
 public final class DIIRTPreferencesHandler {
 
 	public static final String PROP_CONFIGURATIONDIRECTORY = "configurationDirectory";
