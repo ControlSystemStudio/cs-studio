@@ -78,12 +78,18 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
                     // Workspace file?
                     IFile file = ResourceUtilSSHelperImpl.getIFileFromIPath(absolutePath);
                     if (file != null)
+                    {   // Clear the last-used-editor info to always get the default editor,
+                        // the one configurable via Preferences, General, Editors, File Associations,
+                        // and not whatever one user may have used last via Navigator's "Open With..".
+                        // Other cases below use a new, local file that won't have last-used-editor info, yet
+                        file.setPersistentProperty(IDE.EDITOR_KEY, null);
                         IDE.openEditor(page, file, true);
+                    }
                     else if (ResourceUtil.isExistingLocalFile(absolutePath))
                     {   // Local file system
                         try
                         {
-                            IFileStore localFile =    EFS.getLocalFileSystem().getStore(absolutePath);
+                            IFileStore localFile = EFS.getLocalFileSystem().getStore(absolutePath);
                             IDE.openEditorOnFileStore(page, localFile);
                         }
                         catch (Exception e)
