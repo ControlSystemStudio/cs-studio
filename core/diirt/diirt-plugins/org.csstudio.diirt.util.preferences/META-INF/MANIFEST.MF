@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.osgi,
  org.eclipse.ui,
  org.csstudio.startup;bundle-version="3.2.1",
  org.csstudio.diirt.util;bundle-version="1.0.0",
- org.projectlombok.lombok
+ org.projectlombok.lombok,
+ org.apache.commons.lang3
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Import-Package: org.csstudio.utility.product

@@ -14,6 +14,11 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Plain Old Java Object representing the "compositeDataSource element of a
@@ -28,12 +33,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement( name = "compositeDataSource" )
 @XmlType( name = "CompositeDataSource" )
+@ToString @EqualsAndHashCode
 public class CompositeDataSource {
 
-	@XmlAttribute( name = "defaultDataSource" )
+	@Getter @Setter @XmlAttribute( name = "defaultDataSource" )
 	private DataSourceProtocol defaultDataSource = null;
 
-	@XmlAttribute( name = "delimiter" )
+	@Getter @Setter @NonNull @XmlAttribute( name = "delimiter" )
 	private String delimiter = "://";
 
 	/**

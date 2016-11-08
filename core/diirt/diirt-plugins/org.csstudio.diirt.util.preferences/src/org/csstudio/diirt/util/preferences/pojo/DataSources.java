@@ -13,6 +13,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 
 /**
@@ -33,12 +38,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement( name = "dataSources" )
 @XmlType( name = "DataSources" )
+@ToString @EqualsAndHashCode
 public class DataSources {
 
-	@XmlElement( name = "compositeDataSource", nillable = true )
+	@Getter @Setter @XmlElement( name = "compositeDataSource", nillable = true )
 	private CompositeDataSource compositeDataSource = null;
 
-	@XmlAttribute( name = "version", required = true )
-	private final String version = "1";
+	@Getter @Setter @NonNull @XmlAttribute( name = "version", required = true )
+	private String version = "1";
 
 }

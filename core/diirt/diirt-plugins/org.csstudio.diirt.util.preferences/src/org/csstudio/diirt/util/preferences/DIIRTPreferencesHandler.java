@@ -11,11 +11,20 @@ package org.csstudio.diirt.util.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
-import java.beans.VetoableChangeSupport;
-import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 
 /**
@@ -25,149 +34,142 @@ import java.util.logging.Logger;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 4 Nov 2016
  */
-@SuppressWarnings( "FinalClass" )
 public final class DIIRTPreferencesHandler {
 
-	public static final String PROP_CONFIGURATIONDIRECTORY = "configurationDirectory";
-	public static final String PROP_OVERRIDE = "override";
-	private static final Logger LOGGER = Logger.getLogger(DIIRTPreferencesHandler.class.getName());
+    public static final String PROP_CONFIGURATIONDIRECTORY = "configurationDirectory";
+    public static final String PROP_OVERRIDE               = "override";
 
-	public static DIIRTPreferencesHandler get() {
-		return DIIRTPreferencesHandlerInstance.SINGLETON_INSTANCE;
-	}
+    private static final Logger LOGGER              = Logger.getLogger(DIIRTPreferencesHandler.class.getName());
+    private static final String PLATFORM_URI_PREFIX = "platform:";
 
-	private File configurationDirectory = null;
-	private boolean override = false;
+    public static DIIRTPreferencesHandler get ( ) {
+        return DIIRTPreferencesHandlerInstance.SINGLETON_INSTANCE;
+    }
 
-	private final transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-	private final transient VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);
+    /**
+     * Verify if the selected path is a valid location for DIIRT configuration:
+     * <ul>
+     * <li>path exists.</li>
+     * <li><path contains the {@code datasources/datasources.xml} file.</li>
+     * </ul>
+     *
+     * @param path The path to be verified.
+     * @return {@code null} if the {@code path} is valid, otherwise the error
+     *         message explaining why the given {@code path} is not valid.
+     */
+    public static String verifyDIIRTPath ( String path ) {
 
-	private DIIRTPreferencesHandler() {
-	}
+        if ( path == null ) {
+            return Messages.DPH_verifyDIIRTPath_nullPath_message;
+        } else if ( StringUtils.isBlank(path) ) {
+            return Messages.DPH_verifyDIIRTPath_blankPath_message;
+        } else if (!Files.exists(Paths.get(path))) {
+            return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotExists_message, path);
+        } else if ( ! Files.exists(Paths.get(path, "datasources/datasources.xml")) ) {
+            return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotValid_message, path);
+        }
 
-	public void addPropertyChangeListener( PropertyChangeListener listener ) {
-		propertyChangeSupport.addPropertyChangeListener(listener);
-	}
+        return null;
 
-	public void addPropertyChangeListener( String propertyName, PropertyChangeListener listener ) {
-		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-	}
+    }
 
-	public void addVetoableChangeListener( VetoableChangeListener listener ) {
-		vetoableChangeSupport.addVetoableChangeListener(listener);
-	}
+    private static String resolvePlatformPath ( String path ) throws MalformedURLException, IOException {
+        if ( path != null && !path.isEmpty() ) {
+            if ( path.startsWith(PLATFORM_URI_PREFIX) ) {
+                return FileLocator.resolve(new URL(path)).getPath().toString();
+            } else {
+                return path;
+            }
+        } else {
+            return "root";
+        }
+    }
 
-	public void addVetoableChangeListener( String propertyName, VetoableChangeListener listener ) {
-		vetoableChangeSupport.addVetoableChangeListener(propertyName, listener);
-	}
+    private String                configurationDirectory = null;
+    private ScopedPreferenceStore store                  = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
 
-	/**
-	 * @return The {@link File} pointing at the configuration directory, that
-	 *         should contain a {@code datasource} sub-directory with the
-	 *         {@code datasource.xml} file and a sub-sub-directory for each
-	 *         data source supported containing the corresponding configuration
-	 *         file(s).
-	 *         Can be {@code null}, or pointing to a non valid directory, in
-	 *         which case hard-coded defaults will be used for the configuration.
-	 */
-	public File getConfigurationDirectory() {
-		return configurationDirectory;
-	}
+    private final transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-	public PropertyChangeListener[] getPropertyChangeListeners() {
-		return propertyChangeSupport.getPropertyChangeListeners();
-	}
+    private DIIRTPreferencesHandler ( ) {
 
-	public PropertyChangeListener[] getPropertyChangeListeners( String propertyName ) {
-		return propertyChangeSupport.getPropertyChangeListeners(propertyName);
-	}
+        String storedDirectory = store.getString("diirt.home");
 
-	public VetoableChangeListener[] getVetoableListeners() {
-		return vetoableChangeSupport.getVetoableChangeListeners();
-	}
+        try {
+            configurationDirectory = resolvePlatformPath(storedDirectory);
+        } catch ( IOException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve stored path [{0}]. Null is used instead.", storedDirectory), ex);
+            configurationDirectory = null;
+        }
 
-	public VetoableChangeListener[] getVetoableListeners( String propertyName ) {
-		return vetoableChangeSupport.getVetoableChangeListeners(propertyName);
-	}
+        String warning = verifyDIIRTPath(configurationDirectory);
 
-	public boolean hasPropertyChangeListeners( String propertyName ) {
-		return propertyChangeSupport.hasListeners(propertyName);
-	}
+        if ( warning != null ) {
+            LOGGER.warning(warning);
+        }
 
-	public boolean hasVetoableListeners( String propertyName ) {
-		return vetoableChangeSupport.hasListeners(propertyName);
-	}
+    }
 
-	/**
-	 * @return {@code false} when all getters will return the value read from
-	 *         the files configuration or the default one if no files exist,
-	 *         {@code true} when the values of the corresponding fields are
-	 *         returned.
-	 * @see #setOverride(boolean)
-	 */
-	public boolean isOverride() {
-		return override;
-	}
+    public void addPropertyChangeListener ( PropertyChangeListener listener ) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
 
-	public void removePropertyChangeListener( PropertyChangeListener listener ) {
-		propertyChangeSupport.removePropertyChangeListener(listener);
-	}
+    public void addPropertyChangeListener ( String propertyName, PropertyChangeListener listener ) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    }
 
-	public void removePropertyChangeListener( String propertyName, PropertyChangeListener listener ) {
-		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
-	}
+    /**
+     * @return The path pointing at the configuration directory, that
+     *         should contain a {@code datasource} sub-directory with the
+     *         {@code datasource.xml} file and a sub-sub-directory for each
+     *         data source supported containing the corresponding configuration
+     *         file(s).
+     *         Can be {@code null}, or pointing to a non valid directory, in
+     *         which case hard-coded defaults will be used for the
+     *         configuration.
+     */
+    public String getConfigurationDirectory ( ) {
+        return configurationDirectory;
+    }
 
-	public void removeVetoableChangeListener( VetoableChangeListener listener ) {
-		vetoableChangeSupport.removeVetoableChangeListener(listener);
-	}
+    public PropertyChangeListener[] getPropertyChangeListeners ( ) {
+        return propertyChangeSupport.getPropertyChangeListeners();
+    }
 
-	public void removeVetoableChangeListener( String propertyName, VetoableChangeListener listener ) {
-		vetoableChangeSupport.removeVetoableChangeListener(propertyName, listener);
-	}
+    public PropertyChangeListener[] getPropertyChangeListeners ( String propertyName ) {
+        return propertyChangeSupport.getPropertyChangeListeners(propertyName);
+    }
 
-	/**
-	 * @param configurationDirectory The new configuration directory. Can be
-	 *                               {@code null} or pointing to an invalid
-	 *                               directory.
-	 * @see #getConfigurationDirectory()
-	 */
-	public void setConfigurationDirectory( File configurationDirectory ) {
+    public boolean hasPropertyChangeListeners ( String propertyName ) {
+        return propertyChangeSupport.hasListeners(propertyName);
+    }
 
-		File oldConfigurationDirectory = this.configurationDirectory;
+    public void removePropertyChangeListener ( PropertyChangeListener listener ) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
 
-		this.configurationDirectory = configurationDirectory;
+    public void removePropertyChangeListener ( String propertyName, PropertyChangeListener listener ) {
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+    }
 
-		propertyChangeSupport.firePropertyChange(PROP_CONFIGURATIONDIRECTORY, oldConfigurationDirectory, configurationDirectory);
+    /**
+     * @param configurationDirectory The new configuration directory. Can be
+     *            {@code null} or pointing to an invalid
+     *            directory.
+     * @see #getConfigurationDirectory()
+     */
+    public void setConfigurationDirectory ( String configurationDirectory ) {
 
-	}
+        String oldConfigurationDirectory = this.configurationDirectory;
 
-	/**
-	 * Tell the handler what the getters will return. The property is bounded and
-	 * constrained allowing, for example, to control who can change the value.
-	 *
-	 * @param override If {@code false}, then all getters will return the value
-	 *                 read from the files configuration or the default one if
-	 *                 no files exist. If {@code true}, then the values of the
-	 *                 corresponding fields are returned.
-	 * @throws PropertyVetoException If one of the registered
-	 *                               {@link VetoableChangeListener} has vetoed
-	 *                               the change.
-	 */
-	public void setOverride( boolean override ) throws PropertyVetoException {
+        this.configurationDirectory = configurationDirectory;
 
-		boolean oldOverride = this.override;
+        propertyChangeSupport.firePropertyChange(PROP_CONFIGURATIONDIRECTORY, oldConfigurationDirectory, configurationDirectory);
 
-		vetoableChangeSupport.fireVetoableChange(PROP_OVERRIDE, oldOverride, override);
+    }
 
-		this.override = override;
+    private interface DIIRTPreferencesHandlerInstance {
 
-		propertyChangeSupport.firePropertyChange(PROP_OVERRIDE, oldOverride, override);
-
-	}
-
-	private interface DIIRTPreferencesHandlerInstance {
-
-		DIIRTPreferencesHandler SINGLETON_INSTANCE = new DIIRTPreferencesHandler();
-	}
+        DIIRTPreferencesHandler SINGLETON_INSTANCE = new DIIRTPreferencesHandler();
+    }
 
 }

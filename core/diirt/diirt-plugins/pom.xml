@@ -8,8 +8,9 @@
   <artifactId>diirt-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
+  <module>org.csstudio.diirt.help</module>
   <module>org.csstudio.diirt.util</module>
   <module>org.csstudio.diirt.util.preferences</module>
-  <module>org.csstudio.diirt.help</module>
+  <module>org.csstudio.diirt.util.preferences.text</module>
   </modules>
 </project>
