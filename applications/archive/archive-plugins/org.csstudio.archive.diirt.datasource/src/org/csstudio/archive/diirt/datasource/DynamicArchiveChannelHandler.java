@@ -80,7 +80,7 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
         // startTime, endTime, optimised
         // Time, startTime, endTime can be either Long, Date, Timestamp or Time
         try {
-            boolean fetchData = startTime != null && endTime != null;
+            boolean fetchData = true;
             if (newValue instanceof Boolean) {
                 boolean opt = (Boolean) newValue;
                 if (optimised == opt) {
@@ -161,7 +161,7 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
             } else {
                 throw new IllegalArgumentException("Write value '" + newValue + "' is not supported.");
             }
-            if (fetchData) {
+            if (fetchData && startTime != null && endTime != null) {
                 fetchData(startTime, endTime, optimised);
             }
             callback.channelWritten(null);
