@@ -25,8 +25,10 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.junit.Test;
 
@@ -138,7 +140,7 @@ public class EntitiesTest {
         Branch branch = new Branch();
         SaveSet set = new SaveSet(branch, Optional.empty(), new String[] { "first", "second", "third" }, "someId");
         Snapshot snapshot = new Snapshot(set, Instant.now(), "comment", "owner", "tagName", "tagMessage");
-        VSnapshot vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE),
+        VSnapshot vs = new VSnapshot(snapshot, Arrays.asList(new SnapshotEntry("name", VDisconnectedData.INSTANCE)),
             Instant.now(), null);
 
         assertTrue(vs.isSaved());
@@ -147,8 +149,8 @@ public class EntitiesTest {
         assertFalse(vs.isSaved());
         assertTrue(vs.isSaveable());
 
-        vs = new VSnapshot(set, Arrays.asList("name"), Arrays.asList("readback"), Arrays.asList("delta"),
-                Arrays.asList(Boolean.FALSE));
+        vs = new VSnapshot(set, Arrays.asList(
+            new SnapshotEntry("name", VDisconnectedData.INSTANCE, true, "readback", VNoData.INSTANCE, "delta", false)));
         assertFalse(vs.isSaved());
         assertFalse(vs.isSaveable());
         vs.addOrSetPV("tralala", true, VDisconnectedData.INSTANCE);
@@ -156,51 +158,10 @@ public class EntitiesTest {
         assertFalse(vs.isSaveable());
 
         snapshot = new Snapshot(set);
-        vs = new VSnapshot(snapshot, Arrays.asList("name"), Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(),
-            null);
+        vs = new VSnapshot(snapshot, Arrays.asList(new SnapshotEntry("name", VDisconnectedData.INSTANCE)),
+            Instant.now(), null);
         assertFalse(vs.isSaved());
         assertTrue(vs.isSaveable());
-
-        try {
-            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(VDisconnectedData.INSTANCE),
-                Instant.now(), null);
-            fail("Should fail because the length of names and values do not match.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull("Exception was thrown", e.getMessage());
-        }
-
-        try {
-            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("readback"),
-                Arrays.asList(VDisconnectedData.INSTANCE), Arrays.asList("delta", "delta"),
-                Arrays.asList(Boolean.FALSE, Boolean.FALSE),
-                Instant.now());
-            fail("Should fail because the length of readbacks is different from the names.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull("Exception was thrown", e.getMessage());
-        }
-
-        try {
-            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE),
-                Arrays.asList("readback", "readback2"),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta"),
-                Arrays.asList(Boolean.FALSE, Boolean.FALSE), Instant.now());
-            fail("Should fail because the length of deltas is different from the readbacks.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull("Exception was thrown", e.getMessage());
-        }
-
-        try {
-            new VSnapshot(snapshot, Arrays.asList("name1", "name2"), Arrays.asList(true, true),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE),
-                Arrays.asList("readback", "readback2"),
-                Arrays.asList(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE), Arrays.asList("delta","delta"),
-                Arrays.asList(Boolean.FALSE), Instant.now());
-            fail("Should fail because the length of deltas is different from the readbacks.");
-        } catch (IllegalArgumentException e) {
-            assertNotNull("Exception was thrown", e.getMessage());
-        }
     }
 
     /**

@@ -31,12 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.vtype.AlarmSeverity;
@@ -454,9 +456,10 @@ public class MasarClientTest {
             new ArrayList<>(0));
         VSnapshot snapshot = client.loadSnapshotData(snap);
 
-        assertEquals(Arrays.asList("channel1", "channel2", "channel3"), snapshot.getNames());
+        assertEquals(Arrays.asList("channel1", "channel2", "channel3"),
+            snapshot.getEntries().stream().map(e -> e.getPVName()).collect(Collectors.toList()));
         assertEquals(time, snapshot.getTimestamp().toEpochMilli());
-        List<VType> values = snapshot.getValues();
+        List<VType> values = snapshot.getEntries().stream().map(e -> e.getValue()).collect(Collectors.toList());
 
         VDoubleArray v1 = (VDoubleArray) values.get(0);
         assertEquals(3, v1.getData().size());
@@ -499,9 +502,12 @@ public class MasarClientTest {
         BaseLevel base = new BaseLevel(service, "all", "all");
         SaveSet set = new SaveSet(service, Optional.of(base), new String[] { "set" }, MasarDataProvider.ID);
         SaveSetData data = client.loadSaveSetData(set);
-        assertEquals(Arrays.asList("channel1", "channel2", "channel3"), data.getPVList());
-        assertEquals(new ArrayList<>(0), data.getDeltaList());
-        assertEquals(new ArrayList<>(0), data.getReadbackList());
+        assertEquals(Arrays.asList("channel1", "channel2", "channel3"),
+            data.getEntries().stream().map(e -> e.getPVName()).collect(Collectors.toList()));
+        assertEquals(Arrays.asList("", "", ""),
+            data.getEntries().stream().map(e -> e.getDelta()).collect(Collectors.toList()));
+        assertEquals(Arrays.asList("", "", ""),
+            data.getEntries().stream().map(e -> e.getReadback()).collect(Collectors.toList()));
     }
 
     @Test
@@ -522,7 +528,7 @@ public class MasarClientTest {
 
         parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, "45");
         snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania", parameters, new ArrayList<>(0));
-        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Instant.now(), null);
+        snapshot = new VSnapshot(snap, Arrays.asList(new SnapshotEntry("a", VNoData.INSTANCE)), Instant.now(), null);
         try {
             client.saveSnapshot(snapshot, "some comment");
             fail("Service should send an error message");
@@ -531,7 +537,7 @@ public class MasarClientTest {
         }
 
         snap = new Snapshot(set, Instant.now(), "blabla", "taz-mania");
-        snapshot = new VSnapshot(snap, Arrays.asList("a"), Arrays.asList(VNoData.INSTANCE), Instant.now(), null);
+        snapshot = new VSnapshot(snap, Arrays.asList(new SnapshotEntry("a", VNoData.INSTANCE)), Instant.now(), null);
         try {
             client.saveSnapshot(snapshot, "some comment");
             fail("Exception should occur, because snapshot id is missing");
@@ -548,10 +554,11 @@ public class MasarClientTest {
         SaveSet set = new SaveSet(service, Optional.of(base), new String[] { "set" }, MasarDataProvider.ID, parameters);
         VSnapshot snapshot = client.takeSnapshot(set);
 
-        assertEquals(Arrays.asList("channel1", "channel2", "channel3"), snapshot.getNames());
+        assertEquals(Arrays.asList("channel1", "channel2", "channel3"),
+            snapshot.getEntries().stream().map(e -> e.getPVName()).collect(Collectors.toList()));
         assertEquals(Instant.ofEpochSecond(12345, 54321), snapshot.getTimestamp());
         assertEquals("42", snapshot.getSnapshot().get().getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID));
-        List<VType> values = snapshot.getValues();
+        List<VType> values = snapshot.getEntries().stream().map(e -> e.getValue()).collect(Collectors.toList());
 
         VDoubleArray v1 = (VDoubleArray) values.get(0);
         assertEquals(3, v1.getData().size());

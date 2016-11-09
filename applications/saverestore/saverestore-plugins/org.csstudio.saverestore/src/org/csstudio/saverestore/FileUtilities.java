@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.array.ArrayBoolean;
@@ -54,8 +56,8 @@ import org.diirt.vtype.ValueFactory;
 
 /**
  *
- * <code>FileUtilities</code> provides utility methods for reading and writing snapshot and save set files. All
- * methods in this class are thread safe.
+ * <code>FileUtilities</code> provides utility methods for reading and writing snapshot and save set files. All methods
+ * in this class are thread safe.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -95,6 +97,7 @@ public final class FileUtilities {
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
     private static final Pattern LINE_BREAK_PATTERN = Pattern.compile("\\n");
+
     /**
      * Private constructor to prevent instantiation of this class.
      */
@@ -112,13 +115,7 @@ public final class FileUtilities {
     public static SnapshotContent readFromSnapshot(InputStream stream) throws IOException, ParseException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         String date = null;
-        List<String> names = new ArrayList<>();
-        List<VType> data = new ArrayList<>();
-        List<Boolean> selected = new ArrayList<>();
-        List<String> readbacks = new ArrayList<>();
-        List<VType> readbackData = new ArrayList<>();
-        List<String> deltas = new ArrayList<>();
-        List<Boolean> readOnlyFlags = new ArrayList<>();
+        List<SnapshotEntry> entries = new ArrayList<>();
         String line;
         String[] header = null;
         Map<String, Integer> headerMap = new HashMap<>();
@@ -143,7 +140,7 @@ public final class FileUtilities {
                 // there are no fields in here that may contain a comma
                 String[] split = split(line);
                 if (split == null) {
-                    throw new IOException("Invalid content: " + line);
+                    throw new IOException(String.format("Invalid content: %s.", line));
                 }
                 int length = split.length - 1;
                 Integer idx = headerMap.get(H_PV_NAME);
@@ -169,36 +166,35 @@ public final class FileUtilities {
                 idx = headerMap.get(H_READ_ONLY);
                 Boolean readOnly = idx == null || idx > length ? Boolean.FALSE : Boolean.valueOf(trim(split[idx]));
 
+                VType data = null, readbackData = null;
                 try {
-                    data.add(piecesToVType(timestamp, status, severity, value, valueType));
+                    data = piecesToVType(timestamp, status, severity, value, valueType);
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     // number format covers errors in parsing to VNumber, index out of bounds covers the enum parsing
                     // errors
-                    data.add(VDisconnectedData.INSTANCE);
+                    data = VDisconnectedData.INSTANCE;
                 }
-                readbacks.add(readback);
-                deltas.add(delta);
                 try {
-                    readbackData.add(piecesToVType(timestamp, status, severity, readbackValue, valueType));
+                    readbackData = piecesToVType(timestamp, status, severity, readbackValue, valueType);
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    readbackData.add(VDisconnectedData.INSTANCE);
+                    readbackData = VDisconnectedData.INSTANCE;
                 }
-                names.add(name);
-                boolean s = true;
+
+                boolean selected = true;
                 try {
-                    s = Integer.parseInt(sel) != 0;
+                    selected = Integer.parseInt(sel) != 0;
                 } catch (NumberFormatException e) {
                     // ignore
                 }
-                selected.add(s);
-                readOnlyFlags.add(readOnly);
+                entries.add(
+                    new SnapshotEntry(name, data, selected, readback, readbackData, delta, readOnly));
             }
         }
         if (date == null || date.isEmpty()) {
             throw new ParseException("Snapshot does not have a date set.", 0);
         }
         Instant d = TIMESTAMP_FORMATTER.get().parse(date).toInstant();
-        return new SnapshotContent(d, names, selected, data, readbacks, readbackData, deltas, readOnlyFlags);
+        return new SnapshotContent(d, entries);
     }
 
     /**
@@ -251,7 +247,7 @@ public final class FileUtilities {
         String theValue = valueAndLabels[0];
         switch (vtype) {
             case DOUBLE_ARRAY:
-                String[] sd = theValue.split(ARRAY_SPLITTER,-1);
+                String[] sd = theValue.split(ARRAY_SPLITTER, -1);
                 double[] dd = new double[sd.length];
                 for (int i = 0; i < sd.length; i++) {
                     if (sd[i].isEmpty()) {
@@ -263,7 +259,7 @@ public final class FileUtilities {
                 ListDouble datad = new ArrayDouble(dd);
                 return ValueFactory.newVDoubleArray(datad, alarm, time, display);
             case FLOAT_ARRAY:
-                String[] sf = theValue.split(ARRAY_SPLITTER,-1);
+                String[] sf = theValue.split(ARRAY_SPLITTER, -1);
                 float[] df = new float[sf.length];
                 for (int i = 0; i < sf.length; i++) {
                     if (sf[i].isEmpty()) {
@@ -275,7 +271,7 @@ public final class FileUtilities {
                 ListFloat dataf = new ArrayFloat(df);
                 return ValueFactory.newVFloatArray(dataf, alarm, time, display);
             case LONG_ARRAY:
-                String[] sl = theValue.split(ARRAY_SPLITTER,-1);
+                String[] sl = theValue.split(ARRAY_SPLITTER, -1);
                 long[] dl = new long[sl.length];
                 for (int i = 0; i < sl.length; i++) {
                     if (sl[i].isEmpty()) {
@@ -287,7 +283,7 @@ public final class FileUtilities {
                 ListLong datal = new ArrayLong(dl);
                 return ValueFactory.newVLongArray(datal, alarm, time, display);
             case INT_ARRAY:
-                String[] si = theValue.split(ARRAY_SPLITTER,-1);
+                String[] si = theValue.split(ARRAY_SPLITTER, -1);
                 int[] di = new int[si.length];
                 for (int i = 0; i < si.length; i++) {
                     if (si[i].isEmpty()) {
@@ -299,11 +295,11 @@ public final class FileUtilities {
                 ListInt datai = new ArrayInt(di);
                 return ValueFactory.newVIntArray(datai, alarm, time, display);
             case SHORT_ARRAY:
-                String[] ss = theValue.split(ARRAY_SPLITTER,-1);
+                String[] ss = theValue.split(ARRAY_SPLITTER, -1);
                 short[] ds = new short[ss.length];
                 for (int i = 0; i < ss.length; i++) {
                     if (ss[i].isEmpty()) {
-                        ds[i] = (short)0;
+                        ds[i] = (short) 0;
                     } else {
                         ds[i] = Short.parseShort(ss[i]);
                     }
@@ -311,11 +307,11 @@ public final class FileUtilities {
                 ListShort datas = new ArrayShort(ds);
                 return ValueFactory.newVShortArray(datas, alarm, time, display);
             case BYTE_ARRAY:
-                String[] sb = theValue.split(ARRAY_SPLITTER,-1);
+                String[] sb = theValue.split(ARRAY_SPLITTER, -1);
                 byte[] db = new byte[sb.length];
                 for (int i = 0; i < sb.length; i++) {
                     if (sb[i].isEmpty()) {
-                        db[i] = (byte)0;
+                        db[i] = (byte) 0;
                     } else {
                         db[i] = Byte.parseByte(sb[i]);
                     }
@@ -323,7 +319,7 @@ public final class FileUtilities {
                 ListByte datab = new ArrayByte(db);
                 return ValueFactory.newVNumberArray(datab, alarm, time, display);
             case ENUM_ARRAY:
-                String[] se = theValue.split(ARRAY_SPLITTER,-1);
+                String[] se = theValue.split(ARRAY_SPLITTER, -1);
                 List<String> labels = Arrays.asList(valueAndLabels[1].split(ARRAY_SPLITTER));
                 int[] de = new int[se.length];
                 for (int i = 0; i < se.length; i++) {
@@ -332,10 +328,10 @@ public final class FileUtilities {
                 ListInt datae = new ArrayInt(de);
                 return ValueFactory.newVEnumArray(datae, labels, alarm, time);
             case STRING_ARRAY:
-                String[] str = theValue.split(ARRAY_SPLITTER,-1);
+                String[] str = theValue.split(ARRAY_SPLITTER, -1);
                 return ValueFactory.newVStringArray(Arrays.asList(str), alarm, time);
             case BOOLEAN_ARRAY:
-                String[] sbo = theValue.split(ARRAY_SPLITTER,-1);
+                String[] sbo = theValue.split(ARRAY_SPLITTER, -1);
                 boolean[] dbo = new boolean[sbo.length];
                 for (int i = 0; i < sbo.length; i++) {
                     dbo[i] = Boolean.parseBoolean(sbo[i]);
@@ -343,7 +339,7 @@ public final class FileUtilities {
                 ListBoolean databo = new ArrayBoolean(dbo);
                 return ValueFactory.newVBooleanArray(databo, alarm, time);
             case NUMBER_ARRAY:
-                String[] nd = theValue.split(ARRAY_SPLITTER,-1);
+                String[] nd = theValue.split(ARRAY_SPLITTER, -1);
                 double[] ndd = new double[nd.length];
                 for (int i = 0; i < nd.length; i++) {
                     if (nd[i].isEmpty()) {
@@ -372,7 +368,7 @@ public final class FileUtilities {
             case STRING:
                 return ValueFactory.newVString(theValue, alarm, time);
             case ENUM:
-                List<String> lbls = new ArrayList<>(Arrays.asList(valueAndLabels[1].split("\\;",-1)));
+                List<String> lbls = new ArrayList<>(Arrays.asList(valueAndLabels[1].split("\\;", -1)));
                 int idx = lbls.indexOf(theValue);
                 if (idx < 0) {
                     try {
@@ -391,7 +387,7 @@ public final class FileUtilities {
                 return VDisconnectedData.INSTANCE;
         }
 
-        throw new IllegalArgumentException("Unknown data type " + valueType + ".");
+        throw new IllegalArgumentException(String.format("Unknown data type %s.", valueType));
     }
 
     /**
@@ -402,27 +398,17 @@ public final class FileUtilities {
      * @return generated snapshot file content
      */
     public static String generateSnapshotFileContent(VSnapshot data) {
-        List<VType> values = data.getValues();
-        List<String> names = data.getNames();
-        List<Boolean> selected = data.getSelected();
-        List<String> readbacks = data.getReadbackNames();
-        List<VType> readbackValues = data.getReadbackValues();
-        List<String> deltas = data.getDeltas();
-        List<Boolean> readOnlyFlags = data.getReadOnlyFlags();
-        StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * names.size());
+        List<SnapshotEntry> entries = data.getEntries();
+        StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * entries.size());
         Instant timestamp = data.getTimestamp();
         if (timestamp == null) {
             timestamp = Instant.now();
         }
         sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(Date.from(timestamp))).append('\n');
         sb.append(SNAPSHOT_FILE_HEADER).append('\n');
-        boolean deltaEmpty = deltas.isEmpty();
-        boolean noReadbacks = readbacks.isEmpty();
-        boolean readOnlyFlagsEmpty = readOnlyFlags.isEmpty();
-        for (int i = 0; i < names.size(); i++) {
-            sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i),
-                noReadbacks ? null : readbacks.get(i), noReadbacks ? null : readbackValues.get(i),
-                deltaEmpty ? null : deltas.get(i), readOnlyFlagsEmpty ? false : readOnlyFlags.get(i))).append('\n');
+        for (SnapshotEntry e : entries) {
+            sb.append(createSnapshotFileEntry(e.getPVName(), e.isSelected(), e.getValue(), e.getReadbackName(),
+                e.getReadbackValue(), e.getDelta(), e.isReadOnly())).append('\n');
         }
         return sb.toString();
     }
@@ -490,10 +476,7 @@ public final class FileUtilities {
      */
     public static SaveSetContent readFromSaveSet(InputStream stream) throws IOException {
         StringBuilder description = new StringBuilder(400);
-        List<String> names = new ArrayList<>();
-        List<String> readbacks = new ArrayList<>();
-        List<String> deltas = new ArrayList<>();
-        List<Boolean> readOnlyFlags = new ArrayList<>();
+        List<SaveSetEntry> entries = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         boolean isDescriptionLine = false;
         String line;
@@ -533,26 +516,29 @@ public final class FileUtilities {
             } else {
                 String[] split = split(line);
                 if (split == null) {
-                    throw new IOException("Invalid content: " + line);
+                    throw new IOException(String.format("Invalid content: %s.", line));
                 }
                 // there are no fields in here that may contain a comma
+                String name = null, readback = null, delta = null;
+                boolean readOnly = false;
                 if (namesIndex > -1) {
-                    names.add(trim(split[namesIndex]));
+                    name = trim(split[namesIndex]);
                 } else {
                     continue;
                 }
                 if (readbackIndex != -1) {
-                    readbacks.add(trim(split[readbackIndex]));
+                    readback = trim(split[readbackIndex]);
                 }
                 if (deltaIndex != -1) {
-                    deltas.add(trim(split[deltaIndex]));
+                    delta = trim(split[deltaIndex]);
                 }
                 if (readOnlyIndex != -1) {
-                    readOnlyFlags.add(Boolean.valueOf(trim(split[readOnlyIndex])));
+                    readOnly = Boolean.valueOf(trim(split[readOnlyIndex]));
                 }
+                entries.add(new SaveSetEntry(name, readback, delta, readOnly));
             }
         }
-        return new SaveSetContent(description.toString().trim(), names, readbacks, deltas, readOnlyFlags);
+        return new SaveSetContent(description.toString().trim(), entries);
     }
 
     /**
@@ -565,66 +551,16 @@ public final class FileUtilities {
     public static String generateSaveSetContent(SaveSetData data) {
         String description = data.getDescription();
         description = description.replaceAll("\n", "# ");
-        List<String> pvs = data.getPVList();
-        List<String> readbacks = data.getReadbackList();
-        List<String> deltas = data.getDeltaList();
-        List<Boolean> readOnly =data.getReadOnlyFlagsList();
-        final StringBuilder sb = new StringBuilder(BSD_ENTRY_LENGTH * pvs.size());
+        List<SaveSetEntry> entries = data.getEntries();
+        final StringBuilder sb = new StringBuilder(BSD_ENTRY_LENGTH * entries.size());
         sb.append('#').append(' ').append(DESCRIPTION_TAG).append("\n# ");
         sb.append(description).append("\n#\n");
-        if (readbacks.isEmpty() && deltas.isEmpty() && readOnly.isEmpty()) {
-            sb.append(H_PV_NAME).append('\n');
-            pvs.forEach(e -> sb.append(e).append('\n'));
-        } else if (readbacks.isEmpty() && readOnly.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_DELTA).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(getDelta(deltas.get(i))).append('\n');
-            }
-        } else if (deltas.isEmpty() && readOnly.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_READBACK).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append('\n');
-            }
-        } else if (readbacks.isEmpty() && deltas.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_READ_ONLY).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readOnly.get(i)).append('\n');
-            }
-        } else if (readbacks.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_DELTA).append(',').append(H_READ_ONLY).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(getDelta(deltas.get(i))).append(',').append(readOnly.get(i))
-                        .append('\n');
-            }
-        } else if (deltas.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_READ_ONLY).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(readOnly.get(i))
-                        .append('\n');
-            }
-        } else if (readOnly.isEmpty()) {
-            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(getDelta(deltas.get(i)))
-                        .append('\n');
-            }
-        } else {
-            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append(',')
-                    .append(H_READ_ONLY).append('\n');
-            for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(getDelta(deltas.get(i)))
-                        .append(',').append(readOnly.get(i)).append('\n');
-            }
+        sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append(',').append(H_READ_ONLY)
+            .append('\n');
+        for (SaveSetEntry e : entries) {
+            sb.append(e.getSaveString()).append('\n');
         }
         return sb.toString();
-    }
-
-    private static String getDelta(String delta) {
-        if (delta.indexOf(',') > -1) {
-            return new StringBuilder(delta.length() + 2) .append('"').append(delta).append('"').toString();
-        } else {
-            return delta;
-        }
     }
 
     /**

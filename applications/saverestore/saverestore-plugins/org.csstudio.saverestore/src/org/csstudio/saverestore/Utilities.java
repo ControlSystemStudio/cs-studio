@@ -278,7 +278,7 @@ public final class Utilities {
                 try {
                     idx = Integer.parseInt(data);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("'" + data + "' is not a valid enum value.");
+                    throw new IllegalArgumentException(String.format("'%s' is not a valid enum value.",data));
                 }
             }
             if (labels.size() <= idx) {

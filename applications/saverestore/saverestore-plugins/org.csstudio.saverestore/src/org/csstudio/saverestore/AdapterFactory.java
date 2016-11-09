@@ -56,12 +56,11 @@ public class AdapterFactory implements IAdapterFactory {
                     Instant snapshotTime = sc.getDate();
                     SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
-                        sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getReadOnlyFlags(), snapshotTime);
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getEntries(), snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | CoreException | ParseException ex) {
-                    throw new IllegalArgumentException("The file " + file.getName() + " is not a valid snapshot file.",
-                        ex);
+                    throw new IllegalArgumentException(
+                        String.format("The file %s is not a valid snapshot file.", file.getName()), ex);
                 }
             } else if (adaptableObject instanceof IURIEditorInput) {
                 IURIEditorInput input = (IURIEditorInput) adaptableObject;
@@ -73,12 +72,11 @@ public class AdapterFactory implements IAdapterFactory {
                     Instant snapshotTime = sc.getDate();
                     SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
-                        sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getReadOnlyFlags(), snapshotTime);
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getEntries(), snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | ParseException ex) {
-                    throw new IllegalArgumentException("The file " + uri.toString() + " is not a valid snapshot file.",
-                        ex);
+                    throw new IllegalArgumentException(
+                        String.format("The file %s is not a valid snapshot file.", uri.toString()), ex);
                 }
             }
         }

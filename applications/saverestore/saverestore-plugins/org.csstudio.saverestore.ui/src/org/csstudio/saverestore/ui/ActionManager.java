@@ -10,9 +10,11 @@
  */
 package org.csstudio.saverestore.ui;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
@@ -20,6 +22,7 @@ import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.eclipse.jface.window.IShellProvider;
@@ -172,8 +175,9 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Open save set", () -> {
             try {
                 SaveSetData data = provider.getSaveSetContent(set);
-                final VSnapshot s = new VSnapshot(set, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
-                        data.getReadOnlyFlagsList());
+                List<SnapshotEntry> entries = data.getEntries().stream().map(e ->
+                        new SnapshotEntry(e.getPVName(), null, true, e.getReadback(), null, e.getDelta(),e.isReadOnly())).collect(Collectors.toList());
+                final VSnapshot s = new VSnapshot(set, entries);
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {
                         owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);

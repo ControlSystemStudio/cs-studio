@@ -13,91 +13,40 @@ package org.csstudio.saverestore;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.saverestore.data.Threshold;
+import org.csstudio.saverestore.data.SaveSetEntry;
 
 /**
  *
- * <code>SaveSetContent</code> provides the contents of a save set file.
+ * <code>SaveSetContent</code> provides the contents of a save set file. This class serves only as a container of the
+ * loaded data and does not provide any other functionality.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
 public final class SaveSetContent {
 
-    private final List<String> names;
-    private final List<String> readbacks;
-    private final List<String> deltas;
-    private final List<Boolean> readOnlyFlags;
+    private final List<SaveSetEntry> entries;
     private final String description;
 
     /**
      * Constructs a new save set content.
      *
      * @param description the description of the file
-     * @param names the list of PV names
-     * @param readbacks the list of save values
-     * @param deltas the list of delta values
-     * @param readOnlyFlags the list of flags describing if the PV in the name list is read only or not
+     * @param entries the list of PV entries
      */
-    SaveSetContent(String description, List<String> names, List<String> readbacks, List<String> deltas,
-            List<Boolean> readOnlyFlags) {
-        if (!readbacks.isEmpty() && readbacks.size() != names.size()) {
-            throw new IllegalArgumentException("The number of readbacks does not match the number of pv names.");
-        }
-        if (!deltas.isEmpty() && deltas.size() != names.size()) {
-            throw new IllegalArgumentException("The number of deltas does not match the number of pv names.");
-        }
-        if (!readOnlyFlags.isEmpty() && readOnlyFlags.size() != names.size()) {
-            throw new IllegalArgumentException("The number of read only flags does not match the number of pv names.");
-        }
-        this.names = Collections.unmodifiableList(names);
-        this.readbacks = Collections.unmodifiableList(readbacks);
-        this.deltas = Collections.unmodifiableList(deltas);
-        this.readOnlyFlags = Collections.unmodifiableList(readOnlyFlags);
+    SaveSetContent(String description, List<SaveSetEntry> entries) {
+        this.entries = Collections.unmodifiableList(entries);
         this.description = description;
     }
 
     /**
-     * Return the names of all PVs in the save set.
+     * Return the entries of this save set. Each entry contain the information about a single PV entry in the save set
+     * file definition.
      *
-     * @return the names
+     * @return the entries
      */
-    public List<String> getNames() {
-        return names;
-    }
-
-    /**
-     * Returns the names of readback PVs, if one PV does not have a readback, there should be an empty string at that
-     * index. If none of the PVs have a readback PV associated with it, the list can be empty.
-     *
-     * @return the readback PV names
-     */
-    public List<String> getReadbacks() {
-        return readbacks;
-    }
-
-    /**
-     * Returns the deltas list, which define how to treat the difference between values. The deltas are later
-     * transformed to {@link Threshold}s, which evaluate the difference between the values. In general if two values
-     * differ less than delta, they are considered equal or at least non-critically different. The delta can be a
-     * number, or a function. If there is no known delta for a PV the entry should be an empty string. If none of the
-     * PVs have a delta associated with it, the list can be empty.
-     *
-     * @return the deltas list
-     */
-    public List<String> getDeltas() {
-        return deltas;
-    }
-
-    /**
-     * Returns the list of all read only flags. The flags define whether the PV specified in the names list
-     * ({@link #getNames()} is a read only PV or a read and write PV. Read only PVs have the read only flag set to true,
-     * read and write PVs have the flag set to false.
-     *
-     * @return the list of read only flags
-     */
-    public List<Boolean> getReadOnlyFlags() {
-        return readOnlyFlags;
+    public List<SaveSetEntry> getEntries() {
+        return entries;
     }
 
     /**

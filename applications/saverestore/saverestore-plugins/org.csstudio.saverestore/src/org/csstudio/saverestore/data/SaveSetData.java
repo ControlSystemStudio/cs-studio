@@ -20,52 +20,9 @@ public class SaveSetData implements Serializable {
 
     private static final long serialVersionUID = 510361139183432408L;
 
-    /**
-     * <code>Entry</code> describes a single entry in the save set, which is composed from the pv name, readback name
-     * and the delta value to be used in combination with the {@link Threshold}.
-     *
-     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
-     */
-    public static class Entry {
-
-        private final String pv;
-        private final String readback;
-        private final String delta;
-        private final boolean readOnly;
-
-        Entry(String pv, String readback, String delta, boolean readOnly) {
-            this.pv = pv;
-            this.readback = readback;
-            this.delta = delta;
-            this.readOnly = readOnly;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder(200);
-            sb.append(pv);
-            if (readback != null) {
-                sb.append(',').append(readback);
-            }
-            if (delta != null) {
-                sb.append(',');
-                if (delta.indexOf(',') > -1) {
-                    sb.append('"').append(delta).append('"');
-                } else {
-                    sb.append(delta);
-                }
-                sb.append(',').append(readOnly);
-            }
-            return sb.toString();
-        }
-    }
-
     private final String description;
     private final SaveSet descriptor;
-    private final List<String> pvList;
-    private final List<String> readbackList;
-    private final List<String> deltaList;
-    private final List<Boolean> readOnlyFlagsList;
+    private final List<SaveSetEntry> entries;
     private final String storedComment;
     private final Instant storedDate;
 
@@ -73,57 +30,27 @@ public class SaveSetData implements Serializable {
      * Constructs a new save set data object.
      *
      * @param descriptor the save set that describes this data
-     * @param pvList the list of PV names in this save set
-     * @param readbackList the list of readback PV names (one for each PV)
-     * @param deltaList the list of deltas for comparing the PV values (one for each PV)
-     * @param readOnlyFlagsList the list of read only flags (PV that have the flag true are treated as read only and
-     *        cannot be restored)
+     * @param entries the list of all PV entries in this save set
      * @param description the description of the save set
      */
-    public SaveSetData(SaveSet descriptor, List<String> pvList, List<String> readbackList, List<String> deltaList,
-            List<Boolean> readOnlyFlagsList, String description) {
-        this(descriptor,pvList,readbackList,deltaList,readOnlyFlagsList,description,null,null);
+    public SaveSetData(SaveSet descriptor, List<SaveSetEntry> entries, String description) {
+        this(descriptor, entries, description, null, null);
     }
 
     /**
      * Constructs a new save set data object.
      *
      * @param descriptor the save set that describes this data
-     * @param pvList the list of PV names in this save set
-     * @param readbackList the list of readback PV names (one for each pv)
-     * @param deltaList the list of deltas for comparing the PV values (one for each PV)
-     * @param readOnlyFlagsList the list of read only flags (PV that have the flag true are treated as read only and
-     *        cannot be restored)
+     * @param entries the list of all PV entries in this save set
      * @param description the description of the save set
      * @param storedComment the comment describing the current revision of this save set
      * @param storedDate the creation date of the current revision of this save set
      */
-    public SaveSetData(SaveSet descriptor, List<String> pvList, List<String> readbackList, List<String> deltaList,
-            List<Boolean> readOnlyFlagsList, String description, String storedComment, Instant storedDate) {
-        if (readbackList == null) {
-            readbackList = new ArrayList<>(0);
-        }
-        if (deltaList == null) {
-            deltaList = new ArrayList<>(0);
-        }
-        if (readOnlyFlagsList == null) {
-            readOnlyFlagsList = new ArrayList<>(0);
-        }
-        if (!readbackList.isEmpty() && readbackList.size() != pvList.size()) {
-            throw new IllegalArgumentException("The number of readbacks does not match the number of pv names.");
-        }
-        if (!deltaList.isEmpty() && deltaList.size() != pvList.size()) {
-            throw new IllegalArgumentException("The number of deltas does not match the number of pv names.");
-        }
-        if (!readOnlyFlagsList.isEmpty() && readOnlyFlagsList.size() != pvList.size()) {
-            throw new IllegalArgumentException("The number of read only flags does not match the number of pv names.");
-        }
+    public SaveSetData(SaveSet descriptor, List<SaveSetEntry> pvList, String description, String storedComment,
+        Instant storedDate) {
         this.descriptor = descriptor;
         this.description = description;
-        this.pvList = Collections.unmodifiableList(pvList);
-        this.readbackList = Collections.unmodifiableList(readbackList);
-        this.deltaList = Collections.unmodifiableList(deltaList);
-        this.readOnlyFlagsList = Collections.unmodifiableList(readOnlyFlagsList);
+        this.entries = Collections.unmodifiableList(new ArrayList<>(pvList));
         this.storedComment = storedComment;
         this.storedDate = storedDate;
     }
@@ -135,42 +62,6 @@ public class SaveSetData implements Serializable {
      */
     public SaveSet getDescriptor() {
         return descriptor;
-    }
-
-    /**
-     * Returns the list of PV names defined in the save set file.
-     *
-     * @return the list of PV names
-     */
-    public List<String> getPVList() {
-        return pvList;
-    }
-
-    /**
-     * Returns the list of readback PV names in this save set file (either 0 size or one for each PV).
-     *
-     * @return the list of all readback PV names
-     */
-    public List<String> getReadbackList() {
-        return readbackList;
-    }
-
-    /**
-     * Returns the list of all delta values in this save set file (either 0 size or one for each PV)
-     *
-     * @return the list of all delta values
-     */
-    public List<String> getDeltaList() {
-        return deltaList;
-    }
-
-    /**
-     * Returns the list of read only flags in this save set file (either 0 size or one for each PV).
-     *
-     * @return the list of read only flags
-     */
-    public List<Boolean> getReadOnlyFlagsList() {
-        return readOnlyFlagsList;
     }
 
     /**
@@ -205,29 +96,23 @@ public class SaveSetData implements Serializable {
      *
      * @return the list of all entries
      */
-    public List<Entry> getEntries() {
-        List<Entry> entries = new ArrayList<>(pvList.size());
-        boolean readOnlyFlags = readOnlyFlagsList.isEmpty();
-        boolean readbacks = readbackList.isEmpty();
-        boolean deltas = deltaList.isEmpty();
-        for (int i = 0; i < pvList.size(); i++) {
-            entries.add(new Entry(pvList.get(i),readbacks ? null : readbackList.get(i),deltas ? null : deltaList.get(i),
-                    readOnlyFlags ? Boolean.FALSE : readOnlyFlagsList.get(i)));
-        }
+    public List<SaveSetEntry> getEntries() {
         return entries;
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return Objects.hash(description,descriptor,pvList,readbackList,deltaList,readOnlyFlagsList);
+        return Objects.hash(SaveSetData.class, description, descriptor, entries);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -239,11 +124,8 @@ public class SaveSetData implements Serializable {
         } else if (getClass() != obj.getClass()) {
             return false;
         }
-        SaveSetData other = (SaveSetData)obj;
-        return Objects.equals(description,other.description) && Objects.equals(descriptor,other.descriptor)
-                && Objects.equals(pvList,other.pvList) && Objects.equals(readbackList,other.readbackList)
-                && Objects.equals(deltaList,other.deltaList)
-                && Objects.equals(readOnlyFlagsList,other.readOnlyFlagsList);
+        SaveSetData other = (SaveSetData) obj;
+        return Objects.equals(descriptor, other.descriptor) && equalContent(other);
     }
 
     /**
@@ -253,7 +135,7 @@ public class SaveSetData implements Serializable {
      * @return true if the content is identical or false otherwise
      */
     public boolean equalContent(SaveSetData other) {
-        return other != null && Objects.equals(description,other.description) && Objects.equals(pvList,other.pvList)
-                && Objects.equals(readbackList,other.readbackList) && Objects.equals(deltaList,other.deltaList);
+        return other != null && Objects.equals(description, other.description)
+            && Objects.equals(entries, other.entries);
     }
 }

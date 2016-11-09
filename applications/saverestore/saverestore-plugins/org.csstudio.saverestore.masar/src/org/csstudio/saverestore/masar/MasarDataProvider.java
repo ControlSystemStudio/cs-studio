@@ -114,7 +114,7 @@ public class MasarDataProvider implements DataProvider {
             }
             return b;
         } catch (RuntimeException | MasarException e) {
-            throw new DataProviderException("Could not initialise git repository.", e);
+            throw new DataProviderException("Could not initialise masar service.", e);
         }
     }
 
@@ -147,8 +147,7 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional,
-     * org.csstudio.saverestore.data.Branch)
+     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional, org.csstudio.saverestore.data.Branch)
      */
     @Override
     public SaveSet[] getSaveSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
@@ -173,8 +172,8 @@ public class MasarDataProvider implements DataProvider {
             List<Snapshot> snapshots = mc.getSnapshots(set);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
         } catch (RuntimeException | MasarException | ParseException e) {
-            throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
-                e);
+            throw new DataProviderException(
+                String.format("Error retrieving the snapshots list for '%s'.", set.getPathAsString()), e);
         }
     }
 
@@ -203,7 +202,7 @@ public class MasarDataProvider implements DataProvider {
         try {
             service = mc.createService(newServiceName);
         } catch (RuntimeException | MasarException e) {
-            throw new DataProviderException("Error connecting to service '" + newServiceName + "'.", e);
+            throw new DataProviderException(String.format("Error connecting to service '%s'.", newServiceName), e);
         }
         for (CompletionNotifier n : getNotifiers()) {
             n.branchCreated(service);
@@ -221,18 +220,19 @@ public class MasarDataProvider implements DataProvider {
         try {
             return mc.takeSnapshot(saveSet);
         } catch (MasarResponseException e) {
-            throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString()
-                + "'.\nService responded with message: " + e.getMessage());
+            throw new DataProviderException(
+                String.format("Error taking a snapshot for '%s'.\nService responded with message: %s.",
+                    saveSet.getPathAsString(), e.getMessage()));
         } catch (RuntimeException | MasarException e) {
-            throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString() + "'.", e);
+            throw new DataProviderException(
+                String.format("Error taking a snapshot for '%s'.", saveSet.getPathAsString()), e);
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData,
-     * java.lang.String)
+     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData, java.lang.String)
      */
     @Override
     public SaveSetData saveSaveSet(SaveSetData set, String comment) throws DataProviderException {
@@ -242,8 +242,7 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet,
-     * java.lang.String)
+     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet, java.lang.String)
      */
     @Override
     public boolean deleteSaveSet(SaveSet set, String comment) throws DataProviderException {
@@ -261,11 +260,12 @@ public class MasarDataProvider implements DataProvider {
         try {
             snapshot = mc.saveSnapshot(data, comment);
         } catch (MasarResponseException e) {
-            throw new DataProviderException("Error saving a snapshot for '" + data.getSaveSet().getPathAsString()
-            + "'.\nService responded with message: " + e.getMessage());
+            throw new DataProviderException(
+                String.format("Error saving a snapshot for '%s'.\nService responded with message: %s.",
+                    data.getSaveSet().getPathAsString(), e.getMessage()));
         } catch (RuntimeException | MasarException e) {
             throw new DataProviderException(
-                "Error saving snapshot for '" + data.getSaveSet().getPathAsString() + "'.", e);
+                String.format("Error saving snapshot for '%s'.", data.getSaveSet().getPathAsString()), e);
         }
 
         for (CompletionNotifier n : getNotifiers()) {
@@ -297,8 +297,8 @@ public class MasarDataProvider implements DataProvider {
         try {
             return mc.loadSnapshotData(snapshot);
         } catch (RuntimeException | MasarException e) {
-            throw new DataProviderException("Error loading the snapshot content for snapshot '"
-                + snapshot.getSaveSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
+            throw new DataProviderException(String.format("Error loading the snapshot content for snapshot '%s [%s]'.",
+                snapshot.getSaveSet().getPathAsString(), String.valueOf(snapshot.getDate())), e);
         }
     }
 
@@ -319,8 +319,8 @@ public class MasarDataProvider implements DataProvider {
                     int id = Integer.parseInt(expression.trim());
                     mc.findSnapshotById(branch, id).ifPresent(e -> list.add(e));
                 } catch (NumberFormatException e) {
-                    throw new DataProviderException("'" + expression
-                        + "' is not a valid expression for search by snapshot ID. Number is required.");
+                    throw new DataProviderException(String.format(
+                        "'%s' is not a valid expression for search by snapshot ID. Number is required.", expression));
                 }
             } else if (criteria.contains(COMMENT) && criteria.contains(USER)) {
                 // we want OR between user and comments matches, but the MasarClient does AND
@@ -336,8 +336,10 @@ public class MasarDataProvider implements DataProvider {
                 list.addAll(mc.findSnapshots(branch, expression, false, false, start, end));
             }
         } catch (MasarException | ParseException e) {
-            throw new DataProviderException("Error searching for snapshots that match the expression '" + expression
-                + "' using criteria '" + criteria.toString() + ".", e);
+            throw new DataProviderException(
+                String.format("Error searching for snapshots that match the expression '%s' using criteria '%s'.",
+                    expression, criteria.toString()),
+                e);
         }
         Snapshot[] snapshots = list.toArray(new Snapshot[list.size()]);
         if (sort) {

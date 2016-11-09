@@ -154,8 +154,7 @@ public class BrowserActionManager extends ActionManager {
         SaveRestoreService.getInstance().execute("Load save set data", () -> {
             SaveSet set = new SaveSet(branch, Optional.ofNullable(base), new String[] { "SaveSet" },
                 dataProvider);
-            SaveSetData data = new SaveSetData(set, new ArrayList<>(0), new ArrayList<>(0), new ArrayList<>(0),
-                new ArrayList<>(0),"");
+            SaveSetData data = new SaveSetData(set, new ArrayList<>(0),"");
             owner.getSite().getShell().getDisplay().asyncExec(() -> {
                 try {
                     owner.getSite().getPage().openEditor(new SaveSetEditorInput(data), SaveSetEditor.ID);
