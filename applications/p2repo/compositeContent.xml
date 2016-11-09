@@ -21,5 +21,6 @@
     <child location="../scan/scan-repository/target/repository"/>
     <child location="../shift/shift-repository/target/repository"/>
     <child location="../saverestore/saverestore-repository/target/repository"/>
+    <child location="../snl/snl-repository/target/repository"/>
   </children>
 </repository>
