@@ -11,6 +11,6 @@
   <module>org.csstudio.diirt.help</module>
   <module>org.csstudio.diirt.util</module>
   <module>org.csstudio.diirt.util.preferences</module>
-  <module>org.csstudio.diirt.util.preferences.text</module>
+  <module>org.csstudio.diirt.util.preferences.test</module>
   </modules>
 </project>
