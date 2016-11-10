@@ -23,7 +23,7 @@ public class UpdateThrottleTest
 {
     final private AtomicInteger updates = new AtomicInteger();
 
-    @Test(timeout=5000)
+    @Test
     public void testUpdateThrottle() throws Exception
     {
         final Runnable update = new Runnable()
@@ -48,7 +48,7 @@ public class UpdateThrottleTest
         System.out.println("-> Trigger..");
         throttle.trigger();
         // .. with some delay because it's on other thread
-        Thread.sleep(100);
+        Thread.sleep(1000);
         assertThat(updates.get(), equalTo(1));
 
         // Follow-up triggers are delayed...
@@ -61,7 +61,7 @@ public class UpdateThrottleTest
         assertThat(updates.get(), equalTo(1));
 
         // .. until the period passes
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(4);
         assertThat(updates.get(), equalTo(2));
 
         // Faster...
@@ -72,7 +72,7 @@ public class UpdateThrottleTest
         throttle.trigger();
         TimeUnit.MILLISECONDS.sleep(100);
         assertThat(updates.get(), equalTo(3));
-        TimeUnit.MILLISECONDS.sleep(1000);
+        TimeUnit.MILLISECONDS.sleep(2000);
         assertThat(updates.get(), equalTo(4));
     }
 }

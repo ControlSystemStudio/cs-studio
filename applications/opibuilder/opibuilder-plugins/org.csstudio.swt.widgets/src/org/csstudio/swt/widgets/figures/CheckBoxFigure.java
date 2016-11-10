@@ -21,6 +21,7 @@ import org.csstudio.swt.widgets.introspection.LabelWidgetIntrospector;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.Cursors;
@@ -68,11 +69,13 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 
     private Boolean support3d;
 
-    private Color selectedColor=ColorConstants.darkGray;;
+    private Color selectedColor=ColorConstants.darkGray;
+
+    private BoxFigure boxFigure;
 
     public CheckBoxFigure(final boolean runMode) {
         this.runMode = runMode;
-        final BoxFigure boxFigure = new BoxFigure();
+        boxFigure = new BoxFigure();
         setContents(boxFigure);
         if(!runMode)
             setEventHandler(null);
@@ -292,8 +295,17 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
         this.totalBits = totalBits;
     }
 
+    public Dimension getAutoSizeDimension() {
+        Dimension d = boxFigure.getAutoSizeDimension();
+        int textWidth = d.width();
+        d.setWidth(textWidth + BOX_SIZE + GAP);
+        return d;
+    }
+
 
     class BoxFigure extends Figure{
+        Dimension textSize;
+
         @Override
         protected void paintClientArea(Graphics graphics) {
             if(support3d == null)
@@ -323,7 +335,7 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
                 });
             }
             graphics.popState();
-            Dimension textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
+            textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
 
             if (!isEnabled()) {
                 graphics.translate(1, 1);
@@ -336,6 +348,28 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 
             super.paintClientArea(graphics);
 
+        }
+
+        @Override
+        public Dimension getPreferredSize(int wHint, int hHint) {
+            return getTextSize();
+
+        }
+
+
+        protected Dimension getTextSize() {
+            if (textSize == null)
+                textSize = calculateTextSize();
+            return textSize;
+        }
+
+        protected Dimension calculateTextSize() {
+            return Draw2dSingletonUtil.getTextUtilities().getTextExtents(text, getFont());
+        }
+
+        protected Dimension getAutoSizeDimension(){
+            return getPreferredSize().getCopy().expand(
+                    getInsets().getWidth(), getInsets().getHeight());
         }
     }
 
