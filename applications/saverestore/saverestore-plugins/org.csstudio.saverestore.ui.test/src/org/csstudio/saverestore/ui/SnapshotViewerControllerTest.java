@@ -35,6 +35,7 @@ import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.VTypePair;
@@ -207,9 +208,9 @@ public class SnapshotViewerControllerTest {
         VDouble rval1 = ValueFactory.newVDouble(6d, alarmNone, time, display);
         VDoubleArray rval2 = ValueFactory.newVDoubleArray(new ArrayDouble(1, 1, 1), alarmNone, time, display);
 
-        return new VSnapshot(snapshot, Arrays.asList("pv1", "pv2", "complexName:2a"), Arrays.asList(true, false, true),
-            Arrays.asList(val1, val2, VDisconnectedData.INSTANCE), Arrays.asList("rb1", "rb2", "rb3"),
-            Arrays.asList(rval1, rval2, VDisconnectedData.INSTANCE), Arrays.asList("50", "Math.min(x,3)", "30"),
+        return new VSnapshot(snapshot, Arrays.asList(new SnapshotEntry("pv1", val1, true, "rb1", rval1, "50", false),
+            new SnapshotEntry("pv2", val2, false, "rb2", rval2, "Math.min(x,3)", false), new SnapshotEntry(
+                "complexName:2a", VDisconnectedData.INSTANCE, true, "rb3", VDisconnectedData.INSTANCE, "40", false)),
             time.getTimestamp());
     }
 }

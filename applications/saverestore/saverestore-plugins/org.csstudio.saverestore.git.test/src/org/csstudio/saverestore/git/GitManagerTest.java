@@ -1,12 +1,6 @@
 /*
- * This software is Copyright by the Board of Trustees of Michigan
- * State University (c) Copyright 2016.
- *
- * Contact Information:
- *   Facility for Rare Isotope Beam
- *   Michigan State University
- *   East Lansing, MI 48824-1321
- *   http://frib.msu.edu
+ * This software is Copyright by the Board of Trustees of Michigan State University (c) Copyright 2016. Contact
+ * Information: Facility for Rare Isotope Beam Michigan State University East Lansing, MI 48824-1321 http://frib.msu.edu
  */
 package org.csstudio.saverestore.git;
 
@@ -39,7 +33,9 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
 import org.csstudio.ui.fx.util.Credentials;
@@ -63,23 +59,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
  * <code>GitManagerTest</code> tests the methods of the {@link GitManager}. The unit test creates a demo repository in
  * the user's temp folder (on the local file system) and calls different methods from the git manager to verify that
  * they return correct data.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
- *
  */
 public class GitManagerTest {
 
     // create a repository in the temp folder
     private static File repositoryPath = new File(System.getProperty("java.io.tmpdir"),
         "T" + (int) (Math.random() * 1000));
-
     // git uses seconds timestamp resolution
     private static long time = ((System.currentTimeMillis() - 3600000L * 48) / 1000L) * 1000L;
-
     private static Branch branch = new Branch();
     private static Branch secondBranch = new Branch("second", "second");
     private static BaseLevel branchBase = new BaseLevel(branch, "base", "base");
@@ -98,14 +90,18 @@ public class GitManagerTest {
     private static SaveSet secondBranchSaveSet2 = new SaveSet(secondBranch,
         Optional.of(new BaseLevel(secondBranch, branchBase)), new String[] { "foo", "bar", "test2.bms" },
         GitDataProvider.ID);
-    private static SaveSetData branchBSD = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv2"),
-        Arrays.asList("rb1", "rb2"), Arrays.asList("50", "50"), "someDescription");
-    private static SaveSetData branchBSD2 = new SaveSetData(branchSaveSet2, Arrays.asList("pv3", "pv4"),
-        Arrays.asList("rb3", "rb4"), Arrays.asList("40", "40"), "someDescription2");
-    private static SaveSetData branchBSD3 = new SaveSetData(branchSaveSet3, Arrays.asList("pv5", "pv6"),
-        Arrays.asList("rb5", "rb6"), Arrays.asList("30", "30"), "someDescription3");
-    private static SaveSetData secondBSD = new SaveSetData(secondSaveSet, Arrays.asList("pva", "pvb"),
-        Arrays.asList("rba", "rbb"), Arrays.asList("20", "20"), "someDescription4");
+    private static SaveSetData branchBSD = new SaveSetData(branchSaveSet, Arrays
+        .asList(new SaveSetEntry("pv1", "rb1", "50", true), new SaveSetEntry("pv2", "rb2", "50", false)),
+        "someDescription");
+    private static SaveSetData branchBSD2 = new SaveSetData(branchSaveSet2, Arrays
+        .asList(new SaveSetEntry("pv3", "rb4", "40", true), new SaveSetEntry("pv3", "rb4", "40", false)),
+        "someDescription2");
+    private static SaveSetData branchBSD3 = new SaveSetData(branchSaveSet3, Arrays
+        .asList(new SaveSetEntry("pv5", "rb5", "30", true), new SaveSetEntry("pv6", "rb6", "30", false)),
+        "someDescription3");
+    private static SaveSetData secondBSD = new SaveSetData(secondSaveSet, Arrays
+        .asList(new SaveSetEntry("pva", "rba", "20", true), new SaveSetEntry("pvb", "rbb", "20", false)),
+        "someDescription4");
     private static Snapshot branchSnapshot = new Snapshot(branchSaveSet, Instant.ofEpochMilli(time),
         "sufferin succotash", "sylvester");
     private static Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, Instant.ofEpochMilli(time - 10000),
@@ -116,7 +112,6 @@ public class GitManagerTest {
         "What's up, doc?", "bugs bunny");
     private static Snapshot secondSnapshot = new Snapshot(secondSaveSet, Instant.ofEpochMilli(time - 40000),
         "Be vewy vewy quiet, I'm hunting wabbits!, He-e-e-e-e!", "elmerfudd");
-
     private static Snapshot secondBranchSnapshot = new Snapshot(secondBranchSaveSet, Instant.ofEpochMilli(time),
         "sufferin succotash", "sylvester");
     private static Snapshot secondBranchSnapshot2 = new Snapshot(secondBranchSaveSet,
@@ -125,25 +120,30 @@ public class GitManagerTest {
         Instant.ofEpochMilli(time - 20000), "Wabbit Season!", "daffy duck");
     private static Snapshot secondBranchSnapshot4 = new Snapshot(secondBranchSaveSet,
         Instant.ofEpochMilli(time + 10000), "I taught I taw a putty tat. In a succotash.", "tweety");
-
-    private static VSnapshot branchV1 = new VSnapshot(branchSnapshot, Arrays.asList("pv1", "pv2"),
-        Arrays.asList(true, true), Arrays.asList(createData(0), createData(1)), Arrays.asList("rb1", "rb2"),
-        Arrays.asList(createData(0), createData(1)), Arrays.asList("50", "50"), Instant.ofEpochMilli(time));
-    private static VSnapshot branchV2 = new VSnapshot(branchSnapshot2, Arrays.asList("pv1", "pv2"),
-        Arrays.asList(true, true), Arrays.asList(createData(0), createData(1)), Arrays.asList("rb1", "rb2"),
-        Arrays.asList(createData(0), createData(1)), Arrays.asList("50", "50"), Instant.ofEpochMilli(time - 10000));
-    private static VSnapshot branchV3 = new VSnapshot(branchSnapshot3, Arrays.asList("pv1", "pv2"),
-        Arrays.asList(true, true), Arrays.asList(createData(0), createData(1)), Arrays.asList("rb1", "rb2"),
-        Arrays.asList(createData(0), createData(1)), Arrays.asList("50", "50"), Instant.ofEpochMilli(time - 20000));
-    private static VSnapshot branchV4 = new VSnapshot(branchSnapshot4, Arrays.asList("pv3", "pv4"),
-        Arrays.asList(true, true), Arrays.asList(createData(2), createData(3)), Arrays.asList("rb3", "rb4"),
-        Arrays.asList(createData(2), createData(3)), Arrays.asList("40", "40"), Instant.ofEpochMilli(time - 30000));
-    private static VSnapshot secondV5 = new VSnapshot(secondSnapshot, Arrays.asList("pva", "pvb"),
-        Arrays.asList(true, true), Arrays.asList(createData(4), createData(5)), Arrays.asList("rba", "rbb"),
-        Arrays.asList(createData(4), createData(5)), Arrays.asList("20", "20"), Instant.ofEpochMilli(time - 40000));
-    private static VSnapshot secondV1 = new VSnapshot(secondBranchSnapshot4, Arrays.asList("pv1", "pv2"),
-        Arrays.asList(true, true), Arrays.asList(createData(0), createData(1)), Arrays.asList("rb1", "rb2"),
-        Arrays.asList(createData(0), createData(1)), Arrays.asList("50", "50"), Instant.ofEpochMilli(time));
+    private static VSnapshot branchV1 = new VSnapshot(branchSnapshot,
+        Arrays.asList(new SnapshotEntry("pv1", createData(0), true, "rb1", createData(0), "50", false),
+            new SnapshotEntry("pv2", createData(1), false, "rb2", createData(1), "50", false)),
+        Instant.ofEpochMilli(time));
+    private static VSnapshot branchV2 = new VSnapshot(branchSnapshot2,
+        Arrays.asList(new SnapshotEntry("pv1", createData(0), true, "rb1", createData(0), "50", false),
+            new SnapshotEntry("pv2", createData(1), false, "rb2", createData(1), "50", false)),
+        Instant.ofEpochMilli(time - 10000));
+    private static VSnapshot branchV3 = new VSnapshot(branchSnapshot3,
+        Arrays.asList(new SnapshotEntry("pv1", createData(0), true, "rb1", createData(0), "50", false),
+            new SnapshotEntry("pv2", createData(1), false, "rb2", createData(1), "50", false)),
+        Instant.ofEpochMilli(time - 20000));
+    private static VSnapshot branchV4 = new VSnapshot(branchSnapshot4,
+        Arrays.asList(new SnapshotEntry("pv3", createData(2), true, "rb3", createData(0), "40", false),
+            new SnapshotEntry("pv4", createData(3), false, "rb4", createData(1), "40", false)),
+        Instant.ofEpochMilli(time - 30000));
+    private static VSnapshot secondV5 = new VSnapshot(secondSnapshot,
+        Arrays.asList(new SnapshotEntry("pva", createData(4), true, "rba", createData(5), "20", false),
+            new SnapshotEntry("pvb", createData(4), false, "rbb", createData(5), "20", false)),
+        Instant.ofEpochMilli(time - 40000));
+    private static VSnapshot secondV1 = new VSnapshot(secondBranchSnapshot4,
+        Arrays.asList(new SnapshotEntry("pv1", createData(0), true, "rb1", createData(0), "50", false),
+            new SnapshotEntry("pv2", createData(1), true, "rb2", createData(1), "50", false)),
+        Instant.ofEpochMilli(time));
 
     private static VType createData(int type) {
         Time valueTime = ValueFactory.newTime(new Date(time - 100000L).toInstant());
@@ -172,7 +172,6 @@ public class GitManagerTest {
             default:
                 return ValueFactory.newVDouble(Math.random(), alarm, valueTime, display);
         }
-
     }
 
     private static void writeSaveSet(Git git, SaveSetData bsd, SaveSet set) throws Exception {
@@ -189,7 +188,6 @@ public class GitManagerTest {
         }
         String data = FileUtilities.generateSaveSetContent(bsd);
         Files.write(path, data.getBytes(StandardCharsets.UTF_8));
-
         git.add().addFilepattern(relativePath).call();
         CommitCommand command = git.commit().setMessage("unknown comment");
         command.setCommitter("bugs bunny", "bb@looney.tunes");
@@ -210,7 +208,6 @@ public class GitManagerTest {
         }
         String data = FileUtilities.generateSnapshotFileContent(snapshot);
         Files.write(path, data.getBytes(StandardCharsets.UTF_8));
-
         git.add().addFilepattern(relativePath).call();
         CommitCommand command = git.commit().setMessage(snapshot.getSnapshot().get().getComment());
         command.setCommitter(new PersonIdent(snapshot.getSnapshot().get().getOwner(), "UNKNOWN@looney.tunes",
@@ -264,6 +261,7 @@ public class GitManagerTest {
     @Before
     public void setUp() throws Exception {
         manager = new GitManager() {
+
             @Override
             protected Credentials getCredentials(Optional<Credentials> previous) {
                 return new Credentials("", new char[0], false);
@@ -316,13 +314,11 @@ public class GitManagerTest {
         // there are no sets in the second base on the master branch (the base does not exist there)
         saveSets = manager.getSaveSets(Optional.of(secondBase), branch);
         assertTrue(saveSets.isEmpty());
-
         // second branch has the same number of save sets in the first base
         saveSets = manager.getSaveSets(Optional.of(branchBase), secondBranch);
         assertEquals(2, saveSets.size());
         assertTrue(saveSets.contains(secondBranchSaveSet));
         assertTrue(saveSets.contains(secondBranchSaveSet2));
-
         // second branch has 1 bs in the second base
         saveSets = manager.getSaveSets(Optional.of(secondBase), secondBranch);
         assertEquals(1, saveSets.size());
@@ -337,14 +333,11 @@ public class GitManagerTest {
         assertTrue(branchSnapshot.almostEquals(snapshots.get(0)));
         assertTrue(branchSnapshot2.almostEquals(snapshots.get(1)));
         assertTrue(branchSnapshot3.almostEquals(snapshots.get(2)));
-
         snapshots = manager.getSnapshots(branchSaveSet2, 0, Optional.empty());
         assertEquals(1, snapshots.size());
         assertTrue(branchSnapshot4.almostEquals(snapshots.get(0)));
-
         snapshots = manager.getSnapshots(branchSaveSet3, 0, Optional.empty());
         assertTrue(snapshots.isEmpty());
-
         // the second branch has one additional snapshot for the branchSaveSet
         snapshots = manager.getSnapshots(secondBranchSaveSet, 0, Optional.empty());
         assertEquals(4, snapshots.size());
@@ -352,12 +345,10 @@ public class GitManagerTest {
         assertTrue(secondBranchSnapshot.almostEquals(snapshots.get(1)));
         assertTrue(secondBranchSnapshot2.almostEquals(snapshots.get(2)));
         assertTrue(secondBranchSnapshot3.almostEquals(snapshots.get(3)));
-
         snapshots = manager.getSnapshots(secondBranchSaveSet, 2, Optional.of(snapshots.get(1)));
         assertEquals(2, snapshots.size());
         assertTrue(secondBranchSnapshot2.almostEquals(snapshots.get(0)));
         assertTrue(secondBranchSnapshot3.almostEquals(snapshots.get(1)));
-
         snapshots = manager.getSnapshots(secondSaveSet, 0, Optional.empty());
         assertEquals(1, snapshots.size());
         assertTrue(secondSnapshot.almostEquals(snapshots.get(0)));
@@ -376,7 +367,6 @@ public class GitManagerTest {
                 fail("Unknown set: " + s);
             }
         }
-
         sets = manager.getSaveSets(Optional.of(secondBase), secondBranch);
         for (SaveSet set : sets) {
             SaveSetData bsd = manager.loadSaveSetData(set, Optional.empty());
@@ -402,12 +392,12 @@ public class GitManagerTest {
     public void testSaveSaveSet() throws IOException, GitAPIException {
         SaveSet newSaveSet = new SaveSet(secondBranch, Optional.of(secondBase), new String[] { "created", "set" },
             GitDataProvider.ID);
-        SaveSetData bsd = new SaveSetData(newSaveSet, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description");
+        SaveSetData bsd = new SaveSetData(newSaveSet,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description");
         Result<SaveSetData> result = manager.saveSaveSet(bsd, "new comment");
         assertEquals(bsd, result.data);
         assertEquals(ChangeType.SAVE, result.change);
-
         List<SaveSet> sets = manager.getSaveSets(Optional.of(secondBase), secondBranch);
         boolean found = false;
         String[] path = new String[] { "created", "set.bms" };
@@ -422,7 +412,6 @@ public class GitManagerTest {
         if (!found) {
             fail("The new save set was not found.");
         }
-
         SaveSetData data = manager.loadSaveSetData(newSaveSet, Optional.empty());
         assertEquals(bsd, data);
     }
@@ -432,8 +421,9 @@ public class GitManagerTest {
         // first create the save set
         SaveSet newSaveSet = new SaveSet(secondBranch, Optional.of(secondBase), new String[] { "created", "set.bms" },
             GitDataProvider.ID);
-        SaveSetData bsd = new SaveSetData(newSaveSet, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description");
+        SaveSetData bsd = new SaveSetData(newSaveSet,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description");
         Result<SaveSetData> res = manager.saveSaveSet(bsd, "new comment");
         assertEquals(ChangeType.SAVE, res.change);
         // now save the snapshot
@@ -441,10 +431,10 @@ public class GitManagerTest {
         Date date = new Date((System.currentTimeMillis() / 1000) * 1000);
         Instant time = date.toInstant();
         Snapshot snapshot = new Snapshot(newSaveSet, time, comment, "");
-        VSnapshot vSnapshot = new VSnapshot(snapshot, Arrays.asList("t1", "t2"), Arrays.asList(true, false),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r1", "r2"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "1"), time);
-
+        VSnapshot vSnapshot = new VSnapshot(snapshot,
+            Arrays.asList(new SnapshotEntry("t1", createData(0), true, "r1", createData(0), "1", true),
+                new SnapshotEntry("t2", createData(0), false, "r2", createData(0), "1", false)),
+            time);
         Result<VSnapshot> result = manager.saveSnapshot(vSnapshot, comment);
         assertEquals(ChangeType.SAVE, result.change);
         assertTrue(vSnapshot.equalsExceptSnapshot(result.data));
@@ -473,7 +463,6 @@ public class GitManagerTest {
         assertEquals(result.data, newSnapshot);
         assertEquals(tagName, newSnapshot.getTagName().get());
         assertEquals(tagMessage, newSnapshot.getTagMessage().get());
-
         // remove tag
         manager.tagSnapshot(original, "", "");
         snapshots = manager.getSnapshots(branchSaveSet, 1, Optional.empty());
@@ -491,7 +480,6 @@ public class GitManagerTest {
             Optional.empty());
         assertEquals(2, snapshots.size());
         Snapshot orgSnapshot = snapshots.get(0);
-
         Date start = new Date(System.currentTimeMillis() - 3600000 * 96);
         Date stop = new Date(System.currentTimeMillis() - 3600000 * 72);
         snapshots = manager.findSnapshotsByCommentOrUser("succotash", secondBranch, true, false, Optional.of(start),
@@ -501,17 +489,14 @@ public class GitManagerTest {
         snapshots = manager.findSnapshotsByCommentOrUser("succotash", secondBranch, true, false, Optional.of(start),
             Optional.empty());
         assertEquals(1, snapshots.size());
-
         snapshots = manager.findSnapshotsByCommentOrUser("tweety", secondBranch, false, true, Optional.empty(),
             Optional.empty());
         assertEquals(1, snapshots.size());
         snapshots = manager.findSnapshotsByCommentOrUser("tweety", branch, false, true, Optional.empty(),
             Optional.empty());
         assertTrue(snapshots.isEmpty());
-
         snapshots = manager.findSnapshotsByTag("golden", secondBranch, Optional.empty(), Optional.empty());
         assertTrue(snapshots.isEmpty());
-
         // make a tag
         manager.tagSnapshot(orgSnapshot, "GoldenOrbit", "this is a tag message for testing");
         snapshots = manager.findSnapshotsByTag("golden", secondBranch, Optional.empty(), Optional.empty());
@@ -528,8 +513,9 @@ public class GitManagerTest {
     public void testDeleteSaveSet() throws IOException, GitAPIException {
         SaveSet newSaveSet = new SaveSet(secondBranch, Optional.of(secondBase), new String[] { "created", "set2.bms" },
             GitDataProvider.ID);
-        SaveSetData bsd = new SaveSetData(newSaveSet, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description");
+        SaveSetData bsd = new SaveSetData(newSaveSet,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description");
         List<SaveSet> sets = manager.getSaveSets(Optional.of(secondBase), secondBranch);
         assertFalse("Save does not exist", sets.contains(newSaveSet));
         manager.saveSaveSet(bsd, "new comment");
@@ -537,7 +523,6 @@ public class GitManagerTest {
         assertTrue("Save set was created", sets.contains(newSaveSet));
         SaveSetData data = manager.loadSaveSetData(newSaveSet, Optional.empty());
         assertNotNull("Save set has data", data);
-
         Result<SaveSet> result = manager.deleteSaveSet(data.getDescriptor(), "delete save set");
         assertEquals(ChangeType.SAVE, result.change);
         assertEquals(newSaveSet, result.data);
@@ -565,64 +550,69 @@ public class GitManagerTest {
         BaseLevel bl = new BaseLevel(newBranch, "tralala", "tralala");
         SaveSet newSaveSet = new SaveSet(newBranch, Optional.of(bl), new String[] { "created", "test", "set.bms" },
             GitDataProvider.ID);
-        SaveSetData bsd = new SaveSetData(newSaveSet, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description");
+        SaveSetData bsd = new SaveSetData(newSaveSet,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description");
         manager.saveSaveSet(bsd, "some comment");
         // create two snapshots
         Snapshot snp = new Snapshot(newSaveSet, null, null, null);
         Instant firstTime = Instant.ofEpochSecond(1234567, 0);
         Instant secondTime = Instant.ofEpochSecond(System.currentTimeMillis() / 1000, 0);
-        VSnapshot snapshot = new VSnapshot(snp, Arrays.asList("t1", "t2"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r1", "r2"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), firstTime);
-        VSnapshot snapshot2 = new VSnapshot(snp, Arrays.asList("t3", "t4"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r3", "r4"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), secondTime);
+        VSnapshot snapshot = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t1", createData(0), true, "r1", createData(0), "1", true),
+                new SnapshotEntry("t2", createData(0), false, "r2", createData(0), "2", false)),
+            firstTime);
+        VSnapshot snapshot2 = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t3", createData(0), true, "r3", createData(0), "1", true),
+                new SnapshotEntry("t4", createData(0), false, "r4", createData(0), "2", false)),
+            secondTime);
         manager.saveSnapshot(snapshot, "first comment");
         manager.saveSnapshot(snapshot2, "second comment");
         List<Snapshot> snapshots = manager.getSnapshots(newSaveSet, 0, Optional.empty());
         assertEquals(2, snapshots.size());
-
         SaveSet newSaveSet2 = new SaveSet(newBranch, Optional.of(bl), new String[] { "created", "test", "set2.bms" },
             GitDataProvider.ID);
-        SaveSetData bsd2 = new SaveSetData(newSaveSet2, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description 2");
+        SaveSetData bsd2 = new SaveSetData(newSaveSet2,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description 2");
         manager.saveSaveSet(bsd2, "some comment");
         // create two snapshots
         snp = new Snapshot(newSaveSet2, Instant.now(), null, null);
-        VSnapshot asnapshot = new VSnapshot(snp, Arrays.asList("t1", "t2"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r1", "r2"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), firstTime);
-        VSnapshot asnapshot2 = new VSnapshot(snp, Arrays.asList("t3", "t4"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r3", "r4"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), secondTime);
+        VSnapshot asnapshot = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t1", createData(0), true, "r1", createData(0), "1", true),
+                new SnapshotEntry("t2", createData(0), false, "r2", createData(0), "2", false)),
+            firstTime);
+        VSnapshot asnapshot2 = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t3", createData(0), true, "r3", createData(0), "1", true),
+                new SnapshotEntry("t4", createData(0), false, "r4", createData(0), "2", false)),
+            secondTime);
         manager.saveSnapshot(asnapshot, "first comment");
         manager.saveSnapshot(asnapshot2, "second comment");
         snapshots = manager.getSnapshots(newSaveSet, 0, Optional.empty());
         assertEquals(2, snapshots.size());
-
         SaveSet newSaveSet3 = new SaveSet(newBranch, Optional.of(bl), new String[] { "created", "test", "set3.bms" },
             GitDataProvider.ID);
-        SaveSetData bsd3 = new SaveSetData(newSaveSet3, Arrays.asList("t1", "t2"), Arrays.asList("r1", "r2"),
-            Arrays.asList("1", "1"), "my description 3");
+        SaveSetData bsd3 = new SaveSetData(newSaveSet3,
+            Arrays.asList(new SaveSetEntry("t1", "r1", "1", true), new SaveSetEntry("t2", "r2", "1", false)),
+            "my description 3");
         manager.saveSaveSet(bsd3, "some comment");
         // create two snapshots
         snp = new Snapshot(newSaveSet3, Instant.now(), null, null);
-        VSnapshot bsnapshot = new VSnapshot(snp, Arrays.asList("t1", "t2"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r1", "r2"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), firstTime);
-        VSnapshot bsnapshot2 = new VSnapshot(snp, Arrays.asList("t3", "t4"), Arrays.asList(true, true),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("r3", "r4"),
-            Arrays.asList(createData(0), createData(0)), Arrays.asList("1", "2"), secondTime);
+        VSnapshot bsnapshot = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t1", createData(0), true, "r1", createData(0), "1", true),
+                new SnapshotEntry("t2", createData(0), false, "r2", createData(0), "2", false)),
+            firstTime);
+        VSnapshot bsnapshot2 = new VSnapshot(snp,
+            Arrays.asList(new SnapshotEntry("t3", createData(0), true, "r3", createData(0), "1", true),
+                new SnapshotEntry("t4", createData(0), false, "r4", createData(0), "2", false)),
+            secondTime);
         manager.saveSnapshot(bsnapshot, "first comment");
         manager.saveSnapshot(bsnapshot2, "second comment");
         snapshots = manager.getSnapshots(newSaveSet, 0, Optional.empty());
         assertEquals(2, snapshots.size());
-
         // *********************************************************************
         // * preparation ends here
         // *********************************************************************
-
         // import only save set
         bl = new BaseLevel(newBranch2, "tralala", "tralala");
         Result<Boolean> result = manager.importData(newSaveSet, newBranch2, Optional.of(bl), ImportType.SAVE_SET);
@@ -635,7 +625,6 @@ public class GitManagerTest {
         assertTrue(data.equalContent(bsd));
         List<Snapshot> snaps = manager.getSnapshots(sets.get(0), 0, Optional.empty());
         assertTrue("No snapshots were imported for this save set", snaps.isEmpty());
-
         // import save set and last snapshot
         bl = new BaseLevel(newBranch2, "tralala2", "tralala2");
         result = manager.importData(newSaveSet2, newBranch2, Optional.of(bl), ImportType.LAST_SNAPSHOT);
@@ -651,7 +640,6 @@ public class GitManagerTest {
         VSnapshot newData = manager.loadSnapshotData(snaps.get(0));
         assertTrue(asnapshot2.equalsExceptSnapshotOrSaveSet(newData));
         assertEquals("second comment", newData.getSnapshot().get().getComment());
-
         // import everything
         bl = new BaseLevel(newBranch2, "tralala3", "tralala3");
         result = manager.importData(newSaveSet3, newBranch2, Optional.of(bl), ImportType.ALL_SNAPSHOTS);
@@ -671,5 +659,4 @@ public class GitManagerTest {
         assertTrue(bsnapshot.equalsExceptSnapshotOrSaveSet(newData));
         assertEquals("first comment", newData.getSnapshot().get().getComment());
     }
-
 }

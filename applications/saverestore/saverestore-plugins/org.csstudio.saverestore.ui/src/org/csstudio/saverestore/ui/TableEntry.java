@@ -29,6 +29,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -45,7 +46,7 @@ import javafx.beans.property.StringProperty;
 public class TableEntry {
 
     private final IntegerProperty id = new SimpleIntegerProperty(this, "id");
-    private final BooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
+    private final SingleListenerBooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
     private final StringProperty pvName = new SimpleStringProperty(this, "pvName");
     private final ObjectProperty<Instant> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private final StringProperty status = new SimpleStringProperty(this, "status", "OK");
@@ -62,6 +63,25 @@ public class TableEntry {
         new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, Optional.empty()));
     private final List<ObjectProperty<VTypePair>> compareStoredReadbacks = new ArrayList<>();
     private Optional<Threshold<?>> threshold = Optional.empty();
+    private final BooleanProperty readOnly = new SimpleBooleanProperty(this,"readOnly",false);
+
+    /**
+     * Construct a new table entry.
+     */
+    public TableEntry() {
+        //when read only is set to true, unselect this PV
+        readOnly.addListener((a,o,n) -> {
+            if (n) {
+                selected.set(false);
+            }
+        });
+        //when selected, check if readonly is also selected and if yes unselect this pv
+        selected.forceAddListener((a,o,n) -> {
+            if (n && readOnly.get()) {
+                selected.set(false);
+            }
+        });
+    }
 
     /**
      * Returns the property that describes whether the live and stored values are identical. This property can only have
@@ -151,6 +171,13 @@ public class TableEntry {
      */
     public ObjectProperty<VTypePair> storedReadbackProperty() {
         return storedReadback;
+    }
+
+    /**
+     * @return the property indicating the the PV is read only or read and write
+     */
+    public BooleanProperty readOnlyProperty() {
+        return readOnly;
     }
 
     /**

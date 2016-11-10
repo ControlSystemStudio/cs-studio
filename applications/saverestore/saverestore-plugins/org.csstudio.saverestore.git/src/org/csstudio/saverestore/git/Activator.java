@@ -13,6 +13,7 @@ package org.csstudio.saverestore.git;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -39,12 +40,12 @@ public class Activator extends AbstractUIPlugin {
     private static Activator defaultInstance;
 
     /**
-     * The default instance.
+     * The default instance if it exists. May not exist when running unit tests.
      *
      * @return the instance
      */
-    public static Activator getInstance() {
-        return defaultInstance;
+    public static Optional<Activator> getInstance() {
+        return Optional.ofNullable(defaultInstance);
     }
 
     /*
