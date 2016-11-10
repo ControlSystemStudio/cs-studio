@@ -28,13 +28,13 @@ PV list is actually a comma separated spreadsheet. Each entry in the spreadsheet
 <ul>
 <li><i>PV</i> is the name of the setpoint PV that will be stored into snapshots and restored when requested</li>
 <li><i>READBACK</i> is the name of the readback PV which will also be stored into snapshots but will not be restored</li>
-<li><i>DELTA</i> is a threshold value for comparison of readback to setpoint (or any other comparison). If values differ 
+<li><i>DELTA</i> is a threshold value for comparison of readback to setpoint (or any other comparison). If values differ
 for less than this threshold (in any direction) they will be considered within limits, if they differ more, they will
 be marked in the snapshot viewer.</li>
 <li><i>READ_ONLY</i> defines whether the PV given in the first column is read only or not. Read-only PVs are included
-when the snapshot is taken, but are never restored. The value in this column should be either <b>true</b> or 
-<b>false</b>. If no value is given, false is assumed.</li> 
-</ul> 
+when the snapshot is taken, but are never restored. The value in this column should be either <b>true</b> or
+<b>false</b>. If no value is given, false is assumed.</li>
+</ul>
 </p>
 <p>
 It is desirable that a save set provides values for all three spreadsheet columns, though it is not mandatory. The
@@ -54,13 +54,13 @@ PV5,,20,false
 </p>
 <h5>DELTA</h5>
 <p>
-Delta can be given as a constant value, which means that two values will always be compared as 
+Delta can be given as a constant value, which means that two values will always be compared as
 <code>
 |value1 - value2| &le; delta
 </code>
 (absolute value of the difference should be less or equal to delta). The delta can also be given in a form of a one or
 two parameter function. If the function accepts one parameter (<code>x</code>), it must return a numerical value,
-which will be used for comparison as described above. In this case the parameter will be the base value at which we 
+which will be used for comparison as described above. In this case the parameter will be the base value at which we
 want to calculate the threshold. If the function accepts two parameters (<code>base</code> and <code>value</code>),
 it must return a boolean value, which indicates if the two values are within limits (<code>true</code>)
 or not (<code>false</code>). In this case the <code>value</code> is the value of the PV, which is being evaluated and
@@ -79,7 +79,7 @@ as a JavaScript function. The following operations and elementary functions are 
 <li><code>Math.asin(x)</code>: arc sine of x in radians</li>
 <li><code>Math.acos(x)</code>: arc cosine of x in radians</li>
 <li><code>Math.atan(x)</code>: arc tangent of x in radians</li>
-<li><code>Math.abs(x)</code>: absolute value of x</li>  
+<li><code>Math.abs(x)</code>: absolute value of x</li>
 <li><code>Math.exp(x)</code>: Euler's number raised to the power of x</li>
 <li><code>Math.log(x)</code>: natural logarithm (base E) of x</li>
 <li><code>Math.sqrt(x)</code>: square root of x</li>
@@ -94,10 +94,10 @@ Functions may also be combined. For example:
 Below are some examples of valid functions. Let's assume that we are comparing stored value <code>Z</code> against the
 live value <code>Y</code>:
 <ul>
-<li><code>x*2</code>: the values will be within limits when the following is satisfied <code>|Z-Y| &le; Y*2</code></li>  
+<li><code>x*2</code>: the values will be within limits when the following is satisfied <code>|Z-Y| &le; Y*2</code></li>
 <li><code>Math.min(x,20)</code>: the values will be within limits when <code>|Z-Y| &le; Math.min(Y,20)</code></li>
 <li><code>(base &#62;&#61; 10 &#38;&#38; value &#62; 15) || (base &#60; 10 &#38;&#38; value &#60; 5)</code>: the values will be
-within limits when the function evaluates to <code>true</code>, meaning <code>(Y &ge; 10 and Z &#62; 15) 
+within limits when the function evaluates to <code>true</code>, meaning <code>(Y &ge; 10 and Z &#62; 15)
 or (Y &#60; 10 and Z &#60; 5)</code></li>
 <li><code>Math.abs(base - value) &le; 20</code>: the values will be within limits when <code>|Z-Y| &le; 20</code></li>
 </ul>
@@ -113,12 +113,12 @@ PV5,,20,
 </code>
 </p>
 NOTE: If you used one of the functions that contains the comma character (<code>,</code>), such as <code>Math.pow(x,y)</code>,
-make sure that you wrap the entire function into double quotes (<code>"</code>).  
+make sure that you wrap the entire function into double quotes (<code>"</code>).
 
 <h4>Editor</h4>
 <p>
 The PV list editor is very simple and does not offer any fancy spreadsheet editing functionality. However, you can use
-certain common editing functions, such as cut, copy, paste, and select all. You may of course use your preferred 
+certain common editing functions, such as cut, copy, paste, and select all. You may of course use your preferred
 spreadsheet editor to generate the contents and then copy them as text into the editor and save it.
 </p>
 <p>
@@ -128,7 +128,7 @@ set will be disabled.
 </p>
 <p>
 When you are done with editing you have an option to save the contents as a new file or overwrite an existing file. You 
-may choose the appropriate action from the <i>File</i> menu. If you decide to save the set as a new file, a location 
+may choose the appropriate action from the <i>File</i> menu. If you decide to save the set as a new file, a location
 selector will be displayed. Use the tree in the selector to select the appropriate location (you may create new folders
 by right clicking a parent item and selecting the <i>New Folder...</i> item). After you have selected the appropriate
 location type in the name for the save set into the <i>Save Set Name</i> field. This is the name that is also
