@@ -27,6 +27,7 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.security.SecuritySupport;
@@ -249,18 +250,18 @@ public final class MasarUtilities {
         array.get(0, array.getLength(), data);
 
         int length = pvName.data.length;
-        List<String> names = new ArrayList<>(length);
-        List<VType> values = new ArrayList<>(length);
+        List<SnapshotEntry> entries = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
-            names.add(pvName.data[i]);
+            String name = pvName.data[i];
             Time time = ValueFactory.newTime(Instant.ofEpochSecond(seconds.data[i], nanos.data[i]));
             Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
                 toStatus(alarmStatus.data[i]));
             boolean isarray = data.data[i].get() instanceof PVArray;
-            values.add(isarray ? toValue((PVArray) data.data[i].get(), time, alarm, dbrType.data[i] % 7)
-                : toValue(data.data[i].get(), time, alarm, dbrType.data[i] % 7));
+            VType value = isarray ? toValue((PVArray) data.data[i].get(), time, alarm, dbrType.data[i] % 7)
+                : toValue(data.data[i].get(), time, alarm, dbrType.data[i] % 7);
+            entries.add(new SnapshotEntry(name, value));
         }
-        return new VSnapshot(snapshot, names, values, snapshotTime, null);
+        return new VSnapshot(snapshot, entries, snapshotTime, null);
     }
 
     /**
@@ -446,7 +447,7 @@ public final class MasarUtilities {
                 ((PVStringArray) val).get(0, val.getLength(), sval);
                 return ValueFactory.newVStringArray(Arrays.asList(sval.data), alarm, time);
         }
-        throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
+        throw new IllegalArgumentException(String.format("Cannot transform the %s to vtype.",String.valueOf(val)));
     }
 
     /**
@@ -552,7 +553,7 @@ public final class MasarUtilities {
                 return ValueFactory.newVEnum(index, enumLabels, alarm, time);
             }
         }
-        throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
+        throw new IllegalArgumentException(String.format("Cannot transform the %s to vtype.",String.valueOf(val)));
     }
 
     /**

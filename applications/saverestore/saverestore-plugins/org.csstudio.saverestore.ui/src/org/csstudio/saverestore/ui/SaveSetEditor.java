@@ -21,7 +21,7 @@ import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.SaveSetData.Entry;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.ui.util.RunnableWithID;
 import org.csstudio.ui.fx.util.FXEditorPart;
 import org.csstudio.ui.fx.util.FXMessageDialog;
@@ -162,9 +162,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             return null;
         }
         int length = d.length;
-        List<String> pvList = new ArrayList<>(content.length);
-        List<String> readbacksList = new ArrayList<>(content.length);
-        List<String> deltasList = new ArrayList<>(content.length);
+        List<SaveSetEntry> entries = new ArrayList<>(content.length);
         for (String s : content) {
             s = s.trim();
             if (s.isEmpty()) {
@@ -181,17 +179,23 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
                 }
                 return null;
             }
-            pvList.add(d[0].trim());
+            String name = d[0].trim();
+            String readback = null, delta = null;
+            boolean readOnly = false;
             if (d.length > 1) {
-                readbacksList.add(d[1].trim());
+                readback = d[1].trim();
             }
             if (d.length > 2) {
-                deltasList.add(d[2].trim());
+                delta = d[2].trim();
             }
+            if (d.length > 3) {
+                readOnly = Boolean.valueOf(d[3].trim());
+            }
+            entries.add(new SaveSetEntry(name, readback, delta, readOnly));
         }
         Optional<SaveSetData> bsd = controller.getSavedSaveSetData();
         SaveSet descriptor = bsd.isPresent() ? bsd.get().getDescriptor() : new SaveSet();
-        return new SaveSetData(descriptor, pvList, readbacksList, deltasList, description);
+        return new SaveSetData(descriptor, entries, description);
     }
 
     /*
@@ -216,11 +220,8 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             }
             new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
                 .ifPresent(saveSet -> SaveRestoreService.getInstance().execute("Save Save Set",
-                    () -> controller
-                        .save(new SaveSetData(saveSet, data.getPVList(), data.getReadbackList(),
-                            data.getDeltaList(), data.getDescription()))
-                    .ifPresent(d -> getSite().getShell().getDisplay()
-                        .asyncExec(() -> setInput(new SaveSetEditorInput(d))))));
+                    () -> controller.save(new SaveSetData(saveSet, data.getEntries(), data.getDescription())).ifPresent(
+                        d -> getSite().getShell().getDisplay().asyncExec(() -> setInput(new SaveSetEditorInput(d))))));
         }
     }
 
@@ -276,7 +277,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
     private void setSaveSet(final SaveSetData data) {
         if (descriptionArea != null) {
-            List<Entry> list = data.getEntries();
+            List<SaveSetEntry> list = data.getEntries();
             final StringBuilder sb = new StringBuilder(list.size() * 200);
             list.forEach(e -> sb.append(e).append('\n'));
             Platform.runLater(() -> {

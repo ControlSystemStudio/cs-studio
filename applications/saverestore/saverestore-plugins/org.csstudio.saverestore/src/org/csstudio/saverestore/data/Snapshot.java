@@ -252,7 +252,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(comment, date, owner, parameters, set);
+        return Objects.hash(Snapshot.class,comment, date, owner, parameters, set);
     }
 
     /*

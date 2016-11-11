@@ -37,8 +37,8 @@ public class Threshold<T extends Number> implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(Threshold.class.getName());
     private static final long serialVersionUID = 7839497629386640415L;
 
-//    private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs(", "cos(", "acos(", "sin(", "asin(",
-//        "tan(", "atan(", "exp(", "log(", "max(", "min(", "pow(", "sqrt(" };
+    // private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs(", "cos(", "acos(", "sin(", "asin(",
+    // "tan(", "atan(", "exp(", "log(", "max(", "min(", "pow(", "sqrt(" };
     private static final String BASE = "base";
     private static final String VALUE = "value";
     private static final ScriptEngine EVALUATOR = new ScriptEngineManager().getEngineByName("JavaScript");
@@ -58,18 +58,21 @@ public class Threshold<T extends Number> implements Serializable {
         } else if (n instanceof Double) {
             return (U) Double.valueOf(-n.byteValue());
         }
-        throw new IllegalArgumentException("Cannot negate the value " + n);
+        throw new IllegalArgumentException(String.format("Cannot negate the value %s.", String.valueOf(n)));
     }
 
     private static void checkValue(Number n, boolean positive) {
         if (!(n instanceof Byte || n instanceof Short || n instanceof Integer || n instanceof Long || n instanceof Float
             || n instanceof Double)) {
-            throw new IllegalArgumentException("The value " + n + " is not one of the primitive type wrappers.");
+            throw new IllegalArgumentException(
+                String.format("The value %s is not one of the primitive type wrappers.", String.valueOf(n)));
         }
         if (positive && n.doubleValue() < 0.) {
-            throw new IllegalArgumentException("The value " + n + " should be non negative.");
+            throw new IllegalArgumentException(
+                String.format("The value %s should be non negative.", String.valueOf(n)));
         } else if (!positive && n.doubleValue() > 0.) {
-            throw new IllegalArgumentException("The value " + n + " should be non positive.");
+            throw new IllegalArgumentException(
+                String.format("The value %s should be non positive.", String.valueOf(n)));
         }
     }
 
@@ -218,14 +221,14 @@ public class Threshold<T extends Number> implements Serializable {
                     Bindings b = new SimpleBindings();
                     b.put(BASE, base);
                     b.put("x", base);
-                    double threshold = Math.abs(((Number) EVALUATOR.eval(function,b)).doubleValue());
+                    double threshold = Math.abs(((Number) EVALUATOR.eval(function, b)).doubleValue());
                     double v = Math.abs(value.doubleValue() - base.doubleValue());
                     return v <= threshold;
                 }
             } catch (ScriptException | ClassCastException | NullPointerException e) {
                 isMalformed = true;
                 if (logError) {
-                    LOGGER.log(Level.WARNING, "Threshold function " + function + " cannot be evaluated.",
+                    LOGGER.log(Level.WARNING, String.format("Threshold function %s cannot be evaluated.", function),
                         (Throwable) e);
                     logError = false;
                 }
@@ -247,7 +250,7 @@ public class Threshold<T extends Number> implements Serializable {
     public boolean test() {
         boolean log = logError;
         logError = false;
-        isWithinThreshold((T)Long.valueOf(1), (T)Long.valueOf(0));
+        isWithinThreshold((T) Long.valueOf(1), (T) Long.valueOf(0));
         logError = log;
         return !isMalformed;
     }

@@ -125,7 +125,7 @@ public class BaseLevel implements Comparable<BaseLevel>, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getStorageName(), getBranch());
+        return Objects.hash(BaseLevel.class,getStorageName(), getBranch());
     }
 
     /*

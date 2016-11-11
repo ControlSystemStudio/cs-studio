@@ -37,6 +37,15 @@ public class SingleListenerBooleanProperty extends SimpleBooleanProperty {
         super(bean, name, initialValue);
     }
 
+    /**
+     * Add a listener, which is always added to this property, even if one (or more) listener already exists.
+     *
+     * @param listener the listener to add
+     */
+    public void forceAddListener(ChangeListener<? super Boolean> listener) {
+        super.addListener(listener);
+    }
+
     /*
      * (non-Javadoc)
      * @see javafx.beans.property.BooleanPropertyBase#addListener(javafx.beans.value.ChangeListener)
