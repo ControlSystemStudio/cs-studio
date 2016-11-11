@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
@@ -189,12 +190,12 @@ public class MasarUtilitiesTest {
         PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_VSNAPSHOT);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_SECONDS, ScalarType.pvLong)).put(0, 3,
             new long[] { 1, 2, 3 }, 0);
-        ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, ScalarType.pvString)).put(0, 3,
-            new String[] { "ok1", "ok2", "ok3" }, 0);
-        ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME, ScalarType.pvString)).put(0, 3,
-            new String[] { "channel1", "channel2", "channel3" }, 0);
-        ((PVBooleanArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_IS_CONNECTED, ScalarType.pvBoolean)).put(0, 3,
-            new boolean[] { true,true,false }, 0);
+        ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, ScalarType.pvString))
+            .put(0, 3, new String[] { "ok1", "ok2", "ok3" }, 0);
+        ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME, ScalarType.pvString)).put(0,
+            3, new String[] { "channel1", "channel2", "channel3" }, 0);
+        ((PVBooleanArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_IS_CONNECTED, ScalarType.pvBoolean))
+            .put(0, 3, new boolean[] { true, true, false }, 0);
         ((PVIntArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_DBR_TYPE, ScalarType.pvInt)).put(0, 3,
             new int[] { 1, 2, 3 }, 0);
         ((PVIntArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_NANOS, ScalarType.pvInt)).put(0, 3,
@@ -209,13 +210,13 @@ public class MasarUtilitiesTest {
         PVUnion u1 = PVDataFactory.getPVDataCreate().createPVUnion(uu1);
         ScalarArray s1 = FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvDouble);
         PVDoubleArray a1 = (PVDoubleArray) PVDataFactory.getPVDataCreate().createPVScalarArray(s1);
-        a1.put(0, 3, new double[]{1, 2,3},0);
+        a1.put(0, 3, new double[] { 1, 2, 3 }, 0);
         u1.set(a1);
         Union uu2 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
         PVUnion u2 = PVDataFactory.getPVDataCreate().createPVUnion(uu2);
         ScalarArray s2 = FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong);
         PVLongArray a2 = (PVLongArray) PVDataFactory.getPVDataCreate().createPVScalarArray(s2);
-        a2.put(0, 3, new long[]{1, 2,3},0);
+        a2.put(0, 3, new long[] { 1, 2, 3 }, 0);
         u2.set(a2);
         Union uu3 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
         PVUnion u3 = PVDataFactory.getPVDataCreate().createPVUnion(uu3);
@@ -230,15 +231,16 @@ public class MasarUtilitiesTest {
         Instant time = Instant.now();
         VSnapshot snapshot = MasarUtilities.resultToVSnapshot(struct, s, time);
 
-        assertEquals(Arrays.asList("channel1", "channel2", "channel3"),snapshot.getNames());
+        assertEquals(Arrays.asList("channel1", "channel2", "channel3"),
+            snapshot.getEntries().stream().map(e -> e.getPVName()).collect(Collectors.toList()));
         assertEquals(time, snapshot.getTimestamp());
-        List<VType> values = snapshot.getValues();
+        List<VType> values = snapshot.getEntries().stream().map(e -> e.getValue()).collect(Collectors.toList());
 
         VDoubleArray v1 = (VDoubleArray) values.get(0);
         assertEquals(3, v1.getData().size());
-        assertEquals(1, v1.getData().getDouble(0),0);
-        assertEquals(2, v1.getData().getDouble(1),0);
-        assertEquals(3, v1.getData().getDouble(2),0);
+        assertEquals(1, v1.getData().getDouble(0), 0);
+        assertEquals(2, v1.getData().getDouble(1), 0);
+        assertEquals(3, v1.getData().getDouble(2), 0);
         assertEquals(AlarmSeverity.MINOR, v1.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(1).getName(), v1.getAlarmName());
         Instant t1 = Instant.ofEpochSecond(1, 1);
@@ -246,9 +248,9 @@ public class MasarUtilitiesTest {
 
         VLongArray v2 = (VLongArray) values.get(1);
         assertEquals(3, v2.getData().size());
-        assertEquals(1, v2.getData().getLong(0),0);
-        assertEquals(2, v2.getData().getLong(1),0);
-        assertEquals(3, v2.getData().getLong(2),0);
+        assertEquals(1, v2.getData().getLong(0), 0);
+        assertEquals(2, v2.getData().getLong(1), 0);
+        assertEquals(3, v2.getData().getLong(2), 0);
         assertEquals(AlarmSeverity.MAJOR, v2.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(2).getName(), v2.getAlarmName());
         Instant t2 = Instant.ofEpochSecond(2, 2);
@@ -258,7 +260,7 @@ public class MasarUtilitiesTest {
         assertEquals("disabled", v3.getValue());
         assertEquals(AlarmSeverity.INVALID, v3.getAlarmSeverity());
         assertEquals(gov.aps.jca.dbr.Status.forValue(3).getName(), v3.getAlarmName());
-        Instant t3 = Instant.ofEpochSecond(3,3);
+        Instant t3 = Instant.ofEpochSecond(3, 3);
         assertEquals(t3, v3.getTimestamp());
-   }
+    }
 }

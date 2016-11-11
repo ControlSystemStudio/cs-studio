@@ -97,7 +97,7 @@ public class Branch implements Comparable<Branch>, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(shortName);
+        return Objects.hash(Branch.class,shortName);
     }
 
     /*

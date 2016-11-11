@@ -21,7 +21,8 @@ The table displays the data of one or more snapshots at a time. Based on the num
 table might vary. A single row in the table always represents one PV and its properties/values in different columns.
 In case of a single snapshot the table displays the following columns:
 <ul>
-<li>Selection Box: indicates if this PV will be restored when the <code>Restore</code> button is pressed</li>
+<li>Selection Box: indicates if this PV will be restored when the <code>Restore</code> button is pressed; for read-only
+PVs, this box is unticked and disabled</li>
 <li>#: the order number, which indicates the order in which the PVs are defined in the snapshot</li>
 <li>PV: the name of the setpoint PV</li>
 <li>Timestamp: the timestamp of the PV value that was stored in the snapshot</li>
@@ -72,8 +73,12 @@ with a chart, where the horizontal axis displays the array index and the vertica
 at that index. To zoom in on an area in the chart simply drag the the mouse from left to right over the area that you
 wish to zoom in. To zoom out drag the mouse from right to left (this will always reset the zoom action to default).
 <br/>
-<div class='figure'><img src="chart.png"/><p>Fig. 3: Array values displayed in a chart</p></div>
 <br/>
+<div class='figure'><img src="chart.png"/><p>Fig. 3: Array values displayed in a chart</p></div>
+The popup menu also provides an option <b>Read-Only</b>, which is checked whether if the PV was defined to be read-only
+in the save set, or unchecked if the PV was defined as read/write. Use this option to force a read-only PV into a
+read/write state and vice versa.
+<br/><br/>
 Right-clicking on the headers of the snapshot stored values (the headers which contain <code><i>Timestamp</i> (&#916; Base)</code>
 will display a popup menu, which offers a few additional options:
 <ul>

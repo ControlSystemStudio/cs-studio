@@ -43,7 +43,9 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.eclipse.jface.window.IShellProvider;
@@ -81,12 +83,13 @@ public class SelectorTest {
     private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, date.plusMillis(5000), "new snapshot", "user");
     private Snapshot someBranchSnapshot = new Snapshot(someBranchSaveSet, date.plusMillis(5000), "new snapshot",
         "user");
-    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"), Arrays.asList("rb1", "rb2"),
-        Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"),
-        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
-    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot, Arrays.asList("pv1"),
-        Arrays.asList(VDisconnectedData.INSTANCE), Instant.now(), null);
+    private SaveSetData bsd = new SaveSetData(branchSaveSet,
+        Arrays.asList(new SaveSetEntry("pv1", "rb1", "d1", false), new SaveSetEntry("pv2", "rb2", "d2", false)),
+        "description");
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3,
+        Arrays.asList(new SnapshotEntry("pv1", VDisconnectedData.INSTANCE)), Instant.now(), null);
+    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot,
+        Arrays.asList(new SnapshotEntry("pv1", VDisconnectedData.INSTANCE)), Instant.now(), null);
 
     @SuppressWarnings("unchecked")
     @Before

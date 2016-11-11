@@ -39,7 +39,7 @@ public final class DataProviderWrapper {
             throw new IllegalArgumentException("Data provider id not defined.");
         }
         if (provider == null) {
-            throw new IllegalArgumentException("Data provider implementation for " + id + " missing");
+            throw new IllegalArgumentException(String.format("Data provider implementation for %s missing",id));
         }
         this.id = id;
         this.name = name == null ? id : name;
@@ -109,7 +109,7 @@ public final class DataProviderWrapper {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(DataProviderWrapper.class,id);
     }
 
     /*

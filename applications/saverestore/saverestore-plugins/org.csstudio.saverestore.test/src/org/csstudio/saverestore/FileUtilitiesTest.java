@@ -23,11 +23,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ListDouble;
@@ -79,19 +82,21 @@ public class FileUtilitiesTest {
     public void testSaveSetData() throws IOException {
         SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
-        SaveSetData bsd = new SaveSetData(set, Arrays.asList("pv1", "pv2"), Arrays.asList("rb1", "rb2"),
-            Arrays.asList("d1", "Math.pow(x,3)"), "some description");
+        SaveSetData bsd = new SaveSetData(set, Arrays.asList(new SaveSetEntry("pv1","rb1","d1",true),
+            new SaveSetEntry("pv2","rb2","Math.pow(x,3)",false)),"some description");
         String content = FileUtilities.generateSaveSetContent(bsd);
         assertEquals(
-            "# Description:\n# some description\n#\nPV,READBACK,DELTA\npv1,rb1,d1\npv2,rb2,\"Math.pow(x,3)\"\n",
+            "# Description:\n# some description\n#\nPV,READBACK,DELTA,READ_ONLY\npv1,rb1,d1,true\npv2,rb2,\"Math.pow(x,3)\",false\n",
             content);
 
         SaveSetContent bsc = FileUtilities
             .readFromSaveSet(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         assertEquals("some description", bsc.getDescription());
-        assertArrayEquals(new String[] { "pv1", "pv2" }, bsc.getNames().toArray(new String[2]));
-        assertArrayEquals(new String[] { "rb1", "rb2" }, bsc.getReadbacks().toArray(new String[2]));
-        assertArrayEquals(new String[] { "d1", "Math.pow(x,3)" }, bsc.getDeltas().toArray(new String[2]));
+        List<SaveSetEntry> entries = bsc.getEntries();
+        assertArrayEquals(new String[] { "pv1", "pv2" }, entries.stream().map(e -> e.getPVName()).toArray(String[]::new));
+        assertArrayEquals(new String[] { "rb1", "rb2" }, entries.stream().map(e -> e.getReadback()).toArray(String[]::new));
+        assertArrayEquals(new String[] { "d1", "Math.pow(x,3)" }, entries.stream().map(e -> e.getDelta()).toArray(String[]::new));
+        assertArrayEquals(new Boolean[] { true, false }, entries.stream().map(e -> e.isReadOnly()).toArray(Boolean[]::new));
     }
 
     /**
@@ -119,28 +124,31 @@ public class FileUtilitiesTest {
         VDouble rval1 = ValueFactory.newVDouble(6d, alarmNone, time, display);
         VDoubleArray rval2 = ValueFactory.newVDoubleArray(new ArrayDouble(1, 1, 1), alarmNone, time, display);
 
-        VSnapshot vs = new VSnapshot(snapshot, Arrays.asList("pv1", "pv2"), Arrays.asList(true, false),
-            Arrays.asList(val1, val2), Arrays.asList("rb1", "rb2"), Arrays.asList(rval1, rval2),
-            Arrays.asList("50", "Math.min(x,3)"), time.getTimestamp());
+        VSnapshot vs = new VSnapshot(snapshot,
+            Arrays.asList(new SnapshotEntry("pv1", val1, true, "rb1", rval1, "50", true),
+                new SnapshotEntry("pv2", val2, false, "rb2", rval2, "Math.min(x,3)", false)),
+            time.getTimestamp());
 
         String content = FileUtilities.generateSnapshotFileContent(vs);
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(d);
         String CONTENT = "# Date: " + date + "\n"
-            + "PV,SELECTED,TIMESTAMP,STATUS,SEVERITY,VALUE_TYPE,VALUE,READBACK,READBACK_VALUE,DELTA\n"
-            + "pv1,1,1455296909.369000000,HIGH,MINOR,double,\"5.0\",rb1,\"6.0\",50\n"
-            + "pv2,0,1455296909.379000000,NONE,NONE,double_array,\"[1.0;2.0;3.0]\",rb2,\"[1.0;1.0;1.0]\",\"Math.min(x,3)\"\n";
+            + "PV,SELECTED,TIMESTAMP,STATUS,SEVERITY,VALUE_TYPE,VALUE,READBACK,READBACK_VALUE,DELTA,READ_ONLY\n"
+            + "pv1,1,1455296909.369000000,HIGH,MINOR,double,\"5.0\",rb1,\"6.0\",50,true\n"
+            + "pv2,0,1455296909.379000000,NONE,NONE,double_array,\"[1.0;2.0;3.0]\",rb2,\"[1.0;1.0;1.0]\",\"Math.min(x,3)\",false\n";
         assertEquals(CONTENT, content);
 
         SnapshotContent sc = FileUtilities
             .readFromSnapshot(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         assertEquals(time.getTimestamp(), sc.getDate());
-        assertArrayEquals(new String[] { "pv1", "pv2" }, sc.getNames().toArray(new String[2]));
-        assertArrayEquals(new String[] { "rb1", "rb2" }, sc.getReadbacks().toArray(new String[2]));
-        assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, sc.getDeltas().toArray(new String[2]));
-        assertArrayEquals(new Boolean[] { true, false }, sc.getSelected().toArray(new Boolean[2]));
+        List<SnapshotEntry> entries = sc.getEntries();
+        assertArrayEquals(new String[] { "pv1", "pv2" }, entries.stream().map(e -> e.getPVName()).toArray(String[]::new));
+        assertArrayEquals(new String[] { "rb1", "rb2" }, entries.stream().map(e -> e.getReadbackName()).toArray(String[]::new));
+        assertArrayEquals(new String[] { "50", "Math.min(x,3)" }, entries.stream().map(e -> e.getDelta()).toArray(String[]::new));
+        assertArrayEquals(new Boolean[] { true, false }, entries.stream().map(e -> e.isSelected()).toArray(Boolean[]::new));
+        assertArrayEquals(new Boolean[] { true, false}, entries.stream().map(e -> e.isReadOnly()).toArray(Boolean[]::new));
 
         // compare values
-        List<VType> data = sc.getData();
+        List<VType> data = sc.getEntries().stream().map(e -> e.getValue()).collect(Collectors.toList());
         assertEquals(2, data.size());
         VDouble v1 = (VDouble) data.get(0);
         assertEquals(val1.getValue(), v1.getValue());
@@ -159,7 +167,7 @@ public class FileUtilitiesTest {
         assertEquals(val2.getAlarmName(), v2.getAlarmName());
 
         // compare readbacks
-        data = sc.getReadbackData();
+        data = sc.getEntries().stream().map(e -> e.getReadbackValue()).collect(Collectors.toList());
         assertEquals(2, data.size());
         v1 = (VDouble) data.get(0);
         assertEquals(rval1.getValue(), v1.getValue());

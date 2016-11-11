@@ -41,7 +41,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
      */
     public PreferencesPage() {
         super(FieldEditorPreferencePage.GRID);
-        setPreferenceStore(Activator.getInstance().getPreferenceStore());
+        setPreferenceStore(Activator.getInstance().get().getPreferenceStore());
         setMessage("Save and Restore Git Properties");
     }
 

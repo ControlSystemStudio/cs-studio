@@ -136,6 +136,6 @@ public enum ValueType {
                 return t.typeName;
             }
         }
-        throw new IllegalArgumentException("Unknown data type " + type.getClass() + ".");
+        throw new IllegalArgumentException(String.format("Unknown data type %s.", type.getClass()));
     }
 }
