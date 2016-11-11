@@ -86,11 +86,14 @@ public final class DIIRTPreferencesHandler {
     }
 
     private String                configurationDirectory = null;
-    private ScopedPreferenceStore store                  = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
+//    private ScopedPreferenceStore store                  = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
+    private ScopedPreferenceStore store;
 
     private final transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     private DIIRTPreferencesHandler ( ) {
+
+        store = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
 
         String storedDirectory = store.getString("diirt.home");
 
@@ -168,7 +171,6 @@ public final class DIIRTPreferencesHandler {
     }
 
     private interface DIIRTPreferencesHandlerInstance {
-
         DIIRTPreferencesHandler SINGLETON_INSTANCE = new DIIRTPreferencesHandler();
     }
 
