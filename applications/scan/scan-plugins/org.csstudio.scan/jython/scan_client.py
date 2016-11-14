@@ -1,19 +1,14 @@
 """
 Scan Client Tools
 
-Helpers for connecting to the Scan Server,
-to assemble commands for a scan,
-submit them to the server,
-monitor the execution.
+DEPRECATED.
 
-Shortcuts for 1D, 2D, *D scans.
+This API is based on the Java org.csstudio.scan.client.ScanClient
+and thus limited to Jython.
 
-Based on the scan server REST interface, this could be done in pure python code.
-For jython, however, it for now seemed easier to call the already
-existing Java classes, so this code depends on org.csstudio.scan.* packages.
-When invoked from Jython scripts associated with BOY displays,
-the Eclipse class loader provides them.
-To execute from jython command line outside of CSS, see jython.sh
+For a Python scan client library that can be used by
+both Jython and C-Python,
+see https://github.com/PythonScanClient/PyScanClient#pyscanclient
 
 @author: Kay Kasemir
 """
@@ -112,12 +107,13 @@ class ScanClient(object):
         return self.client.simulateScan(xml)
 
 
-    def submit(self, name, commands):
+    def submit(self, name, commands, queue=True):
         """
         Submit a CommandSequence to the server for execution
         
         @param name  Name of the scan
         @param commands  CommandSequence or string with XML text
+        @param queue  Submit to scan server queue, or execute as soon as possible?
           
         @return Scan ID
         """
@@ -128,7 +124,7 @@ class ScanClient(object):
             xml = commands.getXML()
         else:
             raise Exception('Expecting CommandSequence or XML-text')
-        self.id = self.client.submitScan(name, xml)
+        self.id = self.client.submitScan(name, xml, queue)
         return self.id
 
     def getScanInfo(self, id=-1):
