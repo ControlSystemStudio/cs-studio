@@ -8,37 +8,38 @@ Several scan configurations can be submitted to the server.
 Ongoing scans can be monitored, paused, resumed, aborted.
 </p>
 
-<p>For usage info see
-<a href="../org.csstudio.scan.ui/doc/scansystem.html">../org.csstudio.scan.ui/doc/scansystem.html</a>
-</p>
-
-
 <h2>Setup</h2>
 
 <h3>Prepare CSS</h3>
 
 <ul>
-<li>Start with IDE that can run SNS CSS.</li>
-<li>Add PyDev to the IDE.</li>
-<li>Locate the folders org.csstudio.scan/jython and org.csstudio.scan/examples.</li>
+<li>Create a CSS product that includes the org.csstudio.scan.ui.feature.</li>
+<li>It's suggested to also add PyDev to the product.</li>
+</ul>
+
+<h3>Get Python client and examples</h3>
+
+<ul>
+<li>Get the PyScanClient from <a href="https://github.com/PythonScanClient/PyScanClient">https://github.com/PythonScanClient/PyScanClient</a>.</li>
+<li>Follow the installation instructions.</li>
 </ul>
 
 <h3>Run Demo IOC</h3>
 
-<ul>
-<li>Run EPICS softIoc for examples/simulation.db:
-    <pre>cd /path/to/org.csstudio.scan/examples; softIoc -m "P=Demo:Scan:" -d simulation.db -d scan.db</pre>
-</li>
-</ul>
+<pre>
+cd PyScanClient/example/ioc
+. runIoc.sh
+</pre>
 
 <h3>Run Scan Server</h3>
 
-<p>Run or export the org.csstudio.scan.server/ScanServer.product.
+<p>Run or export the org.csstudio.scan.server/scan-server.product.
 </p>
 
 <p>The default settings in org.csstudio.scan.server/plugin_customization.ini
-configure it for 'localhost' and is sufficient for initial tests.
-Adjust to look at other PVs, store the log in a specific folder etc.
+configure it for 'localhost', sufficient for initial tests.
+For a production setup, you need to set the EPICS connection parameters
+and move the log database location to a directory outside of /tmp.
 </p>
 
 <p>The ScanServer product can be run with command-line option
@@ -58,104 +59,77 @@ By default, the scan server REST interface uses port 4810.
 Use /etc/sysconfig/iptables to enable that port for TCP access.
 </p>
 
-<p>To access such a remote ScanServer, run clients with
-<pre>
-  -DScanServerHost=... -DScanServerPort=4810
-</pre>
+
+<h3>Access Scan Server Web Interface</h3>
+
+<p>Open a web browser for the URL
+<a href="http://localhost:4810/index.html">http://localhost:4810/index.html</a>.
+In particular, follow the links to submit a scan and then monitor its progress.
 </p>
 
-<h3>Run CSS with Scan UI</h3>
-
-<p>Add the org.csstudio.scan.ui.feature to the CSS product,
-which includes the scan monitor as well as PyDev.
+<p>This REST API is the underlying interface to the scan server.
+While it can be used to debug the system,
+it is more practical to access it via the CSS Scan UI
+and the PyScanClient.
 </p>
 
-<p>Configure the product as follows after its initial start:
+
+<h3>Interact with Scan Server from CSS and Python</h3>
+
+
+<p>Configure the CS-Studio product as follows after its initial start:
 </p>
 
 <ul>
-<li>In CSS, create a "linked folder" for /examples so you can open the *.opi files
-    and example scripts.
+<li>Check the Menu Edit > Preferences > Scan for the host and port of the scan server.
 </li>
-<li>To enable full PyDev use, open Edit/Preferences, PyDev.</li>
-<li>Under "Interactive Console", increase the
-    "Maximum connection attempts for initial communication"
-    from its default of 50 to 200.
-</li>
-<li>Configure "Interactive Console", adding the following to the
-    "Initial interpreter commands":
-<pre>
-import sys
-sys.path.append('/path/to/org.csstudio.scan/jython')
-from scan_client import *
-</pre>
-    This will allow use of jython scan commands from the interactive console.
-</li>
-<li>Configure "Interpreter - Jython".
-    <ol>
-    <li>Ideally, point it to a jython.jar of a full jython setup,
-        i.e. one that includes a Lib/ subdirectory
-        with standard library sources.
-        As a minimal alternative, configure it to use the jython.jar
-        in org.csstudio.scan.client/lib
-    </li>
-    <li>Add the /path/to/org.csstudio.scan/jython to the PYTHONPATH list of
-        the Jython interpreter.
-    </li>
-    </ol>
-</li>
-
-
-
-<li>Configure "Interpreter - Python" to your python binary, e.g. /usr/bin/python.
-    This seems to be necessary to support full PyDev source-level
-    debugging, even when only planning to use Jython.
+<li>In CSS, create a "linked folder" for the PyScanClient/example directory.
 </li>
 <li>Configure "CSS Applications", "Display", "BOY", "OPI Runtime", "PYTHONPATH" to
-    include the file system path to org.csstudio.scan/jython.
+    include the following:
+    <ol>
+    <li>The path to your PyScanClient installation</li>
+    <li>The path to your PyScanClient/example</li>
+    </ol> 
 </li>
+
 </ul>
 
 <p>Things to try:
 </p>
 
 <ul>
-<li>Invoke menu CSS/Display/Scan Monitor</li>
-<li>Open the examples/*.opi files</li>
-<li>Open examples/custom_scan.py in the PyDev editor.</li>
-<li>Use the context menu Run As, Jython... or Debug As, Jython </li>
-</ul>
-
-<h3>PyDev Jython Console</h3>
-
-<ul>
-<li>Open eclipse console view</li>
-<li>From its toolbar, open new PyDev Console, selecting Jython when prompted.</li>
-<li><p>A new PyDev console for Jython should appear in the Eclipse console view,
-    executing the initial commands like "import sys".
-    </p>
-    <p>If you get an error "Failed to read servers response: Connection refused",
-    increase the "Maximum connection attempts for initial communication" setting
-    mentioned in the previous section.
-    </p>
+<li>Open the PyScanClient/example/opi/1_BeamLine.opi.
+    Manually open the shutter, move the simulated motors or the 'device'.
 </li>
-<li>Type this:
-<pre>
-// These "Initial interpreter commands" should appear:
-sys.path.append('/path/to/org.csstudio.scan/examples')
-from scan_client import *
-
-// Then try to create scans from the console
-scan('Demo 1D', ('xpos', 0, 10, 0.1))
-
-scan('Demo 2D', ('xpos', 0, 10, 0.1), ('ypos', 0, 10, -0.5))
-
-scan.server.getScanInfos()
-</pre>
+<li>Invoke menu CSS > Scan > Scan Monitor.
+    Press the "i" info icon and note the paths that the scan server uses.
+    By default, this will include platform:/plugin/org.csstudio.scan/examples,
+    i.e. it uses a built-in set of configuration files.
+    These files mostly match what's in the PyScanClient/example/server folder.
+    You can try to update the scan server configuration
+    to use the PyScanClient/example/server instead of its
+    built-in examples because it will allow you to edit the files.
 </li>
-<li>
+<li>Invoke menu CSS > Scan > Scan Editor, use it to assemble a scan that consists of some 'Delay' and 'Set' commands,
+    using the PV names from the simulated beamline.
+</li>
+<li>Open the examples/*.py files.
+    When PyDev is installed, these can be executed within CSS.
+    Otherwise, use python on the command line.
+</li>
+<li>Open the remaining examples/opi files and see how they
+    invoke PyScanClient-based scripts.
 </li>
 </ul>
+
+<p>For more on the CS-Studio scan UI see
+<a href="../org.csstudio.scan.ui/doc/scansystem.html">../org.csstudio.scan.ui/doc/scansystem.html</a>
+</p>
+
+<p>For more on the PyScanClient see its documentation.</p>
+
+
 
 </body>
 </html>
