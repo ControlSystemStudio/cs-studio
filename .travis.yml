@@ -10,8 +10,6 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-jdk:
-  - oraclejdk8
 
 install: echo 'Skipping mvn install'
 
