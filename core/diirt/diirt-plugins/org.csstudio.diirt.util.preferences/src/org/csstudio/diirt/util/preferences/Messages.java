@@ -66,6 +66,7 @@ public class Messages extends NLS {
     public static String DSPP_directoryCaption_text;
     public static String DSPP_init_directoryText_exceptionMessage;
     public static String DSPP_overrideCheckBox_text;
+    public static String DSPP_resolveMessage;
     public static String DSPP_title;
 
     static {
