@@ -49,6 +49,11 @@ public class CompositeDataSource {
 	public enum DataSourceProtocol {
 
 		/**
+		 * No data source protocol
+		 */
+		none,
+
+		/**
 		 * Channel Access
 		 */
 		ca

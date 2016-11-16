@@ -15,9 +15,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -33,8 +36,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public static final String[][] AVAILABLE_DATA_SOURCES       = {
-        { "None", "none" },
-        { "Channel Access", "ca" },
+        { "None", DataSourceProtocol.none.name() },
+        { "Channel Access", DataSourceProtocol.ca.name() },
     };
     public static final Logger     LOGGER                       = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
     public static final String     PLATFORM_URI_PREFIX          = "platform:";
@@ -112,6 +115,32 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public DIIRTPreferencesPlugin ( ) {
         instance = this;
+    }
+
+    /**
+     * Updates all default values reading them from the files in the
+     * given DIIRT configuration directory.
+     *
+     * @param confDir The DIIRT configuration directory.
+     */
+    public void updateDefaults ( String confDir ) {
+
+        if ( StringUtils.isBlank(confDir) ) {
+            LOGGER.warning("Null, empty or blank 'confDir'");
+            return;
+        } else {
+            try {
+                confDir = resolvePlatformPath(confDir);
+            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
+                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
+                return;
+            }
+        }
+
+
+
+
+
     }
 
 }

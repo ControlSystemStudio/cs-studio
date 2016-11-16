@@ -13,13 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -38,10 +35,7 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wb.swt.SWTResourceManager;
 
@@ -50,7 +44,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 3 Nov 2016
  */
-public class DataSourcesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class DataSourcesPreferencePage extends BasePreferencePage {
 
     private static String lastPath = System.getProperty("user.home");
 
@@ -79,6 +73,7 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
     @Override
     public Control createContents ( Composite parent ) {
 
+        IPreferenceStore store = getPreferenceStore();
         Composite container = new Composite(parent, SWT.NULL);
 
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -109,7 +104,9 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
 
                 }
 
-                verifyAndNotifyWarning(choice);
+                if ( verifyAndNotifyWarning(choice) ) {
+                    DIIRTPreferencesPlugin.get().updateDefaults(choice);
+                }
 
                 treeViewer.setInput(choice);
                 treeViewer.refresh();
@@ -119,14 +116,11 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
             }
         };
 
-        directoryEditor.getLabelControl(container).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+        directoryEditor.setChangeButtonText(Messages.DSPP_browseButton_text);
         directoryEditor.getTextControl(container).setEditable(false);
         directoryEditor.getTextControl(container).setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         directoryEditor.getTextControl(container).setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-        directoryEditor.setChangeButtonText(Messages.DSPP_browseButton_text);
-        directoryEditor.setPage(this);
-        directoryEditor.setPreferenceStore(getPreferenceStore());
-        directoryEditor.load();
+        addField(directoryEditor, container);
 
         Composite treeComposite = new Composite(container, SWT.NONE);
 
@@ -139,7 +133,6 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
         treeViewer.setLabelProvider(new FileTreeLabelProvider());
         treeViewer.setContentProvider(new FileTreeContentProvider());
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-
             @Override
             public void doubleClick ( DoubleClickEvent event ) {
 
@@ -156,7 +149,6 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
                 }
 
             }
-
         });
 
         cdsGroup = new Group(container, SWT.NONE);
@@ -170,33 +162,22 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
 
         defaultDataSourceEditor = new ComboFieldEditor(DIIRTPreferencesPlugin.PREF_DS_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, DIIRTPreferencesPlugin.AVAILABLE_DATA_SOURCES, cdsGroup);
 
-        defaultDataSourceEditor.setPage(this);
-        defaultDataSourceEditor.setPreferenceStore(getPreferenceStore());
-        defaultDataSourceEditor.load();
-        defaultDataSourceEditor.getLabelControl(cdsGroup).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-        defaultDataSourceEditor.setPropertyChangeListener(e -> {
-            System.out.println("+++ PROPERTY: " + e.getProperty());
-        });
+        addField(
+            defaultDataSourceEditor,
+            cdsGroup,
+            () -> getPreferenceStore().getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT)
+        );
 
         delimiterEditor = new StringFieldEditor(DIIRTPreferencesPlugin.PREF_DS_DELIMITER, Messages.DSPP_delimiterCaption_text, cdsGroup);
 
-        delimiterEditor.getLabelControl(cdsGroup).setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
         delimiterEditor.getTextControl(cdsGroup).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-        delimiterEditor.getTextControl(cdsGroup).addModifyListener(e -> {
-            delimiterEditor.getLabelControl(cdsGroup).setForeground(
-                !Objects.equals(getPreferenceStore().getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER), delimiterEditor.getStringValue())
-                ? SWTResourceManager.getColor(SWT.COLOR_BLUE)
-                : SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND)
-            );
-            System.out.println("*** PROPERTY V: " + getPreferenceStore().getString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER));
-            System.out.println("*** PROPERTY E: " + delimiterEditor.getStringValue());
-        });
-        delimiterEditor.setPropertyChangeListener(e -> {
-            System.out.println("*** PROPERTY: " + e.getProperty());
-        });
-        delimiterEditor.setPage(this);
-        delimiterEditor.setPreferenceStore(getPreferenceStore());
-        delimiterEditor.load();
+        addField(
+            delimiterEditor,
+            cdsGroup,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER)
+        );
 
         //  This must be the last statement statement for the cdsGroup widget.
         cdsGroupLayout.numColumns = 3;
@@ -207,30 +188,14 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
 
     }
 
-    /**
-     * Initialize the preference page.
-     */
-    @Override
-    public void init ( IWorkbench workbench ) {
-    }
-
     @Override
     public boolean performOk ( ) {
         return super.performOk();
     }
 
     @Override
-    protected IPreferenceStore doGetPreferenceStore ( ) {
-        return DIIRTPreferencesPlugin.get().getPreferenceStore();
-    }
-
-    @Override
     protected void performDefaults ( ) {
         super.performDefaults();
-    }
-
-    private void clearWarning () {
-        Display.getDefault().asyncExec(() -> setMessage(null, NONE));
     }
 
     private Image getFileImage ( ) {
@@ -282,27 +247,29 @@ public class DataSourcesPreferencePage extends PreferencePage implements IWorkbe
         directoryEditor.setStringValue(confDir);
         directoryEditor.setFilterPath(new File(confDir).getParentFile());
 
-        verifyAndNotifyWarning(confDir);
+        if ( verifyAndNotifyWarning(confDir) ) {
+            DIIRTPreferencesPlugin.get().updateDefaults(confDir);
+        }
 
         if ( Files.exists(Paths.get(confDir)) ) {
             treeViewer.setInput(confDir);
         }
 
-        updateCaptionColor(defaultDataSourceEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT), store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT));
-        updateCaptionColor(delimiterEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER), store.getString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER));
-
     }
 
-    private void notifyWarning ( final String message ) {
-        Display.getDefault().asyncExec(() -> setMessage(message, message != null ? WARNING : NONE));
-    }
+    /**
+     * @param path The path to be verified.
+     * @return {@code true} if the path is a valid one pointing to a DIIRT
+     *         configuration directory.
+     */
+    private boolean verifyAndNotifyWarning ( final String path ) {
 
-    private void updateCaptionColor ( FieldEditor editor, Composite parent, Object defaultValue, Object currentValue ) {
-        editor.getLabelControl(parent).setForeground(!Objects.equals(defaultValue, currentValue) ? SWTResourceManager.getColor(SWT.COLOR_BLUE) : SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-    }
+        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
 
-    private void verifyAndNotifyWarning ( final String path ) {
-        notifyWarning(DIIRTPreferencesPlugin.verifyDIIRTPath(path));
+        notifyWarning(message);
+
+        return ( message == null );
+
     }
 
     /**
