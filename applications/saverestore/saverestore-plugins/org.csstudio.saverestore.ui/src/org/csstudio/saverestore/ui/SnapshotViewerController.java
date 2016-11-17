@@ -52,8 +52,10 @@ import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
 import org.csstudio.saverestore.ui.util.VTypePair;
@@ -100,34 +102,36 @@ public class SnapshotViewerController {
     // for testing purposes this should not be final
     private static Executor UI_EXECUTOR = Platform::runLater;
 
-    private static final String EMPTY_STRING = "";
-
     private class PV {
         final String pvName;
         final PVReader<VType> reader;
         final PVWriter<Object> writer;
         PVReader<VType> readback;
-        VType value = VDisconnectedData.INSTANCE;
-        VType readbackValue = VDisconnectedData.INSTANCE;
+        volatile VType value = VDisconnectedData.INSTANCE;
+        volatile VType readbackValue = VDisconnectedData.INSTANCE;
 
         PV(String pvName, PVReader<VType> reader, PVWriter<Object> writer, PVReader<VType> readback) {
             this.pvName = pvName;
             this.reader = reader;
             this.writer = writer;
-            this.reader.addPVReaderListener(e -> {
-                synchronized (SnapshotViewerController.this) {
-                    if (suspend.get() > 0) {
-                        return;
+            if (this.reader == null) {
+                this.value = VNoData.INSTANCE;
+            } else {
+                this.reader.addPVReaderListener(e -> {
+                    synchronized (SnapshotViewerController.this) {
+                        if (suspend.get() > 0) {
+                            return;
+                        }
                     }
-                }
-                if (e.isExceptionChanged()) {
-                    SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
-                        e.getPvReader().lastException());
-                }
-                value = e.getPvReader().isConnected() ? e.getPvReader().getValue() : VDisconnectedData.INSTANCE;
-                throttle.trigger();
-            });
-            this.value = reader.getValue();
+                    if (e.isExceptionChanged()) {
+                        SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
+                            e.getPvReader().lastException());
+                    }
+                    value = e.getPvReader().isConnected() ? e.getPvReader().getValue() : VDisconnectedData.INSTANCE;
+                    throttle.trigger();
+                });
+                this.value = reader.getValue();
+            }
             setReadbackReader(readback);
         }
 
@@ -149,17 +153,19 @@ public class SnapshotViewerController {
         }
 
         void resume() {
-            this.value = reader.getValue();
+            if (reader != null) {
+                this.value = reader.getValue();
+            }
             if (readback != null) {
                 readbackValue = readback.getValue();
             }
         }
 
         void dispose() {
-            if (!reader.isClosed()) {
+            if (reader != null && !reader.isClosed()) {
                 reader.close();
             }
-            if (!writer.isClosed()) {
+            if (writer != null && !writer.isClosed()) {
                 writer.close();
             }
             if (readback != null && !readback.isClosed()) {
@@ -276,11 +282,15 @@ public class SnapshotViewerController {
                 }
                 if (pv == null) {
                     String name = e.pvNameProperty().get();
-                    PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
-                        .maxRate(Duration.ofMillis(100));
-                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(Duration.ofMillis(2000)).async();
-                    String readback = e.readbackNameProperty().get();
+                    PVReader<VType> reader = null;
+                    PVWriter<Object> writer = null;
                     PVReader<VType> readbackReader = null;
+                    if (name != null && !name.isEmpty()) {
+                        reader = PVManager.read(channel(name, VType.class, VType.class))
+                            .maxRate(Duration.ofMillis(100));
+                        writer = PVManager.write(channel(name)).timeout(Duration.ofMillis(2000)).async();
+                    }
+                    String readback = e.readbackNameProperty().get();
                     if (readback != null && !readback.isEmpty()) {
                         readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
                             .maxRate(Duration.ofMillis(100));
@@ -327,33 +337,27 @@ public class SnapshotViewerController {
     }
 
     private List<TableEntry> setSnapshotInternal(VSnapshot data) {
-        List<String> names = data.getNames();
-        List<VType> values = data.getValues();
-        List<Boolean> selected = data.getSelected();
-        List<String> rbs = data.getReadbackNames();
-        List<VType> rbValues = data.getReadbackValues();
+        List<SnapshotEntry> entries = data.getEntries();
         synchronized (snapshots) {
             snapshots.add(data);
         }
         snapshotRestorableProperty.set(data.getSnapshot().isPresent());
         String name;
         TableEntry e;
-        for (int i = 0; i < names.size(); i++) {
+        SnapshotEntry entry;
+        for (int i = 0; i < entries.size(); i++) {
+            entry = entries.get(i);
             e = new TableEntry();
-            name = names.get(i);
+            name = entry.getPVName();
             e.idProperty().setValue(i + 1);
             e.pvNameProperty().setValue(name);
-            e.selectedProperty().setValue(selected.get(i));
-            e.setSnapshotValue(values.get(i), 0);
-            if (rbValues.size() > i) {
-                e.setStoredReadbackValue(rbValues.get(i), 0);
-            }
+            e.selectedProperty().setValue(entry.isSelected());
+            e.setSnapshotValue(entry.getValue(), 0);
+            e.setStoredReadbackValue(entry.getReadbackValue(), 0);
             items.put(name, e);
-            String s = readbacks.get(name);
-            if (rbs.size() > i && (s == null || s.isEmpty())) {
-                readbacks.put(name, rbs.get(i));
-                e.readbackNameProperty().set(rbs.get(i));
-            }
+            readbacks.put(name, entry.getReadbackName());
+            e.readbackNameProperty().set(entry.getReadbackName());
+            e.readOnlyProperty().set(entry.isReadOnly());
         }
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
@@ -376,33 +380,28 @@ public class SnapshotViewerController {
         } else if (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
             return setSnapshot(data);
         } else {
-            List<String> names = data.getNames();
-            List<VType> values = data.getValues();
-            List<String> rbs = data.getReadbackNames();
-            List<VType> rbValues = data.getReadbackValues();
+            List<SnapshotEntry> entries = data.getEntries();
             boolean update = false;
             String n;
             TableEntry e;
             List<TableEntry> withoutValue = new ArrayList<>(items.values());
-            for (int i = 0; i < names.size(); i++) {
-                n = names.get(i);
+            SnapshotEntry entry;
+            for (int i = 0; i < entries.size(); i++) {
+                entry = entries.get(i);
+                n = entry.getPVName();
                 e = items.get(n);
                 if (e == null) {
                     e = new TableEntry();
                     e.idProperty().setValue(items.size() + i + 1);
                     e.pvNameProperty().setValue(n);
                     items.put(n, e);
-                    String s = readbacks.get(n);
-                    if (rbs.size() > i && (s == null || s.isEmpty())) {
-                        readbacks.put(n, rbs.get(i));
-                        e.readbackNameProperty().set(rbs.get(i));
-                    }
+                    readbacks.put(n, entry.getReadbackName());
+                    e.readbackNameProperty().set(entry.getReadbackName());
                     update = true;
                 }
-                e.setSnapshotValue(values.get(i), numberOfSnapshots);
-                if (rbValues.size() > i) {
-                    e.setStoredReadbackValue(rbValues.get(i), numberOfSnapshots);
-                }
+                e.setSnapshotValue(entry.getValue(), numberOfSnapshots);
+                e.setStoredReadbackValue(entry.getReadbackValue(), numberOfSnapshots);
+                e.readOnlyProperty().set(entry.isReadOnly());
                 withoutValue.remove(e);
             }
             for (TableEntry te : withoutValue) {
@@ -600,55 +599,47 @@ public class SnapshotViewerController {
                 try {
                     taken = provider.getProvider().takeSnapshot(set);
                 } catch (UnsupportedActionException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.getName()
-                        + " claims that it can take snapshots, but does not implement the action.");
+                    SaveRestoreService.LOGGER.log(Level.SEVERE,e,
+                            () -> String.format(
+                                    "The provider '%s' claims that it can take snapshots, but does not implement the action.",
+                                    provider.getName()));
                 } catch (DataProviderException e) {
                     if (SaveRestoreService.getInstance().isCurrentJobCancelled()) {
                         // if cancelled display the message and return
-                        ActionManager.reportException(e, receiver.getShell());
+                        ActionManager.reportException(e, receiver);
                         return;
                     } else {
                         // notify the user about the exception and continue taking the snapshot normally
                         ActionManager.reportException(e,
                             "Snapshot will be taken locally, but it might not be possible to save it.",
-                            receiver.getShell());
+                            receiver);
                     }
                 }
             }
             if (taken == null) {
-                List<String> names = new ArrayList<>(items.size());
-                List<VType> values = new ArrayList<>(items.size());
-                List<Boolean> selected = new ArrayList<>(items.size());
-                List<String> readbackNames = new ArrayList<>(items.size());
-                List<VType> readbackValues = new ArrayList<>(items.size());
-                List<String> deltas = new ArrayList<>(items.size());
+                List<SnapshotEntry> entries = new ArrayList<>(items.size());
                 PV pv;
-                String name;
-                String delta = null;
+                String name, delta = null, readback = null;
+                VType value = null, readbackValue = null;
                 for (TableEntry t : items.values()) {
                     name = t.pvNameProperty().get();
-                    names.add(name);
                     pv = pvs.get(t);
-                    values.add(pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value);
-                    selected.add(t.selectedProperty().get());
-                    String readback = readbacks.get(name);
-                    readbackNames.add(readback == null ? EMPTY_STRING : readback);
-                    readbackValues
-                        .add(pv == null || pv.readbackValue == null ? VDisconnectedData.INSTANCE : pv.readbackValue);
+                    //there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is
+                    //suspended and the value could not change while suspended
+                    value = pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value;
+                    readback = readbacks.get(name);
+                    readbackValue = pv == null || pv.readbackValue == null ? VDisconnectedData.INSTANCE : pv.readbackValue;
                     for (VSnapshot s : getAllSnapshots()) {
                         delta = s.getDelta(name);
                         if (delta != null) {
                             break;
                         }
                     }
-                    if (delta == null) {
-                        delta = EMPTY_STRING;
-                    }
-                    deltas.add(delta);
+                    entries.add(new SnapshotEntry(name, value, t.selectedProperty().get(), readback, readbackValue,
+                        delta, t.readOnlyProperty().get()));
                 }
                 // taken snapshots always belong to the save set of the master snapshot
-                taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
-                    Instant.now());
+                taken = new VSnapshot(new Snapshot(set),entries, Instant.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 receiver.addSnapshot(taken, false);
@@ -699,7 +690,7 @@ public class SnapshotViewerController {
             }
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            ActionManager.reportException(ex, receiver.getShell());
+            ActionManager.reportException(ex, receiver);
         }
     }
 
@@ -760,7 +751,7 @@ public class SnapshotViewerController {
                 pw.println(sb.toString());
             });
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         } finally {
             resume();
         }
@@ -788,7 +779,7 @@ public class SnapshotViewerController {
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
             return snapshot;
         } catch (Exception e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
             return null;
         }
     }
@@ -810,10 +801,10 @@ public class SnapshotViewerController {
             SaveSet set = new SaveSet(new Branch(), Optional.empty(), p.split("\\/"), null);
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
-            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
-                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate()));
+            return Optional.of(new VSnapshot((Snapshot) descriptor,
+                sc.getEntries(), sc.getDate()));
         } catch (IOException | RuntimeException | ParseException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
             return Optional.empty();
         }
     }
@@ -848,7 +839,7 @@ public class SnapshotViewerController {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved Snapshot {0}: {1}.", new Object[] {
                     snapshot.getSaveSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
             } catch (DataProviderException ex) {
-                ActionManager.reportException(ex, receiver.getShell());
+                ActionManager.reportException(ex, receiver);
             }
             return s;
         } finally {
@@ -866,23 +857,27 @@ public class SnapshotViewerController {
         Map<PV, PVWriterListener<?>> restorablePVs = new HashMap<>();
         try {
             suspend();
-            List<String> names = s.getNames();
-            List<VType> values = s.getValues();
+            List<SnapshotEntry> entries = s.getEntries();
             final Map<PV, PVWriterEvent<?>> restoredPVs = new HashMap<>();
-            for (int i = 0; i < names.size(); i++) {
-                final TableEntry e = items.get(names.get(i));
+            for (SnapshotEntry entry : entries) {
+                final TableEntry e = items.get(entry.getPVName());
                 // only restore the value if the entry is in the filtered list as well
-                if (filteredList.contains(e) && e.selectedProperty().get()) {
+                if (filteredList.contains(e) && e.selectedProperty().get() && !e.readOnlyProperty().get()) {
                     final PV pv = pvs.get(e);
-                    PVWriterListener<?> l = w -> {
-                        restoredPVs.put(pv, w);
-                        synchronized (restoredPVs) {
-                            restoredPVs.notifyAll();
+                    if (pv.writer != null) {
+                        PVWriterListener<?> l = w -> {
+                            restoredPVs.put(pv, w);
+                            synchronized (restoredPVs) {
+                                restoredPVs.notifyAll();
+                            }
+                        };
+                        restorablePVs.put(pv, l);
+                        pv.writer.addPVWriterListener(l);
+                        Object val = Utilities.toRawValue(entry.getValue());
+                        if (val != null) {
+                            pv.writer.write(val);
                         }
-                    };
-                    restorablePVs.put(pv, l);
-                    pv.writer.addPVWriterListener(l);
-                    pv.writer.write(Utilities.toRawValue(values.get(i)));
+                    }
                 }
             }
             try {
@@ -1067,11 +1062,15 @@ public class SnapshotViewerController {
                 Snapshot desc = new Snapshot(bs, timestamp, "Imported from " + importer.name, importer.name);
                 final List<VType> vals = names.stream().map(values::get)
                     .map(v -> v == null ? VDisconnectedData.INSTANCE : v).collect(Collectors.toList());
-                final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
+                List<SnapshotEntry> entries = new ArrayList<>(names.size());
+                for (int i = 0; i < names.size(); i++) {
+                    entries.add(new SnapshotEntry(names.get(i),vals.get(i)));
+                }
+                final VSnapshot snapshot = new VSnapshot(desc, entries, timestamp, importer.name);
                 UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
-            ActionManager.reportException(ex, receiver.getShell());
+            ActionManager.reportException(ex, receiver);
         }
     }
 
@@ -1104,7 +1103,7 @@ public class SnapshotViewerController {
             entry.selectedProperty().set(false);
 
             // Hard reference is required, otherwise diirt might flush the reader, before the value even arrives.
-            final ArrayList<PVReader<VTable>> archiveReaders = new ArrayList<>();
+            final List<PVReader<VTable>> archiveReaders = new ArrayList<>();
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
                 Instant start = snaps.get(i).getTimestamp();
@@ -1167,7 +1166,7 @@ public class SnapshotViewerController {
             pvs.put(entry, new PV(pvName, reader, writer, null));
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         }
     }
 
@@ -1197,7 +1196,7 @@ public class SnapshotViewerController {
             }
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            ActionManager.reportException(e, receiver.getShell());
+            ActionManager.reportException(e, receiver);
         }
     }
 

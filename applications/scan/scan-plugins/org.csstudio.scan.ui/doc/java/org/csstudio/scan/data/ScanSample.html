@@ -136,7 +136,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#ScanSample(java.util.Date, long)">ScanSample</a></strong>(java.util.Date&nbsp;timestamp,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#ScanSample(Instant,%20long)">ScanSample</a></strong>(Instant&nbsp;timestamp,
           long&nbsp;serial)</code>
 <div class="block">Initialize</div>
 </td>
@@ -161,7 +161,7 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.util.Date</code></td>
+<td class="colFirst"><code>Instant</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSample.html#getTimestamp()">getTimestamp</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -196,13 +196,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ScanSample(java.util.Date, long)">
+<a name="ScanSample(Instant, long)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ScanSample</h4>
-<pre>public&nbsp;ScanSample(java.util.Date&nbsp;timestamp,
+<pre>public&nbsp;ScanSample(Instant&nbsp;timestamp,
           long&nbsp;serial)</pre>
 <div class="block">Initialize</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp</dd><dd><code>serial</code> - Serial to identify when the sample was taken</dd></dl>
@@ -222,7 +222,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getTimestamp</h4>
-<pre>public&nbsp;java.util.Date&nbsp;getTimestamp()</pre>
+<pre>public&nbsp;Instant&nbsp;getTimestamp()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Time when this sample was obtained</dd></dl>
 </li>
 </ul>

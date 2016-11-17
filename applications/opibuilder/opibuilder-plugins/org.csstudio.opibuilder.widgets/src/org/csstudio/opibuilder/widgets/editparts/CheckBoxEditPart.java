@@ -190,7 +190,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
      * @param figure
      */
     private void performAutoSize(IFigure figure) {
-        getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
+        getWidgetModel().setSize(((CheckBoxFigure)figure).getAutoSizeDimension());
     }
 
 

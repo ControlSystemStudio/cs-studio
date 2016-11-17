@@ -45,7 +45,7 @@ public class SpinnerModel extends LabelModel {
 
     public static final String PROP_HORIZONTAL_BUTTONS_LAYOUT= "horizontal_buttons_layout";    //$NON-NLS-1$
 
-
+    public static final String PROP_SHOW_TEXT = "show_text";    //$NON-NLS-1$
 
     /**
      * The Format of the value.
@@ -66,7 +66,6 @@ public class SpinnerModel extends LabelModel {
         setSize(85, 25);
         setBorderStyle(BorderStyle.LOWERED);
     }
-
 
     @Override
     protected void configureProperties() {
@@ -104,9 +103,9 @@ public class SpinnerModel extends LabelModel {
         addProperty(new BooleanProperty(PROP_HORIZONTAL_BUTTONS_LAYOUT, "Horizontal Buttons Layout",
                 WidgetPropertyCategory.Display, false));
 
-
+        addProperty(new BooleanProperty(PROP_SHOW_TEXT, "Show text",
+                WidgetPropertyCategory.Display, true));
     }
-
 
     /**
      * @return the minimum value
@@ -115,7 +114,6 @@ public class SpinnerModel extends LabelModel {
         return (Double) getProperty(PROP_MIN).getPropertyValue();
     }
 
-
     /**
      * @return the maximum value
      */
@@ -123,9 +121,9 @@ public class SpinnerModel extends LabelModel {
         return (Double) getProperty(PROP_MAX).getPropertyValue();
     }
 
-
-
-
+    public boolean showText(){
+        return (Boolean)getPropertyValue(PROP_SHOW_TEXT);
+    }
 
     /**
      * @return the step increment
@@ -161,7 +159,6 @@ public class SpinnerModel extends LabelModel {
     public String getTypeID() {
         return ID;
     }
-
 
     public NumericFormatType getFormat() {
         int i = (Integer)getPropertyValue(PROP_FORMAT);

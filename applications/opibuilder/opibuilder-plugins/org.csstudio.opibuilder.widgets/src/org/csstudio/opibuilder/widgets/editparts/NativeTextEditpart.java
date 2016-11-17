@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Xihui Chen
  * @deprecated not used anymore
  */
+@Deprecated
 public class NativeTextEditpart extends TextInputEditpart {
 
 
@@ -106,6 +107,7 @@ public class NativeTextEditpart extends TextInputEditpart {
                 });
             }else {
                 text.addListener (SWT.DefaultSelection, new Listener () {
+                    @Override
                     public void handleEvent (Event e) {
                         outputText(text.getText());
                         switch (getWidgetModel().getFocusTraverse()) {

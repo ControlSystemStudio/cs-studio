@@ -14,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -140,7 +141,9 @@ public class Controller
             // All completed. Do something to the plot?
             final ArchiveRescale rescale = model.getArchiveRescale();
             if (rescale == ArchiveRescale.STAGGER)
-                executeOnUIThread(e -> plot.getPlot().stagger());
+                plot.getPlot().stagger();
+            else
+                doUpdate();
         }
 
         private void reportError(final String displayName, final Exception error)
@@ -387,6 +390,14 @@ public class Controller
             {
                 model.setLegendVisible(visible);
             }
+
+            @Override
+            public void autoScaleChanged(int index, boolean autoScale)
+            {
+                final AxisConfig axis = model.getAxis(index);
+                if (axis != null)
+                    display.asyncExec(() -> axis.setAutoScale(autoScale));
+            }
         });
 
 
@@ -538,9 +549,12 @@ public class Controller
      */
     public void scheduleArchiveRetrieval()
     {
+        // Cancel pending request, but don't interrupt if already ongoing.
+        // A follow-up request will cancel ongoing archive fetch jobs and
+        // allow smoother shutdown of active statements.
         if (archive_fetch_delay_task != null)
-            archive_fetch_delay_task.cancel(true);
-        archive_fetch_delay_task = update_timer.schedule(this::getArchivedData, archive_fetch_delay, TimeUnit.MILLISECONDS);
+            archive_fetch_delay_task.cancel(false);
+        archive_fetch_delay_task = update_timer.schedule(() -> getArchivedData(), archive_fetch_delay, TimeUnit.MILLISECONDS);
     }
 
     /** Start model items and initiate scrolling/updates
@@ -684,24 +698,41 @@ public class Controller
         if (pv_item.getArchiveDataSources().length <= 0)
             return;
 
-        ArchiveFetchJob job;
-
-        // Stop ongoing jobs for this item
+        // Determine ongoing jobs for this item
+        final List<ArchiveFetchJob> ongoing = new ArrayList<>();
+        final ArchiveFetchJob new_job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
         synchronized (archive_fetch_jobs)
         {
-            for (int i=0; i<archive_fetch_jobs.size(); ++i)
+            for (Iterator<ArchiveFetchJob> iter = archive_fetch_jobs.iterator();  iter.hasNext();  /**/)
             {
-                job = archive_fetch_jobs.get(i);
-                if (job.getPVItem() != pv_item)
-                    continue;
-                // System.out.println("Request for " + item.getName() + " cancels " + job);
-                job.cancel();
-                archive_fetch_jobs.remove(job);
+                final ArchiveFetchJob job = iter.next();
+                if (job.getPVItem() == pv_item)
+                {
+                    ongoing.add(job);
+                    iter.remove();
+                }
             }
-            // Start new job
-            job = new ArchiveFetchJob(pv_item, start, end, archive_fetch_listener);
-            archive_fetch_jobs.add(job);
+            // Track new job
+            archive_fetch_jobs.add(new_job);
         }
-        job.schedule();
+
+        Activator.getThreadPool().execute(() ->
+        {
+            // In background, stop ongoing jobs
+            for (ArchiveFetchJob running : ongoing)
+            {
+                try
+                {
+                    running.cancel();
+                    running.join(10000, null);
+                }
+                catch (Exception ex)
+                {
+                    Activator.getLogger().log(Level.WARNING, "Cannot cancel " + running, ex);
+                }
+            }
+            // .. then start new one
+            new_job.schedule();
+        });
     }
 }

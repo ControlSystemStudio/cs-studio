@@ -59,13 +59,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -102,31 +102,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#DATE_FORMAT">DATE_FORMAT</a></strong></code>
-<div class="block">Suggested time format</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#TIME_FORMAT">TIME_FORMAT</a></strong></code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -170,26 +145,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#format(java.util.Date)">format</a></strong>(java.util.Date&nbsp;timestamp)</code>
-<div class="block">Format <code>Date</code> to the fullest detail: Date, time, seconds, ...</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#formatCompactDateTime(java.util.Date)">formatCompactDateTime</a></strong>(java.util.Date&nbsp;timestamp)</code>
-<div class="block">Format date and time in a 'compact' way.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#formatTime(java.util.Date)">formatTime</a></strong>(java.util.Date&nbsp;timestamp)</code>
-<div class="block">Format only the time (HH:MM:SS) of a <code>Date</code></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.util.Date</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#parseTimestamp(java.lang.String)">parseTimestamp</a></strong>(java.lang.String&nbsp;timestamp)</code>
-<div class="block">Parse a time stamp</div>
+<td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/data/ScanSampleFormatter.html#format(Instant)">format</a></strong>(Instant&nbsp;timestamp)</code>
+<div class="block">Format <code>Instant</code> to the fullest detail: Date, time, seconds, ...</div>
 </td>
 </tr>
 </table>
@@ -208,35 +165,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="DATE_FORMAT">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DATE_FORMAT</h4>
-<pre>public static final&nbsp;java.lang.String DATE_FORMAT</pre>
-<div class="block">Suggested time format</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.csstudio.scan.data.ScanSampleFormatter.DATE_FORMAT">Constant Field Values</a></dd></dl>
-</li>
-</ul>
-<a name="TIME_FORMAT">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>TIME_FORMAT</h4>
-<pre>public static final&nbsp;java.lang.String TIME_FORMAT</pre>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.csstudio.scan.data.ScanSampleFormatter.TIME_FORMAT">Constant Field Values</a></dd></dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -284,58 +212,16 @@ extends java.lang.Object</pre>
 <dt><span class="strong">Returns:</span></dt><dd>String for scan sample</dd></dl>
 </li>
 </ul>
-<a name="format(java.util.Date)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>format</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;format(java.util.Date&nbsp;timestamp)</pre>
-<div class="block">Format <code>Date</code> to the fullest detail: Date, time, seconds, ...</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - <code>Date</code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>Date in preferred text format</dd></dl>
-</li>
-</ul>
-<a name="parseTimestamp(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parseTimestamp</h4>
-<pre>public static&nbsp;java.util.Date&nbsp;parseTimestamp(java.lang.String&nbsp;timestamp)
-                                     throws java.text.ParseException</pre>
-<div class="block">Parse a time stamp</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - Time stamp as returned by <code>format()</code></dd>
-<dt><span class="strong">Returns:</span></dt><dd><code>Date</code></dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code>java.text.ParseException</code> - on error</dd><dt><span class="strong">See Also:</span></dt><dd><code>#format(Date)}</code></dd></dl>
-</li>
-</ul>
-<a name="formatTime(java.util.Date)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>formatTime</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;formatTime(java.util.Date&nbsp;timestamp)</pre>
-<div class="block">Format only the time (HH:MM:SS) of a <code>Date</code></div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - <code>Date</code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>Time of the data in preferred text format</dd></dl>
-</li>
-</ul>
-<a name="formatCompactDateTime(java.util.Date)">
+<a name="format(Instant)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>formatCompactDateTime</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;formatCompactDateTime(java.util.Date&nbsp;timestamp)</pre>
-<div class="block">Format date and time in a 'compact' way.
-
-  <p>If the time stamp falls within today, only hours .. seconds are displayed.
-  For a time stamp on a different day from today, the date and time without seconds shown.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - <code>Date</code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>Date and time of the data in preferred text format</dd></dl>
+<h4>format</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;format(Instant&nbsp;timestamp)</pre>
+<div class="block">Format <code>Instant</code> to the fullest detail: Date, time, seconds, ...</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timestamp</code> - <code>Instant</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>Date in preferred text format</dd></dl>
 </li>
 </ul>
 </li>
@@ -389,13 +275,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>

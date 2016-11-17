@@ -20,8 +20,6 @@ import static org.csstudio.scan.server.app.Application.logger;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +48,6 @@ import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.MemoryInfo;
-import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
@@ -70,7 +67,10 @@ import org.csstudio.scan.server.ScanState;
 public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>, AutoCloseable
 {
     /** Pattern for "java.lang.Exception: ", "java...Exception: " */
-    private final Pattern java_exception_pattern = Pattern.compile("java[.a-zA-Z]+Exception: ");
+    private static final Pattern java_exception_pattern = Pattern.compile("java[.a-zA-Z]+Exception: ");
+
+    /** Engine that will execute this scan */
+    private final ScanEngine engine;
 
     /** Jython interpreter that some commands may use.
      *  Owned by the ExecutableScan, see close()
@@ -121,24 +121,20 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      */
     private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
 
-    /** Timeout for updating the status PVs */
+    /** Timeout for updating the state PV
+     *
+     *  <p>Scan state PV is always updated awaiting completion,
+     *  using this timeout.
+     *
+     *  <p>This allows additional database logic to for example
+     *  latch scan failures, or to conditionally update a scan alarm PV.
+     *  Scans can check the scan alarm PV in the pre-scan
+     *  to prohibit further scans until alarm has been cleared.
+     */
     final private static Duration timeout = Duration.ofSeconds(10);
 
     /** Initialize
-     *  @param name User-provided name for this scan
-     *  @param devices {@link DeviceContext} to use for scan
-     *  @param implementations Commands to execute in this scan
-     *  @throws Exception on error (cannot access log, ...)
-     */
-    public ExecutableScan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
-    {
-        this(new JythonSupport(), name, devices,
-            Collections.<ScanCommandImpl<?>>emptyList(),
-            Arrays.asList(implementations),
-            Collections.<ScanCommandImpl<?>>emptyList());
-    }
-
-    /** Initialize
+     *  @param engine {@link ScanEngine} that executes this scan
      *  @param jython Jython support
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
@@ -147,29 +143,13 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
      *  @param post_scan Commands to execute before the 'main' section of the scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public ExecutableScan(final JythonSupport jython, final String name, final DeviceContext devices,
+    public ExecutableScan(final ScanEngine engine, final JythonSupport jython, final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
-        this(jython, DataLogFactory.createDataLog(name), devices, pre_scan, implementations, post_scan);
-    }
-
-    /** Initialize
-     *  @param jython Jython support
-     *  @param scan {@link Scan}
-     *  @param devices {@link DeviceContext} to use for scan
-     *  @param pre_scan Commands to execute before the 'main' section of the scan
-     *  @param implementations Commands to execute in this scan
-     *  @param post_scan Commands to execute before the 'main' section of the scan
-     *  @throws Exception on error (cannot access log, ...)
-     */
-    public ExecutableScan(final JythonSupport jython, final Scan scan, final DeviceContext devices,
-            final List<ScanCommandImpl<?>> pre_scan,
-            final List<ScanCommandImpl<?>> implementations,
-            final List<ScanCommandImpl<?>> post_scan) throws Exception
-    {
-        super(scan);
+        super(DataLogFactory.createDataLog(name));
+        this.engine = engine;
         this.jython = jython;
         this.macros = new MacroContext(ScanSystemPreferences.getMacros());
         this.devices = devices;
@@ -421,6 +401,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         end_ms = System.currentTimeMillis();
         // Un-set data logger
         data_logger = Optional.empty();
+        logger.log(Level.CONFIG, "Completed ID {0}: {1}", new Object[] { getId(), state.get().name() });
         return null;
     }
 
@@ -470,6 +451,9 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         // Execute commands
         try
         {
+            // Start all devices, which includes the optional device_state etc.
+            // This means device_state is not updated until all connect,
+            // which is probably OK because not really "Running" until they do.
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices()), null));
 
             // Initialize scan status PVs. Error will prevent scan from starting.
@@ -536,16 +520,28 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             end_ms = System.currentTimeMillis();
 
+            // Assert that the state is 'done'
+            // to exclude this scan from the engine.hasPendingScans() information
+            state.getAndUpdate(current ->
+            {
+                if (current.isDone())
+                    return current;
+                logger.log(Level.WARNING, "Scan state was %s, changing to Failed", current.toString());
+                return ScanState.Failed;
+            });
+
             try
             {
                 // Final status PV update.
                 if (device_active.isPresent())
                 {
                     getDevice(device_status.get()).write("");
-                    ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+                    ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
                     getDevice(device_finish.get()).write(TimestampFormats.MILLI_FORMAT.format(Instant.now()));
                     ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0));
-                    ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0));
+                    // Update to "anything else running?"
+                    final int active = engine.hasPendingScans() ? 1 : 0;
+                    ScanCommandUtil.write(this, device_active.get(), active);
                 }
             }
             catch (Exception ex)
@@ -678,7 +674,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             try
             {
-                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
             }
             catch (Exception ex)
             {
@@ -697,7 +693,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         {
             try
             {
-                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), 0.1, timeout);
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal(), true, true, device_state.get(), 0.1, timeout);
             }
             catch (Exception ex)
             {

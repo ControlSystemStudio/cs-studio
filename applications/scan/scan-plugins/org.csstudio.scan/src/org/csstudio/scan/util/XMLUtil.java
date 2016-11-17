@@ -53,9 +53,14 @@ public class XMLUtil
             return default_value;
         Node n = element.getFirstChild();
         n = findFirstElementNode(n, name);
-        if (n != null)
+        return getString(n, default_value);
+    }
+
+    final public static String getString(final Node node, final String default_value)
+    {
+        if (node != null)
         {
-            Node text_node = n.getFirstChild();
+            Node text_node = node.getFirstChild();
             if (text_node == null)
                 return default_value;
             return text_node.getNodeValue();

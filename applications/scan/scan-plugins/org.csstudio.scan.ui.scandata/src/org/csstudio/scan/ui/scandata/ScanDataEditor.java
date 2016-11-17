@@ -308,7 +308,11 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
                     return;
 
                 // Has the data layout changed, requiring new table columns?
-                if (table.getColumnCount() != devices.length + 1)
+                // Check for different number of columns.
+                // If there's only one device, check for changed device name
+                // (change from real device to error message)
+                if (table.getColumnCount() != devices.length + 1  ||
+                    (devices.length == 1 && !table.getColumn(1).getText().equals(devices[0])))
                     updateTableColumns(devices);
 
                 table_viewer.setInput(rows);

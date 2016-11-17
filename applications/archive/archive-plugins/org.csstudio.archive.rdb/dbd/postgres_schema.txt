@@ -248,12 +248,12 @@ DROP TABLE IF EXISTS num_metadata;
 CREATE TABLE  num_metadata
 (
    channel_id BIGINT  NOT NULL PRIMARY KEY,
-   low_disp_rng REAL NULL,
-   high_disp_rng REAL NULL,
-   low_warn_lmt REAL NULL,
-   high_warn_lmt REAL NULL,
-   low_alarm_lmt REAL NULL,
-   high_alarm_lmt REAL NULL,
+   low_disp_rng double precision NULL,
+   high_disp_rng double precision NULL,
+   low_warn_lmt double precision NULL,
+   high_warn_lmt double precision NULL,
+   low_alarm_lmt double precision NULL,
+   high_alarm_lmt double precision NULL,
    prec INT NULL,
    unit VARCHAR(100) NOT NULL
 );

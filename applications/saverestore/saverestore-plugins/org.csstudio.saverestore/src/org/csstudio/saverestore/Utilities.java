@@ -278,7 +278,7 @@ public final class Utilities {
                 try {
                     idx = Integer.parseInt(data);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("'" + data + "' is not a valid enum value.");
+                    throw new IllegalArgumentException(String.format("'%s' is not a valid enum value.",data));
                 }
             }
             if (labels.size() <= idx) {
@@ -913,11 +913,11 @@ public final class Utilities {
         } else if (v1 instanceof VEnum && v2 instanceof VEnum) {
             String b = ((VEnum) v1).getValue();
             String c = ((VEnum) v2).getValue();
-            return b != null && b.equals(c) || b == c;
+            return b == c || b != null && b.equals(c);
         } else if (v1 instanceof VString && v2 instanceof VString) {
             String b = ((VString) v1).getValue();
             String c = ((VString) v2).getValue();
-            return b != null && b.equals(c) || b == c;
+            return b == c || b != null && b.equals(c);
         } else if (v1 instanceof VNumberArray && v2 instanceof VNumberArray) {
             if ((v1 instanceof VByteArray && v2 instanceof VByteArray)
                 || (v1 instanceof VShortArray && v2 instanceof VShortArray)

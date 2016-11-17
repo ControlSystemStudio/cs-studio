@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 public class AlarmHistoryQueryParametersDialog extends Dialog {
 
     protected Shell dialogShell;
-    
+
     private AlarmHistoryQueryParameters query;
 
     private final String title;
@@ -58,16 +58,16 @@ public class AlarmHistoryQueryParametersDialog extends Dialog {
         pvs = new AlarmHistoryQueryParametersWidget(container, SWT.NONE);
         pvs.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         pvs.setBounds(10,100,150,50);
-        
+
         initialize();
-        
+
         return container;
     }
 
     private void initialize(){
         pvs.setPVs(query.getPvs());
     }
-    
+
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, "Apply", true);
@@ -77,5 +77,5 @@ public class AlarmHistoryQueryParametersDialog extends Dialog {
     public AlarmHistoryQueryParameters getAlarmHistoryQueryParameters() {
         return buildQuery().forPVs(pvs.getPVs()).build();
     }
-    
+
 }

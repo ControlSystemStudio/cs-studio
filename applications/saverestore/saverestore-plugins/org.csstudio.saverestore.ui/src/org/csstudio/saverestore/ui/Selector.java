@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
@@ -72,6 +73,7 @@ public class Selector implements CompletionNotifier {
     private final BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
     private Snapshot lastSnapshot;
     private final IShellProvider shellProvider;
+    private DataProviderWrapper dataProvider;
 
     private final PropertyChangeListener pcl = e -> {
         DataProviderWrapper oldValue = (DataProviderWrapper) e.getOldValue();
@@ -79,7 +81,7 @@ public class Selector implements CompletionNotifier {
         if (oldValue != null) {
             oldValue.getProvider().removeCompletionNotifier(this);
         }
-        init(newValue);
+        init(newValue, oldValue == null);
     };
 
     /**
@@ -90,7 +92,7 @@ public class Selector implements CompletionNotifier {
     public Selector(IShellProvider shellProvider) {
         this.shellProvider = shellProvider;
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, pcl);
-        init(SaveRestoreService.getInstance().getSelectedDataProvider());
+        init(SaveRestoreService.getInstance().getSelectedDataProvider(),false);
     }
 
     /**
@@ -100,7 +102,9 @@ public class Selector implements CompletionNotifier {
         SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, pcl);
     }
 
-    private void init(DataProviderWrapper wrapper) {
+    private void init(DataProviderWrapper wrapper, boolean initIfEqual) {
+        if (Objects.equals(this.dataProvider,wrapper) && !initIfEqual) return;
+        this.dataProvider = wrapper;
         if (wrapper != null) {
             wrapper.getProvider().addCompletionNotifier(this);
         }
@@ -139,7 +143,7 @@ public class Selector implements CompletionNotifier {
             UI_EXECUTOR.execute(() -> ((ObjectProperty<List<SaveSet>>) saveSetsProperty()).set(Collections
                 .unmodifiableList(theSaveSets == null ? new ArrayList<>(0) : Arrays.asList(theSaveSets))));
         } catch (DataProviderException e) {
-            ActionManager.reportException(e, shellProvider.getShell());
+            ActionManager.reportException(e, shellProvider);
         }
     }
 
@@ -171,7 +175,7 @@ public class Selector implements CompletionNotifier {
                         selectedBranchProperty().set(b);
                     });
                 } catch (DataProviderException e) {
-                    ActionManager.reportException(e, shellProvider.getShell());
+                    ActionManager.reportException(e, shellProvider);
                 }
             });
         } else {
@@ -226,7 +230,7 @@ public class Selector implements CompletionNotifier {
                         readSaveSets();
                     }
                 } catch (DataProviderException e) {
-                    ActionManager.reportException(e, shellProvider.getShell());
+                    ActionManager.reportException(e, shellProvider);
                 }
             });
         } else {
@@ -269,7 +273,7 @@ public class Selector implements CompletionNotifier {
                 UI_EXECUTOR.execute(() -> ((ObjectProperty<List<SaveSet>>) saveSetsProperty()).set(Collections
                     .unmodifiableList(theSaveSets == null ? new ArrayList<>(0) : Arrays.asList(theSaveSets))));
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, shellProvider.getShell());
+                ActionManager.reportException(e, shellProvider);
             }
         });
     }
@@ -330,7 +334,7 @@ public class Selector implements CompletionNotifier {
                         .set(Collections.unmodifiableList(allSnapshots));
                 });
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, shellProvider.getShell());
+                ActionManager.reportException(e, shellProvider);
             }
         });
     }

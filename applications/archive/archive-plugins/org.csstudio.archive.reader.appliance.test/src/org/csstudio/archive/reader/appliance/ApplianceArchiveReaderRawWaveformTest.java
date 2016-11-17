@@ -39,8 +39,8 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
      */
     @Test
     public void testDataRetrievalDouble() throws Exception {
-    	Instant end = Instant.now();
-    	Instant start = end.minus(TimeDuration.ofHours(24.0));
+        Instant end = Instant.now();
+        Instant start = end.minus(TimeDuration.ofHours(24.0));
         ArchiveVNumberArray[] vals = getValuesNumberArray("test_pv_wave_double",false,0, start, end);
         assertEquals("Number of values comparison", TestGenMsgIteratorRaw.MESSAGE_LIST_LENGTH, vals.length);
 

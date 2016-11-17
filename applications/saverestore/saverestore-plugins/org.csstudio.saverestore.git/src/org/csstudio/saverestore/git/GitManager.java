@@ -177,10 +177,16 @@ public class GitManager {
         return localOnly;
     }
 
+    private synchronized void checkInitialised() throws IllegalStateException {
+        if (git == null) {
+            throw new IllegalStateException("Git has not been initialised.");
+        }
+    }
+
     /**
      * Dispose of all resources allocated by this manager.
      */
-    public void dispose() {
+    public synchronized void dispose() {
         try {
             if (repository != null) {
                 repository.close();
@@ -255,7 +261,7 @@ public class GitManager {
                     }
                 } catch (GitAPIException | IOException e) {
                     SaveRestoreService.LOGGER.log(Level.WARNING, e,
-                        () -> "Git repository " + remoteRepository + " is not accessible.");
+                        () -> String.format("Git repository %s is not accessible.", remoteRepository));
                 }
             } else {
                 throw new InvalidRepositoryException("GIT repository URL is not valid.");
@@ -283,7 +289,8 @@ public class GitManager {
                 }
             } catch (GitAPIException | IOException e) {
                 SaveRestoreService.LOGGER.log(Level.WARNING, e,
-                    () -> "Git repository " + remoteRepository + " is not accessible.");
+                    () -> String.format("Git repository %s is not accessible.", remoteRepository));
+                SaveRestoreService.LOGGER.log(Level.WARNING, "Only local repository will be used.");
                 localOnly = true;
                 setAutomaticSynchronisation(false);
             }
@@ -325,6 +332,7 @@ public class GitManager {
      * @throws IOException if the current branch cannot be determined
      */
     private synchronized void setBranch(Branch branch) throws GitAPIException, IOException {
+        checkInitialised();
         if (!branch.getShortName().equals(repository.getBranch())) {
             Ref ref = null;
             try {
@@ -347,6 +355,7 @@ public class GitManager {
      * @throws GitAPIException if the branches could not be read
      */
     public synchronized List<Branch> getBranches() throws GitAPIException {
+        checkInitialised();
         List<Ref> branchesRef = git.branchList().setListMode(ListMode.ALL).call();
         List<Branch> branches = new ArrayList<>(branchesRef.size());
         for (Ref b : branchesRef) {
@@ -376,6 +385,7 @@ public class GitManager {
      * @throws GitAPIException if there is an error during push or pull
      */
     public synchronized boolean synchronise(Optional<Credentials> cp) throws GitAPIException {
+        checkInitialised();
         Credentials c = cp.isPresent() ? cp.get() : getCredentials(Optional.empty());
         if (c != null) {
             Object[] obj = pull(c);
@@ -402,6 +412,7 @@ public class GitManager {
      */
     public synchronized Result<Boolean> importData(SaveSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
         ImportType type) throws GitAPIException, IOException, ParseException {
+        checkInitialised();
         boolean oldAutomatic = this.automatic;
         setAutomaticSynchronisation(false);
         Credentials cred = getCredentials(Optional.empty());
@@ -429,10 +440,10 @@ public class GitManager {
 
     private void importSaveSet(SaveSet source, Optional<BaseLevel> toBaseLevel, Branch toBranch, ImportType type,
         Credentials cred) throws GitAPIException, IOException, ParseException {
+        checkInitialised();
         SaveSetData data = loadSaveSetData(source, Optional.empty());
         SaveSet newSet = new SaveSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
-        SaveSetData newData = new SaveSetData(newSet, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
-            data.getDescription());
+        SaveSetData newData = new SaveSetData(newSet, data.getEntries(), data.getDescription());
         String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
         saveSaveSet(newData, comment, cred);
@@ -441,9 +452,7 @@ public class GitManager {
             if (!list.isEmpty()) {
                 Snapshot snapshot = list.get(0);
                 VSnapshot snp = loadSnapshotData(snapshot);
-                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getEntries(), snp.getTimestamp());
                 saveSnapshot(newSnp, snapshot.getComment(), snapshot.getDate(), snapshot.getOwner());
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
@@ -451,9 +460,7 @@ public class GitManager {
             for (int i = list.size() - 1; i > -1; i--) {
                 Snapshot s = list.get(i);
                 VSnapshot snp = loadSnapshotData(s);
-                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getEntries(), snp.getTimestamp());
                 saveSnapshot(newSnp, s.getComment(), s.getDate(), s.getOwner());
             }
         }
@@ -649,6 +656,7 @@ public class GitManager {
      */
     private Result<SaveSetData> saveSaveSet(SaveSetData data, String comment, Credentials cred)
         throws IOException, GitAPIException {
+        checkInitialised();
         SaveSetData bsd = null;
         ChangeType change = ChangeType.NONE;
         save: {
@@ -671,8 +679,8 @@ public class GitManager {
                 if (automatic) {
                     push(cp, false);
                 }
-                bsd = new SaveSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
-                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp.toInstant());
+                bsd = new SaveSetData(data.getDescriptor(), data.getEntries(), data.getDescription(), info.comment,
+                    info.timestamp.toInstant());
             }
         }
         return new Result<>(bsd, change);
@@ -688,6 +696,7 @@ public class GitManager {
      * @throws GitAPIException in case of an error
      */
     public synchronized Result<SaveSet> deleteSaveSet(SaveSet set, String comment) throws IOException, GitAPIException {
+        checkInitialised();
         SaveSet deleted = null;
         ChangeType change = ChangeType.NONE;
         delete: {
@@ -747,6 +756,7 @@ public class GitManager {
      */
     private Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment, Instant time, String user)
         throws IOException, GitAPIException {
+        checkInitialised();
         VSnapshot vsnp = null;
         ChangeType change = ChangeType.NONE;
         save: {
@@ -774,9 +784,7 @@ public class GitManager {
                 parameters.put(PARAM_GIT_REVISION, info.revision);
                 Snapshot snp = new Snapshot(descriptor.getSaveSet(), info.timestamp.toInstant(), info.comment,
                     info.creator, parameters, new ArrayList<>(0));
-                vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
-                    snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
-                    snapshot.getTimestamp());
+                vsnp = new VSnapshot(snp, snapshot.getEntries(), snapshot.getTimestamp());
             }
         }
         return new Result<>(vsnp, change);
@@ -811,6 +819,7 @@ public class GitManager {
         if (name != null && TAG_PATTERN.matcher(name).replaceAll("").length() != name.length()) {
             throw new DataProviderException("Tag name contains invalid characters.");
         }
+        checkInitialised();
         Snapshot snp = null;
         ChangeType change = ChangeType.NONE;
         tag: {
@@ -1271,8 +1280,8 @@ public class GitManager {
     public synchronized List<Snapshot> findSnapshotsByCommentOrUser(String partialText, final Branch branch,
         boolean byComment, boolean byUser, Optional<Date> start, Optional<Date> end)
             throws IOException, GitAPIException {
-        List<Snapshot> snapshots = new ArrayList<>();
         setBranch(branch);
+        List<Snapshot> snapshots = new ArrayList<>();
         List<RevCommit> revisions = new ArrayList<>();
         try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
             revWalk.markStart(getHeadCommit());
@@ -1378,16 +1387,14 @@ public class GitManager {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
                         SaveSetContent bsc = FileUtilities.readFromSaveSet(stream);
-                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getNames(), bsc.getReadbacks(),
-                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp.toInstant());
+                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getEntries(), bsc.getDescription(),
+                            meta.comment, meta.timestamp.toInstant());
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
                     try (InputStream stream = objectLoader.openStream()) {
-                        SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                        VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(),
-                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate());
-                        return type.cast(vs);
+                        SnapshotContent sc = FileUtilities.readFromSnapshot(stream);;
+                        return type.cast(new VSnapshot((Snapshot) descriptor, sc.getEntries(), sc.getDate()));
                     }
                 }
             }

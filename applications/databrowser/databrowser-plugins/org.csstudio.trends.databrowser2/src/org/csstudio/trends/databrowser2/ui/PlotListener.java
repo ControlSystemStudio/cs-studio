@@ -70,4 +70,7 @@ public interface PlotListener
 
     /** Plot legend displayed or hidden */
     public void changedLegend(boolean visible);
+
+    /** Auto scale modified by user interaction with plot */
+    public void autoScaleChanged(int index, boolean autoScale);
 }

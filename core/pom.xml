@@ -18,7 +18,7 @@
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
-    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio.version>4.4</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20160221192158/repository/</orbit-site>
@@ -28,6 +28,7 @@
     <baselineMode>fail</baselineMode>
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
+    <diirt.version>3.1.5</diirt.version>
     <cs-studio-central.url>${download.root}/core/${cs-studio.version}</cs-studio-central.url>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
@@ -110,7 +111,7 @@
       <repositories>
         <repository>
           <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.1.2</url>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
@@ -192,6 +193,7 @@
                   <includes>**/*</includes>
                   <excludes>**/target/**</excludes>
                   <configLocation>../build/cs-studio-jenkins-checkstyle</configLocation>
+                  <suppressionsLocation>../build/cs-studio-jenkins-checkstyle-suppressions</suppressionsLocation>
                   <encoding>UTF-8</encoding>
                   <consoleOutput>true</consoleOutput>
                   <outputFile>checkstyle-output.xml</outputFile>
@@ -393,8 +395,6 @@
         <version>${tycho.version}</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
-          <!--Some tests fail right now -->
-          <testFailureIgnore>true</testFailureIgnore>
           <failIfNoTests>false</failIfNoTests>
         </configuration>
       </plugin>

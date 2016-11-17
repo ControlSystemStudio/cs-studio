@@ -231,14 +231,24 @@ public class LinearTicks implements Ticks<Double>
     @Override
     public String format(final Double num)
     {
+        // Patch numbers that are "very close to zero"
+        // to avoid "-0.00" or "0.0e-22"
+        if (Math.abs(num) < distance/100000)
+            return num_fmt.format(0.0);
+        return formatDetailed(num);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String formatDetailed(final Double num)
+    {
+        // Do NOT patch numbers "very close to zero"
+        // in detailed format because that could
+        // hide what user wants to inspect
         if (num.isNaN())
             return "NaN";
         if (num.isInfinite())
             return "Inf";
-        // Patch numbers that are "very close to zero"
-        // to avoid "-0.00" or "0.0e-22"
-        if (Math.abs(num) < distance/1000)
-            return num_fmt.format(0.0);
         return num_fmt.format(num);
     }
 

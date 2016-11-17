@@ -248,5 +248,5 @@ public class ShiftTableView extends ViewPart {
         }
         return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));
     }
-    
+
 }

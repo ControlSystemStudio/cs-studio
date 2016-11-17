@@ -271,7 +271,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     final double value = sample.getValue();
                     if (Double.isFinite(value)  &&  axis.getValueRange().contains(value))
                     {
-                        String label = axis.getTicks().format(value);
+                        String label = axis.getTicks().formatDetailed(value);
                         final String units = trace.getUnits();
                         if (! units.isEmpty())
                             label += " " + units;

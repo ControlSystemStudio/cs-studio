@@ -9,13 +9,13 @@ package org.csstudio.vtype.pv.jca;
 
 import java.text.NumberFormat;
 
+import org.diirt.util.text.NumberFormats;
+import org.diirt.vtype.Display;
+
 import gov.aps.jca.dbr.CTRL;
 import gov.aps.jca.dbr.GR;
 import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.TIME;
-
-import org.diirt.vtype.Display;
-import org.diirt.util.text.NumberFormats;
 /** Wrap DBR as VType
  *
  *  <p>Based on ideas from org.epics.pvmanager.jca, Gabriele Carcassi
@@ -25,7 +25,6 @@ import org.diirt.util.text.NumberFormats;
 public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTimeWrapper<T_DBR> implements Display
 {
     final private GR metadata;
-    private NumberFormat format = null;
 
     public DBRAlarmTimeDisplayWrapper(final GR metadata, final T_DBR dbr)
     {
@@ -76,19 +75,14 @@ public class DBRAlarmTimeDisplayWrapper<T_DBR extends TIME> extends DBRAlarmTime
     @Override
     public synchronized NumberFormat getFormat()
     {
-        if (format  == null)
+        if (metadata instanceof PRECISION)
         {
-            if (metadata instanceof PRECISION)
-            {
-                final int precision = ((PRECISION) metadata).getPrecision();
-                if (precision > 0)
-                    format = NumberFormats.format(precision);
-                else
-                    format = NumberFormats.toStringFormat();
-            }
-
+            final int precision = ((PRECISION) metadata).getPrecision();
+            if (precision >= 0)
+                return NumberFormats.format(precision);
+            return NumberFormats.toStringFormat();
         }
-        return format;
+        return NumberFormats.format(0);
     }
 
     @Override

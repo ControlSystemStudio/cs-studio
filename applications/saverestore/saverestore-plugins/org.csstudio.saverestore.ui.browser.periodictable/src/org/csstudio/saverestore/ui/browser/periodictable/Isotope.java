@@ -79,10 +79,11 @@ public final class Isotope extends BaseLevel {
         try {
             e = Element.valueOf(parts[0].toUpperCase(Locale.UK));
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("'" + parts[0] + "' is not a valid name.", ex);
+            throw new IllegalArgumentException(String.format("'%s' is not a valid name.", parts[0]), ex);
         }
         if (parts.length < 3) {
-            throw new IllegalArgumentException(storageName + " does not provide mass, charge and energy.");
+            throw new IllegalArgumentException(
+                String.format("%s does not provide mass, charge and energy.", storageName));
         } else if (parts.length > 3) {
             throw new IllegalArgumentException("Too many parts in the name.");
         }
@@ -90,18 +91,19 @@ public final class Isotope extends BaseLevel {
         int neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
         if (neutrons < 0) {
             throw new IllegalArgumentException(
-                "Mass is too small for '" + e.fullName + "' (min " + e.atomicNumber + ").");
+                String.format("Mass is too small for '%s' (min %d).", e.fullName, e.atomicNumber));
         }
 
         char pn = parts[2].charAt(parts[2].length() - 1);
         if (!(pn == 'n' || pn == 'p')) {
-            throw new IllegalArgumentException("The charge sign is not defined (p or n) for " + storageName + ".");
+            throw new IllegalArgumentException(
+                String.format("The charge sign is not defined (p or n) for %s.", storageName));
         }
         int charge = Integer.parseInt(parts[2].substring(0, parts[2].length() - 1));
         charge *= pn == 'n' ? -1 : 1;
         if (charge > e.atomicNumber) {
             throw new IllegalArgumentException(
-                "Charge of '" + e.fullName + "' cannot be higher than " + e.atomicNumber + ".");
+                String.format("Charge of '%s' cannot be higher than '%d'.", e.fullName, e.atomicNumber));
         }
 
         return new Isotope(e, neutrons, charge);
@@ -229,7 +231,7 @@ public final class Isotope extends BaseLevel {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(charge, element, neutrons);
+        return Objects.hash(Isotope.class, charge, element, neutrons);
     }
 
     /*

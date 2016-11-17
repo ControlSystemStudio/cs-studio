@@ -34,6 +34,7 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.epics.pvaccess.client.Channel;
@@ -96,17 +97,17 @@ public class MasarClient {
                 new Object[] { channel.getChannelName(), connectionState });
             if (connectionState == ConnectionState.CONNECTED) {
                 if (lastConnectionState == ConnectionState.NEVER_CONNECTED && notifier != null) {
-                    //this is to bring up a service which was disconnected at start up time, but became online later
+                    // this is to bring up a service which was disconnected at start up time, but became online later
                     notifier.synchronised();
                 }
-                //if not working, reconnect will happen at the next request
-//                else if (lastConnectionState != ConnectionState.CONNECTED) {
-//                    try {
-//                        client.connect(true);
-//                    } catch (MasarException e) {
-//                        SaveRestoreService.LOGGER.log(Level.SEVERE, "Cannot reconnect to masar service", e);
-//                    }
-//                }
+                // if not working, reconnect will happen at the next request
+                // else if (lastConnectionState != ConnectionState.CONNECTED) {
+                // try {
+                // client.connect(true);
+                // } catch (MasarException e) {
+                // SaveRestoreService.LOGGER.log(Level.SEVERE, "Cannot reconnect to masar service", e);
+                // }
+                // }
             }
             lastConnectionState = connectionState;
         }
@@ -169,13 +170,13 @@ public class MasarClient {
         public PVStructure request(PVStructure requestData) throws InterruptedException, MasarException {
             ChannelRPC rpc = channelRPC;
             if (rpc == null) {
-                throw new MasarException("Cannot connect to the MASAR service " + service + ".");
+                throw new MasarException(String.format("Cannot connect to the MASAR service '%s'.", service));
             }
             this.result = null;
             rpc.request(requestData);
             if (Activator.getInstance().getTimeout() > 0) {
                 if (!doneSemaphore.tryAcquire(1, Activator.getInstance().getTimeout(), TimeUnit.SECONDS)) {
-                    throw new MasarException("Timeout sending request to " + service + ".");
+                    throw new MasarException(String.format("Timeout sending request to '%s'.", service));
                 }
             } else {
                 doneSemaphore.acquire(1);
@@ -199,8 +200,8 @@ public class MasarClient {
         }
     }
 
-    private static RPCRequester createChannel(String service, CompletionNotifier notifier,
-        boolean neverConnected) throws MasarException {
+    private static RPCRequester createChannel(String service, CompletionNotifier notifier, boolean neverConnected)
+        throws MasarException {
         if (service == null) {
             throw new MasarException("No service name provided.");
         }
@@ -335,7 +336,7 @@ public class MasarClient {
      */
     public synchronized Branch createService(String newService) throws MasarException {
         if (Arrays.asList(services).contains(newService)) {
-            throw new MasarException("Service '" + newService + "' already exists.");
+            throw new MasarException(String.format("Service '%s' already exists.", newService));
         }
         RPCRequester channel = createChannel(newService, null, true);
         boolean connected = false;
@@ -357,7 +358,7 @@ public class MasarClient {
             Activator.getInstance().setServices(services);
             return new Branch(newService, newService);
         }
-        throw new MasarException("Service '" + newService + "' is unreachable.");
+        throw new MasarException(String.format("Service '%s' is unreachable.", newService));
     }
 
     /**
@@ -432,8 +433,7 @@ public class MasarClient {
      * @return the list of save sets
      * @throws MasarException in case of an error
      */
-    public synchronized List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch service)
-        throws MasarException {
+    public synchronized List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch service) throws MasarException {
         return getSaveSets(baseLevel, service, true);
     }
 
@@ -542,8 +542,8 @@ public class MasarClient {
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-            return MasarUtilities.createSnapshotsList(value, s -> new SaveSet(service, Optional.empty(),
-                new String[] { "Save Set: " + s }, MasarDataProvider.ID));
+            return MasarUtilities.createSnapshotsList(value,
+                s -> new SaveSet(service, Optional.empty(), new String[] { "Save Set: " + s }, MasarDataProvider.ID));
         } catch (InterruptedException e) {
             throw new MasarException("Searching snapshots aborted.", e);
         }
@@ -593,8 +593,8 @@ public class MasarClient {
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-            List<Snapshot> list = MasarUtilities.createSnapshotsList(value, s -> new SaveSet(service,
-                Optional.empty(), new String[] { "Save Set: " + s }, MasarDataProvider.ID));
+            List<Snapshot> list = MasarUtilities.createSnapshotsList(value,
+                s -> new SaveSet(service, Optional.empty(), new String[] { "Save Set: " + s }, MasarDataProvider.ID));
             if (list.isEmpty()) {
                 return Optional.empty();
             } else {
@@ -627,8 +627,7 @@ public class MasarClient {
      * @throws MasarException in case of an error
      * @throws ParseException if parsing of date failed
      */
-    private List<Snapshot> getSnapshots(SaveSet saveSet, boolean retryOnError)
-        throws MasarException, ParseException {
+    private List<Snapshot> getSnapshots(SaveSet saveSet, boolean retryOnError) throws MasarException, ParseException {
         setService(saveSet.getBranch());
         try {
             PVStructure request;
@@ -684,7 +683,7 @@ public class MasarClient {
                 index = snapshot.getParameters().get(MasarConstants.P_EVENT_ID);
             }
             if (index == null) {
-                throw new MasarException("Unknown snapshot: " + snapshot);
+                throw new MasarException(String.format("Unknown snapshot: %s.", String.valueOf(snapshot)));
             }
             PVStructure request = PVDataFactory.getPVDataCreate()
                 .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_DATA);
@@ -731,14 +730,16 @@ public class MasarClient {
         setService(snapshot.getSaveSet().getBranch());
         try {
             if (!snapshot.getSnapshot().isPresent()) {
-                throw new MasarException("Snapshot " + snapshot + " cannot be saved by MASAR.");
+                throw new MasarException(
+                    String.format("Snapshot '%s' cannot be saved by MASAR.", String.valueOf(snapshot)));
             }
             String id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID);
             if (id == null) {
                 id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.P_EVENT_ID);
             }
             if (id == null) {
-                throw new MasarException("Snapshot " + snapshot + " is not a valid MASAR snapshot.");
+                throw new MasarException(
+                    String.format("Snapshot '%s' is not a valid MASAR snapshot.", String.valueOf(snapshot)));
             }
             String user = MasarUtilities.getUser();
             PVStructure request = PVDataFactory.getPVDataCreate()
@@ -770,9 +771,7 @@ public class MasarClient {
             }
             newSnap = new Snapshot(newSnap.getSaveSet(), date, comment, user, newSnap.getParameters(),
                 newSnap.getPublicParameters());
-            return new VSnapshot(newSnap, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
-                snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
-                snapshot.getTimestamp());
+            return new VSnapshot(newSnap, snapshot.getEntries(), snapshot.getTimestamp());
         } catch (InterruptedException e) {
             throw new MasarException("Saving snapshot aborted.", e);
         }
@@ -842,8 +841,8 @@ public class MasarClient {
     }
 
     /**
-     * Loads the save set data by trying to read the contents from one of the snapshot for this save set. If no
-     * snapshot exists, one is taken and parsed. The snapshot that is taken is never saved.
+     * Loads the save set data by trying to read the contents from one of the snapshot for this save set. If no snapshot
+     * exists, one is taken and parsed. The snapshot that is taken is never saved.
      *
      * @param set the save set for which the content is being loaded
      * @return the save set data
@@ -859,6 +858,8 @@ public class MasarClient {
         } else {
             snapshot = loadSnapshotData(snapshots.get(0));
         }
-        return new SaveSetData(set, snapshot.getNames(), null, null, null);
+        List<SaveSetEntry> entries = snapshot.getEntries().stream().map(e -> new SaveSetEntry(e.getPVName()))
+            .collect(Collectors.toList());
+        return new SaveSetData(set, entries, null);
     }
 }

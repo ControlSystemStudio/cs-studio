@@ -50,9 +50,10 @@ public class Opi_TextupdateClass extends OpiWidget {
         // Handle format and units
         boolean precisionFromPV = true;
         boolean showUnits = true;
+        // Mode maps to org.csstudio.simplepv.FormatEnum
         int mode = 0; // show default display
         if(t.getDisplayMode() == null){ // default mode in EDM; ignores precision field and shows units
-            mode = 0;
+            mode = 0;  // DEFAULT
             precisionFromPV = true;
             showUnits = true;
         } else { // not default mode in EDM
@@ -60,11 +61,13 @@ public class Opi_TextupdateClass extends OpiWidget {
             precisionFromPV = false;
             showUnits = false;
             if(t.getDisplayMode().equals("decimal")){
-                mode = 1;
-            } else if(t.getDisplayMode().equals("engineer") || t.getDisplayMode().equals("exp")) {
-                mode = 2;
-            } else if(t.getDisplayMode().equals("hex")) {
-                mode = 3;
+                mode = 1;  // DECIMAL
+            } else if (t.getDisplayMode().equals("exp")) {
+                mode = 2;  // EXP
+            } else if (t.getDisplayMode().equals("hex")) {
+                mode = 3;  // HEX32
+            } else if (t.getDisplayMode().equals("engineer")){
+                mode = 7;  // ENG
             }
         }
 

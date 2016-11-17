@@ -54,6 +54,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -340,17 +341,34 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         SelectionTableColumn() {
             super("", "Include this PV when restoring values", 30, 30, false);
             setCellValueFactory(new PropertyValueFactory<>("selected"));
-            setCellFactory(CheckBoxTableCell.forTableColumn(this));
+            //for those entries, which have a read-only property, disable the checkbox
+            setCellFactory(column -> {
+                TableCell<TableEntry, Boolean> cell = new CheckBoxTableCell<>(null,null);
+                cell.itemProperty().addListener((a, o, n) -> {
+                    cell.getStyleClass().remove("check-box-table-cell-disabled");
+                    TableRow<?> row = cell.getTableRow();
+                    if (row != null) {
+                        TableEntry item = (TableEntry) row.getItem();
+                        if (item != null) {
+                            cell.setEditable(!item.readOnlyProperty().get());
+                            if (item.readOnlyProperty().get()) {
+                                cell.getStyleClass().add("check-box-table-cell-disabled");
+                            }
+                        }
+                    }
+                });
+                return cell;
+            });
             setEditable(true);
             setSortable(false);
             selectAllCheckBox = new UnfocusableCheckBox();
             selectAllCheckBox.setSelected(false);
-            selectAllCheckBox.setOnAction(
-                e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
+            selectAllCheckBox.setOnAction(e -> getItems().stream().filter(te -> !te.readOnlyProperty().get())
+                    .forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
             setGraphic(selectAllCheckBox);
             MenuItem inverseMI = new MenuItem("Inverse Selection");
-            inverseMI.setOnAction(
-                e -> getItems().forEach(te -> te.selectedProperty().setValue(!te.selectedProperty().get())));
+            inverseMI.setOnAction(e -> getItems().stream().filter(te -> !te.readOnlyProperty().get())
+                    .forEach(te -> te.selectedProperty().setValue(!te.selectedProperty().get())));
             final ContextMenu contextMenu = new ContextMenu(inverseMI);
             selectAllCheckBox.setOnMouseReleased(e -> {
                 if (e.getButton() == MouseButton.SECONDARY) {
@@ -799,6 +817,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     public ISelection getSelection() {
         VSnapshot snapshot = getSelectedSnapshot();
         if (snapshot == null) {
+            return null;
+        }
+        //if there is no PV selected, return null selection
+        if (selectionModelProperty().get().getSelectedItems().isEmpty()) {
             return null;
         }
         // if snapshot was found, use its timestamp and create timestamped PVs

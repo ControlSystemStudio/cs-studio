@@ -29,9 +29,9 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
@@ -47,10 +47,10 @@ public class GitDataProvider implements DataProvider {
 
     public static final String ID = "org.csstudio.saverestore.git.dataprovider";
 
-    private static final SearchCriterion COMMENT = SearchCriterion.of("Snapshot Comment",false, false);
-    private static final SearchCriterion TAG_NAME = SearchCriterion.of("Snapshot tag name",true, false);
-    private static final SearchCriterion TAG_MESSAGE = SearchCriterion.of("Snapshot tag message",false, false);
-    private static final SearchCriterion USER = SearchCriterion.of("User",false, false);
+    private static final SearchCriterion COMMENT = SearchCriterion.of("Snapshot Comment", false, false);
+    private static final SearchCriterion TAG_NAME = SearchCriterion.of("Snapshot tag name", true, false);
+    private static final SearchCriterion TAG_MESSAGE = SearchCriterion.of("Snapshot tag message", false, false);
+    private static final SearchCriterion USER = SearchCriterion.of("User", false, false);
     private static final List<SearchCriterion> SEARCH_CRITERIA = Collections
         .unmodifiableList(Arrays.asList(COMMENT, TAG_NAME, TAG_MESSAGE, USER));
 
@@ -73,6 +73,12 @@ public class GitDataProvider implements DataProvider {
     public GitDataProvider(GitManager grm) {
         notifiers = new ArrayList<>();
         this.grm = grm;
+        Activator.getInstance().ifPresent(a -> a.getPreferenceStore().addPropertyChangeListener(e -> {
+            String property = e.getProperty();
+            if (Activator.PREF_URL.equals(property) || Activator.PREF_DESTINATION.equals(property)) {
+                SaveRestoreService.getInstance().reselectDataProvider();
+            }
+        }));
     }
 
     /*
@@ -83,11 +89,11 @@ public class GitDataProvider implements DataProvider {
     @Override
     public void initialise() throws DataProviderException {
         try {
-            URI remote = Activator.getInstance().getGitURI();
-            if (remote.toString().isEmpty()) {
+            URI remote = Activator.getInstance().map(a -> a.getGitURI()).orElse(null);
+            if (remote == null || remote.toString().isEmpty()) {
                 throw new DataProviderException("Repository was not defined.");
             }
-            File dest = Activator.getInstance().getDestination();
+            File dest = Activator.getInstance().map(a -> a.getDestination()).orElse(null);
             grm.initialise(remote, dest);
             initialized = true;
         } catch (RuntimeException | GitAPIException e) {
@@ -108,8 +114,8 @@ public class GitDataProvider implements DataProvider {
         }
         try {
             initialized = false;
-            URI remote = Activator.getInstance().getGitURI();
-            File dest = Activator.getInstance().getDestination();
+            URI remote = Activator.getInstance().map(a -> a.getGitURI()).orElse(null);
+            File dest = Activator.getInstance().map(a -> a.getDestination()).orElse(null);
             GitManager.deleteFolder(dest);
             boolean b = grm.initialise(remote, dest);
             initialized = true;
@@ -181,8 +187,7 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional,
-     * org.csstudio.saverestore.data.Branch)
+     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional, org.csstudio.saverestore.data.Branch)
      */
     @Override
     public SaveSet[] getSaveSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
@@ -210,8 +215,8 @@ public class GitDataProvider implements DataProvider {
                 all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
         } catch (RuntimeException | IOException | GitAPIException e) {
-            throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
-                e);
+            throw new DataProviderException(
+                String.format("Error retrieving the snapshots list for '%s'.", set.getPathAsString()), e);
         }
     }
 
@@ -226,8 +231,8 @@ public class GitDataProvider implements DataProvider {
         try {
             return grm.loadSaveSetData(set, Optional.empty());
         } catch (RuntimeException | IOException | GitAPIException e) {
-            throw new DataProviderException("Error loading the save set data for '" + set.getPathAsString() + "'.",
-                e);
+            throw new DataProviderException(
+                String.format("Error loading the save set data for '%s'.", set.getPathAsString()), e);
         }
     }
 
@@ -243,7 +248,7 @@ public class GitDataProvider implements DataProvider {
         try {
             branch = grm.createBranch(originalBranch, newBranchName);
         } catch (RuntimeException | GitAPIException | IOException e) {
-            throw new DataProviderException("Error creating branch '" + newBranchName + "'.", e);
+            throw new DataProviderException(String.format("Error creating branch '%s'.", newBranchName), e);
         }
         for (CompletionNotifier n : getNotifiers()) {
             n.branchCreated(branch);
@@ -254,8 +259,7 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData,
-     * java.lang.String)
+     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData, java.lang.String)
      */
     @Override
     public SaveSetData saveSaveSet(SaveSetData set, String comment) throws DataProviderException {
@@ -265,7 +269,7 @@ public class GitDataProvider implements DataProvider {
             answer = grm.saveSaveSet(set, comment);
         } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException(
-                "Error storing save set '" + set.getDescriptor().getPathAsString() + "'.", e);
+                String.format("Error storing save set '%s'.", set.getDescriptor().getPathAsString()), e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -282,8 +286,7 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet,
-     * java.lang.String)
+     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet, java.lang.String)
      */
     @Override
     public boolean deleteSaveSet(SaveSet set, String comment) throws DataProviderException {
@@ -292,7 +295,7 @@ public class GitDataProvider implements DataProvider {
         try {
             answer = grm.deleteSaveSet(set, comment);
         } catch (RuntimeException | IOException | GitAPIException e) {
-            throw new DataProviderException("Error deleting save set '" + set.getPathAsString() + "'.", e);
+            throw new DataProviderException(String.format("Error deleting save set '%s'.", set.getPathAsString()), e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -319,7 +322,7 @@ public class GitDataProvider implements DataProvider {
             answer = grm.saveSnapshot(data, comment);
         } catch (RuntimeException | IOException | GitAPIException e) {
             throw new DataProviderException(
-                "Error saving snapshot set for '" + data.getSaveSet().getPathAsString() + "'.", e);
+                String.format("Error saving snapshot set for '%s'.", data.getSaveSet().getPathAsString()), e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -347,7 +350,8 @@ public class GitDataProvider implements DataProvider {
         try {
             answer = grm.tagSnapshot(snapshot, tagName.orElse(null), tagMessage.orElse(null));
         } catch (RuntimeException | IOException | GitAPIException e) {
-            throw new DataProviderException("Error creating the tag for snapshot '" + snapshot.getDate() + "'.", e);
+            throw new DataProviderException(
+                String.format("Error creating the tag for snapshot '%s'.", snapshot.getDate()), e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -372,8 +376,8 @@ public class GitDataProvider implements DataProvider {
         try {
             return grm.loadSnapshotData(snapshot);
         } catch (ParseException | IOException | GitAPIException | RuntimeException e) {
-            throw new DataProviderException("Error loading the snapshot content for snapshot '"
-                + snapshot.getSaveSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
+            throw new DataProviderException(String.format("Error loading the snapshot content for snapshot '%s [%s]'.",
+                snapshot.getSaveSet().getPathAsString(), String.valueOf(snapshot.getDate())), e);
         }
     }
 
@@ -410,8 +414,10 @@ public class GitDataProvider implements DataProvider {
             }
             sort = size > 0 && list.size() != size;
         } catch (RuntimeException | GitAPIException | IOException e) {
-            throw new DataProviderException("Error search for snapshot that match the expression '" + expression
-                + "' using criteria '" + criteria.toString() + ".", e);
+            throw new DataProviderException(
+                String.format("Error search for snapshot that match the expression '%s' using criteria '%s'.",
+                    expression, criteria.toString()),
+                e);
         }
         Snapshot[] snapshots = list.toArray(new Snapshot[list.size()]);
         if (sort) {
@@ -436,7 +442,8 @@ public class GitDataProvider implements DataProvider {
         try {
             answer = grm.importData(source, toBranch, toBaseLevel, type);
         } catch (RuntimeException | IOException | GitAPIException | ParseException e) {
-            throw new DataProviderException("Error importing data from '" + source.getPathAsString() + "'.", e);
+            throw new DataProviderException(String.format("Error importing data from '%s'.", source.getPathAsString()),
+                e);
         }
 
         if (answer.change == ChangeType.PULL) {
@@ -483,7 +490,7 @@ public class GitDataProvider implements DataProvider {
 
     private void checkInitialised() throws DataProviderException {
         if (!initialized) {
-            throw new DataProviderException("Git Data Provider hase not been initialised.");
+            throw new DataProviderException("Git Data Provider has not been initialised.");
         }
     }
 

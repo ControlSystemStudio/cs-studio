@@ -124,9 +124,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#Scan(long, java.lang.String, java.util.Date)">Scan</a></strong>(long&nbsp;id,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#Scan(long,%20java.lang.String,%20Instant)">Scan</a></strong>(long&nbsp;id,
     java.lang.String&nbsp;name,
-    java.util.Date&nbsp;created)</code>
+    Instant&nbsp;created)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
@@ -153,7 +153,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.util.Date</code></td>
+<td class="colFirst"><code>Instant</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/Scan.html#getCreated()">getCreated</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -197,7 +197,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="Scan(long, java.lang.String, java.util.Date)">
+<a name="Scan(long, java.lang.String, Instant)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -205,7 +205,7 @@ extends java.lang.Object</pre>
 <h4>Scan</h4>
 <pre>public&nbsp;Scan(long&nbsp;id,
     java.lang.String&nbsp;name,
-    java.util.Date&nbsp;created)</pre>
+    Instant&nbsp;created)</pre>
 <div class="block">Initialize</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>id</code> - Scan ID</dd><dd><code>name</code> - Name</dd><dd><code>created</code> - Time when scan was created (submitted to server)</dd></dl>
 </li>
@@ -244,7 +244,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreated</h4>
-<pre>public&nbsp;java.util.Date&nbsp;getCreated()</pre>
+<pre>public&nbsp;Instant&nbsp;getCreated()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>Time when scan was created on server</dd></dl>
 </li>
 </ul>

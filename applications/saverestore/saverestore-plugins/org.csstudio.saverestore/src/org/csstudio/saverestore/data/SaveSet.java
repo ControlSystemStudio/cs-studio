@@ -247,7 +247,7 @@ public class SaveSet implements Comparable<SaveSet>, Serializable {
      */
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(baseLevel, branch) + Arrays.hashCode(path);
+        return 31 * Objects.hash(SaveSet.class,baseLevel, branch) + Arrays.hashCode(path);
     }
 
     /*

@@ -119,15 +119,15 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState)">ScanInfo</a></strong>(<a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a>&nbsp;scan,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan,%20org.csstudio.scan.server.ScanState)">ScanInfo</a></strong>(<a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a>&nbsp;scan,
         <a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a>&nbsp;state)</code>
 <div class="block">Initialize</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState, java.lang.String, long, long, long, long, long, java.lang.String)">ScanInfo</a></strong>(<a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a>&nbsp;scan,
+<td class="colOne"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#ScanInfo(org.csstudio.scan.server.Scan,%20org.csstudio.scan.server.ScanState,%20,%20long,%20long,%20long,%20long,%20long,%20java.lang.String)">ScanInfo</a></strong>(<a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a>&nbsp;scan,
         <a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a>&nbsp;state,
-        java.lang.String&nbsp;error,
+        <any>&nbsp;error,
         long&nbsp;runtime_ms,
         long&nbsp;finishtime_ms,
         long&nbsp;performed_work_units,
@@ -169,11 +169,11 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#getCurrentCommand()">getCurrentCommand</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colFirst"><code><any></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#getError()">getError</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Date</code></td>
+<td class="colFirst"><code>Instant</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/csstudio/scan/server/ScanInfo.html#getFinishTime()">getFinishTime</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -253,7 +253,7 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan</code> - <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server"><code>Scan</code></a></dd><dd><code>state</code> - Scan state</dd></dl>
 </li>
 </ul>
-<a name="ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState, java.lang.String, long, long, long, long, long, java.lang.String)">
+<a name="ScanInfo(org.csstudio.scan.server.Scan, org.csstudio.scan.server.ScanState, , long, long, long, long, long, java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -261,7 +261,7 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <h4>ScanInfo</h4>
 <pre>public&nbsp;ScanInfo(<a href="../../../../org/csstudio/scan/server/Scan.html" title="class in org.csstudio.scan.server">Scan</a>&nbsp;scan,
         <a href="../../../../org/csstudio/scan/server/ScanState.html" title="enum in org.csstudio.scan.server">ScanState</a>&nbsp;state,
-        java.lang.String&nbsp;error,
+        <any>&nbsp;error,
         long&nbsp;runtime_ms,
         long&nbsp;finishtime_ms,
         long&nbsp;performed_work_units,
@@ -269,7 +269,7 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
         long&nbsp;current_address,
         java.lang.String&nbsp;current_commmand)</pre>
 <div class="block">Initialize</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan</code> - Scan</dd><dd><code>state</code> - Scan state</dd><dd><code>error</code> - Error or <code>null</code></dd><dd><code>runtime_ms</code> - Runtime in millisecs</dd><dd><code>finishtime_ms</code> - (Estimated) finish time in millisecs</dd><dd><code>performed_work_units</code> - Work units performed so far</dd><dd><code>total_work_units</code> - Total number of work units</dd><dd><code>current_commmand</code> - Description of current command</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scan</code> - Scan</dd><dd><code>state</code> - Scan state</dd><dd><code>error</code> - Error</dd><dd><code>runtime_ms</code> - Runtime in millisecs</dd><dd><code>finishtime_ms</code> - (Estimated) finish time in millisecs</dd><dd><code>performed_work_units</code> - Work units performed so far</dd><dd><code>total_work_units</code> - Total number of work units</dd><dd><code>current_commmand</code> - Description of current command</dd></dl>
 </li>
 </ul>
 </li>
@@ -296,8 +296,8 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <ul class="blockList">
 <li class="blockList">
 <h4>getError</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getError()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>Error (if state indicates failure) or <code>null</code></dd></dl>
+<pre>public&nbsp;<any>&nbsp;getError()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Error (if state indicates failure)</dd></dl>
 </li>
 </ul>
 <a name="getRuntimeMillisecs()">
@@ -356,7 +356,7 @@ extends <a href="../../../../org/csstudio/scan/server/Scan.html" title="class in
 <ul class="blockList">
 <li class="blockList">
 <h4>getFinishTime</h4>
-<pre>public&nbsp;java.util.Date&nbsp;getFinishTime()</pre>
+<pre>public&nbsp;Instant&nbsp;getFinishTime()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>(Estimated) finish time or <code>null</code></dd></dl>
 </li>
 </ul>

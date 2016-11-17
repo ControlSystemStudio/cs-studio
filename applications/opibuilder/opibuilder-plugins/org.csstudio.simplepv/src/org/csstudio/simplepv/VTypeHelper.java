@@ -49,16 +49,18 @@ import org.diirt.vtype.ValueUtil;
  */
 public class VTypeHelper {
 
-    public static final int DEFAULT_PRECISION = 4;
+    public static final int DEFAULT_PRECISION = 4;//$NON-NLS-1$
+    public static final int UNSET_PRECISION = -1;//$NON-NLS-1$
     public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
     /**
      * The max count of values to be formatted into string. The value beyond
      * this count will be omitted.
      */
-    public final static int MAX_FORMAT_VALUE_COUNT = 100;
-    final public static String ARRAY_ELEMENT_SEPARATOR = ", "; //$NON-NLS-1$
+    public static final int MAX_FORMAT_VALUE_COUNT = 100;
+    public static final String ARRAY_ELEMENT_SEPARATOR = ", "; //$NON-NLS-1$
 
-    private static Map<Integer, NumberFormat> formatCacheMap = new HashMap<Integer, NumberFormat>();
+    private static Map<Integer, NumberFormat> expFormatCacheMap = new HashMap<Integer, NumberFormat>();
+    private static Map<Integer, NumberFormat> decimalFormatCacheMap = new HashMap<Integer, NumberFormat>();
 
     /**
      * Format a VType value to string.
@@ -400,16 +402,18 @@ public class VTypeHelper {
         } else {
             if (data.size() <= 0)
                 return "[]"; //$NON-NLS-1$
+
+            int displayPrecision = calculatePrecision(pmArray, precision);
+
             StringBuilder sb = new StringBuilder(data.size());
-            sb.append(formatScalarNumber(formatEnum, data.getDouble(0), precision));
+            sb.append(formatScalarNumber(formatEnum, data.getDouble(0), displayPrecision));
             for (int i = 1; i < data.size(); i++) {
                 sb.append(ARRAY_ELEMENT_SEPARATOR);
-                sb.append(formatScalarNumber(formatEnum, data.getDouble(i), precision));
+                sb.append(formatScalarNumber(formatEnum, data.getDouble(i), displayPrecision));
                 if (i >= MAX_FORMAT_VALUE_COUNT) {
                     sb.append(ARRAY_ELEMENT_SEPARATOR);
                     sb.append("..."); //$NON-NLS-1$
-                    sb.append(formatScalarNumber(formatEnum, data.getDouble(data.size() - 1),
-                            precision));
+                    sb.append(formatScalarNumber(formatEnum, data.getDouble(data.size() - 1), displayPrecision));
                     sb.append(" "); //$NON-NLS-1$
                     sb.append("["); //$NON-NLS-1$
                     sb.append(data.size());
@@ -447,6 +451,7 @@ public class VTypeHelper {
         case DECIMAL:
         case EXP:
         case COMPACT:
+        case ENG:
             return Integer.toString(enumValue.getIndex());
         case HEX:
         case HEX64:
@@ -475,71 +480,63 @@ public class VTypeHelper {
             Number numValue, int precision) {
         if (pmValue != null)
             numValue = (Number) ((Scalar) pmValue).getValue();
+
+        NumberFormat numberFormat;
+
+        int displayPrecision = calculatePrecision(pmValue, precision);
+
         switch (formatEnum) {
         case DECIMAL:
         case DEFAULT:
         default:
-            if (precision == -1 && pmValue != null && pmValue instanceof Display
-                    && ((Display) pmValue).getFormat() != null) {
-                return ((Display) pmValue).getFormat().format(((Number) numValue).doubleValue());
-            } else {
-                if (precision == -1)
-                    return formatScalarNumber(FormatEnum.COMPACT, numValue, precision);
-                else {
-                    // Sun's implementation of the JDK returns the Unicode replacement
-                    // character, U+FFFD, when asked to parse a NaN. This is more
-                    // consistent with the rest of CSS.
-                    if(Double.isNaN(numValue.doubleValue())) {
-                        return Double.toString(Double.NaN);
-                    }
-
-                    // Also check for positive and negative infinity.
-                    if(Double.isInfinite(numValue.doubleValue())) {
-                        return Double.toString(numValue.doubleValue());
-                    }
-
-                    NumberFormat numberFormat = formatCacheMap.get(precision);
-                    if (numberFormat == null) {
-                        numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
-                        numberFormat.setMinimumFractionDigits(precision);
-                        numberFormat.setMaximumFractionDigits(precision);
-                        formatCacheMap.put(precision, numberFormat);
-                    }
-                    return numberFormat.format(numValue.doubleValue());
+            if (precision == UNSET_PRECISION) {
+                if (pmValue instanceof Display && ((Display) pmValue).getFormat() != null) {
+                    return ((Display) pmValue).getFormat().format(((Number) numValue).doubleValue());
+                } else {
+                    return formatScalarNumber(FormatEnum.COMPACT, numValue, displayPrecision);
                 }
+
+            } else {
+                // Sun's implementation of the JDK returns the Unicode replacement
+                // character, U+FFFD, when asked to parse a NaN. This is more
+                // consistent with the rest of CSS.
+                if(Double.isNaN(numValue.doubleValue())) {
+                    return Double.toString(Double.NaN);
+                }
+
+                // Also check for positive and negative infinity.
+                if(Double.isInfinite(numValue.doubleValue())) {
+                    return Double.toString(numValue.doubleValue());
+                }
+
+                numberFormat = getDecimalFormat(precision);
+                return numberFormat.format(numValue.doubleValue());
             }
 
         case COMPACT:
             double dValue = numValue.doubleValue();
             if (((dValue > 0.0001) && (dValue < 10000))
                     || ((dValue < -0.0001) && (dValue > -10000)) || dValue == 0.0) {
-                return formatScalarNumber(FormatEnum.DECIMAL, numValue, precision == -1 ? 4
-                        : precision);
+                return formatScalarNumber(FormatEnum.DECIMAL, numValue, displayPrecision);
             } else {
-                return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1 ? 4 : precision);
+                return formatScalarNumber(FormatEnum.EXP, numValue, displayPrecision);
             }
-        case EXP:
-            if (precision == -1 && numValue instanceof Display) {
-                precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
-            }
-            NumberFormat numberFormat;
-            if (precision == -1)
-                precision = DEFAULT_PRECISION;
 
-            // Assert positive precision
-            precision = Math.abs(precision);
-            // Exponential notation itentified as 'negative' precision in cached
-            numberFormat = formatCacheMap.get(-precision);
-            if (numberFormat == null) {
-                final StringBuffer pattern = new StringBuffer(10);
-                pattern.append("0."); //$NON-NLS-1$
-                for (int i = 0; i < precision; ++i)
-                    pattern.append('0');
-                pattern.append("E0"); //$NON-NLS-1$
-                numberFormat = new DecimalFormat(pattern.toString());
-                formatCacheMap.put(-precision, numberFormat);
+        case ENG:
+            double value = numValue.doubleValue();
+            if (value == 0) {
+                return formatScalarNumber(FormatEnum.EXP, numValue, displayPrecision);
             }
+
+            double log10 = Math.log10(Math.abs(value));
+            int power = 3 * (int) Math.floor(log10 / 3);
+            return String.format("%." + displayPrecision + "fE%d", value / Math.pow(10, power), power);
+
+        case EXP:
+            // Exponential notation identified as 'negative' precision in cached
+            numberFormat = getExponentialFormat(displayPrecision);
             return numberFormat.format(numValue.doubleValue());
+
         case HEX:
             return HEX_PREFIX + Integer.toHexString(numValue.intValue()).toUpperCase();
         case HEX64:
@@ -549,6 +546,76 @@ public class VTypeHelper {
         }
     }
 
+    /** Return decimal number format.
+     *
+     *  The formats are created if it has not previously been used.
+     *  Constructed formats are cached.
+     *
+     * @param precision
+     * @return
+     */
+    private static NumberFormat getDecimalFormat(int precision) {
+        int absPrecision = Math.abs(precision);
+        NumberFormat numberFormat = decimalFormatCacheMap.get(absPrecision);
+        if (numberFormat == null) {
+            numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
+            numberFormat.setMinimumFractionDigits(absPrecision);
+            numberFormat.setMaximumFractionDigits(absPrecision);
+            decimalFormatCacheMap.put(absPrecision, numberFormat);
+        }
+        return numberFormat;
+    }
+
+    /** Return exponential number format.
+     *
+     *  The formats are created if it has not previously been used.
+     *  Constructed formats are cached.
+     *
+     * @param precision
+     * @return
+     */
+    private static NumberFormat getExponentialFormat(int precision) {
+        int absPrecision = Math.abs(precision);
+        NumberFormat numberFormat = expFormatCacheMap.get(absPrecision);
+        if (numberFormat == null) {
+            final StringBuffer pattern = new StringBuffer(10);
+            pattern.append("0"); //$NON-NLS-1$
+            if (precision > 0) {
+                pattern.append(".");
+            }
+            for (int i = 0; i < precision; ++i) {
+                pattern.append('0');
+            }
+            pattern.append("E0"); //$NON-NLS-1$
+            numberFormat = new DecimalFormat(pattern.toString());
+            expFormatCacheMap.put(absPrecision, numberFormat);
+        }
+        return numberFormat;
+    }
+
+    /** Find the display precision for the value:
+     *  - if a precision is specified use that (precision != UNSET)
+     *  - if precision is UNSET, find the precision from the passed VType value
+     *  - if no suitable value passed use the default
+     *
+     * @param pmValue
+     * @param precision
+     * @return
+     */
+    private static int calculatePrecision(Object pmValue, int precision) {
+        int displayPrecision = DEFAULT_PRECISION;
+
+        if (precision != UNSET_PRECISION) {
+            displayPrecision = precision;
+        }
+        else if (pmValue instanceof Display) {
+            final NumberFormat format = ((Display) pmValue).getFormat();
+            if (format != null)
+                displayPrecision = format.getMinimumFractionDigits();
+        }
+
+        return displayPrecision;
+    }
 
     private static double[] ListNumberToDoubleArray(ListNumber listNumber) {
         Object wrappedArray = CollectionNumbers.wrappedArray(listNumber);

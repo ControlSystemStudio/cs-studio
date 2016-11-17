@@ -34,7 +34,7 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
     @Override
     public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         log.fine("VTable ADAPTER:" + message.toString());
-        
+
         List<String> keys = new ArrayList<String>();
         List<String> values = new ArrayList<String>();
 

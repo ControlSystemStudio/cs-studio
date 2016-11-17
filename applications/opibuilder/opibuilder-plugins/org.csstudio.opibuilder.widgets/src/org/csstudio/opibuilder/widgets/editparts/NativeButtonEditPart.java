@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Button;
  * @author Xihui Chen
  * @deprecated This is not used anymore since the native button is merged to action button.
  */
+@Deprecated
 public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 
     private Button button;
@@ -156,6 +157,7 @@ public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
         };
         getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
             addPropertyChangeListener(new PropertyChangeListener(){
+                @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
                 }

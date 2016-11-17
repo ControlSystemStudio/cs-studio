@@ -51,4 +51,7 @@ public interface Ticks<XTYPE>
 
     /** @return Returns the tick formatted as text. */
     public String format(XTYPE tick);
+
+    /** @return Returns the tick formatted as text. */
+    public String formatDetailed(XTYPE tick);
 }

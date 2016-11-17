@@ -7,14 +7,18 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scandata;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 
@@ -33,6 +37,15 @@ import org.csstudio.scan.server.ScanServerInfo;
 @SuppressWarnings("nls")
 public class ScanDataModel implements ScanInfoModelListener
 {
+    private static final ScanData UNKNOWN_SCAN;
+
+    static
+    {
+        final Map<String, List<ScanSample>> unknown = new HashMap<>();
+        unknown.put("Unknown Scan", Collections.emptyList());
+        UNKNOWN_SCAN = new ScanData(unknown);
+    }
+
     /** ID of scan that we monitor */
     final private long scan_id;
 
@@ -40,7 +53,7 @@ public class ScanDataModel implements ScanInfoModelListener
     final private ScanInfoModel scan_info_model;
 
     /** Most recent scan data */
-    private ScanData scan_data = null;
+    private volatile ScanData scan_data = null;
 
     /** Last sample serial of scan data */
     private long last_scan_data_serial = -1;
@@ -76,7 +89,7 @@ public class ScanDataModel implements ScanInfoModelListener
     }
 
     /** @return most recent scan data. May be <code>null</code> */
-    public synchronized ScanData getScanData()
+    public ScanData getScanData()
     {
         return scan_data;
     }
@@ -85,6 +98,10 @@ public class ScanDataModel implements ScanInfoModelListener
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
+        // Skip querying a scan once server indicated that it's unknown
+        if (last_scan_data_serial == ScanClient.UNKNOWN_SCAN_SERIAL)
+            return;
+
         try
         {
             // Any change in the data?
@@ -94,11 +111,10 @@ public class ScanDataModel implements ScanInfoModelListener
                 return;
 
             // Get data
-            final ScanData data = client.getScanData(scan_id);
-            synchronized (this)
-            {
-                scan_data = data;
-            }
+            final ScanData data = serial == ScanClient.UNKNOWN_SCAN_SERIAL
+                                ? UNKNOWN_SCAN
+                                : client.getScanData(scan_id);
+            scan_data = data;
             last_scan_data_serial = serial;
             // Update listener
             listener.updateScanData(data);

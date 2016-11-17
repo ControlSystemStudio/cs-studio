@@ -68,19 +68,19 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * @param startTime the start of the time window
      * @param endTime the end of the time window
      * @param optimised true for optimised retrieval, false for raw values
-     * @return the list of all found values or null if the channel was not found
+     * @return the list of all found values
+     * @throws UnknownChannelException if the channel was not found in the archive storage
      * @throws Exception if there was an error fetching the data
      */
-    private Optional<List<VType>> loadValuesForTimeWindow(Instant startTime, Instant endTime, boolean optimised)
-        throws Exception {
+    private List<VType> loadValuesForTimeWindow(Instant startTime, Instant endTime, boolean optimised)
+        throws UnknownChannelException, Exception {
         List<VType> values = new ArrayList<>(5000);
         boolean channelFound = false;
         for (ArchiveSource as : sources) {
             ArchiveReader archive = ArchiveRepository.getInstance().getArchiveReader(as.url);
             ValueIterator iterator;
             try {
-                iterator = optimised
-                    ? archive.getOptimizedValues(as.key, strippedName, startTime, endTime, binCount)
+                iterator = optimised ? archive.getOptimizedValues(as.key, strippedName, startTime, endTime, binCount)
                     : archive.getRawValues(as.key, strippedName, startTime, endTime);
             } catch (UnknownChannelException e) {
                 continue;
@@ -96,9 +96,9 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
         }
         if (channelFound) {
             Collections.sort(values, timestampComparator);
-            return Optional.of(values);
+            return values;
         } else {
-            return Optional.empty();
+            throw new UnknownChannelException(strippedName);
         }
     }
 
@@ -106,10 +106,11 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * Loads a single value that matches the given timestamp.
      *
      * @param time the time for which the value should be loaded
-     * @return the value if found or nothing if not found or null if the channel was not found
+     * @return the value if found or nothing if not found
+     * @throws UnknownChannelException if the channel could not be found in any of the archive stores
      * @throws Exception if there is an exception while fetching data from the archive
      */
-    private Optional<VType> loadValueForTime(Instant time) throws Exception {
+    private Optional<VType> loadValueForTime(Instant time) throws UnknownChannelException, Exception {
         VType theValue = null;
         Instant theTimestamp = null;
         boolean channelFound = false;
@@ -150,12 +151,13 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
         if (channelFound) {
             return Optional.ofNullable(theValue);
         } else {
-            return null;
+            throw new UnknownChannelException(strippedName);
         }
     }
 
     /**
-     * Fetch data from the archiver.
+     * Fetch data from the archiver. If the channel does not exist, this method will already handle the exception. All
+     * other exceptions are forwarded to the caller.
      *
      * @param startTime the start time of the fetch interval
      * @param endTime the end time of the fetch interval
@@ -165,24 +167,20 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
     protected void fetchData(Instant startTime, Instant endTime, boolean optimised) throws Exception {
         List<VType> values = null;
         boolean singleValue = startTime.equals(endTime);
-        if (singleValue) {
-            Optional<VType> value = loadValueForTime(startTime);
-            if (value != null) {
+        try {
+            if (singleValue) {
+                Optional<VType> value = loadValueForTime(startTime);
                 values = new ArrayList<>();
                 if (value.isPresent()) {
                     values.add(value.get());
                 }
+            } else {
+                values = loadValuesForTimeWindow(startTime, endTime, optimised);
             }
-        } else {
-            Optional<List<VType>> v = loadValuesForTimeWindow(startTime, endTime, optimised);
-            if (v.isPresent()) {
-                values = v.get();
-            }
-        }
-        if (values == null) {
-            reportExceptionToAllReadersAndWriters(new UnknownChannelException(strippedName));
-        } else {
             processMessage(values);
+        } catch (UnknownChannelException e) {
+            // only catch unknown channel exception and forward all other exceptions
+            reportExceptionToAllReadersAndWriters(new UnknownChannelException(strippedName));
         }
     }
 

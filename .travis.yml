@@ -10,8 +10,6 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
-jdk:
-  - oraclejdk8
 
 install: echo 'Skipping mvn install'
 
@@ -21,5 +19,7 @@ before_script:
 
 script:
  - java -version
- - mvn clean verify -fcore/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore
- - mvn clean verify -fapplications/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Dcsstudio.composite.repo=core/p2repo
+ - ./build/travis.sh
+
+after_failure:
+ - find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat

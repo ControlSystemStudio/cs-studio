@@ -10,5 +10,5 @@
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.swt.rtplot.test</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-test-plugin</packaging>
 </project>

@@ -53,7 +53,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     private final IteratorListener listener;
 
     protected boolean closed = false;
-    
+
     private static Object lock = new Object();
 
     /**

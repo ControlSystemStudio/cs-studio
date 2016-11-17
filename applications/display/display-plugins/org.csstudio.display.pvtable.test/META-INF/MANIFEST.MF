@@ -3,7 +3,7 @@ Bundle-SymbolicName: org.csstudio.display.pvtable.test
 Fragment-Host: org.csstudio.display.pvtable
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 4.0.102.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime;bundle-version="3.6.0"

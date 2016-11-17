@@ -2,7 +2,7 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.Iterator;
 
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
@@ -57,7 +57,7 @@ public final class LauncherHelper {
                 }
             }
         }
-        ErrorHandlerUtil.handleError(NLS.bind("A workspace match for {0} could not be found.", path), null);
+        OPIBuilderPlugin.getLogger().info(NLS.bind("A workspace match for {0} could not be found.", path));
         return path;
     }
 }

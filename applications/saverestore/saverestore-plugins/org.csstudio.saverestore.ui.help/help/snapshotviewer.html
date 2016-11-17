@@ -9,11 +9,11 @@
 
 <h2>Snapshot Viewer</a></h2>
 <p>
-Snapshot viewer is dedicated to displaying the Save and Restore snapshots. The main part of the viewer is the snapshot 
-table, which displays the contents of the snapshot. Above the table, you can find meta information, such as the creation 
+Snapshot viewer is dedicated to displaying the Save and Restore snapshots. The main part of the viewer is the snapshot
+table, which displays the contents of the snapshot. Above the table, you can find meta information, such as the creation
 time, comment, username etc. The viewer also provides facilities to take and save new snapshots as well as restore the
-values from an existing snapshot. At the very top of the viewer there are several commands which provide some more 
-expert functionality (described further below). 
+values from an existing snapshot. At the very top of the viewer there are several commands which provide some more
+expert functionality (described further below).
 </p>
 
 <h3>Table</h3>
@@ -21,15 +21,16 @@ The table displays the data of one or more snapshots at a time. Based on the num
 table might vary. A single row in the table always represents one PV and its properties/values in different columns.
 In case of a single snapshot the table displays the following columns:
 <ul>
-<li>Selection Box: indicates if this PV will be restored when the <code>Restore</code> button is pressed</li>
+<li>Selection Box: indicates if this PV will be restored when the <code>Restore</code> button is pressed; for read-only
+PVs, this box is unticked and disabled</li>
 <li>#: the order number, which indicates the order in which the PVs are defined in the snapshot</li>
 <li>PV: the name of the setpoint PV</li>
 <li>Timestamp: the timestamp of the PV value that was stored in the snapshot</li>
 <li>Status: the alarm status of the PV at the time when the snapshot was taken</li>
 <li>Severity: the alarm severity of the PV at the time when the snapshot was taken</li>
-<li>Stored Value (&#916; Setpoint): the snapshot value at the time when the snapshot was taken. Next to the value the 
+<li>Stored Value (&#916; Setpoint): the snapshot value at the time when the snapshot was taken. Next to the value the
 difference to the current live setpoint value is displayed (if the value is a numerical scalar).</li>
-<li>Live Setpoint: current live value received from the IOC</li> 
+<li>Live Setpoint: current live value received from the IOC</li>
 </ul>
 
 <div class='figure'><img src="snapshotViewerSingle.png"/><p>Fig. 1: Snapshot Viewer displaying a single snapshot</p></div>
@@ -46,8 +47,8 @@ difference to the current live setpoint value is displayed (if the value is a nu
 Next to the value the difference to the base snapshot is displayed (if the value is a numerical scalar).</li>
 <li>(There are as many columns as there are snapshots in the current viewer)</li>
 </ul>
-</li> 
-<li>Live Setpoint: current live value received from the IOC</li> 
+</li>
+<li>Live Setpoint: current live value received from the IOC</li>
 </ul>
 <div class='figure'><img src="snapshotViewerMultiple.png"/><p>Fig. 2: Snapshot Viewer displaying multiple snapshots</p></div>
 
@@ -57,23 +58,27 @@ If the values are the same or within the prescribed threshold, the cell will be 
 more than the specified threshold, the cell will be red. In addition to the red colour, an exclamation mark
 <img src="hprio_tsk.png"/> is drawn in front of the value.
 <br/>
-If the PV was disconnected at the time when the snapshot was taken, the table cell will also be painted red. In such 
-case an X icon <img src="showerr_tsk.png"/> is drawn at the beginning of the cell. 
+If the PV was disconnected at the time when the snapshot was taken, the table cell will also be painted red. In such
+case an X icon <img src="showerr_tsk.png"/> is drawn at the beginning of the cell.
 
 <h4>Table Controls</h4>
 Any stored value in the table can be edited, which can be done at any time. To do that double click on the cell in the
 table and enter a new value. If the edited value is an enum, a choice box is provided, from which you can select the
-new value. If the edited value is an array (waveform), you will need to provide an array of exact same length. Confirm 
+new value. If the edited value is an array (waveform), you will need to provide an array of exact same length. Confirm
 your changes with the <code>Enter</code> key.
 <br/>
 To observe the array value more closely, you may open that value in a chart. Select the cell, which contains the value,
 click the right mouse button and select <code>Show Chart/Table...</code> from the popup menu. This will display a dialog
 with a chart, where the horizontal axis displays the array index and the vertical axis displays the value in the array
-at that index. To zoom in on an area in the chart simply drag the the mouse from left to right over the area that you 
+at that index. To zoom in on an area in the chart simply drag the the mouse from left to right over the area that you
 wish to zoom in. To zoom out drag the mouse from right to left (this will always reset the zoom action to default).
 <br/>
-<div class='figure'><img src="chart.png"/><p>Fig. 3: Array values displayed in a chart</p></div>
 <br/>
+<div class='figure'><img src="chart.png"/><p>Fig. 3: Array values displayed in a chart</p></div>
+The popup menu also provides an option <b>Read-Only</b>, which is checked whether if the PV was defined to be read-only
+in the save set, or unchecked if the PV was defined as read/write. Use this option to force a read-only PV into a
+read/write state and vice versa.
+<br/><br/>
 Right-clicking on the headers of the snapshot stored values (the headers which contain <code><i>Timestamp</i> (&#916; Base)</code>
 will display a popup menu, which offers a few additional options:
 <ul>
@@ -81,11 +86,11 @@ will display a popup menu, which offers a few additional options:
 <li><b>Set As Base</b>: replaces the base snapshot with the clicked one. The current base snapshot will appear at the position
 of the clicked snapshot.</li>
 <li><b>Move To New Editor</b>: removes the clicked snapshot from the current editor and opens it in a new CSS editor, which
-contains only the clicked snapshot</li> 
+contains only the clicked snapshot</li>
 </ul>
 <br/>
 The context menu (right click popup menu) offers other options that are generally available in your Control System Studio
-distribution. Among these you might find the <b>Create Log Entry</b> option, which opens the logbook dialog with the 
+distribution. Among these you might find the <b>Create Log Entry</b> option, which opens the logbook dialog with the
 clicked snapshot file attached. The <b>Process Variable</b> submenu provides options to open the clicked PV in numerous
 other CS-Studio applications, such as <i>Data Browser</i>, <i>PVTable</i>, <i>Probe</i> etc.
 
@@ -97,35 +102,35 @@ the basic controls. Going from left to right, the following information is avail
 <li><b>Timestamp</b>: the snapshot timestamp; depending on the data provider, this can be the time when the snapshot was taken
 or the time when the snapshot was saved</li>
 <li><b>Creator</b>: the username of the user that saved the snapshot; this is usually the user that is logged in to CS-Studio</li>
-<li><b>Info</b>: if the snapshot is tagged with a certain name and or message, they are displayed in the info area (not all data 
+<li><b>Info</b>: if the snapshot is tagged with a certain name and or message, they are displayed in the info area (not all data
 providers provide tagging functionality). Some data providers might decorate the snapshot with other information that can
 be useful for the user. Such info info is also displayed here.</li>
 </ul>
 On the far right of the toolbar, three most common controls are displayed:
 <ul>
 <li><b>Restore</b>: Restore the snapshot - take the values written in the <i>Stored Value</i> column and set them as current
-values of the setpoint PVs. If more than one snapshot is displayed in the table, the user is prompted to select the 
+values of the setpoint PVs. If more than one snapshot is displayed in the table, the user is prompted to select the
 snapshot to restore.</li>
-<li><b>Take Snapshot</b>: grab the current live values (of setpoint PVs) and create a new snapshot from those values. The new 
+<li><b>Take Snapshot</b>: grab the current live values (of setpoint PVs) and create a new snapshot from those values. The new
 snapshot open in the same or new editor (depends on your settings).</li>
 <li><b>Save Snapshot</b>: saves the displayed snapshot to the permanent storage. If there is more than one snapshot in the table,
 you will be prompted to select the snapshot that you wish to store. Before the action is completed, you will also be
 required to enter a snapshot comment (which is visible in the comment box when the snapshot is opened).</li>
-</ul> 
+</ul>
 
 <h3>Toolbar</h3>
 At the very top of the snapshot editor, you can find a toolbar with a set of buttons/actions.
 <ul>
-<li><img src="includeMode_filter.png"/>: add a PV from the archiving system. An input dialog will pop up, where you can 
+<li><img src="includeMode_filter.png"/>: add a PV from the archiving system. An input dialog will pop up, where you can
 enter the name of the PV to add to the current snapshot viewer. The value of that PV at all snapshot times will be fetched
 from the archiving system and displayed in the appropriate columns.</li>
 <li><img src="exp_deployplug.png"/>: show/hide the live readback PV values. If a readback for a PV is known, its live
-value will be displayed in additional column <i>Live Readback (&#916; Setpoint)</i>. The readback PV name is usually 
+value will be displayed in additional column <i>Live Readback (&#916; Setpoint)</i>. The readback PV name is usually
 defined in the save set, but it can also be provided by an external source (if available).</li>
 <li><img src="frgmt_obj.png"/>: show hide the stored readback values. When a snapshot is taken, in addition to the
-setpoint PV values, the readback PV values are also stored (if available). You may show or hide the columns displaying 
+setpoint PV values, the readback PV values are also stored (if available). You may show or hide the columns displaying
 these stored values.</li>
-<li><img src="import_wiz.png"/>: import values from external sources. If an external source is available 
+<li><img src="import_wiz.png"/>: import values from external sources. If an external source is available
 (additional plug-ins), you may import the values for the PVs currently displayed in the table. An external source can
 provide design optics values, read data from files etc.</li>
 <li><img src="fldr_obj.png"/>: add snapshot from the selected snapshot file. A file system browser is displayed and allows

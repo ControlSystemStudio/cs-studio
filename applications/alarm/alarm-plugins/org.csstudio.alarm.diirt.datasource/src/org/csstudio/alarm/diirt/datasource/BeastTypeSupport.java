@@ -23,7 +23,7 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
             Messages.Acknowledge,
             "RawTable",
             "Default");
-    
+
     private final BeastTypeAdapterSet adapters;
 
     public BeastTypeSupport() {
@@ -41,7 +41,7 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
         // TODO Auto-generated method stub
         return super.formatMessage(cache, connection, match, matchedConverters);
     }
-    
+
     /**
      *  checks if the channel name has one of the special types defined
      * @param channelName
@@ -55,10 +55,10 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
         }
         return "Default";
     }
-    
+
     /**
-     * Strips out any type information in the channel name and returns the channel name alone 
-     * 
+     * Strips out any type information in the channel name and returns the channel name alone
+     *
      * @param channelName
      * @return only channel name
      */

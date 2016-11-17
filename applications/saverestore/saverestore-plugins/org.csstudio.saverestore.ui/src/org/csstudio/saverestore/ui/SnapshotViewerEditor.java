@@ -156,7 +156,20 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             }
         };
         menu.add(openChartTableAction);
+        menu.add(new org.eclipse.jface.action.Separator());
         openChartTableAction.setEnabled(false);
+        final Action readOnlyAction = new Action("Read-Only", Action.AS_CHECK_BOX) {
+            @Override
+            public void run() {
+                VTypeNamePair type = table.getClickedItem();
+                if (type != null) {
+                    type.entry.readOnlyProperty().set(isChecked());
+                    type.entry.selectedProperty().set(!isChecked());
+                }
+            }
+        };
+        menu.add(readOnlyAction);
+        readOnlyAction.setEnabled(false);
         final Action removePVAction = new Action("Remove PV") {
             @Override
             public void run() {
@@ -176,6 +189,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             VTypeNamePair type = table.getClickedItem();
             openChartTableAction.setEnabled(type != null && type.value instanceof Array);
             removePVAction.setEnabled(type != null);
+            readOnlyAction.setEnabled(type != null);
+            if (type != null) {
+                readOnlyAction.setChecked(type.entry.readOnlyProperty().get());
+            }
         });
         menu.add(new org.eclipse.jface.action.Separator());
         if (SendToELogAction.isElogAvailable()) {
@@ -793,7 +810,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                         try {
                             addSnapshot(provider.getSnapshotContent(s));
                         } catch (DataProviderException ex) {
-                            ActionManager.reportException(ex, getSite().getShell());
+                            ActionManager.reportException(ex, getSite());
                         }
                     });
                 }

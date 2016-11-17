@@ -29,7 +29,7 @@ public class BeastRawVTableAdapter extends BeastTypeAdapter {
 
     private static Logger log = Logger.getLogger(BeastRawVTableAdapter.class.getName());
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
-    
+
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
         if (connection.getType().equalsIgnoreCase("RawTable"))
