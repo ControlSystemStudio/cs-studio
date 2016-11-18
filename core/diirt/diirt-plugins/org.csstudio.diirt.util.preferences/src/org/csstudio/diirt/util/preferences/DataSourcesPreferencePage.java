@@ -107,7 +107,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
                 if ( verifyAndNotifyWarning(choice) ) {
                     DIIRTPreferencesPlugin.get().updateDefaults(choice, store);
                     DIIRTPreferencesPlugin.get().updateValues(choice, store);
-                    updateCaptionsColor();
+                    reloadEditorsForAllPages();
                 }
 
                 treeViewer.setInput(choice);
@@ -122,7 +122,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.getTextControl(container).setEditable(false);
         directoryEditor.getTextControl(container).setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         directoryEditor.getTextControl(container).setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-        addField(directoryEditor, container);
+        addField(directoryEditor, container, false);
 
         Composite treeComposite = new Composite(container, SWT.NONE);
 
@@ -158,7 +158,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         cdsGroup.setText(Messages.DSPP_cdsGroup_text);
         cdsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 
-        GridLayout cdsGroupLayout = new GridLayout(3, false);
+        GridLayout cdsGroupLayout = new GridLayout();
 
         cdsGroup.setLayout(cdsGroupLayout);
 
@@ -167,6 +167,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         addField(
             defaultDataSourceEditor,
             cdsGroup,
+            true,
             () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT),
             () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT)
         );
@@ -177,27 +178,15 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         addField(
             delimiterEditor,
             cdsGroup,
+            true,
             () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER),
             () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER)
         );
-
-        //  This must be the last statement statement for the cdsGroup widget.
-        cdsGroupLayout.numColumns = 3;
 
         initializeValues();
 
         return container;
 
-    }
-
-    @Override
-    public boolean performOk ( ) {
-        return super.performOk();
-    }
-
-    @Override
-    protected void performDefaults ( ) {
-        super.performDefaults();
     }
 
     private Image getFileImage ( ) {
@@ -251,24 +240,12 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
         if ( verifyAndNotifyWarning(confDir) ) {
             DIIRTPreferencesPlugin.get().updateDefaults(confDir, store);
-            updateCaptionsColor();
+            reloadEditors();
         }
 
         if ( Files.exists(Paths.get(confDir)) ) {
             treeViewer.setInput(confDir);
         }
-
-    }
-
-    private void updateCaptionsColor ( ) {
-
-        IPreferenceStore store = getPreferenceStore();
-
-//        updateCaptionColor(defaultDataSourceEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT), store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT));
-//        updateCaptionColor(delimiterEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER), delimiterEditor.getStringValue());
-
-        defaultDataSourceEditor.load();
-        delimiterEditor.load();
 
     }
 

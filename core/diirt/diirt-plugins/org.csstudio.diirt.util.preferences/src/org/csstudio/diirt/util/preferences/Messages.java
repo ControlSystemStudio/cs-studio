@@ -21,6 +21,9 @@ public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.csstudio.diirt.util.preferences.messages"; //$NON-NLS-1$
 
+    public static String BPP_performOk_message;
+    public static String BPP_performOk_title;
+
     public static String CAPP_addressListCaption_text;
     public static String CAPP_alarmRadioButton_text;
     public static String CAPP_archiveRadioButton_text;
@@ -32,7 +35,6 @@ public class Messages extends NLS {
     public static String CAPP_connectionTimeoutUnitCaption_text;
     public static String CAPP_contextGroup_text;
     public static String CAPP_description;
-    public static String CAPP_falseRadioButton_text;
     public static String CAPP_honorCheckBox_text;
     public static String CAPP_jniRadioButton_text;
     public static String CAPP_maxArraySizeSpinnerCaption_text;
@@ -46,7 +48,6 @@ public class Messages extends NLS {
     public static String CAPP_serverPortSpinnerCaption_text;
     public static String CAPP_subscriptionCaption_text;
     public static String CAPP_title;
-    public static String CAPP_trueRadioButton_text;
     public static String CAPP_valueOnlyCheckBox_text;
     public static String CAPP_valueRadioButton_text;
     public static String CAPP_variableLengthArrayCaption_text;

@@ -48,9 +48,16 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         { "None", DataSourceProtocol.none.name() },
         { "Channel Access", DataSourceProtocol.ca.name() },
     };
+    public static final String[][] AVAILABLE_MODES              = {
+        { "CAJ (Pure Java)", Boolean.TRUE.toString() },
+        { "JCA", Boolean.FALSE.toString() },
+    };
     public static final Logger     LOGGER                       = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
     public static final String     PLATFORM_URI_PREFIX          = "platform:";
     public static final String     PREF_CONFIGURATION_DIRECTORY = "diirt.home";
+    public static final String     PREF_CA_ADDR_LIST            = "diirt.ca.addr.list";
+    public static final String     PREF_CA_AUTO_ADDR_LIST       = "diirt.ca.auto.addr.list";
+    public static final String     PREF_CA_PURE_JAVA            = "diirt.ca.pureJava";
     public static final String     PREF_DS_DEFAULT              = "diirt.datasource.default";
     public static final String     PREF_DS_DELIMITER            = "diirt.datasource.delimiter";
     public static final String     PREF_FIRST_ACCESS            = "diirt.firstAccess";

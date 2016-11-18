@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Plain Old Java Object representing the "compositeDataSource element of a
+ * Plain Old Java Object representing the "compositeDataSource" element of a
  * {@code datasources.xml} file.
  * <p>
  * It  allows to set a default data source so that names that do not
