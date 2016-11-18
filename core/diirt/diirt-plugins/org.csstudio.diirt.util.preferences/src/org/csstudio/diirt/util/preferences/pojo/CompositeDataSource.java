@@ -15,9 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -36,11 +33,11 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 public class CompositeDataSource {
 
-	@Getter @Setter @XmlAttribute( name = "defaultDataSource" )
-	private DataSourceProtocol defaultDataSource = null;
+	@XmlAttribute( name = "defaultDataSource" )
+	public DataSourceProtocol defaultDataSource = null;
 
-	@Getter @Setter @NonNull @XmlAttribute( name = "delimiter" )
-	private String delimiter = "://";
+	@XmlAttribute( name = "delimiter" )
+	public String delimiter = "://";
 
 	/**
 	 * The possible values for the {@link #defaultDataSource} property.

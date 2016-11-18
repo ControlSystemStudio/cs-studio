@@ -19,11 +19,20 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
+import org.csstudio.diirt.util.preferences.pojo.DataSources;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.service.prefs.BackingStoreException;
 
 
 /**
@@ -44,7 +53,12 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     public static final String     PREF_CONFIGURATION_DIRECTORY = "diirt.home";
     public static final String     PREF_DS_DEFAULT              = "diirt.datasource.default";
     public static final String     PREF_DS_DELIMITER            = "diirt.datasource.delimiter";
+    public static final String     PREF_FIRST_ACCESS            = "diirt.firstAccess";
     public static final String     USER_HOME_PARAMETER          = "@user.home";
+
+    private static final String DATASOURCES_DIR     = "datasources";
+    private static final String DATASOURCES_FILE    = "datasources.xml";
+    private static final String DATASOURCES_VERSION = "1";
 
     private static DIIRTPreferencesPlugin instance = null;
 
@@ -71,7 +85,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
             return Messages.DPH_verifyDIIRTPath_blankPath_message;
         } else if ( !Files.exists(Paths.get(path)) ) {
             return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotExists_message, path);
-        } else if ( !Files.exists(Paths.get(path, "datasources/datasources.xml")) ) {
+        } else if ( !Files.exists(Paths.get(path, DATASOURCES_DIR + File.separator + DATASOURCES_FILE)) ) {
             return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotValid_message, path);
         }
 
@@ -117,13 +131,98 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         instance = this;
     }
 
+    @Override
+    public IPreferenceStore getPreferenceStore ( ) {
+
+        IPreferenceStore store = super.getPreferenceStore();
+
+        synchronized ( this ) {
+            if ( store.getBoolean(PREF_FIRST_ACCESS) ) {
+
+                String diirtHome = store.getString(PREF_CONFIGURATION_DIRECTORY);
+
+                if ( verifyDIIRTPath(diirtHome) == null ) {
+                    updateDefaults(diirtHome, store);
+                    updateValues(diirtHome, store);
+                }
+
+                store.setValue(PREF_FIRST_ACCESS, false);
+
+                try {
+                    InstanceScope.INSTANCE.getNode("org.csstudio.diirt.util.preferences").flush();
+                } catch ( BackingStoreException ex ) {
+                    LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
+                }
+
+            }
+        }
+
+        return store;
+
+    }
+
+    private void updateDataSourcesDefaults ( File datasourcesFile, IPreferenceStore store ) throws IOException, JAXBException {
+
+        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
+        Unmarshaller u = jc.createUnmarshaller();
+        DataSources ds = (DataSources) u.unmarshal(datasourcesFile);
+
+        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
+            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
+        }
+
+        CompositeDataSource cds = ds.compositeDataSource;
+
+        if ( cds != null ) {
+
+            DataSourceProtocol dsp = cds.defaultDataSource;
+
+            if ( dsp == null ) {
+                dsp = DataSourceProtocol.none;
+            }
+
+            store.setDefault(PREF_DS_DEFAULT, dsp.name());
+            store.setDefault(PREF_DS_DELIMITER, cds.delimiter);
+
+        }
+
+    }
+
+    private void updateDataSourcesValues ( File datasourcesFile, IPreferenceStore store ) throws IOException, JAXBException {
+
+        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
+        Unmarshaller u = jc.createUnmarshaller();
+        DataSources ds = (DataSources) u.unmarshal(datasourcesFile);
+
+        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
+            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
+        }
+
+        CompositeDataSource cds = ds.compositeDataSource;
+
+        if ( cds != null ) {
+
+            DataSourceProtocol dsp = cds.defaultDataSource;
+
+            if ( dsp == null ) {
+                dsp = DataSourceProtocol.none;
+            }
+
+            store.setValue(PREF_DS_DEFAULT, dsp.name());
+            store.setValue(PREF_DS_DELIMITER, cds.delimiter);
+
+        }
+
+    }
+
     /**
      * Updates all default values reading them from the files in the
      * given DIIRT configuration directory.
      *
      * @param confDir The DIIRT configuration directory.
+     * @param store   The preference store.
      */
-    public void updateDefaults ( String confDir ) {
+    public void updateDefaults ( String confDir, IPreferenceStore store ) {
 
         if ( StringUtils.isBlank(confDir) ) {
             LOGGER.warning("Null, empty or blank 'confDir'");
@@ -137,9 +236,46 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
             }
         }
 
+        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
+        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
 
+        try {
+            updateDataSourcesDefaults(datasourcesFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
+        }
 
+    }
 
+    /**
+     * Updates all values reading them from the files in the
+     * given DIIRT configuration directory.
+     *
+     * @param confDir The DIIRT configuration directory.
+     * @param store   The preference store.
+     */
+    public void updateValues ( String confDir, IPreferenceStore store ) {
+
+        if ( StringUtils.isBlank(confDir) ) {
+            LOGGER.warning("Null, empty or blank 'confDir'");
+            return;
+        } else {
+            try {
+                confDir = resolvePlatformPath(confDir);
+            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
+                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
+                return;
+            }
+        }
+
+        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
+        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
+
+        try {
+            updateDataSourcesValues(datasourcesFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
+        }
 
     }
 

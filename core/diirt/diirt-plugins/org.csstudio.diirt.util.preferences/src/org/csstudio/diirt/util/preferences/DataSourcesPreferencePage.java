@@ -105,7 +105,9 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
                 }
 
                 if ( verifyAndNotifyWarning(choice) ) {
-                    DIIRTPreferencesPlugin.get().updateDefaults(choice);
+                    DIIRTPreferencesPlugin.get().updateDefaults(choice, store);
+                    DIIRTPreferencesPlugin.get().updateValues(choice, store);
+                    updateCaptionsColor();
                 }
 
                 treeViewer.setInput(choice);
@@ -165,7 +167,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         addField(
             defaultDataSourceEditor,
             cdsGroup,
-            () -> getPreferenceStore().getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT),
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT),
             () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT)
         );
 
@@ -248,12 +250,25 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.setFilterPath(new File(confDir).getParentFile());
 
         if ( verifyAndNotifyWarning(confDir) ) {
-            DIIRTPreferencesPlugin.get().updateDefaults(confDir);
+            DIIRTPreferencesPlugin.get().updateDefaults(confDir, store);
+            updateCaptionsColor();
         }
 
         if ( Files.exists(Paths.get(confDir)) ) {
             treeViewer.setInput(confDir);
         }
+
+    }
+
+    private void updateCaptionsColor ( ) {
+
+        IPreferenceStore store = getPreferenceStore();
+
+//        updateCaptionColor(defaultDataSourceEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT), store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT));
+//        updateCaptionColor(delimiterEditor, cdsGroup, store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER), delimiterEditor.getStringValue());
+
+        defaultDataSourceEditor.load();
+        delimiterEditor.load();
 
     }
 

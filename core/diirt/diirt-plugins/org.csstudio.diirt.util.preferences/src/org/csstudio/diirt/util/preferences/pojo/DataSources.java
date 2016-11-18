@@ -13,10 +13,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 
 
@@ -41,10 +39,10 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 public class DataSources {
 
-	@Getter @Setter @XmlElement( name = "compositeDataSource", nillable = true )
-	private CompositeDataSource compositeDataSource = null;
+    @XmlElement( name = "compositeDataSource", nillable = true )
+	public CompositeDataSource compositeDataSource = null;
 
-	@Getter @Setter @NonNull @XmlAttribute( name = "version", required = true )
-	private String version = "1";
+	@XmlAttribute( name = "version", required = true )
+	public String version = "1";
 
 }
