@@ -250,9 +250,6 @@
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.12</id>
                 </artifact>
-                <artifact>
-                  <id>org.projectlombok:lombok:1.16.10</id>
-                </artifact>
 
 
                 <!-- pvmanager-plugins from reactor -->
