@@ -21,6 +21,7 @@
     <child location="scan"/>
     <child location="shift"/>
     <child location="save-set-restore"/>
+    <child location="snl"/>
   </children>
 </repository>
 

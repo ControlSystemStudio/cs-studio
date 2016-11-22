@@ -83,7 +83,7 @@ public class LazySnapshotStructuredSelection implements IStructuredSelection {
             return null;
         }
         VSnapshot d = getLazyData();
-        return d.getNames().isEmpty() ? null : new ProcessVariable(d.getNames().get(0));
+        return d.getEntries().isEmpty() ? null : new ProcessVariable(d.getEntries().get(0).getPVName());
     }
 
     /*
@@ -104,7 +104,7 @@ public class LazySnapshotStructuredSelection implements IStructuredSelection {
     @Override
     public int size() {
         // return something for eclipse to know that there are data
-        return lazyData == null ? 1 : lazyData.getNames().size();
+        return lazyData == null ? 1 : lazyData.getEntries().size();
     }
 
     /*
@@ -117,12 +117,8 @@ public class LazySnapshotStructuredSelection implements IStructuredSelection {
         if (snapshot == null) {
             return new Object[0];
         }
-        List<String> names = getLazyData().getNames();
-        ProcessVariable[] ret = new ProcessVariable[names.size()];
-        for (int i = 0; i < names.size(); i++) {
-            ret[i] = new ProcessVariable(names.get(i));
-        }
-        return ret;
+        return getLazyData().getEntries().stream().map(e -> new ProcessVariable(e.getPVName()))
+            .toArray(ProcessVariable[]::new);
     }
 
     /*
@@ -136,7 +132,8 @@ public class LazySnapshotStructuredSelection implements IStructuredSelection {
             // return dummy stuff, because RCP calls this method and we do not want to initialise the snapshot too soon
             return Arrays.asList(new ProcessVariable("dummy"));
         } else {
-            return lazyData.getNames().stream().map(e -> new ProcessVariable(e)).collect(Collectors.toList());
+            return lazyData.getEntries().stream().map(e -> new ProcessVariable(e.getPVName()))
+                .collect(Collectors.toList());
         }
 
     }

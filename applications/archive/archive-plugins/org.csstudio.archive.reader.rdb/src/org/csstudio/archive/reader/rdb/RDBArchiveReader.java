@@ -519,6 +519,20 @@ public class RDBArchiveReader implements ArchiveReader
     public void close()
     {
         cancel();
+        try
+        {
+            Connection connection = rdb.getConnection();
+            if (connection != null && connection.getAutoCommit() == false)
+            {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING,
+                "Attempt to cleanup connection failed with Exception", ex); //$NON-NLS-1$
+        }
         ConnectionCache.release(rdb);
     }
 

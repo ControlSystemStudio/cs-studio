@@ -261,7 +261,7 @@ public class GitManager {
                     }
                 } catch (GitAPIException | IOException e) {
                     SaveRestoreService.LOGGER.log(Level.WARNING, e,
-                        () -> String.format("Git repository %s is not accessible.",remoteRepository));
+                        () -> String.format("Git repository %s is not accessible.", remoteRepository));
                 }
             } else {
                 throw new InvalidRepositoryException("GIT repository URL is not valid.");
@@ -289,8 +289,8 @@ public class GitManager {
                 }
             } catch (GitAPIException | IOException e) {
                 SaveRestoreService.LOGGER.log(Level.WARNING, e,
-                    () -> String.format("Git repository %s is not accessible.",remoteRepository));
-                SaveRestoreService.LOGGER.log(Level.WARNING,"Only local repository will be used.");
+                    () -> String.format("Git repository %s is not accessible.", remoteRepository));
+                SaveRestoreService.LOGGER.log(Level.WARNING, "Only local repository will be used.");
                 localOnly = true;
                 setAutomaticSynchronisation(false);
             }
@@ -443,8 +443,7 @@ public class GitManager {
         checkInitialised();
         SaveSetData data = loadSaveSetData(source, Optional.empty());
         SaveSet newSet = new SaveSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
-        SaveSetData newData = new SaveSetData(newSet, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
-            data.getDescription());
+        SaveSetData newData = new SaveSetData(newSet, data.getEntries(), data.getDescription());
         String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
         saveSaveSet(newData, comment, cred);
@@ -453,9 +452,7 @@ public class GitManager {
             if (!list.isEmpty()) {
                 Snapshot snapshot = list.get(0);
                 VSnapshot snp = loadSnapshotData(snapshot);
-                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getEntries(), snp.getTimestamp());
                 saveSnapshot(newSnp, snapshot.getComment(), snapshot.getDate(), snapshot.getOwner());
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
@@ -463,9 +460,7 @@ public class GitManager {
             for (int i = list.size() - 1; i > -1; i--) {
                 Snapshot s = list.get(i);
                 VSnapshot snp = loadSnapshotData(s);
-                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
-                    snp.getTimestamp());
+                VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getEntries(), snp.getTimestamp());
                 saveSnapshot(newSnp, s.getComment(), s.getDate(), s.getOwner());
             }
         }
@@ -684,8 +679,8 @@ public class GitManager {
                 if (automatic) {
                     push(cp, false);
                 }
-                bsd = new SaveSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
-                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp.toInstant());
+                bsd = new SaveSetData(data.getDescriptor(), data.getEntries(), data.getDescription(), info.comment,
+                    info.timestamp.toInstant());
             }
         }
         return new Result<>(bsd, change);
@@ -789,9 +784,7 @@ public class GitManager {
                 parameters.put(PARAM_GIT_REVISION, info.revision);
                 Snapshot snp = new Snapshot(descriptor.getSaveSet(), info.timestamp.toInstant(), info.comment,
                     info.creator, parameters, new ArrayList<>(0));
-                vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
-                    snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
-                    snapshot.getTimestamp());
+                vsnp = new VSnapshot(snp, snapshot.getEntries(), snapshot.getTimestamp());
             }
         }
         return new Result<>(vsnp, change);
@@ -1394,16 +1387,14 @@ public class GitManager {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
                         SaveSetContent bsc = FileUtilities.readFromSaveSet(stream);
-                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getNames(), bsc.getReadbacks(),
-                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp.toInstant());
+                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getEntries(), bsc.getDescription(),
+                            meta.comment, meta.timestamp.toInstant());
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
                     try (InputStream stream = objectLoader.openStream()) {
-                        SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                        VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(),
-                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), sc.getDate());
-                        return type.cast(vs);
+                        SnapshotContent sc = FileUtilities.readFromSnapshot(stream);;
+                        return type.cast(new VSnapshot((Snapshot) descriptor, sc.getEntries(), sc.getDate()));
                     }
                 }
             }

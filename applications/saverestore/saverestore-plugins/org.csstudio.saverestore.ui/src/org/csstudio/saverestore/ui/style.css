@@ -4,7 +4,7 @@
 }
 
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .diff-cell,
-.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:selected, 
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:selected,
 .table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:hover:selected,
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:focused:selected:hover {
     -fx-background-color: -fx-selection-bar;
@@ -30,3 +30,8 @@
 .tab-pane .tab-header-area .tab-header-background {
     -fx-opacity: 0;
 }
+
+.check-box-table-cell-disabled > .check-box > .box {
+	-fx-background-color: #E0E0E0;
+}
+

@@ -31,6 +31,9 @@ PV list is actually a comma separated spreadsheet. Each entry in the spreadsheet
 <li><i>DELTA</i> is a threshold value for comparison of readback to setpoint (or any other comparison). If values differ
 for less than this threshold (in any direction) they will be considered within limits, if they differ more, they will
 be marked in the snapshot viewer.</li>
+<li><i>READ_ONLY</i> defines whether the PV given in the first column is read only or not. Read-only PVs are included
+when the snapshot is taken, but are never restored. The value in this column should be either <b>true</b> or
+<b>false</b>. If no value is given, false is assumed.</li>
 </ul>
 </p>
 <p>
@@ -41,12 +44,12 @@ same number of columns. If certain value cannot be defined for a PV, the value o
 </p>
 <p>
 <code>
-PV,READBACK,DELTA<br/>
-PV1,PV1_GET,20<br/>
-PV2,PV2_GET,20<br/>
-PV3,,<br/>
-PV4,PV4_GET,<br/>
-PV5,,20
+PV,READBACK,DELTA,READ_ONLY<br/>
+PV1,PV1_GET,20,false<br/>
+PV2,PV2_GET,20,true<br/>
+PV3,,,<br/>
+PV4,PV4_GET,,<br/>
+PV5,,20,false
 </code>
 </p>
 <h5>DELTA</h5>
@@ -101,16 +104,16 @@ or (Y &#60; 10 and Z &#60; 5)</code></li>
 An example of the save set file with functions:
 <p>
 <code>
-PV,READBACK,DELTA<br/>
-PV1,PV1_GET,x*2<br/>
-PV2,PV2_GET,(base &#62;&#61; Math.PI &#38;&#38; value &#62; 15) || (base &#60; Math.PI &#38;&#38; value &#60; 5)<br/>
-PV3,,<br/>
-PV4,PV4_GET,"Math.pow(x,3)"<br/>
-PV5,,20
+PV,READBACK,DELTA,READ_ONLY<br/>
+PV1,PV1_GET,x*2,true<br/>
+PV2,PV2_GET,(base &#62;&#61; Math.PI &#38;&#38; value &#62; 15) || (base &#60; Math.PI &#38;&#38; value &#60; 5),<br/>
+PV3,,,<br/>
+PV4,PV4_GET,"Math.pow(x,3)",true<br/>
+PV5,,20,
 </code>
 </p>
-NOTE: If you used one of the functions that contains the comma character (<code>,</code>), make sure that you wrap the
-entire function into double quotes (<code>"</code>).
+NOTE: If you used one of the functions that contains the comma character (<code>,</code>), such as <code>Math.pow(x,y)</code>,
+make sure that you wrap the entire function into double quotes (<code>"</code>).
 
 <h4>Editor</h4>
 <p>
