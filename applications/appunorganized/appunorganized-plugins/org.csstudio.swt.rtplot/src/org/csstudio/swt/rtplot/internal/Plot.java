@@ -1090,7 +1090,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         {
             mouseMove(e);
             final YAxisImpl<XTYPE> y_axis = y_axes.get(mouse_y_axis);
-            List<Boolean> new_autoscales = Arrays.asList(new Boolean[y_axes.size()]);
+            List<Boolean> new_autoscales = Arrays.asList(new Boolean[1]);
             Collections.fill(new_autoscales, Boolean.FALSE);
             undo.add(new ChangeAxisRanges<XTYPE>(this, Messages.Pan_Y,
                     Arrays.asList(y_axis),
