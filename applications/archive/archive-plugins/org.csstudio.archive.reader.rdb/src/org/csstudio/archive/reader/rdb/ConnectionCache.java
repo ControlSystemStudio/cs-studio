@@ -131,7 +131,7 @@ public class ConnectionCache
                 // Read-only allows MySQL to use load balancing
                 entry.getConnection().setReadOnly(true);
                 // Avoid caching for PostgreSQL
-                if(entry.getDialect() == RDBUtil.Dialect.PostgreSQL)
+                if(entry.getDialect() != RDBUtil.Dialect.PostgreSQL)
                 {
                 	cache.add(entry);
                 }
