@@ -11,11 +11,7 @@ package org.csstudio.diirt.util.preferences.pojo;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Plain Old Java Object representing the "compositeDataSource" element of a
@@ -28,9 +24,7 @@ import lombok.ToString;
  * @version 1.0.0 7 Nov 2016
  * @see DataSources
  */
-@XmlRootElement( name = "compositeDataSource" )
 @XmlType( name = "CompositeDataSource" )
-@ToString @EqualsAndHashCode
 public class CompositeDataSource {
 
 	@XmlAttribute( name = "defaultDataSource" )
@@ -53,7 +47,32 @@ public class CompositeDataSource {
 		/**
 		 * Channel Access
 		 */
-		ca
+		ca,
+
+		/**
+		 * File
+		 */
+		file,
+
+		/**
+		 * Local
+		 */
+		loc,
+
+		/**
+		 * PV Access
+		 */
+		pva,
+
+		/**
+		 * Simulation
+		 */
+		sim,
+
+		/**
+		 * System
+		 */
+		sys
 
 	}
 

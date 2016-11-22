@@ -8,6 +8,9 @@
  */
 package org.csstudio.diirt.util.preferences.pojo;
 
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Plain Old Java Object representing the "jcaContext" element of a
  * {@code ca.xml} file.
@@ -29,6 +32,35 @@ package org.csstudio.diirt.util.preferences.pojo;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 18 Nov 2016
  */
+@XmlType( name = "JCAContext" )
 public class JCAContext {
+
+    /**
+     * The possible values for the {@link #monitorMask} property.
+     */
+    @XmlEnum
+    public enum MonitorMask {
+
+        /**
+         * Corresponds to a monitor mask on both VALUE and ALARM.
+         */
+        VALUE,
+
+        /**
+         * Corresponds to a monitor mask on LOG.
+         */
+        ARCHIVE,
+
+        /**
+         * Corresponds to a monitor mask on ALARM.
+         */
+        ALARM,
+
+        /**
+         * A number corresponding to the mask itself.
+         */
+        CUSTOM
+
+    }
 
 }

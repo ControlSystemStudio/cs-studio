@@ -16,11 +16,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -31,8 +35,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wb.swt.SWTResourceManager;
-
-import lombok.Data;
 
 
 /**
@@ -84,6 +86,26 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
      *            should not be initially updated.
      */
     protected void addField ( FieldEditor fieldEditor, Composite parent, boolean canBeDefaulted, Supplier<Object> defaultGetter, Supplier<Object> storedGetter ) {
+        addField(fieldEditor, parent, canBeDefaulted, defaultGetter, storedGetter, null);
+    }
+
+    /**
+     * Add the given {@code editor} field to this page. The editor's
+     * caption foreground will be updated when the editor's value changes.
+     *
+     * @param fieldEditor The {@link FieldEditor} to be added and updated.
+     * @param parent The {@link Composite} owning the given {@code editor}.
+     * @param canBeDefaulted {@code true} if the given {@code editor} can be
+     *            restored to its default value.
+     * @param defaultGetter The {@link Supplier} of the editor's default value.
+     *            Can be {@code null} if the editor's caption foreground
+     *            should not be updated when the editor's value changes.
+     * @param storedGetter The {@link Supplier} of the editor's stored value.
+     *            Can be {@code null} if the editor's caption foreground
+     *            should not be initially updated.
+     * @param listener Called when a field editor fires a value property change.
+     */
+    protected void addField ( FieldEditor fieldEditor, Composite parent, boolean canBeDefaulted, Supplier<Object> defaultGetter, Supplier<Object> storedGetter, IPropertyChangeListener listener ) {
 
         final IPreferenceStore store = getPreferenceStore();
         final Editor editor = new Editor(fieldEditor, parent, canBeDefaulted, defaultGetter, storedGetter);
@@ -94,7 +116,13 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
         fieldEditor.load();
         fieldEditor.setPropertyChangeListener(e -> {
             if ( FieldEditor.VALUE.equals(e.getProperty()) ) {
+
                 editor.updateCaptionColor(e.getNewValue());
+
+                if ( listener != null ) {
+                    listener.propertyChange(e);
+                }
+
             }
         });
 
@@ -108,6 +136,17 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
      */
     protected void clearWarning ( ) {
         Display.getDefault().syncExec( ( ) -> setMessage(null, NONE));
+    }
+
+    protected GridData createIntegerFieldEditorGridData ( ) {
+
+        GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+
+        gd.minimumWidth = 80;
+        gd.widthHint    = 80;
+
+        return gd;
+
     }
 
     @Override
@@ -127,7 +166,18 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
         if ( restart ) {
 
             editors.keySet().stream().forEach(e -> e.store());
-            Job.createSystem(m -> Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart())).schedule(500L);
+
+            new Job("Restarting after DIIRT preferences changed") {
+                @Override
+                protected IStatus run ( IProgressMonitor m ) {
+
+                    Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart());
+
+                    return Status.OK_STATUS;
+
+                }
+            }.schedule(500L);
+
 
             return super.performOk();
 
@@ -223,7 +273,6 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
 
     }
 
-    @Data
     private class Editor {
 
         private final FieldEditor editor;
@@ -231,6 +280,34 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
         private final boolean canBeDefaulted;
         private final Supplier<Object> defaultGetter;
         private final Supplier<Object> storedGetter;
+
+        protected Editor ( FieldEditor editor, Composite parent, boolean canBeDefaulted, Supplier<Object> defaultGetter, Supplier<Object> storedGetter ) {
+            this.editor = editor;
+            this.parent = parent;
+            this.canBeDefaulted = canBeDefaulted;
+            this.defaultGetter = defaultGetter;
+            this.storedGetter = storedGetter;
+        }
+
+        Supplier<Object> getDefaultGetter ( ) {
+            return defaultGetter;
+        }
+
+        FieldEditor getEditor ( ) {
+            return editor;
+        }
+
+        Composite getParent ( ) {
+            return parent;
+        }
+
+        Supplier<Object> getStoredGetter ( ) {
+            return storedGetter;
+        }
+
+        boolean isCanBeDefaulted ( ) {
+            return canBeDefaulted;
+        }
 
         void updateCaptionColor ( ) {
             if ( storedGetter != null ) {

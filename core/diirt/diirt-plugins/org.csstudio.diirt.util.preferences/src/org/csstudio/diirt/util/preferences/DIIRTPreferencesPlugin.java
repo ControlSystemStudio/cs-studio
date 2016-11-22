@@ -26,7 +26,9 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
+import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
+import org.csstudio.diirt.util.preferences.pojo.JCAContext.MonitorMask;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -44,24 +46,51 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
-    public static final String[][] AVAILABLE_DATA_SOURCES       = {
-        { "None", DataSourceProtocol.none.name() },
-        { "Channel Access", DataSourceProtocol.ca.name() },
+    public static final String[][] AVAILABLE_DATA_SOURCES         = {
+        { "None",           DataSourceProtocol.none.name() },
+        { "Channel Access", DataSourceProtocol.ca.name()   },
+        { "File",           DataSourceProtocol.file.name() },
+        { "Local",          DataSourceProtocol.loc.name()  },
+        { "PV Access",      DataSourceProtocol.pva.name()  },
+        { "Simulation",     DataSourceProtocol.sim.name()  },
+        { "System",         DataSourceProtocol.sys.name()  },
     };
-    public static final String[][] AVAILABLE_MODES              = {
-        { "CAJ (Pure Java)", Boolean.TRUE.toString() },
-        { "JCA", Boolean.FALSE.toString() },
+    public static final String[][] AVAILABLE_MODES                = {
+        { Messages.CAPP_pureJavaRadioButton_text, Boolean.TRUE.toString()  },
+        { Messages.CAPP_jcaRadioButton_text,      Boolean.FALSE.toString() },
     };
-    public static final Logger     LOGGER                       = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
-    public static final String     PLATFORM_URI_PREFIX          = "platform:";
-    public static final String     PREF_CONFIGURATION_DIRECTORY = "diirt.home";
-    public static final String     PREF_CA_ADDR_LIST            = "diirt.ca.addr.list";
-    public static final String     PREF_CA_AUTO_ADDR_LIST       = "diirt.ca.auto.addr.list";
-    public static final String     PREF_CA_PURE_JAVA            = "diirt.ca.pureJava";
-    public static final String     PREF_DS_DEFAULT              = "diirt.datasource.default";
-    public static final String     PREF_DS_DELIMITER            = "diirt.datasource.delimiter";
-    public static final String     PREF_FIRST_ACCESS            = "diirt.firstAccess";
-    public static final String     USER_HOME_PARAMETER          = "@user.home";
+    public static final String[][] AVAILABLE_MONITOR_MASKS        = {
+        { Messages.CAPP_valueRadioButton_text,   MonitorMask.VALUE.name()   },
+        { Messages.CAPP_archiveRadioButton_text, MonitorMask.ARCHIVE.name() },
+        { Messages.CAPP_alarmRadioButton_text,   MonitorMask.ALARM.name()   },
+        { Messages.CAPP_customRadioButton_text,  MonitorMask.CUSTOM.name()  },
+    };
+    public static final String[][] AVAILABLE_VAR_ARRAY_SUPPORTS   = {
+        { Messages.CAPP_autoRadioButton_text,  VariableArraySupport.AUTO.representation()  },
+        { Messages.CAPP_trueRadioButton_text,  VariableArraySupport.TRUE.representation()  },
+        { Messages.CAPP_falseRadioButton_text, VariableArraySupport.FALSE.representation() },
+    };
+    public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
+    public static final String     PLATFORM_URI_PREFIX            = "platform:";
+    public static final String     PREF_CONFIGURATION_DIRECTORY   = "diirt.home";
+    public static final String     PREF_CA_ADDR_LIST              = "diirt.ca.addr.list";
+    public static final String     PREF_CA_AUTO_ADDR_LIST         = "diirt.ca.auto.addr.list";
+    public static final String     PREF_CA_BEACON_PERIOD          = "diirt.ca.beacon.period";
+    public static final String     PREF_CA_CONNECTION_TIMEOUT     = "diirt.ca.connection.timeout";
+    public static final String     PREF_CA_CUSTOM_MASK            = "diirt.ca.custom.mask";
+    public static final String     PREF_CA_DBE_PROPERTY_SUPPORTED = "diirt.ca.dbe.property.supported";
+    public static final String     PREF_CA_HONOR_ZERO_PRECISION   = "diirt.ca.honor.zero.precision";
+    public static final String     PREF_CA_MAX_ARRAY_SIZE         = "diirt.ca.max.array.size";
+    public static final String     PREF_CA_MONITOR_MASK           = "diirt.ca.monitor.mask";
+    public static final String     PREF_CA_PURE_JAVA              = "diirt.ca.pure.java";
+    public static final String     PREF_CA_REPEATER_PORT          = "diirt.ca.repeater.port";
+    public static final String     PREF_CA_SERVER_PORT            = "diirt.ca.server.port";
+    public static final String     PREF_CA_VALUE_RTYP_MONITOR     = "diirt.ca.value.rtyp.monitor";
+    public static final String     PREF_CA_VARIABLE_LENGTH_ARRAY  = "diirt.ca.variable.length.array";
+    public static final String     PREF_DS_DEFAULT                = "diirt.datasource.default";
+    public static final String     PREF_DS_DELIMITER              = "diirt.datasource.delimiter";
+    public static final String     PREF_FIRST_ACCESS              = "diirt.firstAccess";
+    public static final String     USER_HOME_PARAMETER            = "@user.home";
 
     private static final String DATASOURCES_DIR     = "datasources";
     private static final String DATASOURCES_FILE    = "datasources.xml";

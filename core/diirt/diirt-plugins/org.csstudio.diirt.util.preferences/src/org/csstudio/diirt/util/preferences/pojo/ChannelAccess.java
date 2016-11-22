@@ -13,9 +13,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 /**
  * Plain Old Java Object representing a {@code ca.xml} file.
  * <p>
@@ -24,9 +21,8 @@ import lombok.ToString;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 18 Nov 2016
  */
-@XmlRootElement( name = "dataSources" )
-@XmlType( name = "DataSources" )
-@ToString @EqualsAndHashCode
+@XmlRootElement( name = "ca" )
+@XmlType( name = "ChannelAccess" )
 public class ChannelAccess {
 
     @XmlElement( name = "jcaContext", nillable = true )

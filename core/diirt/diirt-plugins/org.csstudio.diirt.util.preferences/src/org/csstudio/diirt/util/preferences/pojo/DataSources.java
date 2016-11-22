@@ -14,9 +14,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 
 /**
  * Plain Old Java Object representing a {@code datasources.xml} file.
@@ -36,7 +33,6 @@ import lombok.ToString;
  */
 @XmlRootElement( name = "dataSources" )
 @XmlType( name = "DataSources" )
-@ToString @EqualsAndHashCode
 public class DataSources {
 
     @XmlElement( name = "compositeDataSource", nillable = true )

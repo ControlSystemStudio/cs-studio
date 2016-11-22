@@ -8,9 +8,11 @@
  */
 package org.csstudio.diirt.util.preferences;
 
+import org.csstudio.diirt.util.preferences.pojo.JCAContext.MonitorMask;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -18,7 +20,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
+
+import gov.aps.jca.Monitor;
 
 
 /**
@@ -28,11 +33,22 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ChannelAccessPreferencePage extends BasePreferencePage {
 
-    private Group              contextGroup;
-    private StringFieldEditor  addressListEditor;
-    private BooleanFieldEditor autoaddressListEditor;
-    private ComboFieldEditor   pureJavaEditor;
-    private Group              optionsGroup;
+    private Group                 contextGroup;
+    private StringFieldEditor     addressListEditor;
+    private BooleanFieldEditor    autoAddressListEditor;
+    private IntegerFieldEditor    beaconPeriodEditor;
+    private IntegerFieldEditor    connectionTimeoutEditor;
+    private IntegerFieldEditor    customMaskEditor;
+    private IntegerFieldEditor    maxArraySizeEditor;
+    private RadioGroupFieldEditor pureJavaEditor;
+    private IntegerFieldEditor    repeaterPortEditor;
+    private IntegerFieldEditor    serverPortEditor;
+    private Group                 optionsGroup;
+    private RadioGroupFieldEditor monitorMaskEditor;
+    private BooleanFieldEditor    sbePropertySupportedEditor;
+    private BooleanFieldEditor    honorZeropRecisionEditor;
+    private BooleanFieldEditor    valueRTYPMonitorEditor;
+    private RadioGroupFieldEditor variableArrayEditor;
 
     /**
      * Create the preference page.
@@ -64,7 +80,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         contextGroup.setLayout(contextGroupLayout);
 
-        pureJavaEditor = new ComboFieldEditor(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA, Messages.CAPP_modeCaption_text, DIIRTPreferencesPlugin.AVAILABLE_MODES, contextGroup);
+        pureJavaEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, DIIRTPreferencesPlugin.AVAILABLE_MODES, contextGroup, false);
 
         addField(
             pureJavaEditor,
@@ -76,7 +92,6 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         addressListEditor = new StringFieldEditor(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST, Messages.CAPP_addressListCaption_text, contextGroup);
 
-        addressListEditor.getTextControl(contextGroup).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         addField(
             addressListEditor,
             contextGroup,
@@ -85,22 +100,86 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
             () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST)
         );
 
-        autoaddressListEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST, Messages.CAPP_autoCheckButton_text, BooleanFieldEditor.SEPARATE_LABEL, contextGroup);
+        autoAddressListEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST, Messages.CAPP_autoCheckButton_text, BooleanFieldEditor.SEPARATE_LABEL, contextGroup);
 
         addField(
-            autoaddressListEditor,
+            autoAddressListEditor,
             contextGroup,
             true,
             () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST),
             () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST)
         );
 
+        new Label(contextGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
+        connectionTimeoutEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT, Messages.CAPP_connectionTimeoutCaption_text, contextGroup);
 
+        connectionTimeoutEditor.setValidRange(0, 300);
+        connectionTimeoutEditor.setTextLimit(32);
+        connectionTimeoutEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
+        addField(
+            connectionTimeoutEditor,
+            contextGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT)
+        );
 
+        beaconPeriodEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD, Messages.CAPP_beaconPeriodCaption_text, contextGroup);
 
+        beaconPeriodEditor.setValidRange(0, 300);
+        beaconPeriodEditor.setTextLimit(32);
+        beaconPeriodEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
+        addField(
+            beaconPeriodEditor,
+            contextGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD)
+        );
 
+        new Label(contextGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
+        repeaterPortEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT, Messages.CAPP_repeaterPortCaption_text, contextGroup);
+
+        repeaterPortEditor.setValidRange(1024, 65535);
+        repeaterPortEditor.setTextLimit(32);
+        repeaterPortEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
+        addField(
+            repeaterPortEditor,
+            contextGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT)
+        );
+
+        serverPortEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextGroup);
+
+        serverPortEditor.setValidRange(1024, 65535);
+        serverPortEditor.setTextLimit(32);
+        serverPortEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
+        addField(
+            serverPortEditor,
+            contextGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT)
+        );
+
+        new Label(contextGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
+
+        maxArraySizeEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE, Messages.CAPP_maxArraySizeSpinnerCaption_text, contextGroup);
+
+        maxArraySizeEditor.setValidRange(1024, 524288);
+        maxArraySizeEditor.setTextLimit(32);
+        maxArraySizeEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
+        addField(
+            maxArraySizeEditor,
+            contextGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE)
+        );
 
         optionsGroup = new Group(container, SWT.NONE);
 
@@ -111,185 +190,87 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         optionsGroup.setLayout(optionsGroupLayout);
 
+        monitorMaskEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK, Messages.CAPP_monitorMaskCaption_text, 4, DIIRTPreferencesPlugin.AVAILABLE_MONITOR_MASKS, optionsGroup, false);
 
+        addField(
+            monitorMaskEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK),
+            e -> {
 
+                customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(e.getNewValue()), optionsGroup);
 
-//        Label lblConnectionTimeout = new Label(contextGroup, SWT.NONE);
-//        lblConnectionTimeout.setAlignment(SWT.RIGHT);
-//        FormData fd_lblConnectionTimeout = new FormData();
-//        fd_lblConnectionTimeout.top = new FormAttachment(addressListCaption, 13);
-//        fd_lblConnectionTimeout.left = new FormAttachment(modeCaption, 0, SWT.LEFT);
-//        lblConnectionTimeout.setLayoutData(fd_lblConnectionTimeout);
-//        lblConnectionTimeout.setText(Messages.CAPP_connectionTimeoutCaption_text);
-//
-//        Spinner connectionTimeoutSpinner = new Spinner(contextGroup, SWT.BORDER);
-//        connectionTimeoutSpinner.setMaximum(300);
-//        FormData fd_connectionTimeoutSpinner = new FormData();
-//        fd_connectionTimeoutSpinner.right = new FormAttachment(pureJavaRadioButton, 0, SWT.RIGHT);
-//        fd_connectionTimeoutSpinner.top = new FormAttachment(addressListText, 6);
-//        fd_connectionTimeoutSpinner.left = new FormAttachment(pureJavaRadioButton, 0, SWT.LEFT);
-//        connectionTimeoutSpinner.setLayoutData(fd_connectionTimeoutSpinner);
-//
-//        Label connectionTimeoutUnitCaption = new Label(contextGroup, SWT.NONE);
-//        FormData fd_connectionTimeoutUnitCaption = new FormData();
-//        fd_connectionTimeoutUnitCaption.top = new FormAttachment(lblConnectionTimeout, 0, SWT.TOP);
-//        fd_connectionTimeoutUnitCaption.left = new FormAttachment(jniRadioButton, 0, SWT.LEFT);
-//        connectionTimeoutUnitCaption.setLayoutData(fd_connectionTimeoutUnitCaption);
-//        connectionTimeoutUnitCaption.setText(Messages.CAPP_connectionTimeoutUnitCaption_text);
-//
-//        Label beaconPeriodCaption = new Label(contextGroup, SWT.NONE);
-//        beaconPeriodCaption.setText(Messages.CAPP_beaconPeriodCaption_text);
-//        beaconPeriodCaption.setAlignment(SWT.RIGHT);
-//        FormData fd_beaconPeriodCaption = new FormData();
-//        fd_beaconPeriodCaption.left = new FormAttachment(0, 1);
-//        fd_beaconPeriodCaption.right = new FormAttachment(modeCaption, 0, SWT.RIGHT);
-//        beaconPeriodCaption.setLayoutData(fd_beaconPeriodCaption);
-//
-//        Spinner beaconPeriodSpinner = new Spinner(contextGroup, SWT.BORDER);
-//        beaconPeriodSpinner.setMaximum(300);
-//        fd_beaconPeriodCaption.top = new FormAttachment(beaconPeriodSpinner, 5, SWT.TOP);
-//        FormData fd_beaconPeriodSpinner = new FormData();
-//        fd_beaconPeriodSpinner.right = new FormAttachment(pureJavaRadioButton, 0, SWT.RIGHT);
-//        fd_beaconPeriodSpinner.top = new FormAttachment(connectionTimeoutSpinner, 6);
-//        fd_beaconPeriodSpinner.left = new FormAttachment(pureJavaRadioButton, 0, SWT.LEFT);
-//        beaconPeriodSpinner.setLayoutData(fd_beaconPeriodSpinner);
-//
-//        Label label_1 = new Label(contextGroup, SWT.NONE);
-//        label_1.setText(Messages.CAPP_beaconPeriodUnitCaption_text);
-//        FormData fd_label_1 = new FormData();
-//        fd_label_1.top = new FormAttachment(beaconPeriodCaption, 0, SWT.TOP);
-//        fd_label_1.left = new FormAttachment(jniRadioButton, 0, SWT.LEFT);
-//        label_1.setLayoutData(fd_label_1);
-//
-//        Label repeaterPortCaption = new Label(contextGroup, SWT.NONE);
-//        repeaterPortCaption.setText(Messages.CAPP_repeaterPortCaption_text);
-//        repeaterPortCaption.setAlignment(SWT.RIGHT);
-//        FormData fd_repeaterPortCaption = new FormData();
-//        fd_repeaterPortCaption.left = new FormAttachment(modeCaption, 0, SWT.LEFT);
-//        fd_repeaterPortCaption.right = new FormAttachment(modeCaption, 0, SWT.RIGHT);
-//        repeaterPortCaption.setLayoutData(fd_repeaterPortCaption);
-//
-//        Spinner repeaterPortSpinner = new Spinner(contextGroup, SWT.BORDER);
-//        fd_repeaterPortCaption.top = new FormAttachment(repeaterPortSpinner, 5, SWT.TOP);
-//        repeaterPortSpinner.setMaximum(65535);
-//        repeaterPortSpinner.setMinimum(1024);
-//        FormData fd_repeaterPortSpinner = new FormData();
-//        fd_repeaterPortSpinner.right = new FormAttachment(pureJavaRadioButton, 0, SWT.RIGHT);
-//        fd_repeaterPortSpinner.top = new FormAttachment(beaconPeriodSpinner, 6);
-//        fd_repeaterPortSpinner.left = new FormAttachment(pureJavaRadioButton, 0, SWT.LEFT);
-//        repeaterPortSpinner.setLayoutData(fd_repeaterPortSpinner);
-//
-//        Label serverPortSpinnerCaption = new Label(contextGroup, SWT.NONE);
-//        serverPortSpinnerCaption.setText(Messages.CAPP_serverPortSpinnerCaption_text);
-//        serverPortSpinnerCaption.setAlignment(SWT.RIGHT);
-//        FormData fd_serverPortSpinnerCaption = new FormData();
-//        fd_serverPortSpinnerCaption.left = new FormAttachment(modeCaption, 0, SWT.LEFT);
-//        fd_serverPortSpinnerCaption.right = new FormAttachment(modeCaption, 0, SWT.RIGHT);
-//        serverPortSpinnerCaption.setLayoutData(fd_serverPortSpinnerCaption);
-//
-//        Spinner serverPortSpinner = new Spinner(contextGroup, SWT.BORDER);
-//        fd_serverPortSpinnerCaption.top = new FormAttachment(serverPortSpinner, 5, SWT.TOP);
-//        serverPortSpinner.setMaximum(65535);
-//        serverPortSpinner.setMinimum(1024);
-//        FormData fd_serverPortSpinner = new FormData();
-//        fd_serverPortSpinner.right = new FormAttachment(pureJavaRadioButton, 0, SWT.RIGHT);
-//        fd_serverPortSpinner.top = new FormAttachment(repeaterPortSpinner, 6);
-//        fd_serverPortSpinner.left = new FormAttachment(pureJavaRadioButton, 0, SWT.LEFT);
-//        serverPortSpinner.setLayoutData(fd_serverPortSpinner);
-//
-//        Label maxArraySizeSpinnerCaption = new Label(contextGroup, SWT.NONE);
-//        maxArraySizeSpinnerCaption.setText(Messages.CAPP_maxArraySizeSpinnerCaption_text);
-//        maxArraySizeSpinnerCaption.setAlignment(SWT.RIGHT);
-//        FormData fd_maxArraySizeSpinnerCaption = new FormData();
-//        fd_maxArraySizeSpinnerCaption.left = new FormAttachment(modeCaption, 0, SWT.LEFT);
-//        fd_maxArraySizeSpinnerCaption.right = new FormAttachment(modeCaption, 0, SWT.RIGHT);
-//        maxArraySizeSpinnerCaption.setLayoutData(fd_maxArraySizeSpinnerCaption);
-//
-//        Spinner maxArraySizeSpinner = new Spinner(contextGroup, SWT.BORDER);
-//        fd_maxArraySizeSpinnerCaption.top = new FormAttachment(maxArraySizeSpinner, 5, SWT.TOP);
-//        maxArraySizeSpinner.setIncrement(16);
-//        maxArraySizeSpinner.setPageIncrement(1024);
-//        maxArraySizeSpinner.setMaximum(524288);
-//        maxArraySizeSpinner.setMinimum(1024);
-//        FormData fd_maxArraySizeSpinner = new FormData();
-//        fd_maxArraySizeSpinner.right = new FormAttachment(pureJavaRadioButton, 0, SWT.RIGHT);
-//        fd_maxArraySizeSpinner.top = new FormAttachment(serverPortSpinner, 6);
-//        fd_maxArraySizeSpinner.left = new FormAttachment(pureJavaRadioButton, 0, SWT.LEFT);
-//        maxArraySizeSpinner.setLayoutData(fd_maxArraySizeSpinner);
-//
-//        Label label_2 = new Label(contextGroup, SWT.NONE);
-//        label_2.setText(Messages.CAPP_maxArraySizeSpinnerUnitCaption_text);
-//        FormData fd_label_2 = new FormData();
-//        fd_label_2.top = new FormAttachment(maxArraySizeSpinnerCaption, 0, SWT.TOP);
-//        fd_label_2.left = new FormAttachment(jniRadioButton, 0, SWT.LEFT);
-//        label_2.setLayoutData(fd_label_2);
-//
+                if ( MonitorMask.VALUE.name().equals(e.getNewValue()) ) {
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.VALUE | Monitor.ALARM));
+                } else if ( MonitorMask.ARCHIVE.name().equals(e.getNewValue()) ) {
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.LOG));
+                } else if ( MonitorMask.ALARM.name().equals(e.getNewValue()) ) {
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.ALARM));
+                }
 
+            }
+        );
 
+        customMaskEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK, "", optionsGroup);
 
+        customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK)), optionsGroup);
+        customMaskEditor.setValidRange(0, 65536);
+        customMaskEditor.setTextLimit(32);
+        customMaskEditor.getTextControl(optionsGroup).setLayoutData(createIntegerFieldEditorGridData());
 
-//        Label subscriptionCaption = new Label(optionsGroup, SWT.NONE);
-//        subscriptionCaption.setAlignment(SWT.RIGHT);
-//        subscriptionCaption.setBounds(10, 13, 121, 14);
-//        subscriptionCaption.setText(Messages.CAPP_subscriptionCaption_text);
-//
-//        Label variableLengthArrayCaption = new Label(optionsGroup, SWT.NONE);
-//        variableLengthArrayCaption.setAlignment(SWT.RIGHT);
-//        variableLengthArrayCaption.setBounds(10, 108, 121, 14);
-//        variableLengthArrayCaption.setText(Messages.CAPP_variableLengthArrayCaption_text);
-//
-//        Button valueRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        valueRadioButton.setSelection(true);
-//        valueRadioButton.addSelectionListener(new SelectionAdapter() {
-//            @Override
-//            public void widgetSelected(SelectionEvent e) {
-//            }
-//        });
-//        valueRadioButton.setBounds(137, 10, 62, 18);
-//        valueRadioButton.setText(Messages.CAPP_valueRadioButton_text);
-//
-//        Button archiveRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        archiveRadioButton.setBounds(205, 10, 62, 18);
-//        archiveRadioButton.setText(Messages.CAPP_archiveRadioButton_text);
-//
-//        Button alarmRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        alarmRadioButton.setBounds(273, 10, 62, 18);
-//        alarmRadioButton.setText(Messages.CAPP_alarmRadioButton_text);
-//
-//        Button notifyCheckBox = new Button(optionsGroup, SWT.CHECK);
-//        notifyCheckBox.setBounds(137, 33, 164, 18);
-//        notifyCheckBox.setText(Messages.CAPP_notifyCheckBox_text);
-//
-//        Button honorCheckBox = new Button(optionsGroup, SWT.CHECK);
-//        honorCheckBox.setBounds(137, 57, 62, 18);
-//        honorCheckBox.setText(Messages.CAPP_honorCheckBox_text);
-//
-//        Label zeroPrecisionCaption = new Label(optionsGroup, SWT.NONE);
-//        zeroPrecisionCaption.setAlignment(SWT.RIGHT);
-//        zeroPrecisionCaption.setBounds(10, 60, 121, 14);
-//        zeroPrecisionCaption.setText(Messages.CAPP_zeroPrecisionCaption_text);
-//
-//        Button valueOnlyCheckBox = new Button(optionsGroup, SWT.CHECK);
-//        valueOnlyCheckBox.setBounds(137, 81, 78, 18);
-//        valueOnlyCheckBox.setText(Messages.CAPP_valueOnlyCheckBox_text);
-//
-//        Label rtypMonitorCaption = new Label(optionsGroup, SWT.NONE);
-//        rtypMonitorCaption.setAlignment(SWT.RIGHT);
-//        rtypMonitorCaption.setBounds(10, 84, 121, 14);
-//        rtypMonitorCaption.setText(Messages.CAPP_rtypMonitorCaption_text);
-//
-//        Button autoRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        autoRadioButton.setSelection(true);
-//        autoRadioButton.setBounds(137, 105, 62, 18);
-//        autoRadioButton.setText(Messages.CAPP_autoRadioButton_text);
-//
-//        Button trueRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        trueRadioButton.setBounds(205, 105, 62, 18);
-//        trueRadioButton.setText(Messages.CAPP_trueRadioButton_text);
-//
-//        Button falseRadioButton = new Button(optionsGroup, SWT.RADIO);
-//        falseRadioButton.setBounds(273, 105, 62, 18);
-//        falseRadioButton.setText(Messages.CAPP_falseRadioButton_text);
+        addField(
+            customMaskEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK)
+        );
+
+        new Label(optionsGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
+
+        variableArrayEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY, Messages.CAPP_variableLengthArrayCaption_text, 3, DIIRTPreferencesPlugin.AVAILABLE_VAR_ARRAY_SUPPORTS, optionsGroup, false);
+
+        addField(
+            variableArrayEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY)
+        );
+
+        new Label(optionsGroup, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
+
+        sbePropertySupportedEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED, Messages.CAPP_dbePropertySupportedCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+
+        addField(
+            sbePropertySupportedEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED)
+        );
+
+        honorZeropRecisionEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION, Messages.CAPP_honorCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+
+        addField(
+            honorZeropRecisionEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION)
+        );
+
+        valueRTYPMonitorEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR, Messages.CAPP_valueOnlyCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+
+        addField(
+            valueRTYPMonitorEditor,
+            optionsGroup,
+            true,
+            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR),
+            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR)
+        );
 
         return container;
 
