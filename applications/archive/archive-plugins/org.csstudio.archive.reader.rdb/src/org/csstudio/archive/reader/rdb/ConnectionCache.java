@@ -130,7 +130,11 @@ public class ConnectionCache
                 entry = new Entry(id, RDBUtil.connect(url, user, password, false));
                 // Read-only allows MySQL to use load balancing
                 entry.getConnection().setReadOnly(true);
-                cache.add(entry);
+                // Avoid caching for PostgreSQL
+                if(entry.getDialect() == RDBUtil.Dialect.PostgreSQL)
+                {
+                	cache.add(entry);
+                }
             }
             return entry;
         }
