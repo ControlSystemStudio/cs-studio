@@ -133,7 +133,7 @@ public class ConnectionCache
                 // Avoid caching for PostgreSQL
                 if(entry.getDialect() != RDBUtil.Dialect.PostgreSQL)
                 {
-                	cache.add(entry);
+                    cache.add(entry);
                 }
             }
             return entry;
