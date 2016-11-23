@@ -118,7 +118,7 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
 
     private void confirmSelectBaseLevel() {
         BaseLevel bl = internalBaseLevelProperty().getValue();
-        if (bl != null && !availableBaseLevelsProperty.get().contains(bl)) {
+        if (bl != null && !availableBaseLevelsProperty().get().contains(bl)) {
             String message = Selector.validateBaseLevelName(bl.getStorageName());
             if (message != null && !FXMessageDialog.openQuestion(parent.getShell(), "Invalid Name",
                 message + "\n Do you still want to continue?")) {
