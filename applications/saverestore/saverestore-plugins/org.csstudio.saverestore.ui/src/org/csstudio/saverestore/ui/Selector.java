@@ -78,10 +78,12 @@ public class Selector implements CompletionNotifier {
     private final PropertyChangeListener pcl = e -> {
         DataProviderWrapper oldValue = (DataProviderWrapper) e.getOldValue();
         DataProviderWrapper newValue = (DataProviderWrapper) e.getNewValue();
-        if (oldValue != null) {
-            oldValue.getProvider().removeCompletionNotifier(this);
-        }
-        init(newValue, oldValue == null);
+        UI_EXECUTOR.execute(() -> {
+            if (oldValue != null) {
+                oldValue.getProvider().removeCompletionNotifier(this);
+            }
+            init(newValue, oldValue == null);
+        });
     };
 
     /**
