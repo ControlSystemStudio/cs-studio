@@ -92,6 +92,9 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     public static final String     PREF_FIRST_ACCESS              = "diirt.firstAccess";
     public static final String     USER_HOME_PARAMETER            = "@user.home";
 
+    private static final String CA_DIR              = "ca";
+    private static final String CA_FILE             = "ca.xml";
+    private static final String CA_VERSION          = "1";
     private static final String DATASOURCES_DIR     = "datasources";
     private static final String DATASOURCES_FILE    = "datasources.xml";
     private static final String DATASOURCES_VERSION = "1";
@@ -197,6 +200,142 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     }
 
+    /**
+     * Updates all default values reading them from the files in the
+     * given DIIRT configuration directory.
+     *
+     * @param confDir The DIIRT configuration directory.
+     * @param store   The preference store.
+     */
+    public void updateDefaults ( String confDir, IPreferenceStore store ) {
+
+        if ( StringUtils.isBlank(confDir) ) {
+            LOGGER.warning("Null, empty or blank 'confDir'");
+            return;
+        } else {
+            try {
+                confDir = resolvePlatformPath(confDir);
+            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
+                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
+                return;
+            }
+        }
+
+        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
+        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
+
+        try {
+            updateDataSourcesDefaults(datasourcesFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
+        }
+
+        File caDir = new File(datasourcesDir, CA_DIR);
+        File caFile = new File(caDir, CA_FILE);
+
+        try {
+            updateChannelAccessDefaults(caFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", caFile.toString()), ex);
+        }
+
+    }
+
+    /**
+     * Updates all values reading them from the files in the
+     * given DIIRT configuration directory.
+     *
+     * @param confDir The DIIRT configuration directory.
+     * @param store   The preference store.
+     */
+    public void updateValues ( String confDir, IPreferenceStore store ) {
+
+        if ( StringUtils.isBlank(confDir) ) {
+            LOGGER.warning("Null, empty or blank 'confDir'");
+            return;
+        } else {
+            try {
+                confDir = resolvePlatformPath(confDir);
+            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
+                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
+                return;
+            }
+        }
+
+        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
+        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
+
+        try {
+            updateDataSourcesValues(datasourcesFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
+        }
+
+        File caDir = new File(datasourcesDir, CA_DIR);
+        File caFile = new File(caDir, CA_FILE);
+
+        try {
+            updateChannelAccessValues(caFile, store);
+        } catch ( IOException | JAXBException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", caFile.toString()), ex);
+        }
+
+    }
+
+    private void updateChannelAccessDefaults ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
+
+//        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
+//        Unmarshaller u = jc.createUnmarshaller();
+//        DataSources ds = (DataSources) u.unmarshal(caFile);
+//
+//        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
+//            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
+//        }
+//
+//        CompositeDataSource cds = ds.compositeDataSource;
+//
+//        if ( cds != null ) {
+//
+//            DataSourceProtocol dsp = cds.defaultDataSource;
+//
+//            if ( dsp == null ) {
+//                dsp = DataSourceProtocol.none;
+//            }
+//
+//            store.setDefault(PREF_DS_DEFAULT, dsp.name());
+//            store.setDefault(PREF_DS_DELIMITER, cds.delimiter);
+//
+//        }
+
+    }
+
+    private void updateChannelAccessValues ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
+
+//        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
+//        Unmarshaller u = jc.createUnmarshaller();
+//        DataSources ds = (DataSources) u.unmarshal(caFile);
+//
+//        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
+//            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
+//        }
+//
+//        CompositeDataSource cds = ds.compositeDataSource;
+//
+//        if ( cds != null ) {
+//
+//            DataSourceProtocol dsp = cds.defaultDataSource;
+//
+//            if ( dsp == null ) {
+//                dsp = DataSourceProtocol.none;
+//            }
+//
+//            store.setValue(PREF_DS_DEFAULT, dsp.name());
+//            store.setValue(PREF_DS_DELIMITER, cds.delimiter);
+//
+//        }
+
+    }
+
     private void updateDataSourcesDefaults ( File datasourcesFile, IPreferenceStore store ) throws IOException, JAXBException {
 
         JAXBContext jc = JAXBContext.newInstance(DataSources.class);
@@ -247,70 +386,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
             store.setValue(PREF_DS_DEFAULT, dsp.name());
             store.setValue(PREF_DS_DELIMITER, cds.delimiter);
 
-        }
-
-    }
-
-    /**
-     * Updates all default values reading them from the files in the
-     * given DIIRT configuration directory.
-     *
-     * @param confDir The DIIRT configuration directory.
-     * @param store   The preference store.
-     */
-    public void updateDefaults ( String confDir, IPreferenceStore store ) {
-
-        if ( StringUtils.isBlank(confDir) ) {
-            LOGGER.warning("Null, empty or blank 'confDir'");
-            return;
-        } else {
-            try {
-                confDir = resolvePlatformPath(confDir);
-            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
-                return;
-            }
-        }
-
-        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
-        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
-
-        try {
-            updateDataSourcesDefaults(datasourcesFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
-        }
-
-    }
-
-    /**
-     * Updates all values reading them from the files in the
-     * given DIIRT configuration directory.
-     *
-     * @param confDir The DIIRT configuration directory.
-     * @param store   The preference store.
-     */
-    public void updateValues ( String confDir, IPreferenceStore store ) {
-
-        if ( StringUtils.isBlank(confDir) ) {
-            LOGGER.warning("Null, empty or blank 'confDir'");
-            return;
-        } else {
-            try {
-                confDir = resolvePlatformPath(confDir);
-            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
-                return;
-            }
-        }
-
-        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
-        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
-
-        try {
-            updateDataSourcesValues(datasourcesFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
         }
 
     }
