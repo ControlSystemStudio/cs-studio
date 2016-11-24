@@ -206,8 +206,8 @@ public class SnapshotViewerController {
     private boolean hideEqualItems;
     private String filter;
 
-    private PropertyChangeListener busyListener = e -> snapshotSaveableProperty
-        .set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy());
+    private PropertyChangeListener busyListener = e -> UI_EXECUTOR
+        .execute(() -> snapshotSaveableProperty.set(!getSnapshots(true).isEmpty() && !(Boolean) e.getNewValue()));
 
     /**
      * Constructs a new controller for the given editor.
@@ -341,7 +341,7 @@ public class SnapshotViewerController {
         synchronized (snapshots) {
             snapshots.add(data);
         }
-        snapshotRestorableProperty.set(data.getSnapshot().isPresent());
+        UI_EXECUTOR.execute(() -> snapshotRestorableProperty.set(data.getSnapshot().isPresent()));
         String name;
         TableEntry e;
         SnapshotEntry entry;
@@ -360,7 +360,8 @@ public class SnapshotViewerController {
             e.readOnlyProperty().set(entry.isReadOnly());
         }
         connectPVs();
-        snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
+        UI_EXECUTOR.execute(
+            () -> snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy()));
         updateThresholds();
         UI_EXECUTOR.execute(() -> baseSnapshotProperty.set(data));
         return filter(items.values(), filter);
@@ -411,10 +412,12 @@ public class SnapshotViewerController {
                 snapshots.add(data);
             }
             connectPVs();
-            if (!snapshotSaveableProperty.get()) {
-                snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
-            }
-            snapshotRestorableProperty.set(true);
+            UI_EXECUTOR.execute(() -> {
+                if (!snapshotSaveableProperty.get()) {
+                    snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
+                }
+                snapshotRestorableProperty.set(true);
+            });
             if (update) {
                 updateThresholds();
             }
@@ -599,10 +602,10 @@ public class SnapshotViewerController {
                 try {
                     taken = provider.getProvider().takeSnapshot(set);
                 } catch (UnsupportedActionException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE,e,
-                            () -> String.format(
-                                    "The provider '%s' claims that it can take snapshots, but does not implement the action.",
-                                    provider.getName()));
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, e,
+                        () -> String.format(
+                            "The provider '%s' claims that it can take snapshots, but does not implement the action.",
+                            provider.getName()));
                 } catch (DataProviderException e) {
                     if (SaveRestoreService.getInstance().isCurrentJobCancelled()) {
                         // if cancelled display the message and return
@@ -611,8 +614,7 @@ public class SnapshotViewerController {
                     } else {
                         // notify the user about the exception and continue taking the snapshot normally
                         ActionManager.reportException(e,
-                            "Snapshot will be taken locally, but it might not be possible to save it.",
-                            receiver);
+                            "Snapshot will be taken locally, but it might not be possible to save it.", receiver);
                     }
                 }
             }
@@ -624,11 +626,12 @@ public class SnapshotViewerController {
                 for (TableEntry t : items.values()) {
                     name = t.pvNameProperty().get();
                     pv = pvs.get(t);
-                    //there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is
-                    //suspended and the value could not change while suspended
+                    // there is no issues with non atomic access to pv.value or pv.readbackValue because the PV is
+                    // suspended and the value could not change while suspended
                     value = pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value;
                     readback = readbacks.get(name);
-                    readbackValue = pv == null || pv.readbackValue == null ? VDisconnectedData.INSTANCE : pv.readbackValue;
+                    readbackValue = pv == null || pv.readbackValue == null ? VDisconnectedData.INSTANCE
+                        : pv.readbackValue;
                     for (VSnapshot s : getAllSnapshots()) {
                         delta = s.getDelta(name);
                         if (delta != null) {
@@ -639,7 +642,7 @@ public class SnapshotViewerController {
                         delta, t.readOnlyProperty().get()));
                 }
                 // taken snapshots always belong to the save set of the master snapshot
-                taken = new VSnapshot(new Snapshot(set),entries, Instant.now());
+                taken = new VSnapshot(new Snapshot(set), entries, Instant.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 receiver.addSnapshot(taken, false);
@@ -688,7 +691,7 @@ public class SnapshotViewerController {
             if (markAsSaved) {
                 snapshot.markNotDirty();
             }
-            snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
+            UI_EXECUTOR.execute(() -> snapshotSaveableProperty.set(!getSnapshots(true).isEmpty()));
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             ActionManager.reportException(ex, receiver);
         }
@@ -776,7 +779,7 @@ public class SnapshotViewerController {
             if (markAsSaved) {
                 snapshot.markNotDirty();
             }
-            snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
+            UI_EXECUTOR.execute(() -> snapshotSaveableProperty.set(!getSnapshots(true).isEmpty()));
             return snapshot;
         } catch (Exception e) {
             ActionManager.reportException(e, receiver);
@@ -801,8 +804,7 @@ public class SnapshotViewerController {
             SaveSet set = new SaveSet(new Branch(), Optional.empty(), p.split("\\/"), null);
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
-            return Optional.of(new VSnapshot((Snapshot) descriptor,
-                sc.getEntries(), sc.getDate()));
+            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getEntries(), sc.getDate()));
         } catch (IOException | RuntimeException | ParseException e) {
             ActionManager.reportException(e, receiver);
             return Optional.empty();
@@ -1064,7 +1066,7 @@ public class SnapshotViewerController {
                     .map(v -> v == null ? VDisconnectedData.INSTANCE : v).collect(Collectors.toList());
                 List<SnapshotEntry> entries = new ArrayList<>(names.size());
                 for (int i = 0; i < names.size(); i++) {
-                    entries.add(new SnapshotEntry(names.get(i),vals.get(i)));
+                    entries.add(new SnapshotEntry(names.get(i), vals.get(i)));
                 }
                 final VSnapshot snapshot = new VSnapshot(desc, entries, timestamp, importer.name);
                 UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
@@ -1243,7 +1245,7 @@ public class SnapshotViewerController {
         }
         VSnapshot snapshot = getSnapshot(index);
         snapshot.addOrSetPV(name, selected, value);
-        snapshotSaveableProperty.set(true);
+        UI_EXECUTOR.execute(() -> snapshotSaveableProperty.set(true));
         receiver.checkDirty();
     }
 
@@ -1270,7 +1272,7 @@ public class SnapshotViewerController {
         if (entry != null) {
             entry.setSnapshotValue(value, index);
             snapshot.addOrSetPV(pvName, entry.selectedProperty().get(), value);
-            snapshotSaveableProperty.set(true);
+            UI_EXECUTOR.execute(() -> snapshotSaveableProperty.set(true));
             receiver.checkDirty();
         }
     }
