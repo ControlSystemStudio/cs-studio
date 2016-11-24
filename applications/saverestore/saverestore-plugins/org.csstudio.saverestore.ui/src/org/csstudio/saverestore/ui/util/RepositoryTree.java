@@ -19,13 +19,14 @@ import java.util.Optional;
 
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.ui.fx.util.FXTextInputDialog;
 import org.csstudio.ui.fx.util.InputValidator;
 import org.eclipse.jface.window.IShellProvider;
 
+import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -131,7 +132,7 @@ public class RepositoryTree extends TreeView<String> {
     private final boolean editable;
     private final SaveSet initialValue;
     private final String dataProviderId;
-    private PropertyChangeListener busyListener =  e -> setDisable((Boolean) e.getNewValue());
+    private PropertyChangeListener busyListener = e -> Platform.runLater(() -> setDisable((Boolean) e.getNewValue()));
 
     /**
      * Constructs a new repository tree.

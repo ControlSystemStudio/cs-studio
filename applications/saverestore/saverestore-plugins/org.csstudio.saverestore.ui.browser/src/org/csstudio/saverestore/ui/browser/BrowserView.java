@@ -25,8 +25,8 @@ import java.util.function.BooleanSupplier;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.ui.Activator;
 import org.csstudio.saverestore.ui.Selector;
@@ -51,6 +51,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -156,7 +157,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
 
     private final List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
 
-    private PropertyChangeListener dpl = e -> updateForDataProviderChange();
+    private PropertyChangeListener dpl = e -> Platform.runLater(() -> updateForDataProviderChange());
 
     /**
      * @return the selector bound to this view
