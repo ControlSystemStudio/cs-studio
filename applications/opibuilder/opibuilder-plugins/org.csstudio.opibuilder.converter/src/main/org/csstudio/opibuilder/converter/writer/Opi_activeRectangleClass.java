@@ -61,6 +61,13 @@ public class Opi_activeRectangleClass extends OpiWidget {
             line_width = r.getLineWidth();
         new OpiInt(widgetContext, "line_width", line_width);
 
+        // EDM draws a border around the outside of the rectangle. In order to have the
+        // same appearance we need to resize the widget.
+        new OpiInt(widgetContext, "x", r.getX() - widgetContext.getX() - line_width/2);
+        new OpiInt(widgetContext, "y", r.getY() - widgetContext.getY() - line_width/2);
+        new OpiInt(widgetContext, "width", r.getW() + line_width);
+        new OpiInt(widgetContext, "height", r.getH() + line_width);
+
         int lineStyle = 0;
         //For EDMAttribute property, use isExistInEDL
         if (r.getLineStyle().isExistInEDL()) {
