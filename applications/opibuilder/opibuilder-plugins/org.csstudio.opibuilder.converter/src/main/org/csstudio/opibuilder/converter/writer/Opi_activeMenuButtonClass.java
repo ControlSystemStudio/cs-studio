@@ -30,6 +30,10 @@ public class Opi_activeMenuButtonClass extends OpiWidget {
         setName(name);
         setVersion(version);
 
+        // Expand size by 1px to match EDM
+        new OpiInt(widgetContext, "width", r.getW() + 1);
+        new OpiInt(widgetContext, "height", r.getH() + 1);
+
         if(r.getControlPv()!=null)
         {
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));

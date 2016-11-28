@@ -54,6 +54,10 @@ public class Opi_relatedDisplayClass extends OpiWidget {
         setName(name);
         setVersion(version);
 
+        // Expand size by 1px to match EDM
+        new OpiInt(widgetContext, "width", r.getW() + 1);
+        new OpiInt(widgetContext, "height", r.getH() + 1);
+
         for (int i = 0; i < r.getNumDsps(); i++) {
             // path
             Element pathNode = widgetContext.getDocument().createElement("path");

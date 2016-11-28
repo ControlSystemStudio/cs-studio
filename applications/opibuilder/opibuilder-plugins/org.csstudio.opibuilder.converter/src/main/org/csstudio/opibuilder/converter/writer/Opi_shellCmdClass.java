@@ -43,6 +43,11 @@ public class Opi_shellCmdClass extends OpiWidget {
         }
         setName(name);
         setVersion(version);
+
+        // Expand size by 1px to match EDM
+        new OpiInt(widgetContext, "width", r.getW() + 1);
+        new OpiInt(widgetContext, "height", r.getH() + 1);
+
         for (int i = 0; i < r.getNumCmds(); i++) {
             //path
             Element cmdNode = widgetContext.getDocument().createElement("command");

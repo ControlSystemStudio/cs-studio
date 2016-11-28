@@ -32,6 +32,10 @@ public class Opi_activeExitButtonClass extends OpiWidget {
         setName(name);
         setVersion(version);
 
+        // Expand size by 1px to match EDM
+        new OpiInt(widgetContext, "width", r.getW() + 1);
+        new OpiInt(widgetContext, "height", r.getH() + 1);
+
         Element embedded = widgetContext.getDocument().createElement("embedded");
         embedded.setTextContent("true");
         Element scriptText = widgetContext.getDocument().createElement("scriptText");
