@@ -37,6 +37,8 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
 
     private AlarmClientModel model;
 
+    private boolean isItemNull;
+
     /*
      * (non-Javadoc)
      *
@@ -175,7 +177,11 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
             String filterItemPath = getWidgetModel().getFilterItem();
             AlarmTreeRoot root = model.getConfigTree().getRoot();
             AlarmTreeItem item = root.getItemByPath(filterItemPath);
-            getAlarmTable().setFilterItem(item, model);
+            isItemNull = (item == null) ? true : false;
+            if (isItemNull)
+                executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+            else
+                getAlarmTable().setFilterItem(item, model);
         }
     }
 
@@ -201,10 +207,10 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
         executeWithDisplay(() -> {
             updateFilter(getAlarmTable());
             if (!getWidgetModel().isTableHeaderVisible()) {
-                if (model.isServerAlive()) {
-                    figure.setBorder(calculateBorder());
-                } else {
+                if (!model.isServerAlive() || isItemNull) {
                     figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder());
+                } else {
+                    figure.setBorder(calculateBorder());
                 }
             }
         });
@@ -233,7 +239,6 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
         // ignore
         if (!getWidgetModel().isTableHeaderVisible()) {
             executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
-
         }
     }
 
@@ -246,7 +251,10 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
     @Override
     public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
         if (!getWidgetModel().isTableHeaderVisible()) {
-            executeWithDisplay(() -> figure.setBorder(calculateBorder()));
+            if (isItemNull)
+                executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+            else
+                executeWithDisplay(() -> figure.setBorder(calculateBorder()));
         }
     }
 
