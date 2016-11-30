@@ -40,7 +40,22 @@ public enum FormatEnum {
     /**
      * Engineering format (exponent is power of three). For example, 20.23E9
      */
-    ENG("Engineering");
+    ENG("Engineering"),
+    /**
+     * The text is in degrees or hours, minutes, and seconds with colons between
+     * the three fields. For example  12:45:10.2
+     */
+    SEXA("Sexagesimal"),
+    /**
+     * Same as sexagesimal except that the number is assumed to be in radians and
+     * is expressed as hours, minutes, and seconds
+     */
+    SEXA_HMS("Sexagesimal HMS"),
+    /**
+     * Same as sexagesimal except that the number is assumed to be in radians and
+     * is expressed as degrees, minutes, and seconds
+     */
+    SEXA_DMS("Sexagesimal DMS");
 
     private String description;
     private FormatEnum(String description) {
