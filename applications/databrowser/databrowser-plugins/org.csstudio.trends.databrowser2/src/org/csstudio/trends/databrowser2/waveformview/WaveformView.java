@@ -16,6 +16,7 @@ import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
+import org.csstudio.swt.rtplot.YAxis;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
@@ -165,6 +166,10 @@ public class WaveformView extends DataBrowserAwareView
         plot = new RTValuePlot(parent);
         plot.getXAxis().setName(Messages.WaveformIndex);
         plot.getYAxes().get(0).setName(Messages.WaveformAmplitude);
+        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
+        for (YAxis<Double> yaxis : plot.getYAxes()) {
+            yaxis.setAutoscale(true);
+        }
         plot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // <<<<<< Slider >>>>>>
