@@ -37,6 +37,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
@@ -217,42 +218,46 @@ public class WaveformView extends DataBrowserAwareView
     }
 
     /** Update combo box of this view.
+     *  Since it interacts with the UI run on the UI thread.
      *  @param model_changed Is this a different model?
      */
     private void update(final boolean model_changed)
     {
-        if (model == null)
-        {   // Clear/disable GUI
-            pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
-            pv_name.select(0);
-            pv_name.setEnabled(false);
-            selectPV(null);
-            return;
-        }
-
-        // Show PV names
-        final List<String> names_list = new ArrayList<>();
-        names_list.add(Messages.SampleView_SelectItem);
-        for (ModelItem item : model.getItems())
-            names_list.add(item.getName());
-        final String[] names = names_list.toArray(new String[names_list.size()]);
-
-        // Is the previously selected item still valid?
-        final int selected = pv_name.getSelectionIndex();
-        if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
+        Display.getDefault().asyncExec( () ->
         {
-            // Show same PV name again in combo box
+            if (model == null)
+            {   // Clear/disable GUI
+                pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
+                pv_name.select(0);
+                pv_name.setEnabled(false);
+                selectPV(null);
+                return;
+            }
+
+            // Show PV names
+            final List<String> names_list = new ArrayList<>();
+            names_list.add(Messages.SampleView_SelectItem);
+            for (ModelItem item : model.getItems())
+                names_list.add(item.getName());
+            final String[] names = names_list.toArray(new String[names_list.size()]);
+
+            // Is the previously selected item still valid?
+            final int selected = pv_name.getSelectionIndex();
+            if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
+            {
+                // Show same PV name again in combo box
+                pv_name.setItems(names);
+                pv_name.select(selected);
+                pv_name.setEnabled(true);
+                return;
+            }
+            // Previously selected item no longer valid.
+            // Show new items, clear rest
             pv_name.setItems(names);
-            pv_name.select(selected);
+            pv_name.select(0);
             pv_name.setEnabled(true);
-            return;
-        }
-        // Previously selected item no longer valid.
-        // Show new items, clear rest
-        pv_name.setItems(names);
-        pv_name.select(0);
-        pv_name.setEnabled(true);
-        selectPV(null);
+            selectPV(null);
+        });
     }
 
     /** Select given PV item (or <code>null</code>). */
