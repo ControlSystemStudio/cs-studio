@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,7 +185,7 @@ public class SaveRestoreService {
         return INSTANCE;
     }
 
-    private boolean serviceIsBusy;
+    private final AtomicBoolean serviceIsBusy = new AtomicBoolean(false);
     private List<DataProviderWrapper> dataProviders;
     private DataProviderWrapper selectedDataProvider;
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
@@ -379,7 +380,7 @@ public class SaveRestoreService {
      * @return true if the service is currently busy or false otherwise
      */
     public boolean isBusy() {
-        return serviceIsBusy;
+        return serviceIsBusy.get();
     }
 
     /**
@@ -388,10 +389,9 @@ public class SaveRestoreService {
      * @param busy true if the engine is busy or false otherwise
      */
     private void setBusy(boolean busy) {
-        if (this.serviceIsBusy == busy) {
+        if (!serviceIsBusy.compareAndSet(!busy, busy)) {
             return;
         }
-        this.serviceIsBusy = busy;
         support.firePropertyChange(BUSY, !busy, busy);
     }
 

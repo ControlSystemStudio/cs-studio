@@ -31,6 +31,9 @@ public class VTypeFormatTest {
     VType smallNegativeDoubleValue =  ValueFactory.newVDouble(-1.234567e-7);
     VType bigDoubleValueNoFormat =  ValueFactory.newVDouble(6.54321e23);
     VType orderTenDoubleValueFiveDp =  ValueFactory.newVDouble(21.251235, displayFiveDp);
+    VType sexaPositiveValue = ValueFactory.newVDouble(12.5824414);
+    VType sexaNegativeValue = ValueFactory.newVDouble(-12.5824414);
+    VType sexaRoundedValue = ValueFactory.newVDouble(12.9999999);
 
     @Test
     public void expFormatValueOfSmallDoubleWithPrecisionMinus1WithDisplayIsExpWithFormatDp() {
@@ -126,4 +129,55 @@ public class VTypeFormatTest {
     public void decFormatValueOfDoubleHasFullValueForUnsetPrecision() {
         assertThat(VTypeHelper.formatValue(FormatEnum.DECIMAL, orderTenDoubleValueFiveDp, -1), is("21.25124"));
     }
+
+    @Test
+    public void sexaFormatVaueOfPositiveValueIsExpWith7dp() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA, sexaPositiveValue, 7), is("12:34:56.789"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfNegativeValueIsExpWith7dp() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA, sexaNegativeValue, 7), is("-12:34:56.789"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfRoundedValueIsExpWith7dp() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA, sexaRoundedValue, 7), is("13:00:00.000"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfUnroundedValueIsExpWith7dp() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA, sexaRoundedValue, 8), is("12:59:59.9996"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfPositiveValueIsExpWith7dpHMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_HMS, sexaPositiveValue, 7), is("48:03:40.989"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfNegativeValueIsExpWith7dpHMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_HMS, sexaNegativeValue, 7), is("-48:03:40.989"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfRoundedValueIsExpWith7dpHMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_HMS, sexaRoundedValue, 7), is("49:39:22.831"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfPositiveValueIsExpWith7dpDMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_DMS, sexaPositiveValue, 7), is("720:55:14.837"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfNegativeValueIsExpWith7dpDMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_DMS, sexaNegativeValue, 7), is("-720:55:14.837"));
+    }
+
+    @Test
+    public void sexaFormatVaueOfRoundedValueIsExpWith7dpDMS() {
+        assertThat(VTypeHelper.formatValue(FormatEnum.SEXA_DMS, sexaRoundedValue, 7), is("744:50:42.461"));
+    }
+
 }

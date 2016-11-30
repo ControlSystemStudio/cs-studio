@@ -16,6 +16,7 @@ import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
+import org.csstudio.swt.rtplot.YAxis;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
@@ -24,6 +25,7 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
+import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
@@ -163,6 +166,10 @@ public class WaveformView extends DataBrowserAwareView
         plot = new RTValuePlot(parent);
         plot.getXAxis().setName(Messages.WaveformIndex);
         plot.getYAxes().get(0).setName(Messages.WaveformAmplitude);
+        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
+        for (YAxis<Double> yaxis : plot.getYAxes()) {
+            yaxis.setAutoscale(true);
+        }
         plot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // <<<<<< Slider >>>>>>
@@ -216,42 +223,46 @@ public class WaveformView extends DataBrowserAwareView
     }
 
     /** Update combo box of this view.
+     *  Since it interacts with the UI run on the UI thread.
      *  @param model_changed Is this a different model?
      */
     private void update(final boolean model_changed)
     {
-        if (model == null)
-        {   // Clear/disable GUI
-            pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
-            pv_name.select(0);
-            pv_name.setEnabled(false);
-            selectPV(null);
-            return;
-        }
-
-        // Show PV names
-        final List<String> names_list = new ArrayList<>();
-        names_list.add(Messages.SampleView_SelectItem);
-        for (ModelItem item : model.getItems())
-            names_list.add(item.getName());
-        final String[] names = names_list.toArray(new String[names_list.size()]);
-
-        // Is the previously selected item still valid?
-        final int selected = pv_name.getSelectionIndex();
-        if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
+        Display.getDefault().asyncExec( () ->
         {
-            // Show same PV name again in combo box
+            if (model == null)
+            {   // Clear/disable GUI
+                pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
+                pv_name.select(0);
+                pv_name.setEnabled(false);
+                selectPV(null);
+                return;
+            }
+
+            // Show PV names
+            final List<String> names_list = new ArrayList<>();
+            names_list.add(Messages.SampleView_SelectItem);
+            for (ModelItem item : model.getItems())
+                names_list.add(item.getName());
+            final String[] names = names_list.toArray(new String[names_list.size()]);
+
+            // Is the previously selected item still valid?
+            final int selected = pv_name.getSelectionIndex();
+            if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
+            {
+                // Show same PV name again in combo box
+                pv_name.setItems(names);
+                pv_name.select(selected);
+                pv_name.setEnabled(true);
+                return;
+            }
+            // Previously selected item no longer valid.
+            // Show new items, clear rest
             pv_name.setItems(names);
-            pv_name.select(selected);
+            pv_name.select(0);
             pv_name.setEnabled(true);
-            return;
-        }
-        // Previously selected item no longer valid.
-        // Show new items, clear rest
-        pv_name.setItems(names);
-        pv_name.select(0);
-        pv_name.setEnabled(true);
-        selectPV(null);
+            selectPV(null);
+        });
     }
 
     /** Select given PV item (or <code>null</code>). */
@@ -307,7 +318,8 @@ public class WaveformView extends DataBrowserAwareView
             clearInfo();
         else
         {
-            plot.getXAxis().setValueRange(0.0, (double)waveform.size());
+            int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
+            plot.getXAxis().setValueRange(0.0, (double)size);
             timestamp.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
             status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
         }

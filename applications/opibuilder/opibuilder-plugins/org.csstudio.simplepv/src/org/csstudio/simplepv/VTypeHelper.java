@@ -452,6 +452,9 @@ public class VTypeHelper {
         case EXP:
         case COMPACT:
         case ENG:
+        case SEXA:
+        case SEXA_DMS:
+        case SEXA_HMS:
             return Integer.toString(enumValue.getIndex());
         case HEX:
         case HEX64:
@@ -484,6 +487,7 @@ public class VTypeHelper {
         NumberFormat numberFormat;
 
         int displayPrecision = calculatePrecision(pmValue, precision);
+        double highDispLimit = 0.0, lowDispLimit = 0.0;
 
         switch (formatEnum) {
         case DECIMAL:
@@ -531,6 +535,30 @@ public class VTypeHelper {
             double log10 = Math.log10(Math.abs(value));
             int power = 3 * (int) Math.floor(log10 / 3);
             return String.format("%." + displayPrecision + "fE%d", value / Math.pow(10, power), power);
+
+        case SEXA:
+            if (pmValue instanceof Display) {
+                highDispLimit = ((Display) pmValue).getUpperDisplayLimit();
+                lowDispLimit = ((Display) pmValue).getLowerDisplayLimit();
+            }
+
+            return doubleToSexagesimal(numValue.doubleValue(), displayPrecision, highDispLimit, lowDispLimit);
+
+        case SEXA_HMS:
+            if (pmValue instanceof Display) {
+                highDispLimit = ((Display) pmValue).getUpperDisplayLimit();
+                lowDispLimit = ((Display) pmValue).getLowerDisplayLimit();
+            }
+
+            return doubleToSexagesimal(numValue.doubleValue() * 12.0 / Math.PI, displayPrecision, highDispLimit, lowDispLimit);
+
+        case SEXA_DMS:
+            if (pmValue instanceof Display) {
+                highDispLimit = ((Display) pmValue).getUpperDisplayLimit();
+                lowDispLimit = ((Display) pmValue).getLowerDisplayLimit();
+            }
+
+            return doubleToSexagesimal(numValue.doubleValue() * 180.0 / Math.PI, displayPrecision, highDispLimit, lowDispLimit);
 
         case EXP:
             // Exponential notation identified as 'negative' precision in cached
@@ -627,6 +655,73 @@ public class VTypeHelper {
             result[i] = listNumber.getDouble(i);
         }
         return result;
+    }
+
+    private static final int MAXPREC = 8;
+
+    private static final double[] prec_tab = new double[] {
+        1.0, 1.0 / 6.0, 1.0 / 60.0, 1.0 / 360.0, 1.0 / 3.6E3,
+        1.0 / 3.6E4, 1.0 / 3.6E5, 1.0 / 3.6E6, 1.0 / 3.6E7 };
+
+    private static String doubleToSexagesimal(double value, int precision, double hopr, double lopr) {
+        double prec_frac, range, hrs, frac;
+        int i, min, sec;
+
+        if (precision == UNSET_PRECISION) {
+            precision = DEFAULT_PRECISION;
+        }
+
+        /* Round the multiplier required to represent the value as an integer,
+           retaining the required precision */
+        if (precision <= MAXPREC) {
+            prec_frac = prec_tab[precision];
+        } else {
+            prec_frac = prec_tab[MAXPREC];
+            for(i = precision; i > MAXPREC; i--) {
+                prec_frac *= 0.1;
+            }
+        }
+
+        /* Add half the maximum displayed precision to aid with rounding */
+        value = value + 0.5 * prec_frac;
+
+        /* Normalise the value to within the range [hopr,lopr), if required */
+        range = (hopr - lopr);
+        if (range == 360.0 || range == 24.0) {
+            value = value - Math.floor((value - lopr) / range) * range;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        /* Insert a leading negative sign, if required */
+        if(value < 0.0) {
+            builder.append('-');
+            value = -value + prec_frac;
+        }
+
+        /* Now format the numbers */
+        hrs = Math.floor(value);
+        value = (value - hrs) * 60.0;
+        min = (int) value;
+        value = (value - min) * 60.0;
+        sec = (int) value;
+
+        if (precision == 0) {
+            builder.append(String.format("%.0f", hrs));
+        } else if (precision == 1) {
+            builder.append(String.format("%.0f:%d", hrs, (min / 10)));
+        } else if (precision == 2) {
+            builder.append(String.format("%.0f:%02d", hrs, min));
+        } else if (precision == 3) {
+            builder.append(String.format("%.0f:%02d:%d", hrs, min, sec / 10));
+        } else if (precision == 4) {
+            builder.append(String.format("%.0f:%02d:%02d", hrs, min, sec));
+        } else {
+            frac = Math.floor((value - sec) / (prec_frac * 3600.0));
+            builder.append(String.format("%.0f:%02d:%02d.%0" + (precision - 4) + ".0f", hrs, min, sec, frac));
+        }
+
+        return builder.toString();
     }
 
 }
