@@ -523,6 +523,12 @@ public class Controller
             {
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
+
+            @Override
+            public void xAxisLabelChanged(final Instant time)
+            {
+                plot.setXAxisLabel(time);
+            }
         };
         model.addListener(model_listener);
     }

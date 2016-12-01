@@ -112,7 +112,10 @@ public class WaveformView extends DataBrowserAwareView
         parent.addDisposeListener((DisposeEvent e) ->
         {   // Ignore current model after this view is disposed.
             if (model != null)
+            {
                 model.removeListener(model_listener);
+                model.setXAxisLabel(null);
+            }
         });
 
         final GridLayout layout = new GridLayout(4, false);
@@ -314,6 +317,7 @@ public class WaveformView extends DataBrowserAwareView
             sample_index.setMaximum(samples.size());
             final int idx = sample_index.getSelection();
             value = samples.get(idx).getVType();
+            model.setXAxisLabel(samples.get(idx).getPosition());
         }
         finally
         {

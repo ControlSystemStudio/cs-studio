@@ -407,4 +407,8 @@ public class ModelBasedPlot
     {
         plot.requestUpdate();
     }
+
+    public void setXAxisLabel(Instant time) {
+        plot.setXAxisLabel(time);
+    }
 }

@@ -164,4 +164,8 @@ public class RTTimePlot extends RTPlot<Instant>
         if (was_scrolling != null)
             was_scrolling.cancel(false);
     }
+
+    public void setXAxisLabel(Instant time) {
+        plot.setXAxisLabel(time);
+    }
 }
