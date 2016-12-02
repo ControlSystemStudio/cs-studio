@@ -14,6 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for strings "A", "AA", ...
  *  @author Kay Kasemir, based on similar code in diirt
  */
+@SuppressWarnings("nls")
 public class StringsPV extends SimulatedStringPV
 {
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
@@ -37,6 +38,7 @@ public class StringsPV extends SimulatedStringPV
         start(update_seconds);
     }
 
+    @Override
     public String compute()
     {
         buffer.append("A");

@@ -24,6 +24,7 @@ import org.diirt.vtype.ValueUtil;
  *
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 abstract public class SimulatedDoublePV extends SimulatedPV
 {
     /** Format for Display */
@@ -56,6 +57,7 @@ abstract public class SimulatedDoublePV extends SimulatedPV
     }
 
     /** Called by periodic timer */
+    @Override
     protected void update()
     {
         final double value = compute();
