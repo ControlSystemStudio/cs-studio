@@ -362,6 +362,12 @@ public class TextInputEditpart extends TextUpdateEditPart {
                 case COMPACT:
                 case EXP:
                     return parseDouble(text,true);
+                case SEXA:
+                    return parseSexagesimal(text, true);
+                case SEXA_HMS:
+                    return (parseSexagesimal(text, true) * Math.PI / 12.0);
+                case SEXA_DMS:
+                    return (parseSexagesimal(text, true) * Math.PI / 180.0);
                 case DEFAULT:
                 default:
                     try {
@@ -382,6 +388,12 @@ public class TextInputEditpart extends TextUpdateEditPart {
                     case EXP:
                     case COMPACT:
                         return parseDouble(text, true);
+                    case SEXA:
+                        return parseSexagesimal(text, true);
+                    case SEXA_HMS:
+                        return (parseSexagesimal(text, true) * Math.PI / 12.0);
+                    case SEXA_DMS:
+                        return (parseSexagesimal(text, true) * Math.PI / 180.0);
                     case DEFAULT:
                     default:
                         try {
@@ -405,6 +417,12 @@ public class TextInputEditpart extends TextUpdateEditPart {
                 case EXP:
                 case COMPACT:
                     return parseDouble(text, true);
+                case SEXA:
+                    return parseSexagesimal(text, true);
+                case SEXA_HMS:
+                    return (parseSexagesimal(text, true) * Math.PI / 12.0);
+                case SEXA_DMS:
+                    return (parseSexagesimal(text, true) * Math.PI / 180.0);
                 case DEFAULT:
                 default:
                     try {
@@ -476,6 +494,83 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
     }
 
+    private double parseSexagesimal(final String text, final boolean coerce) throws ParseException {
+        double value = Double.NaN;
+        boolean negative = false;
+        double hours = 0.0;
+        double minutes = 0.0;
+        double seconds = 0.0;
+        boolean error = false;
+
+        String[] parts = text.trim().split(":");
+
+        if (parts.length > 0) {
+            if (parts[0].trim().startsWith("-")) {
+                negative = true;
+                parts[0] = parts[0].replace("-", "");
+            }
+
+            /* Hours are always present */
+            try {
+                hours = parseDouble(parts[0], false);
+            } catch (NumberFormatException e) {}
+
+            if ((hours == Math.floor(hours)) && !(hours < 0.0)) {
+                value = hours;
+
+                /* Minutes are present */
+                if (parts.length > 1) {
+                    try {
+                        minutes = parseDouble(parts[1], false);
+                    } catch (NumberFormatException e) {}
+
+                    if ((minutes == Math.floor(minutes)) && !(minutes < 0.0)) {
+                        value += minutes / 60.0;
+
+                        /* Seconds are present */
+                        if (parts.length > 2) {
+                            try {
+                                seconds = parseDouble(parts[2], false);
+                            } catch (NumberFormatException e) {}
+
+                            if (!(seconds < 0.0)) {
+                                value += seconds / 3600.0;
+                            } else {
+                                error = true;
+                            }
+                        }
+                    } else {
+                        error = true;
+                    }
+                }
+            } else {
+                error = true;
+            }
+        } else {
+            error = true;
+        }
+
+        if (error) {
+            value = Double.NaN;
+            throw new ParseException(NLS.bind("{0} cannot be parsed to double", text),text.indexOf("\n"));
+        } else {
+            /* Apply original sign */
+            if (negative) {
+                value = -value;
+            }
+
+            if (coerce) {
+                double min = getWidgetModel().getMinimum();
+                double max = getWidgetModel().getMaximum();
+                if (value < min) {
+                    value = min;
+                } else if (value > max)
+                    value = max;
+            }
+        }
+
+        return value;
+    }
 
     @Override
     protected String formatValue(Object newValue, String propId) {
