@@ -16,6 +16,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for sawtooth wave
  *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class SawtoothWavePV extends SimulatedDoubleArrayPV
 {
     private final double min, range, period, wavelength;
@@ -56,6 +57,7 @@ public class SawtoothWavePV extends SimulatedDoubleArrayPV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double[] compute()
     {
         final Duration dist = Duration.between(start, Instant.now());
