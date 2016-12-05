@@ -25,6 +25,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType( name = "ChannelAccess" )
 public class ChannelAccess {
 
+    @XmlElement( name = "dataSourceOptions", nillable = true )
+    public DataSourceOptions dataSourceOptions = null;
+
     @XmlElement( name = "jcaContext", nillable = true )
     public JCAContext jcaContext = null;
 

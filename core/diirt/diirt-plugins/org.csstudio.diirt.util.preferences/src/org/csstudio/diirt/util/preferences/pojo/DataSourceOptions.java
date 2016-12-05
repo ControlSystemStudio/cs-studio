@@ -8,6 +8,7 @@
  */
 package org.csstudio.diirt.util.preferences.pojo;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
@@ -17,6 +18,49 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType( name = "DataSourceOptions" )
 public class DataSourceOptions {
+
+    @XmlAttribute( name = "dbePropertySupported" )
+    public boolean dbePropertySupported = false;
+
+    @XmlAttribute( name = "honorZeroPrecision" )
+    public boolean honorZeroPrecision = true;
+
+    @XmlAttribute( name = "monitorMask" )
+    public MonitorMask monitorMask = MonitorMask.VALUE;
+
+    @XmlAttribute( name = "rtypeValueOnly" )
+    public boolean rtypeValueOnly = false;
+
+    @XmlAttribute( name = "varArraySupported" )
+    public VariableArraySupport varArraySupported = VariableArraySupport.AUTO;
+
+    /**
+     * The possible values for the {@link #monitorMask} property.
+     */
+    @XmlEnum
+    public enum MonitorMask {
+
+        /**
+         * Corresponds to a monitor mask on both VALUE and ALARM.
+         */
+        VALUE,
+
+        /**
+         * Corresponds to a monitor mask on LOG.
+         */
+        ARCHIVE,
+
+        /**
+         * Corresponds to a monitor mask on ALARM.
+         */
+        ALARM,
+
+        /**
+         * A number corresponding to the mask itself.
+         */
+        CUSTOM
+
+    }
 
     /**
      * The possible values for the {@link #varArraySupported} property.

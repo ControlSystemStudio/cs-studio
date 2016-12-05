@@ -8,7 +8,7 @@
  */
 package org.csstudio.diirt.util.preferences;
 
-import org.csstudio.diirt.util.preferences.pojo.JCAContext.MonitorMask;
+import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;

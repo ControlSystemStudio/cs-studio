@@ -23,12 +23,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
+import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions;
+import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
-import org.csstudio.diirt.util.preferences.pojo.JCAContext.MonitorMask;
+import org.csstudio.diirt.util.preferences.pojo.JCAContext;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -284,55 +288,71 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     private void updateChannelAccessDefaults ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
 
-//        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
-//        Unmarshaller u = jc.createUnmarshaller();
-//        DataSources ds = (DataSources) u.unmarshal(caFile);
-//
-//        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
-//            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
-//        }
-//
-//        CompositeDataSource cds = ds.compositeDataSource;
-//
-//        if ( cds != null ) {
-//
-//            DataSourceProtocol dsp = cds.defaultDataSource;
-//
-//            if ( dsp == null ) {
-//                dsp = DataSourceProtocol.none;
-//            }
-//
-//            store.setDefault(PREF_DS_DEFAULT, dsp.name());
-//            store.setDefault(PREF_DS_DELIMITER, cds.delimiter);
-//
-//        }
+        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
+        Unmarshaller u = jc.createUnmarshaller();
+        ChannelAccess ca = (ChannelAccess) u.unmarshal(caFile);
+
+        if ( !CA_VERSION.equals(ca.version) ) {
+            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
+        }
+
+        DataSourceOptions dso = ca.dataSourceOptions;
+
+        if ( dso != null ) {
+            store.setDefault(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
+            store.setDefault(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
+            store.setDefault(PREF_CA_MONITOR_MASK, ObjectUtils.defaultIfNull(dso.monitorMask, MonitorMask.VALUE).name());
+            store.setDefault(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
+            store.setDefault(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
+        }
+
+        JCAContext jcac = ca.jcaContext;
+
+        if ( jcac != null ) {
+            store.setDefault(PREF_CA_ADDR_LIST, StringUtils.defaultString(jcac.addrList));
+            store.setDefault(PREF_CA_AUTO_ADDR_LIST, jcac.autoAddrList);
+            store.setDefault(PREF_CA_BEACON_PERIOD, jcac.beaconPeriod);
+            store.setDefault(PREF_CA_CONNECTION_TIMEOUT, jcac.connectionTimeout);
+            store.setDefault(PREF_CA_MAX_ARRAY_SIZE, jcac.maxArrayBytes);
+            store.setDefault(PREF_CA_PURE_JAVA, jcac.pureJava);
+            store.setDefault(PREF_CA_REPEATER_PORT, jcac.repeaterPort);
+            store.setDefault(PREF_CA_SERVER_PORT, jcac.serverPort);
+        }
 
     }
 
     private void updateChannelAccessValues ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
 
-//        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
-//        Unmarshaller u = jc.createUnmarshaller();
-//        DataSources ds = (DataSources) u.unmarshal(caFile);
-//
-//        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
-//            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
-//        }
-//
-//        CompositeDataSource cds = ds.compositeDataSource;
-//
-//        if ( cds != null ) {
-//
-//            DataSourceProtocol dsp = cds.defaultDataSource;
-//
-//            if ( dsp == null ) {
-//                dsp = DataSourceProtocol.none;
-//            }
-//
-//            store.setValue(PREF_DS_DEFAULT, dsp.name());
-//            store.setValue(PREF_DS_DELIMITER, cds.delimiter);
-//
-//        }
+        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
+        Unmarshaller u = jc.createUnmarshaller();
+        ChannelAccess ca = (ChannelAccess) u.unmarshal(caFile);
+
+        if ( !CA_VERSION.equals(ca.version) ) {
+            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
+        }
+
+        DataSourceOptions dso = ca.dataSourceOptions;
+
+        if ( dso != null ) {
+            store.setValue(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
+            store.setValue(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
+            store.setValue(PREF_CA_MONITOR_MASK, ObjectUtils.defaultIfNull(dso.monitorMask, MonitorMask.VALUE).name());
+            store.setValue(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
+            store.setValue(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
+        }
+
+        JCAContext jcac = ca.jcaContext;
+
+        if ( jcac != null ) {
+            store.setValue(PREF_CA_ADDR_LIST, StringUtils.defaultString(jcac.addrList));
+            store.setValue(PREF_CA_AUTO_ADDR_LIST, jcac.autoAddrList);
+            store.setValue(PREF_CA_BEACON_PERIOD, jcac.beaconPeriod);
+            store.setValue(PREF_CA_CONNECTION_TIMEOUT, jcac.connectionTimeout);
+            store.setValue(PREF_CA_MAX_ARRAY_SIZE, jcac.maxArrayBytes);
+            store.setValue(PREF_CA_PURE_JAVA, jcac.pureJava);
+            store.setValue(PREF_CA_REPEATER_PORT, jcac.repeaterPort);
+            store.setValue(PREF_CA_SERVER_PORT, jcac.serverPort);
+        }
 
     }
 
@@ -349,16 +369,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         CompositeDataSource cds = ds.compositeDataSource;
 
         if ( cds != null ) {
-
-            DataSourceProtocol dsp = cds.defaultDataSource;
-
-            if ( dsp == null ) {
-                dsp = DataSourceProtocol.none;
-            }
-
-            store.setDefault(PREF_DS_DEFAULT, dsp.name());
+            store.setDefault(PREF_DS_DEFAULT, ObjectUtils.defaultIfNull(cds.defaultDataSource, DataSourceProtocol.none).name());
             store.setDefault(PREF_DS_DELIMITER, cds.delimiter);
-
         }
 
     }
@@ -376,16 +388,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         CompositeDataSource cds = ds.compositeDataSource;
 
         if ( cds != null ) {
-
-            DataSourceProtocol dsp = cds.defaultDataSource;
-
-            if ( dsp == null ) {
-                dsp = DataSourceProtocol.none;
-            }
-
-            store.setValue(PREF_DS_DEFAULT, dsp.name());
+            store.setValue(PREF_DS_DEFAULT, ObjectUtils.defaultIfNull(cds.defaultDataSource, DataSourceProtocol.none).name());
             store.setValue(PREF_DS_DELIMITER, cds.delimiter);
-
         }
 
     }

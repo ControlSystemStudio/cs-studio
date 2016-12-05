@@ -8,7 +8,7 @@
  */
 package org.csstudio.diirt.util.preferences.pojo;
 
-import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -35,32 +35,28 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType( name = "JCAContext" )
 public class JCAContext {
 
-    /**
-     * The possible values for the {@link #monitorMask} property.
-     */
-    @XmlEnum
-    public enum MonitorMask {
+    @XmlAttribute( name = "addr_list" )
+    public String addrList = "localhost";
 
-        /**
-         * Corresponds to a monitor mask on both VALUE and ALARM.
-         */
-        VALUE,
+    @XmlAttribute( name = "auto_addr_list" )
+    public boolean autoAddrList= true;
 
-        /**
-         * Corresponds to a monitor mask on LOG.
-         */
-        ARCHIVE,
+    @XmlAttribute( name = "beacon_period" )
+    public double beaconPeriod = 15;
 
-        /**
-         * Corresponds to a monitor mask on ALARM.
-         */
-        ALARM,
+    @XmlAttribute( name = "connection_timeout" )
+    public double connectionTimeout = 30;
 
-        /**
-         * A number corresponding to the mask itself.
-         */
-        CUSTOM
+    @XmlAttribute( name = "max_array_bytes" )
+    public int maxArrayBytes = 16384;
 
-    }
+    @XmlAttribute( name = "pureJava" )
+    public boolean pureJava = true;
+
+    @XmlAttribute( name = "repeater_port" )
+    public int repeaterPort = 5065;
+
+    @XmlAttribute( name = "server_port" )
+    public int serverPort = 5064;
 
 }
