@@ -16,6 +16,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for sine wave
  *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class SineWavePV extends SimulatedDoubleArrayPV
 {
     private final double min, range, period, wavelength;
@@ -55,6 +56,7 @@ public class SineWavePV extends SimulatedDoubleArrayPV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double[] compute()
     {
         final Duration dist = Duration.between(start, Instant.now());

@@ -14,6 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for noise
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class NoisePV extends SimulatedDoublePV
 {
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
@@ -35,6 +36,7 @@ public class NoisePV extends SimulatedDoublePV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double compute()
     {
         return min + Math.random() * range;
