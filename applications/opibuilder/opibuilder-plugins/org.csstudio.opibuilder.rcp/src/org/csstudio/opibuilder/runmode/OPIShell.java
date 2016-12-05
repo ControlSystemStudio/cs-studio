@@ -112,8 +112,7 @@ public final class OPIShell implements IOPIRuntime {
 
         shell = new Shell(display);
         shell.setImage(icon);
-        displayModel = new DisplayModel(path);
-        displayModel.setOpiRuntime(this);
+
         actionRegistry = new ActionRegistry();
 
         viewer = new GraphicalViewerImpl();
@@ -244,9 +243,12 @@ public final class OPIShell implements IOPIRuntime {
         displayModel = new DisplayModel(path);
         XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
         if (macrosInput != null) {
-            macrosInput = macrosInput.getCopy();
-            macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
-            displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
+            // Macros passed in to the constructor are put into the macro map
+            // taken from the displayModel. This ensures 'default' values are
+            // overridden correctly.
+            MacrosInput childInput = displayModel.getMacrosInput().getCopy();
+            childInput.getMacrosMap().putAll(macrosInput.getCopy().getMacrosMap());
+            displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, childInput);
         }
         viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
