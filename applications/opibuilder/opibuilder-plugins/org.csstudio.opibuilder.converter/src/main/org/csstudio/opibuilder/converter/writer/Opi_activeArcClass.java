@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeArcClass;
  * XML conversion class for Edm_activeArcClass
  * @author Matevz
  */
-public class Opi_activeArcClass extends OpiWidget {
+public class Opi_activeArcClass extends Opi_activeShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeArcClass");
     private static final String typeId = "arc";
@@ -30,6 +30,17 @@ public class Opi_activeArcClass extends OpiWidget {
         setTypeId(typeId);
         setVersion(version);
         setName(name);
+
+        int line_width = 1;
+        if (r.getLineWidth() != 0) // Looks like EDM always show the line.
+            line_width = r.getLineWidth();
+
+        // CS-Studio shrinks the widget by the line width when one is applied, which seems
+        // like a bug, this works around that issue.
+        new OpiInt(widgetContext, "x", r.getX() - widgetContext.getX() - line_width);
+        new OpiInt(widgetContext, "y", r.getY() - widgetContext.getY() - line_width);
+        new OpiInt(widgetContext, "width", r.getW() + line_width * 2);
+        new OpiInt(widgetContext, "height", r.getH() + line_width * 2);
 
         new OpiColor(widgetContext, "foreground_color",r.getLineColor(), r);
 
@@ -48,11 +59,6 @@ public class Opi_activeArcClass extends OpiWidget {
                 createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                         "backColorAlarmRule", false);
         }
-
-        int line_width = 1;
-        if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
-            line_width = r.getLineWidth();
-        new OpiInt(widgetContext, "line_width", line_width);
 
         int lineStyle = 0;
         if (r.getLineStyle().isExistInEDL()) {
