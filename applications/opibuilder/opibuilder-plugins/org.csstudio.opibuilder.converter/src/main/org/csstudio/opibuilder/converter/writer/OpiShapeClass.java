@@ -2,9 +2,9 @@ package org.csstudio.opibuilder.converter.writer;
 
 import org.csstudio.opibuilder.converter.model.Edm_activeShapeClass;
 
-public class Opi_activeShapeClass extends OpiWidget {
+public class OpiShapeClass extends OpiWidget {
 
-    public Opi_activeShapeClass(Context parentContext, Edm_activeShapeClass r) {
+    public OpiShapeClass(Context parentContext, Edm_activeShapeClass r) {
         super(parentContext, r);
         
         int line_width = 1;

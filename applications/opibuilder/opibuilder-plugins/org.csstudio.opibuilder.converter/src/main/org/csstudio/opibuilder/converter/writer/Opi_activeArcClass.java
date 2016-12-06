@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeArcClass;
  * XML conversion class for Edm_activeArcClass
  * @author Matevz
  */
-public class Opi_activeArcClass extends Opi_activeShapeClass {
+public class Opi_activeArcClass extends OpiShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeArcClass");
     private static final String typeId = "arc";

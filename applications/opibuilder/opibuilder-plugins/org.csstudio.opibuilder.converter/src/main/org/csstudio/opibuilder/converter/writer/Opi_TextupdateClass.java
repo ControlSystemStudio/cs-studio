@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
  * XML conversion class for Edm_TextupdateClass.
  * @author Matevz, Xihui Chen
  */
-public class Opi_TextupdateClass extends Opi_activeShapeClass {
+public class Opi_TextupdateClass extends OpiShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_TextupdateClass");
     private static final String typeId = "TextUpdate";

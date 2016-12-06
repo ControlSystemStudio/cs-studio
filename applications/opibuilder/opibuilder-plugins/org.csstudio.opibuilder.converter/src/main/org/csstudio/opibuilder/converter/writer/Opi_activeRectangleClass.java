@@ -17,7 +17,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
  *
  * @author Matevz, Xihui Chen
  */
-public class Opi_activeRectangleClass extends Opi_activeShapeClass {
+public class Opi_activeRectangleClass extends OpiShapeClass {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeRectangleClass");

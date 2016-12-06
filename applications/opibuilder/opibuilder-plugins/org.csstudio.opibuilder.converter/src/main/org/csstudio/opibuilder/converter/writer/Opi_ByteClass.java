@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.converter.model.Edm_ByteClass;
  * XML conversion class for Edm_activeRectangleClass
  * @author Lei Hu, Xihui Chen
  */
-public class Opi_ByteClass extends Opi_activeShapeClass {
+public class Opi_ByteClass extends OpiShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_ByteClass");
     private static final String typeId = "bytemonitor";

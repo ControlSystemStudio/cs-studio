@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeCircleClass;
  * XML conversion class for Edm_activeCircleClasss
  * @author Matevz
  */
-public class Opi_activeCircleClass extends Opi_activeShapeClass {
+public class Opi_activeCircleClass extends OpiShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeCircleClass");
     private static final String typeId = "Ellipse";
