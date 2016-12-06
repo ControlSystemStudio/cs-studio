@@ -158,9 +158,12 @@ public class WaveformView extends DataBrowserAwareView
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
-            {   // Trigger GUI update by switching to current model
-                updateModel(model, model);
-            }
+            {   // First item is "--select PV name--"
+                if (pv_name.getSelectionIndex() == 0)
+                   selectPV(null);
+               else
+                   selectPV(model.getItem(pv_name.getText()));
+           }
         });
 
         // =====================
