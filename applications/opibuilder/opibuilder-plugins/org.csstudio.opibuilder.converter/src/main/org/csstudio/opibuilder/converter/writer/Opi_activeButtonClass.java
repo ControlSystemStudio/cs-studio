@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  *
  * @author Lei Hu, Xihui Chen
  */
-public class Opi_activeButtonClass extends OpiWidget {
+public class Opi_activeButtonClass extends OpiButtonClass {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeButtonClass");
@@ -37,10 +37,6 @@ public class Opi_activeButtonClass extends OpiWidget {
         setTypeId(typeId);
         setName(name);
         setVersion(version);
-
-        // Expand size by 1px to match EDM
-        new OpiInt(widgetContext, "width", r.getW() + 1);
-        new OpiInt(widgetContext, "height", r.getH() + 1);
 
         if (r.getControlPv() != null) {
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
