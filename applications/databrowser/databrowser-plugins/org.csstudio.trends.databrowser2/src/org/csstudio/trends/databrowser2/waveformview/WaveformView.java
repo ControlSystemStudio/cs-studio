@@ -169,10 +169,6 @@ public class WaveformView extends DataBrowserAwareView
         plot = new RTValuePlot(parent);
         plot.getXAxis().setName(Messages.WaveformIndex);
         plot.getYAxes().get(0).setName(Messages.WaveformAmplitude);
-        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
-        for (YAxis<Double> yaxis : plot.getYAxes()) {
-            yaxis.setAutoscale(true);
-        }
         plot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // <<<<<< Slider >>>>>>
@@ -300,6 +296,10 @@ public class WaveformView extends DataBrowserAwareView
         // Enable waveform selection and update slider's range
         sample_index.setEnabled(true);
         showSelectedSample();
+        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
+        for (YAxis<Double> yaxis : plot.getYAxes()) {
+            yaxis.setAutoscale(true);
+        }
     }
 
     /** Show the current sample of the current model item. */
