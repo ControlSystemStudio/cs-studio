@@ -1,4 +1,4 @@
-# cs-studio [![Build Status](https://travis-ci.org/ControlSystemStudio/cs-studio.svg?branch=master)](https://travis-ci.org/ControlSystemStudio/cs-studio) ![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/541/badge)
+# cs-studio [![Build Status](https://travis-ci.org/ControlSystemStudio/cs-studio.svg?branch=master)](https://travis-ci.org/ControlSystemStudio/cs-studio) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/541/badge)](https://bestpractices.coreinfrastructure.org/projects/541)
 
 Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community.
 
