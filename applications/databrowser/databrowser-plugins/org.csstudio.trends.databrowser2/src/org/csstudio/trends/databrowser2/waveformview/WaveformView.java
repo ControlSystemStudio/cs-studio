@@ -271,10 +271,7 @@ public class WaveformView extends DataBrowserAwareView
     /** Select given PV item (or <code>null</code>). */
     private void selectPV(final ModelItem new_item)
     {
-        if (new_item == null)
-            model_item = null;
-        else
-            model_item = new_item;
+        model_item = new_item;
 
         // Delete all existing traces
         for (Trace<Double> trace : plot.getTraces())
