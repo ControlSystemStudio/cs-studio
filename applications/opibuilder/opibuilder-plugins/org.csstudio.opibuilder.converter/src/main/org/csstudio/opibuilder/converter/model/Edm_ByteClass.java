@@ -11,7 +11,7 @@ package org.csstudio.opibuilder.converter.model;
  * @author Lei Hu, Xihui Chen
  *
  */
-public class Edm_ByteClass extends EdmWidget {
+public class Edm_ByteClass extends Edm_activeShapeClass {
 
     @EdmAttributeAn @EdmOptionalAn private EdmColor lineColor;
     @EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
@@ -22,15 +22,11 @@ public class Edm_ByteClass extends EdmWidget {
 
     @EdmAttributeAn @EdmOptionalAn private int numBits;
     @EdmAttributeAn @EdmOptionalAn private int shift;
-    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
 
     public Edm_ByteClass(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
     }
 
-    public int getLineWidth() {
-        return lineWidth;
-    }
     /**
      * @return the lineAlarm
      */

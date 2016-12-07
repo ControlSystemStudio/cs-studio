@@ -41,6 +41,10 @@ public class Opi_activeGroupClass extends OpiWidget {
         }
         setName(""+j);
 
+        // Expand size by 1px to prevent cropping
+        new OpiInt(widgetContext, "width", g.getW() + 1);
+        new OpiInt(widgetContext, "height", g.getH() + 1);
+
         new OpiBoolean(widgetContext, "lock_children", true);
         new OpiInt(widgetContext, "border_style", 0);
         new OpiBoolean(widgetContext, "show_scrollbar", false);

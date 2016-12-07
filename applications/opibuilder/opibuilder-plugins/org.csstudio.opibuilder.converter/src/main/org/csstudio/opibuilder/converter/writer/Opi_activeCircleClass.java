@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeCircleClass;
  * XML conversion class for Edm_activeCircleClasss
  * @author Matevz
  */
-public class Opi_activeCircleClass extends OpiWidget {
+public class Opi_activeCircleClass extends OpiShapeClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeCircleClass");
     private static final String typeId = "Ellipse";
@@ -49,11 +49,6 @@ public class Opi_activeCircleClass extends OpiWidget {
                 createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                         "backColorAlarmRule", false);
         }
-
-        int line_width = 1;
-        if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
-            line_width = r.getLineWidth();
-        new OpiInt(widgetContext, "line_width", line_width);
 
         int lineStyle = 0;
         if (r.getLineStyle().isExistInEDL()) {

@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  *
  * @author Lei Hu, Xihui Chen, Will Rogers
  */
-public class Opi_activeMessageButtonClass extends OpiWidget {
+public class Opi_activeMessageButtonClass extends OpiButtonClass {
 
     private static final String typeId = "BoolButton";
     private static final String name = "EDM Message Button";

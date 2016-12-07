@@ -173,10 +173,10 @@ public class OpiWriterTest {
             assertEquals("1.0", e.getAttribute("version"));
 
             XMLFileHandler.isElementEqual("EDM Text Update", "name", e);
-            XMLFileHandler.isElementEqual("490", "x", e);
-            XMLFileHandler.isElementEqual("400", "y", e);
-            XMLFileHandler.isElementEqual("111", "width", e);
-            XMLFileHandler.isElementEqual("21", "height", e);
+            XMLFileHandler.isElementEqual("489", "x", e);
+            XMLFileHandler.isElementEqual("399", "y", e);
+            XMLFileHandler.isElementEqual("112", "width", e);
+            XMLFileHandler.isElementEqual("22", "height", e);
 
             XMLFileHandler.isElementEqual("$(S)_LLRF:ResCtrl$(N):ResErr_Avg", "pv_name", e);
 

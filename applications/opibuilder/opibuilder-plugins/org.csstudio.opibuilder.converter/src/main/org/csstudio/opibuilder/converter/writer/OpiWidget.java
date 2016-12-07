@@ -37,8 +37,8 @@ public class OpiWidget {
         setDefaultPropertyValue();
         new OpiInt(widgetContext, "x", r.getX() - widgetContext.getX());
         new OpiInt(widgetContext, "y", r.getY() - widgetContext.getY());
-        new OpiInt(widgetContext, "width", r.getW() + 1);
-        new OpiInt(widgetContext, "height", r.getH() + 1);
+        new OpiInt(widgetContext, "width", r.getW());
+        new OpiInt(widgetContext, "height", r.getH());
 
         if (r.getFgColor().isExistInEDL())
             new OpiColor(widgetContext, "foreground_color", r.getFgColor(), r);

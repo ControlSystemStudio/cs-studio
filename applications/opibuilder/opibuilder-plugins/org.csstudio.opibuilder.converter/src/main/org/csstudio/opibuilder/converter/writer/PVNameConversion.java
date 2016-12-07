@@ -139,9 +139,11 @@ public class PVNameConversion {
      * @return List<String> of variables
      */
     private static List<String> parseArguments(String argString) {
-        assert (StringUtils.startsWith(argString, "(") &&
-                StringUtils.endsWith(argString, ")")):
-                    "Failed to parse CALC arguments";
+        // expression contained within ()
+        if (!(StringUtils.startsWith(argString, "(") &&
+                StringUtils.endsWith(argString, ")"))) {
+            throw new IllegalArgumentException("Failed to parse CALC ArrayList");
+        }
         List<String> arguments = new ArrayList<String>();
         argString = argString.substring(1, argString.length() -1);
         List<String> pieces = splitString(argString, ",", false);
