@@ -6,7 +6,7 @@ public class OpiShapeClass extends OpiWidget {
 
     public OpiShapeClass(Context parentContext, Edm_activeShapeClass r) {
         super(parentContext, r);
-        
+
         int line_width = 1;
         if (r.getLineWidth() != 0) // Looks like EDM always show the line.
             line_width = r.getLineWidth();
