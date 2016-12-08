@@ -46,11 +46,6 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 
     private double rotate = 0;
 
-    /**
-     * The real font that is used for drawing. Sometime the font need to be shrinked to fit the widget.
-     */
-    private Font realFont;
-
     public TextFigure() {
         this(false);
     }
@@ -312,25 +307,7 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         super.paintFigure(graphics);
         if(text.length() == 0)
             return;
-        Rectangle clientArea = getClientArea();
-        if(realFont == null)
-            realFont = getFont();
-        int h = getTextSize(realFont).height;
-        if (realFont != getFont() && h < clientArea.height-2) {
-            realFont =getFont();
-            h = getTextSize(realFont).height;
-        }
-        Font font = realFont;
-
-        int i=0;
-        //shrink font size to fit the figure.
-        while(h > (clientArea.height+2) && h > 10 && i++<20){
-            FontData fd = font.getFontData()[0];
-            fd.setHeight(fd.getHeight()-1);
-            font = CustomMediaFactory.getInstance().getFont(fd);
-            h = getTextSize(font).height;
-        }
-        realFont = font;
+        Font font = getFont();
         graphics.setFont(font);
         Rectangle textArea = getTextArea();
         graphics.translate(textArea.x, textArea.y);
@@ -354,12 +331,6 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 
 
         graphics.translate(-textArea.x, -textArea.y);
-    }
-
-    @Override
-    public void setFont(Font f) {
-        realFont = f;
-        super.setFont(f);
     }
 
     @Override
