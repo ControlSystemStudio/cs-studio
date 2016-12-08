@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.ui;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -407,4 +408,55 @@ public class ModelBasedPlot
     {
         plot.requestUpdate();
     }
+
+    public Collection<AnnotationInfo> getAnnotations()
+    {
+        ArrayList<AnnotationInfo> annotations = new ArrayList<>();
+        for (Annotation<Instant> annotation : plot.getAnnotations()) {
+            System.out.println("Getting annotation " + annotation);
+        }
+        return annotations;
+    }
+
+    /**
+     * Ensure that the two sets of annotations are the same.
+     * @param annotations
+     */
+    void setAnnotations(Collection<AnnotationInfo> newAnnotations)
+    {
+        ArrayList<AnnotationInfo> plotAnnotationInfos = new ArrayList<>();
+        final List<Trace<Instant>> traces = new ArrayList<>();
+        for (Trace<Instant> trace : plot.getTraces())
+            traces.add(trace);
+        for (Annotation<Instant> annotation: plot.getAnnotations())
+        {
+            AnnotationInfo plotAnnotationInfo = new AnnotationInfo(
+                    traces.indexOf(annotation.getTrace()),
+                    annotation.getPosition(),
+                    annotation.getValue(),
+                    annotation.getOffset(),
+                    annotation.getText()
+                    );
+            if (!newAnnotations.contains(plotAnnotationInfo))
+                plot.removeAnnotation(annotation);
+            else
+                plotAnnotationInfos.add(plotAnnotationInfo);
+        }
+        // now we have a copy
+
+        for (AnnotationInfo annotation : newAnnotations)
+        {
+            if (!plotAnnotationInfos.contains(annotation))
+            {
+                Annotation<Instant> newAnnotation = new Annotation<Instant>(
+                        traces.get(annotation.getItemIndex()),
+                        annotation.getTime(),
+                        annotation.getValue(),
+                        annotation.getOffset(),
+                        annotation.getText());
+                plot.addAnnotation(newAnnotation);
+            }
+        }
+    }
+
 }
