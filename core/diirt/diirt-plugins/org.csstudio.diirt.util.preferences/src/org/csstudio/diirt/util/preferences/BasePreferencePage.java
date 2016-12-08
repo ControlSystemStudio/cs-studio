@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -66,9 +65,12 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      * @param parent The {@link Composite} owning the given {@code editor}.
      * @param canBeDefaulted {@code true} if the given {@code editor} can be
      *            restored to its default value.
+     * @param storedGetter The {@link Supplier} of the editor's stored value.
+     *            Can be {@code null} if the editor's caption foreground
+     *            should not be initially updated.
      */
-    protected void addField ( FieldEditor editor, Composite parent, boolean canBeDefaulted ) {
-        addField(editor, parent, canBeDefaulted, null, null);
+    protected void addField ( FieldEditor editor, Composite parent, boolean canBeDefaulted, Supplier<Object> storedGetter ) {
+        addField(editor, parent, canBeDefaulted, null, storedGetter);
     }
 
     /**
@@ -118,6 +120,10 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
         fieldEditor.setPropertyChangeListener(e -> {
             if ( FieldEditor.VALUE.equals(e.getProperty()) ) {
 
+                if ( storedGetter != null ) {
+                    editor.setRestartRequired(!Objects.equals(e.getNewValue(), storedGetter.get()));
+                }
+
                 editor.updateCaptionColor(e.getNewValue());
 
                 if ( listener != null ) {
@@ -162,9 +168,7 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     @Override
     public boolean performOk ( ) {
 
-        if ( editors.keySet().stream().anyMatch(e ->
-            !e.presentsDefaultValue() && !( e instanceof DirectoryFieldEditor )
-        )) {
+        if ( editors.values().stream().anyMatch(e -> e.isRestartRequired()) ) {
 
             boolean restart = MessageDialog.openConfirm(getShell(), Messages.BPP_performOk_title, Messages.BPP_performOk_message);
 
@@ -182,7 +186,6 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
                     }
                 }.schedule(500L);
-
 
                 return super.performOk();
 
@@ -332,6 +335,7 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
         private final Composite parent;
         private final boolean canBeDefaulted;
         private final Supplier<Object> defaultGetter;
+        private boolean restartRequired = false;
         private final Supplier<Object> storedGetter;
 
         protected Editor ( FieldEditor editor, Composite parent, boolean canBeDefaulted, Supplier<Object> defaultGetter, Supplier<Object> storedGetter ) {
@@ -350,6 +354,10 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
             return canBeDefaulted;
         }
 
+        boolean isRestartRequired ( ) {
+            return restartRequired;
+        }
+
         void updateCaptionColor ( ) {
             if ( storedGetter != null ) {
                 updateCaptionColor(storedGetter.get());
@@ -360,6 +368,10 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
             if ( defaultGetter != null ) {
                 BasePreferencePage.this.updateCaptionColor(editor, parent, defaultGetter.get(), value);
             }
+        }
+
+        void setRestartRequired ( boolean restartRequired ) {
+            this.restartRequired = restartRequired;
         }
 
     }

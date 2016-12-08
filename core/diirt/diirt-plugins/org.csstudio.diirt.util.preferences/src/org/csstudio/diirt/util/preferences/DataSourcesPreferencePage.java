@@ -94,7 +94,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.getTextControl(container).setEditable(false);
         directoryEditor.getTextControl(container).setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         directoryEditor.getTextControl(container).setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
-        addField(directoryEditor, container, false);
+        addField(directoryEditor, container, false, () -> store.getString(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY));
 
         Composite treeComposite = new Composite(container, SWT.NONE);
 
