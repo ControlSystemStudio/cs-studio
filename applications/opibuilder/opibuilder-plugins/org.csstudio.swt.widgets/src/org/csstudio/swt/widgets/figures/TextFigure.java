@@ -12,7 +12,6 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -22,6 +21,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A text figure without wrapping capability.
@@ -307,7 +307,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         super.paintFigure(graphics);
         if(text.length() == 0)
             return;
-        Font font = getFont();
+
+        // Get the font assuming that the height is in pixels and resize it to points
+        final FontData fontData = getFont().getFontData()[0];
+        fontData.setHeight(convertPixelsToPoints(fontData.getHeight()));
+        Font font = new Font(getFont().getDevice(), fontData);
+
         graphics.setFont(font);
         Rectangle textArea = getTextArea();
         graphics.translate(textArea.x, textArea.y);
@@ -436,6 +441,11 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         public String toString() {
             return descripion;
         }
+    }
+
+    private int convertPixelsToPoints(int pixels) {
+        final int pointsPerInch = 72;
+        return pixels * pointsPerInch / Display.getDefault().getDPI().y;
     }
 
 }
