@@ -81,6 +81,7 @@ import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionFilter;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -116,6 +117,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;
 
     private ExecutionMode executionMode;
+
+    private IWorkbenchPartSite site;
 
     private TooltipLabel tooltipLabel;
 
@@ -774,6 +777,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
          *
          * }
          */
+    }
+
+    public IWorkbenchPartSite getSite() {
+        return site;
+    }
+
+    public void setSite(IWorkbenchPartSite site) {
+        this.site = site;
     }
 
     /**

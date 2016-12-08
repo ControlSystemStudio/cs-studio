@@ -75,6 +75,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
     private IEditorInput editorInput;
 
+    private IWorkbenchPartSite site;
 
     /**
      * The workbench part where the OPI is running on.
@@ -113,6 +114,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
     public void init(final IWorkbenchPartSite site, final IEditorInput input) throws PartInitException
     {
+        this.site = site;
         setEditorInput(input);
         if (viewer != null)
             SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
@@ -205,7 +207,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
     viewer.createControl(parent);
         viewer.setRootEditPart(root);
         viewer.setEditPartFactory(new WidgetEditPartFactory(
-                ExecutionMode.RUN_MODE));
+                ExecutionMode.RUN_MODE, site));
 
         // viewer.addDropTargetListener(new
         // ProcessVariableNameTransferDropPVTargetListener(viewer));
