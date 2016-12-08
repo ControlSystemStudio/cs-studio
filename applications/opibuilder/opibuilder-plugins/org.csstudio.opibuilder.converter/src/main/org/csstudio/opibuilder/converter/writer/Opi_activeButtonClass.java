@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  *
  * @author Lei Hu, Xihui Chen
  */
-public class Opi_activeButtonClass extends OpiWidget {
+public class Opi_activeButtonClass extends OpiButtonClass {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeButtonClass");

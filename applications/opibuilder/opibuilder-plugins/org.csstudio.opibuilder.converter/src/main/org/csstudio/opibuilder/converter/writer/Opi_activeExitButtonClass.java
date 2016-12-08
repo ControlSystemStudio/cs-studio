@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
  *
  * @author Xihui Chen
  */
-public class Opi_activeExitButtonClass extends OpiWidget {
+public class Opi_activeExitButtonClass extends OpiButtonClass {
 
     private static final String typeId = "ActionButton";
     private static final String name = "EDM Exit Button";

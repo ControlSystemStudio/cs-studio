@@ -50,8 +50,8 @@ public class Opi_activeXTextClassTest {
         XMLFileHandler.isElementEqual("EDM Label", "name", e);
         XMLFileHandler.isElementEqual("123", "x", e);
         XMLFileHandler.isElementEqual("50", "y", e);
-        XMLFileHandler.isElementEqual("43", "width", e);
-        XMLFileHandler.isElementEqual("14", "height", e);
+        XMLFileHandler.isElementEqual("42", "width", e);
+        XMLFileHandler.isElementEqual("13", "height", e);
 
         XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", e);
 

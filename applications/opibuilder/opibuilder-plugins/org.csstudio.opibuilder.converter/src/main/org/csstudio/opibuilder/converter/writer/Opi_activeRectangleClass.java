@@ -17,7 +17,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
  *
  * @author Matevz, Xihui Chen
  */
-public class Opi_activeRectangleClass extends OpiWidget {
+public class Opi_activeRectangleClass extends OpiShapeClass {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeRectangleClass");
@@ -55,11 +55,6 @@ public class Opi_activeRectangleClass extends OpiWidget {
                 createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
                     "backColorAlarmRule", false);
         }
-
-        int line_width = 1;
-        if (r.getLineWidth() != 0) //Looks like EDM always show the line.
-            line_width = r.getLineWidth();
-        new OpiInt(widgetContext, "line_width", line_width);
 
         int lineStyle = 0;
         //For EDMAttribute property, use isExistInEDL
