@@ -13,7 +13,7 @@ package org.csstudio.opibuilder.converter.model;
  * @author Xihui Chen
  *
  */
-public class Edm_activeLineClass extends EdmWidget {
+public class Edm_activeLineClass extends Edm_activeShapeClass {
 
 
     @EdmAttributeAn private EdmColor lineColor;
@@ -23,7 +23,6 @@ public class Edm_activeLineClass extends EdmWidget {
     @EdmAttributeAn private EdmPointsList yPoints;
 
 
-    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
     @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
     @EdmAttributeAn @EdmOptionalAn private String arrows;
     @EdmAttributeAn @EdmOptionalAn private boolean closePolygon;
@@ -53,10 +52,6 @@ public class Edm_activeLineClass extends EdmWidget {
 
     public EdmColor getLineColor() {
         return lineColor;
-    }
-
-    public int getLineWidth() {
-        return lineWidth;
     }
 
     public EdmLineStyle getLineStyle() {

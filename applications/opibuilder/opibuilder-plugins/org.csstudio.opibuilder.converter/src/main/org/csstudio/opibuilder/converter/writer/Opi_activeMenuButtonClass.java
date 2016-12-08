@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeMenuButtonClass;
  * XML conversion class for Edm_activeRectangleClass
  * @author Matevz
  */
-public class Opi_activeMenuButtonClass extends OpiWidget {
+public class Opi_activeMenuButtonClass extends OpiButtonClass {
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeMenuButtonClass");
     private static final String typeId = "MenuButton";

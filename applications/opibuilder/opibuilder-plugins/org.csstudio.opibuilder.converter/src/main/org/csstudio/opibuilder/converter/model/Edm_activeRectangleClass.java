@@ -13,12 +13,11 @@ package org.csstudio.opibuilder.converter.model;
  * @author Matevz
  *
  */
-public class Edm_activeRectangleClass extends EdmWidget {
+public class Edm_activeRectangleClass extends Edm_activeShapeClass {
 
 
     @EdmAttributeAn private EdmColor lineColor;
 
-    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
     @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
     @EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
     @EdmAttributeAn @EdmOptionalAn private boolean fill;
@@ -56,10 +55,6 @@ public class Edm_activeRectangleClass extends EdmWidget {
 
     public EdmColor getLineColor() {
         return lineColor;
-    }
-
-    public int getLineWidth() {
-        return lineWidth;
     }
 
     public EdmLineStyle getLineStyle() {
