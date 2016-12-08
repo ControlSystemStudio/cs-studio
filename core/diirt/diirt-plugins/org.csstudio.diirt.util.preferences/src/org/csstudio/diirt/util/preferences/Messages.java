@@ -57,12 +57,21 @@ public class Messages extends NLS {
     public static String DPH_verifyDIIRTPath_pathNotValid_message;
 
     public static String DSPP_browseButton_text;
+    public static String DSPP_browseDialog_message;
+    public static String DSPP_browseDialog_text;
     public static String DSPP_cdsGroup_text;
     public static String DSPP_defaultDataSourceCaption_text;
     public static String DSPP_delimiterCaption_text;
     public static String DSPP_delimiterText_text;
     public static String DSPP_description;
     public static String DSPP_directoryCaption_text;
+    public static String DSPP_exportButton_text;
+    public static String DSPP_exportDialog_message;
+    public static String DSPP_exportDialog_text;
+    public static String DSPP_exportFailed_message;
+    public static String DSPP_exportFilesExist_message;
+    public static String DSPP_exportFilesExist_title;
+    public static String DSPP_exportSuccessful_message;
     public static String DSPP_init_directoryText_exceptionMessage;
     public static String DSPP_overrideCheckBox_text;
     public static String DSPP_resolveMessage;

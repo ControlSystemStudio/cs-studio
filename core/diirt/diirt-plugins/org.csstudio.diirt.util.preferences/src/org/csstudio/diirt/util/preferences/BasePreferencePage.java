@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -41,7 +42,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 16 Nov 2016
  */
-abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
     private static final Set<BasePreferencePage> DIIRT_PAGES = new HashSet<>();
 
@@ -161,28 +162,36 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
     @Override
     public boolean performOk ( ) {
 
-        boolean restart = MessageDialog.openConfirm(getShell(), Messages.BPP_performOk_title, Messages.BPP_performOk_message);
+        if ( editors.keySet().stream().anyMatch(e ->
+            !e.presentsDefaultValue() && !( e instanceof DirectoryFieldEditor )
+        )) {
 
-        if ( restart ) {
+            boolean restart = MessageDialog.openConfirm(getShell(), Messages.BPP_performOk_title, Messages.BPP_performOk_message);
 
-            editors.keySet().stream().forEach(e -> e.store());
+            if ( restart ) {
 
-            new Job("Restarting after DIIRT preferences changed") {
-                @Override
-                protected IStatus run ( IProgressMonitor m ) {
+                editors.keySet().stream().forEach(e -> e.store());
 
-                    Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart());
+                new Job("Restarting after DIIRT preferences changed") {
+                    @Override
+                    protected IStatus run ( IProgressMonitor m ) {
 
-                    return Status.OK_STATUS;
+                        Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart());
 
-                }
-            }.schedule(500L);
+                        return Status.OK_STATUS;
+
+                    }
+                }.schedule(500L);
 
 
-            return super.performOk();
+                return super.performOk();
+
+            } else {
+                return false;
+            }
 
         } else {
-            return false;
+            return super.performOk();
         }
 
     }
@@ -193,12 +202,56 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
     }
 
     /**
+     * Displays an error message.
+     *
+     * @param message The message to be displayed.
+     */
+    protected void notifyError ( final String message ) {
+        notifyMessage(message, ERROR);
+    }
+
+    /**
+     * Displays an information message.
+     *
+     * @param message The message to be displayed.
+     */
+    protected void notifyInformation ( final String message ) {
+        notifyMessage(message, INFORMATION);
+    }
+
+    /**
+     * Displays a message.
+     *
+     * @param message The message to be displayed.
+     * @param type The type of the message: {@link #NONE}, {@link #INFORMATION}, {@link #WARNING}, or {@link #ERROR}.
+     */
+    protected void notifyMessage ( final String message, int type ) {
+
+        final int ftype;
+
+        switch ( type ) {
+            case NONE:
+            case INFORMATION:
+            case WARNING:
+            case ERROR:
+                ftype = type;
+                break;
+            default:
+                ftype = NONE;
+                break;
+        }
+
+        Display.getDefault().syncExec( ( ) -> setMessage(message, message != null ? ftype : NONE));
+
+    }
+
+    /**
      * Displays a warning message.
      *
      * @param message The message to be displayed.
      */
     protected void notifyWarning ( final String message ) {
-        Display.getDefault().syncExec( ( ) -> setMessage(message, message != null ? WARNING : NONE));
+        notifyMessage(message, WARNING);
     }
 
     @Override
@@ -291,18 +344,6 @@ abstract class BasePreferencePage extends PreferencePage implements IWorkbenchPr
 
         Supplier<Object> getDefaultGetter ( ) {
             return defaultGetter;
-        }
-
-        FieldEditor getEditor ( ) {
-            return editor;
-        }
-
-        Composite getParent ( ) {
-            return parent;
-        }
-
-        Supplier<Object> getStoredGetter ( ) {
-            return storedGetter;
         }
 
         boolean isCanBeDefaulted ( ) {

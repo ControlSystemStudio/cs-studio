@@ -33,7 +33,19 @@ public class CompositeDataSource {
 	@XmlAttribute( name = "delimiter" )
 	public String delimiter = "://";
 
-	/**
+	public CompositeDataSource () {
+    }
+
+	public CompositeDataSource ( DataSourceProtocol defaultDataSource, String delimiter ) {
+
+	    this();
+
+	    this.defaultDataSource = defaultDataSource;
+	    this.delimiter = delimiter;
+
+	}
+
+    /**
 	 * The possible values for the {@link #defaultDataSource} property.
 	 */
 	@XmlEnum

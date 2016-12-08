@@ -21,8 +21,10 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
@@ -96,12 +98,12 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     public static final String     PREF_FIRST_ACCESS              = "diirt.firstAccess";
     public static final String     USER_HOME_PARAMETER            = "@user.home";
 
-    private static final String CA_DIR              = "ca";
-    private static final String CA_FILE             = "ca.xml";
-    private static final String CA_VERSION          = "1";
-    private static final String DATASOURCES_DIR     = "datasources";
-    private static final String DATASOURCES_FILE    = "datasources.xml";
-    private static final String DATASOURCES_VERSION = "1";
+    public static final String CA_DIR              = "ca";
+    public static final String CA_FILE             = "ca.xml";
+    public static final String CA_VERSION          = "1";
+    public static final String DATASOURCES_DIR     = "datasources";
+    public static final String DATASOURCES_FILE    = "datasources.xml";
+    public static final String DATASOURCES_VERSION = "1";
 
     private static DIIRTPreferencesPlugin instance = null;
 
@@ -172,6 +174,47 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public DIIRTPreferencesPlugin ( ) {
         instance = this;
+    }
+
+    /**
+     * Export the current DIIRT configuration creating the relative files.
+     *
+     * @param parent The parent directory of the exported configuration.
+     * @throws JAXBException If there were some marshalling problems.
+     * @throws IOException  If an error occurred writing the configuration.
+     */
+    public void exportConfiguration ( File parent ) throws JAXBException, IOException {
+
+        if ( parent == null || !parent.exists() || !parent.isDirectory() ) {
+            return;
+        }
+
+        IPreferenceStore store = getPreferenceStore();
+        DataSourceProtocol dsp = DataSourceProtocol.none;
+
+        try {
+            dsp = DataSourceProtocol.valueOf(store.getString(PREF_DS_DEFAULT));
+        } catch ( Exception ex ){
+            LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", store.getString(PREF_DS_DEFAULT)), ex);
+        }
+
+        File dsDir = new File(parent, DATASOURCES_DIR);
+
+        FileUtils.forceMkdir(dsDir);
+
+        DataSources ds = new DataSources(new CompositeDataSource(dsp, store.getString(PREF_DS_DELIMITER)));
+        JAXBContext context = JAXBContext.newInstance(DataSources.class);
+        Marshaller marshaller = context.createMarshaller();
+
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(ds, new File(dsDir, DATASOURCES_FILE));
+
+
+
+
+
+
+
     }
 
     @Override

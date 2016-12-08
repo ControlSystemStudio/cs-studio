@@ -12,8 +12,14 @@ package org.csstudio.diirt.util.preferences;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
+import javax.xml.bind.JAXBException;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -28,10 +34,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -79,44 +88,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
         container.setLayout(new GridLayout());
 
-        directoryEditor = new DirectoryFieldEditor(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY, Messages.DSPP_directoryCaption_text, container) {
-            @Override
-            protected String changePressed ( ) {
-
-                DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
-
-                if ( lastPath != null ) {
-                    dialog.setFilterPath(lastPath);
-                }
-
-                String choice = dialog.open();
-
-                if ( choice != null ) {
-
-                    try {
-                        choice = DIIRTPreferencesPlugin.resolvePlatformPath(choice.trim());
-                    } catch ( Exception ex ) {
-                        notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, choice));
-                        return null;
-                    }
-
-                    lastPath = choice;
-
-                }
-
-                if ( verifyAndNotifyWarning(choice) ) {
-                    DIIRTPreferencesPlugin.get().updateDefaults(choice, store);
-                    DIIRTPreferencesPlugin.get().updateValues(choice, store);
-                    reloadEditorsForAllPages();
-                }
-
-                treeViewer.setInput(choice);
-                treeViewer.refresh();
-
-                return choice;
-
-            }
-        };
+        directoryEditor = new ConfigurationDirectoryFieldEditor(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY, Messages.DSPP_directoryCaption_text, container, store);
 
         directoryEditor.setChangeButtonText(Messages.DSPP_browseButton_text);
         directoryEditor.getTextControl(container).setEditable(false);
@@ -126,12 +98,16 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
         Composite treeComposite = new Composite(container, SWT.NONE);
 
-        treeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+        GridData gd_treeComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+        gd_treeComposite.heightHint = -14;
+        treeComposite.setLayoutData(gd_treeComposite);
         treeComposite.setLayout(new GridLayout());
 
         treeViewer = new TreeViewer(treeComposite);
 
-        treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.heightHint = -16;
+        treeViewer.getTree().setLayoutData(gridData);
         treeViewer.setLabelProvider(new FileTreeLabelProvider());
         treeViewer.setContentProvider(new FileTreeContentProvider());
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -186,6 +162,89 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         initializeValues();
 
         return container;
+
+    }
+
+    @Override
+    protected void contributeButtons ( Composite parent ) {
+
+        ((GridLayout) parent.getLayout()).numColumns++;
+
+        Button button = new Button(parent, SWT.PUSH);
+
+        button.setText(Messages.DSPP_exportButton_text);
+        button.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected ( SelectionEvent e ) {
+                exportConfiguration();
+            }
+
+            @Override
+            public void widgetDefaultSelected ( SelectionEvent e ) {
+                exportConfiguration();
+            }
+
+        });
+
+    }
+
+    /**
+     * Ask the user for a folder where to save the DIIRT configuration files.
+     */
+    private void exportConfiguration ( ) {
+
+        DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
+
+        dialog.setText(Messages.DSPP_exportDialog_text);
+        dialog.setMessage(Messages.DSPP_exportDialog_message);
+
+        if ( lastPath != null ) {
+            dialog.setFilterPath(lastPath);
+        }
+
+        String choice = dialog.open();
+
+        if ( choice != null ) {
+
+            try {
+                choice = DIIRTPreferencesPlugin.resolvePlatformPath(choice.trim());
+            } catch ( Exception ex ) {
+                notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, choice));
+                return;
+            }
+
+            lastPath = choice;
+
+            Path parentPath = Paths.get(choice);
+            Path dsPath = Paths.get(parentPath.toString(), DIIRTPreferencesPlugin.DATASOURCES_DIR);
+            Path dsFile = Paths.get(dsPath.toString(), DIIRTPreferencesPlugin.DATASOURCES_FILE);
+            Path caPath = Paths.get(dsPath.toString(), DIIRTPreferencesPlugin.CA_DIR);
+            Path caFile = Paths.get(caPath.toString(), DIIRTPreferencesPlugin.CA_FILE);
+            Path[] content = new Path[] { dsPath, dsFile, caPath, caFile };
+
+            if ( Arrays.asList(content).stream().anyMatch(p -> Files.exists(p, LinkOption.NOFOLLOW_LINKS))  ) {
+
+                boolean overwrite = MessageDialog.openConfirm(
+                    getShell(),
+                    Messages.DSPP_exportFilesExist_title,
+                    NLS.bind(Messages.DSPP_exportFilesExist_message, choice)
+                );
+
+                if ( !overwrite ) {
+                    return;
+                }
+
+            }
+
+            try {
+                DIIRTPreferencesPlugin.get().exportConfiguration(parentPath.toFile());
+                notifyInformation(NLS.bind(Messages.DSPP_exportSuccessful_message, choice));
+            } catch ( JAXBException | IOException ex ) {
+                notifyWarning(NLS.bind(Messages.DSPP_exportFailed_message, choice, ex.getMessage()));
+            }
+
+        }
 
     }
 
@@ -265,6 +324,63 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
     }
 
     /**
+     * Editor for the configuration directory.
+     */
+    private class ConfigurationDirectoryFieldEditor extends DirectoryFieldEditor {
+
+        private final IPreferenceStore store;
+
+        protected ConfigurationDirectoryFieldEditor ( String name, String labelText, Composite parent, IPreferenceStore store ) {
+
+            super(name, labelText, parent);
+
+            this.store = store;
+
+        }
+
+        @Override
+        protected String changePressed ( ) {
+
+            DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
+
+            dialog.setText(Messages.DSPP_browseDialog_text);
+            dialog.setMessage(Messages.DSPP_browseDialog_message);
+
+            if ( lastPath != null ) {
+                dialog.setFilterPath(lastPath);
+            }
+
+            String choice = dialog.open();
+
+            if ( choice != null ) {
+
+                try {
+                    choice = DIIRTPreferencesPlugin.resolvePlatformPath(choice.trim());
+                } catch ( Exception ex ) {
+                    notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, choice));
+                    return null;
+                }
+
+                lastPath = choice;
+
+                if ( verifyAndNotifyWarning(choice) ) {
+                    DIIRTPreferencesPlugin.get().updateDefaults(choice, store);
+                    DIIRTPreferencesPlugin.get().updateValues(choice, store);
+                    reloadEditorsForAllPages();
+                }
+
+                treeViewer.setInput(choice);
+                treeViewer.refresh();
+
+            }
+
+            return choice;
+
+        }
+
+    }
+
+    /**
      * This class provides the content for the tree in FileTree.
      */
     private class FileTreeContentProvider implements ITreeContentProvider {
@@ -339,7 +455,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             }
         }
 
-    }
+    }   //  class FileTreeContentProvider
 
     /**
      * This class provides the labels for the file tree.
@@ -415,6 +531,6 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         public void removeListener ( ILabelProviderListener arg0 ) {
         }
 
-    }
+    }   //  class FileTreeLabelProvider
 
 }

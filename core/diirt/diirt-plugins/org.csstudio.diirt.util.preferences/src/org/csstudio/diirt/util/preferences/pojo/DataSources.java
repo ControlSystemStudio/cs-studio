@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
+
 
 /**
  * Plain Old Java Object representing a {@code datasources.xml} file.
@@ -39,6 +41,17 @@ public class DataSources {
 	public CompositeDataSource compositeDataSource = null;
 
 	@XmlAttribute( name = "version", required = true )
-	public String version = "1";
+	public String version = DIIRTPreferencesPlugin.DATASOURCES_VERSION;
+
+    public DataSources () {
+    }
+
+    public DataSources ( CompositeDataSource compositeDataSource ) {
+
+        this();
+
+        this.compositeDataSource = compositeDataSource;
+
+    }
 
 }
