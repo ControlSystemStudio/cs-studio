@@ -4,12 +4,6 @@
    <extension point="org.eclipse.ui.preferencePages">
       <page
          category="org.csstudio.platform.ui.css.platform"
-         class="org.csstudio.diirt.util.preferences.DiirtPreferencePage"
-         id="org.csstudio.diirt.util.preferences.diirt"
-         name="DIIRT">
-      </page>
-      <page
-         category="org.csstudio.platform.ui.css.platform"
          class="org.csstudio.diirt.util.preferences.DataSourcesPreferencePage"
          id="org.csstudio.diirt.util.preferences.datasources"
          name="Data Sources">

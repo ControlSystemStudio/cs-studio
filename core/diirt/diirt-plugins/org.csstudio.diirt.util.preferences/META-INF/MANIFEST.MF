@@ -9,7 +9,6 @@ Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.startup;bundle-version="3.2.1",
- org.csstudio.diirt.util;bundle-version="1.0.0",
  org.apache.commons.io,
  org.apache.commons.lang3,
  org.epics.jca;bundle-version="2.3.6"

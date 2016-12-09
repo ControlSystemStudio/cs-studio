@@ -8,6 +8,8 @@
  */
 package org.csstudio.diirt.util.preferences.pojo;
 
+import java.text.MessageFormat;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
@@ -26,13 +28,56 @@ public class DataSourceOptions {
     public boolean honorZeroPrecision = true;
 
     @XmlAttribute( name = "monitorMask" )
-    public MonitorMask monitorMask = MonitorMask.VALUE;
+    public String monitorMaskValue = MonitorMask.VALUE.name();
 
     @XmlAttribute( name = "rtypeValueOnly" )
     public boolean rtypeValueOnly = false;
 
     @XmlAttribute( name = "varArraySupported" )
     public VariableArraySupport varArraySupported = VariableArraySupport.AUTO;
+
+    public DataSourceOptions () {
+    }
+
+    public DataSourceOptions (
+        boolean dbePropertySupported,
+        boolean honorZeroPrecision,
+        MonitorMask monitorMask,
+        int monitorMaskCustomValue,
+        boolean rtypeValueOnly,
+        VariableArraySupport varArraySupported
+    ) {
+
+        this();
+
+        this.dbePropertySupported = dbePropertySupported;
+        this.honorZeroPrecision = honorZeroPrecision;
+        this.rtypeValueOnly = rtypeValueOnly;
+        this.varArraySupported = varArraySupported;
+
+        if ( monitorMask == MonitorMask.CUSTOM ) {
+            monitorMaskValue = String.valueOf(monitorMaskCustomValue);
+        } else {
+            monitorMaskValue = monitorMask.name();
+        }
+
+    }
+
+    public MonitorMask monitorMask() {
+        try {
+            return MonitorMask.valueOf(monitorMaskValue);
+        } catch ( Exception ex ) {
+            return MonitorMask.CUSTOM;
+        }
+    }
+
+    public int monitorMaskCustomValue() {
+        try {
+            return Integer.parseInt(monitorMaskValue);
+        } catch ( Exception ex ) {
+            return 5;
+        }
+    }
 
     /**
      * The possible values for the {@link #monitorMask} property.
@@ -91,6 +136,18 @@ public class DataSourceOptions {
 
         public String representation() {
             return representation;
+        }
+
+        public static VariableArraySupport representationOf ( String repr ) {
+
+            for ( VariableArraySupport v : values() ) {
+                if ( v.representation.equals(repr) ) {
+                    return v;
+                }
+            }
+
+            throw new IllegalArgumentException(MessageFormat.format("Illegal representation: {0}", repr));
+
         }
 
     }

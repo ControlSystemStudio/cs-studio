@@ -15,7 +15,6 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 3 Nov 2016
- *
  */
 public class Messages extends NLS {
 
@@ -83,4 +82,5 @@ public class Messages extends NLS {
 
     private Messages ( ) {
     }
+
 }

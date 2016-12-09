@@ -182,8 +182,9 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
      * @param parent The parent directory of the exported configuration.
      * @throws JAXBException If there were some marshalling problems.
      * @throws IOException  If an error occurred writing the configuration.
+     * @throws IllegalArgumentException  If an error occurred evaluating enumerations.
      */
-    public void exportConfiguration ( File parent ) throws JAXBException, IOException {
+    public void exportConfiguration ( File parent ) throws JAXBException, IOException, IllegalArgumentException {
 
         if ( parent == null || !parent.exists() || !parent.isDirectory() ) {
             return;
@@ -202,18 +203,46 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
         FileUtils.forceMkdir(dsDir);
 
-        DataSources ds = new DataSources(new CompositeDataSource(dsp, store.getString(PREF_DS_DELIMITER)));
+        DataSources ds = new DataSources(new CompositeDataSource(
+            dsp,
+            store.getString(PREF_DS_DELIMITER)
+        ));
         JAXBContext context = JAXBContext.newInstance(DataSources.class);
         Marshaller marshaller = context.createMarshaller();
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(ds, new File(dsDir, DATASOURCES_FILE));
 
+        File caDir = new File(dsDir, CA_DIR);
 
+        FileUtils.forceMkdir(caDir);
 
+        ChannelAccess ca = new ChannelAccess(
+            new DataSourceOptions(
+                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED),
+                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION),
+                MonitorMask.valueOf(store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK)),
+                store.getInt(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK),
+                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR),
+                VariableArraySupport.representationOf(store.getString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY))
+            ),
+            new JCAContext(
+                store.getString(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST),
+                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST),
+                store.getDouble(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD),
+                store.getDouble(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT),
+                store.getInt(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE),
+                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA),
+                store.getInt(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT),
+                store.getInt(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT)
+            )
+        );
 
+        context = JAXBContext.newInstance(ChannelAccess.class);
+        marshaller = context.createMarshaller();
 
-
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(ca, new File(caDir, CA_FILE));
 
     }
 
@@ -344,7 +373,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         if ( dso != null ) {
             store.setDefault(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
             store.setDefault(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
-            store.setDefault(PREF_CA_MONITOR_MASK, ObjectUtils.defaultIfNull(dso.monitorMask, MonitorMask.VALUE).name());
+            store.setDefault(PREF_CA_MONITOR_MASK, dso.monitorMask().name());
+            store.setDefault(PREF_CA_CUSTOM_MASK, dso.monitorMaskCustomValue());
             store.setDefault(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
             store.setDefault(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
         }
@@ -379,7 +409,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         if ( dso != null ) {
             store.setValue(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
             store.setValue(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
-            store.setValue(PREF_CA_MONITOR_MASK, ObjectUtils.defaultIfNull(dso.monitorMask, MonitorMask.VALUE).name());
+            store.setValue(PREF_CA_MONITOR_MASK, dso.monitorMask().name());
+            store.setValue(PREF_CA_CUSTOM_MASK, dso.monitorMaskCustomValue());
             store.setValue(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
             store.setValue(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
         }

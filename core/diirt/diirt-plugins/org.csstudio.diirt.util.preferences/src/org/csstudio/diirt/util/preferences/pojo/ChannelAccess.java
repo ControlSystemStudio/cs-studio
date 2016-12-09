@@ -34,4 +34,16 @@ public class ChannelAccess {
     @XmlAttribute( name = "version", required = true )
     public String version = "1";
 
+    public ChannelAccess () {
+    }
+
+    public ChannelAccess ( DataSourceOptions dataSourceOptions, JCAContext jcaContext ) {
+
+        this();
+
+        this.dataSourceOptions = dataSourceOptions;
+        this.jcaContext = jcaContext;
+
+    }
+
 }

@@ -59,4 +59,31 @@ public class JCAContext {
     @XmlAttribute( name = "server_port" )
     public int serverPort = 5064;
 
+    public JCAContext () {
+    }
+
+    public JCAContext (
+        String addrList,
+        boolean autoAddrList,
+        double beaconPeriod,
+        double connectionTimeout,
+        int maxArrayBytes,
+        boolean pureJava,
+        int repeaterPort,
+        int serverPort
+    ) {
+
+        this();
+
+        this.addrList = addrList;
+        this.autoAddrList = autoAddrList;
+        this.beaconPeriod = beaconPeriod;
+        this.connectionTimeout = connectionTimeout;
+        this.maxArrayBytes = maxArrayBytes;
+        this.pureJava = pureJava;
+        this.repeaterPort = repeaterPort;
+        this.serverPort = serverPort;
+
+    }
+
 }
