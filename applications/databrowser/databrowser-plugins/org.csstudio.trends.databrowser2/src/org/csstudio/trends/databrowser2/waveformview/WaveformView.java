@@ -138,10 +138,9 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void changedTimerange()
         {
-            // TODO Why?
-            System.out.println("WaveformView: Plot changed timerange...");
-//            if (model_item != null)
-//                showSelectedSample();
+            // Update selected sample to assert that it's one of the visible ones.
+            if (model_item != null)
+                showSelectedSample();
         }
     };
 
