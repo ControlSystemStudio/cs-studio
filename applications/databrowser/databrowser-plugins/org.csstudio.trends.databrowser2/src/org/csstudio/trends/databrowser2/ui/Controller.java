@@ -537,8 +537,6 @@ public class Controller
                 if (changing_annotations)
                     return;
                 changing_annotations = true;
-                // TODO Remove
-                System.out.println("Controller: Update annotations in plot because model changed: " + model.getAnnotations());
                 plot.setAnnotations(model.getAnnotations());
                 changing_annotations = false;
             }

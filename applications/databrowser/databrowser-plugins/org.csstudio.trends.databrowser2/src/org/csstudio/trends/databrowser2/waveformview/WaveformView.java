@@ -7,8 +7,13 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.waveformview;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
@@ -17,6 +22,7 @@ import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
 import org.csstudio.swt.rtplot.YAxis;
+import org.csstudio.swt.rtplot.data.TimeDataSearch;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
@@ -86,11 +92,16 @@ public class WaveformView extends DataBrowserAwareView
 
     private boolean changing_annotations = false;
 
+    private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+
+    private ScheduledFuture<?> pending_move = null;
+
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
         @Override
         public void itemAdded(final ModelItem item)
         {
+
             update(false);
         }
 
@@ -114,11 +125,14 @@ public class WaveformView extends DataBrowserAwareView
         {
             if (changing_annotations)
                 return;
-            changing_annotations = true;
-            // TODO Timer, update selected waveform with some delay
-            // Don't update right away to avoid flurry of updates as user moves the annotation
-            System.out.println("Annotations in plot changed, select different waveform?");
-            changing_annotations = false;
+
+            // Reacting as the user moves the annotation
+            // would be too expensive.
+            // Delay, canceling previous request, for "post-selection"
+            // type update once the user stops moving the annotation for a little time
+            if (pending_move != null)
+                pending_move.cancel(false);
+            pending_move = timer.schedule(WaveformView.this::userMovedAnnotation, 500, TimeUnit.MILLISECONDS);
         }
 
         @Override
@@ -344,25 +358,26 @@ public class WaveformView extends DataBrowserAwareView
     {
         // Get selected sample (= one waveform)
         final PlotSamples samples = model_item.getSamples();
-        final VType value;
+        final int idx = sample_index.getSelection();
+        final PlotSample sample;
         samples.getLock().lock();
         try
         {
             sample_index.setMaximum(samples.size());
-            final int idx = sample_index.getSelection();
-            value = samples.get(idx).getVType();
-            updateAnnotation(samples.get(idx));
+            sample = samples.get(idx);
         }
         finally
         {
             samples.getLock().unlock();
         }
         // Setting the value can be delayed while the plot is being updated
+        final VType value = sample.getVType();
         Activator.getThreadPool().execute(() -> waveform.setValue(value));
         if (value == null)
             clearInfo();
         else
         {
+            updateAnnotation(sample.getPosition(), sample.getValue());
             int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
             plot.getXAxis().setValueRange(0.0, (double)size);
             timestamp.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
@@ -376,6 +391,40 @@ public class WaveformView extends DataBrowserAwareView
     {
         timestamp.setText("");
         status.setText("");
+        removeAnnotation();
+    }
+
+    private void userMovedAnnotation()
+    {
+        if (waveform_annotation == null)
+            return;
+        for (AnnotationInfo annotation : model.getAnnotations())
+        {   // Locate the annotation for this waveform
+            if (annotation.isInternal()  &&
+                annotation.getItemIndex() == waveform_annotation.getItemIndex() &&
+                annotation.getText().equals(waveform_annotation.getText()))
+            {   // Locate index of sample for annotation's time stamp
+                final PlotSamples samples = model_item.getSamples();
+                final TimeDataSearch search = new TimeDataSearch();
+                final int idx;
+                samples.getLock().lock();
+                try
+                {
+                    idx = search.findClosestSample(samples, annotation.getTime());
+                }
+                finally
+                {
+                    samples.getLock().unlock();
+                }
+                // Update waveform view for that sample on UI thread
+                sample_index.getDisplay().asyncExec(() ->
+                {
+                    sample_index.setSelection(idx);
+                    showSelectedSample();
+                });
+                return;
+            }
+        }
     }
 
     private void removeAnnotation()
@@ -387,11 +436,11 @@ public class WaveformView extends DataBrowserAwareView
             model.setAnnotations(modelAnnotations);
             changing_annotations = false;
         }
+        waveform_annotation = null;
     }
 
-    private void updateAnnotation(final PlotSample sample)
+    private void updateAnnotation(final Instant time, final double value)
     {
-        System.out.println("WaveformView.updateAnnotation " + sample); // TODO remove
         final List<AnnotationInfo> annotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
         // Start annotation somewhat above the sample
         Point offset = new Point(-30, -30);
@@ -418,9 +467,7 @@ public class WaveformView extends DataBrowserAwareView
             }
             i++;
         }
-        waveform_annotation = new AnnotationInfo(true, item_index,
-                                                 sample.getPosition(), sample.getValue(),
-                                                 offset, ANNOTATION_TEXT);
+        waveform_annotation = new AnnotationInfo(true, item_index, time, value, offset, ANNOTATION_TEXT);
         annotations.add(waveform_annotation);
         changing_annotations = true;
         model.setAnnotations(annotations);
