@@ -419,7 +419,8 @@ public class ModelBasedPlot
 
         // Set new annotations in plot
         for (AnnotationInfo annotation : newAnnotations)
-            plot.addAnnotation(new Annotation<Instant>(traces.get(annotation.getItemIndex()),
+            plot.addAnnotation(new Annotation<Instant>(annotation.isInternal(),
+                                                       traces.get(annotation.getItemIndex()),
                                                        annotation.getTime(),
                                                        annotation.getValue(),
                                                        annotation.getOffset(),

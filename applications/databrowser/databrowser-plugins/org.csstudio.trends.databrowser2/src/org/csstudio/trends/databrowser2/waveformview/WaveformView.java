@@ -380,7 +380,6 @@ public class WaveformView extends DataBrowserAwareView
 
     private void removeAnnotation()
     {
-        System.out.println("WaveformView.removeAnnotation()"); // TODO remove
         final List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
         if (modelAnnotations.remove(waveform_annotation))
         {
@@ -419,11 +418,9 @@ public class WaveformView extends DataBrowserAwareView
             }
             i++;
         }
-        waveform_annotation = new AnnotationInfo(item_index,
-                                                 sample.getPosition(),
-                                                 sample.getValue(),
-                                                 offset,
-                                                 ANNOTATION_TEXT);
+        waveform_annotation = new AnnotationInfo(true, item_index,
+                                                 sample.getPosition(), sample.getValue(),
+                                                 offset, ANNOTATION_TEXT);
         annotations.add(waveform_annotation);
         changing_annotations = true;
         model.setAnnotations(annotations);
