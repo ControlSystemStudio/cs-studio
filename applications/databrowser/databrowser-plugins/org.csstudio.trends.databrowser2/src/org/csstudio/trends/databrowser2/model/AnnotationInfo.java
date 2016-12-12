@@ -29,8 +29,10 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AnnotationInfo
 {
+    // TODO: "Transient" flag: Not saved. Cannot be edited */
     final int item_index;
     final private Instant time;
     final private double value;
@@ -39,7 +41,6 @@ public class AnnotationInfo
 
     public AnnotationInfo(final int item_index, final Instant time, final double value, final Point offset, final String text)
     {
-
         this.item_index = item_index;
         this.time = time;
         this.value = value;
@@ -77,7 +78,35 @@ public class AnnotationInfo
         return text;
     }
 
-    @SuppressWarnings("nls")
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = item_index;
+        result = prime * result + offset.hashCode();
+        result = prime * result + text.hashCode();
+        result = prime * result + time.hashCode();
+        long temp;
+        temp = Double.doubleToLongBits(value);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (! (obj instanceof AnnotationInfo))
+            return false;
+        final AnnotationInfo other = (AnnotationInfo) obj;
+        return item_index == other.item_index  &&
+               offset.equals(other.offset)     &&
+               text.equals(other.text)         &&
+               time.equals(other.time)         &&
+               Double.doubleToLongBits(value) == Double.doubleToLongBits(other.value);
+    }
+
     @Override
     public String toString()
     {

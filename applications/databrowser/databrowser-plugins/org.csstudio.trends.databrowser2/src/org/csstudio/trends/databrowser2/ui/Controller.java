@@ -87,6 +87,9 @@ public class Controller
     /** GUI for displaying the data */
     final private ModelBasedPlot plot;
 
+    /** Prevent loop between model and plot when changing their annotations */
+    private boolean changing_annotations = false;
+
     /** Timer that triggers scrolling or trace redraws */
     final private static ScheduledExecutorService update_timer =
             Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DataBrowserUpdates"));
@@ -370,7 +373,11 @@ public class Controller
             @Override
             public void changedAnnotations(final List<AnnotationInfo> annotations)
             {
+                if (changing_annotations)
+                    return;
+                changing_annotations = true;
                 model.setAnnotations(annotations);
+                changing_annotations = false;
             }
 
             @Override
@@ -522,6 +529,18 @@ public class Controller
             public void itemRefreshRequested(final PVItem item)
             {
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
+            }
+
+            @Override
+            public void changedAnnotations()
+            {
+                if (changing_annotations)
+                    return;
+                changing_annotations = true;
+                // TODO Remove
+                System.out.println("Controller: Update annotations in plot because model changed: " + model.getAnnotations());
+                plot.setAnnotations(model.getAnnotations());
+                changing_annotations = false;
             }
         };
         model.addListener(model_listener);
