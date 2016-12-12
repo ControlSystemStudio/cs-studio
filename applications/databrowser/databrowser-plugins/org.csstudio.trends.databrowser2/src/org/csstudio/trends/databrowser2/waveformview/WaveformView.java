@@ -441,8 +441,8 @@ public class WaveformView extends DataBrowserAwareView
     private void updateAnnotation(final Instant time, final double value)
     {
         final List<AnnotationInfo> annotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
-        // Start annotation somewhat above the sample
-        Point offset = new Point(-30, -30);
+        // Initial annotation offset
+        Point offset = new Point(20, -20);
         // If already in model, note its offset and remove
         for (AnnotationInfo annotation : annotations)
         {
