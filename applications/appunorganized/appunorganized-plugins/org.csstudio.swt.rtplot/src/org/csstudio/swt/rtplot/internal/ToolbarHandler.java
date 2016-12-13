@@ -141,7 +141,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             public void widgetSelected(final SelectionEvent e)
             {
                 new AddAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
-                edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+                edit_annotation.setEnabled(haveUserAnnotations());
             }
         });
 
