@@ -19,6 +19,8 @@ import org.csstudio.swt.xygraph.undo.IOperationsManagerListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.RemoveAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
+import org.csstudio.swt.xygraph.util.EventManager;
+import org.csstudio.swt.xygraph.util.IEventManagerListener;
 import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.ui.util.ColorConstants;
@@ -209,6 +211,48 @@ public class XYGraphToolbar extends Figure {
         addSeparator();
         zoomGroup = new ButtonGroup();
         createZoomButtons(flags);
+        //enable/disable scrolling
+        addSeparator();
+
+        final TwoImageToggleButton scrollingButton = new TwoImageToggleButton(
+                XYGraphMediaFactory.getInstance().getImage("images/scroll_on.png"),//$NON-NLS-1$
+                XYGraphMediaFactory.getInstance().getImage("images/scroll_off.png")); //$NON-NLS-1$
+        scrollingButton.setToolTip(new Label("Disable Scrolling"));
+        scrollingButton.setBackgroundColor(ColorConstants.button);
+        scrollingButton.setOpaque(true);
+        scrollingButton.setSelected(!xyGraph.isScrollingDisabled());
+
+        final ToggleModel scrollingButtonModel = new ToggleModel();
+        scrollingButtonModel.setSelected(!xyGraph.isScrollingDisabled());
+        scrollingButton.setModel(scrollingButtonModel);
+        addButton(scrollingButton);
+        scrollingButtonModel.addChangeListener(new ChangeListener(){
+            public void handleStateChanged(ChangeEvent event) {
+            	xyGraph.setScrollingDisabled(!scrollingButton.isSelected());
+            	scrollingButton.switchImage(scrollingButton.isSelected());
+            	if(scrollingButton.isSelected()) {
+            		scrollingButton.setToolTip(new Label("Disable Scrolling"));
+
+            	} else {
+            		scrollingButton.setToolTip(new Label("Enable Scrolling"));
+            	}
+            }
+        });
+
+        xyGraph.getEventManager().addListener(new IEventManagerListener(){
+			@Override
+			public void dataChanged(EventManager manager) {
+				scrollingButton.switchImage(manager.isScrollingDisabled());
+				scrollingButton.setSelected(manager.isScrollingDisabled());
+				scrollingButtonModel.setSelected(manager.isScrollingDisabled());
+            	if(manager.isScrollingDisabled()) {
+            		scrollingButton.setToolTip(new Label("Disable Scrolling"));
+            	} else {
+            		scrollingButton.setToolTip(new Label("Enable Scrolling"));
+            	}
+			}
+        });
+
 
         addSeparator();
         addUndoRedoButtons();
