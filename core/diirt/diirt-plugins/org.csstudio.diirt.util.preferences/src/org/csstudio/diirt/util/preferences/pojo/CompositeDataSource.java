@@ -16,6 +16,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 
 /**
@@ -49,6 +52,42 @@ public class CompositeDataSource {
 	    this.delimiter = delimiter;
 
 	}
+
+    @Override
+    public int hashCode ( ) {
+        return new HashCodeBuilder(17, 37)
+            .append(defaultDataSource)
+            .append(delimiter)
+            .toHashCode();
+    }
+
+    @Override
+    public boolean equals ( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
+        } else if ( obj == this ) {
+            return true;
+        } else if ( obj.getClass() != getClass() ) {
+            return false;
+        }
+
+        CompositeDataSource cds = (CompositeDataSource) obj;
+
+        return new EqualsBuilder()
+            .append(defaultDataSource, cds.defaultDataSource)
+            .append(delimiter, cds.delimiter)
+            .isEquals();
+
+    }
+
+    @Override
+    public String toString ( ) {
+        return new ToStringBuilder(this)
+            .append("defaultDataSource", defaultDataSource)
+            .append("delimiter", delimiter)
+            .toString();
+    }
 
     /**
 	 * The possible values for the {@link #defaultDataSource} property.

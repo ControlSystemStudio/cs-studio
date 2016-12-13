@@ -74,7 +74,6 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
     private Image                folderImage = null;
     private TreeViewer           treeViewer;
     private Image                xmlImage    = null;
-    private DataSources          cancelData  = null;
 
     /**
      * Create the preference page.
@@ -191,12 +190,16 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
     }
 
     @Override
+    protected void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore ) {
+        DataSources.copy(store, cancelStore);
+    }
+
+    @Override
     protected String initializeValues ( IPreferenceStore store ) {
 
         String confDir = super.initializeValues(store);
 
         lastPath = confDir;
-        cancelData = new DataSources(store);
 
         directoryEditor.setStringValue(confDir);
         directoryEditor.setFilterPath(new File(confDir).getParentFile());
@@ -207,6 +210,11 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
         return confDir;
 
+    }
+
+    @Override
+    protected void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore ) {
+        DataSources.copy(cancelStore, store);
     }
 
     /**

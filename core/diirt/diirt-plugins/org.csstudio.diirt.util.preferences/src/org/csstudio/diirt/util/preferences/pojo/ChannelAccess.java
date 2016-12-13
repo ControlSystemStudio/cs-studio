@@ -38,6 +38,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 18 Nov 2016
+ * @see DataSourceOptions
+ * @see JCAContext
  */
 @XmlRootElement( name = "ca" )
 @XmlType( name = "ChannelAccess" )
@@ -70,6 +72,62 @@ public class ChannelAccess {
 
     @XmlAttribute( name = "version", required = true )
     public String version = "1";
+
+    /**
+     * Copy the {@link ChannelAccess} parameters from a source store to a
+     * destination one.
+     *
+     * @param source The source preference store.
+     * @param destination The destination preference store.
+     */
+    public static void copy ( IPreferenceStore source, IPreferenceStore destination ) {
+
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DBE_PROPERTY_SUPPORTED), source.getBoolean(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DBE_PROPERTY_SUPPORTED)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_HONOR_ZERO_PRECISION),   source.getBoolean(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_HONOR_ZERO_PRECISION)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_MONITOR_MASK),           source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_MONITOR_MASK)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_CUSTOM_MASK),            source.getInt(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_CUSTOM_MASK)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_VALUE_RTYP_MONITOR),     source.getBoolean(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_VALUE_RTYP_MONITOR)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_VARIABLE_LENGTH_ARRAY),  source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_VARIABLE_LENGTH_ARRAY)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_ADDR_LIST),              source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_ADDR_LIST)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_AUTO_ADDR_LIST),         source.getBoolean(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_AUTO_ADDR_LIST)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_BEACON_PERIOD),          source.getDouble(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_BEACON_PERIOD)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_CONNECTION_TIMEOUT),     source.getDouble(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_CONNECTION_TIMEOUT)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_MAX_ARRAY_SIZE),         source.getInt(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_MAX_ARRAY_SIZE)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_PURE_JAVA),              source.getBoolean(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_PURE_JAVA)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_REPEATER_PORT),          source.getInt(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_REPEATER_PORT)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_SERVER_PORT),            source.getInt(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_SERVER_PORT)));
+
+        destination.setDefault(PREF_DBE_PROPERTY_SUPPORTED, source.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setDefault(PREF_HONOR_ZERO_PRECISION,   source.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setDefault(PREF_MONITOR_MASK,           source.getDefaultString(PREF_MONITOR_MASK));
+        destination.setDefault(PREF_CUSTOM_MASK,            source.getDefaultInt(PREF_CUSTOM_MASK));
+        destination.setDefault(PREF_VALUE_RTYP_MONITOR,     source.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setDefault(PREF_VARIABLE_LENGTH_ARRAY,  source.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setDefault(PREF_ADDR_LIST,              source.getDefaultString(PREF_ADDR_LIST));
+        destination.setDefault(PREF_AUTO_ADDR_LIST,         source.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setDefault(PREF_BEACON_PERIOD,          source.getDefaultDouble(PREF_BEACON_PERIOD));
+        destination.setDefault(PREF_CONNECTION_TIMEOUT,     source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setDefault(PREF_MAX_ARRAY_SIZE,         source.getDefaultInt(PREF_MAX_ARRAY_SIZE));
+        destination.setDefault(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
+        destination.setDefault(PREF_REPEATER_PORT,          source.getDefaultInt(PREF_REPEATER_PORT));
+        destination.setDefault(PREF_SERVER_PORT,            source.getDefaultInt(PREF_SERVER_PORT));
+
+        destination.setValue(PREF_DBE_PROPERTY_SUPPORTED, source.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setValue(PREF_HONOR_ZERO_PRECISION,   source.getBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setValue(PREF_MONITOR_MASK,           source.getString(PREF_MONITOR_MASK));
+        destination.setValue(PREF_CUSTOM_MASK,            source.getInt(PREF_CUSTOM_MASK));
+        destination.setValue(PREF_VALUE_RTYP_MONITOR,     source.getBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setValue(PREF_VARIABLE_LENGTH_ARRAY,  source.getString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setValue(PREF_ADDR_LIST,              source.getString(PREF_ADDR_LIST));
+        destination.setValue(PREF_AUTO_ADDR_LIST,         source.getBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setValue(PREF_BEACON_PERIOD,          source.getDouble(PREF_BEACON_PERIOD));
+        destination.setValue(PREF_CONNECTION_TIMEOUT,     source.getDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setValue(PREF_MAX_ARRAY_SIZE,         source.getInt(PREF_MAX_ARRAY_SIZE));
+        destination.setValue(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
+        destination.setValue(PREF_REPEATER_PORT,          source.getInt(PREF_REPEATER_PORT));
+        destination.setValue(PREF_SERVER_PORT,            source.getInt(PREF_SERVER_PORT));
+
+    }
 
     /**
      * Create and instance of this class loading it from the given folder.
@@ -132,22 +190,22 @@ public class ChannelAccess {
     public ChannelAccess ( IPreferenceStore store ) {
         this(
             new DataSourceOptions(
-                store.getBoolean(ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED),
-                store.getBoolean(ChannelAccess.PREF_HONOR_ZERO_PRECISION),
-                MonitorMask.fromString(store.getString(ChannelAccess.PREF_MONITOR_MASK)),
-                store.getInt(ChannelAccess.PREF_CUSTOM_MASK),
-                store.getBoolean(ChannelAccess.PREF_VALUE_RTYP_MONITOR),
-                VariableArraySupport.fromString(store.getString(ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY))
+                store.getBoolean(PREF_DBE_PROPERTY_SUPPORTED),
+                store.getBoolean(PREF_HONOR_ZERO_PRECISION),
+                MonitorMask.fromString(store.getString(PREF_MONITOR_MASK)),
+                store.getInt(PREF_CUSTOM_MASK),
+                store.getBoolean(PREF_VALUE_RTYP_MONITOR),
+                VariableArraySupport.fromString(store.getString(PREF_VARIABLE_LENGTH_ARRAY))
             ),
             new JCAContext(
-                store.getString(ChannelAccess.PREF_ADDR_LIST),
-                store.getBoolean(ChannelAccess.PREF_AUTO_ADDR_LIST),
-                store.getDouble(ChannelAccess.PREF_BEACON_PERIOD),
-                store.getDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT),
-                store.getInt(ChannelAccess.PREF_MAX_ARRAY_SIZE),
-                store.getBoolean(ChannelAccess.PREF_PURE_JAVA),
-                store.getInt(ChannelAccess.PREF_REPEATER_PORT),
-                store.getInt(ChannelAccess.PREF_SERVER_PORT)
+                store.getString(PREF_ADDR_LIST),
+                store.getBoolean(PREF_AUTO_ADDR_LIST),
+                store.getDouble(PREF_BEACON_PERIOD),
+                store.getDouble(PREF_CONNECTION_TIMEOUT),
+                store.getInt(PREF_MAX_ARRAY_SIZE),
+                store.getBoolean(PREF_PURE_JAVA),
+                store.getInt(PREF_REPEATER_PORT),
+                store.getInt(PREF_SERVER_PORT)
             )
         );
     }
@@ -181,7 +239,10 @@ public class ChannelAccess {
         try ( Writer writer = new FileWriter(new File(caDir, CA_FILE)) ) {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
-            writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", DIIRTPreferencesPlugin.get().getDIIRTHome()));
+
+            if ( DIIRTPreferencesPlugin.get() != null ) {
+                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", DIIRTPreferencesPlugin.get().getDIIRTHome()));
+            }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);

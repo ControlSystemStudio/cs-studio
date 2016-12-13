@@ -65,7 +65,6 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
     private BooleanFieldEditor    honorZeropRecisionEditor;
     private BooleanFieldEditor    valueRTYPMonitorEditor;
     private RadioGroupFieldEditor variableArrayEditor;
-    private ChannelAccess         cancelData = null;
 
     /**
      * Create the preference page.
@@ -223,14 +222,13 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
     }
 
     @Override
-    protected String initializeValues ( IPreferenceStore store ) {
+    protected void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore ) {
+        ChannelAccess.copy(store, cancelStore);
+    }
 
-        String confDir = super.initializeValues(store);
-
-        cancelData = new ChannelAccess(store);
-
-        return confDir;
-
+    @Override
+    protected void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore ) {
+        ChannelAccess.copy(cancelStore, store);
     }
 
 }

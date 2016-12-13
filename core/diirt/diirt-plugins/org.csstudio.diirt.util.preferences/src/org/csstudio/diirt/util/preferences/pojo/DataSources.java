@@ -26,6 +26,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -63,6 +66,26 @@ public class DataSources {
 
 	@XmlAttribute( name = "version", required = true )
 	public String version = DATASOURCES_VERSION;
+
+    /**
+     * Copy the {@link DataSources} parameters from a source store to a
+     * destination one.
+     *
+     * @param source The source preference store.
+     * @param destination The destination preference store.
+     */
+    public static void copy ( IPreferenceStore source, IPreferenceStore destination ) {
+
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT),   source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT)));
+        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER), source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER)));
+
+        destination.setDefault(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
+        destination.setDefault(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
+
+        destination.setValue(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
+        destination.setValue(PREF_DELIMITER, source.getString(PREF_DELIMITER));
+
+    }
 
 	/**
 	 * Create and instance of this class loading it from the given folder.
@@ -107,8 +130,8 @@ public class DataSources {
 
     public DataSources ( IPreferenceStore store ) {
         this(new CompositeDataSource(
-            CompositeDataSource.DataSourceProtocol.fromString(store.getString(DataSources.PREF_DEFAULT)),
-            store.getString(DataSources.PREF_DELIMITER)
+            CompositeDataSource.DataSourceProtocol.fromString(store.getString(PREF_DEFAULT)),
+            store.getString(PREF_DELIMITER)
         ));
     }
 
@@ -118,6 +141,42 @@ public class DataSources {
 
         this.compositeDataSource = compositeDataSource;
 
+    }
+
+    @Override
+    public int hashCode ( ) {
+        return new HashCodeBuilder(19, 311)
+            .append(compositeDataSource)
+            .append(version)
+            .toHashCode();
+    }
+
+    @Override
+    public boolean equals ( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
+        } else if ( obj == this ) {
+            return true;
+        } else if ( obj.getClass() != getClass() ) {
+            return false;
+        }
+
+        DataSources ds = (DataSources) obj;
+
+        return new EqualsBuilder()
+            .append(compositeDataSource, ds.compositeDataSource)
+            .append(version, ds.version)
+            .isEquals();
+
+    }
+
+    @Override
+    public String toString ( ) {
+        return new ToStringBuilder(this)
+            .append("compositeDataSource", compositeDataSource)
+            .append("version", version)
+            .toString();
     }
 
     /**
@@ -139,7 +198,10 @@ public class DataSources {
         try ( Writer writer = new FileWriter(new File(dsDir, DATASOURCES_FILE)) ) {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
-            writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", DIIRTPreferencesPlugin.get().getDIIRTHome()));
+
+            if ( DIIRTPreferencesPlugin.get() != null ) {
+                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", DIIRTPreferencesPlugin.get().getDIIRTHome()));
+            }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);

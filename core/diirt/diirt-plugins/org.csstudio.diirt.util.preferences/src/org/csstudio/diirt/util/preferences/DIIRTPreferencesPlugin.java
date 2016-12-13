@@ -85,7 +85,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public static DIIRTPreferencesPlugin get ( ) {
 
-        if ( firstAccess ) {
+        if ( firstAccess && instance != null ) {
             instance.getPreferenceStore().getString(PREF_CONFIGURATION_DIRECTORY);
             firstAccess = false;
         }
