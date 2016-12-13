@@ -267,6 +267,7 @@ public abstract class ArchiveListGUI
                         for (ArchiveInfo info : infos)
                             archives.add(new ArchiveDataSource(url, info.getKey(), info.getName(), info.getDescription()));
                         archive_table.setInput(archives);
+                        // If a default archive engine is set for this URL, select it in the table.
                         for (ArchiveDataSource dataSource : default_archives)
                         {
                             if (dataSource.getUrl().equals(url) && archives.contains(dataSource))
