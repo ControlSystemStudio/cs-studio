@@ -261,6 +261,8 @@ public class WaveformView extends DataBrowserAwareView
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
+        if (this.model == model)
+            return;
         removeAnnotation();
         this.model = model;
         if (old_model != model)
