@@ -9,10 +9,13 @@
 package org.csstudio.diirt.util.preferences.pojo;
 
 import java.text.MessageFormat;
+import java.util.logging.Level;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
+
+import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
@@ -103,7 +106,21 @@ public class DataSourceOptions {
         /**
          * A number corresponding to the mask itself.
          */
-        CUSTOM
+        CUSTOM;
+
+        public static MonitorMask fromString ( String monitorMask ) {
+
+            MonitorMask mm = MonitorMask.VALUE;
+
+            try {
+                mm = MonitorMask.valueOf(monitorMask);
+            } catch ( Exception ex ){
+                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid monitor mask [{0}].", monitorMask), ex);
+            }
+
+            return mm;
+
+        }
 
     }
 
@@ -128,14 +145,18 @@ public class DataSourceOptions {
          */
         FALSE(Boolean.FALSE.toString());
 
-        private final String representation;
+        public static VariableArraySupport fromString ( String variableArraySupportRepresentation ) {
 
-        private VariableArraySupport ( String representation ) {
-            this.representation = representation;
-        }
+            VariableArraySupport vas = VariableArraySupport.AUTO;
 
-        public String representation() {
-            return representation;
+            try {
+                vas = VariableArraySupport.representationOf(variableArraySupportRepresentation);
+            } catch ( Exception ex ){
+                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid cariable array support [{0}].", variableArraySupportRepresentation), ex);
+            }
+
+            return vas;
+
         }
 
         public static VariableArraySupport representationOf ( String repr ) {
@@ -148,6 +169,16 @@ public class DataSourceOptions {
 
             throw new IllegalArgumentException(MessageFormat.format("Illegal representation: {0}", repr));
 
+        }
+
+        private final String representation;
+
+        private VariableArraySupport ( String representation ) {
+            this.representation = representation;
+        }
+
+        public String representation() {
+            return representation;
         }
 
     }

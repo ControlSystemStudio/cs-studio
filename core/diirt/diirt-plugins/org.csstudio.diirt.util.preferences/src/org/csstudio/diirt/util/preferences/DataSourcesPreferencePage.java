@@ -9,6 +9,13 @@
 package org.csstudio.diirt.util.preferences;
 
 
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.CA_DIR;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.CA_FILE;
+import static org.csstudio.diirt.util.preferences.pojo.DataSources.DATASOURCES_DIR;
+import static org.csstudio.diirt.util.preferences.pojo.DataSources.DATASOURCES_FILE;
+import static org.csstudio.diirt.util.preferences.pojo.DataSources.PREF_DEFAULT;
+import static org.csstudio.diirt.util.preferences.pojo.DataSources.PREF_DELIMITER;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +25,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
+import org.csstudio.diirt.util.preferences.pojo.DataSources;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -65,6 +74,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
     private Image                folderImage = null;
     private TreeViewer           treeViewer;
     private Image                xmlImage    = null;
+    private DataSources          cancelData  = null;
 
     /**
      * Create the preference page.
@@ -94,11 +104,12 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.getTextControl(container).setEditable(false);
         directoryEditor.getTextControl(container).setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         directoryEditor.getTextControl(container).setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
+
         addField(directoryEditor, container, false, () -> store.getString(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY));
 
         Composite treeComposite = new Composite(container, SWT.NONE);
-
         GridData gd_treeComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+
         gd_treeComposite.heightHint = -14;
         treeComposite.setLayoutData(gd_treeComposite);
         treeComposite.setLayout(new GridLayout());
@@ -106,6 +117,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         treeViewer = new TreeViewer(treeComposite);
 
         GridData gridData = new GridData(GridData.FILL_BOTH);
+
         gridData.heightHint = -16;
         treeViewer.getTree().setLayoutData(gridData);
         treeViewer.setLabelProvider(new FileTreeLabelProvider());
@@ -138,28 +150,17 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
         cdsGroup.setLayout(cdsGroupLayout);
 
-        defaultDataSourceEditor = new ComboFieldEditor(DIIRTPreferencesPlugin.PREF_DS_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, DIIRTPreferencesPlugin.AVAILABLE_DATA_SOURCES, cdsGroup);
+        defaultDataSourceEditor = new ComboFieldEditor(PREF_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, DIIRTPreferencesPlugin.AVAILABLE_DATA_SOURCES, cdsGroup);
 
-        addField(
-            defaultDataSourceEditor,
-            cdsGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DEFAULT)
-        );
+        addField(defaultDataSourceEditor, cdsGroup, true, () -> store.getDefaultString(PREF_DEFAULT), () -> store.getString(PREF_DEFAULT));
 
-        delimiterEditor = new StringFieldEditor(DIIRTPreferencesPlugin.PREF_DS_DELIMITER, Messages.DSPP_delimiterCaption_text, cdsGroup);
+        delimiterEditor = new StringFieldEditor(PREF_DELIMITER, Messages.DSPP_delimiterCaption_text, cdsGroup);
 
         delimiterEditor.getTextControl(cdsGroup).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-        addField(
-            delimiterEditor,
-            cdsGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_DS_DELIMITER)
-        );
 
-        initializeValues();
+        addField(delimiterEditor, cdsGroup, true, () -> store.getDefaultString(PREF_DELIMITER), () -> store.getString(PREF_DELIMITER));
+
+        initializeValues(store);
 
         return container;
 
@@ -186,6 +187,25 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             }
 
         });
+
+    }
+
+    @Override
+    protected String initializeValues ( IPreferenceStore store ) {
+
+        String confDir = super.initializeValues(store);
+
+        lastPath = confDir;
+        cancelData = new DataSources(store);
+
+        directoryEditor.setStringValue(confDir);
+        directoryEditor.setFilterPath(new File(confDir).getParentFile());
+
+        if ( Files.exists(Paths.get(confDir)) ) {
+            treeViewer.setInput(confDir);
+        }
+
+        return confDir;
 
     }
 
@@ -217,10 +237,10 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             lastPath = choice;
 
             Path parentPath = Paths.get(choice);
-            Path dsPath = Paths.get(parentPath.toString(), DIIRTPreferencesPlugin.DATASOURCES_DIR);
-            Path dsFile = Paths.get(dsPath.toString(), DIIRTPreferencesPlugin.DATASOURCES_FILE);
-            Path caPath = Paths.get(dsPath.toString(), DIIRTPreferencesPlugin.CA_DIR);
-            Path caFile = Paths.get(caPath.toString(), DIIRTPreferencesPlugin.CA_FILE);
+            Path dsPath = Paths.get(parentPath.toString(), DATASOURCES_DIR);
+            Path dsFile = Paths.get(dsPath.toString(), DATASOURCES_FILE);
+            Path caPath = Paths.get(dsPath.toString(), CA_DIR);
+            Path caFile = Paths.get(caPath.toString(), CA_FILE);
             Path[] content = new Path[] { dsPath, dsFile, caPath, caFile };
 
             if ( Arrays.asList(content).stream().anyMatch(p -> Files.exists(p, LinkOption.NOFOLLOW_LINKS))  ) {
@@ -240,7 +260,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             try {
                 DIIRTPreferencesPlugin.get().exportConfiguration(parentPath.toFile());
                 notifyInformation(NLS.bind(Messages.DSPP_exportSuccessful_message, choice));
-            } catch ( JAXBException | IOException ex ) {
+            } catch ( JAXBException | IOException | XMLStreamException ex ) {
                 notifyWarning(NLS.bind(Messages.DSPP_exportFailed_message, choice, ex.getMessage()));
             }
 
@@ -275,51 +295,6 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         }
 
         return xmlImage;
-
-    }
-
-    /**
-     * Initialize widgets with values from the preferences store.
-     */
-    private void initializeValues ( ) {
-
-        IPreferenceStore store = getPreferenceStore();
-        String confDir = store.getString(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY);
-
-        try {
-            confDir = DIIRTPreferencesPlugin.resolvePlatformPath(confDir);
-        } catch ( IOException ex ) {
-            notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, confDir));
-        }
-
-        lastPath = confDir;
-
-        directoryEditor.setStringValue(confDir);
-        directoryEditor.setFilterPath(new File(confDir).getParentFile());
-
-        if ( verifyAndNotifyWarning(confDir) ) {
-            DIIRTPreferencesPlugin.get().updateDefaults(confDir, store);
-            reloadEditors();
-        }
-
-        if ( Files.exists(Paths.get(confDir)) ) {
-            treeViewer.setInput(confDir);
-        }
-
-    }
-
-    /**
-     * @param path The path to be verified.
-     * @return {@code true} if the path is a valid one pointing to a DIIRT
-     *         configuration directory.
-     */
-    private boolean verifyAndNotifyWarning ( final String path ) {
-
-        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
-
-        notifyWarning(message);
-
-        return ( message == null );
 
     }
 
@@ -364,8 +339,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
                 lastPath = choice;
 
                 if ( verifyAndNotifyWarning(choice) ) {
-                    DIIRTPreferencesPlugin.get().updateDefaults(choice, store);
-                    DIIRTPreferencesPlugin.get().updateValues(choice, store);
+                    DIIRTPreferencesPlugin.get().updateDefaultsAndValues(choice, store);
                     reloadEditorsForAllPages();
                 }
 

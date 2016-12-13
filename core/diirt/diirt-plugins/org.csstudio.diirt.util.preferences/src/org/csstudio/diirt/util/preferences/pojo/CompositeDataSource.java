@@ -9,9 +9,14 @@
 package org.csstudio.diirt.util.preferences.pojo;
 
 
+import java.text.MessageFormat;
+import java.util.logging.Level;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
+
+import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 
 /**
  * Plain Old Java Object representing the "compositeDataSource" element of a
@@ -84,7 +89,21 @@ public class CompositeDataSource {
 		/**
 		 * System
 		 */
-		sys
+		sys;
+
+	    public static DataSourceProtocol fromString ( String dataSourceProtocol ) {
+
+	        DataSourceProtocol dsp = DataSourceProtocol.none;
+
+	        try {
+	            dsp = DataSourceProtocol.valueOf(dataSourceProtocol);
+	        } catch ( Exception ex ){
+	            DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", dataSourceProtocol), ex);
+	        }
+
+	        return dsp;
+
+	    }
 
 	}
 

@@ -15,3 +15,4 @@ Require-Bundle: org.eclipse.osgi,
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Import-Package: org.csstudio.utility.product
 Bundle-Activator: org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin
+Export-Package: org.csstudio.diirt.util.preferences

@@ -8,7 +8,24 @@
  */
 package org.csstudio.diirt.util.preferences;
 
+
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_ADDR_LIST;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_AUTO_ADDR_LIST;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_BEACON_PERIOD;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_CONNECTION_TIMEOUT;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_CUSTOM_MASK;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
+import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY;
+
 import org.csstudio.diirt.util.preferences.jface.DoubleFieldEditor;
+import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.csstudio.diirt.util.preferences.swt.Separator;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -22,7 +39,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IWorkbench;
 
 import gov.aps.jca.Monitor;
 
@@ -30,7 +46,6 @@ import gov.aps.jca.Monitor;
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 3 Nov 2016
- *
  */
 public class ChannelAccessPreferencePage extends BasePreferencePage {
 
@@ -50,6 +65,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
     private BooleanFieldEditor    honorZeropRecisionEditor;
     private BooleanFieldEditor    valueRTYPMonitorEditor;
     private RadioGroupFieldEditor variableArrayEditor;
+    private ChannelAccess         cancelData = null;
 
     /**
      * Create the preference page.
@@ -81,106 +97,63 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         contextGroup.setLayout(contextGroupLayout);
 
-        pureJavaEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, DIIRTPreferencesPlugin.AVAILABLE_MODES, contextGroup, false);
+        pureJavaEditor = new RadioGroupFieldEditor(PREF_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, DIIRTPreferencesPlugin.AVAILABLE_MODES, contextGroup, false);
 
-        addField(
-            pureJavaEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA)
-        );
+        addField(pureJavaEditor, contextGroup, true, () -> store.getDefaultString(PREF_PURE_JAVA), () -> store.getString(PREF_PURE_JAVA));
 
-        addressListEditor = new StringFieldEditor(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST, Messages.CAPP_addressListCaption_text, contextGroup);
+        addressListEditor = new StringFieldEditor(PREF_ADDR_LIST, Messages.CAPP_addressListCaption_text, contextGroup);
 
-        addField(
-            addressListEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST)
-        );
+        addField(addressListEditor, contextGroup, true, () -> store.getDefaultString(PREF_ADDR_LIST), () -> store.getString(PREF_ADDR_LIST));
 
-        autoAddressListEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST, Messages.CAPP_autoCheckButton_text, BooleanFieldEditor.SEPARATE_LABEL, contextGroup);
+        autoAddressListEditor = new BooleanFieldEditor(PREF_AUTO_ADDR_LIST, Messages.CAPP_autoCheckButton_text, BooleanFieldEditor.SEPARATE_LABEL, contextGroup);
 
-        addField(
-            autoAddressListEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultBoolean(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST),
-            () -> store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST)
-        );
+        addField(autoAddressListEditor, contextGroup, true, () -> store.getDefaultBoolean(PREF_AUTO_ADDR_LIST), () -> store.getBoolean(PREF_AUTO_ADDR_LIST));
 
         new Separator(contextGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        connectionTimeoutEditor = new DoubleFieldEditor(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT, Messages.CAPP_connectionTimeoutCaption_text, contextGroup);
+        connectionTimeoutEditor = new DoubleFieldEditor(PREF_CONNECTION_TIMEOUT, Messages.CAPP_connectionTimeoutCaption_text, contextGroup);
 
         connectionTimeoutEditor.setValidRange(0, 300);
         connectionTimeoutEditor.setTextLimit(32);
         connectionTimeoutEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
-        addField(
-            connectionTimeoutEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT)
-        );
 
-        beaconPeriodEditor = new DoubleFieldEditor(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD, Messages.CAPP_beaconPeriodCaption_text, contextGroup);
+        addField(connectionTimeoutEditor, contextGroup, true, () -> store.getDefaultString(PREF_CONNECTION_TIMEOUT), () -> store.getString(PREF_CONNECTION_TIMEOUT));
+
+        beaconPeriodEditor = new DoubleFieldEditor(PREF_BEACON_PERIOD, Messages.CAPP_beaconPeriodCaption_text, contextGroup);
 
         beaconPeriodEditor.setValidRange(0, 300);
         beaconPeriodEditor.setTextLimit(32);
         beaconPeriodEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
-        addField(
-            beaconPeriodEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD)
-        );
+
+        addField(beaconPeriodEditor, contextGroup, true, () -> store.getDefaultString(PREF_BEACON_PERIOD), () -> store.getString(PREF_BEACON_PERIOD));
 
         new Separator(contextGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        repeaterPortEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT, Messages.CAPP_repeaterPortCaption_text, contextGroup);
+        repeaterPortEditor = new IntegerFieldEditor(PREF_REPEATER_PORT, Messages.CAPP_repeaterPortCaption_text, contextGroup);
 
         repeaterPortEditor.setValidRange(1024, 65535);
         repeaterPortEditor.setTextLimit(32);
         repeaterPortEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
-        addField(
-            repeaterPortEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT)
-        );
 
-        serverPortEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextGroup);
+        addField(repeaterPortEditor, contextGroup, true, () -> store.getDefaultString(PREF_REPEATER_PORT), () -> store.getString(PREF_REPEATER_PORT));
+
+        serverPortEditor = new IntegerFieldEditor(PREF_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextGroup);
 
         serverPortEditor.setValidRange(1024, 65535);
         serverPortEditor.setTextLimit(32);
         serverPortEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
-        addField(
-            serverPortEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT)
-        );
+
+        addField(serverPortEditor, contextGroup, true, () -> store.getDefaultString(PREF_SERVER_PORT), () -> store.getString(PREF_SERVER_PORT));
 
         new Separator(contextGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        maxArraySizeEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE, Messages.CAPP_maxArraySizeSpinnerCaption_text, contextGroup);
+        maxArraySizeEditor = new IntegerFieldEditor(PREF_MAX_ARRAY_SIZE, Messages.CAPP_maxArraySizeSpinnerCaption_text, contextGroup);
 
         maxArraySizeEditor.setValidRange(1024, 524288);
         maxArraySizeEditor.setTextLimit(32);
         maxArraySizeEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
-        addField(
-            maxArraySizeEditor,
-            contextGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE)
-        );
+
+        addField(maxArraySizeEditor, contextGroup, true, () -> store.getDefaultString(PREF_MAX_ARRAY_SIZE), () -> store.getString(PREF_MAX_ARRAY_SIZE));
 
         optionsGroup = new Group(container, SWT.NONE);
 
@@ -191,14 +164,14 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         optionsGroup.setLayout(optionsGroupLayout);
 
-        monitorMaskEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK, Messages.CAPP_monitorMaskCaption_text, 4, DIIRTPreferencesPlugin.AVAILABLE_MONITOR_MASKS, optionsGroup, false);
+        monitorMaskEditor = new RadioGroupFieldEditor(PREF_MONITOR_MASK, Messages.CAPP_monitorMaskCaption_text, 4, DIIRTPreferencesPlugin.AVAILABLE_MONITOR_MASKS, optionsGroup, false);
 
         addField(
             monitorMaskEditor,
             optionsGroup,
             true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK),
+            () -> store.getDefaultString(PREF_MONITOR_MASK),
+            () -> store.getString(PREF_MONITOR_MASK),
             e -> {
 
                 customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(e.getNewValue()), optionsGroup);
@@ -214,75 +187,50 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
             }
         );
 
-        customMaskEditor = new IntegerFieldEditor(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK, "", optionsGroup);
+        customMaskEditor = new IntegerFieldEditor(PREF_CUSTOM_MASK, "", optionsGroup);
 
-        customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK)), optionsGroup);
+        customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(store.getString(PREF_MONITOR_MASK)), optionsGroup);
         customMaskEditor.setValidRange(0, 65536);
         customMaskEditor.setTextLimit(32);
         customMaskEditor.getTextControl(optionsGroup).setLayoutData(createIntegerFieldEditorGridData());
 
-        addField(
-            customMaskEditor,
-            optionsGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK)
-        );
+        addField(customMaskEditor, optionsGroup, true, () -> store.getDefaultString(PREF_CUSTOM_MASK), () -> store.getString(PREF_CUSTOM_MASK));
 
         new Separator(optionsGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        variableArrayEditor = new RadioGroupFieldEditor(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY, Messages.CAPP_variableLengthArrayCaption_text, 3, DIIRTPreferencesPlugin.AVAILABLE_VAR_ARRAY_SUPPORTS, optionsGroup, false);
+        variableArrayEditor = new RadioGroupFieldEditor(PREF_VARIABLE_LENGTH_ARRAY, Messages.CAPP_variableLengthArrayCaption_text, 3, DIIRTPreferencesPlugin.AVAILABLE_VAR_ARRAY_SUPPORTS, optionsGroup, false);
 
-        addField(
-            variableArrayEditor,
-            optionsGroup,
-            true,
-            () -> store.getDefaultString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY),
-            () -> store.getString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY)
-        );
+        addField(variableArrayEditor, optionsGroup, true, () -> store.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY), () -> store.getString(PREF_VARIABLE_LENGTH_ARRAY));
 
         new Separator(optionsGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        dbePropertySupportedEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED, Messages.CAPP_dbePropertySupportedCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+        dbePropertySupportedEditor = new BooleanFieldEditor(PREF_DBE_PROPERTY_SUPPORTED, Messages.CAPP_dbePropertySupportedCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
 
-        addField(
-            dbePropertySupportedEditor,
-            optionsGroup,
-            true,
-            () -> store.getDefaultBoolean(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED),
-            () -> store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED)
-        );
+        addField(dbePropertySupportedEditor, optionsGroup, true, () -> store.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED), () -> store.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
 
-        honorZeropRecisionEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION, Messages.CAPP_honorCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+        honorZeropRecisionEditor = new BooleanFieldEditor(PREF_HONOR_ZERO_PRECISION, Messages.CAPP_honorCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
 
-        addField(
-            honorZeropRecisionEditor,
-            optionsGroup,
-            true,
-            () -> store.getDefaultBoolean(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION),
-            () -> store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION)
-        );
+        addField(honorZeropRecisionEditor, optionsGroup, true, () -> store.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION), () -> store.getBoolean(PREF_HONOR_ZERO_PRECISION));
 
-        valueRTYPMonitorEditor = new BooleanFieldEditor(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR, Messages.CAPP_valueOnlyCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
+        valueRTYPMonitorEditor = new BooleanFieldEditor(PREF_VALUE_RTYP_MONITOR, Messages.CAPP_valueOnlyCheckBox_text, BooleanFieldEditor.SEPARATE_LABEL, optionsGroup);
 
-        addField(
-            valueRTYPMonitorEditor,
-            optionsGroup,
-            true,
-            () -> store.getDefaultBoolean(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR),
-            () -> store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR)
-        );
+        addField(valueRTYPMonitorEditor, optionsGroup, true, () -> store.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR), () -> store.getBoolean(PREF_VALUE_RTYP_MONITOR));
+
+        initializeValues(store);
 
         return container;
 
     }
 
-    /**
-     * Initialize the preference page.
-     */
     @Override
-    public void init ( IWorkbench workbench ) {
-        // Initialize the preference page
+    protected String initializeValues ( IPreferenceStore store ) {
+
+        String confDir = super.initializeValues(store);
+
+        cancelData = new ChannelAccess(store);
+
+        return confDir;
+
     }
 
 }

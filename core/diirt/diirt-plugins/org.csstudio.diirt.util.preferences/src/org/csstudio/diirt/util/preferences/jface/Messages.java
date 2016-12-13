@@ -16,7 +16,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.csstudio.diirt.util.preferences.ui.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.diirt.util.preferences.jface.messages"; //$NON-NLS-1$
 
     public static String DoubleFieldEditor_errorMessage;
     public static String DoubleFieldEditor_errorMessageRange;

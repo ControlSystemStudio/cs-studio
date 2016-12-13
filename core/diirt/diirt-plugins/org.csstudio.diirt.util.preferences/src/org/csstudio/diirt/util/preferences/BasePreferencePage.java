@@ -205,6 +205,24 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     }
 
     /**
+     * Initialize widgets with values from the preferences store.
+     *
+     * @param store The data store.
+     * @return The DIIRT configuration path.
+     */
+    protected String initializeValues ( IPreferenceStore store ) {
+
+        String confDir = DIIRTPreferencesPlugin.get().getDIIRTHome();
+
+        if ( verifyAndNotifyWarning(confDir) ) {
+            reloadEditors();
+        }
+
+        return confDir;
+
+    }
+
+    /**
      * Displays an error message.
      *
      * @param message The message to be displayed.
@@ -326,6 +344,21 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
             }
 
         });
+
+    }
+
+    /**
+     * @param path The path to be verified.
+     * @return {@code true} if the path is a valid one pointing to a DIIRT
+     *         configuration directory.
+     */
+    protected boolean verifyAndNotifyWarning ( final String path ) {
+
+        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
+
+        notifyWarning(message);
+
+        return ( message == null );
 
     }
 

@@ -19,28 +19,20 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
-import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
-import org.csstudio.diirt.util.preferences.pojo.JCAContext;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.service.prefs.BackingStoreException;
 
 
 /**
@@ -76,39 +68,30 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         { Messages.CAPP_trueRadioButton_text,  VariableArraySupport.TRUE.representation()  },
         { Messages.CAPP_falseRadioButton_text, VariableArraySupport.FALSE.representation() },
     };
+    public static final String     CANCEL_PREFIX                  = "cancel.";
+    public static final String     DEFAULT_PREFIX                 = "default.";
     public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
     public static final String     PLATFORM_URI_PREFIX            = "platform:";
     public static final String     PREF_CONFIGURATION_DIRECTORY   = "diirt.home";
-    public static final String     PREF_CA_ADDR_LIST              = "diirt.ca.addr.list";
-    public static final String     PREF_CA_AUTO_ADDR_LIST         = "diirt.ca.auto.addr.list";
-    public static final String     PREF_CA_BEACON_PERIOD          = "diirt.ca.beacon.period";
-    public static final String     PREF_CA_CONNECTION_TIMEOUT     = "diirt.ca.connection.timeout";
-    public static final String     PREF_CA_CUSTOM_MASK            = "diirt.ca.custom.mask";
-    public static final String     PREF_CA_DBE_PROPERTY_SUPPORTED = "diirt.ca.dbe.property.supported";
-    public static final String     PREF_CA_HONOR_ZERO_PRECISION   = "diirt.ca.honor.zero.precision";
-    public static final String     PREF_CA_MAX_ARRAY_SIZE         = "diirt.ca.max.array.size";
-    public static final String     PREF_CA_MONITOR_MASK           = "diirt.ca.monitor.mask";
-    public static final String     PREF_CA_PURE_JAVA              = "diirt.ca.pure.java";
-    public static final String     PREF_CA_REPEATER_PORT          = "diirt.ca.repeater.port";
-    public static final String     PREF_CA_SERVER_PORT            = "diirt.ca.server.port";
-    public static final String     PREF_CA_VALUE_RTYP_MONITOR     = "diirt.ca.value.rtyp.monitor";
-    public static final String     PREF_CA_VARIABLE_LENGTH_ARRAY  = "diirt.ca.variable.length.array";
-    public static final String     PREF_DS_DEFAULT                = "diirt.datasource.default";
-    public static final String     PREF_DS_DELIMITER              = "diirt.datasource.delimiter";
-    public static final String     PREF_FIRST_ACCESS              = "diirt.firstAccess";
+    public static final String     PREF_DEFAULT_INITIALIZED       = "diirt.default.initialized";
     public static final String     USER_HOME_PARAMETER            = "@user.home";
 
-    public static final String CA_DIR              = "ca";
-    public static final String CA_FILE             = "ca.xml";
-    public static final String CA_VERSION          = "1";
-    public static final String DATASOURCES_DIR     = "datasources";
-    public static final String DATASOURCES_FILE    = "datasources.xml";
-    public static final String DATASOURCES_VERSION = "1";
+    private static DIIRTPreferencesPlugin instance    = null;
+    private static boolean                firstAccess = true;
 
-    private static DIIRTPreferencesPlugin instance = null;
+    public static String defaultPreferenceName ( String preferenceName ) {
+        return MessageFormat.format("{0}{1}", DEFAULT_PREFIX, preferenceName);
+    }
 
     public static DIIRTPreferencesPlugin get ( ) {
+
+        if ( firstAccess ) {
+            instance.getPreferenceStore().getString(PREF_CONFIGURATION_DIRECTORY);
+            firstAccess = false;
+        }
+
         return instance;
+
     }
 
     /**
@@ -130,7 +113,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
             return Messages.DPH_verifyDIIRTPath_blankPath_message;
         } else if ( !Files.exists(Paths.get(path)) ) {
             return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotExists_message, path);
-        } else if ( !Files.exists(Paths.get(path, DATASOURCES_DIR + File.separator + DATASOURCES_FILE)) ) {
+        } else if ( !Files.exists(Paths.get(path, DataSources.DATASOURCES_DIR + File.separator + DataSources.DATASOURCES_FILE)) ) {
             return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotValid_message, path);
         }
 
@@ -140,7 +123,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     /**
      * Return a valid path string (to be used with {@link File}'s methods) resolving
-     * the given {@code path} against the {@link #PLATFORM_URI_PREFIX} protocol.
+     * the given {@code path} against the {@link #PLATFORM_URI_PREFIX} protocol, or
+     * the {@link #USER_HOME_PARAMETER} macro.
      *
      * @param path The path to be resolved.
      * @return A filename valid for {@link File} operations.
@@ -183,288 +167,140 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
      * @throws JAXBException If there were some marshalling problems.
      * @throws IOException  If an error occurred writing the configuration.
      * @throws IllegalArgumentException  If an error occurred evaluating enumerations.
+     * @throws XMLStreamException If there were some marshalling problems.
      */
-    public void exportConfiguration ( File parent ) throws JAXBException, IOException, IllegalArgumentException {
+    public void exportConfiguration ( File parent ) throws JAXBException, IOException, IllegalArgumentException, XMLStreamException {
 
         if ( parent == null || !parent.exists() || !parent.isDirectory() ) {
             return;
         }
 
         IPreferenceStore store = getPreferenceStore();
-        DataSourceProtocol dsp = DataSourceProtocol.none;
 
-        try {
-            dsp = DataSourceProtocol.valueOf(store.getString(PREF_DS_DEFAULT));
-        } catch ( Exception ex ){
-            LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", store.getString(PREF_DS_DEFAULT)), ex);
-        }
-
-        File dsDir = new File(parent, DATASOURCES_DIR);
-
-        FileUtils.forceMkdir(dsDir);
-
-        DataSources ds = new DataSources(new CompositeDataSource(
-            dsp,
-            store.getString(PREF_DS_DELIMITER)
-        ));
-        JAXBContext context = JAXBContext.newInstance(DataSources.class);
-        Marshaller marshaller = context.createMarshaller();
-
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(ds, new File(dsDir, DATASOURCES_FILE));
-
-        File caDir = new File(dsDir, CA_DIR);
-
-        FileUtils.forceMkdir(caDir);
-
-        ChannelAccess ca = new ChannelAccess(
-            new DataSourceOptions(
-                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_DBE_PROPERTY_SUPPORTED),
-                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_HONOR_ZERO_PRECISION),
-                MonitorMask.valueOf(store.getString(DIIRTPreferencesPlugin.PREF_CA_MONITOR_MASK)),
-                store.getInt(DIIRTPreferencesPlugin.PREF_CA_CUSTOM_MASK),
-                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_VALUE_RTYP_MONITOR),
-                VariableArraySupport.representationOf(store.getString(DIIRTPreferencesPlugin.PREF_CA_VARIABLE_LENGTH_ARRAY))
-            ),
-            new JCAContext(
-                store.getString(DIIRTPreferencesPlugin.PREF_CA_ADDR_LIST),
-                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_AUTO_ADDR_LIST),
-                store.getDouble(DIIRTPreferencesPlugin.PREF_CA_BEACON_PERIOD),
-                store.getDouble(DIIRTPreferencesPlugin.PREF_CA_CONNECTION_TIMEOUT),
-                store.getInt(DIIRTPreferencesPlugin.PREF_CA_MAX_ARRAY_SIZE),
-                store.getBoolean(DIIRTPreferencesPlugin.PREF_CA_PURE_JAVA),
-                store.getInt(DIIRTPreferencesPlugin.PREF_CA_REPEATER_PORT),
-                store.getInt(DIIRTPreferencesPlugin.PREF_CA_SERVER_PORT)
-            )
-        );
-
-        context = JAXBContext.newInstance(ChannelAccess.class);
-        marshaller = context.createMarshaller();
-
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(ca, new File(caDir, CA_FILE));
+        new DataSources(store).toFile(parent);
+        new ChannelAccess(store).toFile(parent);
 
     }
+
+    /**
+     * @return The resolved path to the DIIRT home.
+     */
+    public String getDIIRTHome ( ) {
+        return getDIIRTHome(getPreferenceStore());
+    }
+
+    /**
+     * Update all stored defaults, current defaults and values from the files in the
+     * given DIIRT configuration directory.
+     *
+     * @param confDir The DIIRT configuration directory.
+     * @param store   The preference store.
+     */
+    public void updateDefaultsAndValues ( String confDir, IPreferenceStore store ) {
+
+        if ( StringUtils.isBlank(confDir) ) {
+            LOGGER.warning("Null, empty or blank 'confDir'");
+            return;
+        } else {
+            try {
+                confDir = resolvePlatformPath(confDir);
+            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
+                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
+                return;
+            }
+        }
+
+        File confFolder = new File(confDir);
+        DataSources ds = new DataSources();
+        ChannelAccess ca = new ChannelAccess();
+
+        try {
+            ds = DataSources.fromFile(confFolder);
+            ca = ChannelAccess.fromFile(confFolder);
+        } catch ( JAXBException | IOException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file(s) [{0}].", confDir), ex);
+        }
+
+        ds.updateDefaultsAndValues(store);
+        ca.updateDefaultsAndValues(store);
+
+        try {
+            ((IPersistentPreferenceStore) store).save();
+        } catch ( IOException ex ) {
+            DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
+        }
+
+    }
+
+    /**
+     * Update current defaults and values from the stored ones.
+     *
+     * @param store The preference store.
+     */
+    public void updateValues ( IPreferenceStore store ) {
+        DataSources.updateValues(store);
+        ChannelAccess.updateValues(store);
+    }
+
+
 
     @Override
-    public IPreferenceStore getPreferenceStore ( ) {
+    protected void initializeDefaultPreferences ( IPreferenceStore store ) {
 
-        IPreferenceStore store = super.getPreferenceStore();
+        // Don't move the following statement: it is required at this time.
+        String diirtHome = getDIIRTHome(store);
 
         synchronized ( this ) {
-            if ( store.getBoolean(PREF_FIRST_ACCESS) ) {
-
-                String diirtHome = store.getString(PREF_CONFIGURATION_DIRECTORY);
+            if ( !store.getBoolean(PREF_DEFAULT_INITIALIZED) ) {
 
                 if ( verifyDIIRTPath(diirtHome) == null ) {
-                    updateDefaults(diirtHome, store);
-                    updateValues(diirtHome, store);
+                    updateDefaultsAndValues(diirtHome, store);
                 }
 
-                store.setValue(PREF_FIRST_ACCESS, false);
+                store.setValue(PREF_DEFAULT_INITIALIZED, true);
 
                 try {
-                    InstanceScope.INSTANCE.getNode("org.csstudio.diirt.util.preferences").flush();
-                } catch ( BackingStoreException ex ) {
-                    LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
+                    ((IPersistentPreferenceStore) store).save();
+                } catch ( IOException ex ) {
+                  DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
+                }
+
+            } else {
+                updateValues(store);
+            }
+        }
+
+    }
+
+    private String getDIIRTHome ( IPreferenceStore store ) {
+
+        String diirtHome = store.getString(PREF_CONFIGURATION_DIRECTORY);
+
+        try {
+
+            String resolvedDir = resolvePlatformPath(diirtHome);
+
+            if ( !StringUtils.equals(diirtHome, resolvedDir) ) {
+
+                LOGGER.log(Level.CONFIG, "DIIRT home path resolved [before: {0}, after: {1}].", new Object[] { diirtHome, resolvedDir });
+
+                diirtHome = resolvedDir;
+
+                store.putValue(PREF_CONFIGURATION_DIRECTORY, diirtHome);
+
+                try {
+                    ( (IPersistentPreferenceStore) store ).save();
+                } catch ( IOException ex ) {
+                    DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
                 }
 
             }
+
+        } catch ( IOException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT home [{0}].", diirtHome), ex);
         }
 
-        return store;
-
-    }
-
-    /**
-     * Updates all default values reading them from the files in the
-     * given DIIRT configuration directory.
-     *
-     * @param confDir The DIIRT configuration directory.
-     * @param store   The preference store.
-     */
-    public void updateDefaults ( String confDir, IPreferenceStore store ) {
-
-        if ( StringUtils.isBlank(confDir) ) {
-            LOGGER.warning("Null, empty or blank 'confDir'");
-            return;
-        } else {
-            try {
-                confDir = resolvePlatformPath(confDir);
-            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
-                return;
-            }
-        }
-
-        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
-        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
-
-        try {
-            updateDataSourcesDefaults(datasourcesFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
-        }
-
-        File caDir = new File(datasourcesDir, CA_DIR);
-        File caFile = new File(caDir, CA_FILE);
-
-        try {
-            updateChannelAccessDefaults(caFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", caFile.toString()), ex);
-        }
-
-    }
-
-    /**
-     * Updates all values reading them from the files in the
-     * given DIIRT configuration directory.
-     *
-     * @param confDir The DIIRT configuration directory.
-     * @param store   The preference store.
-     */
-    public void updateValues ( String confDir, IPreferenceStore store ) {
-
-        if ( StringUtils.isBlank(confDir) ) {
-            LOGGER.warning("Null, empty or blank 'confDir'");
-            return;
-        } else {
-            try {
-                confDir = resolvePlatformPath(confDir);
-            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
-                return;
-            }
-        }
-
-        File datasourcesDir = new File(confDir, DATASOURCES_DIR);
-        File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
-
-        try {
-            updateDataSourcesValues(datasourcesFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", datasourcesFile.toString()), ex);
-        }
-
-        File caDir = new File(datasourcesDir, CA_DIR);
-        File caFile = new File(caDir, CA_FILE);
-
-        try {
-            updateChannelAccessValues(caFile, store);
-        } catch ( IOException | JAXBException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file [{0}].", caFile.toString()), ex);
-        }
-
-    }
-
-    private void updateChannelAccessDefaults ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
-
-        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
-        Unmarshaller u = jc.createUnmarshaller();
-        ChannelAccess ca = (ChannelAccess) u.unmarshal(caFile);
-
-        if ( !CA_VERSION.equals(ca.version) ) {
-            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
-        }
-
-        DataSourceOptions dso = ca.dataSourceOptions;
-
-        if ( dso != null ) {
-            store.setDefault(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
-            store.setDefault(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
-            store.setDefault(PREF_CA_MONITOR_MASK, dso.monitorMask().name());
-            store.setDefault(PREF_CA_CUSTOM_MASK, dso.monitorMaskCustomValue());
-            store.setDefault(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
-            store.setDefault(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
-        }
-
-        JCAContext jcac = ca.jcaContext;
-
-        if ( jcac != null ) {
-            store.setDefault(PREF_CA_ADDR_LIST, StringUtils.defaultString(jcac.addrList));
-            store.setDefault(PREF_CA_AUTO_ADDR_LIST, jcac.autoAddrList);
-            store.setDefault(PREF_CA_BEACON_PERIOD, jcac.beaconPeriod);
-            store.setDefault(PREF_CA_CONNECTION_TIMEOUT, jcac.connectionTimeout);
-            store.setDefault(PREF_CA_MAX_ARRAY_SIZE, jcac.maxArrayBytes);
-            store.setDefault(PREF_CA_PURE_JAVA, jcac.pureJava);
-            store.setDefault(PREF_CA_REPEATER_PORT, jcac.repeaterPort);
-            store.setDefault(PREF_CA_SERVER_PORT, jcac.serverPort);
-        }
-
-    }
-
-    private void updateChannelAccessValues ( File caFile, IPreferenceStore store ) throws IOException, JAXBException {
-
-        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
-        Unmarshaller u = jc.createUnmarshaller();
-        ChannelAccess ca = (ChannelAccess) u.unmarshal(caFile);
-
-        if ( !CA_VERSION.equals(ca.version) ) {
-            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
-        }
-
-        DataSourceOptions dso = ca.dataSourceOptions;
-
-        if ( dso != null ) {
-            store.setValue(PREF_CA_DBE_PROPERTY_SUPPORTED, dso.dbePropertySupported);
-            store.setValue(PREF_CA_HONOR_ZERO_PRECISION, dso.honorZeroPrecision);
-            store.setValue(PREF_CA_MONITOR_MASK, dso.monitorMask().name());
-            store.setValue(PREF_CA_CUSTOM_MASK, dso.monitorMaskCustomValue());
-            store.setValue(PREF_CA_VALUE_RTYP_MONITOR, dso.rtypeValueOnly);
-            store.setValue(PREF_CA_VARIABLE_LENGTH_ARRAY, ObjectUtils.defaultIfNull(dso.varArraySupported, VariableArraySupport.AUTO).name());
-        }
-
-        JCAContext jcac = ca.jcaContext;
-
-        if ( jcac != null ) {
-            store.setValue(PREF_CA_ADDR_LIST, StringUtils.defaultString(jcac.addrList));
-            store.setValue(PREF_CA_AUTO_ADDR_LIST, jcac.autoAddrList);
-            store.setValue(PREF_CA_BEACON_PERIOD, jcac.beaconPeriod);
-            store.setValue(PREF_CA_CONNECTION_TIMEOUT, jcac.connectionTimeout);
-            store.setValue(PREF_CA_MAX_ARRAY_SIZE, jcac.maxArrayBytes);
-            store.setValue(PREF_CA_PURE_JAVA, jcac.pureJava);
-            store.setValue(PREF_CA_REPEATER_PORT, jcac.repeaterPort);
-            store.setValue(PREF_CA_SERVER_PORT, jcac.serverPort);
-        }
-
-    }
-
-    private void updateDataSourcesDefaults ( File datasourcesFile, IPreferenceStore store ) throws IOException, JAXBException {
-
-        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
-        Unmarshaller u = jc.createUnmarshaller();
-        DataSources ds = (DataSources) u.unmarshal(datasourcesFile);
-
-        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
-            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
-        }
-
-        CompositeDataSource cds = ds.compositeDataSource;
-
-        if ( cds != null ) {
-            store.setDefault(PREF_DS_DEFAULT, ObjectUtils.defaultIfNull(cds.defaultDataSource, DataSourceProtocol.none).name());
-            store.setDefault(PREF_DS_DELIMITER, cds.delimiter);
-        }
-
-    }
-
-    private void updateDataSourcesValues ( File datasourcesFile, IPreferenceStore store ) throws IOException, JAXBException {
-
-        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
-        Unmarshaller u = jc.createUnmarshaller();
-        DataSources ds = (DataSources) u.unmarshal(datasourcesFile);
-
-        if ( !DATASOURCES_VERSION.equals(ds.version) ) {
-            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", DATASOURCES_VERSION, ds.version));
-        }
-
-        CompositeDataSource cds = ds.compositeDataSource;
-
-        if ( cds != null ) {
-            store.setValue(PREF_DS_DEFAULT, ObjectUtils.defaultIfNull(cds.defaultDataSource, DataSourceProtocol.none).name());
-            store.setValue(PREF_DS_DELIMITER, cds.delimiter);
-        }
+        return diirtHome;
 
     }
 
