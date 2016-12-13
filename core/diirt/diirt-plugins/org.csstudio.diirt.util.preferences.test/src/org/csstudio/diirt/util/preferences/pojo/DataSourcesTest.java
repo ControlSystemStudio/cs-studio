@@ -9,6 +9,7 @@
 package org.csstudio.diirt.util.preferences.pojo;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -16,12 +17,14 @@ import static org.junit.Assert.assertNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
 import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.hamcrest.core.StringStartsWith;
 import org.junit.Test;
 
 
@@ -30,6 +33,8 @@ import org.junit.Test;
  * @version 1.0.0 13 Dec 2016
  */
 public class DataSourcesTest {
+
+    public static final Logger LOGGER = Logger.getLogger(DataSourcesTest.class.getName());
 
     @Test
     public void testConstructors ( ) {
@@ -106,6 +111,88 @@ public class DataSourcesTest {
         DataSources ds2 = DataSources.fromFile(confDir);
 
         assertEquals(ds1, ds2);
+
+        confDir = Files.createTempDirectory("diirt.test").toFile();
+        ds2.compositeDataSource.delimiter = "345";
+        ds2.compositeDataSource.defaultDataSource = DataSourceProtocol.file;
+
+        ds2.toFile(confDir);
+
+        DataSources ds3 = DataSources.fromFile(confDir);
+
+        assertEquals(ds2, ds3);
+
+        confDir = Files.createTempDirectory("diirt.test").toFile();
+        ds2.version = "1.3.42";
+
+        ds2.toFile(confDir);
+
+        try {
+            ds3 = DataSources.fromFile(confDir);
+        } catch ( IOException ex ) {
+            assertThat(ex.getMessage(), new StringStartsWith("Version mismatch:"));
+        }
+
+    }
+
+    @Test
+    public void testUpdate ( ) {
+
+        PreferenceStore store = new PreferenceStore();
+
+        store.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DEFAULT),   DataSourceProtocol.ca.name());
+        store.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DELIMITER), "qwe");
+
+        store.setDefault(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
+        store.setDefault(DataSources.PREF_DELIMITER, "zxc");
+
+        store.setValue(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
+        store.setValue(DataSources.PREF_DELIMITER, "asd");
+
+        store.setDefault("fakeKey1", "fakeValue1");
+        store.setValue("fakeKey2", "fakeValue2");
+
+        assertEquals(DataSourceProtocol.ca.name(), store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DEFAULT)));
+        assertEquals("qwe",                        store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DELIMITER)));
+
+        assertEquals(DataSourceProtocol.pva.name(), store.getDefaultString(DataSources.PREF_DEFAULT));
+        assertEquals("zxc",                         store.getDefaultString(DataSources.PREF_DELIMITER));
+
+        assertEquals(DataSourceProtocol.file.name(), store.getString(DataSources.PREF_DEFAULT));
+        assertEquals("asd",                          store.getString(DataSources.PREF_DELIMITER));
+
+        assertEquals("fakeValue1", store.getDefaultString("fakeKey1"));
+        assertEquals("fakeValue2", store.getString("fakeKey2"));
+
+        DataSources.updateValues(store);
+
+        assertEquals(DataSourceProtocol.ca.name(), store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DEFAULT)));
+        assertEquals("qwe",                        store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DELIMITER)));
+
+        assertEquals(DataSourceProtocol.ca.name(), store.getDefaultString(DataSources.PREF_DEFAULT));
+        assertEquals("qwe",                        store.getDefaultString(DataSources.PREF_DELIMITER));
+
+        assertEquals(DataSourceProtocol.file.name(), store.getString(DataSources.PREF_DEFAULT));
+        assertEquals("asd",                          store.getString(DataSources.PREF_DELIMITER));
+
+        assertEquals("fakeValue1", store.getDefaultString("fakeKey1"));
+        assertEquals("fakeValue2", store.getString("fakeKey2"));
+
+        DataSources ds1 = new DataSources(new CompositeDataSource(DataSourceProtocol.none, "poi"));
+
+        ds1.updateDefaultsAndValues(store);
+
+        assertEquals(DataSourceProtocol.none.name(), store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DEFAULT)));
+        assertEquals("poi",                          store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(DataSources.PREF_DELIMITER)));
+
+        assertEquals(DataSourceProtocol.none.name(), store.getDefaultString(DataSources.PREF_DEFAULT));
+        assertEquals("poi",                          store.getDefaultString(DataSources.PREF_DELIMITER));
+
+        assertEquals(DataSourceProtocol.none.name(), store.getString(DataSources.PREF_DEFAULT));
+        assertEquals("poi",                          store.getString(DataSources.PREF_DELIMITER));
+
+        assertEquals("fakeValue1", store.getDefaultString("fakeKey1"));
+        assertEquals("fakeValue2", store.getString("fakeKey2"));
 
     }
 
