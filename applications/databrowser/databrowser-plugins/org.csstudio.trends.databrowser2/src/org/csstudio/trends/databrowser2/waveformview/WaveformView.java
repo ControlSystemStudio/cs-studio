@@ -261,6 +261,7 @@ public class WaveformView extends DataBrowserAwareView
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
+        removeAnnotation();
         this.model = model;
         if (old_model != model)
         {
@@ -428,12 +429,15 @@ public class WaveformView extends DataBrowserAwareView
 
     private void removeAnnotation()
     {
-        final List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
-        if (modelAnnotations.remove(waveform_annotation))
+        if (model != null)
         {
-            changing_annotations = true;
-            model.setAnnotations(modelAnnotations);
-            changing_annotations = false;
+            final List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
+            if (modelAnnotations.remove(waveform_annotation))
+            {
+                changing_annotations = true;
+                model.setAnnotations(modelAnnotations);
+                changing_annotations = false;
+            }
         }
         waveform_annotation = null;
     }
