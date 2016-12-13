@@ -162,7 +162,11 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             @Override
             public void changedAnnotations()
             {
-                edit_annotation.getDisplay().asyncExec(() -> edit_annotation.setEnabled(haveUserAnnotations()));
+                edit_annotation.getDisplay().asyncExec(() ->
+                {
+                    if (! edit_annotation.isDisposed())
+                        edit_annotation.setEnabled(haveUserAnnotations());
+                });
             }
         });
 
