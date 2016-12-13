@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -63,6 +64,8 @@ public abstract class ArchiveListGUI
 
     /** Archive servers */
     private final ArchiveServerURL[] server_urls;
+    /** Default archives per server if selected */
+    private final ArchiveDataSource[] default_archives;
 
     /** Initialize
      *  @param parent Parent widget
@@ -70,6 +73,7 @@ public abstract class ArchiveListGUI
     public ArchiveListGUI(final Composite parent)
     {
         server_urls = Preferences.getArchiveServerURLs();
+        default_archives = Preferences.getArchives();
 
         createGUI(parent);
 
@@ -258,10 +262,20 @@ public abstract class ArchiveListGUI
                         if (info.isDisposed())
                             return;
                         ArchiveListGUI.this.url = url;
+
                         final ArrayList<ArchiveDataSource> archives = new ArrayList<ArchiveDataSource>();
                         for (ArchiveInfo info : infos)
                             archives.add(new ArchiveDataSource(url, info.getKey(), info.getName(), info.getDescription()));
                         archive_table.setInput(archives);
+                        for (ArchiveDataSource dataSource : default_archives)
+                        {
+                            if (dataSource.getUrl().equals(url) && archives.contains(dataSource))
+                            {
+                                int selection = archives.indexOf(dataSource);
+                                archive_table.setSelection(new StructuredSelection(archive_table.getElementAt(selection)));
+                                break;
+                            }
+                        }
                         // Enable operations on server resp. archives
                         info.setEnabled(true);
                         handleArchiveUpdate();
