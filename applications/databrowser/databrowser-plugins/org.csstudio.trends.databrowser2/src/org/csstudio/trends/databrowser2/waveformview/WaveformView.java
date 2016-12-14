@@ -20,10 +20,12 @@ import org.csstudio.swt.rtplot.YAxis;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
+import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
+import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
@@ -33,6 +35,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -52,6 +55,7 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("nls")
 public class WaveformView extends DataBrowserAwareView
 {
+    final public static String ANNOTATION_TEXT = "Waveform view";
     /** View ID registered in plugin.xml */
     final public static String ID =
         "org.csstudio.trends.databrowser.waveformview.WaveformView"; //$NON-NLS-1$
@@ -74,6 +78,8 @@ public class WaveformView extends DataBrowserAwareView
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
 
+    private AnnotationInfo waveform_annotation;
+
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
         @Override
@@ -87,6 +93,7 @@ public class WaveformView extends DataBrowserAwareView
         {
             if (item == model_item) {
                 model_item = null;
+                removeAnnotation();
             }
             update(false);
         }
@@ -95,6 +102,48 @@ public class WaveformView extends DataBrowserAwareView
         public void changedItemLook(final ModelItem item)
         {
             update(false);
+        }
+
+        @Override
+        public void changedAnnotations()
+        {
+            if (model_item != null) {
+                AnnotationInfo latest_waveform_annotation = null;
+                for (AnnotationInfo ai : model.getAnnotations())
+                {
+                    if (ai.getText().equals(ANNOTATION_TEXT)) {
+                        latest_waveform_annotation = ai;
+                        if (waveform_annotation != null)
+                        {
+                            if (waveform_annotation.getTime() != latest_waveform_annotation.getTime())
+                            {
+                                waveform_annotation = latest_waveform_annotation;
+                                for (int i = 0; i < model_item.getSamples().size(); i++)
+                                {
+                                    if (model_item.getSamples().get(i).getPosition() == latest_waveform_annotation.getTime())
+                                    {
+                                        final int j = i;
+                                        sample_index.getDisplay().asyncExec(() ->
+                                        {
+                                            sample_index.setSelection(j);
+                                            showSelectedSample();
+                                        });
+                                    }
+                                }
+                            }
+                        } else
+                            waveform_annotation = latest_waveform_annotation;
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void changedTimerange()
+        {
+            if (model_item != null)
+                showSelectedSample();
         }
     };
 
@@ -111,8 +160,10 @@ public class WaveformView extends DataBrowserAwareView
         // Arrange disposal
         parent.addDisposeListener((DisposeEvent e) ->
         {   // Ignore current model after this view is disposed.
-            if (model != null)
+            if (model != null) {
                 model.removeListener(model_listener);
+                removeAnnotation();
+            }
         });
 
         final GridLayout layout = new GridLayout(4, false);
@@ -314,6 +365,9 @@ public class WaveformView extends DataBrowserAwareView
             sample_index.setMaximum(samples.size());
             final int idx = sample_index.getSelection();
             value = samples.get(idx).getVType();
+            updateAnnotation(samples.get(idx));
+
+
         }
         finally
         {
@@ -339,4 +393,43 @@ public class WaveformView extends DataBrowserAwareView
         timestamp.setText("");
         status.setText("");
     }
+
+    private void removeAnnotation() {
+        List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
+        modelAnnotations.remove(waveform_annotation);
+        model.setAnnotations(modelAnnotations);
+    }
+
+    private void addAnnotation() {
+        List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
+        modelAnnotations.add(waveform_annotation);
+        model.setAnnotations(modelAnnotations);
+    }
+
+    private void updateAnnotation(PlotSample plotSample)
+    {
+        Point offset = new Point(0, 0);
+        for (AnnotationInfo annotation : model.getAnnotations())
+        {
+            if (annotation.getText().equals(ANNOTATION_TEXT))
+                offset = annotation.getOffset();
+                waveform_annotation = annotation;
+        }
+        removeAnnotation();
+        int i = 0;
+        int item_index = 0;
+        for (ModelItem item : model.getItems()) {
+            if (item == model_item) {
+                item_index = i;
+            }
+            i++;
+        }
+        waveform_annotation = new AnnotationInfo(item_index,
+                plotSample.getPosition(),
+                plotSample.getValue(),
+                offset,
+                ANNOTATION_TEXT);
+        addAnnotation();
+    }
+
 }

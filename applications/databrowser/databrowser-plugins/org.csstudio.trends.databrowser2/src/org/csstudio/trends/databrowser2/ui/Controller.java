@@ -523,6 +523,11 @@ public class Controller
             {
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
+
+            public void changedAnnotations()
+            {
+                plot.setAnnotations(model.getAnnotations());
+            }
         };
         model.addListener(model_listener);
     }

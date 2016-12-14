@@ -84,6 +84,23 @@ public class AnnotationInfo
         return "Annotation for item " + item_index + ": '" + text + "' @ " + TimeHelper.format(time) + ", " + value;
     }
 
+    @Override
+    public boolean equals(Object other)
+    {
+        boolean value = false;
+        if (!(other instanceof AnnotationInfo))
+            value = false;
+        if (other == this)
+            value = true;
+        AnnotationInfo otherAnn = (AnnotationInfo) other;
+        value = this.item_index == otherAnn.getItemIndex() &&
+                this.time.equals(otherAnn.getTime()) &&
+                this.value == otherAnn.getValue() &&
+                this.offset.equals(otherAnn.getOffset()) &&
+                this.text.equals(otherAnn.getText());
+        return value;
+    }
+
     /** Write XML formatted annotation configuration
      *  @param writer PrintWriter
      */
