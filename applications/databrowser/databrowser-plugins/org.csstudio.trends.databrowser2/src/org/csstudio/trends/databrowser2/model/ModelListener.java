@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.time.Instant;
 import java.util.Optional;
 
 /** Listener interface for the Model
@@ -77,4 +78,6 @@ public interface ModelListener
 
     /** ModelItems have new selected sample */
     void selectedSamplesChanged();
+
+    void xAxisLabelChanged(Instant time);
 }

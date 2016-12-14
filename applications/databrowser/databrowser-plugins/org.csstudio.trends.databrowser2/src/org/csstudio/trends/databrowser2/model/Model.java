@@ -976,4 +976,9 @@ public class Model
         }
         return Optional.empty();
     }
+
+    public void setXAxisLabel(Instant time) {
+        for (ModelListener listener : listeners)
+            listener.xAxisLabelChanged(time);
+    }
 }

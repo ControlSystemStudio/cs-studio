@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import java.time.Instant;
 import java.util.Optional;
 
 /** Helper for implementing {@link ModelListener}
@@ -67,4 +68,8 @@ public class ModelListenerAdapter implements ModelListener
 
     @Override
     public void selectedSamplesChanged() { /* NOP */}
+
+    @Override
+    public void xAxisLabelChanged(Instant time) { /* NOP */}
+
 }

@@ -149,6 +149,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     };
 
     private boolean show_crosshair = false;
+    private XTYPE x_axis_label = null;
     private MouseMode mouse_mode = MouseMode.NONE;
     private Optional<Point> mouse_start = Optional.empty();
     private volatile Optional<Point> mouse_current = Optional.empty();
@@ -669,6 +670,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 //        x_axis.setLabelFont(label_font);
 //        x_axis.setScaleFont(scale_font);
         x_axis.paint(gc, media, plot_bounds);
+        if (x_axis_label != null) {
+            x_axis.drawTickLabel(gc, media, x_axis_label, true);
+        }
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (YAxisImpl<XTYPE> y_axis : y_axes)
         {
@@ -1272,5 +1276,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedAutoScale(axis);
+    }
+
+    public void setXAxisLabel(XTYPE selectedTime) {
+        x_axis_label = selectedTime;
+        requestUpdate();
     }
 }
