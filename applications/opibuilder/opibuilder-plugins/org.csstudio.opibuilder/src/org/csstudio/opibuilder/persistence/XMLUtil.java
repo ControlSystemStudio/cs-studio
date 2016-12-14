@@ -185,7 +185,7 @@ public class XMLUtil {
      */
     public static void fillDisplayModelFromInputStream(
             final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
-    	fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), null);
+        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), null);
     }
 
     /**Fill the DisplayModel from an OPI file inputstream
@@ -301,7 +301,7 @@ public class XMLUtil {
     }
 
     private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace,
-    		final MacrosInput macrosInput_) throws Exception{
+            final MacrosInput macrosInput_) throws Exception{
         if(element == null) return null;
 
         AbstractWidgetModel result = null;
@@ -399,7 +399,7 @@ public class XMLUtil {
     }
 
     private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace,
-    		final MacrosInput macrosInput_) throws Exception{
+            final MacrosInput macrosInput_) throws Exception{
         if(container instanceof AbstractLinkingContainerModel) {
             AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)container;
             List<IPath> tempTrace = new ArrayList<IPath>();
@@ -491,7 +491,7 @@ public class XMLUtil {
     }
 
     private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace,
-    		final MacrosInput macrosInput_)
+            final MacrosInput macrosInput_)
         throws Exception {
 
         if(container == null) return;
@@ -512,10 +512,10 @@ public class XMLUtil {
                 String resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> macroMap.get(s));
                 path = ResourceUtil.getPathFromString(resolvedPath);
                 if(path.toString().contains("${") && macrosInput_ != null && macrosInput_.getMacrosMap() != null) {
-                	path = container.getOPIFilePath();
-                	LinkedHashMap<String, String> runtimeMacros = macrosInput_.getMacrosMap();
-                	resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> runtimeMacros.get(s));
-                	path = ResourceUtil.getPathFromString(resolvedPath);
+                    path = container.getOPIFilePath();
+                    LinkedHashMap<String, String> runtimeMacros = macrosInput_.getMacrosMap();
+                    resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> runtimeMacros.get(s));
+                    path = ResourceUtil.getPathFromString(resolvedPath);
                 }
 
                 final DisplayModel inside = new DisplayModel(path);
