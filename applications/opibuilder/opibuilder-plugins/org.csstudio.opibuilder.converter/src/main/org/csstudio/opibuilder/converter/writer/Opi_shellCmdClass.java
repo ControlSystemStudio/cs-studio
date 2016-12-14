@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  *
  * @author Xihui Chen
  */
-public class Opi_shellCmdClass extends OpiWidget {
+public class Opi_shellCmdClass extends OpiButtonClass {
 
     private static final String typeId = "ActionButton";
     private static final String name = "EDM shell command";
@@ -43,6 +43,7 @@ public class Opi_shellCmdClass extends OpiWidget {
         }
         setName(name);
         setVersion(version);
+
         for (int i = 0; i < r.getNumCmds(); i++) {
             //path
             Element cmdNode = widgetContext.getDocument().createElement("command");

@@ -26,7 +26,8 @@ public class OpiBooleanTest {
         Document doc = XMLFileHandler.createDomDocument();
 
         // OpiBoolean data
-        String name = "someBooleanElement";
+        String trueBooleanName = "trueBooleanElement";
+        String falseBooleanName = "falseBooleanElement";
         EdmBoolean bT = new EdmBoolean(new EdmAttribute(), false);    //[TRUE]
         EdmBoolean bF = new EdmBoolean(null, false);                //[FALSE]
 
@@ -34,14 +35,14 @@ public class OpiBooleanTest {
         Element parent = doc.createElement("root");
         doc.appendChild(parent);
         Context context = new Context(doc, parent, null, 0, 0);
-        OpiBoolean o = new OpiBoolean(context, name, bT);
+        OpiBoolean o = new OpiBoolean(context, trueBooleanName, bT);
         assertTrue(o instanceof OpiAttribute);
-        new OpiBoolean(context, name, bF);
+        new OpiBoolean(context, falseBooleanName, bF);
 
         // testing
-        Element x = (Element)doc.getElementsByTagName(name).item(0);
+        Element x = (Element)doc.getElementsByTagName(trueBooleanName).item(0);
         assertEquals("true", x.getTextContent());
-        x = (Element)doc.getElementsByTagName(name).item(1);
+        x = (Element)doc.getElementsByTagName(falseBooleanName).item(0);
         assertEquals("false", x.getTextContent());
 
         //XMLFileHandler.writeXML(doc);

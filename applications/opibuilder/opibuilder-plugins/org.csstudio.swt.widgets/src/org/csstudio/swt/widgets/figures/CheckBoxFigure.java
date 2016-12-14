@@ -276,7 +276,9 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
 
     public void setText(String text) {
         this.text = text;
+        boxFigure.clearTextSize();
         repaint();
+
     }
 
     public String getText() {
@@ -353,14 +355,16 @@ public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigur
         @Override
         public Dimension getPreferredSize(int wHint, int hHint) {
             return getTextSize();
-
         }
-
 
         protected Dimension getTextSize() {
             if (textSize == null)
                 textSize = calculateTextSize();
             return textSize;
+        }
+
+        protected void clearTextSize() {
+            textSize = null;
         }
 
         protected Dimension calculateTextSize() {

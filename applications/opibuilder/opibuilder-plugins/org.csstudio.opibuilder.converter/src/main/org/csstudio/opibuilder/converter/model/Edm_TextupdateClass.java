@@ -13,7 +13,7 @@ package org.csstudio.opibuilder.converter.model;
  * @author Matevz
  *
  */
-public class Edm_TextupdateClass extends EdmWidget {
+public class Edm_TextupdateClass extends Edm_activeShapeClass {
 
 
     @EdmAttributeAn private String controlPv;
@@ -25,7 +25,6 @@ public class Edm_TextupdateClass extends EdmWidget {
 
     @EdmAttributeAn @EdmOptionalAn private String fontAlign;
 
-    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
     @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 
 
@@ -60,10 +59,6 @@ public class Edm_TextupdateClass extends EdmWidget {
 
     public String getFontAlign() {
         return fontAlign;
-    }
-
-    public int getLineWidth() {
-        return lineWidth;
     }
 
     public boolean isLineAlarm() {

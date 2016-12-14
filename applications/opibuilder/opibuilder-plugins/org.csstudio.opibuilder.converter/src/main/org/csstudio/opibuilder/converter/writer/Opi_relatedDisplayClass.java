@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Xihui Chen
  */
-public class Opi_relatedDisplayClass extends OpiWidget {
+public class Opi_relatedDisplayClass extends OpiButtonClass {
 
     private static final String typeId = "ActionButton";
     private static final String name = "EDM related display";

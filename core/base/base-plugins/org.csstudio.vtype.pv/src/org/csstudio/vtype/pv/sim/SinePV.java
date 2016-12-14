@@ -14,6 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for sine
  *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class SinePV extends SimulatedDoublePV
 {
     private final double min, range, step;
@@ -39,6 +40,7 @@ public class SinePV extends SimulatedDoublePV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double compute()
     {
         final double value = min + (Math.sin(x)+1.0)/2.0 * range;
