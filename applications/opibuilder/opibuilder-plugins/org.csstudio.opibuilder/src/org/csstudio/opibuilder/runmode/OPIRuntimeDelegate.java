@@ -136,15 +136,15 @@ public class OPIRuntimeDelegate implements IAdaptable{
                     inputStream = run_input.getInputStream();
                 displayOpenManager = run_input.getDisplayOpenManager();
             }
-            else {
-            	inputStream = ResourceUtil.getInputStreamFromEditorInput(input);
+            else  {
+                inputStream = ResourceUtil.getInputStreamFromEditorInput(input);
             }
             if (inputStream != null)
             {
-            	MacrosInput macrosInput = null;
-            	if(input instanceof IRunnerInput) {
-            		macrosInput = ((IRunnerInput) input).getMacrosInput();
-            	}
+                MacrosInput macrosInput = null;
+                if(input instanceof IRunnerInput) {
+                    macrosInput = ((IRunnerInput) input).getMacrosInput();
+                }
                 XMLUtil.fillDisplayModelFromInputStream(inputStream,
                         displayModel, null, macrosInput);
                 displayModelFilled = true;
