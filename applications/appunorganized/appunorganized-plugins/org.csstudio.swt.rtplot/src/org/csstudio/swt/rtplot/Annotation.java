@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Point;
 @SuppressWarnings("nls")
 public class Annotation<XTYPE extends Comparable<XTYPE>>
 {
+    final protected boolean internal;
     final protected Trace<XTYPE> trace;
 
     /** The position and value, i.e. x/y in value space */
@@ -34,11 +35,24 @@ public class Annotation<XTYPE extends Comparable<XTYPE>>
     /** Constructor */
     public Annotation(final Trace<XTYPE> trace, final XTYPE position, final double value, final Point offset, final String text)
     {
+        this(false, trace, position, value, offset, text);
+    }
+
+    /** Constructor */
+    public Annotation(final boolean internal, final Trace<XTYPE> trace, final XTYPE position, final double value, final Point offset, final String text)
+    {
+        this.internal = internal;
         this.trace = Objects.requireNonNull(trace);
         this.position = Objects.requireNonNull(position);
         this.value = value;
         this.offset = Objects.requireNonNull(offset);
         this.text = Objects.requireNonNull(text);
+    }
+
+    /** @return Internal annotation, not created by user? */
+    public boolean isInternal()
+    {
+        return internal;
     }
 
     /** @return Trace for which this annotation shows values */

@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.ui;
 import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,7 +119,8 @@ public class ModelBasedPlot
                 for (Annotation<Instant> annotation : plot.getAnnotations())
                 {
                     final int item_index = traces.indexOf(annotation.getTrace());
-                    annotations.add(new AnnotationInfo(item_index,
+                    annotations.add(new AnnotationInfo(annotation.isInternal(),
+                                                       item_index,
                                                        annotation.getPosition(), annotation.getValue(),
                                                        annotation.getOffset(), annotation.getText()));
                 }
@@ -400,6 +402,30 @@ public class ModelBasedPlot
     public void setTimeRange(final Instant start, final Instant end)
     {
         display.asyncExec(() -> plot.getXAxis().setValueRange(start, end));
+    }
+
+    /** Set annotations in plot to match model's annotations
+     *  @param newAnnotations Annotations to show in plot
+     */
+    void setAnnotations(final Collection<AnnotationInfo> newAnnotations)
+    {
+        final List<Trace<Instant>> traces = new ArrayList<>();
+        for (Trace<Instant> trace : plot.getTraces())
+            traces.add(trace);
+
+        // Remove old annotations from plot
+        final List<Annotation<Instant>> plot_annotations = new ArrayList<>(plot.getAnnotations());
+        for (Annotation<Instant> old : plot_annotations)
+            plot.removeAnnotation(old);
+
+        // Set new annotations in plot
+        for (AnnotationInfo annotation : newAnnotations)
+            plot.addAnnotation(new Annotation<Instant>(annotation.isInternal(),
+                                                       traces.get(annotation.getItemIndex()),
+                                                       annotation.getTime(),
+                                                       annotation.getValue(),
+                                                       annotation.getOffset(),
+                                                       annotation.getText()));
     }
 
     /** Refresh the plot because the data has changed */

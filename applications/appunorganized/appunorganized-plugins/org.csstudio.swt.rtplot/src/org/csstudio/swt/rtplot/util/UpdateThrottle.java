@@ -114,7 +114,8 @@ public class UpdateThrottle
         timer.shutdown();
         try
         {
-            timer.awaitTermination(1, TimeUnit.SECONDS);
+            if (! timer.awaitTermination(2, TimeUnit.SECONDS))
+                Activator.getLogger().log(Level.WARNING, "Update thread didn't close down within two seconds");
         }
         catch (InterruptedException e)
         {
