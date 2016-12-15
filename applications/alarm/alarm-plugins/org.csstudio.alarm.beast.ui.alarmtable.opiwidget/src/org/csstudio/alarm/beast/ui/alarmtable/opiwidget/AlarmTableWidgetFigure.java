@@ -65,9 +65,10 @@ public class AlarmTableWidgetFigure extends AbstractSWTWidgetFigure<Composite> {
             gui.dispose();
         }
         if (base != null) {
-            AlarmTableWidgetModel model = ((AlarmTableWidgetEditPart) editPart).getWidgetModel();
+            AlarmTableWidgetEditPart widgetEditPart = (AlarmTableWidgetEditPart) editPart;
+            AlarmTableWidgetModel model = widgetEditPart.getWidgetModel();
 
-            gui = new GUI(base, null, model.isWritable(), model.isSeparateTables(), model.getColumns(),
+            gui = new GUI(base, widgetEditPart.getSite(), model.isWritable(), model.isSeparateTables(), model.getColumns(),
                     model.getSortingColumn(), model.isSortAscending(),model.isTableHeaderVisible());
             gui.setNumberOfAlarmsLimit(model.getMaxNumberOfAlarms());
             gui.setBlinking(model.isUnacknowledgedBlinking());

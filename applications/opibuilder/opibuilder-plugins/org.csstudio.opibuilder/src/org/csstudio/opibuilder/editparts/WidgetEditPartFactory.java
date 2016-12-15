@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /**The central factory to create editpart for all widgets.
  * @author Sven Wende (class of same name in SDS)
@@ -24,6 +25,13 @@ import org.eclipse.gef.EditPartFactory;
 public class WidgetEditPartFactory implements EditPartFactory {
 
     private ExecutionMode executionMode;
+
+    private IWorkbenchPartSite site;
+
+    public WidgetEditPartFactory(ExecutionMode executionMode, IWorkbenchPartSite site) {
+        this(executionMode);
+        this.site = site;
+    }
 
     public WidgetEditPartFactory(ExecutionMode executionMode) {
         this.executionMode = executionMode;
@@ -34,8 +42,10 @@ public class WidgetEditPartFactory implements EditPartFactory {
         EditPart part = getPartForModel(model);
         if(part != null){
             part.setModel(model);
-            if(part instanceof AbstractBaseEditPart)
+            if(part instanceof AbstractBaseEditPart) {
                 ((AbstractBaseEditPart)part).setExecutionMode(executionMode);
+                ((AbstractBaseEditPart)part).setSite(site);
+            }
             else if(part instanceof WidgetConnectionEditPart)
                 ((WidgetConnectionEditPart)part).setExecutionMode(executionMode);
         }
