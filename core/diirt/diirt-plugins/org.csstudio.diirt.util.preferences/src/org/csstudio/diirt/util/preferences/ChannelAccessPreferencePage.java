@@ -27,6 +27,7 @@ import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_VARIAB
 import org.csstudio.diirt.util.preferences.jface.DoubleFieldEditor;
 import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
+import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.swt.Separator;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -48,6 +49,22 @@ import gov.aps.jca.Monitor;
  * @version 1.0.0 3 Nov 2016
  */
 public class ChannelAccessPreferencePage extends BasePreferencePage {
+
+    public static final String[][] AVAILABLE_MODES              = {
+        { Messages.CAPP_pureJavaRadioButton_text, Boolean.TRUE.toString()  },
+        { Messages.CAPP_jcaRadioButton_text,      Boolean.FALSE.toString() },
+    };
+    public static final String[][] AVAILABLE_MONITOR_MASKS      = {
+        { Messages.CAPP_valueRadioButton_text,   MonitorMask.VALUE.name()   },
+        { Messages.CAPP_archiveRadioButton_text, MonitorMask.ARCHIVE.name() },
+        { Messages.CAPP_alarmRadioButton_text,   MonitorMask.ALARM.name()   },
+        { Messages.CAPP_customRadioButton_text,  MonitorMask.CUSTOM.name()  },
+    };
+    public static final String[][] AVAILABLE_VAR_ARRAY_SUPPORTS = {
+        { Messages.CAPP_autoRadioButton_text,  VariableArraySupport.AUTO.representation()  },
+        { Messages.CAPP_trueRadioButton_text,  VariableArraySupport.TRUE.representation()  },
+        { Messages.CAPP_falseRadioButton_text, VariableArraySupport.FALSE.representation() },
+    };
 
     private Group                 contextGroup;
     private StringFieldEditor     addressListEditor;
@@ -96,7 +113,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         contextGroup.setLayout(contextGroupLayout);
 
-        pureJavaEditor = new RadioGroupFieldEditor(PREF_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, DIIRTPreferencesPlugin.AVAILABLE_MODES, contextGroup, false);
+        pureJavaEditor = new RadioGroupFieldEditor(PREF_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, AVAILABLE_MODES, contextGroup, false);
 
         addField(pureJavaEditor, contextGroup, true, () -> store.getDefaultString(PREF_PURE_JAVA), () -> store.getString(PREF_PURE_JAVA));
 
@@ -163,7 +180,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         optionsGroup.setLayout(optionsGroupLayout);
 
-        monitorMaskEditor = new RadioGroupFieldEditor(PREF_MONITOR_MASK, Messages.CAPP_monitorMaskCaption_text, 4, DIIRTPreferencesPlugin.AVAILABLE_MONITOR_MASKS, optionsGroup, false);
+        monitorMaskEditor = new RadioGroupFieldEditor(PREF_MONITOR_MASK, Messages.CAPP_monitorMaskCaption_text, 4, AVAILABLE_MONITOR_MASKS, optionsGroup, false);
 
         addField(
             monitorMaskEditor,
@@ -197,7 +214,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         new Separator(optionsGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        variableArrayEditor = new RadioGroupFieldEditor(PREF_VARIABLE_LENGTH_ARRAY, Messages.CAPP_variableLengthArrayCaption_text, 3, DIIRTPreferencesPlugin.AVAILABLE_VAR_ARRAY_SUPPORTS, optionsGroup, false);
+        variableArrayEditor = new RadioGroupFieldEditor(PREF_VARIABLE_LENGTH_ARRAY, Messages.CAPP_variableLengthArrayCaption_text, 3, AVAILABLE_VAR_ARRAY_SUPPORTS, optionsGroup, false);
 
         addField(variableArrayEditor, optionsGroup, true, () -> store.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY), () -> store.getString(PREF_VARIABLE_LENGTH_ARRAY));
 

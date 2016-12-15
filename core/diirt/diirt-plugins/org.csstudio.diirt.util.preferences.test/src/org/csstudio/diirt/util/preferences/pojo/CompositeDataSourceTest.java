@@ -12,6 +12,8 @@ package org.csstudio.diirt.util.preferences.pojo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Field;
+
 import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.junit.Test;
 
@@ -52,6 +54,21 @@ public class CompositeDataSourceTest {
         assertEquals(DataSourceProtocol.sim, DataSourceProtocol.fromString("sim"));
         assertEquals(DataSourceProtocol.sys, DataSourceProtocol.fromString("sys"));
         assertEquals(DataSourceProtocol.none, DataSourceProtocol.fromString("FUFFA"));
+    }
+
+    /**
+     * This test is made to fail if the structure of {@link CompositeDataSource}
+     * changed, ensuring that also the test classes are changed too.
+     */
+    @Test
+    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
+
+        Field[] fields = CompositeDataSource.class.getDeclaredFields();
+
+        assertEquals(2, fields.length);
+        assertEquals(DataSourceProtocol.class, CompositeDataSource.class.getDeclaredField("defaultDataSource").getType());
+        assertEquals(String.class, CompositeDataSource.class.getDeclaredField("delimiter").getType());
+
     }
 
 }

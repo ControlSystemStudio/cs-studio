@@ -24,9 +24,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
-import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
@@ -44,30 +41,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
-    public static final String[][] AVAILABLE_DATA_SOURCES         = {
-        { "None",           DataSourceProtocol.none.name() },
-        { "Channel Access", DataSourceProtocol.ca.name()   },
-        { "File",           DataSourceProtocol.file.name() },
-        { "Local",          DataSourceProtocol.loc.name()  },
-        { "PV Access",      DataSourceProtocol.pva.name()  },
-        { "Simulation",     DataSourceProtocol.sim.name()  },
-        { "System",         DataSourceProtocol.sys.name()  },
-    };
-    public static final String[][] AVAILABLE_MODES                = {
-        { Messages.CAPP_pureJavaRadioButton_text, Boolean.TRUE.toString()  },
-        { Messages.CAPP_jcaRadioButton_text,      Boolean.FALSE.toString() },
-    };
-    public static final String[][] AVAILABLE_MONITOR_MASKS        = {
-        { Messages.CAPP_valueRadioButton_text,   MonitorMask.VALUE.name()   },
-        { Messages.CAPP_archiveRadioButton_text, MonitorMask.ARCHIVE.name() },
-        { Messages.CAPP_alarmRadioButton_text,   MonitorMask.ALARM.name()   },
-        { Messages.CAPP_customRadioButton_text,  MonitorMask.CUSTOM.name()  },
-    };
-    public static final String[][] AVAILABLE_VAR_ARRAY_SUPPORTS   = {
-        { Messages.CAPP_autoRadioButton_text,  VariableArraySupport.AUTO.representation()  },
-        { Messages.CAPP_trueRadioButton_text,  VariableArraySupport.TRUE.representation()  },
-        { Messages.CAPP_falseRadioButton_text, VariableArraySupport.FALSE.representation() },
-    };
     public static final String     CANCEL_PREFIX                  = "cancel.";
     public static final String     DEFAULT_PREFIX                 = "default.";
     public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());

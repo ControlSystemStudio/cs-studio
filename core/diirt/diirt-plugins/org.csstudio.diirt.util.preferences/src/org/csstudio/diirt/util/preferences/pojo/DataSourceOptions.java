@@ -15,6 +15,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 
 /**
@@ -37,7 +40,7 @@ public class DataSourceOptions {
     public boolean rtypeValueOnly = false;
 
     @XmlAttribute( name = "varArraySupported" )
-    public VariableArraySupport varArraySupported = VariableArraySupport.AUTO;
+    public String varArraySupported = VariableArraySupport.AUTO.representation();
 
     public DataSourceOptions () {
     }
@@ -56,7 +59,7 @@ public class DataSourceOptions {
         this.dbePropertySupported = dbePropertySupported;
         this.honorZeroPrecision = honorZeroPrecision;
         this.rtypeValueOnly = rtypeValueOnly;
-        this.varArraySupported = varArraySupported;
+        this.varArraySupported = varArraySupported.representation();
 
         if ( monitorMask == MonitorMask.CUSTOM ) {
             monitorMaskValue = String.valueOf(monitorMaskCustomValue);
@@ -66,20 +69,65 @@ public class DataSourceOptions {
 
     }
 
-    public MonitorMask monitorMask() {
-        try {
-            return MonitorMask.valueOf(monitorMaskValue);
-        } catch ( Exception ex ) {
-            return MonitorMask.CUSTOM;
-        }
+    @Override
+    public int hashCode ( ) {
+        return new HashCodeBuilder(29, 661)
+            .append(dbePropertySupported)
+            .append(honorZeroPrecision)
+            .append(monitorMaskValue)
+            .append(rtypeValueOnly)
+            .append(varArraySupported)
+            .toHashCode();
     }
 
-    public int monitorMaskCustomValue() {
+    @Override
+    public boolean equals ( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
+        } else if ( obj == this ) {
+            return true;
+        } else if ( obj.getClass() != getClass() ) {
+            return false;
+        }
+
+        DataSourceOptions dso = (DataSourceOptions) obj;
+
+        return new EqualsBuilder()
+            .append(dbePropertySupported, dso.dbePropertySupported)
+            .append(honorZeroPrecision,   dso.honorZeroPrecision)
+            .append(monitorMaskValue,     dso.monitorMaskValue)
+            .append(rtypeValueOnly,       dso.rtypeValueOnly)
+            .append(varArraySupported,    dso.varArraySupported)
+            .isEquals();
+
+    }
+
+    public MonitorMask monitorMask ( ) {
+        return MonitorMask.fromString(monitorMaskValue);
+    }
+
+    public int monitorMaskCustomValue ( ) {
         try {
             return Integer.parseInt(monitorMaskValue);
         } catch ( Exception ex ) {
             return 5;
         }
+    }
+
+    public VariableArraySupport variableArraySupport ( ) {
+        return VariableArraySupport.fromString(varArraySupported);
+    }
+
+    @Override
+    public String toString ( ) {
+        return new ToStringBuilder(this)
+            .append("dbePropertySupported", dbePropertySupported)
+            .append("honorZeroPrecision",   honorZeroPrecision)
+            .append("monitorMaskValue",     monitorMaskValue)
+            .append("rtypeValueOnly",       rtypeValueOnly)
+            .append("varArraySupported",    varArraySupported)
+            .toString();
     }
 
     /**
@@ -110,7 +158,7 @@ public class DataSourceOptions {
 
         public static MonitorMask fromString ( String monitorMask ) {
 
-            MonitorMask mm = MonitorMask.VALUE;
+            MonitorMask mm = MonitorMask.CUSTOM;
 
             try {
                 mm = MonitorMask.valueOf(monitorMask);
@@ -152,7 +200,7 @@ public class DataSourceOptions {
             try {
                 vas = VariableArraySupport.representationOf(variableArraySupportRepresentation);
             } catch ( Exception ex ){
-                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid cariable array support [{0}].", variableArraySupportRepresentation), ex);
+                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid variable array support representation [{0}].", variableArraySupportRepresentation), ex);
             }
 
             return vas;
@@ -167,7 +215,7 @@ public class DataSourceOptions {
                 }
             }
 
-            throw new IllegalArgumentException(MessageFormat.format("Illegal representation: {0}", repr));
+            throw new IllegalArgumentException(MessageFormat.format("Illegal variable array support representation: {0}", repr));
 
         }
 

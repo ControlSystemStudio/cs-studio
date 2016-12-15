@@ -11,6 +11,10 @@ package org.csstudio.diirt.util.preferences.pojo;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Plain Old Java Object representing the "jcaContext" element of a
  * {@code ca.xml} file.
@@ -84,6 +88,60 @@ public class JCAContext {
         this.repeaterPort = repeaterPort;
         this.serverPort = serverPort;
 
+    }
+
+    @Override
+    public int hashCode ( ) {
+        return new HashCodeBuilder(23, 1117)
+            .append(addrList)
+            .append(autoAddrList)
+            .append(beaconPeriod)
+            .append(connectionTimeout)
+            .append(maxArrayBytes)
+            .append(pureJava)
+            .append(repeaterPort)
+            .append(serverPort)
+            .toHashCode();
+    }
+
+    @Override
+    public boolean equals ( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
+        } else if ( obj == this ) {
+            return true;
+        } else if ( obj.getClass() != getClass() ) {
+            return false;
+        }
+
+        JCAContext jcc = (JCAContext) obj;
+
+        return new EqualsBuilder()
+            .append(addrList,          jcc.addrList)
+            .append(autoAddrList,      jcc.autoAddrList)
+            .append(beaconPeriod,      jcc.beaconPeriod)
+            .append(connectionTimeout, jcc.connectionTimeout)
+            .append(maxArrayBytes,     jcc.maxArrayBytes)
+            .append(pureJava,          jcc.pureJava)
+            .append(repeaterPort,      jcc.repeaterPort)
+            .append(serverPort,        jcc.serverPort)
+            .isEquals();
+
+    }
+
+    @Override
+    public String toString ( ) {
+        return new ToStringBuilder(this)
+            .append("addrList",          addrList)
+            .append("autoAddrList",      autoAddrList)
+            .append("beaconPeriod",      beaconPeriod)
+            .append("connectionTimeout", connectionTimeout)
+            .append("maxArrayBytes",     maxArrayBytes)
+            .append("pureJava",          pureJava)
+            .append("repeaterPort",      repeaterPort)
+            .append("serverPort",        serverPort)
+            .toString();
     }
 
 }

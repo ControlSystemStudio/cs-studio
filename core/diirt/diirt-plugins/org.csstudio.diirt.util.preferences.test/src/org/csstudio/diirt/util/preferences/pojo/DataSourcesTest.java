@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
@@ -135,6 +136,21 @@ public class DataSourcesTest {
 
     }
 
+    /**
+     * This test is made to fail if the structure of {@link DataSources}
+     * changed, ensuring that also the test classes are changed too.
+     */
+    @Test
+    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
+
+        Field[] fields = DataSources.class.getDeclaredFields();
+
+        assertEquals(2 + 5, fields.length);
+        assertEquals(CompositeDataSource.class, DataSources.class.getDeclaredField("compositeDataSource").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("version").getType());
+
+    }
+
     @Test
     public void testUpdate ( ) {
 
@@ -194,6 +210,14 @@ public class DataSourcesTest {
         assertEquals("fakeValue1", store.getDefaultString("fakeKey1"));
         assertEquals("fakeValue2", store.getString("fakeKey2"));
 
+    }
+
+    /**
+     * This test is made to fail when {@link DataSources#DATASOURCES_VERSION} is updated.
+     */
+    @Test
+    public void testVersion ( ) {
+        assertEquals("1", new DataSources().version);
     }
 
 }

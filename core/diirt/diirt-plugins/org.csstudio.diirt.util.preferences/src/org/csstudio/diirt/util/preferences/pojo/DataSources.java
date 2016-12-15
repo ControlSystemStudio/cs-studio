@@ -166,7 +166,7 @@ public class DataSources {
 
         return new EqualsBuilder()
             .append(compositeDataSource, ds.compositeDataSource)
-            .append(version, ds.version)
+            .append(version,             ds.version)
             .isEquals();
 
     }
@@ -175,7 +175,7 @@ public class DataSources {
     public String toString ( ) {
         return new ToStringBuilder(this)
             .append("compositeDataSource", compositeDataSource)
-            .append("version", version)
+            .append("version",             version)
             .toString();
     }
 

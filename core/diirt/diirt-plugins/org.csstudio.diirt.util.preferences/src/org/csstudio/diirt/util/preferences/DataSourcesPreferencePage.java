@@ -27,6 +27,7 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.ComboFieldEditor;
@@ -63,6 +64,16 @@ import org.eclipse.wb.swt.SWTResourceManager;
  * @version 1.0.0 3 Nov 2016
  */
 public class DataSourcesPreferencePage extends BasePreferencePage {
+
+    public static final String[][] AVAILABLE_DATA_SOURCES = {
+        { "None",           DataSourceProtocol.none.name() },
+        { "Channel Access", DataSourceProtocol.ca.name()   },
+        { "File",           DataSourceProtocol.file.name() },
+        { "Local",          DataSourceProtocol.loc.name()  },
+        { "PV Access",      DataSourceProtocol.pva.name()  },
+        { "Simulation",     DataSourceProtocol.sim.name()  },
+        { "System",         DataSourceProtocol.sys.name()  },
+    };
 
     private static String lastPath = System.getProperty("user.home");
 
@@ -149,7 +160,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
         cdsGroup.setLayout(cdsGroupLayout);
 
-        defaultDataSourceEditor = new ComboFieldEditor(PREF_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, DIIRTPreferencesPlugin.AVAILABLE_DATA_SOURCES, cdsGroup);
+        defaultDataSourceEditor = new ComboFieldEditor(PREF_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, AVAILABLE_DATA_SOURCES, cdsGroup);
 
         addField(defaultDataSourceEditor, cdsGroup, true, () -> store.getDefaultString(PREF_DEFAULT), () -> store.getString(PREF_DEFAULT));
 

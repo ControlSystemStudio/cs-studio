@@ -76,7 +76,7 @@ public class CompositeDataSource {
 
         return new EqualsBuilder()
             .append(defaultDataSource, cds.defaultDataSource)
-            .append(delimiter, cds.delimiter)
+            .append(delimiter,         cds.delimiter)
             .isEquals();
 
     }
@@ -85,7 +85,7 @@ public class CompositeDataSource {
     public String toString ( ) {
         return new ToStringBuilder(this)
             .append("defaultDataSource", defaultDataSource)
-            .append("delimiter", delimiter)
+            .append("delimiter",         delimiter)
             .toString();
     }
 

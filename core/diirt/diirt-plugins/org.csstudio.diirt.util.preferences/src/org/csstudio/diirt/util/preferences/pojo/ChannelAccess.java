@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
 import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
@@ -261,7 +260,7 @@ public class ChannelAccess {
 
         if ( dataSourceOptions != null ) {
 
-            String vlaName = ObjectUtils.defaultIfNull(dataSourceOptions.varArraySupported, VariableArraySupport.AUTO).representation();
+            String vlaName = dataSourceOptions.variableArraySupport().representation();
             String mmName = dataSourceOptions.monitorMask().name();
             int mmcValue = dataSourceOptions.monitorMaskCustomValue();
 
