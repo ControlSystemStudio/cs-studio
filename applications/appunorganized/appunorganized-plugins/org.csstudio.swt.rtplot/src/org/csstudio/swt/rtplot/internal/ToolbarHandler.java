@@ -8,9 +8,10 @@
 package org.csstudio.swt.rtplot.internal;
 
 import org.csstudio.swt.rtplot.Activator;
+import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.Messages;
-import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.RTPlot;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
@@ -140,7 +141,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             public void widgetSelected(final SelectionEvent e)
             {
                 new AddAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
-                edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+                edit_annotation.setEnabled(haveUserAnnotations());
             }
         });
 
@@ -151,7 +152,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             public void widgetSelected(final SelectionEvent e)
             {
                 new EditAnnotationDialog<XTYPE>(toolbar.getShell(), plot).open();
-                edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
+                edit_annotation.setEnabled(haveUserAnnotations());
             }
         });
         // Enable if there are annotations to remove
@@ -161,7 +162,11 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
             @Override
             public void changedAnnotations()
             {
-                edit_annotation.getDisplay().asyncExec(() -> edit_annotation.setEnabled(! plot.getAnnotations().isEmpty()));
+                edit_annotation.getDisplay().asyncExec(() ->
+                {
+                    if (! edit_annotation.isDisposed())
+                        edit_annotation.setEnabled(haveUserAnnotations());
+                });
             }
         });
 
@@ -174,6 +179,15 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
                 plot.showCrosshair(crosshair.getSelection());
             }
         });
+    }
+
+    /** @return Are there any user (non-internal) annotations? */
+    private boolean haveUserAnnotations()
+    {
+        for (Annotation<XTYPE> annotation : plot.getAnnotations())
+            if (!annotation.isInternal())
+                return true;
+        return false;
     }
 
     private void addZoom()
