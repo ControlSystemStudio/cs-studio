@@ -178,8 +178,10 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
             AlarmTreeRoot root = model.getConfigTree().getRoot();
             AlarmTreeItem item = root.getItemByPath(filterItemPath);
             isItemNull = (item == null) ? true : false;
-            if (isItemNull)
+            if (isItemNull) {
                 executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+                getAlarmTable().getActiveAlarmTable().getTable().setEnabled(false);
+            }
             else
                 getAlarmTable().setFilterItem(item, model);
         }
