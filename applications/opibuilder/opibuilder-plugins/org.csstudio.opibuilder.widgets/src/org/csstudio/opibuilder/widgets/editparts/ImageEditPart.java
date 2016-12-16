@@ -285,6 +285,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ImageFigure imageFigure = (ImageFigure) figure;
                 int newDegree = getWidgetModel().getDegree((Integer) newValue);
                 int oldDegree = getWidgetModel().getDegree((Integer) oldValue);
@@ -312,6 +314,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipH((Boolean) newValue);
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
@@ -335,6 +339,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipV((Boolean) newValue);
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();

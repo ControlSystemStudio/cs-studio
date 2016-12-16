@@ -172,9 +172,9 @@ public class RulesProperty extends AbstractWidgetProperty {
                         valueElement.setText(exp.getValue().toString());
                     else{
                         Object savedValue = ruleData.getProperty().getPropertyValue();
-                        ruleData.getProperty().setPropertyValue(exp.getValue());
+                        ruleData.getProperty().setPropertyValue_IgnoreOldValue(exp.getValue());
                         ruleData.getProperty().writeToXML(valueElement);
-                        ruleData.getProperty().setPropertyValue(savedValue);
+                        ruleData.getProperty().setPropertyValue_IgnoreOldValue(savedValue);
                     }
                     expElement.addContent(valueElement);
                     ruleElement.addContent(expElement);
