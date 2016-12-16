@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.MonitorMask;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.Test;
 

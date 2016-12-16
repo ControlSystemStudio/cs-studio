@@ -11,8 +11,8 @@ Require-Bundle: org.eclipse.osgi,
  org.csstudio.startup;bundle-version="3.2.1",
  org.apache.commons.io,
  org.apache.commons.lang3,
- org.epics.jca;bundle-version="2.3.6"
+ org.epics.jca;bundle-version="2.3.6",
+ org.csstudio.diirt.util.core.preferences;bundle-version="1.0.0"
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Import-Package: org.csstudio.utility.product
 Bundle-Activator: org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin
-Export-Package: org.csstudio.diirt.util.preferences

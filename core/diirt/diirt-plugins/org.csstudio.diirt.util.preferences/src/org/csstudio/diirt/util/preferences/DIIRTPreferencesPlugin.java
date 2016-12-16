@@ -11,10 +11,6 @@ package org.csstudio.diirt.util.preferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,10 +21,8 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.preferences.pojo.DataSources;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
@@ -44,10 +38,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     public static final String     CANCEL_PREFIX                  = "cancel.";
     public static final String     DEFAULT_PREFIX                 = "default.";
     public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
-    public static final String     PLATFORM_URI_PREFIX            = "platform:";
     public static final String     PREF_CONFIGURATION_DIRECTORY   = "diirt.home";
-    public static final String     PREF_DEFAULT_INITIALIZED       = "diirt.default.initialized";
-    public static final String     USER_HOME_PARAMETER            = "@user.home";
 
     private static DIIRTPreferencesPlugin instance    = null;
     private static boolean                firstAccess = true;
@@ -64,68 +55,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         }
 
         return instance;
-
-    }
-
-    /**
-     * Verify if the selected path is a valid location for DIIRT configuration:
-     * <ul>
-     * <li>path exists.</li>
-     * <li><path contains the {@code datasources/datasources.xml} file.</li>
-     * </ul>
-     *
-     * @param path The path to be verified.
-     * @return {@code null} if the {@code path} is valid, otherwise the error
-     *         message explaining why the given {@code path} is not valid.
-     */
-    public static String verifyDIIRTPath ( String path ) {
-
-        if ( path == null ) {
-            return Messages.DPH_verifyDIIRTPath_nullPath_message;
-        } else if ( StringUtils.isBlank(path) ) {
-            return Messages.DPH_verifyDIIRTPath_blankPath_message;
-        } else if ( !Files.exists(Paths.get(path)) ) {
-            return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotExists_message, path);
-        } else if ( !Files.exists(Paths.get(path, DataSources.DATASOURCES_DIR + File.separator + DataSources.DATASOURCES_FILE)) ) {
-            return NLS.bind(Messages.DPH_verifyDIIRTPath_pathNotValid_message, path);
-        }
-
-        return null;
-
-    }
-
-    /**
-     * Return a valid path string (to be used with {@link File}'s methods) resolving
-     * the given {@code path} against the {@link #PLATFORM_URI_PREFIX} protocol, or
-     * the {@link #USER_HOME_PARAMETER} macro.
-     *
-     * @param path The path to be resolved.
-     * @return A filename valid for {@link File} operations.
-     * @throws MalformedURLException If {@code path} starts with
-     *             {@link #PLATFORM_URI_PREFIX} but is not a valid URL.
-     * @throws IOException If {@code path} cannot be resolved.
-     * @throws NullPointerException If {@code path} is {@code null}.
-     * @throws IllegalArgumentException If {@code path} is empty or blank.
-     */
-    public static String resolvePlatformPath ( String path )
-            throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException
-    {
-
-        if ( path == null ) {
-            throw new NullPointerException("Null path'");
-        } else if ( StringUtils.isBlank(path) ) {
-            throw new IllegalArgumentException("Empty path.");
-        }
-
-        if ( path.contains(USER_HOME_PARAMETER) ) {
-            path = path.replace(USER_HOME_PARAMETER, System.getProperty("user.home"));
-        }
-
-        if ( path.startsWith(PLATFORM_URI_PREFIX) ) {
-            return FileLocator.resolve(new URL(path)).getPath().toString();
-        } else {
-            return new File(path).getCanonicalPath();
-        }
 
     }
 
@@ -214,8 +143,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         DataSources.updateValues(store);
         ChannelAccess.updateValues(store);
     }
-
-
 
     @Override
     protected void initializeDefaultPreferences ( IPreferenceStore store ) {

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 import java.text.MessageFormat;
 import java.util.logging.Level;
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
@@ -163,7 +163,7 @@ public class DataSourceOptions {
             try {
                 mm = MonitorMask.valueOf(monitorMask);
             } catch ( Exception ex ){
-                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid monitor mask [{0}].", monitorMask), ex);
+                DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid monitor mask [{0}].", monitorMask), ex);
             }
 
             return mm;
@@ -200,7 +200,7 @@ public class DataSourceOptions {
             try {
                 vas = VariableArraySupport.representationOf(variableArraySupportRepresentation);
             } catch ( Exception ex ){
-                DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid variable array support representation [{0}].", variableArraySupportRepresentation), ex);
+                DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid variable array support representation [{0}].", variableArraySupportRepresentation), ex);
             }
 
             return vas;

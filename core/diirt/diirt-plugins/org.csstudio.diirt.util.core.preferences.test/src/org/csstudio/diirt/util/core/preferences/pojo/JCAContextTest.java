@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 
 import static org.junit.Assert.assertEquals;

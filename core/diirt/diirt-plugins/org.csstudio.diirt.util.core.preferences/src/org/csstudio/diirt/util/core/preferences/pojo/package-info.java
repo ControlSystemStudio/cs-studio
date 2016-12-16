@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 @XmlAccessorOrder( XmlAccessOrder.ALPHABETICAL )
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 
 import javax.xml.bind.annotation.XmlAccessOrder;

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 
 import java.io.File;
@@ -26,12 +26,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
-import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.PreferenceContainer;
+import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 
 
 /**
@@ -68,16 +69,13 @@ public class DataSources {
 	public String version = DATASOURCES_VERSION;
 
     /**
-     * Copy the {@link DataSources} parameters from a source store to a
+     * Copy the {@link DataSources} parameters from a source container to a
      * destination one.
      *
-     * @param source The source preference store.
-     * @param destination The destination preference store.
+     * @param source The source preference container.
+     * @param destination The destination preference container.
      */
-    public static void copy ( IPreferenceStore source, IPreferenceStore destination ) {
-
-        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT),   source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT)));
-        destination.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER), source.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER)));
+    public static void copy ( PreferenceContainer source, PreferenceContainer destination ) {
 
         destination.setDefault(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
         destination.setDefault(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
@@ -115,23 +113,13 @@ public class DataSources {
 
 	}
 
-    /**
-     * Update current defaults and values from the stored ones.
-     *
-     * @param store The preference store.
-     */
-    public static void updateValues ( IPreferenceStore store ) {
-        store.setDefault(PREF_DEFAULT, store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT)));
-        store.setDefault(PREF_DELIMITER, store.getString(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER)));
-    }
-
     public DataSources () {
     }
 
-    public DataSources ( IPreferenceStore store ) {
+    public DataSources ( PreferenceContainer container ) {
         this(new CompositeDataSource(
-            CompositeDataSource.DataSourceProtocol.fromString(store.getString(PREF_DEFAULT)),
-            store.getString(PREF_DELIMITER)
+            CompositeDataSource.DataSourceProtocol.fromString(container.getString(PREF_DEFAULT)),
+            container.getString(PREF_DELIMITER)
         ));
     }
 
@@ -199,8 +187,10 @@ public class DataSources {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
 
-            if ( DIIRTPreferencesPlugin.get() != null ) {
-                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", DIIRTPreferencesPlugin.get().getDIIRTHome()));
+            String diirtHome = DIIRTPreferences.get().getDIIRTHome();
+
+            if ( StringUtils.isNoneBlank(diirtHome) ) {
+                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", diirtHome));
             }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -212,24 +202,39 @@ public class DataSources {
     }
 
     /**
-     * Update all stored defaults, current defaults and values in the given store.
+     * Update defaults and values in the given container.
      *
-     * @param store The preference store.
+     * @param container The preference container.
      */
-    public void updateDefaultsAndValues ( IPreferenceStore store ) {
+    public void updateDefaultsAndValues ( PreferenceContainer container ) {
 
         if ( compositeDataSource != null ) {
 
             String cdsName = ObjectUtils.defaultIfNull(compositeDataSource.defaultDataSource, DataSourceProtocol.none).name();
 
-            store.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DEFAULT), cdsName);
-            store.setValue(DIIRTPreferencesPlugin.defaultPreferenceName(PREF_DELIMITER), compositeDataSource.delimiter);
+            container.setDefault(PREF_DEFAULT, cdsName);
+            container.setDefault(PREF_DELIMITER, compositeDataSource.delimiter);
 
-            store.setDefault(PREF_DEFAULT, cdsName);
-            store.setDefault(PREF_DELIMITER, compositeDataSource.delimiter);
+            container.setValue(PREF_DEFAULT, cdsName);
+            container.setValue(PREF_DELIMITER, compositeDataSource.delimiter);
 
-            store.setValue(PREF_DEFAULT, cdsName);
-            store.setValue(PREF_DELIMITER, compositeDataSource.delimiter);
+        }
+
+    }
+
+    /**
+     * Update values in the given container.
+     *
+     * @param container The preference container.
+     */
+    public void updateValues ( PreferenceContainer container ) {
+
+        if ( compositeDataSource != null ) {
+
+            String cdsName = ObjectUtils.defaultIfNull(compositeDataSource.defaultDataSource, DataSourceProtocol.none).name();
+
+            container.setValue(PREF_DEFAULT, cdsName);
+            container.setValue(PREF_DELIMITER, compositeDataSource.delimiter);
 
         }
 

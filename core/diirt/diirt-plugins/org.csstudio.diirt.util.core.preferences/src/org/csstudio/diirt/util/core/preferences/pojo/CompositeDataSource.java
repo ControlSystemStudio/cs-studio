@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.csstudio.diirt.util.preferences.pojo;
+package org.csstudio.diirt.util.core.preferences.pojo;
 
 
 import java.text.MessageFormat;
@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 
 /**
  * Plain Old Java Object representing the "compositeDataSource" element of a
@@ -137,7 +137,7 @@ public class CompositeDataSource {
 	        try {
 	            dsp = DataSourceProtocol.valueOf(dataSourceProtocol);
 	        } catch ( Exception ex ){
-	            DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", dataSourceProtocol), ex);
+	            DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", dataSourceProtocol), ex);
 	        }
 
 	        return dsp;
