@@ -314,6 +314,8 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
                 int newDegree = (Integer) newValue;
                 int oldDegree = (Integer) oldValue;
@@ -338,6 +340,8 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
@@ -357,6 +361,8 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
