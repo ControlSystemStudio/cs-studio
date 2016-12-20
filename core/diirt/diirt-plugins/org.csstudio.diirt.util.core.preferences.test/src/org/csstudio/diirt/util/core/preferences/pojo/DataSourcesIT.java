@@ -22,8 +22,9 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.TestScope;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.Test;
 
@@ -32,9 +33,9 @@ import org.junit.Test;
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 13 Dec 2016
  */
-public class DataSourcesTest {
+public class DataSourcesIT {
 
-    public static final Logger LOGGER = Logger.getLogger(DataSourcesTest.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(DataSourcesIT.class.getName());
 
     @Test
     public void testConstructors ( ) {
@@ -54,10 +55,10 @@ public class DataSourcesTest {
 
         assertEquals(ds1,  ds2);
 
-        PreferenceStore store = new PreferenceStore();
+        DIIRTPreferences store = new DIIRTPreferences(new TestScope());
 
-        store.setDefault(DataSources.PREF_DEFAULT, DataSourceProtocol.pva.name());
-        store.setDefault(DataSources.PREF_DELIMITER, "zxc");
+        store.setDefaultString(DataSources.PREF_DEFAULT, DataSourceProtocol.pva.name());
+        store.setString(DataSources.PREF_DELIMITER, "zxc");
 
         DataSources ds3 = new DataSources(store);
 
@@ -68,18 +69,18 @@ public class DataSourcesTest {
     @Test
     public void testCopy ( ) {
 
-        PreferenceStore source = new PreferenceStore();
+        DIIRTPreferences source = new DIIRTPreferences(new TestScope());
 
-        source.setDefault(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
-        source.setDefault(DataSources.PREF_DELIMITER, "zxc");
+        source.setDefaultString(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
+        source.setDefaultString(DataSources.PREF_DELIMITER, "zxc");
 
-        source.setValue(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
-        source.setValue(DataSources.PREF_DELIMITER, "asd");
+        source.setString(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
+        source.setString(DataSources.PREF_DELIMITER, "asd");
 
-        source.setDefault("fakeKey1", "fakeValue1");
-        source.setValue("fakeKey2", "fakeValue2");
+        source.setDefaultString("fakeKey1", "fakeValue1");
+        source.setString("fakeKey2", "fakeValue2");
 
-        PreferenceStore destination = new PreferenceStore();
+        DIIRTPreferences destination = new DIIRTPreferences(new TestScope());
 
         DataSources.copy(source, destination);
 
@@ -115,6 +116,7 @@ public class DataSourcesTest {
         DataSources ds3 = DataSources.fromFile(confDir);
 
         assertEquals(ds2, ds3);
+        assertNotEquals(ds1,  ds3);
 
         confDir = Files.createTempDirectory("diirt.test").toFile();
         ds2.version = "1.3.42";
@@ -138,25 +140,34 @@ public class DataSourcesTest {
 
         Field[] fields = DataSources.class.getDeclaredFields();
 
+        //  First is the number of instance variables.
+        //  Second is the number of static variables.
         assertEquals(2 + 5, fields.length);
+
         assertEquals(CompositeDataSource.class, DataSources.class.getDeclaredField("compositeDataSource").getType());
         assertEquals(String.class, DataSources.class.getDeclaredField("version").getType());
+
+        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DEFAULT").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DELIMITER").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_DIR").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_FILE").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_VERSION").getType());
 
     }
 
     @Test
     public void testUpdate ( ) {
 
-        PreferenceStore store = new PreferenceStore();
+        DIIRTPreferences store = new DIIRTPreferences(new TestScope());
 
-        store.setDefault(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
-        store.setDefault(DataSources.PREF_DELIMITER, "zxc");
+        store.setDefaultString(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
+        store.setDefaultString(DataSources.PREF_DELIMITER, "zxc");
 
-        store.setValue(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
-        store.setValue(DataSources.PREF_DELIMITER, "asd");
+        store.setString(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
+        store.setString(DataSources.PREF_DELIMITER, "asd");
 
-        store.setDefault("fakeKey1", "fakeValue1");
-        store.setValue("fakeKey2", "fakeValue2");
+        store.setDefaultString("fakeKey1", "fakeValue1");
+        store.setString("fakeKey2", "fakeValue2");
 
         assertEquals(DataSourceProtocol.pva.name(), store.getDefaultString(DataSources.PREF_DEFAULT));
         assertEquals("zxc",                         store.getDefaultString(DataSources.PREF_DELIMITER));

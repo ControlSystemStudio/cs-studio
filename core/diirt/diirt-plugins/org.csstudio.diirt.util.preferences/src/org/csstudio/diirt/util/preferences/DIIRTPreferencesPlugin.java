@@ -38,7 +38,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     public static final String     CANCEL_PREFIX                  = "cancel.";
     public static final String     DEFAULT_PREFIX                 = "default.";
     public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
-    public static final String     PREF_CONFIGURATION_DIRECTORY   = "diirt.home";
 
     private static DIIRTPreferencesPlugin instance    = null;
     private static boolean                firstAccess = true;

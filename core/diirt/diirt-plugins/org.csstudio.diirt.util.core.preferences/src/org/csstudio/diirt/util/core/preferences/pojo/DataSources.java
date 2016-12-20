@@ -26,12 +26,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
-import org.csstudio.diirt.util.core.preferences.PreferenceContainer;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 
 
@@ -69,19 +67,19 @@ public class DataSources {
 	public String version = DATASOURCES_VERSION;
 
     /**
-     * Copy the {@link DataSources} parameters from a source container to a
+     * Copy the {@link DataSources} parameters from a source set to a
      * destination one.
      *
-     * @param source The source preference container.
-     * @param destination The destination preference container.
+     * @param source The source preferences set.
+     * @param destination The destination preferences set.
      */
-    public static void copy ( PreferenceContainer source, PreferenceContainer destination ) {
+    public static void copy ( DIIRTPreferences source, DIIRTPreferences destination ) {
 
-        destination.setDefault(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
-        destination.setDefault(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
+        destination.setDefaultString(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
+        destination.setDefaultString(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
 
-        destination.setValue(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
-        destination.setValue(PREF_DELIMITER, source.getString(PREF_DELIMITER));
+        destination.setString(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
+        destination.setString(PREF_DELIMITER, source.getString(PREF_DELIMITER));
 
     }
 
@@ -113,13 +111,22 @@ public class DataSources {
 
 	}
 
+	/**
+	 * Create an instance of this class with default initialization.
+	 */
     public DataSources () {
     }
 
-    public DataSources ( PreferenceContainer container ) {
+    /**
+     * Create an instance of this class initialized using the given preferences
+     * set.
+     *
+     * @param preferencesSet The preferences set used to initialize this object.
+     */
+    public DataSources ( DIIRTPreferences preferencesSet ) {
         this(new CompositeDataSource(
-            CompositeDataSource.DataSourceProtocol.fromString(container.getString(PREF_DEFAULT)),
-            container.getString(PREF_DELIMITER)
+            CompositeDataSource.DataSourceProtocol.fromString(preferencesSet.getString(PREF_DEFAULT)),
+            preferencesSet.getString(PREF_DELIMITER)
         ));
     }
 
@@ -187,11 +194,12 @@ public class DataSources {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
 
-            String diirtHome = DIIRTPreferences.get().getDIIRTHome();
-
-            if ( StringUtils.isNoneBlank(diirtHome) ) {
-                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", diirtHome));
-            }
+//  TODO: CR: uncomment when understood how to run IT tests.
+//            String diirtHome = DIIRTPreferences.get().getDIIRTHome();
+//
+//            if ( StringUtils.isNoneBlank(diirtHome) ) {
+//                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", diirtHome));
+//            }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
@@ -202,39 +210,38 @@ public class DataSources {
     }
 
     /**
-     * Update defaults and values in the given container.
+     * Update defaults and values in the given preferences set.
      *
-     * @param container The preference container.
+     * @param preferencesSet The preferences set.
      */
-    public void updateDefaultsAndValues ( PreferenceContainer container ) {
+    public void updateDefaultsAndValues ( DIIRTPreferences preferencesSet ) {
 
         if ( compositeDataSource != null ) {
 
             String cdsName = ObjectUtils.defaultIfNull(compositeDataSource.defaultDataSource, DataSourceProtocol.none).name();
 
-            container.setDefault(PREF_DEFAULT, cdsName);
-            container.setDefault(PREF_DELIMITER, compositeDataSource.delimiter);
-
-            container.setValue(PREF_DEFAULT, cdsName);
-            container.setValue(PREF_DELIMITER, compositeDataSource.delimiter);
+            preferencesSet.setDefaultString(PREF_DEFAULT, cdsName);
+            preferencesSet.setDefaultString(PREF_DELIMITER, compositeDataSource.delimiter);
 
         }
+
+        updateValues(preferencesSet);
 
     }
 
     /**
-     * Update values in the given container.
+     * Update values in the given preferences set.
      *
-     * @param container The preference container.
+     * @param preferencesSet The preferences set.
      */
-    public void updateValues ( PreferenceContainer container ) {
+    public void updateValues ( DIIRTPreferences preferencesSet ) {
 
         if ( compositeDataSource != null ) {
 
             String cdsName = ObjectUtils.defaultIfNull(compositeDataSource.defaultDataSource, DataSourceProtocol.none).name();
 
-            container.setValue(PREF_DEFAULT, cdsName);
-            container.setValue(PREF_DELIMITER, compositeDataSource.delimiter);
+            preferencesSet.setString(PREF_DEFAULT, cdsName);
+            preferencesSet.setString(PREF_DELIMITER, compositeDataSource.delimiter);
 
         }
 

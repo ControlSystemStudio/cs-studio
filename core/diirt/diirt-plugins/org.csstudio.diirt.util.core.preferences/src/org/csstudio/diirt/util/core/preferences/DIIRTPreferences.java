@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSources;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -39,23 +42,25 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 15 Dec 2016
  */
-public class DIIRTPreferences {
+public final class DIIRTPreferences {
 
     public static final Logger LOGGER = Logger.getLogger(DIIRTPreferences.class.getName());
 
-    private static final boolean BOOLEAN_DEFAULT_DEFAULT  = false;
-    private static final String  DEFAULT_PREFIX           = "_default_.";
-    private static final double  DOUBLE_DEFAULT_DEFAULT   = 0.0;
-    private static final float   FLOAT_DEFAULT_DEFAULT    = 0.0f;
-    private static final int     INTEGER_DEFAULT_DEFAULT  = 0;
-    private static final long    LONG_DEFAULT_DEFAULT     = 0L;
-    private static final String  PLATFORM_URI_PREFIX      = "platform:";
-    private static final String  PREF_DEFAULT_INITIALIZED = "diirt.default.initialized";
-    private static final String  STRING_DEFAULT_DEFAULT   = ""; //$NON-NLS-1$
-    private static final String  USER_HOME_PARAMETER      = "@user.home";
+    private static final boolean BOOLEAN_DEFAULT_DEFAULT      = false;
+    private static final String  DEFAULT_PREFIX               = "_default_.";
+    private static final double  DOUBLE_DEFAULT_DEFAULT       = 0.0;
+    private static final float   FLOAT_DEFAULT_DEFAULT        = 0.0f;
+    private static final int     INTEGER_DEFAULT_DEFAULT      = 0;
+    private static final long    LONG_DEFAULT_DEFAULT         = 0L;
+    private static final String  PLATFORM_URI_PREFIX          = "platform:";
+    private static final String  PREF_CONFIGURATION_DIRECTORY = "diirt.home";
+    private static final String  PREF_DEFAULT_INITIALIZED     = "diirt.default.initialized";
+    private static final String  STRING_DEFAULT_DEFAULT       = "";                          //$NON-NLS-1$
+    private static final String  USER_HOME_PARAMETER          = "@user.home";
 
     private final IScopeContext scopeContext;
-    private final String        qualifier = Activator.getContext().getBundle().getSymbolicName();
+//    private final String        qualifier = Activator.getContext().getBundle().getSymbolicName();
+    private final String        qualifier = "org.csstudio.diirt.util.core.preferences";
 
     /**
      * Return the name of the property used to store the default value
@@ -65,14 +70,14 @@ public class DIIRTPreferences {
      * @return The name of the preference used to store the default value of the
      *         given one.
      */
-    public static final String defaultPreferenceName ( String preferenceName ) {
+    public static String defaultPreferenceName ( String preferenceName ) {
         return MessageFormat.format("{0}{1}", DEFAULT_PREFIX, preferenceName);
     }
 
     /**
      * @return The singleton instance of this class.
      */
-    public final static DIIRTPreferences get ( ) {
+    public static DIIRTPreferences get ( ) {
         return DIIRTPreferencesSingleInstance.INSTANCE;
     }
 
@@ -82,8 +87,50 @@ public class DIIRTPreferences {
      * @param preferenceName The preference name.
      * @return {@code true} if the given name is used to save default values.
      */
-    public static final boolean isDefaultPreferenceName ( String preferenceName ) {
+    public static boolean isDefaultPreferenceName ( String preferenceName ) {
         return StringUtils.defaultString(preferenceName).startsWith(DEFAULT_PREFIX);
+    }
+
+    /**
+     * Verify if the selected path is a valid location for DIIRT configuration:
+     * <ul>
+     * <li>path exists.</li>
+     * <li><path contains the {@code datasources/datasources.xml} file.</li>
+     * </ul>
+     *
+     * @param path The path to be verified.
+     * @return {@code null} if the {@code path} is valid, otherwise the error
+     *         message explaining why the given {@code path} is not valid.
+     */
+    public static String resolveAndVerifyDIIRTPath ( String path ) {
+
+        if ( path == null ) {
+            return Messages.DIIRTPreferences_verifyDIIRTPath_nullPath_message;
+        } else if ( StringUtils.isBlank(path) ) {
+            return Messages.DIIRTPreferences_verifyDIIRTPath_blankPath_message;
+        } else {
+
+            String beforeResolving = path;
+
+            try {
+                path = resolvePlatformPath(path);
+            } catch ( IOException | NullPointerException | IllegalArgumentException ex ) {
+                return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
+            }
+            if ( !StringUtils.equals(beforeResolving, path) ) {
+                LOGGER.log(Level.CONFIG, "DIIRT home path resolved [before: {0}, after: {1}].", new Object[] { beforeResolving, path });
+            }
+
+            if ( !Files.exists(Paths.get(path)) ) {
+                return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_pathNotExists_message, path);
+            } else if ( !Files.exists(Paths.get(path, DataSources.DATASOURCES_DIR + File.separator + DataSources.DATASOURCES_FILE)) ) {
+                return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_pathNotValid_message, path);
+            }
+
+        }
+
+        return null;
+
     }
 
     /**
@@ -121,58 +168,41 @@ public class DIIRTPreferences {
 
     }
 
-    /**
-     * Verify if the selected path is a valid location for DIIRT configuration:
-     * <ul>
-     * <li>path exists.</li>
-     * <li><path contains the {@code datasources/datasources.xml} file.</li>
-     * </ul>
-     *
-     * @param path The path to be verified.
-     * @return {@code null} if the {@code path} is valid, otherwise the error
-     *         message explaining why the given {@code path} is not valid.
-     */
-    public static String verifyDIIRTPath ( String path ) {
-
-        if ( path == null ) {
-            return Messages.DIIRTPreferences_verifyDIIRTPath_nullPath_message;
-        } else if ( StringUtils.isBlank(path) ) {
-            return Messages.DIIRTPreferences_verifyDIIRTPath_blankPath_message;
-        } else if ( !Files.exists(Paths.get(path)) ) {
-            return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_pathNotExists_message, path);
-        } else if ( !Files.exists(Paths.get(path, DataSources.DATASOURCES_DIR + File.separator + DataSources.DATASOURCES_FILE)) ) {
-            return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_pathNotValid_message, path);
-        }
-
-        return null;
-
-    }
-
     private DIIRTPreferences ( ) {
 
         scopeContext = InstanceScope.INSTANCE;
 
         if ( !getBoolean(PREF_DEFAULT_INITIALIZED) ) {
 
-            File defaultDIIRTConfig = null;
-            Location location = Platform.getInstanceLocation();
+            String diirtHome = getString(PREF_CONFIGURATION_DIRECTORY);
+            String message = resolveAndVerifyDIIRTPath(diirtHome);
 
-            if ( location != null ) {
-                try {
-                    defaultDIIRTConfig = URIUtil.toFile(URIUtil.append(location.getURL().toURI(), "diirt"));
-                } catch ( URISyntaxException e ) {
+            if ( message != null ) {
+
+                LOGGER.warning(message);
+
+                Location location = Platform.getInstanceLocation();
+
+                if ( location != null ) {
+                    try {
+                        diirtHome = URIUtil.toFile(URIUtil.append(location.getURL().toURI(), "diirt")).toString();
+                    } catch ( URISyntaxException ex ) {
+                        LOGGER.log(Level.WARNING, "Unable to setup fallback DIIRT directory.", ex);
+                    }
                 }
+
+                message = resolveAndVerifyDIIRTPath(diirtHome);
+
+                if ( message != null ) {
+                    LOGGER.warning(message);
+                }
+
             }
 
+            if ( message == null ) {
+                fromFiles(new File(diirtHome));
+            }
 
-
-
-
-
-
-
-
-            //  TODO: CR: initialize
         }
 
     }
@@ -184,7 +214,7 @@ public class DIIRTPreferences {
      *            use</b> the {@link InstanceScope#INSTANCE} contest: use
      *            {@link #get()} instead.
      */
-    DIIRTPreferences ( IScopeContext scopeContext ) {
+    public DIIRTPreferences ( IScopeContext scopeContext ) {
         this.scopeContext = scopeContext;
     }
 
@@ -195,7 +225,7 @@ public class DIIRTPreferences {
      * @return {@code true} if either a current value or a default
      *         value is known for the named preference, {@code false} otherwise.
      */
-    public final boolean contains ( String name ) {
+    public boolean contains ( String name ) {
 
         try {
 
@@ -220,7 +250,7 @@ public class DIIRTPreferences {
      * @return {@code true} if either a default value is known for the named
      *         preference, {@code false} otherwise.
      */
-    public final boolean containsDefault ( String name ) {
+    public boolean containsDefault ( String name ) {
 
         try {
 
@@ -250,16 +280,53 @@ public class DIIRTPreferences {
      *             to a failure in the backing store, or inability to
      *             communicate with it.
      */
-    public final void flush ( ) throws BackingStoreException {
+    public void flush ( ) throws BackingStoreException {
         getPreferences().flush();
+    }
+
+    /**
+     * Update this preferences store reading from the DIIRT home directory the
+     * configuration files.
+     *
+     * @param diirtHome The DIIRT configuration directory.
+     */
+    public void fromFiles ( File diirtHome ) {
+
+        DataSources ds = new DataSources();
+        ChannelAccess ca = new ChannelAccess();
+
+        try {
+            ds = DataSources.fromFile(diirtHome);
+            ca = ChannelAccess.fromFile(diirtHome);
+        } catch ( JAXBException | IOException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file(s) [{0}].", diirtHome), ex);
+        }
+
+        ds.updateDefaultsAndValues(this);
+        ca.updateDefaultsAndValues(this);
+
+        try {
+            flush();
+        } catch ( BackingStoreException ex ) {
+            LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
+        }
+
     }
 
     /**
      * @return The resolved path to the DIIRT home.
      */
     public String getDIIRTHome ( ) {
-//  TODO: CR: to be implemented
-        return null;
+
+        String diirtHome = getString(PREF_CONFIGURATION_DIRECTORY);
+        String message = resolveAndVerifyDIIRTPath(diirtHome);
+
+        if ( message != null ) {
+            LOGGER.warning(message);
+        }
+
+        return diirtHome;
+
     }
 
     /**
@@ -269,7 +336,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The boolean-valued preference.
      */
-    public final boolean getBoolean ( String name ) {
+    public boolean getBoolean ( String name ) {
         return getPreferences().getBoolean(name, getDefaultBoolean(name));
     }
 
@@ -280,7 +347,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final boolean getDefaultBoolean ( String name ) {
+    public boolean getDefaultBoolean ( String name ) {
         return getPreferences().getBoolean(defaultPreferenceName(name), BOOLEAN_DEFAULT_DEFAULT);
     }
 
@@ -291,7 +358,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final double getDefaultDouble ( String name ) {
+    public double getDefaultDouble ( String name ) {
         return getPreferences().getDouble(defaultPreferenceName(name), DOUBLE_DEFAULT_DEFAULT);
     }
 
@@ -302,7 +369,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final float getDefaultFloat ( String name ) {
+    public float getDefaultFloat ( String name ) {
         return getPreferences().getFloat(defaultPreferenceName(name), FLOAT_DEFAULT_DEFAULT);
     }
 
@@ -313,7 +380,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final int getDefaultInteger ( String name ) {
+    public int getDefaultInteger ( String name ) {
         return getPreferences().getInt(defaultPreferenceName(name), INTEGER_DEFAULT_DEFAULT);
     }
 
@@ -324,7 +391,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final long getDefaultLong ( String name ) {
+    public long getDefaultLong ( String name ) {
         return getPreferences().getLong(defaultPreferenceName(name), LONG_DEFAULT_DEFAULT);
     }
 
@@ -335,7 +402,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The default value of the named preference.
      */
-    public final String getDefaultString ( String name ) {
+    public String getDefaultString ( String name ) {
         return getPreferences().get(defaultPreferenceName(name), STRING_DEFAULT_DEFAULT);
     }
 
@@ -346,7 +413,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The double-valued preference.
      */
-    public final double getDouble ( String name ) {
+    public double getDouble ( String name ) {
         return getPreferences().getDouble(name, getDefaultDouble(name));
     }
 
@@ -357,7 +424,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The float-valued preference.
      */
-    public final float getFloat ( String name ) {
+    public float getFloat ( String name ) {
         return getPreferences().getFloat(name, getDefaultFloat(name));
     }
 
@@ -368,7 +435,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The int-valued preference.
      */
-    public final int getInteger ( String name ) {
+    public int getInteger ( String name ) {
         return getPreferences().getInt(name, getDefaultInteger(name));
     }
 
@@ -379,7 +446,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The long-valued preference.
      */
-    public final long getLong ( String name ) {
+    public long getLong ( String name ) {
         return getPreferences().getLong(name, getDefaultLong(name));
     }
 
@@ -387,7 +454,7 @@ public class DIIRTPreferences {
      * @return Return the {@link IEclipsePreferences} node. It can then be used
      *         to add listeners and visitors to the preferences.
      */
-    public final IEclipsePreferences getPreferences() {
+    public IEclipsePreferences getPreferences() {
         return scopeContext.getNode(qualifier);
     }
 
@@ -398,7 +465,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @return The string-valued preference.
      */
-    public final String getString ( String name ) {
+    public String getString ( String name ) {
         return getPreferences().get(name, getDefaultString(name));
     }
 
@@ -409,7 +476,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setBoolean ( String name, boolean value ) {
+    public void setBoolean ( String name, boolean value ) {
 
         boolean oldValue = getBoolean(name);
 
@@ -430,8 +497,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param defaultObject The new default value for the preference.
      */
-    public final void setDefaultBoolean ( String name, boolean value ) {
-        getPreferences().putBoolean(name, value);
+    public void setDefaultBoolean ( String name, boolean value ) {
+        getPreferences().putBoolean(defaultPreferenceName(name), value);
     }
 
     /**
@@ -441,8 +508,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new default value for the preference.
      */
-    public final void setDefaultDouble ( String name, double value ) {
-        getPreferences().putDouble(name, value);
+    public void setDefaultDouble ( String name, double value ) {
+        getPreferences().putDouble(defaultPreferenceName(name), value);
     }
 
     /**
@@ -452,8 +519,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new default value for the preference.
      */
-    public final void setDefaultFloat ( String name, float value ) {
-        getPreferences().putFloat(name, value);
+    public void setDefaultFloat ( String name, float value ) {
+        getPreferences().putFloat(defaultPreferenceName(name), value);
     }
 
     /**
@@ -463,8 +530,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new default value for the preference.
      */
-    public final void setDefaultInteger ( String name, int value ) {
-        getPreferences().putInt(name, value);
+    public void setDefaultInteger ( String name, int value ) {
+        getPreferences().putInt(defaultPreferenceName(name), value);
     }
 
     /**
@@ -474,8 +541,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new default value for the preference.
      */
-    public final void setDefaultLong ( String name, long value ) {
-        getPreferences().putLong(name, value);
+    public void setDefaultLong ( String name, long value ) {
+        getPreferences().putLong(defaultPreferenceName(name), value);
     }
 
     /**
@@ -485,8 +552,8 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new default value for the preference.
      */
-    public final void setDefaultString ( String name, String value ) {
-        getPreferences().put(name, value);
+    public void setDefaultString ( String name, String value ) {
+        getPreferences().put(defaultPreferenceName(name), value);
     }
 
     /**
@@ -496,7 +563,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setDouble ( String name, double value ) {
+    public void setDouble ( String name, double value ) {
 
         double oldValue = getDouble(name);
 
@@ -517,7 +584,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setValue ( String name, float value ) {
+    public void setValue ( String name, float value ) {
 
         float oldValue = getFloat(name);
 
@@ -538,7 +605,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setInteger ( String name, int value ) {
+    public void setInteger ( String name, int value ) {
 
         int oldValue = getInteger(name);
 
@@ -559,7 +626,7 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setLong ( String name, long value ) {
+    public void setLong ( String name, long value ) {
 
         long oldValue = getLong(name);
 
@@ -580,11 +647,11 @@ public class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public final void setString ( String name, String value ) {
+    public void setString ( String name, String value ) {
 
         String oldValue = getString(name);
 
-        if ( StringUtils.equals(oldValue, value) ) {
+        if ( ! StringUtils.equals(oldValue, value) ) {
             if ( StringUtils.equals(getDefaultString(name), value) ) {
                 getPreferences().remove(name);
             } else {
@@ -600,7 +667,7 @@ public class DIIRTPreferences {
      *
      * @param name The name of the preference.
      */
-    public final void setToDefault ( String name ) {
+    public void setToDefault ( String name ) {
         setString(name, getDefaultString(name));
     }
 
@@ -614,8 +681,26 @@ public class DIIRTPreferences {
      *             to a failure in the backing store, or inability to
      *             communicate with it.
      */
-    public final void synch ( ) throws BackingStoreException {
+    public void synch ( ) throws BackingStoreException {
         getPreferences().sync();
+    }
+
+    /**
+     * Export the current DIIRT configuration creating the relative files.
+     *
+     * @param diirtHome The DIIRT configuration directory.
+     * @throws JAXBException If there were some marshalling problems.
+     * @throws IOException  If an error occurred writing the configuration.
+     */
+    public void toFiles ( File diirtHome ) throws IOException, JAXBException {
+
+        if ( diirtHome == null || !diirtHome.exists() || !diirtHome.isDirectory() ) {
+            return;
+        }
+
+        new DataSources(this).toFile(diirtHome);
+        new ChannelAccess(this).toFile(diirtHome);
+
     }
 
     private interface DIIRTPreferencesSingleInstance {

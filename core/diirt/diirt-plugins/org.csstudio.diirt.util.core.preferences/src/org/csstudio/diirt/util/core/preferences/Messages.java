@@ -24,6 +24,7 @@ class Messages extends NLS {
     public static String DIIRTPreferences_verifyDIIRTPath_nullPath_message;
     public static String DIIRTPreferences_verifyDIIRTPath_pathNotExists_message;
     public static String DIIRTPreferences_verifyDIIRTPath_pathNotValid_message;
+    public static String DIIRTPreferences_verifyDIIRTPath_resolvingPath_message;
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
