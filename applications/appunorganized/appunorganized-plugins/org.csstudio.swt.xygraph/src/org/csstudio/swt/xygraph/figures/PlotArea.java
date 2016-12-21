@@ -298,7 +298,7 @@ public class PlotArea extends Figure {
      */
     private void zoomInOut(final boolean horizontally,
             final boolean vertically, final double factor) {
-    	xyGraph.getEventManager().setScrollingDisabled(false);
+        xyGraph.getEventManager().setScrollingDisabled(false);
         if (horizontally)
             for (Axis axis : xyGraph.getXAxisList()) {
                 final double center = axis.getPositionValue(start.x, false);
@@ -511,7 +511,7 @@ public class PlotArea extends Figure {
 
         /** Pan axis according to start/end from mouse listener */
         private void pan() {
-        	xyGraph.getEventManager().setScrollingDisabled(false);
+            xyGraph.getEventManager().setScrollingDisabled(false);
             List<Axis> axes = xyGraph.getXAxisList();
             for (int i = 0; i < axes.size(); ++i) {
                 final Axis axis = axes.get(i);
@@ -594,8 +594,8 @@ public class PlotArea extends Figure {
         return showAxisTrace;
     }
 
-	public void setScrollingDisabled(boolean scrollingDisabled) {
-		List<Axis> axes = xyGraph.getXAxisList();
+    public void setScrollingDisabled(boolean scrollingDisabled) {
+        List<Axis> axes = xyGraph.getXAxisList();
         for (int i = 0; i < axes.size(); ++i) {
             final Axis axis = axes.get(i);
             axis.setScrollingDisabled(scrollingDisabled);
@@ -605,5 +605,5 @@ public class PlotArea extends Figure {
             final Axis axis = axes.get(i);
             axis.setScrollingDisabled(scrollingDisabled);
         }
-	}
+    }
 }

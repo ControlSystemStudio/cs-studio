@@ -25,7 +25,7 @@ public class TwoImageToggleButton extends ToggleButton {
         super(new ImageFigure(image1));
         this.image = new ImageFigure(image1);
         if(image2 == null) {
-        	this.disabledImage = new ImageFigure(image1);
+            this.disabledImage = new ImageFigure(image1);
         }
         this.disabledImage = new ImageFigure(image2);
     }

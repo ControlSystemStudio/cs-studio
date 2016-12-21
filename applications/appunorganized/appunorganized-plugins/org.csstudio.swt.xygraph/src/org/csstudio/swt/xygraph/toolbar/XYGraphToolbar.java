@@ -228,29 +228,29 @@ public class XYGraphToolbar extends Figure {
         addButton(scrollingButton);
         scrollingButtonModel.addChangeListener(new ChangeListener(){
             public void handleStateChanged(ChangeEvent event) {
-            	xyGraph.setScrollingDisabled(!scrollingButton.isSelected());
-            	scrollingButton.switchImage(scrollingButton.isSelected());
-            	if(scrollingButton.isSelected()) {
-            		scrollingButton.setToolTip(new Label("Disable Scrolling"));
+                xyGraph.setScrollingDisabled(!scrollingButton.isSelected());
+                scrollingButton.switchImage(scrollingButton.isSelected());
+                if(scrollingButton.isSelected()) {
+                    scrollingButton.setToolTip(new Label("Disable Scrolling"));
 
-            	} else {
-            		scrollingButton.setToolTip(new Label("Enable Scrolling"));
-            	}
+                } else {
+                    scrollingButton.setToolTip(new Label("Enable Scrolling"));
+                }
             }
         });
 
         xyGraph.getEventManager().addListener(new IEventManagerListener(){
-			@Override
-			public void dataChanged(EventManager manager) {
-				scrollingButton.switchImage(manager.isScrollingDisabled());
-				scrollingButton.setSelected(manager.isScrollingDisabled());
-				scrollingButtonModel.setSelected(manager.isScrollingDisabled());
-            	if(manager.isScrollingDisabled()) {
-            		scrollingButton.setToolTip(new Label("Disable Scrolling"));
-            	} else {
-            		scrollingButton.setToolTip(new Label("Enable Scrolling"));
-            	}
-			}
+            @Override
+            public void dataChanged(EventManager manager) {
+                scrollingButton.switchImage(manager.isScrollingDisabled());
+                scrollingButton.setSelected(manager.isScrollingDisabled());
+                scrollingButtonModel.setSelected(manager.isScrollingDisabled());
+                if(manager.isScrollingDisabled()) {
+                    scrollingButton.setToolTip(new Label("Disable Scrolling"));
+                } else {
+                    scrollingButton.setToolTip(new Label("Enable Scrolling"));
+                }
+            }
         });
 
 

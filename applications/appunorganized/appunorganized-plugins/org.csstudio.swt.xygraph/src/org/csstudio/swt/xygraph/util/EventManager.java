@@ -17,20 +17,20 @@ import java.util.List;
  */
 public class EventManager {
 
-	boolean isScrollingDisabled;
+    boolean isScrollingDisabled;
 
-	private List<IEventManagerListener> listeners;
+    private List<IEventManagerListener> listeners;
 
     /**
      * Constructor.
      */
     public EventManager() {
-    	isScrollingDisabled = false;
-    	listeners = new ArrayList<IEventManagerListener>();
+        isScrollingDisabled = false;
+        listeners = new ArrayList<IEventManagerListener>();
     }
 
     public void setScrollingDisabled(boolean isScrollingDisabled_){
-    	isScrollingDisabled = isScrollingDisabled_;
+        isScrollingDisabled = isScrollingDisabled_;
         fireDataChanged();
     }
 
@@ -48,7 +48,7 @@ public class EventManager {
     }
 
     public boolean isScrollingDisabled() {
-		return isScrollingDisabled;
-	}
+        return isScrollingDisabled;
+    }
 
 }

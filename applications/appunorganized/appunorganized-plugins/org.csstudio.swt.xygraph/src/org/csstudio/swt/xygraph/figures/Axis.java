@@ -811,13 +811,13 @@ public class Axis extends LinearScale{
     }
 
     public void setScrollingDisabled(boolean isScrollingDisabled_) {
-    	this.autoScale = !isScrollingDisabled_;
-    	setRange(getRange());
-	}
+        this.autoScale = !isScrollingDisabled_;
+        setRange(getRange());
+    }
 
     public boolean isScrollingDisabled() {
-		return !this.autoScale;
-	}
+        return !this.autoScale;
+    }
 
     /**
      * @param grid the grid to set
@@ -1022,13 +1022,13 @@ public class Axis extends LinearScale{
             final double center = getPositionValue(pixel_pos, false);
             switch (zoomType)
             {
-	            case ZOOM_IN:              zoomInOut(center, ZOOM_RATIO); break;
-	            case ZOOM_IN_HORIZONTALLY: zoomInOut(center, ZOOM_RATIO); break;
-	            case ZOOM_IN_VERTICALLY:   zoomInOut(center, ZOOM_RATIO); break;
-	            case ZOOM_OUT:             zoomInOut(center, -ZOOM_RATIO); break;
-	            case ZOOM_OUT_HORIZONTALLY:zoomInOut(center, -ZOOM_RATIO); break;
-	            case ZOOM_OUT_VERTICALLY:  zoomInOut(center, -ZOOM_RATIO); break;
-	            default:                   // NOP
+                case ZOOM_IN:              zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_IN_HORIZONTALLY: zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_IN_VERTICALLY:   zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_OUT:             zoomInOut(center, -ZOOM_RATIO); break;
+                case ZOOM_OUT_HORIZONTALLY:zoomInOut(center, -ZOOM_RATIO); break;
+                case ZOOM_OUT_VERTICALLY:  zoomInOut(center, -ZOOM_RATIO); break;
+                default:                   // NOP
             }
         }
     }

@@ -473,9 +473,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                                 @Override
                                 public void run() {
                                     if(isActive()) {
-                                    	 handler.handleChange(
+                                         handler.handleChange(
                                                evt.getOldValue(), evt.getNewValue(), getFigure());
-                                   		}
+                                           }
                                     }
                                 });
                         }

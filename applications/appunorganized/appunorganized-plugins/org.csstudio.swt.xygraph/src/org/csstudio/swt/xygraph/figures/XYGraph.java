@@ -722,14 +722,14 @@ public class XYGraph extends Figure {
         operationsManager.addCommand(command);
     }
 
-	public boolean isScrollingDisabled() {
-		return scrollingDisabled;
-	}
+    public boolean isScrollingDisabled() {
+        return scrollingDisabled;
+    }
 
-	public void setScrollingDisabled(boolean scrollingDisabled) {
-		this.scrollingDisabled = scrollingDisabled;
-		if(plotArea != null) {
-			plotArea.setScrollingDisabled(this.scrollingDisabled);
-		}
-	}
+    public void setScrollingDisabled(boolean scrollingDisabled) {
+        this.scrollingDisabled = scrollingDisabled;
+        if(plotArea != null) {
+            plotArea.setScrollingDisabled(this.scrollingDisabled);
+        }
+    }
 }
