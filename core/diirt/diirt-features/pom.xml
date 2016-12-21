@@ -30,7 +30,6 @@
         <!-- Plugin required to properly publish source feature -->
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-plugin</artifactId>
-        <version>${tycho.version}</version>
         <executions>
           <execution>
             <id>attach-p2-metadata</id>

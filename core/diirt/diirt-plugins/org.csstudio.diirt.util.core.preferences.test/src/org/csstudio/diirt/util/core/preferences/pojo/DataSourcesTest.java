@@ -16,8 +16,8 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
@@ -33,9 +33,9 @@ import org.junit.Test;
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 13 Dec 2016
  */
-public class DataSourcesIT {
+public class DataSourcesTest {
 
-    public static final Logger LOGGER = Logger.getLogger(DataSourcesIT.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(DataSourcesTest.class.getName());
 
     @Test
     public void testConstructors ( ) {
@@ -138,11 +138,9 @@ public class DataSourcesIT {
     @Test
     public void testStructure ( ) throws NoSuchFieldException, SecurityException {
 
-        Field[] fields = DataSources.class.getDeclaredFields();
-
         //  First is the number of instance variables.
         //  Second is the number of static variables.
-        assertEquals(2 + 5, fields.length);
+        assertEquals(2 + 5, Arrays.asList(DataSources.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
         assertEquals(CompositeDataSource.class, DataSources.class.getDeclaredField("compositeDataSource").getType());
         assertEquals(String.class, DataSources.class.getDeclaredField("version").getType());

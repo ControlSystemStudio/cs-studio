@@ -12,7 +12,7 @@
 		<module>org.csstudio.diirt.help</module>
 		<module>org.csstudio.diirt.util</module>
 		<module>org.csstudio.diirt.util.core.preferences</module>
-		<module>org.csstudio.diirt.util.dore.preferences.test</module>
+		<module>org.csstudio.diirt.util.core.preferences.test</module>
 		<module>org.csstudio.diirt.util.preferences</module>
 	</modules>
 </project>

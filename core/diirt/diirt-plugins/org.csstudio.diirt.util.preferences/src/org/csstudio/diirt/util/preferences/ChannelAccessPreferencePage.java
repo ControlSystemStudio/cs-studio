@@ -9,25 +9,24 @@
 package org.csstudio.diirt.util.preferences;
 
 
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_ADDR_LIST;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_AUTO_ADDR_LIST;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_BEACON_PERIOD;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_CONNECTION_TIMEOUT;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_CUSTOM_MASK;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_ADDR_LIST;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_AUTO_ADDR_LIST;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_BEACON_PERIOD;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_CONNECTION_TIMEOUT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_CUSTOM_MASK;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY;
 
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.MonitorMask;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.jface.DoubleFieldEditor;
-import org.csstudio.diirt.util.preferences.pojo.ChannelAccess;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.MonitorMask;
-import org.csstudio.diirt.util.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.diirt.util.preferences.swt.Separator;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -240,12 +239,72 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
     @Override
     protected void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-        ChannelAccess.copy(store, cancelStore);
+
+        cancelStore.setDefault(PREF_DBE_PROPERTY_SUPPORTED, store.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        cancelStore.setDefault(PREF_HONOR_ZERO_PRECISION,   store.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
+        cancelStore.setDefault(PREF_MONITOR_MASK,           store.getDefaultString(PREF_MONITOR_MASK));
+        cancelStore.setDefault(PREF_CUSTOM_MASK,            store.getDefaultInt(PREF_CUSTOM_MASK));
+        cancelStore.setDefault(PREF_VALUE_RTYP_MONITOR,     store.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
+        cancelStore.setDefault(PREF_VARIABLE_LENGTH_ARRAY,  store.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
+        cancelStore.setDefault(PREF_ADDR_LIST,              store.getDefaultString(PREF_ADDR_LIST));
+        cancelStore.setDefault(PREF_AUTO_ADDR_LIST,         store.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
+        cancelStore.setDefault(PREF_BEACON_PERIOD,          store.getDefaultDouble(PREF_BEACON_PERIOD));
+        cancelStore.setDefault(PREF_CONNECTION_TIMEOUT,     store.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
+        cancelStore.setDefault(PREF_MAX_ARRAY_SIZE,         store.getDefaultInt(PREF_MAX_ARRAY_SIZE));
+        cancelStore.setDefault(PREF_PURE_JAVA,              store.getDefaultBoolean(PREF_PURE_JAVA));
+        cancelStore.setDefault(PREF_REPEATER_PORT,          store.getDefaultInt(PREF_REPEATER_PORT));
+        cancelStore.setDefault(PREF_SERVER_PORT,            store.getDefaultInt(PREF_SERVER_PORT));
+
+        cancelStore.setValue(PREF_DBE_PROPERTY_SUPPORTED, store.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        cancelStore.setValue(PREF_HONOR_ZERO_PRECISION,   store.getBoolean(PREF_HONOR_ZERO_PRECISION));
+        cancelStore.setValue(PREF_MONITOR_MASK,           store.getString(PREF_MONITOR_MASK));
+        cancelStore.setValue(PREF_CUSTOM_MASK,            store.getInt(PREF_CUSTOM_MASK));
+        cancelStore.setValue(PREF_VALUE_RTYP_MONITOR,     store.getBoolean(PREF_VALUE_RTYP_MONITOR));
+        cancelStore.setValue(PREF_VARIABLE_LENGTH_ARRAY,  store.getString(PREF_VARIABLE_LENGTH_ARRAY));
+        cancelStore.setValue(PREF_ADDR_LIST,              store.getString(PREF_ADDR_LIST));
+        cancelStore.setValue(PREF_AUTO_ADDR_LIST,         store.getBoolean(PREF_AUTO_ADDR_LIST));
+        cancelStore.setValue(PREF_BEACON_PERIOD,          store.getDouble(PREF_BEACON_PERIOD));
+        cancelStore.setValue(PREF_CONNECTION_TIMEOUT,     store.getDouble(PREF_CONNECTION_TIMEOUT));
+        cancelStore.setValue(PREF_MAX_ARRAY_SIZE,         store.getInt(PREF_MAX_ARRAY_SIZE));
+        cancelStore.setValue(PREF_PURE_JAVA,              store.getBoolean(PREF_PURE_JAVA));
+        cancelStore.setValue(PREF_REPEATER_PORT,          store.getInt(PREF_REPEATER_PORT));
+        cancelStore.setValue(PREF_SERVER_PORT,            store.getInt(PREF_SERVER_PORT));
+
     }
 
     @Override
     protected void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-        ChannelAccess.copy(cancelStore, store);
+
+        store.setDefault(PREF_DBE_PROPERTY_SUPPORTED, cancelStore.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        store.setDefault(PREF_HONOR_ZERO_PRECISION,   cancelStore.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
+        store.setDefault(PREF_MONITOR_MASK,           cancelStore.getDefaultString(PREF_MONITOR_MASK));
+        store.setDefault(PREF_CUSTOM_MASK,            cancelStore.getDefaultInt(PREF_CUSTOM_MASK));
+        store.setDefault(PREF_VALUE_RTYP_MONITOR,     cancelStore.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
+        store.setDefault(PREF_VARIABLE_LENGTH_ARRAY,  cancelStore.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
+        store.setDefault(PREF_ADDR_LIST,              cancelStore.getDefaultString(PREF_ADDR_LIST));
+        store.setDefault(PREF_AUTO_ADDR_LIST,         cancelStore.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
+        store.setDefault(PREF_BEACON_PERIOD,          cancelStore.getDefaultDouble(PREF_BEACON_PERIOD));
+        store.setDefault(PREF_CONNECTION_TIMEOUT,     cancelStore.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
+        store.setDefault(PREF_MAX_ARRAY_SIZE,         cancelStore.getDefaultInt(PREF_MAX_ARRAY_SIZE));
+        store.setDefault(PREF_PURE_JAVA,              cancelStore.getDefaultBoolean(PREF_PURE_JAVA));
+        store.setDefault(PREF_REPEATER_PORT,          cancelStore.getDefaultInt(PREF_REPEATER_PORT));
+        store.setDefault(PREF_SERVER_PORT,            cancelStore.getDefaultInt(PREF_SERVER_PORT));
+
+        store.setValue(PREF_DBE_PROPERTY_SUPPORTED, cancelStore.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        store.setValue(PREF_HONOR_ZERO_PRECISION,   cancelStore.getBoolean(PREF_HONOR_ZERO_PRECISION));
+        store.setValue(PREF_MONITOR_MASK,           cancelStore.getString(PREF_MONITOR_MASK));
+        store.setValue(PREF_CUSTOM_MASK,            cancelStore.getInt(PREF_CUSTOM_MASK));
+        store.setValue(PREF_VALUE_RTYP_MONITOR,     cancelStore.getBoolean(PREF_VALUE_RTYP_MONITOR));
+        store.setValue(PREF_VARIABLE_LENGTH_ARRAY,  cancelStore.getString(PREF_VARIABLE_LENGTH_ARRAY));
+        store.setValue(PREF_ADDR_LIST,              cancelStore.getString(PREF_ADDR_LIST));
+        store.setValue(PREF_AUTO_ADDR_LIST,         cancelStore.getBoolean(PREF_AUTO_ADDR_LIST));
+        store.setValue(PREF_BEACON_PERIOD,          cancelStore.getDouble(PREF_BEACON_PERIOD));
+        store.setValue(PREF_CONNECTION_TIMEOUT,     cancelStore.getDouble(PREF_CONNECTION_TIMEOUT));
+        store.setValue(PREF_MAX_ARRAY_SIZE,         cancelStore.getInt(PREF_MAX_ARRAY_SIZE));
+        store.setValue(PREF_PURE_JAVA,              cancelStore.getBoolean(PREF_PURE_JAVA));
+        store.setValue(PREF_REPEATER_PORT,          cancelStore.getInt(PREF_REPEATER_PORT));
+        store.setValue(PREF_SERVER_PORT,            cancelStore.getInt(PREF_SERVER_PORT));
+
     }
 
 }

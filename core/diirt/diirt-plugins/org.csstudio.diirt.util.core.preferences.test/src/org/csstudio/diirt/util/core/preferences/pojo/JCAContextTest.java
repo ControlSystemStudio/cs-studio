@@ -12,7 +12,7 @@ package org.csstudio.diirt.util.core.preferences.pojo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -59,9 +59,8 @@ public class JCAContextTest {
     @Test
     public void testStructure ( ) throws NoSuchFieldException, SecurityException {
 
-        Field[] fields = JCAContext.class.getDeclaredFields();
+        assertEquals(8, Arrays.asList(JCAContext.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
-        assertEquals(8, fields.length);
         assertEquals(String.class, JCAContext.class.getDeclaredField("addrList").getType());
         assertEquals(boolean.class, JCAContext.class.getDeclaredField("autoAddrList").getType());
         assertEquals(double.class, JCAContext.class.getDeclaredField("beaconPeriod").getType());

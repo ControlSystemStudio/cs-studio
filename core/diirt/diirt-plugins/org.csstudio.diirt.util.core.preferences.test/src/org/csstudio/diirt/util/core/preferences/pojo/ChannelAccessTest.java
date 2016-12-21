@@ -16,8 +16,8 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 19 Dec 2016
  */
-public class ChannelAccessIT {
+public class ChannelAccessTest {
 
     @Test
     public final void testConstructors ( ) {
@@ -205,11 +205,9 @@ public class ChannelAccessIT {
     @Test
     public void testStructure ( ) throws NoSuchFieldException, SecurityException {
 
-        Field[] fields = ChannelAccess.class.getDeclaredFields();
-
         //  First is the number of instance variables.
         //  Second is the number of static variables.
-        assertEquals(3 + 17, fields.length);
+        assertEquals(3 + 17, Arrays.asList(ChannelAccess.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
         assertEquals(DataSourceOptions.class, ChannelAccess.class.getDeclaredField("dataSourceOptions").getType());
         assertEquals(JCAContext.class, ChannelAccess.class.getDeclaredField("jcaContext").getType());

@@ -44,19 +44,19 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public final class DIIRTPreferences {
 
-    public static final Logger LOGGER = Logger.getLogger(DIIRTPreferences.class.getName());
+    public static final String PREF_CONFIGURATION_DIRECTORY = "diirt.home";
+    public static final Logger LOGGER                       = Logger.getLogger(DIIRTPreferences.class.getName());
 
-    private static final boolean BOOLEAN_DEFAULT_DEFAULT      = false;
-    private static final String  DEFAULT_PREFIX               = "_default_.";
-    private static final double  DOUBLE_DEFAULT_DEFAULT       = 0.0;
-    private static final float   FLOAT_DEFAULT_DEFAULT        = 0.0f;
-    private static final int     INTEGER_DEFAULT_DEFAULT      = 0;
-    private static final long    LONG_DEFAULT_DEFAULT         = 0L;
-    private static final String  PLATFORM_URI_PREFIX          = "platform:";
-    private static final String  PREF_CONFIGURATION_DIRECTORY = "diirt.home";
-    private static final String  PREF_DEFAULT_INITIALIZED     = "diirt.default.initialized";
-    private static final String  STRING_DEFAULT_DEFAULT       = "";                          //$NON-NLS-1$
-    private static final String  USER_HOME_PARAMETER          = "@user.home";
+    private static final boolean BOOLEAN_DEFAULT_DEFAULT  = false;
+    private static final String  DEFAULT_PREFIX           = "_default_.";
+    private static final double  DOUBLE_DEFAULT_DEFAULT   = 0.0;
+    private static final float   FLOAT_DEFAULT_DEFAULT    = 0.0f;
+    private static final int     INTEGER_DEFAULT_DEFAULT  = 0;
+    private static final long    LONG_DEFAULT_DEFAULT     = 0L;
+    private static final String  PLATFORM_URI_PREFIX      = "platform:";
+    private static final String  PREF_DEFAULT_INITIALIZED = "diirt.default.initialized";
+    private static final String  STRING_DEFAULT_DEFAULT   = ""; //$NON-NLS-1$
+    private static final String  USER_HOME_PARAMETER      = "@user.home";
 
     private final IScopeContext scopeContext;
 //    private final String        qualifier = Activator.getContext().getBundle().getSymbolicName();
@@ -201,6 +201,14 @@ public final class DIIRTPreferences {
 
             if ( message == null ) {
                 fromFiles(new File(diirtHome));
+            }
+
+            setBoolean(PREF_DEFAULT_INITIALIZED, true);
+
+            try {
+                flush();
+            } catch ( BackingStoreException ex ) {
+                LOGGER.log(Level.WARNING, "Unable to flush preferences.", ex);
             }
 
         }
@@ -702,6 +710,43 @@ public final class DIIRTPreferences {
         new ChannelAccess(this).toFile(diirtHome);
 
     }
+
+//    /**
+//     * Update defaults and values in this preferences set, loading them from the
+//     * DIIRT configuration directory.
+//     *
+//     * @param confDir The DIIRT configuration directory.
+//     * @throws IOException In case the given file cannot be read or the version
+//     *             is invalid.
+//     * @throws JAXBException In case the given file cannot unmashalled.
+//     */
+//    public void updateDefaultsAndValues ( File confDir ) throws IOException, JAXBException {
+//
+//        DataSources ds = DataSources.fromFile(confDir);
+//        ChannelAccess ca = ChannelAccess.fromFile(confDir);
+//
+//        ds.updateDefaultsAndValues(this);
+//        ca.updateDefaultsAndValues(this);
+//
+//    }
+//
+//    /**
+//     * Update values in this preferences set, loading them from the DIIRT
+//     * configuration directory.
+//     *
+//     * @param confDir The DIIRT configuration directory.
+//     * @throws IOException In case the given file cannot be read or the version is invalid.
+//     * @throws JAXBException In case the given file cannot unmashalled.
+//     */
+//    public void updateValues ( File confDir ) throws IOException, JAXBException {
+//
+//        DataSources ds = DataSources.fromFile(confDir);
+//        ChannelAccess ca = ChannelAccess.fromFile(confDir);
+//
+//        ds.updateValues(this);
+//        ca.updateValues(this);
+//
+//    }
 
     private interface DIIRTPreferencesSingleInstance {
         static final DIIRTPreferences INSTANCE = new DIIRTPreferences();

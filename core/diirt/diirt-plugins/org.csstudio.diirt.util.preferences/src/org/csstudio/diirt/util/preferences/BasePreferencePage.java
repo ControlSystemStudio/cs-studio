@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -233,7 +234,8 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      */
     protected String initializeValues ( IPreferenceStore store ) {
 
-        String confDir = DIIRTPreferencesPlugin.get().getDIIRTHome();
+//        String confDir = DIIRTPreferencesPlugin.get().getDIIRTHome();
+        String confDir = DIIRTPreferences.get().getDIIRTHome();
 
         if ( verifyAndNotifyWarning(confDir) ) {
             reloadEditors();
@@ -387,7 +389,8 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      */
     protected boolean verifyAndNotifyWarning ( final String path ) {
 
-        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
+//        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
+        String message = DIIRTPreferences.resolveAndVerifyDIIRTPath(path);
 
         notifyWarning(message);
 

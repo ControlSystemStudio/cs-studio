@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
-import org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin;
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
 import org.diirt.datasource.CompositeDataSource;
 import org.diirt.datasource.CompositeDataSourceConfiguration;
@@ -54,7 +54,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
             File diirtHome = Files.createTempDirectory("DIIRT").toFile();
 
-            DIIRTPreferencesPlugin.get().exportConfiguration(diirtHome);
+            DIIRTPreferences.get().toFiles(diirtHome);
 
             log.config(MessageFormat.format("Setting 'diirt.home' system property [{0}].", diirtHome.toString()));
             System.setProperty("diirt.home", diirtHome.toString());

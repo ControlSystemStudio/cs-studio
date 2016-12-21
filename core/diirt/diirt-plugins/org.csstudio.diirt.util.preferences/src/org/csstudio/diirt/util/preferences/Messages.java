@@ -50,11 +50,6 @@ public class Messages extends NLS {
     public static String CAPP_valueRadioButton_text;
     public static String CAPP_variableLengthArrayCaption_text;
 
-    public static String DPH_verifyDIIRTPath_blankPath_message;
-    public static String DPH_verifyDIIRTPath_nullPath_message;
-    public static String DPH_verifyDIIRTPath_pathNotExists_message;
-    public static String DPH_verifyDIIRTPath_pathNotValid_message;
-
     public static String DSPP_browseButton_text;
     public static String DSPP_browseDialog_message;
     public static String DSPP_browseDialog_text;

@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.VariableArraySupport;
@@ -89,9 +89,8 @@ public class DataSourceOptionsTest {
     @Test
     public void testStructure ( ) throws NoSuchFieldException, SecurityException {
 
-        Field[] fields = DataSourceOptions.class.getDeclaredFields();
+        assertEquals(5, Arrays.asList(DataSourceOptions.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
-        assertEquals(5, fields.length);
         assertEquals(boolean.class, DataSourceOptions.class.getDeclaredField("dbePropertySupported").getType());
         assertEquals(boolean.class, DataSourceOptions.class.getDeclaredField("honorZeroPrecision").getType());
         assertEquals(String.class, DataSourceOptions.class.getDeclaredField("monitorMaskValue").getType());

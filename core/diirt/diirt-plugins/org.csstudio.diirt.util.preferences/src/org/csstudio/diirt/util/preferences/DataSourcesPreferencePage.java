@@ -9,12 +9,13 @@
 package org.csstudio.diirt.util.preferences;
 
 
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.CA_DIR;
-import static org.csstudio.diirt.util.preferences.pojo.ChannelAccess.CA_FILE;
-import static org.csstudio.diirt.util.preferences.pojo.DataSources.DATASOURCES_DIR;
-import static org.csstudio.diirt.util.preferences.pojo.DataSources.DATASOURCES_FILE;
-import static org.csstudio.diirt.util.preferences.pojo.DataSources.PREF_DEFAULT;
-import static org.csstudio.diirt.util.preferences.pojo.DataSources.PREF_DELIMITER;
+import static org.csstudio.diirt.util.core.preferences.DIIRTPreferences.PREF_CONFIGURATION_DIRECTORY;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.CA_DIR;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.CA_FILE;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.DATASOURCES_DIR;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.DATASOURCES_FILE;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DEFAULT;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DELIMITER;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +26,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
-import org.csstudio.diirt.util.preferences.pojo.CompositeDataSource.DataSourceProtocol;
-import org.csstudio.diirt.util.preferences.pojo.DataSources;
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -108,14 +108,14 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
         container.setLayout(new GridLayout());
 
-        directoryEditor = new ConfigurationDirectoryFieldEditor(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY, Messages.DSPP_directoryCaption_text, container, store);
+        directoryEditor = new ConfigurationDirectoryFieldEditor(PREF_CONFIGURATION_DIRECTORY, Messages.DSPP_directoryCaption_text, container, store);
 
         directoryEditor.setChangeButtonText(Messages.DSPP_browseButton_text);
         directoryEditor.getTextControl(container).setEditable(false);
         directoryEditor.getTextControl(container).setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
         directoryEditor.getTextControl(container).setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
 
-        addField(directoryEditor, container, false, () -> store.getString(DIIRTPreferencesPlugin.PREF_CONFIGURATION_DIRECTORY));
+        addField(directoryEditor, container, false, () -> store.getString(PREF_CONFIGURATION_DIRECTORY));
 
         Composite treeComposite = new Composite(container, SWT.NONE);
         GridData gd_treeComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
@@ -202,7 +202,13 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
     @Override
     protected void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-        DataSources.copy(store, cancelStore);
+
+        cancelStore.setDefault(PREF_DEFAULT,   store.getDefaultString(PREF_DEFAULT));
+        cancelStore.setDefault(PREF_DELIMITER, store.getDefaultString(PREF_DELIMITER));
+
+        cancelStore.setValue(PREF_DEFAULT,   store.getString(PREF_DEFAULT));
+        cancelStore.setValue(PREF_DELIMITER, store.getString(PREF_DELIMITER));
+
     }
 
     @Override
@@ -225,7 +231,13 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
     @Override
     protected void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-        DataSources.copy(cancelStore, store);
+
+        store.setDefault(PREF_DEFAULT,   cancelStore.getDefaultString(PREF_DEFAULT));
+        store.setDefault(PREF_DELIMITER, cancelStore.getDefaultString(PREF_DELIMITER));
+
+        store.setValue(PREF_DEFAULT,   cancelStore.getString(PREF_DEFAULT));
+        store.setValue(PREF_DELIMITER, cancelStore.getString(PREF_DELIMITER));
+
     }
 
     /**
@@ -247,7 +259,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         if ( choice != null ) {
 
             try {
-                choice = DIIRTPreferencesPlugin.resolvePlatformPath(choice.trim());
+                choice = DIIRTPreferences.resolvePlatformPath(choice.trim());
             } catch ( Exception ex ) {
                 notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, choice));
                 return;
@@ -277,9 +289,9 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             }
 
             try {
-                DIIRTPreferencesPlugin.get().exportConfiguration(parentPath.toFile());
+                DIIRTPreferences.get().toFiles(parentPath.toFile());
                 notifyInformation(NLS.bind(Messages.DSPP_exportSuccessful_message, choice));
-            } catch ( JAXBException | IOException | XMLStreamException ex ) {
+            } catch ( JAXBException | IOException ex ) {
                 notifyWarning(NLS.bind(Messages.DSPP_exportFailed_message, choice, ex.getMessage()));
             }
 
@@ -349,7 +361,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             if ( choice != null ) {
 
                 try {
-                    choice = DIIRTPreferencesPlugin.resolvePlatformPath(choice.trim());
+                    choice = DIIRTPreferences.resolvePlatformPath(choice.trim());
                 } catch ( Exception ex ) {
                     notifyWarning(NLS.bind(Messages.DSPP_resolveMessage, choice));
                     return null;
@@ -358,7 +370,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
                 lastPath = choice;
 
                 if ( verifyAndNotifyWarning(choice) ) {
-                    DIIRTPreferencesPlugin.get().updateDefaultsAndValues(choice, store);
+                    DIIRTPreferences.get().fromFiles(new File(choice));
                     reloadEditorsForAllPages();
                 }
 

@@ -12,7 +12,7 @@ package org.csstudio.diirt.util.core.preferences.pojo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.junit.Test;
@@ -63,9 +63,8 @@ public class CompositeDataSourceTest {
     @Test
     public void testStructure ( ) throws NoSuchFieldException, SecurityException {
 
-        Field[] fields = CompositeDataSource.class.getDeclaredFields();
+        assertEquals(2, Arrays.asList(CompositeDataSource.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
-        assertEquals(2, fields.length);
         assertEquals(DataSourceProtocol.class, CompositeDataSource.class.getDeclaredField("defaultDataSource").getType());
         assertEquals(String.class, CompositeDataSource.class.getDeclaredField("delimiter").getType());
 
