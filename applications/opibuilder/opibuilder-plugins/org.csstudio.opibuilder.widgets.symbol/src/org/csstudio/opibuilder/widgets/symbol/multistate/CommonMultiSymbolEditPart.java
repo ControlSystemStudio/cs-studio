@@ -446,6 +446,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
                 int newDegree = (Integer) newValue;
                 int oldDegree = (Integer) oldValue;
@@ -470,6 +472,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
@@ -489,6 +493,8 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
+                if (oldValue == null || newValue == null)
+                    return false;
                 CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
