@@ -66,8 +66,30 @@ public class DataSourcesTest {
 
     }
 
+    /**
+     * This test is made to fail if the structure of {@link DataSources}
+     * changed, ensuring that also the test classes are changed too.
+     */
     @Test
-    public void testFromToFile ( ) throws IOException, JAXBException {
+    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
+
+        //  First is the number of instance variables.
+        //  Second is the number of static variables.
+        assertEquals(2 + 5, Arrays.asList(DataSources.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
+
+        assertEquals(CompositeDataSource.class, DataSources.class.getDeclaredField("compositeDataSource").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("version").getType());
+
+        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DEFAULT").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DELIMITER").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_DIR").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_FILE").getType());
+        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_VERSION").getType());
+
+    }
+
+    @Test
+    public void testToFromFile ( ) throws IOException, JAXBException {
 
         File confDir = Files.createTempDirectory("diirt.test").toFile();
         DataSources ds1 = new DataSources(new CompositeDataSource(DataSourceProtocol.pva, "zxc"));
@@ -99,28 +121,6 @@ public class DataSourcesTest {
         } catch ( IOException ex ) {
             assertThat(ex.getMessage(), new StringStartsWith("Version mismatch:"));
         }
-
-    }
-
-    /**
-     * This test is made to fail if the structure of {@link DataSources}
-     * changed, ensuring that also the test classes are changed too.
-     */
-    @Test
-    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
-
-        //  First is the number of instance variables.
-        //  Second is the number of static variables.
-        assertEquals(2 + 5, Arrays.asList(DataSources.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
-
-        assertEquals(CompositeDataSource.class, DataSources.class.getDeclaredField("compositeDataSource").getType());
-        assertEquals(String.class, DataSources.class.getDeclaredField("version").getType());
-
-        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DEFAULT").getType());
-        assertEquals(String.class, DataSources.class.getDeclaredField("PREF_DELIMITER").getType());
-        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_DIR").getType());
-        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_FILE").getType());
-        assertEquals(String.class, DataSources.class.getDeclaredField("DATASOURCES_VERSION").getType());
 
     }
 

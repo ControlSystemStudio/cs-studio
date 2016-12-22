@@ -116,6 +116,7 @@ public final class DIIRTPreferences {
             } catch ( IOException | NullPointerException | IllegalArgumentException ex ) {
                 return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
             }
+
             if ( !StringUtils.equals(beforeResolving, path) ) {
                 LOGGER.log(Level.CONFIG, "DIIRT home path resolved [before: {0}, after: {1}].", new Object[] { beforeResolving, path });
             }
@@ -150,7 +151,7 @@ public final class DIIRTPreferences {
     {
 
         if ( path == null ) {
-            throw new NullPointerException("Null path'");
+            throw new NullPointerException("Null 'path'.");
         } else if ( StringUtils.isBlank(path) ) {
             throw new IllegalArgumentException("Empty path.");
         }
@@ -600,7 +601,7 @@ public final class DIIRTPreferences {
      * @param name The name of the preference.
      * @param value The new current value of the preference.
      */
-    public void setValue ( String name, float value ) {
+    public void setFloat ( String name, float value ) {
 
         float oldValue = getFloat(name);
 

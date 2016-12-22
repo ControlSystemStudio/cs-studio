@@ -83,8 +83,43 @@ public class ChannelAccessTest {
 
     }
 
+    /**
+     * This test is made to fail if the structure of {@link ChannelAccess}
+     * changed, ensuring that also the test classes are changed too.
+     */
     @Test
-    public void testFromToFile ( ) throws IOException, JAXBException {
+    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
+
+        //  First is the number of instance variables.
+        //  Second is the number of static variables.
+        assertEquals(3 + 17, Arrays.asList(ChannelAccess.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
+
+        assertEquals(DataSourceOptions.class, ChannelAccess.class.getDeclaredField("dataSourceOptions").getType());
+        assertEquals(JCAContext.class, ChannelAccess.class.getDeclaredField("jcaContext").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("version").getType());
+
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_ADDR_LIST").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_AUTO_ADDR_LIST").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_BEACON_PERIOD").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_CONNECTION_TIMEOUT").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_CUSTOM_MASK").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_DBE_PROPERTY_SUPPORTED").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_HONOR_ZERO_PRECISION").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MAX_ARRAY_SIZE").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MONITOR_MASK").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_PURE_JAVA").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_REPEATER_PORT").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_SERVER_PORT").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_VALUE_RTYP_MONITOR").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_VARIABLE_LENGTH_ARRAY").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_DIR").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_FILE").getType());
+        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_VERSION").getType());
+
+    }
+
+    @Test
+    public void testToFromFile ( ) throws IOException, JAXBException {
 
         File confDir = Files.createTempDirectory("diirt.test").toFile();
         ChannelAccess ca1 = new ChannelAccess(
@@ -121,41 +156,6 @@ public class ChannelAccessTest {
         } catch ( IOException ex ) {
             assertThat(ex.getMessage(), new StringStartsWith("Version mismatch:"));
         }
-
-    }
-
-    /**
-     * This test is made to fail if the structure of {@link ChannelAccess}
-     * changed, ensuring that also the test classes are changed too.
-     */
-    @Test
-    public void testStructure ( ) throws NoSuchFieldException, SecurityException {
-
-        //  First is the number of instance variables.
-        //  Second is the number of static variables.
-        assertEquals(3 + 17, Arrays.asList(ChannelAccess.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
-
-        assertEquals(DataSourceOptions.class, ChannelAccess.class.getDeclaredField("dataSourceOptions").getType());
-        assertEquals(JCAContext.class, ChannelAccess.class.getDeclaredField("jcaContext").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("version").getType());
-
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_ADDR_LIST").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_AUTO_ADDR_LIST").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_BEACON_PERIOD").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_CONNECTION_TIMEOUT").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_CUSTOM_MASK").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_DBE_PROPERTY_SUPPORTED").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_HONOR_ZERO_PRECISION").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MAX_ARRAY_SIZE").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MONITOR_MASK").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_PURE_JAVA").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_REPEATER_PORT").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_SERVER_PORT").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_VALUE_RTYP_MONITOR").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_VARIABLE_LENGTH_ARRAY").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_DIR").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_FILE").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("CA_VERSION").getType());
 
     }
 
@@ -253,7 +253,7 @@ public class ChannelAccessTest {
         assertEquals(true,                                        store.getBoolean(ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED));
         assertEquals(false,                                       store.getBoolean(ChannelAccess.PREF_HONOR_ZERO_PRECISION));
         assertEquals(MonitorMask.ALARM.name(),                    store.getString(ChannelAccess.PREF_MONITOR_MASK));
-        assertEquals(5,                                           store.getInteger(ChannelAccess.PREF_CUSTOM_MASK));
+        assertEquals(4,                                           store.getInteger(ChannelAccess.PREF_CUSTOM_MASK));
         assertEquals(true,                                        store.getBoolean(ChannelAccess.PREF_VALUE_RTYP_MONITOR));
         assertEquals(VariableArraySupport.FALSE.representation(), store.getString(ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY));
 
@@ -274,7 +274,7 @@ public class ChannelAccessTest {
         assertEquals(true,                                        store.getDefaultBoolean(ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED));
         assertEquals(false,                                       store.getDefaultBoolean(ChannelAccess.PREF_HONOR_ZERO_PRECISION));
         assertEquals(MonitorMask.ALARM.name(),                    store.getDefaultString(ChannelAccess.PREF_MONITOR_MASK));
-        assertEquals(5,                                           store.getDefaultInteger(ChannelAccess.PREF_CUSTOM_MASK));
+        assertEquals(4,                                           store.getDefaultInteger(ChannelAccess.PREF_CUSTOM_MASK));
         assertEquals(true,                                        store.getDefaultBoolean(ChannelAccess.PREF_VALUE_RTYP_MONITOR));
         assertEquals(VariableArraySupport.FALSE.representation(), store.getDefaultString(ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY));
 
@@ -290,7 +290,7 @@ public class ChannelAccessTest {
         assertEquals(true,                                        store.getBoolean(ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED));
         assertEquals(false,                                       store.getBoolean(ChannelAccess.PREF_HONOR_ZERO_PRECISION));
         assertEquals(MonitorMask.ALARM.name(),                    store.getString(ChannelAccess.PREF_MONITOR_MASK));
-        assertEquals(5,                                           store.getInteger(ChannelAccess.PREF_CUSTOM_MASK));
+        assertEquals(4,                                           store.getInteger(ChannelAccess.PREF_CUSTOM_MASK));
         assertEquals(true,                                        store.getBoolean(ChannelAccess.PREF_VALUE_RTYP_MONITOR));
         assertEquals(VariableArraySupport.FALSE.representation(), store.getString(ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY));
 
