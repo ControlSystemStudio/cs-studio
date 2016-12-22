@@ -25,9 +25,17 @@ public class ExceptionUtilities {
      * @param ex The exception.
      * @param pattern The string to be matched.
      * @return The reduced version of the stack frame string, containing the
-     *         given {@code pattern} string
+     *         given {@code pattern} string, or the full stack trace if the
+     *         {@code pattern} string is not found or {@code null}.
+     *         {@code null} is returned if the given exception is {@code null}.
      */
     public static String reducedStackTrace ( Throwable ex, String pattern ) {
+
+        if ( ex == null ) {
+            return null;
+        } else if ( pattern == null ) {
+            pattern = "";
+        }
 
         StringBuilder builder = new StringBuilder();
         String[] stackFrames = ExceptionUtils.getStackFrames(ex);
@@ -48,12 +56,14 @@ public class ExceptionUtilities {
                 if ( found )  {
                     patternFound = true;
                 }
-            } else if ( patternFound && !found ) {
+            } else if ( patternFound && !found && i < stackFrames.length - 1 ) {
                 builder.append("\n\t...");
                 break;
             }
 
         }
+
+        builder.append('\n');
 
         return builder.toString();
 
