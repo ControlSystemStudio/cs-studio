@@ -25,7 +25,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -47,7 +46,6 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
     private static final Set<BasePreferencePage> DIIRT_PAGES = new HashSet<>();
 
-    private final PreferenceStore cancelStore = new PreferenceStore();
     private final Map<FieldEditor, Editor> editors = new HashMap<>();
 
     public BasePreferencePage ( ) {
@@ -171,7 +169,7 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     @Override
     public boolean performCancel ( ) {
 
-        performCancel(getPreferenceStore(), cancelStore);
+        DIIRTPreferencesPlugin.get().performCancel();
 
         return true;
 
@@ -217,16 +215,6 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     }
 
     /**
-     * Initialize the cancel store copying in it the relevant information from
-     * the preference store.
-     *
-     * @param store The preference store.
-     * @param cancelStore The preference store used to revert back preferences
-     *            when CANCEL is pressed.
-     */
-    protected abstract void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore );
-
-    /**
      * Initialize widgets with values from the preferences store.
      *
      * @param store The data store.
@@ -234,14 +222,13 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      */
     protected String initializeValues ( IPreferenceStore store ) {
 
-//        String confDir = DIIRTPreferencesPlugin.get().getDIIRTHome();
         String confDir = DIIRTPreferences.get().getDIIRTHome();
 
         if ( verifyAndNotifyWarning(confDir) ) {
             reloadEditors();
         }
 
-        initializeCancelStore(store, cancelStore);
+        DIIRTPreferencesPlugin.get().initializeCancelStore();
 
         return confDir;
 
@@ -304,16 +291,6 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     protected void performApply ( ) {
         editors.keySet().stream().forEach(e -> e.store());
     }
-
-    /**
-     * Perform cancel operation copying from the cancel store the relevant information into
-     * the preference store.
-     *
-     * @param store The preference store.
-     * @param cancelStore The preference store used to revert back preferences
-     *            when CANCEL is pressed.
-     */
-    protected abstract void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore );
 
     @Override
     protected void performDefaults ( ) {
@@ -389,7 +366,6 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      */
     protected boolean verifyAndNotifyWarning ( final String path ) {
 
-//        String message = DIIRTPreferencesPlugin.verifyDIIRTPath(path);
         String message = DIIRTPreferences.resolveAndVerifyDIIRTPath(path);
 
         notifyWarning(message);

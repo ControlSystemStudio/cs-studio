@@ -20,6 +20,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.ExceptionUtilities;
 
 /**
  * Plain Old Java Object representing the "compositeDataSource" element of a
@@ -137,7 +138,14 @@ public class CompositeDataSource {
 	        try {
 	            dsp = DataSourceProtocol.valueOf(dataSourceProtocol);
 	        } catch ( Exception ex ){
-	            DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}].", dataSourceProtocol), ex);
+	            DIIRTPreferences.LOGGER.log(
+                    Level.WARNING,
+                    MessageFormat.format(
+                        "Invalid default data source [{0}]\n{1}",
+                        dataSourceProtocol,
+                        ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")
+                    )
+                );
 	        }
 
 	        return dsp;

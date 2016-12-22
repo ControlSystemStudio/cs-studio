@@ -66,23 +66,6 @@ public class DataSources {
 	@XmlAttribute( name = "version", required = true )
 	public String version = DATASOURCES_VERSION;
 
-    /**
-     * Copy the {@link DataSources} parameters from a source set to a
-     * destination one.
-     *
-     * @param source The source preferences set.
-     * @param destination The destination preferences set.
-     */
-    public static void copy ( DIIRTPreferences source, DIIRTPreferences destination ) {
-
-        destination.setDefaultString(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
-        destination.setDefaultString(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
-
-        destination.setString(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
-        destination.setString(PREF_DELIMITER, source.getString(PREF_DELIMITER));
-
-    }
-
 	/**
 	 * Create and instance of this class loading it from the given folder.
 	 *
@@ -193,13 +176,6 @@ public class DataSources {
         try ( Writer writer = new FileWriter(new File(dsDir, DATASOURCES_FILE)) ) {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
-
-//  TODO: CR: uncomment when understood how to run IT tests.
-//            String diirtHome = DIIRTPreferences.get().getDIIRTHome();
-//
-//            if ( StringUtils.isNoneBlank(diirtHome) ) {
-//                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", diirtHome));
-//            }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);

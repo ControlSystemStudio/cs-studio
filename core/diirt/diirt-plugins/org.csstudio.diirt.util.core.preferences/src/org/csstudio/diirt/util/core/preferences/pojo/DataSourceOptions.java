@@ -19,6 +19,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.ExceptionUtilities;
 
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
@@ -163,7 +164,14 @@ public class DataSourceOptions {
             try {
                 mm = MonitorMask.valueOf(monitorMask);
             } catch ( Exception ex ){
-                DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid monitor mask [{0}].", monitorMask), ex);
+                DIIRTPreferences.LOGGER.log(
+                    Level.WARNING,
+                    MessageFormat.format(
+                        "Invalid monitor mask [{0}]\n{1}",
+                        monitorMask,
+                        ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")
+                    )
+                );
             }
 
             return mm;
@@ -200,7 +208,14 @@ public class DataSourceOptions {
             try {
                 vas = VariableArraySupport.representationOf(variableArraySupportRepresentation);
             } catch ( Exception ex ){
-                DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid variable array support representation [{0}].", variableArraySupportRepresentation), ex);
+                DIIRTPreferences.LOGGER.log(
+                    Level.WARNING,
+                    MessageFormat.format(
+                        "Invalid variable array support representation [{0}]\n{1}",
+                        variableArraySupportRepresentation,
+                        ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")
+                    )
+                );
             }
 
             return vas;

@@ -67,35 +67,6 @@ public class DataSourcesTest {
     }
 
     @Test
-    public void testCopy ( ) {
-
-        DIIRTPreferences source = new DIIRTPreferences(new TestScope());
-
-        source.setDefaultString(DataSources.PREF_DEFAULT,   DataSourceProtocol.pva.name());
-        source.setDefaultString(DataSources.PREF_DELIMITER, "zxc");
-
-        source.setString(DataSources.PREF_DEFAULT,   DataSourceProtocol.file.name());
-        source.setString(DataSources.PREF_DELIMITER, "asd");
-
-        source.setDefaultString("fakeKey1", "fakeValue1");
-        source.setString("fakeKey2", "fakeValue2");
-
-        DIIRTPreferences destination = new DIIRTPreferences(new TestScope());
-
-        DataSources.copy(source, destination);
-
-        assertEquals(DataSourceProtocol.pva.name(), destination.getDefaultString(DataSources.PREF_DEFAULT));
-        assertEquals("zxc",                         destination.getDefaultString(DataSources.PREF_DELIMITER));
-
-        assertEquals(DataSourceProtocol.file.name(), destination.getString(DataSources.PREF_DEFAULT));
-        assertEquals("asd",                          destination.getString(DataSources.PREF_DELIMITER));
-
-        assertNotEquals("fakeValue1", destination.getDefaultString("fakeKey1"));
-        assertNotEquals("fakeValue2", destination.getString("fakeKey2"));
-
-    }
-
-    @Test
     public void testFromToFile ( ) throws IOException, JAXBException {
 
         File confDir = Files.createTempDirectory("diirt.test").toFile();

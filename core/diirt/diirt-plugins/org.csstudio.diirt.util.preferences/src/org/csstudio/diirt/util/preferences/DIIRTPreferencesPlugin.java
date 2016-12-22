@@ -9,10 +9,31 @@
 package org.csstudio.diirt.util.preferences;
 
 
-import java.text.MessageFormat;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_ADDR_LIST;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_AUTO_ADDR_LIST;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_BEACON_PERIOD;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_CONNECTION_TIMEOUT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_CUSTOM_MASK;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
+import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DEFAULT;
+import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DELIMITER;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.service.prefs.BackingStoreException;
 
 
 /**
@@ -24,143 +45,151 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
-    public static final String     CANCEL_PREFIX                  = "cancel.";
-    public static final String     DEFAULT_PREFIX                 = "default.";
-    public static final Logger     LOGGER                         = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
 
     private static DIIRTPreferencesPlugin instance    = null;
-//    private static boolean                firstAccess = true;
+    private static boolean                firstAccess = true;
 
-    public static String defaultPreferenceName ( String preferenceName ) {
-        return MessageFormat.format("{0}{1}", DEFAULT_PREFIX, preferenceName);
+    private final PreferenceStore cancelStore = new PreferenceStore();
+
+    public static void copyChannelAccess ( IPreferenceStore source, DIIRTPreferences destination ) {
+
+        destination.setDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED, source.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setDefaultBoolean(PREF_HONOR_ZERO_PRECISION,   source.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setDefaultString(PREF_MONITOR_MASK,            source.getDefaultString(PREF_MONITOR_MASK));
+        destination.setDefaultInteger(PREF_CUSTOM_MASK,            source.getDefaultInt(PREF_CUSTOM_MASK));
+        destination.setDefaultBoolean(PREF_VALUE_RTYP_MONITOR,     source.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setDefaultString(PREF_VARIABLE_LENGTH_ARRAY,   source.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setDefaultString(PREF_ADDR_LIST,               source.getDefaultString(PREF_ADDR_LIST));
+        destination.setDefaultBoolean(PREF_AUTO_ADDR_LIST,         source.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setDefaultDouble(PREF_BEACON_PERIOD,           source.getDefaultDouble(PREF_BEACON_PERIOD));
+        destination.setDefaultDouble(PREF_CONNECTION_TIMEOUT,      source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setDefaultInteger(PREF_MAX_ARRAY_SIZE,         source.getDefaultInt(PREF_MAX_ARRAY_SIZE));
+        destination.setDefaultBoolean(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
+        destination.setDefaultInteger(PREF_REPEATER_PORT,          source.getDefaultInt(PREF_REPEATER_PORT));
+        destination.setDefaultInteger(PREF_SERVER_PORT,            source.getDefaultInt(PREF_SERVER_PORT));
+
+        destination.setBoolean(PREF_DBE_PROPERTY_SUPPORTED, source.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setBoolean(PREF_HONOR_ZERO_PRECISION,   source.getBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setString(PREF_MONITOR_MASK,            source.getString(PREF_MONITOR_MASK));
+        destination.setInteger(PREF_CUSTOM_MASK,            source.getInt(PREF_CUSTOM_MASK));
+        destination.setBoolean(PREF_VALUE_RTYP_MONITOR,     source.getBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setString(PREF_VARIABLE_LENGTH_ARRAY,   source.getString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setString(PREF_ADDR_LIST,               source.getString(PREF_ADDR_LIST));
+        destination.setBoolean(PREF_AUTO_ADDR_LIST,         source.getBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setDouble(PREF_BEACON_PERIOD,           source.getDouble(PREF_BEACON_PERIOD));
+        destination.setDouble(PREF_CONNECTION_TIMEOUT,      source.getDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setInteger(PREF_MAX_ARRAY_SIZE,         source.getInt(PREF_MAX_ARRAY_SIZE));
+        destination.setBoolean(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
+        destination.setInteger(PREF_REPEATER_PORT,          source.getInt(PREF_REPEATER_PORT));
+        destination.setInteger(PREF_SERVER_PORT,            source.getInt(PREF_SERVER_PORT));
+
+    }
+
+    public static void copyChannelAccess ( DIIRTPreferences source, IPreferenceStore destination ) {
+
+        destination.setDefault(PREF_DBE_PROPERTY_SUPPORTED, source.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setDefault(PREF_HONOR_ZERO_PRECISION,   source.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setDefault(PREF_MONITOR_MASK,           source.getDefaultString(PREF_MONITOR_MASK));
+        destination.setDefault(PREF_CUSTOM_MASK,            source.getDefaultInteger(PREF_CUSTOM_MASK));
+        destination.setDefault(PREF_VALUE_RTYP_MONITOR,     source.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setDefault(PREF_VARIABLE_LENGTH_ARRAY,  source.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setDefault(PREF_ADDR_LIST,              source.getDefaultString(PREF_ADDR_LIST));
+        destination.setDefault(PREF_AUTO_ADDR_LIST,         source.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setDefault(PREF_BEACON_PERIOD,          source.getDefaultDouble(PREF_BEACON_PERIOD));
+        destination.setDefault(PREF_CONNECTION_TIMEOUT,     source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setDefault(PREF_MAX_ARRAY_SIZE,         source.getDefaultInteger(PREF_MAX_ARRAY_SIZE));
+        destination.setDefault(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
+        destination.setDefault(PREF_REPEATER_PORT,          source.getDefaultInteger(PREF_REPEATER_PORT));
+        destination.setDefault(PREF_SERVER_PORT,            source.getDefaultInteger(PREF_SERVER_PORT));
+
+        destination.setValue(PREF_DBE_PROPERTY_SUPPORTED, source.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
+        destination.setValue(PREF_HONOR_ZERO_PRECISION,   source.getBoolean(PREF_HONOR_ZERO_PRECISION));
+        destination.setValue(PREF_MONITOR_MASK,           source.getString(PREF_MONITOR_MASK));
+        destination.setValue(PREF_CUSTOM_MASK,            source.getInteger(PREF_CUSTOM_MASK));
+        destination.setValue(PREF_VALUE_RTYP_MONITOR,     source.getBoolean(PREF_VALUE_RTYP_MONITOR));
+        destination.setValue(PREF_VARIABLE_LENGTH_ARRAY,  source.getString(PREF_VARIABLE_LENGTH_ARRAY));
+        destination.setValue(PREF_ADDR_LIST,              source.getString(PREF_ADDR_LIST));
+        destination.setValue(PREF_AUTO_ADDR_LIST,         source.getBoolean(PREF_AUTO_ADDR_LIST));
+        destination.setValue(PREF_BEACON_PERIOD,          source.getDouble(PREF_BEACON_PERIOD));
+        destination.setValue(PREF_CONNECTION_TIMEOUT,     source.getDouble(PREF_CONNECTION_TIMEOUT));
+        destination.setValue(PREF_MAX_ARRAY_SIZE,         source.getInteger(PREF_MAX_ARRAY_SIZE));
+        destination.setValue(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
+        destination.setValue(PREF_REPEATER_PORT,          source.getInteger(PREF_REPEATER_PORT));
+        destination.setValue(PREF_SERVER_PORT,            source.getInteger(PREF_SERVER_PORT));
+
+    }
+
+    public static void copyDataSources ( IPreferenceStore source, DIIRTPreferences destination ) {
+
+        destination.setDefaultString(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
+        destination.setDefaultString(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
+
+        destination.setString(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
+        destination.setString(PREF_DELIMITER, source.getString(PREF_DELIMITER));
+
+    }
+
+    public static void copyDataSources ( DIIRTPreferences source, IPreferenceStore destination ) {
+
+        destination.setDefault(PREF_DEFAULT,   source.getDefaultString(PREF_DEFAULT));
+        destination.setDefault(PREF_DELIMITER, source.getDefaultString(PREF_DELIMITER));
+
+        destination.setValue(PREF_DEFAULT,   source.getString(PREF_DEFAULT));
+        destination.setValue(PREF_DELIMITER, source.getString(PREF_DELIMITER));
+
     }
 
     public static DIIRTPreferencesPlugin get ( ) {
-
-//        if ( firstAccess && instance != null ) {
-//            instance.getPreferenceStore().getString(PREF_CONFIGURATION_DIRECTORY);
-//            firstAccess = false;
-//        }
-
         return instance;
-
     }
 
     public DIIRTPreferencesPlugin ( ) {
         instance = this;
     }
 
+    @Override
+    public IPreferenceStore getPreferenceStore ( ) {
+
+        IPreferenceStore store = super.getPreferenceStore();
+
+        if ( firstAccess && store != null ) {
+
+            copyDataSources(DIIRTPreferences.get(), store);
+            copyChannelAccess(DIIRTPreferences.get(), store);
+
+            firstAccess = false;
+
+        }
+
+        return store;
+
+    }
+
     /**
-     * Update all stored defaults, current defaults and values from the files in the
-     * given DIIRT configuration directory.
-     *
-     * @param confDir The DIIRT configuration directory.
-     * @param store   The preference store.
+     * Initialize the cancel store copying in it the relevant information from
+     * the preference store.
      */
-//    public void updateDefaultsAndValues ( String confDir, IPreferenceStore store ) {
-//
-//        if ( StringUtils.isBlank(confDir) ) {
-//            LOGGER.warning("Null, empty or blank 'confDir'");
-//            return;
-//        } else {
-//            try {
-//                confDir = resolvePlatformPath(confDir);
-//            } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-//                LOGGER.log(Level.WARNING, MessageFormat.format("Path cannot be resolved [{0}].", confDir), ex);
-//                return;
-//            }
-//        }
-//
-//        File confFolder = new File(confDir);
-//        DataSources ds = new DataSources();
-//        ChannelAccess ca = new ChannelAccess();
-//
-//        try {
-//            ds = DataSources.fromFile(confFolder);
-//            ca = ChannelAccess.fromFile(confFolder);
-//        } catch ( JAXBException | IOException ex ) {
-//            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file(s) [{0}].", confDir), ex);
-//        }
-//
-//        ds.updateDefaultsAndValues(store);
-//        ca.updateDefaultsAndValues(store);
-//
-//        try {
-//            ((IPersistentPreferenceStore) store).save();
-//        } catch ( IOException ex ) {
-//            DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
-//        }
-//
-//    }
+    public void initializeCancelStore ( ) {
+        copyDataSources(DIIRTPreferences.get(), cancelStore);
+        copyChannelAccess(DIIRTPreferences.get(), cancelStore);
+    }
 
-//    /**
-//     * Update current defaults and values from the stored ones.
-//     *
-//     * @param store The preference store.
-//     */
-//    public void updateValues ( IPreferenceStore store ) {
-//        DataSources.updateValues(store);
-//        ChannelAccess.updateValues(store);
-//    }
+    /**
+     * Perform cancel operation copying from the cancel store the relevant
+     * information into the preference store.
+     */
+    public void performCancel ( ) {
 
-//    @Override
-//    protected void initializeDefaultPreferences ( IPreferenceStore store ) {
-//
-//        // Don't move the following statement: it is required at this time.
-//        String diirtHome = getDIIRTHome(store);
-//
-//        synchronized ( this ) {
-//            if ( !store.getBoolean(PREF_DEFAULT_INITIALIZED) ) {
-//
-//                if ( verifyDIIRTPath(diirtHome) == null ) {
-//                    updateDefaultsAndValues(diirtHome, store);
-//                }
-//
-//                store.setValue(PREF_DEFAULT_INITIALIZED, true);
-//
-//                try {
-//                    ((IPersistentPreferenceStore) store).save();
-//                } catch ( IOException ex ) {
-//                  DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
-//                }
-//
-//            } else {
-//                updateValues(store);
-//            }
-//        }
-//
-//    }
+        copyDataSources(cancelStore, DIIRTPreferences.get());
+        copyChannelAccess(cancelStore, DIIRTPreferences.get());
 
-//    private String getDIIRTHome ( IPreferenceStore store ) {
-//
-//        String diirtHome = store.getString(PREF_CONFIGURATION_DIRECTORY);
-//
-//        try {
-//
-//            String resolvedDir = resolvePlatformPath(diirtHome);
-//
-//            if ( !StringUtils.equals(diirtHome, resolvedDir) ) {
-//
-//                LOGGER.log(Level.CONFIG, "DIIRT home path resolved [before: {0}, after: {1}].", new Object[] { diirtHome, resolvedDir });
-//
-//                diirtHome = resolvedDir;
-//
-//                store.putValue(PREF_CONFIGURATION_DIRECTORY, diirtHome);
-//
-//                try {
-//                    ( (IPersistentPreferenceStore) store ).save();
-//                } catch ( IOException ex ) {
-//                    DIIRTPreferencesPlugin.LOGGER.log(Level.WARNING, "Unable to flush preference store.", ex);
-//                }
-//
-//            }
-//
-//        } catch ( IOException ex ) {
-//            LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT home [{0}].", diirtHome), ex);
-//        }
-//
-//        return diirtHome;
-//
-//    }
+        try {
+            DIIRTPreferences.get().flush();
+        } catch ( BackingStoreException ex ) {
+            LOGGER.log(Level.WARNING, "Unable to flush tge preferences backing store.", ex);
+        }
+
+    }
 
 }

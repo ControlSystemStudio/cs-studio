@@ -201,17 +201,6 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
     }
 
     @Override
-    protected void initializeCancelStore ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-
-        cancelStore.setDefault(PREF_DEFAULT,   store.getDefaultString(PREF_DEFAULT));
-        cancelStore.setDefault(PREF_DELIMITER, store.getDefaultString(PREF_DELIMITER));
-
-        cancelStore.setValue(PREF_DEFAULT,   store.getString(PREF_DEFAULT));
-        cancelStore.setValue(PREF_DELIMITER, store.getString(PREF_DELIMITER));
-
-    }
-
-    @Override
     protected String initializeValues ( IPreferenceStore store ) {
 
         String confDir = super.initializeValues(store);
@@ -226,17 +215,6 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         }
 
         return confDir;
-
-    }
-
-    @Override
-    protected void performCancel ( IPreferenceStore store, IPreferenceStore cancelStore ) {
-
-        store.setDefault(PREF_DEFAULT,   cancelStore.getDefaultString(PREF_DEFAULT));
-        store.setDefault(PREF_DELIMITER, cancelStore.getDefaultString(PREF_DELIMITER));
-
-        store.setValue(PREF_DEFAULT,   cancelStore.getString(PREF_DEFAULT));
-        store.setValue(PREF_DELIMITER, cancelStore.getString(PREF_DELIMITER));
 
     }
 
@@ -371,6 +349,8 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
                 if ( verifyAndNotifyWarning(choice) ) {
                     DIIRTPreferences.get().fromFiles(new File(choice));
+                    DIIRTPreferencesPlugin.copyDataSources(DIIRTPreferences.get(), store);
+                    DIIRTPreferencesPlugin.copyChannelAccess(DIIRTPreferences.get(), store);
                     reloadEditorsForAllPages();
                 }
 

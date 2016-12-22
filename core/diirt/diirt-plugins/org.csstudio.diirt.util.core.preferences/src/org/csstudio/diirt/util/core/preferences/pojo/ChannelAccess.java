@@ -75,47 +75,6 @@ public class ChannelAccess {
     public String version = "1";
 
     /**
-     * Copy the {@link ChannelAccess} parameters from a source set to a
-     * destination one.
-     *
-     * @param source The source preference store.
-     * @param destination The destination preference store.
-     */
-    public static void copy ( DIIRTPreferences source, DIIRTPreferences destination ) {
-
-        destination.setDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED, source.getDefaultBoolean(PREF_DBE_PROPERTY_SUPPORTED));
-        destination.setDefaultBoolean(PREF_HONOR_ZERO_PRECISION,   source.getDefaultBoolean(PREF_HONOR_ZERO_PRECISION));
-        destination.setDefaultString(PREF_MONITOR_MASK,            source.getDefaultString(PREF_MONITOR_MASK));
-        destination.setDefaultInteger(PREF_CUSTOM_MASK,            source.getDefaultInteger(PREF_CUSTOM_MASK));
-        destination.setDefaultBoolean(PREF_VALUE_RTYP_MONITOR,     source.getDefaultBoolean(PREF_VALUE_RTYP_MONITOR));
-        destination.setDefaultString(PREF_VARIABLE_LENGTH_ARRAY,   source.getDefaultString(PREF_VARIABLE_LENGTH_ARRAY));
-        destination.setDefaultString(PREF_ADDR_LIST,               source.getDefaultString(PREF_ADDR_LIST));
-        destination.setDefaultBoolean(PREF_AUTO_ADDR_LIST,         source.getDefaultBoolean(PREF_AUTO_ADDR_LIST));
-        destination.setDefaultDouble(PREF_BEACON_PERIOD,           source.getDefaultDouble(PREF_BEACON_PERIOD));
-        destination.setDefaultDouble(PREF_CONNECTION_TIMEOUT,      source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
-        destination.setDefaultInteger(PREF_MAX_ARRAY_SIZE,         source.getDefaultInteger(PREF_MAX_ARRAY_SIZE));
-        destination.setDefaultBoolean(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
-        destination.setDefaultInteger(PREF_REPEATER_PORT,          source.getDefaultInteger(PREF_REPEATER_PORT));
-        destination.setDefaultInteger(PREF_SERVER_PORT,            source.getDefaultInteger(PREF_SERVER_PORT));
-
-        destination.setBoolean(PREF_DBE_PROPERTY_SUPPORTED, source.getBoolean(PREF_DBE_PROPERTY_SUPPORTED));
-        destination.setBoolean(PREF_HONOR_ZERO_PRECISION,   source.getBoolean(PREF_HONOR_ZERO_PRECISION));
-        destination.setString(PREF_MONITOR_MASK,            source.getString(PREF_MONITOR_MASK));
-        destination.setInteger(PREF_CUSTOM_MASK,            source.getInteger(PREF_CUSTOM_MASK));
-        destination.setBoolean(PREF_VALUE_RTYP_MONITOR,     source.getBoolean(PREF_VALUE_RTYP_MONITOR));
-        destination.setString(PREF_VARIABLE_LENGTH_ARRAY,   source.getString(PREF_VARIABLE_LENGTH_ARRAY));
-        destination.setString(PREF_ADDR_LIST,               source.getString(PREF_ADDR_LIST));
-        destination.setBoolean(PREF_AUTO_ADDR_LIST,         source.getBoolean(PREF_AUTO_ADDR_LIST));
-        destination.setDouble(PREF_BEACON_PERIOD,           source.getDouble(PREF_BEACON_PERIOD));
-        destination.setDouble(PREF_CONNECTION_TIMEOUT,      source.getDouble(PREF_CONNECTION_TIMEOUT));
-        destination.setInteger(PREF_MAX_ARRAY_SIZE,         source.getInteger(PREF_MAX_ARRAY_SIZE));
-        destination.setBoolean(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
-        destination.setInteger(PREF_REPEATER_PORT,          source.getInteger(PREF_REPEATER_PORT));
-        destination.setInteger(PREF_SERVER_PORT,            source.getInteger(PREF_SERVER_PORT));
-
-    }
-
-    /**
      * Create and instance of this class loading it from the given folder.
      *
      * @param confDir The DIIRT configuration directory.
@@ -251,13 +210,6 @@ public class ChannelAccess {
         try ( Writer writer = new FileWriter(new File(caDir, CA_FILE)) ) {
 
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
-
-//  TODO: CR: uncomment when understood how to run IT tests.
-//            String diirtHome = DIIRTPreferences.get().getDIIRTHome();
-//
-//            if ( StringUtils.isNoneBlank(diirtHome) ) {
-//                writer.write(MessageFormat.format("<!-- Original DIIRT home: {0} -->\n", diirtHome));
-//            }
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
