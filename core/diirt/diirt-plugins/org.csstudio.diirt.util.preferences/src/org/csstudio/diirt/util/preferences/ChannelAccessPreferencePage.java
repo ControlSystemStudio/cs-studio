@@ -40,8 +40,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-import gov.aps.jca.Monitor;
-
 
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
@@ -192,11 +190,11 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
                 customMaskEditor.setEnabled(MonitorMask.CUSTOM.name().equals(e.getNewValue()), optionsGroup);
 
                 if ( MonitorMask.VALUE.name().equals(e.getNewValue()) ) {
-                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.VALUE | Monitor.ALARM));
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(MonitorMask.VALUE.mask()));
                 } else if ( MonitorMask.ARCHIVE.name().equals(e.getNewValue()) ) {
-                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.LOG));
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(MonitorMask.ARCHIVE.mask()));
                 } else if ( MonitorMask.ALARM.name().equals(e.getNewValue()) ) {
-                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(Monitor.ALARM));
+                    customMaskEditor.getTextControl(optionsGroup).setText(Integer.toString(MonitorMask.ALARM.mask()));
                 }
 
             }

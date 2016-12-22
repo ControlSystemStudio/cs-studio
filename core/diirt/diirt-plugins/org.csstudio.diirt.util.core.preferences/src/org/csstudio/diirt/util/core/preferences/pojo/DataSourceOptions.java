@@ -21,6 +21,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.diirt.util.core.preferences.ExceptionUtilities;
 
+import gov.aps.jca.Monitor;
+
 /**
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 22 Nov 2016
@@ -112,7 +114,11 @@ public class DataSourceOptions {
         try {
             return Integer.parseInt(monitorMaskValue);
         } catch ( Exception ex ) {
-            return 5;
+            try {
+                return MonitorMask.fromString(monitorMaskValue).mask();
+            } catch ( Exception eexx ) {
+                return MonitorMask.VALUE.mask();
+            }
         }
     }
 
@@ -140,22 +146,24 @@ public class DataSourceOptions {
         /**
          * Corresponds to a monitor mask on both VALUE and ALARM.
          */
-        VALUE,
+        VALUE(Monitor.VALUE | Monitor.ALARM),
 
         /**
          * Corresponds to a monitor mask on LOG.
          */
-        ARCHIVE,
+        ARCHIVE(Monitor.LOG),
 
         /**
          * Corresponds to a monitor mask on ALARM.
          */
-        ALARM,
+        ALARM(Monitor.ALARM),
 
         /**
          * A number corresponding to the mask itself.
          */
-        CUSTOM;
+        CUSTOM(-1);
+
+        final private int mask;
 
         public static MonitorMask fromString ( String monitorMask ) {
 
@@ -176,6 +184,14 @@ public class DataSourceOptions {
 
             return mm;
 
+        }
+
+        public int mask ( ) {
+            return mask;
+        }
+
+        private MonitorMask ( int mask ) {
+            this.mask = mask;
         }
 
     }
