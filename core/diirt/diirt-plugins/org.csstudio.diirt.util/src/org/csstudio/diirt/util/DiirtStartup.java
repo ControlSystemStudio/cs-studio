@@ -41,17 +41,6 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
         try {
 
-//            {
-//
-//                final Location instanceLoc = Platform.getInstanceLocation();
-//                final String defaultDiirtConfig = new URL(instanceLoc.getURL(),"diirt").toURI().getPath();
-//
-//                IPreferencesService prefs = Platform.getPreferencesService();
-//                String diirtHome = getSubstitutedPath(prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null));
-//                log.config(MessageFormat.format("Setting 'diirt.home' system property [{0}].", diirtHome.toString()));
-//
-//            }
-
             File diirtHome = Files.createTempDirectory("DIIRT").toFile();
 
             DIIRTPreferences.get().toFiles(diirtHome);
@@ -60,7 +49,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
             System.setProperty("diirt.home", diirtHome.toString());
 
             // Configuration.
-            log.config("Resetting the configuration folder");
+            log.config("Resetting the DIIRT configuration folder.");
             Configuration.reset();
 
             DataSource defaultDataSource = PVManager.getDefaultDataSource();
