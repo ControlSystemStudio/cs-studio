@@ -64,6 +64,8 @@ public class XYGraph extends Figure {
         XYGraphMemento old = this.xyGraphMem;
         this.xyGraphMem = xyGraphMem;
         firePropertyChange("xyGraphMem", old, this.xyGraphMem);
+
+        System.out.println("**** XYGraph.setXyGraphMem() ****");
     }
 
     private static final int GAP = 2;
