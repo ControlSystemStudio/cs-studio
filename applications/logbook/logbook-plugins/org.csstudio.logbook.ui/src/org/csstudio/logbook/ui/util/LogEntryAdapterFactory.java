@@ -58,7 +58,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
         Pattern pvPattern = Pattern.compile(pvRegex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         Matcher pvMatcher = pvPattern.matcher(logEntry.getText());
         while (pvMatcher.find()) {
-            pvNames.add(pvMatcher.group(1));
+            pvNames.add(pvMatcher.group(1).trim());
         }
 
         if (adapterType == String.class) {
