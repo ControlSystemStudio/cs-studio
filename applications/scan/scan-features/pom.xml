@@ -9,6 +9,7 @@
   <artifactId>scan-features</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.scan.diirt.datasource.feature</module>
     <module>org.csstudio.scan.ui.feature</module>
     <module>org.csstudio.scan.server.feature</module>
   </modules>

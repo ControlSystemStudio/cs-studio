@@ -17,6 +17,7 @@ import org.csstudio.vtype.pv.PVFactory;
 /** PV Factory for simulated PVs
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SimPVFactory implements PVFactory
 {
     final public static String TYPE = "sim";

@@ -14,6 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for noise wave
  *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class NoiseWavePV extends SimulatedDoubleArrayPV
 {
     private final double min, range;
@@ -47,6 +48,7 @@ public class NoiseWavePV extends SimulatedDoubleArrayPV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double[] compute()
     {
         final double[] value = new double[size];

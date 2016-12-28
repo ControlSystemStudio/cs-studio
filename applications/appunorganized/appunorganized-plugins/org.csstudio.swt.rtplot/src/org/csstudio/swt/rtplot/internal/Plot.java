@@ -430,11 +430,27 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
-        Image image = plot_image.orElse(null);
-        if (image != null)
-            synchronized (image)
+        // Using locking to protect plot_image can cause deadlocks due to a
+        // bug in SWT: https://bugs.eclipse.org/bugs/show_bug.cgi?id=265265
+        // Instead, just try again if the image was disposed.
+        // Is there still a canvas that will generate an image?
+        if (! isDisposed())
+            while (true)
             {
-                return new Image(display, image, SWT.IMAGE_COPY);
+                Image image = plot_image.orElse(null);
+                if (image == null)
+                    break;
+                try
+                {
+                    return new Image(display, image, SWT.IMAGE_COPY);
+                }
+                catch (Throwable ex)
+                {
+                    // If image was disposed, try again
+                    // Otherwise give up
+                    if (! image.isDisposed())
+                        break;
+                }
             }
         return new Image(display, 10, 10);
     }
@@ -485,7 +501,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         if (annotation instanceof AnnotationImpl)
             annotations.add((AnnotationImpl)annotation);
         else
-            annotations.add(new AnnotationImpl<XTYPE>(annotation.getTrace(), annotation.getPosition(),
+            annotations.add(new AnnotationImpl<XTYPE>(annotation.isInternal(), annotation.getTrace(), annotation.getPosition(),
                                                       annotation.getValue(), annotation.getOffset(),
                                                       annotation.getText()));
         requestUpdate();

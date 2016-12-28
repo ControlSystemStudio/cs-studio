@@ -47,7 +47,10 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
     {
         super(shell);
         this.plot = plot;
-        annotations = plot.getAnnotations();
+        annotations = new ArrayList<>();
+        for (Annotation<XTYPE> annotation : plot.getAnnotations())
+            if (! annotation.isInternal())
+                annotations.add(annotation);
     }
 
     @Override

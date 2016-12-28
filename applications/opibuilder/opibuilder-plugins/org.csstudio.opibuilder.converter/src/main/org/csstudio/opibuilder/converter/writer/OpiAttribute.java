@@ -8,6 +8,8 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * General OPI output class for EdmAttribute.
@@ -22,6 +24,12 @@ public class OpiAttribute {
      * sets the local context to this element.
      */
     public OpiAttribute(Context widgetContext, String name) {
+        // Remove existing nodes
+        NodeList nodes = widgetContext.getElement().getElementsByTagName(name);
+        for(int i=0; i<nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            widgetContext.getElement().removeChild(node);
+        }
 
         Element element = widgetContext.getDocument().createElement(name);
         widgetContext.getElement().appendChild(element);

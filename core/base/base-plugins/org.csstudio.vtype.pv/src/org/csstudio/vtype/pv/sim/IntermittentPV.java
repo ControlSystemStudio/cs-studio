@@ -10,17 +10,15 @@ package org.csstudio.vtype.pv.sim;
 import java.util.List;
 
 import org.csstudio.vtype.pv.PV;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VType;
-import org.diirt.vtype.ValueFactory;
-import org.diirt.vtype.ValueUtil;
 
 /** Simulated PV with random value, intermittently connected
  *  @author Kay Kasemir, based on similar code in diirt
  */
+@SuppressWarnings("nls")
 public class IntermittentPV extends SimulatedDoublePV
 {
     private boolean connected = true;
+
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
     {
         if (parameters.size() <= 0)
@@ -50,18 +48,11 @@ public class IntermittentPV extends SimulatedDoublePV
         if (connected)
             super.update();
         else
-        {
-            VType vtype = read();
-            final Double value = ValueUtil.numericValueOf(vtype);
-            vtype = ValueFactory.newVDouble(value,
-                                            ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"),
-                                            ValueFactory.timeNow(),
-                                            display);
-            notifyListenersOfValue(vtype);
-        }
+            notifyListenersOfDisconnect();
         connected = ! connected;
     }
 
+    @Override
     public double compute()
     {
         return min + Math.random() * range;

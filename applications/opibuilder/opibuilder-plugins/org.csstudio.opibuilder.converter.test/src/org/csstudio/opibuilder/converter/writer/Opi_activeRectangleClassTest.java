@@ -48,10 +48,10 @@ public class Opi_activeRectangleClassTest {
 
         XMLFileHandler.isElementEqual("EDM Rectangle", "name", e);
 
-        XMLFileHandler.isElementEqual("4", "x", e);
-        XMLFileHandler.isElementEqual("45", "y", e);
-        XMLFileHandler.isElementEqual("112", "width", e);
-        XMLFileHandler.isElementEqual("43", "height", e);
+        XMLFileHandler.isElementEqual("3", "x", e);
+        XMLFileHandler.isElementEqual("44", "y", e);
+        XMLFileHandler.isElementEqual("113", "width", e);
+        XMLFileHandler.isElementEqual("44", "height", e);
 
         XMLFileHandler.isColorElementEqual(new EdmColor(7), "line_color", e);
         XMLFileHandler.isColorElementEqual(new EdmColor(0), "background_color", e);

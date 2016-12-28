@@ -14,6 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for ramp
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
+@SuppressWarnings("nls")
 public class RampPV extends SimulatedDoublePV
 {
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
@@ -40,6 +41,7 @@ public class RampPV extends SimulatedDoublePV
         start(min, max, update_seconds);
     }
 
+    @Override
     public double compute()
     {
         value += step;

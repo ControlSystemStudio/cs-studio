@@ -16,7 +16,7 @@ import org.csstudio.opibuilder.converter.model.Edm_activeLineClass;
  *
  * @author Xihui Chen
  */
-public class Opi_activeLineClass extends OpiWidget {
+public class Opi_activeLineClass extends OpiShapeClass {
 
     private static Logger log = Logger
             .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeRectangleClass");
@@ -85,8 +85,6 @@ public class Opi_activeLineClass extends OpiWidget {
         }
 
         new OpiPointsList(widgetContext, "points", r.getXPoints(), r.getYPoints());
-
-        new OpiInt(widgetContext, "line_width", r.getLineWidth() == 0 ? 1 : r.getLineWidth());
 
         /*
          * It is not clear when there is no border for EDM display.
