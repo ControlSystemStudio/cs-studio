@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -508,15 +507,12 @@ public class XMLUtil {
             IPath path = container.getOPIFilePath();
             if(path != null && !path.isEmpty()) {
                 final Map<String,String> macroMap = PreferencesHelper.getMacros();
+                if(macrosInput_ != null && macrosInput_.getMacrosMap() != null) {
+                    macroMap.putAll(macrosInput_.getMacrosMap());
+                }
                 macroMap.putAll(buildMacroMap(container));
                 String resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> macroMap.get(s));
                 path = ResourceUtil.getPathFromString(resolvedPath);
-                if(path.toString().contains("${") && macrosInput_ != null && macrosInput_.getMacrosMap() != null) {
-                    path = container.getOPIFilePath();
-                    LinkedHashMap<String, String> runtimeMacros = macrosInput_.getMacrosMap();
-                    resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> runtimeMacros.get(s));
-                    path = ResourceUtil.getPathFromString(resolvedPath);
-                }
 
                 final DisplayModel inside = new DisplayModel(path);
                 inside.setDisplayID(container.getRootDisplayModel(false).getDisplayID());
