@@ -105,31 +105,31 @@ public class PVSummary {
         StringBuilder builder = new StringBuilder();
         builder.append("PV: ");
         builder.append(name);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Description: ");
         builder.append(getSummary());
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Alarm Time: ");
         builder.append(timestamp);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Current Severity: ");
         builder.append(current_severity);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Current Status: ");
         builder.append(current_message);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Alarm Severity: ");
         builder.append(severity);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Alarm Status: ");
         builder.append(message);
-        builder.append(" - ");
+        builder.append("\r\n");
 
         builder.append("Alarm Value: ");
         builder.append(value);
