@@ -43,10 +43,34 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
         connPoints.removeAllPoints();
         Point startPoint = getStartPoint(conn);
         conn.translateToRelative(startPoint);
-        connPoints.addPoint(startPoint);
-        connPoints.addAll(newPoints);
+
         Point endPoint = getEndPoint(conn);
         conn.translateToRelative(endPoint);
+
+        FixedPositionAnchor anchor = (FixedPositionAnchor)conn.getSourceAnchor();
+        conn.translateToRelative(newPoints.getPoint(0));
+        Point sourcePoint = anchor.getSlantDifference(startPoint, newPoints.getPoint(0));
+
+        anchor = (FixedPositionAnchor)conn.getTargetAnchor();
+        conn.translateToRelative(newPoints.getPoint(newPoints.size()-1));
+        Point targetPoint = anchor.getSlantDifference(endPoint, newPoints.getPoint(newPoints.size()-1));
+
+        int xDiff, yDiff;
+        if (sourcePoint.x() == 0) {
+            xDiff = targetPoint.x();
+            yDiff = sourcePoint.y();
+        } else {
+            xDiff = sourcePoint.x();
+            yDiff = targetPoint.y();
+        }
+
+        connPoints.addPoint(startPoint);
+        for(int i=0; i<newPoints.size(); i++) {
+            Point point = new Point(xDiff + newPoints.getPoint(i).x(),
+                    yDiff + newPoints.getPoint(i).y());
+            connPoints.addPoint(point);
+        }
+
         connPoints.addPoint(endPoint);
         conn.setPoints(connPoints);
     }

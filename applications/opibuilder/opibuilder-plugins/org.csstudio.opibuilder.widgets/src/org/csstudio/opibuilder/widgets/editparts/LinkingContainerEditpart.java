@@ -334,7 +334,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 for(int i=0; i<points.size(); i++){
                     Point point = points.getPoint(i);
                     point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
-                    getContentPane().translateToAbsolute(point);
+                    getContentPane().translateFromParent(point);
                     points.setPoint(point, i);
                 }
                 conn.setPoints(points);
