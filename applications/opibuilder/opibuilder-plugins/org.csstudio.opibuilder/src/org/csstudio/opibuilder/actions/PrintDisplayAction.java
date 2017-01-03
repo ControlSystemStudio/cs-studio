@@ -74,8 +74,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
      */
     @Override
     public void run() {
-        final GraphicalViewer viewer;
-        viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);
+        final GraphicalViewer viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);
 
         viewer.getControl().getDisplay().asyncExec(new Runnable() {
             @Override
@@ -104,12 +103,10 @@ public class PrintDisplayAction extends WorkbenchPartAction {
 
                             // Determine the bounds of the entire area of the printer
                             Rectangle trim = printer.computeTrim(0, 0, 0, 0);
-
+                            Image printerImage = new Image(printer, imageData[0]);
                             if (printer.startJob("Printing OPI")) {
                                 if (printer.startPage()) {
                                     GC gc = new GC(printer);
-                                    // Load the image
-                                    Image printerImage = new Image(printer, imageData[0]);
                                     Rectangle printArea = printer.getClientArea();
 
                                     if (imageData[0].width * scaleFactor <= printArea.width) {
@@ -123,13 +120,14 @@ public class PrintDisplayAction extends WorkbenchPartAction {
                                     gc.drawImage(printerImage, 0, 0, imageData[0].width,
                                             imageData[0].height, -trim.x, -trim.y,
                                             printArea.width, printArea.height);
-                                    printerImage.dispose();
+                                    
                                     gc.dispose();
                                     printer.endPage();
                                 } 
                             }
                             printer.endJob();
                             printer.dispose();
+                            printerImage.dispose();
                         }
                     }
                 } catch (Exception e) {
