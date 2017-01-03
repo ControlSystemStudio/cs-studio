@@ -71,8 +71,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     for (int i=0; i<N; ++i)
                     {
                         final PlotDataItem<XTYPE> item = data.get(i);
-                        if (item.getPosition().compareTo(x_range.getLow()) > 0 &&
-                                item.getPosition().compareTo(x_range.getHigh()) < 0)
+                        if (x_range.contains(item.getPosition()))
                         {
                             final double value = item.getValue();
                             if (! Double.isFinite(value))
