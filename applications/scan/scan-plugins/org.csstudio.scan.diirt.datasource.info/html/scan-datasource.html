@@ -8,16 +8,16 @@
 
     <body>
         <h1>Scan Server DataSource</h1>
-    
+
         <h2>Overview</h2>
         <p>
         The Scan Server DataSource allows select access to the CS-Studio Scan Server API through pvmanager.
-        Access to the datasource depends on a plugin's dependence to pvmanager (BOY, probe, etc.). 
+        Access to the datasource depends on a plugin's dependence to pvmanager (BOY, probe, etc.).
         Submitting a scan is not supported in the datasource, as a diirt service is a better fit.
         </p>
-        <p>Refer to Help Contents -> CSS Applications -> Scan Server 
+        <p>Refer to Help Contents -> CSS Applications -> Scan Server
         for a more detailed description of the Scan Server system</p>
-         
+
         <h2>PV syntax</h2>
         <p>
         The standard prefix for the datasource is <code>scan://</code> which can be omitted if configured as the default datasource.
@@ -26,13 +26,13 @@
         <code>
             scan://localscan VTable of infos 1000 max entries (percent complete, start time, etc.)
             scan://localscan?max=5 VTable of infos (percent complete, start time, etc.)
-            scan://localscan/1 VTable of specific scan info 
+            scan://localscan/1 VTable of specific scan info
             scan://localscan/1/data VTable of scan data
             scan://localscan/1/devices VTable of devices used in scan (null entries if the state is "Logged")
         </code>
         </pre>
-        
-        <p>Writes are allowed for the <code>scan://localscan/1</code> request with strings to control the specific scan</p> 
+
+        <p>Writes are allowed for the <code>scan://localscan/1</code> request with strings to control the specific scan</p>
         <pre>
         <code>
         	"pause"
@@ -41,9 +41,9 @@
         	"remove"
         </code>
         </pre>
-        
+
         <h2>XML Config</h2>
-        <p>Configuration follows the "diirt" configuration.  A "scan" directory/file needs to be placed in your configuration directory ie. .diirt/datasources/scan/scan.xml.  
+        <p>Configuration follows the "diirt" configuration.  A "scan" directory/file needs to be placed in your configuration directory ie. .diirt/datasources/scan/scan.xml.
         Below is an example.  The Scan Server has a REST API which is polled at "pollInterval", and a "timeout" on that connection.
         The "name" will be the alias to the defined "url".</p>
         <pre><xmp>
@@ -55,6 +55,6 @@
 			</scan>
 		</xmp>
         </pre>
-        
+
     </body>
 </html>
