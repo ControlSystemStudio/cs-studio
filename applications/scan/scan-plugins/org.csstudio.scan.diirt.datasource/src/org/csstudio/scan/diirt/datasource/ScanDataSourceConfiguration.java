@@ -44,21 +44,21 @@ public class ScanDataSourceConfiguration extends DataSourceConfiguration<ScanDat
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(input);
-            
+
             XPathFactory xpathFactory = XPathFactory.newInstance();
             XPath xPath = xpathFactory.newXPath();
-            
+
             String ver = xPath.evaluate("/scan/@version", document);
             if (!ver.equals("1")) {
                 throw new IllegalArgumentException("Unsupported version " + ver);
             }
-            
+
             String pollIntervalSetting = xPath.evaluate("/scan/servers/@pollInterval", document);
             pollInterval = Integer.parseInt(pollIntervalSetting);
-            
+
             String timeOutSetting = xPath.evaluate("/scan/servers/@timeout", document);
             timeOut = Integer.parseInt(timeOutSetting);
-            
+
             Map<String, URL> newConnections = new HashMap<>();
             NodeList xmlChannels = (NodeList) xPath.evaluate("/scan/servers/server", document, XPathConstants.NODESET);
             for (int j = 0; j < xmlChannels.getLength(); j++) {
@@ -67,7 +67,7 @@ public class ScanDataSourceConfiguration extends DataSourceConfiguration<ScanDat
                 String url =  xPath.evaluate("@url", xmlChannel);
                 newConnections.put(channelName,new URL(url));
             }
-            
+
             connections = newConnections;
         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
             Logger.getLogger(ScanDataSourceConfiguration.class.getName()).log(Level.FINEST, "Couldn't load scan configuration", ex);
