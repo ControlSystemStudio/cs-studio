@@ -12,8 +12,7 @@ import org.diirt.datasource.ConfigurableDataSourceProvider;
  * @author Eric Berryman
  *
  */
-public class ScanDataSourceProvider
-        extends ConfigurableDataSourceProvider<ScanDataSource, ScanDataSourceConfiguration> {
+public class ScanDataSourceProvider extends ConfigurableDataSourceProvider<ScanDataSource, ScanDataSourceConfiguration> {
 
     public ScanDataSourceProvider() {
         super(ScanDataSourceConfiguration.class);
