@@ -35,10 +35,10 @@
         <p>Writes are allowed for the <code>scan://localscan/1</code> request with strings to control the specific scan</p>
         <pre>
         <code>
-        	"pause"
-        	"resume"
-        	"abort"
-        	"remove"
+            "pause"
+            "resume"
+            "abort"
+            "remove"
         </code>
         </pre>
 
@@ -47,13 +47,13 @@
         Below is an example.  The Scan Server has a REST API which is polled at "pollInterval", and a "timeout" on that connection.
         The "name" will be the alias to the defined "url".</p>
         <pre><xmp>
-			<scan version="1">
-			  <servers pollInterval="2" timeout="10">
-			    <server name="localscan" url="http://localhost:4810/">
-			    </server>
-			  </servers>
-			</scan>
-		</xmp>
+            <scan version="1">
+              <servers pollInterval="2" timeout="10">
+                <server name="localscan" url="http://localhost:4810/">
+                </server>
+              </servers>
+            </scan>
+        </xmp>
         </pre>
 
     </body>
