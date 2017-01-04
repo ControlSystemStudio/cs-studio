@@ -5,8 +5,11 @@ import java.util.Map;
 
 import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * The router that route a connection through fixed points
@@ -16,6 +19,10 @@ import org.eclipse.draw2d.geometry.PointList;
 public class FixedPointsConnectionRouter extends AbstractRouter {
 
     private Map<Connection, Object> constraints = new HashMap<Connection, Object>(2);
+
+    private PolylineConnection connectionFigure;
+
+    private ScrollPane scrollPane;
 
     public FixedPointsConnectionRouter() {
     }
@@ -35,6 +42,14 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
         constraints.put(connection, constraint);
     }
 
+    public void setConnectionFigure(PolylineConnection connectionFigure) {
+        this.connectionFigure = connectionFigure;
+    }
+
+    public void setScrollPane(ScrollPane scrollPane) {
+        this.scrollPane = scrollPane;
+    }
+
 
     @Override
     public void route(Connection conn) {
@@ -47,27 +62,16 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
         Point endPoint = getEndPoint(conn);
         conn.translateToRelative(endPoint);
 
-        FixedPositionAnchor anchor = (FixedPositionAnchor)conn.getSourceAnchor();
-        conn.translateToRelative(newPoints.getPoint(0));
-        Point sourcePoint = anchor.getSlantDifference(startPoint, newPoints.getPoint(0));
-
-        anchor = (FixedPositionAnchor)conn.getTargetAnchor();
-        conn.translateToRelative(newPoints.getPoint(newPoints.size()-1));
-        Point targetPoint = anchor.getSlantDifference(endPoint, newPoints.getPoint(newPoints.size()-1));
-
-        int xDiff, yDiff;
-        if (sourcePoint.x() == 0) {
-            xDiff = targetPoint.x();
-            yDiff = sourcePoint.y();
-        } else {
-            xDiff = sourcePoint.x();
-            yDiff = targetPoint.y();
-        }
-
         connPoints.addPoint(startPoint);
         for(int i=0; i<newPoints.size(); i++) {
-            Point point = new Point(xDiff + newPoints.getPoint(i).x(),
-                    yDiff + newPoints.getPoint(i).y());
+            Point point = newPoints.getPoint(i);
+            // updateBendpoints only from inside linking container
+            if(scrollPane != null && connectionFigure != null) {
+                scrollPane.translateToAbsolute(point);
+                connectionFigure.translateToRelative(point);
+                Rectangle bounds = scrollPane.getBounds();
+                point = new Point(point.x() + bounds.x(), point.y() + bounds.y());
+            }
             connPoints.addPoint(point);
         }
 

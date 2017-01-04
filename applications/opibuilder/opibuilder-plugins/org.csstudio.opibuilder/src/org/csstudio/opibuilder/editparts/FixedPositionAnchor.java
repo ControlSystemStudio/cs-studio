@@ -106,28 +106,6 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
         return p;
     }
 
-    public Point getSlantDifference(Point anchorPoint, Point midPoint) {
-        int x=0, y=0;
-
-        switch (anchorPosition) {
-        case LEFT:
-        case RIGHT:
-            y=Math.abs(anchorPoint.y() - midPoint.y());
-            break;
-        case BOTTOM:
-        case BOTTOM_LEFT:
-        case BOTTOM_RIGHT:
-        case TOP:
-        case TOP_LEFT:
-        case TOP_RIGHT:
-            x=Math.abs(anchorPoint.x() - midPoint.x());
-            break;
-        default:
-            break;
-        }
-        return new Point(x, y);
-    }
-
     /**
      * Returns <code>true</code> if the other anchor has the same owner and box.
      *
