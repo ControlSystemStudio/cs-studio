@@ -120,10 +120,9 @@ public class PrintDisplayAction extends WorkbenchPartAction {
                                     gc.drawImage(printerImage, 0, 0, imageData[0].width,
                                             imageData[0].height, -trim.x, -trim.y,
                                             printArea.width, printArea.height);
-                                    
                                     gc.dispose();
                                     printer.endPage();
-                                } 
+                                }
                             }
                             printer.endJob();
                             printer.dispose();
