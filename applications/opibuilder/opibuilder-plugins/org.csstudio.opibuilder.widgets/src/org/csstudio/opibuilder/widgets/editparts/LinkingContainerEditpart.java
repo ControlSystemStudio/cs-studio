@@ -253,6 +253,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             conn.setLoadedFromLinkedOpi(true);
             if(conn.getPoints()!=null)
                 originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
         }
         if (originalPoints != null && !originalPoints.isEmpty()) {
             //update connections after the figure is repainted.
@@ -337,20 +338,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 for(int i=0; i<points.size(); i++){
                     Point point = points.getPoint(i);
                     point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
-
-                    WidgetConnectionEditPart widgetConnectionEditPart = (WidgetConnectionEditPart) getViewer().getEditPartRegistry().get(conn);
-                    if(widgetConnectionEditPart == null) {
-                        continue;
-                    }
-                    PolylineConnection connectionFigure = widgetConnectionEditPart.getConnectionFigure();
-
-                    ScrollPane scrollPane = ((LinkingContainerFigure)getFigure()).getScrollPane();
-
-                    scrollPane.translateToAbsolute(point);
-                    connectionFigure.translateToRelative(point);
-                    Rectangle bounds = scrollPane.getBounds();
-                    point = new Point(point.x + bounds.x, point.y + bounds.y);
-
                     points.setPoint(point, i);
                 }
                 conn.setPoints(points);

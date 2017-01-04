@@ -23,6 +23,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -227,6 +228,8 @@ public class ConnectionModel extends AbstractWidgetModel {
     private DisplayModel displayModel;
 
     private PointList originPoints;
+
+    private ScrollPane scrollPane;
 
     /**Construct a connection model which belongs to the displayModel.
      * If this is a temporary connection model which doesn't belong to any display model,
@@ -640,4 +643,19 @@ public class ConnectionModel extends AbstractWidgetModel {
         int i = (Integer) getPropertyValue(PROP_LINE_JUMP_STYLE);
         return LineJumpStyle.values()[i];
     }
+
+    /**
+     * @return the scrollPane
+     */
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    /**
+     * @param scrollPane the scrollPane to set
+     */
+    public void setScrollPane(ScrollPane scrollPane) {
+        this.scrollPane = scrollPane;
+    }
+
 }

@@ -31,6 +31,7 @@ import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PolylineDecoration;
 import org.eclipse.draw2d.RotatableDecoration;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -552,6 +553,10 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
             }
             //has points, use points for routing
             router = new FixedPointsConnectionRouter();
+            if (getWidgetModel().isLoadedFromLinkedOpi() == true) {
+                ((FixedPointsConnectionRouter) router).setScrollPane(getWidgetModel().getScrollPane());
+                ((FixedPointsConnectionRouter) router).setConnectionFigure(connection);
+            }
             connection.setConnectionRouter(router);
             refreshBendpoints(connection);
             return;
