@@ -84,9 +84,8 @@ public abstract class ResourceUtilSSHelper {
      */
     public abstract IPath workspacePathToSysPath(IPath path);
 
-
     public abstract Image getScreenShotImage(GraphicalViewer viewer);
 
-
+    public abstract IEditorInput editorInputFromPath(IPath path);
 
 }
