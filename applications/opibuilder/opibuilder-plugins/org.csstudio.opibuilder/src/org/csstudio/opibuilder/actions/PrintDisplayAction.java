@@ -74,8 +74,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
      */
     @Override
     public void run() {
-        final GraphicalViewer viewer;
-        viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);
+        final GraphicalViewer viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);
 
         viewer.getControl().getDisplay().asyncExec(new Runnable() {
             @Override
@@ -86,50 +85,55 @@ public class PrintDisplayAction extends WorkbenchPartAction {
 
                     imageData = loader.load(ResourceUtil
                             .getScreenshotFile(viewer));
+
+                    if (imageData.length > 0) {
+                        PrintDialog dialog = new PrintDialog(viewer.getControl()
+                                .getShell(), SWT.NULL);
+                        final PrinterData data = dialog.open();
+                        if (data != null) {
+                            Printer printer = new Printer(data);
+
+                            // Calculate the scale factor between the screen resolution
+                            // and printer
+                            // resolution in order to correctly size the image for the
+                            // printer
+                            Point screenDPI = viewer.getControl().getDisplay().getDPI();
+                            Point printerDPI = printer.getDPI();
+                            int scaleFactor = printerDPI.x / screenDPI.x;
+
+                            // Determine the bounds of the entire area of the printer
+                            Rectangle trim = printer.computeTrim(0, 0, 0, 0);
+                            Image printerImage = new Image(printer, imageData[0]);
+                            if (printer.startJob("Printing OPI")) {
+                                if (printer.startPage()) {
+                                    GC gc = new GC(printer);
+                                    Rectangle printArea = printer.getClientArea();
+
+                                    if (imageData[0].width * scaleFactor <= printArea.width) {
+                                        printArea.width = imageData[0].width * scaleFactor;
+                                        printArea.height = imageData[0].height
+                                                * scaleFactor;
+                                    } else {
+                                        printArea.height = printArea.width
+                                                * imageData[0].height / imageData[0].width;
+                                    }
+                                    gc.drawImage(printerImage, 0, 0, imageData[0].width,
+                                            imageData[0].height, -trim.x, -trim.y,
+                                            printArea.width, printArea.height);
+                                    
+                                    gc.dispose();
+                                    printer.endPage();
+                                } 
+                            }
+                            printer.endJob();
+                            printer.dispose();
+                            printerImage.dispose();
+                        }
+                    }
                 } catch (Exception e) {
                     ErrorHandlerUtil.handleError("Failed to print OPI", e);
                     return;
                 }
-                PrintDialog dialog = new PrintDialog(viewer.getControl()
-                        .getShell(), SWT.NULL);
-                final PrinterData data = dialog.open();
-                if (data == null)
-                    return;
-                Printer printer = new Printer(data);
-                if (printer.startJob("Printing OPI")) {
-                    Rectangle trim = printer.computeTrim(0, 0, 0, 0);
-                    // Calculate the scale factor between the screen resolution
-                    // and printer
-                    // resolution in order to correctly size the image for the
-                    // printer
-                    Point screenDPI = viewer.getControl().getDisplay().getDPI();
-                    Point printerDPI = printer.getDPI();
-                    int scaleFactor = printerDPI.x / screenDPI.x;
-
-                    if (printer.startPage()) {
-                        GC gc = new GC(printer);
-                        // Load the image
-                        Image printerImage = new Image(printer, imageData[0]);
-                        Rectangle printArea = printer.getClientArea();
-
-                        if (imageData[0].width * scaleFactor <= printArea.width) {
-                            printArea.width = imageData[0].width * scaleFactor;
-                            printArea.height = imageData[0].height
-                                    * scaleFactor;
-                        } else {
-                            printArea.height = printArea.width
-                                    * imageData[0].height / imageData[0].width;
-                        }
-                        gc.drawImage(printerImage, 0, 0, imageData[0].width,
-                                imageData[0].height, -trim.x, -trim.y,
-                                printArea.width, printArea.height);
-                        printerImage.dispose();
-                        gc.dispose();
-                        printer.endPage();
-                    }
-                    printer.endJob();
-                }
-                printer.dispose();
             }
         });
 
