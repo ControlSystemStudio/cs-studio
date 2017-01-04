@@ -208,7 +208,7 @@ public class Preferences
             }
             catch (Throwable ex)
             {
-                throw new Error("Error in archive preference '" + spec + "'");
+                Activator.getLogger().log(Level.WARNING, "Misconfigured archive data source: " + spec, ex);
             }
         }
         return archives.toArray(new ArchiveDataSource[archives.size()]);
