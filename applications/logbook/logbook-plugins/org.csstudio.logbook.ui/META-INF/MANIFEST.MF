@@ -11,11 +11,11 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
  org.csstudio.apputil.ui;bundle-version="3.2.0",
- org.csstudio.csdata
+ org.csstudio.csdata,
+ com.google.guava.base;bundle-version="0.0.0",
+ com.google.guava.collections;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui,
  org.csstudio.logbook.ui.util
-Import-Package: com.google.common.base,
- com.google.common.collect,
- org.eclipse.ui.part
+Import-Package: org.eclipse.ui.part

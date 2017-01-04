@@ -10,10 +10,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.olog;bundle-version="1.1.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
  org.diirt.util;bundle-version="3.1.2",
- org.csstudio.apputil
+ org.csstudio.apputil,
+ com.google.guava.base;bundle-version="0.0.0",
+ com.google.guava.collections;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
-Import-Package: com.google.common.base,
- com.google.common.collect,
- javax.ws.rs.core
+Import-Package: javax.ws.rs.core
