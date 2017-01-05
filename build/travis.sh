@@ -14,6 +14,7 @@ function doCompileWithDeploy {
 
 function catTests {
   find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat
+  find . -type f -name "*.log" -print0 | xargs --null cat
 }
 
 REPO=`git config remote.origin.url`
