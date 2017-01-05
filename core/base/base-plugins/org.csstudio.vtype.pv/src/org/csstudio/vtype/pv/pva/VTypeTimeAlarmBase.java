@@ -7,17 +7,16 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
-import org.epics.pvdata.property.AlarmStatus;
-import org.epics.pvdata.pv.PVInt;
-import org.epics.pvdata.pv.PVLong;
-import org.epics.pvdata.pv.PVStructure;
-
 import java.time.Instant;
 
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
+import org.epics.pvdata.property.AlarmStatus;
+import org.epics.pvdata.pv.PVInt;
+import org.epics.pvdata.pv.PVLong;
+import org.epics.pvdata.pv.PVStructure;
 
 /** Base {@link VType} that decodes {@link Time} and {@link Alarm}
  *
@@ -41,7 +40,7 @@ class VTypeTimeAlarmBase implements Time, Alarm
         if (time != null)
         {
             final PVLong sec = time.getSubField(PVLong.class, "secondsPastEpoch");
-            final PVInt nano = time.getSubField(PVInt.class, "nanoSeconds");
+            final PVInt nano = time.getSubField(PVInt.class, "nanoseconds");
             if (sec == null || nano == null)
                 timestamp = NO_TIME;
             else
