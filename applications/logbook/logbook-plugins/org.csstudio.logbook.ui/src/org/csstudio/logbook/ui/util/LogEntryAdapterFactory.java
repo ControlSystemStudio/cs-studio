@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
@@ -19,9 +20,6 @@ import org.csstudio.logbook.LogEntry;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 /**
  *
@@ -85,29 +83,17 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
                 return new ProcessVariable(pvNames.iterator().next());
         } else if (adapterType == ProcessVariable[].class) {
             if (pvNames != null && !pvNames.isEmpty())
-                return Collections2.transform(pvNames,
-                        new Function<String, ProcessVariable>() {
-
-                            @Override
-                            public ProcessVariable apply(String pvName) {
-                                return new ProcessVariable(pvName);
-                            }
-
-                        }).toArray(new ProcessVariable[pvNames.size()]);
-        } else if (adapterType == TimestampedPV.class){
+                return pvNames.stream().map((name) -> {
+                    return new ProcessVariable(name);
+                }).toArray(ProcessVariable[]::new);
+        } else if (adapterType == TimestampedPV.class) {
             if (pvNames != null && pvNames.size() == 1)
                 return new TimestampedPV(pvNames.iterator().next(), logEntry.getCreateDate().getTime());
         } else if (adapterType == TimestampedPV[].class) {
             if (pvNames != null && !pvNames.isEmpty())
-                return Collections2.transform(pvNames,
-                        new Function<String, TimestampedPV>() {
-
-                            @Override
-                            public TimestampedPV apply(String pvName) {
-                                return new TimestampedPV(pvName, logEntry.getCreateDate().getTime());
-                            }
-
-                        }).toArray(new TimestampedPV[pvNames.size()]);
+                return pvNames.stream().map((name) -> {
+                    return new TimestampedPV(name, logEntry.getCreateDate().getTime());
+                }).toArray(TimestampedPV[]::new);
         }
         return null;
     }
