@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY base plugin
 Bundle-Description: Base plugin of BOY
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.2.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -38,7 +38,10 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.e4.ui.workbench,
  org.eclipse.core.filesystem,
  org.eclipse.core.resources,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ net.sf.cssbox.jstyleparser;bundle-version="1.22.0",
+ org.antlr.runtime;bundle-version="[3.5.2,4.0.0)",
+ org.unbescape
 Eclipse-RegisterBuddy: org.python.jython
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,

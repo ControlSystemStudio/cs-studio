@@ -83,5 +83,6 @@ public abstract class PropertySSHelper {
     public abstract PropertyDescriptor getPVNamePropertyDescriptor(String prop_id,
             String description, String detailedDescription);
 
-
+    public abstract PropertyDescriptor getWidgetClassPropertyDescriptor(String widgetID, String propID,
+        String description, String detaileDescription);
 }

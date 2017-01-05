@@ -25,7 +25,7 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
 
 
     private String[] extensions = null;
-
+    private boolean isMultiFile = false;
 
     /**
      * Creates a new file field editor
@@ -55,19 +55,45 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      * @param parent the parent of the field editor's control
      */
     public WorkspaceFileFieldEditor(String name, String labelText, String[] extensions, Composite parent) {
+        this(name, labelText, extensions, parent, false);
+    }
+
+    /**
+     * Creates a file field editor.
+     *
+     * @param name the name of the preference this field editor works on
+     * @param labelText the label text of the field editor
+     * @param extensions the file extensions
+     * @param parent the parent of the field editor's control
+     * @param multiFileEditor true to allow selection of multiple files (new files are appended to the existing ones)
+     *          or false otherwise
+     */
+    public WorkspaceFileFieldEditor(String name, String labelText, String[] extensions, Composite parent,
+        boolean multiFileEditor) {
         super(name, labelText, parent);
         setFileExtensions(extensions);
         setChangeButtonText("Browse...");
+        isMultiFile = multiFileEditor;
     }
-
 
 
     @Override
     protected String changePressed() {
-        IPath startPath = new Path(getTextControl().getText());
+        String currentValue = getStringValue();
+        String lastItem = "";
+        if (!currentValue.isEmpty()) {
+            String[] vals = currentValue.split("\\,");
+            lastItem = vals[vals.length-1];
+            if (lastItem.length() >= 2) {
+                lastItem = lastItem.substring(1, lastItem.length()-1);
+            }
+        }
+        IPath startPath = new Path(lastItem);
         IPath path = getPath(startPath);
-        if(path != null)
-            return path.toPortableString();
+        if(path != null) {
+            String selected = path.toPortableString();
+            return currentValue.isEmpty() ? "\"" + selected + "\"" : currentValue + ", \"" + selected + "\"";
+        }
         else
             return null;
 
@@ -93,6 +119,16 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
      */
     public void setFileExtensions(String[] extensions) {
         this.extensions = extensions;
+    }
+
+    /**
+     * Sets this editor as a multiple file editor or a single file editor. In multiple mode, more than one file
+     * can be selected. Every new selected file is appended to the list of already selected ones.
+     *
+     * @param isMultiFile true to allow selectio of multiple files
+     */
+    public void setMultiFileEditor(boolean isMultiFile) {
+        this.isMultiFile = isMultiFile;
     }
 
     public void setTooltip(String tooltip){

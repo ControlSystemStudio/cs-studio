@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.editor;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
+import org.csstudio.opibuilder.actions.ReloadSchemaAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
@@ -45,6 +46,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 
     @Override
     protected void buildActions() {
+        addRetargetAction(new UndoRetargetAction());
         addRetargetAction(new UndoRetargetAction());
         addRetargetAction(new RedoRetargetAction());
         addRetargetAction(new DeleteRetargetAction());
@@ -103,7 +105,6 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         a.setActionDefinitionId(RunOPIAction.ACITON_DEFINITION_ID);
         addRetargetAction(a);
 
-
         for(DistributeType dt : DistributeType.values()){
             if(dt != DistributeType.HORIZONTAL_GAP){
                 a = new RetargetAction(dt.getActionID(), dt.getLabel());
@@ -145,6 +146,11 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         });
         addRetargetAction(a);
 
+        ReloadSchemaAction reloadAction = new ReloadSchemaAction();
+        a = new RetargetAction(reloadAction.getId(), reloadAction.getText());
+        a.setImageDescriptor(reloadAction.getImageDescriptor());
+        addRetargetAction(a);
+
     }
 
     @Override
@@ -152,6 +158,9 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
         tbm.add(getAction(ActionFactory.UNDO.getId()));
         tbm.add(getAction(ActionFactory.REDO.getId()));
         tbm.add(getAction(ActionFactory.DELETE.getId()));
+
+        tbm.add(new Separator());
+        tbm.add(getAction(ReloadSchemaAction.ID));
 
         tbm.add(new Separator());
         tbm.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY));

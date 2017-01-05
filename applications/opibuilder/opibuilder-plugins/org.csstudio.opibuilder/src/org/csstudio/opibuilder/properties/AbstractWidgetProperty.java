@@ -22,7 +22,7 @@ import org.jdom.Element;
  */
 public abstract class AbstractWidgetProperty {
 
-    protected String prop_id;
+    protected final String prop_id;
 
     protected String description;
 

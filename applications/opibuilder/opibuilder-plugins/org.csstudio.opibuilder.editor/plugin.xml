@@ -80,6 +80,12 @@
             id="org.csstudio.opibuilder.commands.editopi"
             name="Edit OPI">
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            description="Reload BOY Schema and Style Sheets"
+            id="org.csstudio.opibuilder.reloadschema"
+            name="Reload Schema &amp; Styles">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -182,6 +188,14 @@
                definitionId="org.csstudio.opibuilder.runopi"
                id="org.csstudio.opibuilder.runOPIAction"
                label="Run OPI"
+               style="push">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.actions.ReloadSchemaAction"
+               definitionId="org.csstudio.opibuilder.reloadschema"
+               icon="icons/refresh_nav.png"
+               id="org.csstudio.opibuilder.reloadSchemaAction"
+               label="Reload Schema &amp; Styles"
                style="push">
          </action>
       </actionSet>

@@ -49,6 +49,7 @@ import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
+import org.csstudio.opibuilder.actions.ReloadSchemaAction;
 import org.csstudio.opibuilder.actions.ReplaceWidgetsAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ShowIndexInTreeViewAction;
@@ -73,6 +74,7 @@ import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
@@ -220,11 +222,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
     private OPIHelpContextProvider helpContextProvider;
 
+    //when schema is reloaded (includes widget classes), refresh the widgets in this editor
+    private SchemaService.SchemaListener schemaListener = () -> SchemaService.refreshModels(displayModel);
 
     public OPIEditor() {
         if(getPalettePreferences().getPaletteState() <= 0)
             getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
         setEditDomain(new DefaultEditDomain(this));
+        SchemaService.getInstance().addSchemaListener(schemaListener);
     }
 
     @Override
@@ -241,6 +246,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             undoablePropertySheetPage.dispose();
             undoablePropertySheetPage = null;
         }
+        SchemaService.getInstance().removeSchemaListener(schemaListener);
         displayModel = null;
         super.dispose();
     }
@@ -516,6 +522,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
         }
 
         action = new RunOPIAction();
+        registry.registerAction(action);
+
+        action = new ReloadSchemaAction();
         registry.registerAction(action);
 
         PastePropertiesAction pastePropAction = new PastePropertiesAction(this);

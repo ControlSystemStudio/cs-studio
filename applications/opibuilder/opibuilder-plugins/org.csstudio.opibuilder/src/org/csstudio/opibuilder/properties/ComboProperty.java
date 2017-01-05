@@ -22,6 +22,8 @@
 
 package org.csstudio.opibuilder.properties;
 
+import java.util.Arrays;
+
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -61,7 +63,8 @@ public class ComboProperty extends AbstractWidgetProperty {
             try {
                 acceptedValue = Integer.parseInt(value.toString());
             } catch (NumberFormatException e) {
-                acceptedValue = null;
+                int idx = Arrays.asList(labelsArray).indexOf(value.toString());
+                acceptedValue = idx < 0 ? null : idx;
             }
         } else {
             acceptedValue = ((Number) value).intValue();

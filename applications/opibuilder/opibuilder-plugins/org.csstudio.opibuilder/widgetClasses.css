@@ -1,0 +1,46 @@
+/* Define the default properties of every widget of this type */
+TextUpdate {
+  font: myBoldFont;
+  foreground_color: #000000;
+}
+
+/* Define classes 'blue' and 'green' for the widget TextUpdate, which have everything that is defined 
+in the TextUpdate above and a different background colour */
+
+TextUpdate.blue {
+  background_color: myblue; 
+}
+TextUpdate.green {
+  background_color: mygreen;
+}
+
+/* Define class tiny, which has all properties of TextUpdate.gray and also a special font */
+TextUpdate.green > TextUpdate.tiny {
+  font: myTinyFont;
+}
+
+/* Define 2 classes: yellow and lemon, where lemon extends tiny */
+TextUpdate.yellow, TextUpdate.tiny > TextUpdate.lemon {
+  background_color: #ffff00;
+}
+
+/* Define class 'noscale', which is applicable to all widgets types */
+.noscale {
+  scale_options: false false false;
+}
+
+/* Define some fonts and colours (these are used in the rules above) */
+@font-face {
+    font-family: myBoldFont;
+    font-weight: bold;
+    font-size: 20;
+    src: Tahoma;
+}
+@font-face {
+    font-family: myTinyFont;
+    font-size: 8;
+}
+* {
+   myblue: #0000ff;
+   mygreen: #00ff00;
+}

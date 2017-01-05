@@ -40,6 +40,7 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.opibuilder.util.StyleSheetService;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.core.runtime.IPath;
@@ -90,8 +91,10 @@ public class XMLUtil {
         result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion().toString());
         List<String> propIds = new ArrayList<>(widgetModel.getAllPropertyIDs());
         Collections.sort(propIds);
+        StyleSheetService styleService = StyleSheetService.getInstance();
         for(String propId : propIds){
-            if(widgetModel.getProperty(propId).isSavable()){
+            if(widgetModel.getProperty(propId).isSavable()
+                && !styleService.isPropertyHandledByWidgetClass(widgetModel, propId)){
                 Element propElement = new Element(propId);
                 widgetModel.getProperty(propId).writeToXML(propElement);
                 result.addContent(propElement);
@@ -433,22 +436,35 @@ public class XMLUtil {
         List children = element.getChildren();
         Iterator iterator = children.iterator();
         Set<String> propIdSet = model.getAllPropertyIDs();
+        Element widgetClassProperty = null;
         while (iterator.hasNext()) {
             Element subElement = (Element) iterator.next();
             //handle property
             if(propIdSet.contains(subElement.getName())){
                 String propId = subElement.getName();
-                try {
-                    model.setPropertyValue(propId,
-                            model.getProperty(propId).readValueFromXML(subElement));
-                } catch (Exception e) {
-                    String errorMessage = "Failed to read the " + propId + " property for " + model.getName() +". " +
-                            "The default property value will be setted instead. \n" + e;
-                    //MessageDialog.openError(null, "OPI File format error", errorMessage + "\n" + e.getMessage());
-                    OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage, e);
-                    ConsoleService.getInstance().writeWarning(errorMessage);
+                if (AbstractWidgetModel.PROP_WIDGET_CLASS.equals(propId)) {
+                    widgetClassProperty = subElement;
+                } else {
+                    setProperty(subElement, propId, model);
                 }
             }
+        }
+        //set the widget class last to override other properties
+        if (widgetClassProperty != null) {
+            setProperty(widgetClassProperty, AbstractWidgetModel.PROP_WIDGET_CLASS, model);
+        }
+    }
+
+    private static void setProperty(Element element, String propId, AbstractWidgetModel model) {
+        try {
+            model.setPropertyValue(propId,
+                    model.getProperty(propId).readValueFromXML(element));
+        } catch (Exception e) {
+            String errorMessage = "Failed to read the " + propId + " property for " + model.getName() +". " +
+                    "The default property value will be setted instead. \n" + e;
+            //MessageDialog.openError(null, "OPI File format error", errorMessage + "\n" + e.getMessage());
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage, e);
+            ConsoleService.getInstance().writeWarning(errorMessage);
         }
     }
 

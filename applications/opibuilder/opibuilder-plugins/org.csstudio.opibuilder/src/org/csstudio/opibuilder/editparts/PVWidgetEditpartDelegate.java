@@ -97,11 +97,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     //invisible border for no_alarm state, this can prevent the widget from resizing
     //when alarm turn back to no_alarm state/
     private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
-
+        @Override
         public Insets getInsets(IFigure figure) {
             return new Insets(2);
         }
-
+        @Override
         public void paint(IFigure figure, Graphics graphics, Insets insets) {
         }
     };

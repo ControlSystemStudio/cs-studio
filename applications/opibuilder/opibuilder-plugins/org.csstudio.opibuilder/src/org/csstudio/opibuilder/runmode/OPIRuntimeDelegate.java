@@ -12,11 +12,13 @@ import org.csstudio.opibuilder.actions.RefreshOPIAction;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
@@ -107,9 +109,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
 
     private ZoomManager zoomManager;
+    private SchemaService.SchemaListener schemaListener = () -> SchemaService.refreshModels(displayModel);
 
     public OPIRuntimeDelegate(IOPIRuntime opiRuntime){
         this.opiRuntime = opiRuntime;
+        SchemaService.getInstance().addSchemaListener(schemaListener);
     }
 
     public void init(final IWorkbenchPartSite site, final IEditorInput input) throws PartInitException
@@ -513,6 +517,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
      * Dispose of all resources.
      */
     public void dispose() {
+        SchemaService.getInstance().removeSchemaListener(schemaListener);
         getActionRegistry().dispose();
         if (displayOpenManager != null) {
             displayOpenManager.dispose();

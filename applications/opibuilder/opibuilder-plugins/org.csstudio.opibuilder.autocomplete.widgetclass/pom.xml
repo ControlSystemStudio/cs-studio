@@ -7,7 +7,7 @@
     <artifactId>opibuilder-plugins</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>org.csstudio.opibuilder.editor</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <artifactId>org.csstudio.opibuilder.autocomplete.widgetclass</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.preferences;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class PreferencesHelper {
     public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
     public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
     public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
+    public static final String WIDGET_CLASSES_STYLESHEET = "widget_classes_stylesheet"; //$NON-NLS-1$
     public static final String PYTHON_PATH = "python_path"; //$NON-NLS-1$
     public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
     public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
@@ -137,6 +139,29 @@ public class PreferencesHelper {
         if(schemaOPIPath == null || schemaOPIPath.trim().isEmpty())
             return null;
         return getExistFileInRepoAndSearchPath(schemaOPIPath);
+    }
+
+    /**
+     * Returns the widget class rules definition file. This file defined, which properties are skipped when applying
+     * a widget class settings to a widget model.
+     *
+     * @return the file path or null if not defined
+     */
+    public static IPath[] getWidgetClassesStylesheetPath(){
+        String rulesPath = getString(WIDGET_CLASSES_STYLESHEET);
+        if(rulesPath == null || rulesPath.trim().isEmpty())
+            return new IPath[0];
+        String[] paths = rulesPath.split("\\,");
+        List<IPath> css = new ArrayList<>();
+        for (String s : paths) {
+            String path = s.trim();
+            if (s.length() > 1) {
+                //strip away the quotes
+                path = path.substring(1, path.length()-1);
+            }
+            css.add(getExistFileInRepoAndSearchPath(path));
+        }
+        return css.toArray(new IPath[css.size()]);
     }
 
     public static boolean isAutoSaveBeforeRunning(){
