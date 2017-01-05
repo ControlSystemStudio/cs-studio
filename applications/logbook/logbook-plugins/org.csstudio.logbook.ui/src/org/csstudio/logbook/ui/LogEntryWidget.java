@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import org.csstudio.apputil.ui.swt.Screenshot;
 import org.csstudio.logbook.Attachment;
@@ -86,8 +87,6 @@ import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.dnd.ImageTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
@@ -862,20 +861,8 @@ public class LogEntryWidget extends Composite {
         public void run() {
         if (logbookClient != null) {
             try {
-            logbookNames = Lists.transform(new ArrayList<Logbook>(
-                logbookClient.listLogbooks()),
-                new Function<Logbook, String>() {
-                    public String apply(Logbook input) {
-                    return input.getName();
-                    };
-                });
-            tagNames = Lists.transform(new ArrayList<Tag>(
-                logbookClient.listTags()),
-                new Function<Tag, String>() {
-                    public String apply(Tag input) {
-                    return input.getName();
-                    };
-                });
+            logbookNames = logbookClient.listLogbooks().stream().map(Logbook::getName).sorted().collect(Collectors.toList());
+            tagNames = logbookClient.listTags().stream().map(Tag::getName).sorted().collect(Collectors.toList());
             levels = logbookClient.listLevels();
             getDisplay().asyncExec(new Runnable() {
 

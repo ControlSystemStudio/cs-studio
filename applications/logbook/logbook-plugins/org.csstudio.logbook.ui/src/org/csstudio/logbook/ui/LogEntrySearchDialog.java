@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.csstudio.apputil.ui.time.Messages;
 import org.csstudio.apputil.ui.time.StartEndDialog;
@@ -40,7 +41,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.google.common.base.Joiner;
 
 /**
  *
@@ -167,7 +167,7 @@ public class LogEntrySearchDialog extends Dialog {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                searchParameters.put(SEARCH_KEYWORD_LOGBOOKS, Joiner.on(",").join(logbookCombo.getSelection()));
+                searchParameters.put(SEARCH_KEYWORD_LOGBOOKS, logbookCombo.getSelection().stream().collect(Collectors.joining(",")));
                 updateSearch();
             }
         });
@@ -184,7 +184,7 @@ public class LogEntrySearchDialog extends Dialog {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                searchParameters.put(SEARCH_KEYWORD_TAGS, Joiner.on(",").join(tagCombo.getSelection()));
+                searchParameters.put(SEARCH_KEYWORD_TAGS, tagCombo.getSelection().stream().collect(Collectors.joining(",")));
                 updateSearch();
             }
         });

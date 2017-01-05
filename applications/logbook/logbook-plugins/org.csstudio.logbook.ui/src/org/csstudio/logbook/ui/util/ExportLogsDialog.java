@@ -1,11 +1,13 @@
 package org.csstudio.logbook.ui.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
@@ -28,7 +30,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
-import com.google.common.base.Joiner;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -96,7 +97,7 @@ public class ExportLogsDialog extends Dialog {
             // Open a dialog which allows users to select fields
                 final StringListSelectionDialog dialog = new StringListSelectionDialog(getShell(), fields, fieldsText.getSelection(), "Add Fields");
                 if (dialog.open() == IDialogConstants.OK_ID) {
-                    fieldsText.setSelection(Joiner.on(",").join(dialog.getSelectedValues()));
+                    dialog.getSelectedValues().stream().collect(Collectors.joining(","));
                 }
             }
         });
@@ -119,10 +120,10 @@ public class ExportLogsDialog extends Dialog {
         try {
             final BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filePath.getText())));
             try {
-                bw.append(Joiner.on(separator).join(getHeader()));
+                bw.append(Arrays.asList(getHeader()).stream().collect(Collectors.joining(separator)));
                 for (final LogEntry log : data) {
                     bw.newLine();
-                    bw.append(Joiner.on(separator).join(getLine(log)));
+                    bw.append(Arrays.asList(getLine(log)).stream().collect(Collectors.joining(separator)));
                 }
                 getShell().setCursor(originalCursor);
                 setReturnCode(OK);
