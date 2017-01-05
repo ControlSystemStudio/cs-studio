@@ -94,7 +94,7 @@ class VImageForNTNDArray extends VTypeTimeAlarmBase implements VImage
             image_type = VImageType.TYPE_CUSTOM;
         }
         else
-            throw new Exception("Cannot extract byte[] from " + value);
+            throw new Exception("Cannot decode NTNDArray type of value " + value);
     }
 
     @Override

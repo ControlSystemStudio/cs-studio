@@ -16,7 +16,6 @@ import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VImage;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.epics.pvdata.factory.ConvertFactory;
@@ -307,16 +306,6 @@ class PVStructureHelper
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
                     ValueFactory.timeNow());
         }
-    }
-
-    /** Decode image from NTNDArray
-     *  @param struct
-     *  @return
-     *  @throws Exception
-     */
-    private static VImage decodeNTNDArray(final PVStructure struct) throws Exception
-    {
-        return new VImageForNTNDArray(struct);
     }
 
     /** @param structure {@link PVStructure} from which to read
