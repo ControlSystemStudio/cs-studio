@@ -265,7 +265,7 @@ public class ConnectionModel extends AbstractWidgetModel {
         addProperty(new PointListProperty(PROP_POINTS, "Points",
                 WidgetPropertyCategory.Display, new PointList()));
         addProperty(new ComboProperty(PROP_LINE_JUMP_ADD, "Add Line Jump To",
-                WidgetPropertyCategory.Display, LineJumpAdd.stringValues(), 1));
+                WidgetPropertyCategory.Display, LineJumpAdd.stringValues(), 0));
         addProperty(new ComboProperty(PROP_LINE_JUMP_STYLE, "Line Jump Style",
                 WidgetPropertyCategory.Display, LineJumpStyle.stringValues(), 0));
         addProperty(new IntegerProperty(PROP_LINE_JUMP_SIZE, "Line Jump Size",
