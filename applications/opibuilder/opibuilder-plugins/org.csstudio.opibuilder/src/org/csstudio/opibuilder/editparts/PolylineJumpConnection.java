@@ -14,6 +14,7 @@ import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 public class PolylineJumpConnection extends PolylineConnection {
@@ -27,15 +28,10 @@ public class PolylineJumpConnection extends PolylineConnection {
     public PolylineJumpConnection(WidgetConnectionEditPart widgetConnectionEditPart) {
         this.widgetConnectionEditPart = widgetConnectionEditPart;
 
-        setClippingStrategy(new IClippingStrategy() {
-
-            public Rectangle[] getClip(IFigure childFigure) {
-                Rectangle bounds = childFigure.getBounds();
-                bounds.expand(lineJumpSize*2, lineJumpSize*2);
-                return new Rectangle[]{
-                        bounds
-                };
-            }
+        setClippingStrategy((childFigure) -> {
+            Rectangle bounds = childFigure.getBounds();
+            bounds.expand(lineJumpSize*2, lineJumpSize*2);
+            return new Rectangle[] { bounds };
         });
     }
 
@@ -91,6 +87,12 @@ public class PolylineJumpConnection extends PolylineConnection {
                     Point intersectionPoint = currentEntry.getKey();
                     PointList intersectionEdges = currentEntry.getValue();
                     int angle = (int) angleOf(intersectionEdges.getFirstPoint(), intersectionEdges.getLastPoint());
+                    angle = angle % 180;
+
+                    // Correct small angle deviations caused by calculating intersecting points rounding to int
+                    if(angle > 175) {
+                        angle = 0;
+                    }
 
                     Arc arc = new Arc(intersectionPoint.x()-lineJumpSize, intersectionPoint.y()-lineJumpSize,
                             lineJumpSize*2, lineJumpSize*2, angle, 180);
@@ -108,6 +110,12 @@ public class PolylineJumpConnection extends PolylineConnection {
                     PointList intersectionEdges = currentEntry.getValue();
                     Point tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
                             intersectionEdges.getLastPoint(), true);
+
+                    // If jump is right hand side, take it to left hand side
+                    if(tipPoint.x > intersectionEdges.getFirstPoint().x) {
+                        tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
+                        intersectionEdges.getLastPoint(), false);
+                    }
 
                     Polyline triangleLine1 = getPolyLine(intersectionEdges.getFirstPoint(), tipPoint);
                     triangleLine1.paint(graphics);
@@ -133,13 +141,49 @@ public class PolylineJumpConnection extends PolylineConnection {
                     int y3 = (int) (x2y2.y + (0.577350269)*(x1y1.x - x2y2.x));
                     Point squareCorner1 = new Point(x3, y3);
 
-                    Polyline squareLine1 = getPolyLine(intersectionEdges.getLastPoint(), squareCorner1);
-                    squareLine1.paint(graphics);
-                    this.setBounds(getBounds().union(squareLine1.getBounds()));
+                    // For Vertical Lines,  If square is on right hand side, bring it to left hand side
+                    // Leave margin for rounding errors
+                    if(Math.abs(x1y1.x - x2y2.x) < 5) {
+                        if(x3 > x2y2.x) {
+                            int length = Math.abs(x2y2.x-x3);
+                            x3 = x2y2.x - length;
+                            squareCorner1 = new Point(x3, y3);
+                        }
+                    }
+
+                    // For Horizontal Lines,  If square is on Bottom side, bring it to upper side
+                    // Leave margin for rounding errors
+                    if(Math.abs(x1y1.y - x2y2.y) < 5) {
+                        if(y3 > x2y2.y) {
+                            int length = Math.abs(x2y2.y-y3);
+                            y3 = x2y2.y - length;
+                            squareCorner1 = new Point(x3, y3);
+                        }
+                    }
 
                     int x4 = (int) (x1y1.x - (0.577350269)*(x2y2.y - x1y1.y));
                     int y4 = (int) (x1y1.y - (0.577350269)*(x2y2.x - x1y1.x));
                     Point squareCorner2 = new Point(x4, y4);
+
+                    // For Vertical Lines,  If square is on right hand side, bring it to left hand side
+                    // Leave margin for rounding errors
+                    if(Math.abs(x1y1.x - x2y2.x) < 5) {
+                        if(x4 > x1y1.x) {
+                            int length = Math.abs(x1y1.x-x4);
+                            x4 = x1y1.x - length;
+                            squareCorner2 = new Point(x4, y4);
+                        }
+                    }
+
+                    // For Horizonal Lines,  If square is on Bottom side, bring it to upper side
+                    // Leave margin for rounding errors
+                    if(Math.abs(x1y1.y - x2y2.y) < 5) {
+                        if(y4 > x1y1.y) {
+                            int length = Math.abs(x1y1.y-y4);
+                            y4 = x1y1.y - length;
+                            squareCorner2 = new Point(x4, y4);
+                        }
+                    }
 
                     Polyline squareLine2 =  getPolyLine(intersectionEdges.getFirstPoint(), squareCorner2);
                     squareLine2.paint(graphics);
@@ -190,7 +234,7 @@ public class PolylineJumpConnection extends PolylineConnection {
                     rx = cx - height * pDirX;
                     ry = cy - height * pDirY;
                 }
-                return new Point(rx, ry);
+                return new PrecisionPoint(rx, ry);
             }
 
     public static double angleOf(Point p1, Point p2) {
