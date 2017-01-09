@@ -221,6 +221,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         addAxisProperties();
         addTraceProperties();
         setPropertyVisible(PROP_FONT, false);
+        setPropertyVisible(PROP_FONT_PIXELS, false);
     }
 
     @Override

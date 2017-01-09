@@ -136,9 +136,14 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     public static final String PROP_COLOR_FOREGROUND = "foreground_color";//$NON-NLS-1$
 
     /**
-     * Foreground color.
+     * Font.
      */
     public static final String PROP_FONT = "font";//$NON-NLS-1$
+
+    /**
+     * Whether to interpret font height in pixels rather than points.
+     */
+    public static final String PROP_FONT_PIXELS = "font_pixels";//$NON-NLS-1$
 
     /**
      * Visibility of the widget.
@@ -339,6 +344,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
                 WidgetPropertyCategory.Display, new RGB(192, 192, 192)));
         addProperty(new FontProperty(PROP_FONT, "Font",
                 WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
+        addProperty(new BooleanProperty(PROP_FONT_PIXELS, "Font Pixels",
+                WidgetPropertyCategory.Display, false));
         addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
                 WidgetPropertyCategory.Border, new RGB(0, 128, 255)));
         addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style",
@@ -472,6 +479,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
     public OPIFont getFont(){
         return (OPIFont)getPropertyValue(PROP_FONT);
+    }
+
+    public boolean getFontPixels(){
+        return (boolean)getPropertyValue(PROP_FONT_PIXELS);
     }
 
     public RGB getForegroundColor(){
