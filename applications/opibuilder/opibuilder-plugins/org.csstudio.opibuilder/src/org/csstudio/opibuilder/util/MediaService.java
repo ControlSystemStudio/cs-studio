@@ -406,6 +406,14 @@ public final class MediaService {
         return new OPIFont(name, fontData);
     }
 
+    public Object getOPIFont(FontData fontData, boolean heightInPixels) {
+        return new OPIFont(fontData, heightInPixels);
+    }
+
+    public OPIFont getOPIFont(String name, FontData fontData, boolean heightInPixels) {
+        return new OPIFont(name, fontData, heightInPixels);
+    }
+
     public OPIFont[] getAllPredefinedFonts() {
         OPIFont[] result = new OPIFont[fontMap.size()];
         int i = 0;
