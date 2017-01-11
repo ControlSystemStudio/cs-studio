@@ -377,21 +377,6 @@ public final class MediaService {
     }
 
     /**
-     * Get the font from the predefined font map, which is defined in the font
-     * file.
-     *
-     * @param name
-     *            the predefined name of the font.
-     * @return the FontData, or the default font if the name doesn't exist in
-     *         the font file.
-     */
-    public FontData getFontData(String name) {
-        if (fontMap.containsKey(name))
-            return fontMap.get(name).getFontData();
-        return DEFAULT_UNKNOWN_FONT;
-    }
-
-    /**
      * Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a
      * name is found.
      *
@@ -401,6 +386,10 @@ public final class MediaService {
      */
     public OPIFont getOPIFont(String name) {
         return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
+    }
+
+    public OPIFont getOPIFont(FontData fontData) {
+        return new OPIFont(fontData);
     }
 
     /**

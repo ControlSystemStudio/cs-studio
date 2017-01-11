@@ -61,7 +61,7 @@ public class FontProperty extends AbstractWidgetProperty {
      */
     public FontProperty(String prop_id, String description,
             WidgetPropertyCategory category, FontData defaultValue) {
-        super(prop_id, description, category, new OPIFont(defaultValue));
+        super(prop_id, description, category, MediaService.getInstance().getOPIFont(defaultValue));
     }
     /**Font Property Constructor. The property value type is {@link OPIFont}.
      * @param prop_id the property id which should be unique in a widget model.
@@ -92,7 +92,7 @@ public class FontProperty extends AbstractWidgetProperty {
             if(((OPIFont)value).getFontData() == null)
                 acceptedValue = null;
         }else if (value instanceof FontData) {
-            acceptedValue = new OPIFont((FontData)value);
+            acceptedValue = MediaService.getInstance().getOPIFont((FontData)value);
         }else if(value instanceof String){
             acceptedValue = MediaService.getInstance().getOPIFont((String)value);
         }else
@@ -137,7 +137,7 @@ public class FontProperty extends AbstractWidgetProperty {
     public Object readValueFromXML(Element propElement) {
         Element fontElement = propElement.getChild(XML_ELEMENT_FONT);
         if(fontElement !=null){
-            return new OPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
+            return MediaService.getInstance().getOPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
                 (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
                 Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
         }else{

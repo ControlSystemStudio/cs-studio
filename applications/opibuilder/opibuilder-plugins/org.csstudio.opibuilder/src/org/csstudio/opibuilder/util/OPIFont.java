@@ -25,20 +25,20 @@ public class OPIFont{
 
     private boolean preDefined;
 
-    public OPIFont(String fontName) {
+    OPIFont(String fontName) {
         this.fontName = fontName;
-        this.fontData = MediaService.getInstance().getFontData(fontName);
+        this.fontData = MediaService.getInstance().getOPIFont(fontName).getFontData();
         preDefined = true;
     }
 
-    public OPIFont(FontData fontData){
+    OPIFont(FontData fontData){
         this.fontName = fontData.toString();
         setFontData(fontData);
     }
 
 
 
-    public OPIFont(String name, FontData fontData) {
+    OPIFont(String name, FontData fontData) {
         this.fontName = name;
         this.fontData = fontData;
         preDefined = true;
@@ -107,7 +107,7 @@ public class OPIFont{
 
     public void setFontName(String fontName) {
         this.fontName = fontName;
-        this.fontData = MediaService.getInstance().getFontData(fontName);
+        this.fontData = MediaService.getInstance().getOPIFont(fontName).getFontData();
         preDefined = true;
     }
 
