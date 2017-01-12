@@ -1172,19 +1172,19 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+    public <T> T getAdapter(Class<T> type) {
         if (type == ISaveablePart.class)
             return null; // we should not return the saveable part, because the outline itself is not saveable, the editor is
         else if (type == ZoomManager.class)
-            return getGraphicalViewer().getProperty(ZoomManager.class.toString());
+            return type.cast(getGraphicalViewer().getProperty(ZoomManager.class.toString()));
         else if (type == CommandStack.class)
-            return getCommandStack();
+            return type.cast(getCommandStack());
         else if (type.equals(IContextProvider.class)){
             if(helpContextProvider == null)
                 helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
-            return helpContextProvider;
+            return type.cast(helpContextProvider);
         }
-        return OPIEditor.this.getAdapter(type);
+        return type.cast(OPIEditor.this.getAdapter(type));
     }
 
     @Override
