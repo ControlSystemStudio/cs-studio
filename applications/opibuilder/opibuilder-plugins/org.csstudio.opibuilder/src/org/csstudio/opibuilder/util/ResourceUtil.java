@@ -35,10 +35,6 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -53,8 +49,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**Utility functions for resources.
  * @author Xihui Chen, Abadie Lana, Kay Kasemir
@@ -429,19 +423,7 @@ public class ResourceUtil {
     }
 
     public static IEditorInput editorInputFromPath(IPath path) {
-        IEditorInput editorInput = null;
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-        // Files outside the workspace are handled differently
-        // by Eclipse.
-        if (!ResourceUtil.isExistingWorkspaceFile(path)
-                && ResourceUtil.isExistingLocalFile(path)) {
-            IFileStore fileStore = EFS.getLocalFileSystem()
-                    .getStore(file.getFullPath());
-            editorInput = new FileStoreEditorInput(fileStore);
-        } else {
-            editorInput = new FileEditorInput(file);
-        }
-        return editorInput;
+        return IMPL.editorInputFromPath(path);
     }
 
     /**Get the first existing file on search path. Search path is a BOY preference.

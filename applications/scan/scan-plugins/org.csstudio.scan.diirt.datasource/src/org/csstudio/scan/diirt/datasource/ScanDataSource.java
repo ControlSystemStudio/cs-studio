@@ -29,13 +29,13 @@ import static org.diirt.util.concurrent.Executors.namedPool;
  *
  */
 public class ScanDataSource extends DataSource {
-    
+
     static {
         // Install type support for the types it generates.
         DataTypeSupport.install();
     }
-    
-    public enum REQUEST_TYPE { 
+
+    public enum REQUEST_TYPE {
         SCAN_INFO, SERVER_INFO, SCAN_DATA, SCAN_DEVICES
     }
 
@@ -47,7 +47,7 @@ public class ScanDataSource extends DataSource {
     private final Pattern scanInfoPath;
     private final Pattern dataPath;
     private final Pattern devicesPath;
-    
+
     static {
         // Install type support for the types it generates.
         DataTypeSupport.install();
@@ -60,20 +60,20 @@ public class ScanDataSource extends DataSource {
         scanInfoPath = Pattern.compile("\\/-?([0-9]+)\\/?");
         dataPath = Pattern.compile("\\/-?([0-9]+)\\/data");
         devicesPath = Pattern.compile("\\/-?([0-9]+)\\/devices");
-        
+
     }
 
     @Override
     public boolean isWriteable() {
         return true;
     }
-    
+
     @Override
     public void close() {
         exec.shutdown();
         super.close();
     }
-    
+
     private void poll() {
         for (ChannelHandler channel : getChannels().values()) {
             ((ScanChannelHandler)channel).poll();
@@ -85,7 +85,7 @@ public class ScanDataSource extends DataSource {
         try {
             // adding a protocol to simplify parsing
             URI uri = new URI("http://"+channelName);
-            
+
             if(configuration.connections.containsKey(uri.getHost())) {
                 if( uri.getPath().isEmpty() ){
                     log.fine("Creating Channel: "+channelName);
@@ -113,17 +113,17 @@ public class ScanDataSource extends DataSource {
                     log.fine("Creating Channel: "+channelName+" with id: "+String.valueOf(id));
                     return new ScanChannelHandler(this,uri,id, REQUEST_TYPE.SCAN_INFO);
                 }
-                            
+
                 throw new RuntimeException("Malformed URI scan channel named " + channelName);
             }
             throw new RuntimeException("Couldn't find scan channel named " + channelName);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Malformed URI scan channel named " + channelName);
         }
-        
-        
+
+
     }
-    
+
     ScanClient getConnection(String connectionName) {
         ScanClient scanSource = scanSources.get(connectionName);
         if (scanSource == null) {

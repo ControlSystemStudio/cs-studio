@@ -9,13 +9,6 @@ public class ShiftViewerPerspective implements IPerspectiveFactory {
 
     public static final String ID = "org.csstudio.shift.ui.ShiftViewerPerspective";
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
-     * .IPageLayout)
-     */
     @Override
     public void createInitialLayout(final IPageLayout layout) {
 
