@@ -56,9 +56,9 @@ public class OPIFontDialog extends HelpTrayDialog {
         this.title = dialogTitle;
         if(font.isPreDefined())
             this.opiFont = MediaService.getInstance().getOPIFont(
-                    font.getFontMacroName(), font.getFontData());
+                    font.getFontMacroName(), font.getFontData(), font.getFontPixels());
         else
-            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData());
+            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.getFontPixels());
     }
 
     /**
@@ -153,8 +153,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         outputTextLabel = new Label(group, SWT.None);
         outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         outputTextLabel.setText(opiFont.getFontMacroName());
-        outputTextLabel.setFont(
-                CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
+        outputTextLabel.setFont(opiFont.getSWTFont());
 
         if(opiFont.isPreDefined())
             preDefinedFontsViewer.setSelection(new StructuredSelection(opiFont));

@@ -406,7 +406,7 @@ public final class MediaService {
         return new OPIFont(name, fontData);
     }
 
-    public Object getOPIFont(FontData fontData, boolean heightInPixels) {
+    public OPIFont getOPIFont(FontData fontData, boolean heightInPixels) {
         return new OPIFont(fontData, heightInPixels);
     }
 
