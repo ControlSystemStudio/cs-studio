@@ -155,10 +155,18 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
         if ( firstAccess && store != null ) {
 
-            copyDataSources(DIIRTPreferences.get(), store);
-            copyChannelAccess(DIIRTPreferences.get(), store);
+            DIIRTPreferences dp = DIIRTPreferences.get();
 
-            firstAccess = false;
+            //  Can be null when getPreferenceStore() is automatically called
+            //  while DIIRTPreferences is constructed.
+            if ( dp != null ) {
+
+                copyDataSources(DIIRTPreferences.get(), store);
+                copyChannelAccess(DIIRTPreferences.get(), store);
+
+                firstAccess = false;
+
+            }
 
         }
 
