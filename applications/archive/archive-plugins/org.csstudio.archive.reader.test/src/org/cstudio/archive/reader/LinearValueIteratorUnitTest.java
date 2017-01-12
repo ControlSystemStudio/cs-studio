@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.cstudio.archive.reader;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
