@@ -8,7 +8,141 @@
 
 	<body>
 
+
+
 		<h1>Channel Access</h1>
+
+
+
+		<!-- ====================================================== -->
+		<h2><a name="table_of_contents">Table of Contents</a></h2>
+		<!-- ====================================================== -->
+
+		<ul style="border-left: 5px solid #51515a;background-color: #f1f1fa;list-style-type: none;padding: 6px 12px;">
+			<li><a href="#overview">Overview</a></li>
+			<li><a href="#jca_context">JCA Context</a></li>
+			<li><a href="#options">Options</a></li>
+			<li>&nbsp;</li>
+			<li>&blacktriangleright;<a href="programmersnotes.html"><i>Programmer's Notes</i></a></li>
+			<li>&blacktriangle;<a href="datasources.html"><i>Data Sources</i></a></li>
+		</ul>
+
+
+
+		<!-- ====================================================== -->
+		<h2><a name="overview">Overview</a></h2>
+		<!-- ====================================================== -->
+		<p>
+			The <b>Channel Access</b> page shows the preferences used to access
+			the <i>Process Variables</i> on EPICS IOCs via the network.
+		</p>
+
+		<p style="text-align:center;">
+			<img src="images/channel-access.png" alt="Channel Access preferences page." width="663" style="vertical-align:top"/>
+		</p>
+
+
+
+		<!-- ====================================================== -->
+		<h2><a name="jca_context">JCA Context</a></h2>
+		<!-- ====================================================== -->
+
+		<p>
+			The core parameter for the <i>EPICS Channel Access</i> are
+			configured through the <b>JCA Context</b> section. This includes
+			what implementation of JCA is used (JCA/JNI or CAJ/Pure Java) and 
+			the configuration parameters for those implementations.
+		</p>
+
+		<p>
+			By default, CAJ is used with the default CAJ configuration. CAJ
+			should, by default, honor the standard EPICS environment variables
+			to configure the client. One can still override that configuration
+			by specifying the configuration properties here. Please, refer
+			to the JCA/CAJ instructions for details on these properties.
+		</p>
+
+		<p>
+			We recommend to use the CAJ (pure java) implementation, as the JCA
+			(JNI) implementation currently lacks an official maintainer.
+			Moreover, to use the JNI version, the operating system specific
+			binaries for JNI must be installed.
+		</p>
+
+		<p>
+			The preferences in the <b>JCA Context</b> section are listed below.
+		</p>
+
+		<p style="text-align:center;">
+			<img src="images/jca-context.png" alt="JCA Context preferences." width="449" style="vertical-align:top"/>
+		</p>
+
+		<table style="border-style:none;width:100%;">
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Mode</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Address&nbsp;List</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Auto&nbsp;Address&nbsp;List</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Connection&nbsp;Timeout&nbsp;[s]</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Beacon&nbsp;Period&nbsp;[s]</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Repeater&nbsp;Port</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Server&nbsp;Port</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Max&nbsp;Array&nbsp;Size&nbsp;[bytes]</th>
+				<td style="width:6px;"></td>
+				<td style="text-align:left;padding:0px;">
+					The xxx
+				</td>
+			</tr>
+		</table>
+
+
+
+		<!-- ====================================================== -->
+		<h2><a name="options">Options</a></h2>
+		<!-- ====================================================== -->
+
+
 
 		<!--<h1>EPICS Library</h1>
 		This provides the ChannelAccess (CA) client library
@@ -58,6 +192,8 @@
 		<p>
 		To use the JNI version, you need the operating system specific binaries for JNI.
 		</p>-->
+
+
 
 	</body>
 
