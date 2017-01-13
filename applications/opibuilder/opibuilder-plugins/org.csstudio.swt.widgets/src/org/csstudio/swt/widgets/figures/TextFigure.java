@@ -12,7 +12,6 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -22,6 +21,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A text figure without wrapping capability.
@@ -45,11 +45,6 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
     private final Point POINT_ZERO = new Point(0,0);
 
     private double rotate = 0;
-
-    /**
-     * The real font that is used for drawing. Sometime the font need to be shrinked to fit the widget.
-     */
-    private Font realFont;
 
     public TextFigure() {
         this(false);
@@ -312,25 +307,12 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         super.paintFigure(graphics);
         if(text.length() == 0)
             return;
-        Rectangle clientArea = getClientArea();
-        if(realFont == null)
-            realFont = getFont();
-        int h = getTextSize(realFont).height;
-        if (realFont != getFont() && h < clientArea.height-2) {
-            realFont =getFont();
-            h = getTextSize(realFont).height;
-        }
-        Font font = realFont;
 
-        int i=0;
-        //shrink font size to fit the figure.
-        while(h > (clientArea.height+2) && h > 10 && i++<20){
-            FontData fd = font.getFontData()[0];
-            fd.setHeight(fd.getHeight()-1);
-            font = CustomMediaFactory.getInstance().getFont(fd);
-            h = getTextSize(font).height;
-        }
-        realFont = font;
+        // Get the font assuming that the height is in pixels and resize it to points
+        final FontData fontData = getFont().getFontData()[0];
+        fontData.setHeight(convertPixelsToPoints(fontData.getHeight()));
+        Font font = new Font(getFont().getDevice(), fontData);
+
         graphics.setFont(font);
         Rectangle textArea = getTextArea();
         graphics.translate(textArea.x, textArea.y);
@@ -354,12 +336,6 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
 
 
         graphics.translate(-textArea.x, -textArea.y);
-    }
-
-    @Override
-    public void setFont(Font f) {
-        realFont = f;
-        super.setFont(f);
     }
 
     @Override
@@ -465,6 +441,11 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         public String toString() {
             return descripion;
         }
+    }
+
+    private int convertPixelsToPoints(int pixels) {
+        final int pointsPerInch = 72;
+        return pixels * pointsPerInch / Display.getDefault().getDPI().y;
     }
 
 }
