@@ -51,6 +51,8 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
      */
     private Font realFont;
 
+    private boolean fontHeightInPixels = false;
+
     public TextFigure() {
         this(false);
     }
@@ -323,12 +325,15 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         Font font = realFont;
 
         int i=0;
-        //shrink font size to fit the figure.
-        while(h > (clientArea.height+2) && h > 10 && i++<20){
-            FontData fd = font.getFontData()[0];
-            fd.setHeight(fd.getHeight()-1);
-            font = CustomMediaFactory.getInstance().getFont(fd);
-            h = getTextSize(font).height;
+        // Shrink font size to fit the figure, if fonts are not
+        // explicitly sized in pixels.
+        if (! fontHeightInPixels) {
+            while(h > (clientArea.height+2) && h > 10 && i++<20){
+                FontData fd = font.getFontData()[0];
+                fd.setHeight(fd.getHeight()-1);
+                font = CustomMediaFactory.getInstance().getFont(fd);
+                h = getTextSize(font).height;
+            }
         }
         realFont = font;
         graphics.setFont(font);
@@ -362,6 +367,13 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
         super.setFont(f);
     }
 
+    public void setFontPixels(boolean fontPixels) {
+        if(this.fontHeightInPixels == fontPixels)
+            return;
+        this.fontHeightInPixels = fontPixels;
+        revalidate();
+        repaint();
+    }
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
