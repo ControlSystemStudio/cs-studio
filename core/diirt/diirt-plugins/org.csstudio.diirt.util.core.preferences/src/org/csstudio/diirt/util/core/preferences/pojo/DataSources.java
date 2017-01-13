@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.MessageFormat;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -23,7 +22,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -53,28 +51,28 @@ import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSou
 @XmlType( name = "DataSources" )
 public class DataSources {
 
-    public static final String PREF_DEFAULT   = "diirt.datasource.default";
+    public static final String PREF_DEFAULT = "diirt.datasource.default";
     public static final String PREF_DELIMITER = "diirt.datasource.delimiter";
 
-    public static final String DATASOURCES_DIR     = "datasources";
-    public static final String DATASOURCES_FILE    = "datasources.xml";
+    public static final String DATASOURCES_DIR = "datasources";
+    public static final String DATASOURCES_FILE = "datasources.xml";
     public static final String DATASOURCES_VERSION = "1";
 
     @XmlElement( name = "compositeDataSource", nillable = true )
-	public CompositeDataSource compositeDataSource = null;
+    public CompositeDataSource compositeDataSource = null;
 
-	@XmlAttribute( name = "version", required = true )
-	public String version = DATASOURCES_VERSION;
+    @XmlAttribute( name = "version", required = true )
+    public String version = DATASOURCES_VERSION;
 
-	/**
-	 * Create and instance of this class loading it from the given folder.
-	 *
-	 * @param confDir The DIIRT configuration directory.
-	 * @return An instance of this class initialized from the given folder.
-	 * @throws IOException In case the given file cannot be read or the version is invalid.
-	 * @throws JAXBException In case the given file cannot unmashalled.
-	 */
-	public static DataSources fromFile ( File confDir ) throws IOException, JAXBException {
+    /**
+     * Create and instance of this class loading it from the given folder.
+     *
+     * @param confDir The DIIRT configuration directory.
+     * @return An instance of this class initialized from the given folder.
+     * @throws IOException   In case the given file cannot be read or the version is invalid.
+     * @throws JAXBException In case the given file cannot unmashalled.
+     */
+    public static DataSources fromFile( File confDir ) throws IOException, JAXBException {
 
         File datasourcesDir = new File(confDir, DATASOURCES_DIR);
         File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
@@ -92,12 +90,12 @@ public class DataSources {
 
         return ds;
 
-	}
+    }
 
-	/**
-	 * Create an instance of this class with default initialization.
-	 */
-    public DataSources () {
+    /**
+     * Create an instance of this class with default initialization.
+     */
+    public DataSources() {
     }
 
     /**
@@ -106,14 +104,14 @@ public class DataSources {
      *
      * @param preferencesSet The preferences set used to initialize this object.
      */
-    public DataSources ( DIIRTPreferences preferencesSet ) {
+    public DataSources( DIIRTPreferences preferencesSet ) {
         this(new CompositeDataSource(
             CompositeDataSource.DataSourceProtocol.fromString(preferencesSet.getString(PREF_DEFAULT)),
             preferencesSet.getString(PREF_DELIMITER)
         ));
     }
 
-    public DataSources ( CompositeDataSource compositeDataSource ) {
+    public DataSources( CompositeDataSource compositeDataSource ) {
 
         this();
 
@@ -122,7 +120,7 @@ public class DataSources {
     }
 
     @Override
-    public int hashCode ( ) {
+    public int hashCode() {
         return new HashCodeBuilder(19, 311)
             .append(compositeDataSource)
             .append(version)
@@ -130,7 +128,7 @@ public class DataSources {
     }
 
     @Override
-    public boolean equals ( Object obj ) {
+    public boolean equals( Object obj ) {
 
         if ( obj == null ) {
             return false;
@@ -144,16 +142,16 @@ public class DataSources {
 
         return new EqualsBuilder()
             .append(compositeDataSource, ds.compositeDataSource)
-            .append(version,             ds.version)
+            .append(version, ds.version)
             .isEquals();
 
     }
 
     @Override
-    public String toString ( ) {
+    public String toString() {
         return new ToStringBuilder(this)
             .append("compositeDataSource", compositeDataSource)
-            .append("version",             version)
+            .append("version", version)
             .toString();
     }
 
@@ -161,10 +159,10 @@ public class DataSources {
      * Store this instance into the given folder.
      *
      * @param confDir The current DIIRT configuration directory.
-     * @throws IOException If problems occurred saving data into file or creating the folder structure.
+     * @throws IOException   If problems occurred saving data into file or creating the folder structure.
      * @throws JAXBException In case the given instance cannot be marshalled.
      */
-    public void toFile ( File confDir ) throws IOException, JAXBException {
+    public void toFile( File confDir ) throws IOException, JAXBException {
 
         File dsDir = new File(confDir, DATASOURCES_DIR);
 
@@ -190,7 +188,7 @@ public class DataSources {
      *
      * @param preferencesSet The preferences set.
      */
-    public void updateDefaultsAndValues ( DIIRTPreferences preferencesSet ) {
+    public void updateDefaultsAndValues( DIIRTPreferences preferencesSet ) {
 
         if ( compositeDataSource != null ) {
 
@@ -210,7 +208,7 @@ public class DataSources {
      *
      * @param preferencesSet The preferences set.
      */
-    public void updateValues ( DIIRTPreferences preferencesSet ) {
+    public void updateValues( DIIRTPreferences preferencesSet ) {
 
         if ( compositeDataSource != null ) {
 
