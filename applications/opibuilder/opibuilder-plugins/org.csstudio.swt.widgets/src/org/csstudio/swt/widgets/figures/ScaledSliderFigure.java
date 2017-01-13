@@ -132,8 +132,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
             }
         });
 
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
         addKeyListener(new KeyListener() {
 
                 public void keyPressed(KeyEvent ke) {
