@@ -19,7 +19,7 @@ Checkstyle configuration that checks the sun coding conventions.
       <property name="severity" value="warning"/>
     </module>
     <module name="UnusedImports">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="error"/>
       <property name="processJavadoc" value="true"/>
     </module>
     <module name="MissingOverride">

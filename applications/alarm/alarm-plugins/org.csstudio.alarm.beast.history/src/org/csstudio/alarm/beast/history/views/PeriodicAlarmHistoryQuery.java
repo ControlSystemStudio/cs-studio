@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.jobs.Job;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 /**

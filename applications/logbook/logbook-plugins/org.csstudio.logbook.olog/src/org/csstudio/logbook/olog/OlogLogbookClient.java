@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.logbook.Attachment;

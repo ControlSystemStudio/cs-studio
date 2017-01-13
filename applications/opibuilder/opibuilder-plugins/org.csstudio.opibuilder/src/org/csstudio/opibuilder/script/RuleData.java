@@ -253,9 +253,9 @@ public class RuleData implements IAdaptable{
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if(adapter == IWorkbenchAdapter.class)
-            return new IWorkbenchAdapter() {
+            return adapter.cast(new IWorkbenchAdapter() {
 
                 @Override
                 public Object getParent(Object o) {
@@ -277,7 +277,7 @@ public class RuleData implements IAdaptable{
                 public Object[] getChildren(Object o) {
                     return new Object[0];
                 }
-            };
+            });
 
         return null;
     }
