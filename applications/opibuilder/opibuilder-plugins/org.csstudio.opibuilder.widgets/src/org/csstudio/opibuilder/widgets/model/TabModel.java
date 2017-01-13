@@ -100,6 +100,7 @@ public class TabModel extends AbstractContainerModel {
         addProperty(new IntegerProperty(PROP_MINIMUM_TAB_HEIGHT, "Minimum Tab Height",
                 WidgetPropertyCategory.Display, 10, 10, 1000));
         setPropertyVisible(PROP_FONT, false);
+        setPropertyVisible(PROP_FONT_PIXELS, false);
         addTabsProperties();
     }
 

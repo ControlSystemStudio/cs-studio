@@ -49,7 +49,6 @@ import org.csstudio.opibuilder.util.BOYPVFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
@@ -80,6 +79,9 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.progress.UIJob;
@@ -281,6 +283,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
                 getWidgetModel().getName());
     }
+
+    public Font calculateFont() {
+        Font font = getWidgetModel().getFont().getSWTFont();
+        boolean pixels = getWidgetModel().getFontPixels();
+        if (pixels) {
+            FontData fontData = font.getFontData()[0];
+            int configuredSize = fontData.getHeight();
+            int heightInPoints = (configuredSize * 72) / Display.getDefault().getDPI().y;
+            fontData.setHeight(heightInPoints);
+            font = new Font(font.getDevice(), fontData);
+        }
+        return font;
+    }
+
 
     protected ConnectionHandler createConnectionHandler() {
         return new ConnectionHandler(this);
@@ -536,7 +552,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                     .getColor(getWidgetModel().getForegroundColor()));
 
         if (allPropIds.contains(AbstractWidgetModel.PROP_FONT))
-            figure.setFont(getWidgetModel().getFont().getSWTFont());
+            figure.setFont(calculateFont());
 
         if (allPropIds.contains(AbstractWidgetModel.PROP_VISIBLE))
             figure.setVisible(getExecutionMode() == ExecutionMode.RUN_MODE ? getWidgetModel()
@@ -642,11 +658,12 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
             @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
-                figure.setFont(((OPIFont) newValue).getSWTFont());
+                figure.setFont(calculateFont());
                 return false;
             }
         };
         setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT_PIXELS, fontHandler);
 
         IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
             @Override

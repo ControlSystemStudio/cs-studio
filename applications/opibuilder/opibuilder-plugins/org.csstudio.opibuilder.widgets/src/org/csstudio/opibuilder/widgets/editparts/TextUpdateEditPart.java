@@ -85,6 +85,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
         labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
         labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
         labelFigure.setRotate(widgetModel.getRotationAngle());
+        labelFigure.setFontPixels(widgetModel.getFontPixels());
     }
 
     /**

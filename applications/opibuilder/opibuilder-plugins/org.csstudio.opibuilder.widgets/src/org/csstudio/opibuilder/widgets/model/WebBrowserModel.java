@@ -38,6 +38,7 @@ public class WebBrowserModel extends AbstractWidgetModel {
         addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar",
                 WidgetPropertyCategory.Display, true));
         setPropertyVisible(PROP_FONT, false);
+        setPropertyVisible(PROP_FONT_PIXELS, false);
     }
 
     public String getURL(){

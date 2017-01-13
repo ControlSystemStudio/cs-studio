@@ -56,6 +56,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         labelFigure.setOpaque(!getWidgetModel().isTransparent());
         labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
         labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
+        labelFigure.setFontPixels(getWidgetModel().getFontPixels());
         spinner.setMax(getWidgetModel().getMaximum());
         spinner.setMin(getWidgetModel().getMinimum());
         spinner.setStepIncrement(getWidgetModel().getStepIncrement());
