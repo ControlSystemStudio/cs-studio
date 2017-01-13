@@ -71,9 +71,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     private List<String>  meta = null;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IFigure doCreateFigure() {
         final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
@@ -205,9 +202,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         registerLoadActionsListener();
     }
 
-    /**
-     *
-     */
     private void registerLoadActionsListener() {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             if (getWidgetModel().isActionsFromPV()) {
@@ -267,9 +261,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
@@ -357,9 +348,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                 !actionsFromPV);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int size() {
         // always one sample
         return 1;

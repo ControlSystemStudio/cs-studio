@@ -402,12 +402,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     protected abstract void configureProperties();
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         return null;
     }
-
-
 
     public Set<String> getAllPropertyIDs(){
         return new HashSet<String>(propertyMap.keySet());

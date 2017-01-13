@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
