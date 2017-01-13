@@ -152,7 +152,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         serverPortEditor = new IntegerFieldEditor(PREF_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextGroup);
 
-        serverPortEditor.setValidRange(1024, 65535);
+        serverPortEditor.setValidRange(16384, 65535);
         serverPortEditor.setTextLimit(32);
         serverPortEditor.getTextControl(contextGroup).setLayoutData(createIntegerFieldEditorGridData());
 

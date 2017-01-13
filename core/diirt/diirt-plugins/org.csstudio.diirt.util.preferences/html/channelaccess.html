@@ -82,56 +82,73 @@
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Mode</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Allows to chose between the CAJ/Pure Java implementation of
+                    the JCA library, or the native JNI one, where the operating
+                    system specific binaries for JNI must be installed.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Address&nbsp;List</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    A space-separated list of broadcast address for process
+                    variable name resolution. Each address must be of the form:
+                    <blockquote>
+                        [<i>ip-number</i>]:[<i>port</i>]
+                    </blockquote>
+                    or
+                    <blockquote>
+                        [<i>host-name</i>]:[<i>port</i>]
+                    </blockquote>
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Auto&nbsp;Address&nbsp;List</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Define whether or not the network interfaces should be
+                    discovered at runtime.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Connection&nbsp;Timeout&nbsp;[s]</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    If the context doesn't see a beacon from a server that it is
+                    connected to for Connection Timeout seconds then a
+                    state-of-health message is sent to the server over TCP/IP.
+                    If this state-of-health message isn't promptly replied to
+                    then the context will assume that the server is no longer
+                    present on the network and disconnect.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Beacon&nbsp;Period&nbsp;[s]</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Period in second between two beacon signals.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Repeater&nbsp;Port</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Port number for the repeater to listen to.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Server&nbsp;Port</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Port number for the server to listen to.
                 </td>
             </tr>
             <tr>
                 <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Max&nbsp;Array&nbsp;Size&nbsp;[bytes]</th>
                 <td style="width:6px;"></td>
                 <td style="text-align:left;padding:0px;">
-                    The xxx
+                    Length in bytes of the maximum array size that may pass
+                    through Channel Access.
                 </td>
             </tr>
         </table>
@@ -142,56 +159,71 @@
         <h2><a name="options">Options</a></h2>
         <!-- ====================================================== -->
 
-
-
-        <!--<h1>EPICS Library</h1>
-        This provides the ChannelAccess (CA) client library
-        for accessing Process Variables on EPICS IOCs
-        via the network.
-
-        <h2>Preferences</h2>
-        There are two main items to configure:
-        <ul>
-        <li>JCA Context:<br>
-            There is a pure Java as well as a JNI implementation
-            available.
-            The pure Java version is the default because it is
-            easier to install and should
-            work "out of the box", while the JNI implementation
-            might provide maximum compatibility with existing
-            EPICS installations.
-        </li>
-        <li>addr_list and auto_addr_list:<br>
-            If all CA servers (IOCs) are on the same subnet
-            as the computer running the CSS application,
-            you can stay with the default: Empty addr_list,
-            using auto_addr_list.
-            Otherwise, if you need to access PVs on a gateway or
-            in another subnet, list the IP addresses
-            of IOCs or IOC subnets in the addr_list,
-            and un-check the auto_addr_list.
-            For details on this as well as the remaining settings,
-            refer to the EPICS Channel Access reference manual.
-        </li>
-        </ul>
         <p>
-        Note that changes require a restart of the application,
-        they do not take effect at runtime!
+            The data source itself is configurable through the following
+            parameters:
         </p>
-        <h2>Default Settings</h2>
-        While each user can specify custom settings for each workspace,
-        a site might have some default choices.
-        Your CSS administrator can refer to the file "preferences.ini"
-        inside the org.csstudio.vtype.pv plugin
-        and provide a suitable "plugin_customization.ini" file
-        for your site-specific version of CSS.
 
-        <h2>Installation</h2>
-        When using the 'pure java' version, aka. CAJ,
-        no additional steps should be required.
-        <p>
-        To use the JNI version, you need the operating system specific binaries for JNI.
-        </p>-->
+        <p style="text-align:center;">
+            <img src="images/options.png" alt="Options preferences." width="449" style="vertical-align:top"/>
+        </p>
+
+        <table style="border-style:none;width:100%;">
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Monitor&nbsp;Mask</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    Allows to change what is the mask used for the CA monitor.
+                    The possible values are:
+                    <dl>
+                        <dt><b>Value</b></dt>
+                        <dd>Corresponds to a monitor mask on both VALUE and ALARM;</dd>
+                        <dt><b>Archive</b></dt>
+                        <dd>Corresponds to a monitor mask on LOG;</dd>
+                        <dt><b>Alarm</b></dt>
+                        <dd>Corresponds to a monitor mask on ALARM;</dd>
+                        <dt><b>Custom</b></dt>
+                        <dd>A number corresponding to the mask itself.</dd>
+                    </dl>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Variable&nbsp;Length&nbsp;Array</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    Whether variable length arrays are supported by the client.
+                    Possible values are <b>Auto Detect</b>, <b>Enabled</b> or
+                    <b>Disabled</b>. Auto Detect tries to detect the version of
+                    the client and act accordingly. Auto detection may not work
+                    on JNI implementation.
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">DBE_PROPERTY&nbsp;Supported</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    Whether to subscribe to DBE_PROPERTY to monitor metadata
+                    changes.
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Honor&nbsp;Zero&nbsp;Precision</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    Whether zero precision on numeric metadata should  be used
+                    or disregarded. This may be useful if too many IOCs are not
+                    configured properly.
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Value&nbsp;Only&nbsp;RTYP&nbsp;Monitor</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    Whether .RTYP should be monitored as value only or not.
+                    This is a workaround for old IOCs.
+                </td>
+            </tr>
+        </table>
 
 
 
