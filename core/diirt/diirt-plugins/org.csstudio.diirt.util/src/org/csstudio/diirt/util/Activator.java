@@ -9,8 +9,6 @@ public class Activator implements BundleActivator {
 
     public static final String ID = "org.csstudio.diirt.util";
 
-    private static final String PLATFORM_URI_PREFIX = "platform:";
-
     private static final Logger log = Logger.getLogger(ID);
 
     @Override

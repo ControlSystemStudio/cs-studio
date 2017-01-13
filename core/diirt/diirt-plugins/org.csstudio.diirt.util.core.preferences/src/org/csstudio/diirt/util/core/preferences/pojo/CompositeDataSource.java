@@ -22,12 +22,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.diirt.util.core.preferences.ExceptionUtilities;
 
+
 /**
  * Plain Old Java Object representing the "compositeDataSource" element of a
  * {@code datasources.xml} file.
  * <p>
- * It  allows to set a default data source so that names that do not
- * match the pattern are forwarded to the datasource.</p>
+ * It allows to set a default data source so that names that do not
+ * match the pattern are forwarded to the datasource.
+ * </p>
  *
  * @author Claudio Rosati, European Spallation Source ERIC
  * @version 1.0.0 7 Nov 2016
@@ -36,30 +38,27 @@ import org.csstudio.diirt.util.core.preferences.ExceptionUtilities;
 @XmlType( name = "CompositeDataSource" )
 public class CompositeDataSource {
 
-	@XmlAttribute( name = "defaultDataSource" )
-	public DataSourceProtocol defaultDataSource = null;
+    @XmlAttribute( name = "defaultDataSource" )
+    public DataSourceProtocol defaultDataSource = null;
 
-	@XmlAttribute( name = "delimiter" )
-	public String delimiter = "://";
+    @XmlAttribute( name = "delimiter" )
+    public String delimiter = "://";
 
-	public CompositeDataSource () {
+    public CompositeDataSource ( ) {
     }
 
-	public CompositeDataSource ( DataSourceProtocol defaultDataSource, String delimiter ) {
+    public CompositeDataSource ( DataSourceProtocol defaultDataSource, String delimiter ) {
 
-	    this();
+        this();
 
-	    this.defaultDataSource = defaultDataSource;
-	    this.delimiter = delimiter;
+        this.defaultDataSource = defaultDataSource;
+        this.delimiter = delimiter;
 
-	}
+    }
 
     @Override
     public int hashCode ( ) {
-        return new HashCodeBuilder(17, 37)
-            .append(defaultDataSource)
-            .append(delimiter)
-            .toHashCode();
+        return new HashCodeBuilder(17, 37).append(defaultDataSource).append(delimiter).toHashCode();
     }
 
     @Override
@@ -75,83 +74,70 @@ public class CompositeDataSource {
 
         CompositeDataSource cds = (CompositeDataSource) obj;
 
-        return new EqualsBuilder()
-            .append(defaultDataSource, cds.defaultDataSource)
-            .append(delimiter,         cds.delimiter)
-            .isEquals();
+        return new EqualsBuilder().append(defaultDataSource, cds.defaultDataSource).append(delimiter, cds.delimiter).isEquals();
 
     }
 
     @Override
     public String toString ( ) {
-        return new ToStringBuilder(this)
-            .append("defaultDataSource", defaultDataSource)
-            .append("delimiter",         delimiter)
-            .toString();
+        return new ToStringBuilder(this).append("defaultDataSource", defaultDataSource).append("delimiter", delimiter).toString();
     }
 
     /**
-	 * The possible values for the {@link #defaultDataSource} property.
-	 */
-	@XmlEnum
-	public enum DataSourceProtocol {
+     * The possible values for the {@link #defaultDataSource} property.
+     */
+    @XmlEnum
+    public enum DataSourceProtocol {
 
-		/**
-		 * No data source protocol
-		 */
-		none,
+        /**
+         * No data source protocol
+         */
+        none,
 
-		/**
-		 * Channel Access
-		 */
-		ca,
+        /**
+         * Channel Access
+         */
+        ca,
 
-		/**
-		 * File
-		 */
-		file,
+        /**
+         * File
+         */
+        file,
 
-		/**
-		 * Local
-		 */
-		loc,
+        /**
+         * Local
+         */
+        loc,
 
-		/**
-		 * PV Access
-		 */
-		pva,
+        /**
+         * PV Access
+         */
+        pva,
 
-		/**
-		 * Simulation
-		 */
-		sim,
+        /**
+         * Simulation
+         */
+        sim,
 
-		/**
-		 * System
-		 */
-		sys;
+        /**
+         * System
+         */
+        sys;
 
-	    public static DataSourceProtocol fromString ( String dataSourceProtocol ) {
+        public static DataSourceProtocol fromString ( String dataSourceProtocol ) {
 
-	        DataSourceProtocol dsp = DataSourceProtocol.none;
+            DataSourceProtocol dsp = DataSourceProtocol.none;
 
-	        try {
-	            dsp = DataSourceProtocol.valueOf(dataSourceProtocol);
-	        } catch ( Exception ex ){
-	            DIIRTPreferences.LOGGER.log(
-                    Level.WARNING,
-                    MessageFormat.format(
-                        "Invalid default data source [{0}]\n{1}",
-                        dataSourceProtocol,
-                        ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")
-                    )
-                );
-	        }
+            try {
+                dsp = DataSourceProtocol.valueOf(dataSourceProtocol);
+            } catch ( Exception ex ) {
+                DIIRTPreferences.LOGGER.log(Level.WARNING, MessageFormat.format("Invalid default data source [{0}]\n{1}", dataSourceProtocol, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
+            }
 
-	        return dsp;
+            return dsp;
 
-	    }
+        }
 
-	}
+    }
 
 }
