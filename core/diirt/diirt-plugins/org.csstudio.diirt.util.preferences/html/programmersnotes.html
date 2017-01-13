@@ -20,10 +20,11 @@
 
         <ul style="border-left: 5px solid #51515a;background-color: #f1f1fa;list-style-type: none;padding: 6px 12px;">
             <li><a href="#overview">Overview</a></li>
-            <li><a href="#jca_context">JCA Context</a></li>
-            <li><a href="#options">Options</a></li>
+            <li><a href="#configuration_directory">Configuration Directory</a></li>
+            <li><a href="#data_source_management">Data Source Management</a></li>
+            <li><a href="#accessing_preferences">Accessing Preferences</a></li>
+            <li><a href="#extending_data_sources">Extending Data Sources</a></li>
             <li>&nbsp;</li>
-            <li>&blacktriangleright;<a href="channelaccess.html"><i>Channel Access</i></a></li>
             <li>&blacktriangle;<a href="datasources.html"><i>Data Sources</i></a></li>
         </ul>
 
@@ -33,8 +34,162 @@
         <h2><a name="overview">Overview</a></h2>
         <!-- ====================================================== -->
 
+        <p>
+            CS-Studio CE up to version 4.1.2 had an EPICS preference page, where
+            all the properties were available to be edited.
+        </p>
 
-        valid configuration directory
+        <p style="text-align:center;">
+            <img src="images/epics-properties.png" alt="EPICS preferences." height="350" style="vertical-align:top"/>
+        </p>
+
+        <p>
+            Then it was substituted by configuration files, allowing for more
+            flexible extensions.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/diirt-properties.png" alt="DIIRT preferences." height="350" style="vertical-align:top"/>
+        </p>
+
+        <p>
+            Most users were unhappy of the last change, because unaware of
+            structure of the configuration directory and the content of the
+            XML configuration files.
+            For this reason a new solution was adopted, creating new preference
+            pages to allow direct manipulation of the settings, backed upon the
+            XML configuration files.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/data-sources.png" alt="DIIRT preferences." height="350" style="vertical-align:top"/>
+            <img src="images/channel-access.png" alt="DIIRT preferences." height="350" style="vertical-align:top"/>
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="configuration_directory">Configuration Directory</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            The configuration directory must point to a folder containing a specific
+            structure of sub-folders:
+        </p>
+
+        <ul>
+            <li>A <code>datasources</code> root directory;</li>
+            <li>A <code>datasources.xml</code> file inside that directory;</li>
+            <li>For each data sources (i.e. Channel Access, File, PV Access,
+                etc.) a sub-directory inside the <code>datasources</code> one,
+                containing an XML file (e.g. for Channel Access:
+                <code>ca/ca.xml</code>.</li>
+        </ul>
+
+        <p>
+            The <code>datasources/datasources.xml</code> file contains the
+            default data source to be used when no explicit one is indicated
+            into a PV address, and the default separator to be used.
+        </p>
+
+        <p>
+            The <code>datasources/ca/ca.xml</code> file specifies the parameters
+            for the Channel Access data source.
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="data_source_management">Data Source Management</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            The new data source management merges at startup the XML
+            configuration files with the user's preferences in CS-Studio,
+            creating a temporary configuration set used to initialize the DIIRT
+            communication library.
+        </p>
+
+        <p>
+            Preference panels in CS-Studio will show the content of the
+            temporary configuration set, and save it as CS-Studio preferences.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/data-source-management.png" alt="Data Source management." height="400" style="vertical-align:top"/>
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="accessing_preferences">Accessing Preferences</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            To access the preferences from code the following must be done:
+        </p>
+
+        <ul>
+            <li>
+                Add <code>org.csstudio.diirt.util.core.preferences</code> to
+                your project's dependencies.
+            </li>
+            <li>
+                Use <code>org.csstudio.diirt.util.core.preferences.DIIRTPreferences.get()</code>
+                to obtain the reference to the preferences manager.
+            </li>
+            <li>
+                Use its public methods to read the preferences. Preference names
+                are accessible as string constants inside the
+                <code>org.csstudio.diirt.util.core.preferences.DIIRTPreferences</code>,
+                <code>org.csstudio.diirt.util.core.preferences.pojo.DataSources</code>, and
+                <code>org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess</code>
+                classes.
+            </li>
+            <li>
+                As an example of how to initialize the DIIRT library, take a look
+                at <code>org.csstudio.diirt.util.DiirtStartup.preWindowOpen()</code>.
+            </li>
+        </ul>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="extending_data_sources">Extending Data Sources</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            Adding a new sub-page inside the Data Sources preference page is
+            straightforward copying the/being inspired by the classes inside
+            the projects/packages cited in the following list.
+        </p>
+
+        <ul>
+            <li>
+                Inside the <code>org.csstudio.diirt.util.core.preferences.pojo</code>
+                (project <code>org.csstudio.diirt.util.core.preferences</code>)
+                package add the JAXB-annotated class(es) corresponding to your
+                sub-page.
+            </li>
+            <li>
+                Add the corresponding JUnit classes inside the
+                <code>org.csstudio.diirt.util.core.preferences.test</code> project.
+            </li>
+            <li>
+                Inside the <code>org.csstudio.diirt.util.preferences.pojo</code>
+                (project <code>org.csstudio.diirt.util.preferences</code>)
+                package add the class(es) implementing your sub-page.
+            </li>
+            <li>
+                Update the <code>org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin</code>
+                correspondingly.
+            </li>
+            <li>
+                Inside the <code>org.csstudio.diirt.util.preferences</code>
+                project add/update the help pages.
+            </li>
+        </ul>
+
 
 
     </body>
