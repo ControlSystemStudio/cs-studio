@@ -8,9 +8,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.nebula.widgets.grid;bundle-version="1.0.0",
  org.csstudio.logbook;bundle-version="3.1.0",
- org.csstudio.ui.util;bundle-version="3.2.0"
+ org.csstudio.ui.util;bundle-version="3.2.0",
+ com.google.guava.base;bundle-version="0.0.0",
+ com.google.guava.collections;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui.extra
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.google.common.base,
- com.google.common.collect
