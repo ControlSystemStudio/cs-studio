@@ -131,7 +131,7 @@ public class FontProperty extends AbstractWidgetProperty {
                 "" + fontData.getHeight()); //$NON-NLS-1$
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
                 "" + fontData.getStyle()); //$NON-NLS-1$
-        fontElement.setAttribute(XML_ATTRIBUTE_FONT_PIXELS, "" + opiFont.getFontPixels());
+        fontElement.setAttribute(XML_ATTRIBUTE_FONT_PIXELS, "" + opiFont.isSizeInPixels());
 
         propElement.addContent(fontElement);
     }
@@ -162,7 +162,7 @@ public class FontProperty extends AbstractWidgetProperty {
                 }
                 if (heightInPixels != null) {
                     boolean inPixels = Boolean.parseBoolean(heightInPixels);
-                    font.setFontPixels(inPixels);
+                    font.setSizeInPixels(inPixels);
                 }
                 return font;
             }

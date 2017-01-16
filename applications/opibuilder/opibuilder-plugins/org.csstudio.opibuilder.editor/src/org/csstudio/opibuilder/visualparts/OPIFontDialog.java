@@ -56,9 +56,9 @@ public class OPIFontDialog extends HelpTrayDialog {
         this.title = dialogTitle;
         if(font.isPreDefined())
             this.opiFont = MediaService.getInstance().getOPIFont(
-                    font.getFontMacroName(), font.getFontData(), font.getFontPixels());
+                    font.getFontMacroName(), font.getFontData(), font.isSizeInPixels());
         else
-            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.getFontPixels());
+            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.isSizeInPixels());
     }
 
     /**
@@ -120,7 +120,7 @@ public class OPIFontDialog extends HelpTrayDialog {
                 FontData fontdata = dialog.open();
                 if(fontdata != null){
                     opiFont = MediaService.getInstance().getOPIFont(fontdata);
-                    opiFont.setFontPixels(checkbox.getSelection());
+                    opiFont.setSizeInPixels(checkbox.getSelection());
                     preDefinedFontsViewer.setSelection(null);
                     outputTextLabel.setText(opiFont.getFontMacroName());
                     outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
@@ -130,11 +130,11 @@ public class OPIFontDialog extends HelpTrayDialog {
         });
 
         checkbox.setText("Interpret font height as pixels");
-        checkbox.setSelection(opiFont.getFontPixels());
+        checkbox.setSelection(opiFont.isSizeInPixels());
         checkbox.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                opiFont.setFontPixels(checkbox.getSelection());
+                opiFont.setSizeInPixels(checkbox.getSelection());
                 outputTextLabel.setText(opiFont.getFontMacroName());
                 outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
                 getShell().layout(true, true);
@@ -217,7 +217,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
             opiFont = (OPIFont)selection.getFirstElement();
-            opiFont.setFontPixels(checkbox.getSelection());
+            opiFont.setSizeInPixels(checkbox.getSelection());
             outputTextLabel.setText(opiFont.getFontMacroName());
             outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
             getShell().layout(true, true);

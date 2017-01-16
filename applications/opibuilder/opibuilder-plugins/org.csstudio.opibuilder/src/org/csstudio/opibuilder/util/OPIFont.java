@@ -32,11 +32,11 @@ public class OPIFont{
      * and use the font size to determine the number of vertical
      * pixels used in rendering the text.
      */
-    private boolean heightInPixels = false;
+    private boolean sizeInPixels = false;
 
     /*
      * All constructors are package-private to allow access only by MediaService.
-     * When heightInPixels is provided, ensure that the rawFontData is scaled back
+     * When sizeInPixels is provided, ensure that the rawFontData is scaled back
      * to the equivalent in points if necessary.
      */
 
@@ -52,14 +52,14 @@ public class OPIFont{
         preDefined = false;
     }
 
-    OPIFont(String name, FontData fontData, boolean heightInPixels) {
-        this(name, scaleFontData(fontData, heightInPixels));
-        this.heightInPixels = heightInPixels;
+    OPIFont(String name, FontData fontData, boolean sizeInPixels) {
+        this(name, scaleFontData(fontData, sizeInPixels));
+        this.sizeInPixels = sizeInPixels;
     }
 
-    OPIFont(FontData fontData, boolean heightInPixels) {
-        this(scaleFontData(fontData, heightInPixels));
-        this.heightInPixels = heightInPixels;
+    OPIFont(FontData fontData, boolean sizeInPixels) {
+        this(scaleFontData(fontData, sizeInPixels));
+        this.sizeInPixels = sizeInPixels;
     }
 
     public OPIFont(OPIFont opiFont) {
@@ -78,11 +78,11 @@ public class OPIFont{
      * If FontData is provided with height in pixels, rescale it and return the
      * 'raw' FontData with height in points.
      * @param fontData  the provided FontData
-     * @param heightInPixels whether the FontData is representing pixels or points
+     * @param sizeInPixels whether the FontData is representing pixels or points
      * @return the rescaled FontData
      */
-    private static FontData scaleFontData(FontData fontData, boolean heightInPixels) {
-        if (heightInPixels) {
+    private static FontData scaleFontData(FontData fontData, boolean sizeInPixels) {
+        if (sizeInPixels) {
             return new FontData(fontData.getName(), pixelsToPoints(fontData.getHeight()), fontData.getStyle());
         } else {
             return fontData;
@@ -111,7 +111,7 @@ public class OPIFont{
 
     /**
      * Returns the height of the font in either fonts or pixels depending
-     * on the value of heightInPixels.
+     * on the value of sizeInPixels.
      *
      * @return the height of the font.
      *
@@ -139,7 +139,7 @@ public class OPIFont{
      */
     public FontData getFontData() {
         int height = rawFontData.getHeight();
-        if (this.heightInPixels) {
+        if (this.sizeInPixels) {
             height = pointsToPixels(height);
         }
         return new FontData(rawFontData.getName(), height, rawFontData.getStyle());
@@ -172,7 +172,7 @@ public class OPIFont{
         this.fontName = fontName;
         OPIFont cachedFont =  MediaService.getInstance().getOPIFont(fontName);
         this.rawFontData = cachedFont.getFontData();
-        this.heightInPixels = cachedFont.getFontPixels();
+        this.sizeInPixels = cachedFont.isSizeInPixels();
         preDefined = true;
     }
 
@@ -187,7 +187,7 @@ public class OPIFont{
         int result = 1;
         result = prime * result + ((rawFontData == null) ? 0 : rawFontData.hashCode());
         result = prime * result + ((fontName == null) ? 0 : fontName.hashCode());
-        result = prime * result + ((this.heightInPixels) ? 0 : 1);
+        result = prime * result + ((this.sizeInPixels) ? 0 : 1);
         return result;
     }
 
@@ -200,7 +200,7 @@ public class OPIFont{
         if (getClass() != obj.getClass())
             return false;
         OPIFont other = (OPIFont) obj;
-        if (other.heightInPixels != heightInPixels) {
+        if (other.sizeInPixels != sizeInPixels) {
             return false;
         }
         if (rawFontData == null) {
@@ -216,12 +216,12 @@ public class OPIFont{
         return true;
     }
 
-    public void setFontPixels(boolean heightInPixels) {
-        this.heightInPixels = heightInPixels;
+    public void setSizeInPixels(boolean sizeInPixels) {
+        this.sizeInPixels = sizeInPixels;
     }
 
-    public boolean getFontPixels() {
-        return heightInPixels;
+    public boolean isSizeInPixels() {
+        return sizeInPixels;
     }
 
 }
