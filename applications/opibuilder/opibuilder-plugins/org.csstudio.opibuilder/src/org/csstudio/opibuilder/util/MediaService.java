@@ -402,7 +402,7 @@ public final class MediaService {
      */
     public OPIFont getOPIFont(String name, FontData fontData) {
         if (fontMap.containsKey(name))
-            return fontMap.get(name);
+            return new OPIFont(fontMap.get(name));
         return new OPIFont(name, fontData);
     }
 

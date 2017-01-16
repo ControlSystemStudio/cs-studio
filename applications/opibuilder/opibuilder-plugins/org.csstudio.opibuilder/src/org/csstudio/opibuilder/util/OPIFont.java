@@ -62,6 +62,10 @@ public class OPIFont{
         this.heightInPixels = heightInPixels;
     }
 
+    public OPIFont(OPIFont opiFont) {
+        this(opiFont.getFontMacroName(), opiFont.rawFontData);
+    }
+
     private static int pointsToPixels(int points) {
         return points * POINTS_PER_INCH / Display.getDefault().getDPI().y;
     }
