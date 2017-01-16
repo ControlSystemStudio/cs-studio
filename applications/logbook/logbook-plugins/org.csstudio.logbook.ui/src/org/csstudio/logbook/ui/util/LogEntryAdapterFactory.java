@@ -20,9 +20,6 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-
 /**
  *
  * An adapter factory from adaption an LogEntry to
@@ -58,7 +55,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
         Pattern pvPattern = Pattern.compile(pvRegex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         Matcher pvMatcher = pvPattern.matcher(logEntry.getText());
         while (pvMatcher.find()) {
-            pvNames.add(pvMatcher.group(1));
+            pvNames.add(pvMatcher.group(1).trim());
         }
 
         if (adapterType == String.class) {
@@ -85,29 +82,17 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
                 return new ProcessVariable(pvNames.iterator().next());
         } else if (adapterType == ProcessVariable[].class) {
             if (pvNames != null && !pvNames.isEmpty())
-                return Collections2.transform(pvNames,
-                        new Function<String, ProcessVariable>() {
-
-                            @Override
-                            public ProcessVariable apply(String pvName) {
-                                return new ProcessVariable(pvName);
-                            }
-
-                        }).toArray(new ProcessVariable[pvNames.size()]);
-        } else if (adapterType == TimestampedPV.class){
+                return pvNames.stream().map((name) -> {
+                    return new ProcessVariable(name);
+                }).toArray(ProcessVariable[]::new);
+        } else if (adapterType == TimestampedPV.class) {
             if (pvNames != null && pvNames.size() == 1)
                 return new TimestampedPV(pvNames.iterator().next(), logEntry.getCreateDate().getTime());
         } else if (adapterType == TimestampedPV[].class) {
             if (pvNames != null && !pvNames.isEmpty())
-                return Collections2.transform(pvNames,
-                        new Function<String, TimestampedPV>() {
-
-                            @Override
-                            public TimestampedPV apply(String pvName) {
-                                return new TimestampedPV(pvName, logEntry.getCreateDate().getTime());
-                            }
-
-                        }).toArray(new TimestampedPV[pvNames.size()]);
+                return pvNames.stream().map((name) -> {
+                    return new TimestampedPV(name, logEntry.getCreateDate().getTime());
+                }).toArray(TimestampedPV[]::new);
         }
         return null;
     }

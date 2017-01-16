@@ -49,11 +49,13 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
         this.plot = plot;
     }
 
-    /** Submit background job to determine value range
+    /** Submit background job to determine value range for y axis for values within the
+     * specified x axis.
      *  @param data {@link PlotDataProvider} with values
+     *  @param x_range {@link AxisRange} covering visible part of plot
      *  @return {@link Future} to {@link ValueRange}
      */
-    public Future<ValueRange> determineValueRange(final PlotDataProvider<XTYPE> data)
+    public Future<ValueRange> determineValueRange(final PlotDataProvider<XTYPE> data, final AxisRange<XTYPE> x_range)
     {
         return thread_pool.submit(new Callable<ValueRange>()
         {
@@ -69,13 +71,16 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     for (int i=0; i<N; ++i)
                     {
                         final PlotDataItem<XTYPE> item = data.get(i);
-                        final double value = item.getValue();
-                        if (! Double.isFinite(value))
-                            continue;
-                        if (value < low)
-                            low = value;
-                        if (value > high)
-                            high = value;
+                        if (x_range.contains(item.getPosition()))
+                        {
+                            final double value = item.getValue();
+                            if (! Double.isFinite(value))
+                                continue;
+                            if (value < low)
+                                low = value;
+                            if (value > high)
+                                high = value;
+                        }
                     }
                 }
                 finally
@@ -89,9 +94,10 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
 
     /** Submit background job to determine value range
      *  @param axis {@link YAxisImpl} for which to determine range
+     *  @param x_axis {@link AxisRange} over which range is to be determined
      *  @return {@link Future} to {@link ValueRange}
      */
-    public Future<ValueRange> determineValueRange(final YAxisImpl<XTYPE> axis)
+    public Future<ValueRange> determineValueRange(final YAxisImpl<XTYPE> axis, final AxisPart<XTYPE> x_axis)
     {
         return thread_pool.submit(new Callable<ValueRange>()
         {
@@ -101,7 +107,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                 // In parallel, determine range of all traces in this axis
                 final List<Future<ValueRange>> ranges = new ArrayList<Future<ValueRange>>();
                 for (Trace<XTYPE> trace : axis.getTraces())
-                    ranges.add(determineValueRange(trace.getData()));
+                    ranges.add(determineValueRange(trace.getData(), x_axis.getValueRange()));
 
                 // Merge the trace ranges into overall axis range
                 double low = Double.MAX_VALUE;
@@ -147,7 +153,6 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
         thread_pool.execute(() ->
         {
             final double GAP = 0.1;
-
             // Arrange all axes so they don't overlap by assigning 1/Nth of
             // the vertical range to each one
             // Determine range of each axes' traces in parallel
@@ -161,7 +166,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                 // As fallback, assume that new range matches old range
                 new_ranges.add(axis.getValueRange());
                 original_ranges.add(axis.getValueRange());
-                ranges.add(determineValueRange(axis));
+                ranges.add(determineValueRange(axis, plot.getXAxis()));
             }
             final int N = y_axes.size();
             for (int i=0; i<N; ++i)
@@ -346,7 +351,10 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
         });
     }
 
-    /** Perform autoscale for all axes that are marked as such */
+    /**
+     * Perform autoscale for all axes that are marked as such.
+     * Autoscale only for the data that is visible on the plot.
+     */
     public void autoscale()
     {
         // Determine range of each axes' traces in parallel
@@ -356,7 +364,7 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
             if (axis.isAutoscale())
             {
                 y_axes.add(axis);
-                ranges.add(determineValueRange(axis));
+                ranges.add(determineValueRange(axis, plot.getXAxis()));
             }
         final int N = y_axes.size();
         for (int i=0; i<N; ++i)
