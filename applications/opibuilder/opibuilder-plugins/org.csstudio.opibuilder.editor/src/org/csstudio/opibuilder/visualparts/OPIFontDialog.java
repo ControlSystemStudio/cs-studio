@@ -46,6 +46,7 @@ public class OPIFontDialog extends HelpTrayDialog {
 
     private OPIFont opiFont;
     private TableViewer preDefinedFontsViewer;
+    private Button checkbox;
     private Label outputTextLabel;
     private String title;
 
@@ -55,9 +56,9 @@ public class OPIFontDialog extends HelpTrayDialog {
         this.title = dialogTitle;
         if(font.isPreDefined())
             this.opiFont = MediaService.getInstance().getOPIFont(
-                    font.getFontMacroName(), font.getFontData());
+                    font.getFontMacroName(), font.getFontData(), font.getFontPixels());
         else
-            this.opiFont = new OPIFont(font.getFontData());
+            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.getFontPixels());
     }
 
     /**
@@ -106,6 +107,8 @@ public class OPIFontDialog extends HelpTrayDialog {
         createLabel(rightComposite, "");
 
         Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
+        checkbox = new Button(rightComposite, SWT.CHECK);
+
         colorDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         colorDialogButton.setText("Choose from Font Dialog");
         colorDialogButton.addSelectionListener(new SelectionAdapter(){
@@ -113,15 +116,28 @@ public class OPIFontDialog extends HelpTrayDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 FontDialog dialog = new FontDialog(Display.getCurrent().getActiveShell());
-                dialog.setFontData(opiFont.getFontData());
+                dialog.setFontData(opiFont.getRawFontData());
                 FontData fontdata = dialog.open();
                 if(fontdata != null){
-                    opiFont = new OPIFont(fontdata);
+                    opiFont = MediaService.getInstance().getOPIFont(fontdata);
+                    opiFont.setFontPixels(checkbox.getSelection());
                     preDefinedFontsViewer.setSelection(null);
                     outputTextLabel.setText(opiFont.getFontMacroName());
-                    outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(fontdata));
+                    outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
                     getShell().layout(true, true);
                 }
+            }
+        });
+
+        checkbox.setText("Interpret font height as pixels");
+        checkbox.setSelection(opiFont.getFontPixels());
+        checkbox.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                opiFont.setFontPixels(checkbox.getSelection());
+                outputTextLabel.setText(opiFont.getFontMacroName());
+                outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
+                getShell().layout(true, true);
             }
         });
 
@@ -137,8 +153,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         outputTextLabel = new Label(group, SWT.None);
         outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         outputTextLabel.setText(opiFont.getFontMacroName());
-        outputTextLabel.setFont(
-                CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
+        outputTextLabel.setFont(opiFont.getSWTFont());
 
         if(opiFont.isPreDefined())
             preDefinedFontsViewer.setSelection(new StructuredSelection(opiFont));
@@ -202,6 +217,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
             opiFont = (OPIFont)selection.getFirstElement();
+            opiFont.setFontPixels(checkbox.getSelection());
             outputTextLabel.setText(opiFont.getFontMacroName());
             outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
             getShell().layout(true, true);

@@ -51,8 +51,8 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
     protected IFigure doCreateFigure() {
         SpinnerFigure spinner = new SpinnerFigure();
         TextFigure labelFigure = spinner.getLabelFigure();
-        labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-                getWidgetModel().getFont().getFontData()));
+        labelFigure.setFont(getWidgetModel().getFont().getSWTFont());
+        labelFigure.setFontPixels(getWidgetModel().getFont().getFontPixels());
         labelFigure.setOpaque(!getWidgetModel().isTransparent());
         labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
         labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
