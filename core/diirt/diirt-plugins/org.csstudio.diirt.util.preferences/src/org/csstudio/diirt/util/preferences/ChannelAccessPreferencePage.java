@@ -156,7 +156,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         serverPortEditor = new IntegerFieldEditor(PREF_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextInnerGroup);
 
-        serverPortEditor.setValidRange(16384, 65535);
+        serverPortEditor.setValidRange(1024, 65535);
         serverPortEditor.setTextLimit(32);
         serverPortEditor.getTextControl(contextInnerGroup).setLayoutData(createIntegerFieldEditorGridData());
 
@@ -166,7 +166,7 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         maxArraySizeEditor = new IntegerFieldEditor(PREF_MAX_ARRAY_SIZE, Messages.CAPP_maxArraySizeSpinnerCaption_text, contextInnerGroup);
 
-        maxArraySizeEditor.setValidRange(1024, 524288);
+        maxArraySizeEditor.setValidRange(16384, 524288);
         maxArraySizeEditor.setTextLimit(32);
         maxArraySizeEditor.getTextControl(contextInnerGroup).setLayoutData(createIntegerFieldEditorGridData());
 
