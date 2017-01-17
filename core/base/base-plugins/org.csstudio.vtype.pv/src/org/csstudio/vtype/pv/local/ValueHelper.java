@@ -134,17 +134,21 @@ public class ValueHelper
         return false;
     }
 
-    /** @param items Items from <code>splitInitialItems</code>
+    /** @param items Items from <code>splitInitialItems</code>, include enum index and labels
      *  @return All items as strings, surrounding quotes removed, un-escaping quotes
      */
-    public static List<String> getInitialStrings(List<String> items)
+    private static List<String> getInitialStrings(List<String> items)
     {
-        final List<String> strings = new ArrayList<>(items.size());
-        for (String item : items)
+        final List<String> strings = new ArrayList<>(items.size()-1);
+        // Skip first item (enum index)
+        for (int i=1; i<items.size(); ++i)
+        {
+            final String item = items.get(i);
             if (item.startsWith("\""))
                 strings.add(item.substring(1, item.length()-1).replace("\\\"", "\""));
             else
                 strings.add(item);
+        }
         return strings;
     }
 
@@ -212,7 +216,7 @@ public class ValueHelper
             final int initial;
             try
             {
-                initial = Integer.parseInt(items.remove(0));
+                initial = Integer.parseInt(items.get(0));
             }
             catch (NumberFormatException ex)
             {
@@ -295,7 +299,7 @@ public class ValueHelper
         if (type == VDoubleArray.class)
         {   // Pass double[]
             if (new_value instanceof double[])
-                return ValueFactory.toVType((double[]) new_value);
+                return ValueFactory.toVType(new_value);
             // Pass List
             if (new_value instanceof List)
             {
