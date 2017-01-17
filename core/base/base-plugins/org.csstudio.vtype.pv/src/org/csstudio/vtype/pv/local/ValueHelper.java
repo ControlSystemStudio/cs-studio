@@ -299,7 +299,7 @@ public class ValueHelper
         if (type == VDoubleArray.class)
         {   // Pass double[]
             if (new_value instanceof double[])
-                return ValueFactory.toVType(new_value);
+                return ValueFactory.toVType((double[]) new_value);
             // Pass List
             if (new_value instanceof List)
             {
