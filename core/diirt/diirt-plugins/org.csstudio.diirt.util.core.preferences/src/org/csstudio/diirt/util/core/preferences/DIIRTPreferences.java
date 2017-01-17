@@ -720,7 +720,7 @@ public final class DIIRTPreferences {
 
     }
 
-    private interface DIIRTPreferencesSingleInstance {
+    private static class DIIRTPreferencesSingleInstance {
         static final DIIRTPreferences INSTANCE = new DIIRTPreferences();
     }
 

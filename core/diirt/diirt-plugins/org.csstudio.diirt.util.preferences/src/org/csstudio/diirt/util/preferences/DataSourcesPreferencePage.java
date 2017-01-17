@@ -77,7 +77,8 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
 
     private static String lastPath = System.getProperty("user.home");
 
-    private Group                cdsGroup;
+    private Composite            cdsInnerGroup;
+    private Group                cdsOuterGroup;
     private DirectoryFieldEditor directoryEditor;
     private ComboFieldEditor     defaultDataSourceEditor;
     private StringFieldEditor    delimiterEditor;
@@ -151,24 +152,26 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             }
         });
 
-        cdsGroup = new Group(container, SWT.NONE);
+        cdsOuterGroup = new Group(container, SWT.NONE);
 
-        cdsGroup.setText(Messages.DSPP_cdsGroup_text);
-        cdsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        cdsOuterGroup.setText(Messages.DSPP_cdsGroup_text);
+        cdsOuterGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        cdsOuterGroup.setLayout(new GridLayout());
 
-        GridLayout cdsGroupLayout = new GridLayout();
+        cdsInnerGroup = new Composite(cdsOuterGroup, SWT.DOUBLE_BUFFERED);
 
-        cdsGroup.setLayout(cdsGroupLayout);
+        cdsInnerGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        cdsInnerGroup.setLayout(new GridLayout());
 
-        defaultDataSourceEditor = new ComboFieldEditor(PREF_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, AVAILABLE_DATA_SOURCES, cdsGroup);
+        defaultDataSourceEditor = new ComboFieldEditor(PREF_DEFAULT, Messages.DSPP_defaultDataSourceCaption_text, AVAILABLE_DATA_SOURCES, cdsInnerGroup);
 
-        addField(defaultDataSourceEditor, cdsGroup, true, () -> store.getDefaultString(PREF_DEFAULT), () -> store.getString(PREF_DEFAULT));
+        addField(defaultDataSourceEditor, cdsInnerGroup, true, () -> store.getDefaultString(PREF_DEFAULT), () -> store.getString(PREF_DEFAULT));
 
-        delimiterEditor = new StringFieldEditor(PREF_DELIMITER, Messages.DSPP_delimiterCaption_text, cdsGroup);
+        delimiterEditor = new StringFieldEditor(PREF_DELIMITER, Messages.DSPP_delimiterCaption_text, cdsInnerGroup);
 
-        delimiterEditor.getTextControl(cdsGroup).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        delimiterEditor.getTextControl(cdsInnerGroup).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 
-        addField(delimiterEditor, cdsGroup, true, () -> store.getDefaultString(PREF_DELIMITER), () -> store.getString(PREF_DELIMITER));
+        addField(delimiterEditor, cdsInnerGroup, true, () -> store.getDefaultString(PREF_DELIMITER), () -> store.getString(PREF_DELIMITER));
 
         initializeValues(store);
 
