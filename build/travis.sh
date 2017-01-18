@@ -1,30 +1,4 @@
 #!/bin/bash
-set -e
-
-while [[ $# -gt 0 ]]
-do
-key="$1"
-
-case $key in
-    -c|--core)
-    CORE=true
-    shift # past argument
-    ;;
-    -a|--applications)
-    APPLICATIONS=true
-    shift # past argument
-    ;;
-    --default)
-    CORE=true
-    APPLICATIONS=true
-    ;;
-    *)
-            # unknown option
-    ;;
-esac
-shift # past argument or value
-done
-
 
 function doCompile {
   if [ "$CORE" = true ] ; then
@@ -59,6 +33,31 @@ echo $REPO
 echo $REPO_ORG
 echo $SHA
 
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    -c|--core)
+    CORE=true
+    shift # past argument
+    ;;
+    -a|--applications)
+    APPLICATIONS=true
+    shift # past argument
+    ;;
+    --default)
+    CORE=true
+    APPLICATIONS=true
+    ;;
+    *)
+            # unknown option
+    ;;
+  esac
+  shift # past argument or value
+done
+
+echo "CORE=${CORE}"
+echo "APP=${APPLICATIONS}"
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$REPO_ORG" == "ControlSystemStudio" ] && ([[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+\.x ]] || [ "$TRAVIS_BRANCH" == "master" ]); then
     echo "Deploying"
