@@ -134,21 +134,17 @@ public class ValueHelper
         return false;
     }
 
-    /** @param items Items from <code>splitInitialItems</code>, include enum index and labels
+    /** @param items Items from <code>splitInitialItems</code>
      *  @return All items as strings, surrounding quotes removed, un-escaping quotes
      */
     private static List<String> getInitialStrings(List<String> items)
     {
-        final List<String> strings = new ArrayList<>(items.size()-1);
-        // Skip first item (enum index)
-        for (int i=1; i<items.size(); ++i)
-        {
-            final String item = items.get(i);
+        final List<String> strings = new ArrayList<>(items.size());
+        for (String item : items)
             if (item.startsWith("\""))
                 strings.add(item.substring(1, item.length()-1).replace("\\\"", "\""));
             else
                 strings.add(item);
-        }
         return strings;
     }
 
@@ -222,7 +218,11 @@ public class ValueHelper
             {
                 throw new Exception("Cannot parse enum index", ex);
             }
-            final List<String> labels = getInitialStrings(items);
+            // Preserve original list
+            final List<String> copy = new ArrayList<>(items.size()-1);
+            for (int i=1; i<items.size(); ++i)
+                copy.add(items.get(i));
+            final List<String> labels = getInitialStrings(copy);
             return ValueFactory.newVEnum(initial, labels, ValueFactory.alarmNone(), ValueFactory.timeNow());
         }
 

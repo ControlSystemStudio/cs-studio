@@ -260,7 +260,7 @@ public class LocalPVTest implements PVListener
     @Test
     public void testEnum() throws Exception
     {
-        final PV pv = PVPool.getPV("name<VEnum>(1, \"Nothing\", \"2 Apples\")");
+        PV pv = PVPool.getPV("name<VEnum>(1, \"Nothing\", \"2 Apples\")");
         System.out.println(pv.read());
         assertThat(pv.read(), instanceOf(VEnum.class));
         assertThat(((VEnum)pv.read()).getValue(), equalTo("2 Apples"));
@@ -274,6 +274,23 @@ public class LocalPVTest implements PVListener
         System.out.println(pv.read());
         assertThat(pv.read(), instanceOf(VEnum.class));
         assertThat(((VEnum)pv.read()).getIndex(), equalTo(1));
+
+        PVPool.releasePV(pv);
+
+
+        // Request PV several times with different initializers
+        pv = PVPool.getPV("name<VEnum>(1, One, Two)");
+        System.out.println(pv.read());
+
+        // Creates a warning "was initialized as .. and is now requested as .."
+        PV pv2 = PVPool.getPV("name<VEnum>(0, Uno, Due)");
+        System.out.println(pv2.read());
+        // The value stays with the original enum index and labels
+        assertThat(pv2.read(), instanceOf(VEnum.class));
+        final VEnum value = (VEnum) pv2.read();
+        assertThat(value.getIndex(), equalTo(1));
+        assertThat(value.getLabels(), equalTo(Arrays.asList("One", "Two")));
+        PVPool.releasePV(pv2);
 
         PVPool.releasePV(pv);
     }
