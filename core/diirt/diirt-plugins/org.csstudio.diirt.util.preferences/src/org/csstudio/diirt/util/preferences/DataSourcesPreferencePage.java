@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -213,7 +214,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.setStringValue(confDir);
         directoryEditor.setFilterPath(new File(confDir).getParentFile());
 
-        if ( Files.exists(Paths.get(confDir)) ) {
+        if ( StringUtils.isNoneBlank(confDir) && Files.exists(Paths.get(confDir)) ) {
             treeViewer.setInput(confDir);
         }
 
