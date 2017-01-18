@@ -146,14 +146,6 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         new Separator(contextInnerGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
-        repeaterPortEditor = new IntegerFieldEditor(PREF_REPEATER_PORT, Messages.CAPP_repeaterPortCaption_text, contextInnerGroup);
-
-        repeaterPortEditor.setValidRange(1024, 65535);
-        repeaterPortEditor.setTextLimit(32);
-        repeaterPortEditor.getTextControl(contextInnerGroup).setLayoutData(createIntegerFieldEditorGridData());
-
-        addField(repeaterPortEditor, contextInnerGroup, true, () -> store.getDefaultString(PREF_REPEATER_PORT), () -> store.getString(PREF_REPEATER_PORT));
-
         serverPortEditor = new IntegerFieldEditor(PREF_SERVER_PORT, Messages.CAPP_serverPortCaption_text, contextInnerGroup);
 
         serverPortEditor.setValidRange(1024, 65535);
@@ -162,11 +154,19 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
 
         addField(serverPortEditor, contextInnerGroup, true, () -> store.getDefaultString(PREF_SERVER_PORT), () -> store.getString(PREF_SERVER_PORT));
 
+        repeaterPortEditor = new IntegerFieldEditor(PREF_REPEATER_PORT, Messages.CAPP_repeaterPortCaption_text, contextInnerGroup);
+
+        repeaterPortEditor.setValidRange(1024, 65535);
+        repeaterPortEditor.setTextLimit(32);
+        repeaterPortEditor.getTextControl(contextInnerGroup).setLayoutData(createIntegerFieldEditorGridData());
+
+        addField(repeaterPortEditor, contextInnerGroup, true, () -> store.getDefaultString(PREF_REPEATER_PORT), () -> store.getString(PREF_REPEATER_PORT));
+
         new Separator(contextInnerGroup).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 2, 1));
 
         maxArraySizeEditor = new IntegerFieldEditor(PREF_MAX_ARRAY_SIZE, Messages.CAPP_maxArraySizeSpinnerCaption_text, contextInnerGroup);
 
-        maxArraySizeEditor.setValidRange(16384, 524288);
+        maxArraySizeEditor.setValidRange(16384, Integer.MAX_VALUE);
         maxArraySizeEditor.setTextLimit(32);
         maxArraySizeEditor.getTextControl(contextInnerGroup).setLayoutData(createIntegerFieldEditorGridData());
 
