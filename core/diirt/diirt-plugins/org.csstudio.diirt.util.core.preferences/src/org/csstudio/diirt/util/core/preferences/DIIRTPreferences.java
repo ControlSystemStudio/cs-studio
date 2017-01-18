@@ -266,9 +266,14 @@ public final class DIIRTPreferences {
 
         try {
             ds = DataSources.fromFile(diirtHome);
+        } catch ( JAXBException | IOException ex ) {
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading datasource.xml [{0}].\n{1}", diirtHome, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
+        }
+
+        try {
             ca = ChannelAccess.fromFile(diirtHome);
         } catch ( JAXBException | IOException ex ) {
-            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading file(s) [{0}].", diirtHome), ex);
+            LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading ca/ca.xml [{0}].\n{1}", diirtHome, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
         }
 
         ds.updateDefaultsAndValues(this);
