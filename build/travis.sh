@@ -1,15 +1,48 @@
 #!/bin/bash
 set -e
 
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -c|--core)
+    CORE=true
+    shift # past argument
+    ;;
+    -a|--applications)
+    APPLICATIONS=true
+    shift # past argument
+    ;;
+    --default)
+    CORE=true
+    APPLICATIONS=true
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+
 function doCompile {
-  mvn clean verify -fcore/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Pcheckstyle
-  mvn clean verify -fapplications/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Dcsstudio.composite.repo=core/p2repo -Pcheckstyle
+  if [ "$CORE" = true ] ; then
+    mvn clean verify -fcore/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Pcheckstyle
+  fi
+  if [ "$APPLICATIONS" = true ] ; then
+    mvn clean verify -fapplications/pom.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Dcsstudio.composite.repo=core/p2repo -Pcheckstyle
+  fi
 }
 
 function doCompileWithDeploy {
   echo "<settings><servers><server><id>s3.site</id><username>\${env.S3USER}</username><password>\${env.S3PASS}</password></server></servers></settings>" > ~/settings.xml
-  mvn clean verify -fcore/pom.xml --settings ~/settings.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -PuploadRepo
-  mvn clean verify -fapplications/pom.xml --settings ~/settings.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Dcsstudio.composite.repo=core/p2repo -PuploadRepo
+  if [ "$CORE" = true ] ; then
+    mvn clean verify -fcore/pom.xml --settings ~/settings.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -PuploadRepo
+  fi
+  if [ "$APPLICATIONS" = true ] ; then
+    mvn clean verify -fapplications/pom.xml --settings ~/settings.xml -Declipse.p2.mirrors=false -Dtycho.localArtifacts=ignore -Dcsstudio.composite.repo=core/p2repo -PuploadRepo
+  fi
 }
 
 function catTests {
