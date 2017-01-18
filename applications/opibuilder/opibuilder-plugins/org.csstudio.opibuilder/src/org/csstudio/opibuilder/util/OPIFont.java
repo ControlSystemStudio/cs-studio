@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -44,12 +45,14 @@ public class OPIFont{
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
+        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
     OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
+        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
     OPIFont(String name, FontData fontData, boolean sizeInPixels) {
