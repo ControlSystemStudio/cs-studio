@@ -110,9 +110,8 @@ public class OPIFontDialog extends HelpTrayDialog {
         GridData gd2 = new GridData();
         gd2.grabExcessVerticalSpace = true;
         spacer2.setLayoutData(gd2);
-        Label pixelsLabel = new Label(rightComposite, SWT.NONE);
-        pixelsLabel.setText("Font size:");
         Group radioGroup = new Group(rightComposite, SWT.NONE);
+        radioGroup.setText("Font size");
         GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         radioGroup.setLayout(layout);
