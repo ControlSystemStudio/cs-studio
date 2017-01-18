@@ -1,6 +1,13 @@
-# whitelist
+# whitelist 
+language: java    
 
-langauge: java
+cache:  
+  directories:  
+   - $HOME/.m2  
+
+env:  
+  global:  
+   - DISPLAY=:99.0
 
 sudo: false
 
