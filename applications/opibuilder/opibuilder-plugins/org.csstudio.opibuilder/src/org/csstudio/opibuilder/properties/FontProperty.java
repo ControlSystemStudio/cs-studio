@@ -91,7 +91,8 @@ public class FontProperty extends AbstractWidgetProperty {
         Object acceptedValue = value;
 
         if(value instanceof OPIFont){
-            if(((OPIFont)value).getFontData() == null)
+            // Avoid getFontData() as this method can be called from off the UI thread.
+            if(((OPIFont)value).getRawFontData() == null)
                 acceptedValue = null;
         }else if (value instanceof FontData) {
             acceptedValue = MediaService.getInstance().getOPIFont((FontData)value);

@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The dedicated font type which supports predefined font name in OPI builder font file.
- * If the font name doesn't exist in the color file, the system font will be adopted.
+ * If the font name doesn't exist in the font file, the system font will be adopted.
  * @author Xihui Chen
  *
  */
@@ -134,7 +134,8 @@ public class OPIFont{
 
     /**
      * Return the FontData, scaled according to whether its size represents
-     * pixels or points.
+     * pixels or points.  This may be called only on the UI thread, since
+     * it uses the SWT Display to do the scaling.
      * @return the scaled FontData
      */
     public FontData getFontData() {
