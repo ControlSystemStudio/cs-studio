@@ -63,9 +63,6 @@ public class OPIFontDialog extends HelpTrayDialog {
             this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.isSizeInPixels());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void configureShell(final Shell shell) {
         super.configureShell(shell);
@@ -105,8 +102,9 @@ public class OPIFontDialog extends HelpTrayDialog {
         gd.widthHint = 250;
         rightComposite.setLayoutData(gd);
 
+        @SuppressWarnings("unused")  // This label doesn't need to do anything but exist.
         Label spacer = new Label(rightComposite, SWT.NONE);
-        Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
+        Button fontDialogButton = new Button(rightComposite, SWT.PUSH);
         // Push radioButtons to bottom of rightComposite.
         Label spacer2 = new Label(rightComposite, SWT.NONE);
         GridData gd2 = new GridData();
@@ -126,14 +124,13 @@ public class OPIFontDialog extends HelpTrayDialog {
         pixelsButton.setSelection(opiFont.isSizeInPixels());
         pointsButton.setSelection(!opiFont.isSizeInPixels());
 
-        colorDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        colorDialogButton.setText("Choose from Font Dialog");
-        colorDialogButton.addSelectionListener(new SelectionAdapter(){
-            @SuppressWarnings("deprecation")
+        fontDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        fontDialogButton.setText("Choose from Font Dialog");
+        fontDialogButton.addSelectionListener(new SelectionAdapter(){
             @Override
             public void widgetSelected(SelectionEvent e) {
                 FontDialog dialog = new FontDialog(Display.getCurrent().getActiveShell());
-                dialog.setFontData(opiFont.getRawFontData());
+                dialog.setFontList(new FontData[] {opiFont.getRawFontData()});
                 FontData fontdata = dialog.open();
                 if(fontdata != null){
                     opiFont = MediaService.getInstance().getOPIFont(fontdata);
@@ -272,9 +269,6 @@ public class OPIFontDialog extends HelpTrayDialog {
             preDefinedFontsViewer.setInput(
                     MediaService.getInstance().getAllPredefinedFonts());
         }
-
-
     }
-
 
 }
