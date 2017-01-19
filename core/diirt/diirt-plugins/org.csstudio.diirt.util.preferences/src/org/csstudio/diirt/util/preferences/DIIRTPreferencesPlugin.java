@@ -30,9 +30,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 
@@ -51,6 +53,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     private static boolean                firstAccess = true;
 
     private final PreferenceStore cancelStore = new PreferenceStore();
+    private IPreferenceStore      prefStore   = null;
 
     public static void copyChannelAccess ( IPreferenceStore source, DIIRTPreferences destination ) {
 
@@ -151,7 +154,11 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     @Override
     public IPreferenceStore getPreferenceStore ( ) {
 
-        IPreferenceStore store = super.getPreferenceStore();
+        if ( prefStore == null ) {
+            prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, DIIRTPreferences.QUALIFIER);
+        }
+
+        IPreferenceStore store = prefStore;
 
         if ( firstAccess && store != null ) {
 
