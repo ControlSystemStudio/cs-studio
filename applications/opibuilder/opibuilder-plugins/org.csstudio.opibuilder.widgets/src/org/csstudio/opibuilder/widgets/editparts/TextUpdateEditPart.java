@@ -80,7 +80,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
     protected void initTextFigure(TextFigure labelFigure) {
         labelFigure.setFont(widgetModel.getFont().getSWTFont());
-        labelFigure.setFontPixels(getWidgetModel().getFont().getFontPixels());
+        labelFigure.setFontPixels(getWidgetModel().getFont().isSizeInPixels());
         labelFigure.setOpaque(!widgetModel.isTransparent());
         labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
         labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());

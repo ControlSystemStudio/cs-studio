@@ -5,7 +5,6 @@
     <artifactId>platform-features</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.core.platform.rap.feature</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>

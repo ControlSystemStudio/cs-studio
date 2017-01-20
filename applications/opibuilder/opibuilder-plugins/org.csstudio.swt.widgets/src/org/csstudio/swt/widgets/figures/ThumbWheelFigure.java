@@ -190,10 +190,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
             add(down, BorderLayout.BOTTOM);
 
-            // Enable focusing and key operation only in run mode.
+            // Enable key operation only in run mode.
             if (runmode) {
-                setRequestFocusEnabled(true);
-                setFocusTraversable(true);
 
                 // When the user clicks this figure, the focus is requested so that
                 // this widget can get key events.
