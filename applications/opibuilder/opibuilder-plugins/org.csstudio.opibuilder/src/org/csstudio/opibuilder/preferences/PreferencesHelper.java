@@ -67,6 +67,7 @@ public class PreferencesHelper {
     public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style"; //$NON-NLS-1$
     public static final String SHOW_OPI_RUNTIME_STACKS = "show_opi_runtime_stacks"; //$NON-NLS-1$
     public static final String SWITCH_TO_OPI_EDITOR_PERSPECTIVE = "switch_to_opi_editor_perspective"; //$NON-NLS-1$
+    public static final String FONT_DEFAULT_PIXELS_OR_POINTS = "font_default_pixels_or_points";
 
     //The widgets that are hidden from palette.
     public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
@@ -85,17 +86,28 @@ public class PreferencesHelper {
     private static final char ITEM_SEPARATOR = ',';
     private static final char MACRO_SEPARATOR = '=';
 
-    final public static String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
+    public static final String DEFAULT_EMAIL_SENDER="default_email_sender"; //$NON-NLS-1$
 
-    final public static String ABOUT_SHOW_LINKS="about_show_links"; //$NON-NLS-1$
+    public static final String ABOUT_SHOW_LINKS="about_show_links"; //$NON-NLS-1$
+    public static final String PIXELS = "pixels";
+    public static final String POINTS = "points";
 
      /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
     protected static String getString(final String preferenceName)
     {
+        return getString(preferenceName, null);
+    }
+
+    /** @param preferenceName Preference identifier
+     * @param defaultValue default value
+    *  @return String from preference system, or <code>defaultValue</code> if null
+    */
+    protected static String getString(final String preferenceName, final String defaultValue)
+    {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getString(OPIBuilderPlugin.PLUGIN_ID, preferenceName, null, null);
+        return service.getString(OPIBuilderPlugin.PLUGIN_ID, preferenceName, defaultValue, null);
     }
 
     /**Get the color file path from preference store.
@@ -191,6 +203,10 @@ public class PreferencesHelper {
     public static Integer getPulsingAlarmMajorPeriod(){
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PULSING_ALARM_MAJOR_PERIOD, 1500, null);
+    }
+
+    public static boolean isDefaultFontSizeInPixels(){
+        return getString(FONT_DEFAULT_PIXELS_OR_POINTS, POINTS).equals(PIXELS);
     }
 
     /**Get the macros map from preference store.
