@@ -111,9 +111,6 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
         mousePressed = false;
         listeners = new ArrayList<ButtonActionListener>();
 
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
-
         setLayoutManager(new StackLayout());
 
 
