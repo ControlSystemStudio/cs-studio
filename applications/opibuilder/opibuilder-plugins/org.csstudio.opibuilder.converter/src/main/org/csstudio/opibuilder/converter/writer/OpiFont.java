@@ -22,7 +22,7 @@ public class OpiFont extends OpiAttribute {
     private static final int BOLD = 1 << 0;
     private static final int ITALIC = 1 << 1;
 
-    private final double fontScale = 0.76;
+    private final double fontScale = 1.01;
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiFont");
 
@@ -61,6 +61,7 @@ public class OpiFont extends OpiAttribute {
         fontElement.setAttribute("fontName", fontName);
         fontElement.setAttribute("height", height);
         fontElement.setAttribute("style", style);
+        fontElement.setAttribute("pixels", "true");
 
         log.config("Written font property with attributes: " + fontName + ", " + height + ", " + style);
     }
