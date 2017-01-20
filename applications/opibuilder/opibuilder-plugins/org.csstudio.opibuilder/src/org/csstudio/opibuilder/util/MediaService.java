@@ -187,8 +187,8 @@ public final class MediaService {
         final CountDownLatch latch = new CountDownLatch(1);
         Job job = new Job("Load Font File") {
             @Override
-            public IStatus run(IProgressMonitor monitor) {                monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
-
+            public IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask("Connecting to " + fontFilePath, IProgressMonitor.UNKNOWN);
                 loadFontFile(systemFontName.toString());
                 latch.countDown();
                 monitor.done();
@@ -402,7 +402,7 @@ public final class MediaService {
      */
     public OPIFont getOPIFont(String name, FontData fontData) {
         if (fontMap.containsKey(name))
-            return fontMap.get(name);
+            return new OPIFont(fontMap.get(name));
         return new OPIFont(name, fontData);
     }
 

@@ -91,7 +91,8 @@ public class FontProperty extends AbstractWidgetProperty {
         Object acceptedValue = value;
 
         if(value instanceof OPIFont){
-            if(((OPIFont)value).getFontData() == null)
+            // Avoid getFontData() as this method can be called from off the UI thread.
+            if(((OPIFont)value).getRawFontData() == null)
                 acceptedValue = null;
         }else if (value instanceof FontData) {
             acceptedValue = MediaService.getInstance().getOPIFont((FontData)value);
@@ -131,7 +132,7 @@ public class FontProperty extends AbstractWidgetProperty {
                 "" + fontData.getHeight()); //$NON-NLS-1$
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
                 "" + fontData.getStyle()); //$NON-NLS-1$
-        fontElement.setAttribute(XML_ATTRIBUTE_FONT_PIXELS, "" + opiFont.getFontPixels());
+        fontElement.setAttribute(XML_ATTRIBUTE_FONT_PIXELS, "" + opiFont.isSizeInPixels());
 
         propElement.addContent(fontElement);
     }
@@ -160,9 +161,14 @@ public class FontProperty extends AbstractWidgetProperty {
                 } else {
                     font = MediaService.getInstance().getOPIFont(fontElement.getText());
                 }
+                // If this was serialised without a height in pixels attribute, it was from
+                // an older verison of BOY where points were assumed.  To ensure the screens are not
+                // changed when re-saved, make this explicit.
                 if (heightInPixels != null) {
                     boolean inPixels = Boolean.parseBoolean(heightInPixels);
-                    font.setFontPixels(inPixels);
+                    font.setSizeInPixels(inPixels);
+                } else {
+                    font.setSizeInPixels(false);
                 }
                 return font;
             }

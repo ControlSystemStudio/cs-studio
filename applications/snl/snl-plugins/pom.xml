@@ -7,7 +7,6 @@
     <artifactId>snl</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>snl-plugins</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 

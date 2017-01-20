@@ -7,7 +7,6 @@
     <artifactId>base-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <version>4.0.4-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
