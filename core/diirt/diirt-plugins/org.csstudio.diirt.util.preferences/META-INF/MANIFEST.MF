@@ -9,6 +9,9 @@ Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.startup;bundle-version="3.2.1",
- org.csstudio.diirt.util;bundle-version="1.0.0"
+ org.apache.commons.io,
+ org.apache.commons.lang3,
+ org.csstudio.diirt.util.core.preferences
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Import-Package: org.csstudio.utility.product
+Bundle-Activator: org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin
