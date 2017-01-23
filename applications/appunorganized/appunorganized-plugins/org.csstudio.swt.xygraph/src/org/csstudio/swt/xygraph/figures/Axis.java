@@ -110,7 +110,6 @@ public class Axis extends LinearScale{
     private RGB colorRGB;
     private RGB majorGridColorRGB;
 
-
     public FontData getTitleFontData() {
         return titleFontData;
     }
@@ -181,7 +180,7 @@ public class Axis extends LinearScale{
     @Override
     protected void layout() {
         super.layout();
-          Rectangle area = getClientArea();
+        Rectangle area = getClientArea();
         if (isHorizontal() && getTickLablesSide() == LabelSide.Primary) {
             mousePositionLabel.setBounds(new Rectangle(area.x, area.y
                     + LinearScaleTickMarks.MAJOR_TICK_LENGTH
@@ -779,7 +778,9 @@ public class Axis extends LinearScale{
             t1 = temp.getLower() - m;
             t2 = temp.getUpper() - m;
         }
+        setScrollingDisabled(false);
         setRange(t1, t2);
+        setScrollingDisabled(true);
     }
 
     /** Zoom axis
@@ -804,7 +805,18 @@ public class Axis extends LinearScale{
             t1 = getRange().getLower() + r1 * factor * l;
             t2 = getRange().getUpper() - r2 * factor * l;
         }
+        setScrollingDisabled(false);
         setRange(t1, t2, true);
+        setScrollingDisabled(true);
+    }
+
+    public void setScrollingDisabled(boolean isScrollingDisabled_) {
+        this.autoScale = !isScrollingDisabled_;
+        setRange(getRange());
+    }
+
+    public boolean isScrollingDisabled() {
+        return !this.autoScale;
     }
 
     /**
@@ -1010,16 +1022,15 @@ public class Axis extends LinearScale{
             final double center = getPositionValue(pixel_pos, false);
             switch (zoomType)
             {
-            case ZOOM_IN:              zoomInOut(center, ZOOM_RATIO); break;
-            case ZOOM_IN_HORIZONTALLY: zoomInOut(center, ZOOM_RATIO); break;
-            case ZOOM_IN_VERTICALLY:   zoomInOut(center, ZOOM_RATIO); break;
-            case ZOOM_OUT:             zoomInOut(center, -ZOOM_RATIO); break;
-            case ZOOM_OUT_HORIZONTALLY:zoomInOut(center, -ZOOM_RATIO); break;
-            case ZOOM_OUT_VERTICALLY:  zoomInOut(center, -ZOOM_RATIO); break;
-            default:                   // NOP
+                case ZOOM_IN:              zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_IN_HORIZONTALLY: zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_IN_VERTICALLY:   zoomInOut(center, ZOOM_RATIO); break;
+                case ZOOM_OUT:             zoomInOut(center, -ZOOM_RATIO); break;
+                case ZOOM_OUT_HORIZONTALLY:zoomInOut(center, -ZOOM_RATIO); break;
+                case ZOOM_OUT_VERTICALLY:  zoomInOut(center, -ZOOM_RATIO); break;
+                default:                   // NOP
             }
         }
     }
-
 
 }
