@@ -17,12 +17,13 @@ import org.w3c.dom.Element;
  */
 public class OpiFont extends OpiAttribute {
 
+    /** Scaling factor to convert EDM font sizes into BOY **/
+    static final double FONT_SCALE = 1.01;
+
     // Definitions copied from org.eclipse.swt.SWT class.
     private static final int NORMAL = 0;
     private static final int BOLD = 1 << 0;
     private static final int ITALIC = 1 << 1;
-
-    private final double fontScale = 1.01;
 
     private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiFont");
 
@@ -45,7 +46,7 @@ public class OpiFont extends OpiAttribute {
 
         String fontName = f.getName();
 
-        int size = (int) (f.getSize() * fontScale);
+        int size = (int) (f.getSize() * FONT_SCALE);
         String height = String.valueOf(size);
 
         // Style conversion copied from org.eclipse.swt.SWT class.
