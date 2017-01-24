@@ -184,11 +184,24 @@ public class XMLUtil {
      */
     public static void fillDisplayModelFromInputStream(
             final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
-        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>());
+        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), null);
+    }
+
+    /**Fill the DisplayModel from an OPI file inputstream
+     * @param inputStream the inputstream will be closed in this method before return.
+     * @param displayModel. The {@link DisplayModel} to be filled.
+     * @param display the display in UI Thread.
+     * @throws Exception
+     */
+    public static void fillDisplayModelFromInputStream(
+            final InputStream inputStream, final DisplayModel displayModel, Display display,
+            final MacrosInput macrosInput_) throws Exception{
+        fillDisplayModelFromInputStreamSub(inputStream, displayModel, display, new ArrayList<IPath>(), macrosInput_);
     }
 
     private static void fillDisplayModelFromInputStreamSub(
-            final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace) throws Exception{
+            final InputStream inputStream, final DisplayModel displayModel, Display display, List<IPath> trace,
+            final MacrosInput macrosInput_) throws Exception{
 
         if(display == null){
             display = Display.getCurrent();
@@ -232,7 +245,7 @@ public class XMLUtil {
 
         Element root = inputStreamToXML(inputStream);
         if(root != null){
-             XMLElementToWidgetSub(root, displayModel, trace);
+             XMLElementToWidgetSub(root, displayModel, trace, macrosInput_);
 
              //check version
              if(compareVersion(displayModel.getBOYVersion(),
@@ -275,7 +288,6 @@ public class XMLUtil {
         fillDisplayModelFromInputStream(inputStream, displayModel, null);
     }
 
-
     /**Construct widget model from XML element. Sometimes it includes filling LinkingContainer and/or construct Connection model between widgets.
      * @param element
      * @param displayModel the root display model. If root of the element is a display, use this display model as root model
@@ -284,10 +296,11 @@ public class XMLUtil {
      * @throws Exception
      */
     public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
-        return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> ());
+        return XMLElementToWidgetSub(element, displayModel, new ArrayList<IPath> (), null);
     }
 
-    private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace) throws Exception{
+    private static AbstractWidgetModel XMLElementToWidgetSub(Element element, DisplayModel displayModel, List<IPath> trace,
+            final MacrosInput macrosInput_) throws Exception{
         if(element == null) return null;
 
         AbstractWidgetModel result = null;
@@ -296,7 +309,7 @@ public class XMLUtil {
             result = fillWidgets(element, displayModel);
 
             if(result instanceof AbstractContainerModel)
-                fillLinkingContainersSub((AbstractContainerModel)result, trace);
+                fillLinkingContainersSub((AbstractContainerModel)result, trace, macrosInput_);
             fillConnections(element, displayModel);
 
             return result;
@@ -381,15 +394,16 @@ public class XMLUtil {
      * @throws Exception
      */
     public static void fillLinkingContainers(AbstractContainerModel container) throws Exception {
-        fillLinkingContainersSub(container, new ArrayList<IPath>());
+        fillLinkingContainersSub(container, new ArrayList<IPath>(), null);
     }
 
-    private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace) throws Exception{
+    private static void fillLinkingContainersSub(AbstractContainerModel container, List<IPath> trace,
+            final MacrosInput macrosInput_) throws Exception{
         if(container instanceof AbstractLinkingContainerModel) {
             AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)container;
             List<IPath> tempTrace = new ArrayList<IPath>();
             tempTrace.addAll(trace);
-            fillLinkingContainerSub(linkingContainer, tempTrace);
+            fillLinkingContainerSub(linkingContainer, tempTrace, macrosInput_);
         }
 
         for(AbstractWidgetModel w : container.getAllDescendants()) {
@@ -397,7 +411,7 @@ public class XMLUtil {
                 AbstractLinkingContainerModel linkingContainer = (AbstractLinkingContainerModel)w;
                 List<IPath> tempTrace = new ArrayList<IPath>();
                 tempTrace.addAll(trace);
-                fillLinkingContainerSub(linkingContainer, tempTrace);
+                fillLinkingContainerSub(linkingContainer, tempTrace, macrosInput_);
             }
         }
     }
@@ -460,7 +474,7 @@ public class XMLUtil {
      */
     public static void fillLinkingContainer(final AbstractLinkingContainerModel container)
             throws Exception {
-        fillLinkingContainerSub(container, new ArrayList<IPath>());
+        fillLinkingContainerSub(container, new ArrayList<IPath>(), null);
     }
 
     private static Map<String,String> buildMacroMap(AbstractContainerModel model) {
@@ -475,7 +489,8 @@ public class XMLUtil {
         return macros;
     }
 
-    private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace)
+    private static void fillLinkingContainerSub(final AbstractLinkingContainerModel container, List<IPath> trace,
+            final MacrosInput macrosInput_)
         throws Exception {
 
         if(container == null) return;
@@ -492,6 +507,9 @@ public class XMLUtil {
             IPath path = container.getOPIFilePath();
             if(path != null && !path.isEmpty()) {
                 final Map<String,String> macroMap = PreferencesHelper.getMacros();
+                if(macrosInput_ != null && macrosInput_.getMacrosMap() != null) {
+                    macroMap.putAll(macrosInput_.getMacrosMap());
+                }
                 macroMap.putAll(buildMacroMap(container));
                 String resolvedPath = MacroUtil.replaceMacros(path.toString(), s -> macroMap.get(s));
                 path = ResourceUtil.getPathFromString(resolvedPath);
@@ -501,7 +519,7 @@ public class XMLUtil {
 
                 try
                 {
-                    fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace);
+                    fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace, macrosInput_);
                 }
                 catch (Exception ex)
                 {
@@ -529,7 +547,6 @@ public class XMLUtil {
             }
         }
     }
-
 
     /**Compare version without comparing qualifier.
      * @param v1
