@@ -15,7 +15,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.csstudio</groupId>
   <artifactId>product</artifactId>
-  <version>4.4.1-SNAPSHOT</version>
+  <version>4.5.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- USE MAVEN 3.0 -->
@@ -28,7 +28,7 @@
 		<!-- VERSIONS -->
 		<tycho.version>0.23.1</tycho.version>
 		<tycho-extras.version>0.23.1</tycho-extras.version>
-		<cs-studio.version>4.3</cs-studio.version>
+		<cs-studio.version>4.5</cs-studio.version>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/product/${cs-studio.version}</cs-studio-central.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
