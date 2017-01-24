@@ -214,7 +214,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
         directoryEditor.setStringValue(confDir);
         directoryEditor.setFilterPath(new File(confDir).getParentFile());
 
-        if ( StringUtils.isNoneBlank(confDir) && Files.exists(Paths.get(confDir)) ) {
+        if ( StringUtils.isNotBlank(confDir) && Files.exists(Paths.get(confDir)) ) {
             treeViewer.setInput(confDir);
         }
 
