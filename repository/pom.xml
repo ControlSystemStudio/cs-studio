@@ -245,7 +245,7 @@
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>eu.hansolo:Medusa:7.4</id>
+                  <id>eu.hansolo:Medusa:7.5</id>
                 </artifact>
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.12</id>
