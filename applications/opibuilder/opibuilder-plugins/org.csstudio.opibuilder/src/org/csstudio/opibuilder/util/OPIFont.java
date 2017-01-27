@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 /**The dedicated font type which supports predefined font name in OPI builder font file.
@@ -47,14 +48,14 @@ public class OPIFont{
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     public OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     public OPIFont(OPIFont opiFont) {
@@ -63,8 +64,8 @@ public class OPIFont{
         this.sizeInPixels = opiFont.isSizeInPixels();
     }
 
-    private static int pixelsToPoints(int pixels) {
-        return pixels * POINTS_PER_INCH / Display.getDefault().getDPI().y;
+    private int pixelsToPoints(int pixels) {
+        return pixels * POINTS_PER_INCH / getDPI().y;
     }
 
     /**Returns the Macro Name of the OPIFont.
@@ -193,6 +194,14 @@ public class OPIFont{
 
     public boolean isSizeInPixels() {
         return sizeInPixels;
+    }
+
+    protected boolean getDefaultIsInPixels() {
+        return PreferencesHelper.isDefaultFontSizeInPixels();
+    }
+
+    protected Point getDPI() {
+        return Display.getDefault().getDPI();
     }
 
 }
