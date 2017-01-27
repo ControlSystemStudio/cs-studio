@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.editparts.WidgetConnectionEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
@@ -35,6 +36,8 @@ import org.csstudio.swt.widgets.figures.LinkingContainerFigure;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -250,6 +253,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             conn.setLoadedFromLinkedOpi(true);
             if(conn.getPoints()!=null)
                 originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
         }
         if (originalPoints != null && !originalPoints.isEmpty()) {
             //update connections after the figure is repainted.
@@ -334,7 +338,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 for(int i=0; i<points.size(); i++){
                     Point point = points.getPoint(i);
                     point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
-                    getContentPane().translateToAbsolute(point);
                     points.setPoint(point, i);
                 }
                 conn.setPoints(points);
