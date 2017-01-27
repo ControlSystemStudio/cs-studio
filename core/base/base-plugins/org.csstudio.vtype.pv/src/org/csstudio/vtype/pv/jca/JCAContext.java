@@ -69,9 +69,10 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
 
         // Potentially check version for variable array support,
         // based on diirt JCADataSourceConfiguration#isVarArraySupported().
-        Boolean supported = JCA_Preferences.getInstance().isVarArraySupported();
-        if (supported == null)
+        boolean supported;
+        switch (JCA_Preferences.getInstance().isVarArraySupported())
         {
+        case AUTO:
             if (use_caj)
             {   // Variable array support was added to CAJ 1.1.10
                 final Version version = ((CAJContext)context).getVersion();
@@ -90,7 +91,7 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
                     final int ref = invokePrivateMethod(jni, "_ca_getRevision");
                     final int mod = invokePrivateMethod(jni, "_ca_getModification");
                     logger.log(Level.CONFIG, "JCA version " + version + "." + ref + "." + mod);
-                    supported = ! (version <= 3  && ref <= 14 && mod <= 11);
+                    supported = ! (version <= 3  &&  ref <= 14  &&  mod <= 11);
                 }
                 catch (Exception ex)
                 {
@@ -98,6 +99,14 @@ public class JCAContext implements ContextMessageListener, ContextExceptionListe
                     supported = false;
                 }
             }
+            break;
+        case TRUE:
+            supported = true;
+            break;
+        case FALSE:
+        default:
+            supported = false;
+            break;
         }
         is_var_array_supported = supported;
     }
