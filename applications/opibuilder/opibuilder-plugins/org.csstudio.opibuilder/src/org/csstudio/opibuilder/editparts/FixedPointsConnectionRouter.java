@@ -54,7 +54,7 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
     @Override
     public void route(Connection conn) {
         PointList connPoints = conn.getPoints().getCopy();
-        PointList newPoints = (PointList) getConstraint(conn);
+        PointList constraintPoints = (PointList) getConstraint(conn);
         connPoints.removeAllPoints();
         Point startPoint = getStartPoint(conn);
         conn.translateToRelative(startPoint);
@@ -63,8 +63,9 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
         conn.translateToRelative(endPoint);
 
         connPoints.addPoint(startPoint);
-        for(int i=0; i<newPoints.size(); i++) {
-            Point point = newPoints.getPoint(i);
+        PointList newPoints = new PointList();
+        for(int i=0; i<constraintPoints.size(); i++) {
+            Point point = constraintPoints.getPoint(i);
             // updateBendpoints only from inside linking container
             if(scrollPane != null && connectionFigure != null) {
                 scrollPane.translateToAbsolute(point);
@@ -72,11 +73,38 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
                 Rectangle bounds = scrollPane.getBounds();
                 point = new Point(point.x() + bounds.x(), point.y() + bounds.y());
             }
-            connPoints.addPoint(point);
+            newPoints.addPoint(point);
         }
+
+        FixedPositionAnchor anchor = (FixedPositionAnchor)conn.getSourceAnchor();
+        Point sourcePoint = anchor.getSlantDifference(startPoint, newPoints.getFirstPoint());
+
+        anchor = (FixedPositionAnchor)conn.getTargetAnchor();
+        Point targetPoint = anchor.getSlantDifference(endPoint, newPoints.getLastPoint());
+
+        connPoints.addAll(staticRoute(newPoints, sourcePoint, targetPoint));
 
         connPoints.addPoint(endPoint);
         conn.setPoints(connPoints);
     }
 
+    private PointList staticRoute(PointList oldPoints, Point sourcePoint, Point targetPoint) {
+        int xDiff = 0, yDiff = 0;
+        if (sourcePoint.x() != 0) {
+            xDiff = sourcePoint.x();
+            yDiff = targetPoint.y();
+        } else {
+            xDiff = targetPoint.x();
+            yDiff = sourcePoint.y();
+        }
+
+        PointList newPoints = new PointList();
+        for(int i=0; i<oldPoints.size(); i++) {
+            Point point = oldPoints.getPoint(i);
+            point.setX(point.x() + xDiff);
+            point.setY(point.y() + yDiff);
+            newPoints.addPoint(point);
+        }
+        return newPoints;
+    }
 }
