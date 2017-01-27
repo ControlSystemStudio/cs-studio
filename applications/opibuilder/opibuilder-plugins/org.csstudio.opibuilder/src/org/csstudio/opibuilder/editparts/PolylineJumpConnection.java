@@ -24,6 +24,8 @@ public class PolylineJumpConnection extends PolylineConnection {
     private LineJumpStyle lineJumpStyle;
     private PointList pointsWithIntersection;
     private HashMap<Point, PointList> intersectionMap;
+    private Point initialStartPoint;
+    private Point initialEndPoint;
 
     public PolylineJumpConnection(WidgetConnectionEditPart widgetConnectionEditPart) {
         this.widgetConnectionEditPart = widgetConnectionEditPart;
@@ -281,5 +283,21 @@ public class PolylineJumpConnection extends PolylineConnection {
 
     public int getLineJumpSize() {
         return lineJumpSize;
+    }
+
+    public Point getInitialStartPoint() {
+        return initialStartPoint;
+    }
+
+    public void setInitialStartPoint(Point startPoint) {
+        initialStartPoint = startPoint.getCopy();
+    }
+
+    public Point getInitialEndPoint() {
+        return initialEndPoint;
+    }
+
+    public void setInitialEndPoint(Point endPoint) {
+        initialEndPoint = endPoint.getCopy();
     }
 }
