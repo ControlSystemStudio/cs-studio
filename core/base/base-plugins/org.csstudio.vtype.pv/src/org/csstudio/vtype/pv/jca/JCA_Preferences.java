@@ -67,8 +67,7 @@ public class JCA_Preferences
             if (prefs == null)
                 return;
 
-            DIIRTPreferences dp = DIIRTPreferences.get();
-            logger.config("DIIRT preferences initialized: " + dp.getBoolean("diirt.default.initialized"));
+            final DIIRTPreferences dp = DIIRTPreferences.get();
 
             use_pure_java = dp.getBoolean(ChannelAccess.PREF_PURE_JAVA);
 
