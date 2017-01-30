@@ -55,17 +55,17 @@ public class OPIFont{
         this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
-    OPIFont(String name, FontData fontData, boolean sizeInPixels) {
-        this(name, scaleFontData(fontData, sizeInPixels));
-        this.sizeInPixels = sizeInPixels;
+    OPIFont(String name, FontData fontData, boolean convertToPixels) {
+        this(name, scaleFontData(fontData, convertToPixels));
+        this.sizeInPixels = convertToPixels;
     }
 
-    OPIFont(FontData fontData, boolean sizeInPixels) {
-        this(scaleFontData(fontData, sizeInPixels));
-        this.sizeInPixels = sizeInPixels;
+    OPIFont(FontData fontData, boolean convertToPixels) {
+        this(scaleFontData(fontData, convertToPixels));
+        this.sizeInPixels = convertToPixels;
     }
 
-    public OPIFont(OPIFont opiFont) {
+    OPIFont(OPIFont opiFont) {
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
     }
 
@@ -78,14 +78,14 @@ public class OPIFont{
     }
 
     /**
-     * If FontData is provided with height in pixels, rescale it and return the
-     * 'raw' FontData with height in points.
+     * If the provided FontData is intended to be interpreted as height in pixels,
+     * rescale it and return the 'raw' FontData with height in points.
      * @param fontData  the provided FontData
-     * @param sizeInPixels whether the FontData is representing pixels or points
+     * @param convertToPixels whether the FontData is representing pixels or points
      * @return the rescaled FontData
      */
-    private static FontData scaleFontData(FontData fontData, boolean sizeInPixels) {
-        if (sizeInPixels) {
+    private static FontData scaleFontData(FontData fontData, boolean convertToPixels) {
+        if (convertToPixels) {
             return new FontData(fontData.getName(), pointsToPixels(fontData.getHeight()), fontData.getStyle());
         } else {
             return fontData;
