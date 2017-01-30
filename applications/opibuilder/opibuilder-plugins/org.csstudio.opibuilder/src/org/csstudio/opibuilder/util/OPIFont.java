@@ -69,12 +69,12 @@ public class OPIFont{
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
     }
 
-    private static int pointsToPixels(int points) {
-        return points * POINTS_PER_INCH / Display.getDefault().getDPI().y;
+    private static int pixelsToPoints(int pixels) {
+        return pixels * POINTS_PER_INCH / Display.getDefault().getDPI().y;
     }
 
-    private static int pixelsToPoints(int pixels) {
-        return pixels * Display.getDefault().getDPI().y / POINTS_PER_INCH;
+    private static int pointsToPixels(int points) {
+        return points * Display.getDefault().getDPI().y / POINTS_PER_INCH;
     }
 
     /**
@@ -86,7 +86,7 @@ public class OPIFont{
      */
     private static FontData scaleFontData(FontData fontData, boolean sizeInPixels) {
         if (sizeInPixels) {
-            return new FontData(fontData.getName(), pixelsToPoints(fontData.getHeight()), fontData.getStyle());
+            return new FontData(fontData.getName(), pointsToPixels(fontData.getHeight()), fontData.getStyle());
         } else {
             return fontData;
         }
@@ -144,7 +144,7 @@ public class OPIFont{
     public FontData getFontData() {
         int height = rawFontData.getHeight();
         if (this.sizeInPixels) {
-            height = pointsToPixels(height);
+            height = pixelsToPoints(height);
         }
         return new FontData(rawFontData.getName(), height, rawFontData.getStyle());
     }
