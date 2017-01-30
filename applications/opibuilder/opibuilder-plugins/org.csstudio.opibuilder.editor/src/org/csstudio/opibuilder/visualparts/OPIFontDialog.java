@@ -228,7 +228,7 @@ public class OPIFontDialog extends HelpTrayDialog {
                 .getSelection();
         if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
-            opiFont = (OPIFont)selection.getFirstElement();
+            opiFont = MediaService.getInstance().getOPIFont((OPIFont)selection.getFirstElement());
             opiFont.setSizeInPixels(pixelsButton.getSelection());
             outputTextLabel.setText(opiFont.getFontMacroName());
             outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));

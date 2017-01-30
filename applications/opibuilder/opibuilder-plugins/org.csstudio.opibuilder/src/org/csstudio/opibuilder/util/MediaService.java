@@ -388,6 +388,10 @@ public final class MediaService {
         return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
     }
 
+    public OPIFont getOPIFont(OPIFont font) {
+        return new OPIFont(font);
+    }
+
     public OPIFont getOPIFont(FontData fontData) {
         return new OPIFont(fontData);
     }

@@ -67,6 +67,8 @@ public class OPIFont{
 
     OPIFont(OPIFont opiFont) {
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
+        this.preDefined = opiFont.isPreDefined();
+        this.sizeInPixels = opiFont.isSizeInPixels();
     }
 
     private static int pixelsToPoints(int pixels) {
