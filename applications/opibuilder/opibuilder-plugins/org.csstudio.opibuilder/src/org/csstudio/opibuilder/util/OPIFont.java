@@ -78,10 +78,10 @@ public class OPIFont{
     }
 
     /**
-     * If the provided FontData is intended to be interpreted as height in pixels,
-     * rescale it and return the 'raw' FontData with height in points.
+     * If the provided FontData is intended to be converted to a height in pixels,
+     * rescale it and return the 'raw' FontData with height in pixels.
      * @param fontData  the provided FontData
-     * @param convertToPixels whether the FontData is representing pixels or points
+     * @param convertToPixels whether the FontData needs converting to pixels
      * @return the rescaled FontData
      */
     private static FontData scaleFontData(FontData fontData, boolean convertToPixels) {
