@@ -126,7 +126,7 @@ public class FontProperty extends AbstractWidgetProperty {
             fontElement = new Element(XML_ELEMENT_FONTNAME);
             fontElement.setText(opiFont.getFontMacroName());
         }
-        FontData fontData = opiFont.getFontData();
+        FontData fontData = opiFont.getRawFontData();
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_HEIGHT,
                 "" + fontData.getHeight()); //$NON-NLS-1$
@@ -141,17 +141,19 @@ public class FontProperty extends AbstractWidgetProperty {
     public Object readValueFromXML(Element propElement) {
         Element fontElement = propElement.getChild(XML_ELEMENT_FONT);
         if(fontElement !=null){
-            return MediaService.getInstance().getOPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
-                (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
-                Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))),
-                    Boolean.parseBoolean(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_PIXELS))
-                    );
+            // Create the OPIFont with the raw font data from the XML.
+            OPIFont font = MediaService.getInstance().getOPIFont(
+                    new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
+                                 (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
+                                 Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
+            font.setSizeInPixels(Boolean.parseBoolean(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_PIXELS)));
+            return font;
         }else{
             fontElement = propElement.getChild(XML_ELEMENT_FONTNAME);
             if(fontElement != null){
                 OPIFont font = null;
                 String fontName = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME);
-                String fontHeight=fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
+                String fontHeight = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
                 String fontStyle = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
                 String heightInPixels = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_PIXELS);
                 if(fontName != null && fontHeight != null && fontStyle != null){
@@ -193,7 +195,5 @@ public class FontProperty extends AbstractWidgetProperty {
                 fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
         }
     }
-
-
 
 }
