@@ -44,7 +44,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -57,6 +60,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -64,6 +68,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -222,11 +227,6 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             updateItem(getItem(), isEmpty());
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see javafx.scene.control.cell.TextFieldTableCell#updateItem(java.lang.Object, boolean)
-         */
         @Override
         public void updateItem(T item, boolean empty) {
             super.updateItem(item, empty);
@@ -276,6 +276,126 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             }
         }
     }
+
+    /**
+     * A dedicated CellEditor for displaying delta only.
+     * TODO can be simplified further
+     * 
+     * @author Kunal Shroff
+     *
+     * @param <T>
+     */
+    private static class VDeltaCellEditor<T> extends VTypeCellEditor<T> {
+
+        private static final Image WARNING_IMAGE = new Image(
+            SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
+        private static final Image DISCONNECTED_IMAGE = new Image(
+            SnapshotViewerEditor.class.getResourceAsStream("/icons/showerr_tsk.png"));
+        private final Tooltip tooltip = new Tooltip();
+
+        VDeltaCellEditor(SnapshotViewerController cntrl) {
+            super(cntrl);
+        }
+
+        @Override
+        public void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            getStyleClass().remove("diff-cell");
+            if (item == null || empty) {
+                setText("");
+                setTooltip(null);
+                setGraphic(null);
+            } else {
+                if (item == VDisconnectedData.INSTANCE) {
+                    setText(VDisconnectedData.DISCONNECTED);
+                    setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
+                    getStyleClass().add("diff-cell");
+                } else if (item == VNoData.INSTANCE) {
+                    setText(item.toString());
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
+                } else if (item instanceof VTypePair) {
+                    VTypePair pair = (VTypePair) item;
+                    if (pair.value == VDisconnectedData.INSTANCE) {
+                        setText(VDisconnectedData.DISCONNECTED);
+                        if (pair.base != VDisconnectedData.INSTANCE) {
+                            getStyleClass().add("diff-cell");
+                        }
+                        setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    } else if (pair.value == VNoData.INSTANCE) {
+                        setText(pair.value.toString());
+                    } else {
+                        VTypeComparison vtc = Utilities.deltaValueToString(pair.value, pair.base, pair.threshold);
+                        setText(vtc.getString());
+                        if (!vtc.isWithinThreshold()) {
+                            getStyleClass().add("diff-cell");
+                            setGraphic(new ImageView(WARNING_IMAGE));
+                        }
+                    }
+
+                    tooltip.setText(item.toString());
+                    setTooltip(tooltip);
+                }
+            }
+        }
+    }
+
+    private static class VSetpointCellEditor<T> extends VTypeCellEditor<T> {
+
+        private static final Image DISCONNECTED_IMAGE = new Image(
+                SnapshotViewerEditor.class.getResourceAsStream("/icons/showerr_tsk.png"));
+        private final Tooltip tooltip = new Tooltip();
+
+        VSetpointCellEditor(SnapshotViewerController cntrl) {
+            super(cntrl);
+        }
+
+        @Override
+        public void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            getStyleClass().remove("diff-cell");
+            if (item == null || empty) {
+                setText("");
+                setTooltip(null);
+                setGraphic(null);
+            } else {
+                if (item == VDisconnectedData.INSTANCE) {
+                    setText(VDisconnectedData.DISCONNECTED);
+                    setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
+                    getStyleClass().add("diff-cell");
+                } else if (item == VNoData.INSTANCE) {
+                    setText(item.toString());
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
+                } else if (item instanceof VType) {
+                    setText(Utilities.valueToString((VType) item));
+                    setGraphic(null);
+                    tooltip.setText(item.toString());
+                    setTooltip(tooltip);
+                } else if (item instanceof VTypePair) {
+                    VTypePair pair = (VTypePair) item;
+                    if (pair.value == VDisconnectedData.INSTANCE) {
+                        setText(VDisconnectedData.DISCONNECTED);
+                        if (pair.base != VDisconnectedData.INSTANCE) {
+                            getStyleClass().add("diff-cell");
+                        }
+                        setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    } else if (pair.value == VNoData.INSTANCE) {
+                        setText(pair.value.toString());
+                    } else {
+                        setText(Utilities.valueToString(pair.value));
+                    }
+                    tooltip.setText(pair.value.toString());
+                    setTooltip(tooltip);
+                }
+            }
+        }
+    }
+    
 
     /**
      * <code>TooltipTableColumn</code> is the common table column implementation, which can also provide the tooltip.
@@ -492,19 +612,33 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         severityColumn.setCellValueFactory(new PropertyValueFactory<>("severity"));
         list.add(severityColumn);
 
-        TableColumn<TableEntry, VTypePair> storedValueColumn = new TooltipTableColumn<>(
-            "Stored Setpoint\n(" + Utilities.DELTA_CHAR + " Live Setpoint)",
+        TableColumn<TableEntry, ?> storedValueBaseColumn = new TooltipTableColumn<>(
+                "Stored Setpoint", "", -1);
+        
+        TableColumn<TableEntry, VType> storedValueColumn = new TooltipTableColumn<>(
+            "Stored Setpoint",
             "Setpoint PV value when the snapshot was taken", 100);
-        storedValueColumn.setCellValueFactory(e -> e.getValue().valueProperty());
+        storedValueColumn.setCellValueFactory(new PropertyValueFactory<>("snapshotVal"));
         storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
         storedValueColumn.setEditable(true);
         storedValueColumn.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
-            value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
+            value.setValue(new VTypePair(value.get().base, e.getNewValue(), value.get().threshold));
             controller.updateSnapshot(0, e.getRowValue());
             controller.resume();
         });
-        list.add(storedValueColumn);
+
+        storedValueBaseColumn.getColumns().add(storedValueColumn);
+        // show deltas in separate column
+        TableColumn<TableEntry, VTypePair> delta = new TooltipTableColumn<>(
+                Utilities.DELTA_CHAR + " Live Setpoint",
+                "", 100);
+        delta.setCellValueFactory(e -> e.getValue().valueProperty());
+        delta.setCellFactory(e -> new VDeltaCellEditor<>(controller));
+        delta.setEditable(false);
+        storedValueBaseColumn.getColumns().add(delta);
+
+        list.add(storedValueBaseColumn);
 
         if (showStoredReadback) {
             TableColumn<TableEntry, VType> storedReadbackColumn = new TooltipTableColumn<>(
@@ -551,26 +685,42 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         list.add(setpointPVName);
         if (showReadback) {
             TableColumn<TableEntry, String> readbackPVName = new TooltipTableColumn<>("Readback\nPV Name",
-                "The list of readback PV names associated with the setpoints", 100);
+                "The list of readback PV names associated with the setpoints", 66);
             readbackPVName.setCellValueFactory(new PropertyValueFactory<>("readbackName"));
             list.add(readbackPVName);
         }
 
         TableColumn<TableEntry, ?> storedValueColumn = new TooltipTableColumn<>("Stored Values",
             "PV values when the snapshots were taken", -1);
-        TableColumn<TableEntry, VTypePair> baseCol = new TooltipTableColumn<>(
-            "Base Setpoint\n(" + Utilities.DELTA_CHAR + "Live Setpoint)",
-            "Setpoint PV value when the base snapshot was taken", 100);
-        baseCol.setCellValueFactory(e -> e.getValue().valueProperty());
-        baseCol.setCellFactory(e -> new VTypeCellEditor<>(controller));
-        baseCol.setEditable(true);
-        baseCol.setOnEditCommit(e -> {
+        TableColumn<TableEntry, ?> baseCol = new TooltipTableColumn<>(
+            "Base Setpoint",
+            "Setpoint PV value when the base snapshot was taken", 33);
+
+        TableColumn<TableEntry, VType> storedBaseSetpointValueColumn = new TooltipTableColumn<>(
+            "Base Setpoint",
+            "Base Setpoint PV value when the snapshot was taken", 100);
+        storedBaseSetpointValueColumn.setCellValueFactory(new PropertyValueFactory<>("snapshotVal"));
+        storedBaseSetpointValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
+        storedBaseSetpointValueColumn.setEditable(true);
+        storedBaseSetpointValueColumn.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
-            value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
+            value.setValue(new VTypePair(value.get().base, e.getNewValue(), value.get().threshold));
             controller.updateSnapshot(0, e.getRowValue());
             controller.resume();
         });
+
+        baseCol.getColumns().add(storedBaseSetpointValueColumn);
+        // show deltas in separate column
+        TableColumn<TableEntry, VTypePair> delta = new TooltipTableColumn<>(
+                Utilities.DELTA_CHAR + " Live Setpoint",
+                "", 100);
+        delta.setCellValueFactory(e -> e.getValue().valueProperty());
+        delta.setCellFactory(e -> new VDeltaCellEditor<>(controller));
+        delta.setEditable(false);
+        baseCol.getColumns().add(delta);
+
         storedValueColumn.getColumns().add(baseCol);
+
         if (showStoredReadback) {
             TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
                 "Base Readback\n(" + Utilities.DELTA_CHAR + " Base Setpoint)",
@@ -583,26 +733,47 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         for (int i = 1; i < snapshots.size(); i++) {
             final int snapshotIndex = i;
             String snapshotName = String.valueOf(snapshots.get(snapshotIndex));
-            TooltipTableColumn<VTypePair> col = new TooltipTableColumn<>(
-                snapshots.get(i).toString() + "\n(" + Utilities.DELTA_CHAR + " Base Setpoint)",
-                "Setpoint PV value when the " + snapshotName + " snapshot was taken", 100);
             final ContextMenu menu = createContextMenu(snapshotIndex);
-            col.label.setContextMenu(menu);
-            col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
-            col.setCellFactory(e -> new VTypeCellEditor<>(controller));
-            col.setEditable(true);
-            col.setOnEditCommit(e -> {
+
+            TooltipTableColumn<VTypePair> baseSnapshotCol = new TooltipTableColumn<>(snapshotName,
+                    "Setpoint PV value when the " + snapshotName + " snapshot was taken", 100);
+            baseSnapshotCol.label.setContextMenu(menu);
+            
+            TooltipTableColumn<VTypePair> setpointValueCol = new TooltipTableColumn<>(
+                    "Setpoint",
+                    "Setpoint PV value when the " + snapshotName + " snapshot was taken", 66);
+            setpointValueCol.label.setContextMenu(menu);
+            setpointValueCol.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
+            setpointValueCol.setCellFactory(e -> new VSetpointCellEditor<>(controller));
+            setpointValueCol.setEditable(true);
+            setpointValueCol.setOnEditCommit(e -> {
                 ObjectProperty<VTypePair> value = e.getRowValue().compareValueProperty(snapshotIndex);
                 value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
                 controller.updateSnapshot(snapshotIndex, e.getRowValue());
                 controller.resume();
             });
-            col.label.setOnMouseReleased(e -> {
+            setpointValueCol.label.setOnMouseReleased(e -> {
                 if (e.getButton() == MouseButton.SECONDARY) {
-                    menu.show(col.label, e.getScreenX(), e.getScreenY());
+                    menu.show(setpointValueCol.label, e.getScreenX(), e.getScreenY());
                 }
             });
-            storedValueColumn.getColumns().add(col);
+            baseSnapshotCol.getColumns().add(setpointValueCol);
+            
+            TooltipTableColumn<VTypePair> deltaCol = new TooltipTableColumn<>(
+                 Utilities.DELTA_CHAR + " Base Setpoint",
+                "Setpoint PV value when the " + snapshotName + " snapshot was taken", 50);
+            deltaCol.label.setContextMenu(menu);
+            deltaCol.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
+            deltaCol.setCellFactory(e -> new VDeltaCellEditor<>(controller));
+            deltaCol.setEditable(false);
+            deltaCol.label.setOnMouseReleased(e -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    menu.show(deltaCol.label, e.getScreenX(), e.getScreenY());
+                }
+            });
+            baseSnapshotCol.getColumns().add(deltaCol);
+            storedValueColumn.getColumns().add(baseSnapshotCol);
+            
             if (showStoredReadback) {
                 TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
                     "Readback\n(" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);

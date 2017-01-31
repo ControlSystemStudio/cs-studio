@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.ui.util.SingleListenerBooleanProperty;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.vtype.Alarm;
@@ -51,6 +52,7 @@ public class TableEntry {
     private final ObjectProperty<Instant> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private final StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private final ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
+    private final ObjectProperty<VType> snapshotVal = new SimpleObjectProperty<>(this, "snapshotValue", VNoData.INSTANCE);
     private final ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
         new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, Optional.empty()));
     private final ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VDisconnectedData.INSTANCE);
@@ -148,6 +150,13 @@ public class TableEntry {
     /**
      * @return the property providing the value of the primary snapshot value
      */
+    public ObjectProperty<VType> snapshotValProperty() {
+        return snapshotVal;
+    }
+
+    /**
+     * @return the property providing the value of the primary snapshot value
+     */
     public ObjectProperty<VTypePair> valueProperty() {
         return value;
     }
@@ -226,6 +235,7 @@ public class TableEntry {
             } else {
                 timestamp.set(null);
             }
+            snapshotVal.set(val);
             value.set(new VTypePair(liveValue.get(), val, threshold));
             compareValues.forEach(o -> o.set(new VTypePair(val, o.get().value, threshold)));
             liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
