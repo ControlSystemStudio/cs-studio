@@ -368,32 +368,24 @@ public final class MediaService {
     }
 
     /**
-     * Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a
-     * name is found.
-     *
      * @param name
-     * @return
-     * @see #getOPIFont(String, FontData)
+     * @return true if the OPI color is defined.
      */
-    public OPIFont getOPIFont(String name) {
-        return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
+    public boolean isColorNameDefined(String name) {
+        return colorMap.containsKey(name);
     }
 
-    public OPIFont getOPIFont(OPIFont font) {
-        return new OPIFont(font);
-    }
-
-    public OPIFont getOPIFont(FontData fontData) {
-        return new OPIFont(fontData);
-    }
+    /* The following methods are the approved way of constructing OPIFonts.
+     * The constructors are package-private for this reason.
+     */
 
     /**
-     * Get the OPIFont based on name. Use the provided fontData if no such a
-     * name is found.
+     * Get a copy the OPIFont from the configured defaults based on name.
+     * Use the provided fontData if the name is not in the cache.
      *
-     * @param name
-     * @param fontData
-     * @return
+     * @param name of predefined font
+     * @param fontData to use if name is not in cache
+     * @return new OPIFont
      */
     public OPIFont getOPIFont(String name, FontData fontData) {
         if (fontMap.containsKey(name))
@@ -401,29 +393,70 @@ public final class MediaService {
         return new OPIFont(name, fontData);
     }
 
+    /**
+     * Get a copy of the OPIFont from the configured defaults based on name.
+     * Use {@link #DEFAULT_UNKNOWN_FONT} if the name is not in the cache.
+     *
+     * @param name of predefined font
+     * @return new OPIFont
+     * @see #getOPIFont(String, FontData)
+     */
+    public OPIFont getOPIFont(String name) {
+        return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
+    }
+
+    /**
+     * Return a copy of the provided OPIFont.
+     * @param font to copy
+     * @return a copy of the provided font
+     */
+    public OPIFont getOPIFont(OPIFont font) {
+        return new OPIFont(font);
+    }
+
+    /**
+     * Return a new OPIFont based on the provided FontData.
+     * @param fontData for basis of new OPIFont
+     * @return new OPIFont
+     */
+    public OPIFont getOPIFont(FontData fontData) {
+        return new OPIFont(fontData);
+    }
+
+    /**
+     * Return a new OPIFont based on the provided FontData.  Convert size
+     * from points to pixels if necessary.
+     * @param fontData for basis of new OPIFont
+     * @param convertToPixels whether to convert to pixels
+     * @return new OPIFont
+     */
     public OPIFont getOPIFont(FontData fontData, boolean convertToPixels) {
         return new OPIFont(fontData, convertToPixels);
     }
 
+    /**
+     * Return a new OPIFont based on the provided name.  Fall back to the provided
+     * FontData if necessary.  Convert size from points to pixels if necessary.
+     * @param name of predefined font
+     * @param fontData for basis of new OPIFont if name not in cache
+     * @param convertToPixels whether to convert to pixels
+     * @return new OPIFont
+     */
     public OPIFont getOPIFont(String name, FontData fontData, boolean convertToPixels) {
         return new OPIFont(name, fontData, convertToPixels);
     }
 
+    /**
+     * Return an array of a copy of all predefined fonts.
+     * @return array of predefined fonts
+     */
     public OPIFont[] getAllPredefinedFonts() {
         OPIFont[] result = new OPIFont[fontMap.size()];
         int i = 0;
         for (OPIFont c : fontMap.values()) {
-            result[i++] = c;
+            result[i++] = new OPIFont(c);
         }
         return result;
-    }
-
-    /**
-     * @param name
-     * @return true if the OPI color is defined.
-     */
-    public boolean isColorNameDefined(String name) {
-        return colorMap.containsKey(name);
     }
 
 }
