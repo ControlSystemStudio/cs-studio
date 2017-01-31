@@ -97,11 +97,6 @@ public final class MediaService {
 
     private void loadPredefinedFonts() {
         FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0];
-        // String osName = getOSName();
-        //        if(osName.equals("linux_gtk")) //$NON-NLS-1$
-        //            defaultFont = new FontData("Sans", 10, SWT.NORMAL); //$NON-NLS-1$
-        //        else if(osName.equals("macosx")) //$NON-NLS-1$
-        //            defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
         fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
         int height = defaultFont.getHeight();
@@ -222,8 +217,6 @@ public final class MediaService {
 
         colorFilePath = PreferencesHelper.getColorFilePath();
         if (colorFilePath == null || colorFilePath.isEmpty()) {
-            // String message = "No color definition file was found.";
-            // ConsoleService.getInstance().writeInfo(message);
             return;
         }
 
@@ -266,8 +259,6 @@ public final class MediaService {
         Set<String> trimmedNameSet = new LinkedHashSet<String>();
         fontFilePath = PreferencesHelper.getFontFilePath();
         if (fontFilePath == null || fontFilePath.isEmpty()) {
-            // String message = "No font definition file was found.";
-            // ConsoleService.getInstance().writeInfo(message);
             return;
         }
 
