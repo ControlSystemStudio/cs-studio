@@ -174,14 +174,6 @@ public class OPIFont{
         return preDefined;
     }
 
-    public void setFontName(String fontName) {
-        this.fontName = fontName;
-        OPIFont cachedFont =  MediaService.getInstance().getOPIFont(fontName);
-        this.rawFontData = cachedFont.getFontData();
-        this.sizeInPixels = cachedFont.isSizeInPixels();
-        preDefined = true;
-    }
-
     @Override
     public String toString() {
         return fontName;
