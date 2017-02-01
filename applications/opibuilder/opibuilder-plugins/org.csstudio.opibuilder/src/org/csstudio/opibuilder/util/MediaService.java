@@ -375,10 +375,6 @@ public final class MediaService {
         return colorMap.containsKey(name);
     }
 
-    /* The following methods are the approved way of constructing OPIFonts.
-     * The constructors are package-private for this reason.
-     */
-
     /**
      * Get a copy the OPIFont from the configured defaults based on name.
      * Use the provided fontData if the name is not in the cache.
@@ -403,47 +399,6 @@ public final class MediaService {
      */
     public OPIFont getOPIFont(String name) {
         return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
-    }
-
-    /**
-     * Return a copy of the provided OPIFont.
-     * @param font to copy
-     * @return a copy of the provided font
-     */
-    public OPIFont getOPIFont(OPIFont font) {
-        return new OPIFont(font);
-    }
-
-    /**
-     * Return a new OPIFont based on the provided FontData.
-     * @param fontData for basis of new OPIFont
-     * @return new OPIFont
-     */
-    public OPIFont getOPIFont(FontData fontData) {
-        return new OPIFont(fontData);
-    }
-
-    /**
-     * Return a new OPIFont based on the provided FontData.  Convert size
-     * from points to pixels if necessary.
-     * @param fontData for basis of new OPIFont
-     * @param convertToPixels whether to convert to pixels
-     * @return new OPIFont
-     */
-    public OPIFont getOPIFont(FontData fontData, boolean convertToPixels) {
-        return new OPIFont(fontData, convertToPixels);
-    }
-
-    /**
-     * Return a new OPIFont based on the provided name.  Fall back to the provided
-     * FontData if necessary.  Convert size from points to pixels if necessary.
-     * @param name of predefined font
-     * @param fontData for basis of new OPIFont if name not in cache
-     * @param convertToPixels whether to convert to pixels
-     * @return new OPIFont
-     */
-    public OPIFont getOPIFont(String name, FontData fontData, boolean convertToPixels) {
-        return new OPIFont(name, fontData, convertToPixels);
     }
 
     /**

@@ -24,8 +24,16 @@ public class OPIFont{
 
     private String fontName;
 
+    /**
+     * FontData object.  If sizeInPixels, the height represents
+     * height in pixels rather than the standard SWT representation
+     * in points.
+     */
     private FontData rawFontData;
 
+    /**
+     * Whether the font exists in the MediaService cache.
+     */
     private boolean preDefined;
 
     /**
@@ -35,37 +43,21 @@ public class OPIFont{
      */
     private boolean sizeInPixels = false;
 
-    /*
-     * All constructors are package-private to allow access only by MediaService.
-     * When sizeInPixels is provided, ensure that the rawFontData is scaled back
-     * to the equivalent in points if necessary.
-     */
-
-    OPIFont(String name, FontData fontData) {
+    public OPIFont(String name, FontData fontData) {
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
         this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
-    OPIFont(FontData fontData) {
+    public OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
         this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
-    OPIFont(String name, FontData fontData, boolean convertToPixels) {
-        this(name, scaleFontData(fontData, convertToPixels));
-        this.sizeInPixels = convertToPixels;
-    }
-
-    OPIFont(FontData fontData, boolean convertToPixels) {
-        this(scaleFontData(fontData, convertToPixels));
-        this.sizeInPixels = convertToPixels;
-    }
-
-    OPIFont(OPIFont opiFont) {
+    public OPIFont(OPIFont opiFont) {
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
         this.preDefined = opiFont.isPreDefined();
         this.sizeInPixels = opiFont.isSizeInPixels();
@@ -73,25 +65,6 @@ public class OPIFont{
 
     private static int pixelsToPoints(int pixels) {
         return pixels * POINTS_PER_INCH / Display.getDefault().getDPI().y;
-    }
-
-    private static int pointsToPixels(int points) {
-        return points * Display.getDefault().getDPI().y / POINTS_PER_INCH;
-    }
-
-    /**
-     * If the provided FontData is intended to be converted to a height in pixels,
-     * rescale it and return the 'raw' FontData with height in pixels.
-     * @param fontData  the provided FontData
-     * @param convertToPixels whether the FontData needs converting to pixels
-     * @return the rescaled FontData
-     */
-    private static FontData scaleFontData(FontData fontData, boolean convertToPixels) {
-        if (convertToPixels) {
-            return new FontData(fontData.getName(), pointsToPixels(fontData.getHeight()), fontData.getStyle());
-        } else {
-            return fontData;
-        }
     }
 
     /**Returns the Macro Name of the OPIFont.
@@ -144,11 +117,11 @@ public class OPIFont{
      * @return the scaled FontData
      */
     public FontData getFontData() {
-        int height = rawFontData.getHeight();
+        int rawSize = rawFontData.getHeight();
         if (this.sizeInPixels) {
-            height = pixelsToPoints(height);
+            rawSize = pixelsToPoints(rawSize);
         }
-        return new FontData(rawFontData.getName(), height, rawFontData.getStyle());
+        return new FontData(rawFontData.getName(), rawSize, rawFontData.getStyle());
     }
 
     /**
