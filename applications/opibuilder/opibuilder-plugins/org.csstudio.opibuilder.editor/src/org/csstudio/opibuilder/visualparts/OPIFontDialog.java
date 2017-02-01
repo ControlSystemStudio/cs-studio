@@ -56,11 +56,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.title = dialogTitle;
-        if(font.isPreDefined())
-            this.opiFont = MediaService.getInstance().getOPIFont(
-                    font.getFontMacroName(), font.getFontData(), font.isSizeInPixels());
-        else
-            this.opiFont = MediaService.getInstance().getOPIFont(font.getFontData(), font.isSizeInPixels());
+        this.opiFont = new OPIFont(font);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class OPIFontDialog extends HelpTrayDialog {
                 dialog.setFontList(new FontData[] {opiFont.getRawFontData()});
                 FontData fontdata = dialog.open();
                 if(fontdata != null){
-                    opiFont = MediaService.getInstance().getOPIFont(fontdata);
+                    opiFont = new OPIFont(fontdata);
                     opiFont.setSizeInPixels(pixelsButton.getSelection());
                     preDefinedFontsViewer.setSelection(null);
                     outputTextLabel.setText(opiFont.getFontMacroName());
@@ -228,7 +224,7 @@ public class OPIFontDialog extends HelpTrayDialog {
                 .getSelection();
         if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
-            opiFont = MediaService.getInstance().getOPIFont((OPIFont)selection.getFirstElement());
+            opiFont = new OPIFont((OPIFont)selection.getFirstElement());
             opiFont.setSizeInPixels(pixelsButton.getSelection());
             outputTextLabel.setText(opiFont.getFontMacroName());
             outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
