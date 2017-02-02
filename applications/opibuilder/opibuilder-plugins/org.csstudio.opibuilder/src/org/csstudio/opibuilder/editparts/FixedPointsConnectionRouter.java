@@ -131,33 +131,15 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
     }
 
     private PointList animatedRoute(PointList oldPoints, Point sourcePoint, Point targetPoint) {
-        int startXDiff = 0, startYDiff = 0;
-        if (sourcePoint.x() != 0) {
-            startXDiff = sourcePoint.x();
-            startYDiff = targetPoint.y();
-        } else {
-            startXDiff = targetPoint.x();
-            startYDiff = sourcePoint.y();
-        }
-
-        int endXDiff = 0, endYDiff = 0;
-        if (targetPoint.x() != 0) {
-            endXDiff = targetPoint.x();
-            endYDiff = sourcePoint.y();
-        } else {
-            endXDiff = sourcePoint.x();
-            endYDiff = targetPoint.y();
-        }
-
         PointList newPoints = new PointList();
         for(int i=0; i<oldPoints.size(); i++) {
             Point point = oldPoints.getPoint(i);
             if(i == 0) {
-                point.setX(point.x() + startXDiff);
-                point.setY(point.y() + startYDiff);
+                point.setX(point.x() + sourcePoint.x());
+                point.setY(point.y() + sourcePoint.y());
             } else if(i == oldPoints.size()-1) {
-                point.setX(point.x() + endXDiff);
-                point.setY(point.y() + endYDiff);
+                point.setX(point.x() + targetPoint.x());
+                point.setY(point.y() + targetPoint.y());
             }
             newPoints.addPoint(point);
         }
