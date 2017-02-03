@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Tree;
  *  @see PVTreeItem
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 {
     /** The view to which we are connected. */
@@ -180,7 +181,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
-            logger.fine("PVTreeModel disposed"); //$NON-NLS-1$
+            logger.fine("PVTreeModel disposed");
             root.dispose();
             root = null;
         }
@@ -239,8 +240,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 
         tree.getDisplay().asyncExec(() ->
         {
-               if (tree.isDisposed())
-                   return;
+            if (tree.isDisposed())
+                return;
 
             viewer.update(item, null);
             if (frozen && !was_frozen)
@@ -251,8 +252,6 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Used by item to refresh the tree from the item on down. */
     public void itemChanged(final PVTreeItem item)
     {
-//        System.out.println("Item changed: " + item);
-
         final Tree tree = viewer.getTree();
         if (tree.isDisposed())
             return;
@@ -264,7 +263,6 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
                 viewer.refresh();
             else
                 viewer.refresh(item);
-            viewer.expandAll();
         });
     }
 }
