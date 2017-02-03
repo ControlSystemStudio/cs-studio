@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
@@ -40,7 +42,7 @@ abstract public class StringListener extends PVListenerAdapter
         }
         catch (Throwable ex)
         {
-            Plugin.getLogger().log(Level.SEVERE,
+            logger.log(Level.SEVERE,
                     "PV Listener error for '" + pv.getName() + "': " + ex.getMessage(),
                     ex);
         }

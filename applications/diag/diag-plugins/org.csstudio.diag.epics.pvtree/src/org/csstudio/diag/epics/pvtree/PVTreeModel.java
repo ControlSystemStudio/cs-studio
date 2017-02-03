@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +179,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
-            Plugin.getLogger().fine("PVTreeModel disposed"); //$NON-NLS-1$
+            logger.fine("PVTreeModel disposed"); //$NON-NLS-1$
             root.dispose();
             root = null;
         }

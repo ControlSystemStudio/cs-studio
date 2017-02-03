@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -135,7 +137,7 @@ class PVTreeItem
         else
             record_name = pv_name;
 
-        Plugin.getLogger().log(Level.FINE,
+        logger.log(Level.FINE,
                 "New Tree item {0}, record name {1}",
                 new Object[] { pv_name, record_name});
 
@@ -163,7 +165,7 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e);
+            logger.log(Level.SEVERE, "PV creation error" , e);
         }
 
         // Avoid loops.
@@ -178,7 +180,7 @@ class PVTreeItem
         if (other != null  &&  other.type != null)
         {
             type = other.type;
-            Plugin.getLogger().fine("Known item, not traversing inputs (again)");
+            logger.fine("Known item, not traversing inputs (again)");
             return;
         }
         // Determine record type.
@@ -206,7 +208,7 @@ class PVTreeItem
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , ex);
+            logger.log(Level.SEVERE, "PV.RTYP creation error" , ex);
         }
     }
 
@@ -333,7 +335,7 @@ class PVTreeItem
     /** Thread-safe handling of the 'type' update. */
     private void updateType()
     {
-        Plugin.getLogger().log(Level.FINE,
+        logger.log(Level.FINE,
                 "{0} received type {1}", new Object[] { pv_name, type });
 
         // We got the type, so close the connection.
@@ -349,7 +351,7 @@ class PVTreeItem
             links_to_read.addAll(fields);
         if (links_to_read.size() <= 0)
         {
-            Plugin.getLogger().log(Level.FINE,
+            logger.log(Level.FINE,
                     "{0} has unknown record type {1}", new Object[] { pv_name, type });
             return;
         }
@@ -372,7 +374,7 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e);
+            logger.log(Level.SEVERE, "PV." + field + " creation error" , e);
         }
     }
 
@@ -381,13 +383,13 @@ class PVTreeItem
     {
         if (link_pv == null)
         {
-            Plugin.getLogger().log(Level.FINE,
+            logger.log(Level.FINE,
                     "{0} already disposed", pv_name);
             return;
         }
         else
         {
-            Plugin.getLogger().log(Level.FINE,
+            logger.log(Level.FINE,
                     "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
         }
         disposeLinkPV();
@@ -396,7 +398,7 @@ class PVTreeItem
         // list of links to read
         if (links_to_read.size() <= 0)
         {
-            Plugin.getLogger().log(Level.FINE,
+            logger.log(Level.FINE,
                     "{0} update without active link?",link_pv.getName());
             return;
         }
