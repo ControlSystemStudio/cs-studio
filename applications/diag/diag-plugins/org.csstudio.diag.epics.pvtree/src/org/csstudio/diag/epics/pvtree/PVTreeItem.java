@@ -11,7 +11,7 @@ import static org.csstudio.diag.epics.pvtree.Plugin.logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -104,36 +104,32 @@ class PVTreeItem
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
      */
-    private final List<String> links_to_read = new CopyOnWriteArrayList<>();
+    private final ConcurrentLinkedQueue<String> links_to_read = new ConcurrentLinkedQueue<>();
 
     /** Listener to link_pv */
     private final StringListener link_listener = new StringListener()
     {
         @Override
-        public void handleText(final String text)
+        public void handleText(String text)
         {
-            link_value = text;
-
-            // TODO What if value is a constant number?
-            // TODO Clear severity?
-
             // The value could be
             // a) a record name followed by "... NPP NMS". Remove that.
             // b) a hardware input/output "@... " or "#...". Keep that.
-            if (link_value.length() > 1 &&
-                link_value.charAt(0) != '@' &&
-                link_value.charAt(0) != '#')
+            if (text.length() > 1 &&
+                    text.charAt(0) != '@' &&
+                            text.charAt(0) != '#')
             {
-                int i = link_value.indexOf(' ');
+                int i = text.indexOf(' ');
                 if (i > 0)
-                    link_value = link_value.substring(0, i);
+                    text = text.substring(0, i);
             }
+            link_value = text;
             updateLink();
         }
     };
 
     /** Used to read the links of this pv. */
-    private PV link_pv = null;
+    private AtomicReference<PV> link_pv = new AtomicReference<>();
 
     /** Link's value */
     private volatile String link_value;
@@ -282,14 +278,18 @@ class PVTreeItem
         return true;
     }
 
-    /** Delete the link_pv */
-    private void disposeLinkPV()
+    /** Delete the link_pv
+     *  @return Name of link PV that was disposed, <code>null</code> if no PV to dispose
+     */
+    private String disposeLinkPV()
     {
-        if (link_pv != null)
-        {
-            PVPool.releasePV(link_pv);
-            link_pv = null;
-        }
+        final PV pv = link_pv.getAndSet(null);
+        if (pv == null)
+            return null;
+        final String name = pv.getName();
+        pv.removeListener(link_listener);
+        PVPool.releasePV(pv);
+        return name;
     }
 
     /** @return Returns the name of this PV. */
@@ -360,13 +360,13 @@ class PVTreeItem
         // Probably superfluous, but can't hurt
         disposeLinkPV();
         // Any more links to read?
-        if (links_to_read.size() <= 0)
+        final String field = links_to_read.peek();
+        if (field == null)
             return;
-        final String field = links_to_read.get(0);
         final String link_name = record_name + "." + field;
         try
         {
-            link_pv = createPV(link_name, link_listener);
+            link_pv.set(createPV(link_name, link_listener));
         }
         catch (Exception e)
         {
@@ -378,31 +378,23 @@ class PVTreeItem
     private void updateLink()
     {
         // Only one update
-        link_pv.removeListener(link_listener);
-
-
-        if (link_pv == null)
+        final String link_name = disposeLinkPV();
+        if (link_name == null)
         {
-            logger.log(Level.FINE,
-                    "{0} already disposed", pv_name);
+            logger.log(Level.FINE, "{0} already disposed link", pv_name);
             return;
         }
         else
-        {
-            logger.log(Level.FINE,
-                    "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
-        }
-        disposeLinkPV();
+            logger.log(Level.FINE, "{0} received ''{1}''", new Object[] { link_name, link_value });
 
         // Remove field for which we received update from
         // list of links to read
-        if (links_to_read.size() <= 0)
+        final String field = links_to_read.poll();
+        if (field == null)
         {
-            logger.log(Level.FINE,
-                    "{0} update without active link?",link_pv.getName());
+            logger.log(Level.FINE, "{0} update without active link?", link_name);
             return;
         }
-        final String field = links_to_read.remove(0);
         // If there is a value in the link, display this
         // (and sub-items)
         // TODO: This is not 100% correct. If a link happens to contain
