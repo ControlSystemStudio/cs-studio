@@ -96,6 +96,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
         switch (severity)
         {
         case UNDEFINED:
+            return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
         case INVALID:
             return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
         case MAJOR:

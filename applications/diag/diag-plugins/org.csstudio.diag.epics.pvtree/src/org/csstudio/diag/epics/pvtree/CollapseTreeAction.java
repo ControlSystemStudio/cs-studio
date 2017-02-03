@@ -30,6 +30,10 @@ public class CollapseTreeAction extends Action
     @Override
     public void run()
     {
+        final PVTreeModel model = (PVTreeModel) viewer.getInput();
+
+        System.out.println("Items: " + model.getItemCount());
+
         viewer.collapseAll();
 
         // While working on earlier iteration of the alarm tree,

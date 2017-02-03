@@ -305,4 +305,18 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
                 viewer.refresh(item);
         });
     }
+
+    public int getItemCount()
+    {   // Root itself
+        return 1 + getItemCount(root);
+    }
+
+    private int getItemCount(final PVTreeItem item)
+    {
+        final PVTreeItem[] links = item.getLinks();
+        int count = links.length;
+        for (PVTreeItem link : links)
+            count += getItemCount(link);
+        return count;
+    }
 }

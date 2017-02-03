@@ -440,6 +440,8 @@ class PVTreeItem
             b.append(" ").append(CONSTANT_VALUE);
         else if (value != null)
             b.append("  =  ").append(value);
+        else
+            b.append(" [DISCONNECTED]");
         return b.toString();
     }
 }
