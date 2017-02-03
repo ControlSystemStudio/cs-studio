@@ -72,7 +72,7 @@ class PVTreeItem
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
     /** Listener to value updates for this item */
-    final private PVListener value_listener = new PVListenerAdapter()
+    private final PVListener value_listener = new PVListenerAdapter()
     {
         @Override
         public void valueChanged(final PV pv, final VType pv_value)
@@ -104,11 +104,39 @@ class PVTreeItem
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
      */
-    final private List<String> links_to_read = new CopyOnWriteArrayList<>();
+    private final List<String> links_to_read = new CopyOnWriteArrayList<>();
+
+    /** Listener to link_pv */
+    private final StringListener link_listener = new StringListener()
+    {
+        @Override
+        public void handleText(final String text)
+        {
+            link_value = text;
+
+            // TODO What if value is a constant number?
+            // TODO Clear severity?
+
+            // The value could be
+            // a) a record name followed by "... NPP NMS". Remove that.
+            // b) a hardware input/output "@... " or "#...". Keep that.
+            if (link_value.length() > 1 &&
+                link_value.charAt(0) != '@' &&
+                link_value.charAt(0) != '#')
+            {
+                int i = link_value.indexOf(' ');
+                if (i > 0)
+                    link_value = link_value.substring(0, i);
+            }
+            updateLink();
+        }
+    };
 
     /** Used to read the links of this pv. */
     private PV link_pv = null;
-    private String link_value;
+
+    /** Link's value */
+    private volatile String link_value;
 
     /** Tree item children, populated with info from the input links. */
     private List<PVTreeItem> links = new ArrayList<>();
@@ -240,38 +268,6 @@ class PVTreeItem
         disposeTypePV();
     }
 
-    /** @return PV for the given name */
-    private PV createLinkPV(final String name) throws Exception
-    {
-        final PVListener listener = new StringListener()
-        {
-            @Override
-            public void handleText(final String text)
-            {
-                link_value = text;
-
-                // TODO What if value is a constant number?
-                // TODO Clear severity?
-
-                // The value could be
-                // a) a record name followed by "... NPP NMS". Remove that.
-                // b) a hardware input/output "@... " or "#...". Keep that.
-                if (link_value.length() > 1 &&
-                    link_value.charAt(0) != '@' &&
-                    link_value.charAt(0) != '#')
-                {
-                    int i = link_value.indexOf(' ');
-                    if (i > 0)
-                        link_value = link_value.substring(0, i);
-                }
-                // Only one update
-                link_pv.removeListener(this);
-                updateLink();
-            }
-        };
-        return createPV(name, listener);
-    }
-
     /** Delete the type_pv
      *  @return <code>true</code> if disposing, <code>false</code> if was already disposed
      */
@@ -370,7 +366,7 @@ class PVTreeItem
         final String link_name = record_name + "." + field;
         try
         {
-            link_pv = createLinkPV(link_name);
+            link_pv = createPV(link_name, link_listener);
         }
         catch (Exception e)
         {
@@ -381,6 +377,10 @@ class PVTreeItem
     /** Thread-safe handling of the 'link_pv' update. */
     private void updateLink()
     {
+        // Only one update
+        link_pv.removeListener(link_listener);
+
+
         if (link_pv == null)
         {
             logger.log(Level.FINE,
