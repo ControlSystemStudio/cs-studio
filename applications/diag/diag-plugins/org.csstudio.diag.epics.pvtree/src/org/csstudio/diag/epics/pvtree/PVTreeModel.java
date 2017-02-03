@@ -35,7 +35,9 @@ import org.eclipse.swt.widgets.Tree;
 class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 {
     /** The view to which we are connected. */
-    final private TreeViewer viewer;
+    private final TreeViewer viewer;
+
+    private final TreeValueUpdateThrottle value_throttle;
 
     /** Root PV of the tree */
     private PVTreeItem root;
@@ -54,6 +56,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     PVTreeModel(final TreeViewer viewer) throws Exception
     {
         this.viewer = viewer;
+        value_throttle = new TreeValueUpdateThrottle(viewer);
         field_info = Preferences.getFieldInfo();
         root = null;
     }
@@ -179,6 +182,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     @Override
     public void dispose()
     {
+        value_throttle.shutdown();
         if (root != null)
         {
             logger.fine("PVTreeModel disposed");
@@ -234,19 +238,20 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             item.getSeverity() != AlarmSeverity.NONE)
             frozen = true;
 
-        final Tree tree = viewer.getTree();
-        if (tree.isDisposed())
-            return;
+        value_throttle.scheduleUpdate(item);
 
-        tree.getDisplay().asyncExec(() ->
+        if (frozen && !was_frozen)
         {
+            final Tree tree = viewer.getTree();
             if (tree.isDisposed())
                 return;
-
-            viewer.update(item, null);
-            if (frozen && !was_frozen)
+            tree.getDisplay().asyncExec(() ->
+            {
+                if (tree.isDisposed())
+                    return;
                 tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
-        });
+            });
+        }
     }
 
     /** Used by item to refresh the tree from the item on down. */

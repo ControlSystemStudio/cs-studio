@@ -27,7 +27,7 @@ public class Preferences
     public static double getUpdatePeriod()
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
-        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.1, null);
+        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.2, null);
     }
 
     /** @return Max number of alarm PVs to reveal */
