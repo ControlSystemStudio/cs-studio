@@ -9,9 +9,9 @@ package org.csstudio.diag.epics.pvtree;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -135,7 +135,7 @@ class PVTreeItem
     private volatile String link_value;
 
     /** Tree item children, populated with info from the input links. */
-    private List<PVTreeItem> links = new ArrayList<>();
+    private List<PVTreeItem> links = new CopyOnWriteArrayList<>();
 
     /** Create a new PV tree item.
      *  @param model The model to which this whole tree belongs.
