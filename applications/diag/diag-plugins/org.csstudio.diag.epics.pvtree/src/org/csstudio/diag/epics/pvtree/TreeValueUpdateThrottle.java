@@ -49,6 +49,14 @@ public class TreeValueUpdateThrottle
         }
     }
 
+    public void clearPendingUpdates()
+    {
+        synchronized (updateable)
+        {
+            updateable.clear();
+        }
+    }
+
     private void doRun()
     {
         final Tree tree = viewer.getTree();

@@ -351,6 +351,7 @@ class PVTreeItem
                     "{0} has unknown record type {1}", new Object[] { pv_name, type });
             return;
         }
+        model.incrementLinks(links_to_read.size());
         getNextLink();
     }
 
@@ -405,6 +406,13 @@ class PVTreeItem
             new PVTreeItem(model, PVTreeItem.this, field, link_value);
             model.itemChanged(PVTreeItem.this);
         }
+        // This could decrement the links read so far to zero,
+        // since the new PVTreeItem just created has not
+        // started to request its links.
+        // Tree will thus expand a few times,
+        // whenever a bunch of links have resolved,
+        // but at least not for every single change
+        model.decrementLinks();
         getNextLink();
     }
 
