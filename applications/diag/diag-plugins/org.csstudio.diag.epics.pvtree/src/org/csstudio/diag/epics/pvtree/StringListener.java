@@ -51,5 +51,4 @@ abstract public class StringListener extends PVListenerAdapter
     {
         handleError(pv.getName() + " disconnected");
     }
-
 };

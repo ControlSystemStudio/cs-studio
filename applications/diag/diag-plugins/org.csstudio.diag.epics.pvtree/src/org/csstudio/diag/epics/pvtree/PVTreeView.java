@@ -135,14 +135,6 @@ public class PVTreeView extends ViewPart
             }
         });
         new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
-        // pv_name_helper =
-        // new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-        // PV_LIST_TAG, pv_name)
-        // {
-        // @Override
-        // public void newSelection(String new_pv_name)
-        // { setPVName(new_pv_name); }
-        // };
 
         final Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();

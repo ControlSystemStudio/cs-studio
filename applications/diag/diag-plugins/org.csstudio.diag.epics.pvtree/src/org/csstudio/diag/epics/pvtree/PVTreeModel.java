@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Tree;
-import org.diirt.vtype.AlarmSeverity;
 
 /** The PV Tree Model
  *  <p>
@@ -55,7 +55,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         root = null;
     }
 
-    /** @return Field info for all record types
+    /** @return Map of record type to fields of that record type
      *  @see FieldParser
      */
     Map<String, List<String>> getFieldInfo()

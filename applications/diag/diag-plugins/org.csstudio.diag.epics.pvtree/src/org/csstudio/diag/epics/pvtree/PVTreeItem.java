@@ -58,6 +58,9 @@ class PVTreeItem
     /** Alarm received while updates might have been were frozen */
     private volatile AlarmSeverity current_severity = AlarmSeverity.UNDEFINED;
 
+    /** Marker used for values that are not from PV but constant */
+    private static final String CONSTANT_VALUE = Messages.Constant;
+
     /** Most recent value to show (may be frozen). */
     private volatile String value = null;
 
@@ -92,14 +95,14 @@ class PVTreeItem
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
      */
-    final private ArrayList<String> links_to_read = new ArrayList<String>();
+    final private List<String> links_to_read = new ArrayList<>();
 
     /** Used to read the links of this pv. */
     private PV link_pv = null;
     private String link_value;
 
     /** Tree item children, populated with info from the input links. */
-    private ArrayList<PVTreeItem> links = new ArrayList<PVTreeItem>();
+    private List<PVTreeItem> links = new ArrayList<>();
 
     /** Create a new PV tree item.
      *  @param model The model to which this whole tree belongs.
@@ -138,8 +141,11 @@ class PVTreeItem
         // Hardware links "@vme..." or constant numbers "-12.3"
         // cause us to stop here:
         if (! PVNameFilter.isPvName(pv_name))
-        {
+        {   // No PV
             pv = null;
+            // Clear alarm
+            severity = AlarmSeverity.NONE;
+            value = CONSTANT_VALUE;
             return;
         }
 
@@ -233,6 +239,10 @@ class PVTreeItem
             public void handleText(final String text)
             {
                 link_value = text;
+
+                // TODO What if value is a constant number?
+                // TODO Clear severity?
+
                 // The value could be
                 // a) a record name followed by "... NPP NMS". Remove that.
                 // b) a hardware input/output "@... " or "#...". Keep that.
@@ -306,29 +316,6 @@ class PVTreeItem
     public boolean hasLinks()
     {
         return links.size() > 0;
-    }
-
-    /** @return Returns a String. No really, it does! */
-    @Override
-    public String toString()
-    {
-        StringBuffer b = new StringBuffer();
-        b.append(info);
-        b.append(" '");
-        b.append(pv_name);
-        b.append("'");
-        if (type != null)
-        {
-            b.append("  (");
-            b.append(type);
-            b.append(")");
-        }
-        if (value != null)
-        {
-            b.append("  =  ");
-            b.append(value);
-        }
-        return b.toString();
     }
 
     /** Thread-safe handling of the 'type' update. */
@@ -425,5 +412,20 @@ class PVTreeItem
         value = current_value;
         severity = current_severity;
         model.itemUpdated(PVTreeItem.this);
+    }
+
+    /** @return Returns a String. No really, it does! */
+    @Override
+    public String toString()
+    {
+        final StringBuffer b = new StringBuffer();
+        b.append(info).append(" '").append(pv_name).append("'");
+        if (type != null)
+            b.append("  (").append(type).append(")");
+        if (value == CONSTANT_VALUE)
+            b.append(" ").append(CONSTANT_VALUE);
+        else if (value != null)
+            b.append("  =  ").append(value);
+        return b.toString();
     }
 }

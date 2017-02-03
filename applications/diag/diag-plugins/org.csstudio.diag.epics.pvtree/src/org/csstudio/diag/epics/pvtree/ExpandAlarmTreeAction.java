@@ -34,6 +34,16 @@ public class ExpandAlarmTreeAction extends Action
     {
         final PVTreeModel model = (PVTreeModel) viewer.getInput();
         final List<PVTreeItem> pvs = model.getAlarmPVs();
+
+
+        System.out.println("Expanded: ");
+        for (Object pv : viewer.getExpandedElements())
+            System.out.println(pv);
+
+        System.out.println("PVS in alarm: ");
+        for (PVTreeItem pv : pvs)
+            System.out.println(pv);
+
         viewer.setExpandedElements(pvs.toArray(new PVTreeItem[pvs.size()]));
     }
 }
