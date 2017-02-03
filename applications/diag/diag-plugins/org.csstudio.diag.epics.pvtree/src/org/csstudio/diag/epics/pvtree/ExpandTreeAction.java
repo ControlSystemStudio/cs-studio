@@ -40,10 +40,11 @@ public class ExpandTreeAction extends Action
         tree.setRedraw(true);
     }
 
-    private void expand(TreeItem item)
+    private void expand(final TreeItem item)
     {
         item.setExpanded(true);
-        for (int i=0; i<item.getItemCount(); ++i)
+        final int count = item.getItemCount();
+        for (int i=0; i<count; ++i)
             expand(item.getItem(i));
     }
 }

@@ -250,6 +250,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Used by item to refresh the tree from the item on down. */
     public void itemChanged(final PVTreeItem item)
     {
+        System.out.println("Item changed: " + item);
+
         final Tree tree = viewer.getTree();
         if (tree.isDisposed())
             return;

@@ -1,8 +1,8 @@
+# Record with links that goes into alarm
 record(calc, "ramp")
 {
     field(INPA, "ramp")
     field(INPB, "10")
-    field(INPC, "broken_link")
     field(CALC, "A<B?A+1:0")
     field(HSV,  "MINOR")
     field(HIGH, "8")
@@ -10,9 +10,9 @@ record(calc, "ramp")
     field(HIHI, "9")
 }
 
-record(calc, "tree")
+# Record that links, but doesn't inherit the alarm
+record(ai, "tree")
 {
-    field(INPA, "ramp PP MS")
-    field(SCAN, "10 second")
+    field(INP, "ramp PP NMS")
+    field(SCAN, "2 second")
 }
-    
