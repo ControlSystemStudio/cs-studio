@@ -104,9 +104,9 @@ public class PVTreeView extends ViewPart
 
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new TreeModeAction(model));
-        toolbar.add(new CollapseTreeAction(viewer.getTree()));
+        toolbar.add(new CollapseTreeAction(viewer));
         toolbar.add(new ExpandAlarmTreeAction(viewer));
-        toolbar.add(new ExpandTreeAction(viewer.getTree()));
+        toolbar.add(new ExpandTreeAction(viewer));
     }
 
     private void createGUI(final Composite parent)

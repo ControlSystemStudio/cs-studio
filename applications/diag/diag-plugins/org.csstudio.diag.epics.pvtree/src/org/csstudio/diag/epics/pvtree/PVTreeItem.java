@@ -177,7 +177,7 @@ class PVTreeItem
         {   // No PV
             pv = null;
             // Clear alarm
-            severity = AlarmSeverity.NONE;
+            severity = null;
             value = CONSTANT_VALUE;
             return;
         }

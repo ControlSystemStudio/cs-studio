@@ -161,7 +161,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
      */
     private void addAlarmPVs(final List<PVTreeItem> alarms, final PVTreeItem item)
     {
-        if (item.getSeverity() != AlarmSeverity.NONE)
+        final AlarmSeverity severity = item.getSeverity();
+        if (severity != null  &&  severity != AlarmSeverity.NONE)
             alarms.add(item);
         for (PVTreeItem sub : item.getLinks())
             addAlarmPVs(alarms, sub);
@@ -250,7 +251,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Used by item to refresh the tree from the item on down. */
     public void itemChanged(final PVTreeItem item)
     {
-        System.out.println("Item changed: " + item);
+//        System.out.println("Item changed: " + item);
 
         final Tree tree = viewer.getTree();
         if (tree.isDisposed())
