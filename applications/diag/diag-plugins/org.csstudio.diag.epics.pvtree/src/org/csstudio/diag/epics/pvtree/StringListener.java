@@ -38,11 +38,11 @@ abstract public class StringListener extends PVListenerAdapter
         {
             handleText(VTypeHelper.format(value));
         }
-        catch (Exception e)
+        catch (Throwable ex)
         {
             Plugin.getLogger().log(Level.SEVERE,
-                    "PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
-                    e);
+                    "PV Listener error for '" + pv.getName() + "': " + ex.getMessage(),
+                    ex);
         }
     }
 

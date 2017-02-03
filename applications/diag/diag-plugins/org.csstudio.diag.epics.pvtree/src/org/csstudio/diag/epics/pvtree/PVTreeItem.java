@@ -9,6 +9,8 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
@@ -50,7 +52,7 @@ class PVTreeItem
     private final String record_name;
 
     /** The PV used for getting the current value. */
-    private PV pv;
+    private volatile PV pv;
 
     /** Value received while updates might have been were frozen */
     private volatile String current_value = null;
@@ -87,15 +89,20 @@ class PVTreeItem
         }
     };
 
+    /** Listener to type_pv */
+    private volatile StringListener type_listener;
+
     /** The PV used for getting the record type. */
-    private PV type_pv;
-    private String type;
+    private AtomicReference<PV> type_pv = new AtomicReference<>();
+
+    /** Type received from type_pv */
+    private volatile String type;
 
     /** Array of fields to read for this record type.
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
      */
-    final private List<String> links_to_read = new ArrayList<>();
+    final private List<String> links_to_read = new CopyOnWriteArrayList<>();
 
     /** Used to read the links of this pv. */
     private PV link_pv = null;
@@ -165,7 +172,7 @@ class PVTreeItem
         // follow its input links.
         // Behavior is not fully predictable:
         // When PV is in tree multiple times, instances receive their RTYP
-        // into at various times. Once they have it, there are no more loops.
+        // info at various times. Once they have it, there are no more loops.
         // Until they have it, they'll look for it in parallel.
         final PVTreeItem other = model.findPV(pv_name);
         if (other != null  &&  other.type != null)
@@ -174,9 +181,12 @@ class PVTreeItem
             Plugin.getLogger().fine("Known item, not traversing inputs (again)");
             return;
         }
+        // Determine record type.
+        // This is where this tool starts to only support IOCs with records,
+        // since generic CA servers lack ".RTYP"
         try
         {
-            final PVListener listener = new StringListener()
+            type_listener = new StringListener()
             {
                 @Override
                 public void handleText(final String text)
@@ -184,21 +194,19 @@ class PVTreeItem
                     // type should be a text.
                     // If it starts with a number, it's probably not an
                     // EPICS record type but a simulated PV
-                    final char first_char = text.charAt(0);
+                    final char first_char = text.length() > 0  ?  text.charAt(0)  : '\0';
                     if (first_char >= 'a' && first_char <= 'z')
                         type = text;
                     else
                         type = Messages.UnknownPVType;
-                    // Only need one update
-                    type_pv.removeListener(this);
                     updateType();
                 }
             };
-            type_pv = createPV(record_name + ".RTYP", listener);
+            type_pv.set(createPV(record_name + ".RTYP", type_listener));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e);
+            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , ex);
         }
     }
 
@@ -262,14 +270,18 @@ class PVTreeItem
         return createPV(name, listener);
     }
 
-    /** Delete the type_pv */
-    private void disposeTypePV()
+    /** Delete the type_pv
+     *  @return <code>true</code> if disposing, <code>false</code> if was already disposed
+     */
+    private boolean disposeTypePV()
     {
-        if (type_pv != null)
-        {
-            PVPool.releasePV(type_pv);
-            type_pv = null;
-        }
+        final PV pv = type_pv.getAndSet(null);
+        if (pv == null)
+            return false;
+        pv.removeListener(type_listener);
+        type_listener = null;
+        PVPool.releasePV(pv);
+        return true;
     }
 
     /** Delete the link_pv */
@@ -323,11 +335,11 @@ class PVTreeItem
     {
         Plugin.getLogger().log(Level.FINE,
                 "{0} received type {1}", new Object[] { pv_name, type });
-        // Already disposed?
-        if (type_pv == null)
-            return;
+
         // We got the type, so close the connection.
-        disposeTypePV();
+        if (! disposeTypePV())
+            return; // Already disposed
+
         // Display the received type of this record.
         model.itemChanged(PVTreeItem.this);
 
