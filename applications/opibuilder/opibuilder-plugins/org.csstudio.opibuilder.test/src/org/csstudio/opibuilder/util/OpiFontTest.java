@@ -38,6 +38,7 @@ public class OpiFontTest {
         protected boolean getDefaultIsInPixels() {
             return false;
         }
+        @Override
         protected Point getDPI() {
             return DUMMY_DPI;
         }
@@ -49,7 +50,7 @@ public class OpiFontTest {
     }
 
     @Test
-    public void testCopyConstructor() {
+    public void testCopyConstructorCreatesNewObjectWithSameHashCodeThatEvaluatesAsEqual() {
         OPIFont copyFont = new TestableOPIFont(testOPIFont);
         assertEquals(testOPIFont, copyFont);
         assertTrue(testOPIFont != copyFont);
@@ -57,13 +58,13 @@ public class OpiFontTest {
     }
 
     @Test
-    public void testSizeInPoints() {
+    public void testSizeInPointsIsEqualToRawFontData() {
         // Returned size should be 10 points
         assertEquals(FONT_SIZE, testOPIFont.getFontData().getHeight());
     }
 
     @Test
-    public void testSizeInPixels() throws Exception {
+    public void testSizeInPixelsIsDifferentToRawFontData() throws Exception {
         // Set font size to be in pixels
         testOPIFont.setSizeInPixels(true);
         // Returned size should be 10 pixels converted to points based on the display DPI
@@ -72,7 +73,7 @@ public class OpiFontTest {
     }
 
     @Test
-    public void testGetRawFontData() throws Exception {
+    public void testGetRawFontDataDoesNotChangeIfSizeInPixelsIsTrue() throws Exception {
         // Set font size to be in pixels
         testOPIFont.setSizeInPixels(true);
         // Returned size should still be 10 pixels
