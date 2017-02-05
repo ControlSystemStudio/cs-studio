@@ -7,8 +7,14 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
+import java.io.FileInputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -27,7 +33,10 @@ public class Preferences
     public static double getUpdatePeriod()
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
-        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.2, null);
+        double period = 0.2;
+        if (preferences != null)
+            period = preferences.getDouble(Plugin.ID, UPDATE_PERIOD, period, null);
+        return period;
     }
 
     /** @return Max number of alarm PVs to reveal */
@@ -41,13 +50,26 @@ public class Preferences
      *  @throws Exception on error in the preference setting
      *  @see FieldParser
      */
-    public static Map<String, List<String>> getFieldInfo() throws Exception
+    public static Map<String, List<String>> getFieldInfo()
     {
-        final IPreferencesService preferences = Platform.getPreferencesService();
-        final String fields_pref =
-            preferences.getString(Plugin.ID, FIELDS, null, null);
-        if (fields_pref == null)
-            throw new Exception("Missing preference setting");
-        return FieldParser.parse(fields_pref);
+        try
+        {
+            final IPreferencesService preferences = Platform.getPreferencesService();
+            final String fields_pref;
+            if (preferences == null)
+            {   // For unit tests without OSGi, read local file
+                final Properties props = new Properties();
+                props.load(new FileInputStream("../org.csstudio.diag.epics.pvtree/preferences.ini"));
+                fields_pref = props.getProperty(FIELDS);
+            }
+            else
+                fields_pref = preferences.getString(Plugin.ID, FIELDS, null, null);
+            return FieldParser.parse(fields_pref);
+        }
+        catch (Exception ex)
+        {
+            logger.log(Level.SEVERE, "Cannot get field information", ex);
+        }
+        return Collections.emptyMap();
     }
 }

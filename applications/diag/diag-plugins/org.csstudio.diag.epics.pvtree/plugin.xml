@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.csstudio.diag.epics.pvtree.PVTreeItem"
+            adaptableType="org.csstudio.diag.epics.pvtree.model.TreeModelItem"
             class="org.csstudio.diag.epics.pvtree.PVTreeItemAdapter">
          <adapter
                type="java.lang.String">
@@ -23,7 +23,7 @@
       <view
             allowMultiple="true"
             category="org.csstudio"
-            class="org.csstudio.diag.epics.pvtree.PVTreeView"
+            class="org.csstudio.diag.epics.pvtree.swt.PVTreeView"
             icon="icons/pvtree.png"
             id="org.csstudio.diag.epics.pvtree.PVTreeView"
             name="%PVTree">

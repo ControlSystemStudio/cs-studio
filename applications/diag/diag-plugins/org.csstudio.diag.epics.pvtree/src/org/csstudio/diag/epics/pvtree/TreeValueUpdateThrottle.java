@@ -9,28 +9,35 @@ package org.csstudio.diag.epics.pvtree;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Tree;
-
-/** Throttle for tree viewer 'update' calls
+/** Throttle for tree UI 'update' of a tree item value
+ *
+ *  <p>Structure (new links) need to be represented
+ *  to allow reacting to updates of their values,
+ *  but the value updates itself can be throttled.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TreeValueUpdateThrottle
+public class TreeValueUpdateThrottle<T>
 {
     private final static long update_period_ms = Math.round(Preferences.getUpdatePeriod() * 1000);
-    private final TreeViewer viewer;
-    private final Set<PVTreeItem> updateable = new LinkedHashSet<>();
+    private final Consumer<Collection<T>> updater;
+    private final Set<T> updateable = new LinkedHashSet<>();
     private final Thread throttle_thread;
     private volatile boolean run = true;
 
-    public TreeValueUpdateThrottle(final TreeViewer viewer)
+    /** @param updater Will be called with accumulated fields to update */
+    public TreeValueUpdateThrottle(final Consumer<Collection<T>> updater)
     {
-        this.viewer = viewer;
+        this.updater = updater;
         throttle_thread = new Thread(this::doRun);
         throttle_thread.setName("PVTreeUpdates");
         throttle_thread.setDaemon(true);
@@ -40,7 +47,7 @@ public class TreeValueUpdateThrottle
     /** Request a tree viewer 'update'
      *  @param item Item to update
      */
-    public void scheduleUpdate(final PVTreeItem item)
+    public void scheduleUpdate(final T item)
     {
         synchronized (updateable)
         {
@@ -59,29 +66,23 @@ public class TreeValueUpdateThrottle
 
     private void doRun()
     {
-        final Tree tree = viewer.getTree();
         try
         {
+            final List<T> items = new ArrayList<>();
             while (run)
             {
-                final PVTreeItem[] items;
+                items.clear();
                 synchronized (updateable)
                 {
                     while (run  &&  updateable.isEmpty())
                         updateable.wait();
-                    items = updateable.toArray(new PVTreeItem[updateable.size()]);
+                    items.addAll(updateable);
                     updateable.clear();
                 }
-                if (! run  ||  tree.isDisposed())
+                if (! run)
                     return;
 
-                tree.getDisplay().asyncExec(() ->
-                {
-                    if (tree.isDisposed())
-                        return;
-                    for (PVTreeItem item : items)
-                        viewer.update(item, null);
-                });
+                updater.accept(items);
 
                 // Suppress updates
                 Thread.sleep(update_period_ms);

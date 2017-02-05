@@ -9,6 +9,8 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.List;
 
+import org.csstudio.diag.epics.pvtree.model.TreeModel;
+import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -34,8 +36,8 @@ public class ExpandAlarmTreeAction extends Action
     @Override
     public void run()
     {
-        final PVTreeModel model = (PVTreeModel) viewer.getInput();
-        List<PVTreeItem> pvs = model.getAlarmPVs();
+        final TreeModel model = (TreeModel) viewer.getInput();
+        List<TreeModelItem> pvs = model.getAlarmItems();
 
         if (pvs.size() > max)
         {
@@ -47,7 +49,7 @@ public class ExpandAlarmTreeAction extends Action
 
         viewer.collapseAll();
         // For each PV in alarm, expand its path
-        for (PVTreeItem pv : pvs)
+        for (TreeModelItem pv : pvs)
             viewer.reveal(pv);
     }
 }

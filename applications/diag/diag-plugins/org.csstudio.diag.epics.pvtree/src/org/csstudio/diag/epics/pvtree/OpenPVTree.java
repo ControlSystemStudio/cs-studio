@@ -8,6 +8,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.diag.epics.pvtree.swt.PVTreeView;
 import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;

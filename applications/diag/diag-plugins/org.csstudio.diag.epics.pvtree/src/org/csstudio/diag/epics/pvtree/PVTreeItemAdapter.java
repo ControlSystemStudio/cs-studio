@@ -8,6 +8,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /** Adapter from PV Tree model to {@link ProcessVariable}
@@ -30,7 +31,7 @@ public class PVTreeItemAdapter implements IAdapterFactory
     @Override
     public <T> T getAdapter(final Object adaptableObject, final Class<T> adapterType)
     {
-        final String pv_name = ((PVTreeItem)adaptableObject).getPVName();
+        final String pv_name = ((TreeModelItem)adaptableObject).getPVName();
         if (adapterType == String.class)
             return adapterType.cast(pv_name);
         else if (adapterType == ProcessVariable.class)

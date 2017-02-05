@@ -5,4 +5,6 @@ Bundle-SymbolicName: org.csstudio.diag.epics.pvtree.test
 Bundle-Version: 4.0.0.qualifier
 Fragment-Host: org.csstudio.diag.epics.pvtree;bundle-version="4.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.eclipse.fx.javafx
+Import-Package: org.eclipse.fx.ui.workbench3

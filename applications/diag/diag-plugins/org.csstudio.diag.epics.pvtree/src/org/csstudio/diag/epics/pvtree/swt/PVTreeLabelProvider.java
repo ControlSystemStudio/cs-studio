@@ -5,11 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.epics.pvtree;
+package org.csstudio.diag.epics.pvtree.swt;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
 import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -22,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-/** Label provider for PVTreeItem entries.
+/** Label provider for {@link TreeModelItem} entries.
  *  @author Kay Kasemir
  */
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
@@ -113,8 +114,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
      */
     private AlarmSeverity getSeverity(final Object element)
     {
-        if (element instanceof PVTreeItem)
-            return ((PVTreeItem)element).getSeverity();
+        if (element instanceof TreeModelItem)
+            return ((TreeModelItem)element).getSeverity();
         return null;
     }
 }
