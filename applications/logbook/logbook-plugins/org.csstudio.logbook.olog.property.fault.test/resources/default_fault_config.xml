@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<faultConfiguration>
+  <areas>Global Linac BR SR</areas>
+  <subsystems>Diagnostics EPS RF Controls</subsystems>
+  <devices>M01 M02 M03</devices>
+  <groups>
+    <group name="Controls" owner="Kunal Shroff" contact="shroffk@bnl.gov" />
+    <group name="Operations" owner="Reid Smith" contact="smithr@bnl.gov" />
+  </groups>
+</faultConfiguration>
