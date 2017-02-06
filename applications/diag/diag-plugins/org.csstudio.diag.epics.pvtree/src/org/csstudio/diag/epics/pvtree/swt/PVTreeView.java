@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2017 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
-/** Eclipse ViewPart for the EPICS PV Tree.
+/** Eclipse ViewPart for the {@link TreeModel}
+ *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTreeView extends ViewPart
 {
     /** View ID, defined in plugin.xml */
@@ -210,7 +212,7 @@ public class PVTreeView extends ViewPart
 
         viewer = new TreeViewer(tree);
         drillDownAdapter = new DrillDownAdapter(viewer);
-        viewer.setContentProvider(new TreeModelContentProvider(viewer, model));
+        viewer.setContentProvider(new TreeModelContentProvider());
         viewer.setLabelProvider(new PVTreeLabelProvider(tree));
         // One and only model _is_ the content.
         // Setting the Input will trigger refresh,

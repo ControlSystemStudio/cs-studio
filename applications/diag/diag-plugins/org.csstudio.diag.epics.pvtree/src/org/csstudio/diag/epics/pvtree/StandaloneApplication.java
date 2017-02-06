@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
@@ -24,6 +31,7 @@ import javafx.stage.Stage;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class StandaloneApplication implements IApplication
 {
     private Display display;
@@ -55,8 +63,6 @@ public class StandaloneApplication implements IApplication
     @Override
     public Object start(IApplicationContext context) throws Exception
     {
-        logger.info("EPICS PV Tree");
-
         final String[] argv = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         logger.log(Level.CONFIG, "Args: " + Arrays.toString(argv));
 
@@ -70,7 +76,6 @@ public class StandaloneApplication implements IApplication
 
         if (argv.length == 1)
             pv_name = argv[0];
-
 
         final Stage stage = initializeUI();
         final TreeModel model = new TreeModel();

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree.model;
 
 import java.util.ArrayList;
@@ -10,6 +17,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.csstudio.diag.epics.pvtree.Messages;
 import org.diirt.vtype.AlarmSeverity;
 
+/** Model of the PV Tree
+ *  @author Kay Kasemir
+ */
 public class TreeModel
 {
     private final AtomicReference<TreeModelItem> root = new AtomicReference<>();
@@ -24,7 +34,7 @@ public class TreeModel
     /** 'latched' = value updates should be ignored */
     private final AtomicBoolean latched = new AtomicBoolean();
 
-
+    /** @param listener Listener to add */
     public void addListener(final TreeModelListener listener)
     {
         listeners.add(listener);
@@ -54,6 +64,7 @@ public class TreeModel
                 listener.latchStateChanged(false);
     }
 
+    /** @return Root element */
     public TreeModelItem getRoot()
     {
         return root.get();
@@ -69,7 +80,7 @@ public class TreeModel
      *
      *  <p>Triggers tree expansion when no links left to resolve
      */
-    protected void decrementLinks()
+    void decrementLinks()
     {
         final int left = links_to_resolve.decrementAndGet();
         if (left > 0)
@@ -84,11 +95,13 @@ public class TreeModel
         return latched.get();
     }
 
+    /** @return Does the model latch updates when the root enters alarm state? */
     public boolean isLatchingOnAlarm()
     {
         return latch_alarm;
     }
 
+    /** @param latch Should the model latch updates when the root enters alarm state? */
     public void latchOnAlarm(final boolean latch)
     {
         latch_alarm = latch;
@@ -108,6 +121,7 @@ public class TreeModel
             unlatch(link);
     }
 
+    /** @return All items that are currently in alarm */
     public List<TreeModelItem> getAlarmItems()
     {
         final List<TreeModelItem> alarms = new ArrayList<>();
@@ -173,6 +187,7 @@ public class TreeModel
             listener.itemLinkAdded(item, new_item);
     }
 
+    /** Must be called to release PVs */
     public void dispose()
     {
         final TreeModelItem old = root.getAndSet(null);

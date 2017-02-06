@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree.jfx;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
@@ -26,6 +33,7 @@ import javafx.scene.paint.Color;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FXTree
 {
     protected final TreeModel model;
@@ -94,11 +102,13 @@ public class FXTree
         model.addListener(model_listener);
     }
 
+    /** @return JFX node that makes up this UI */
     public Node getNode()
     {
         return tree_view;
     }
 
+    /** @param pv_name PV name to show in tree */
     public void setPVName(String pv_name)
     {
         pv_name = pv_name.trim();
@@ -126,11 +136,13 @@ public class FXTree
         return node;
     }
 
+    /** @param expand Show all tree items? */
     public void expandAll(final boolean expand)
     {
         TreeHelper.setExpanded(tree_view, expand);
     }
 
+    /** Show all tree items that are in alarm */
     public void expandAlarms()
     {
         TreeHelper.setExpanded(tree_view, false);

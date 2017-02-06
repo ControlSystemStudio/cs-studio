@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree.model;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
@@ -18,13 +25,24 @@ import org.csstudio.vtype.pv.PVPool;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
+/** One 'item' in the PV Tree
+ *
+ *  <p>Typically a PV with value and maybe links.
+ *
+ *  <p>Also used for constants, like "INP=10"
+ *
+ *  @author Kay Kasemir
+ */
+@SuppressWarnings("nls")
 public class TreeModelItem
 {
+    /** Map of record type to fields for that record type */
     private final static Map<String, List<String>> field_info = Preferences.getFieldInfo();
 
     /** The model to which this whole tree belongs. */
     private final TreeModel model;
 
+    /** Parent item or <code>null</code> */
     private final TreeModelItem parent;
 
     /** The info provided by the parent or creator ("PV", "INPA", ...) */
@@ -57,9 +75,10 @@ public class TreeModelItem
     /** Most recent severity (may be frozen). */
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
+    /** Links */
     private final List<TreeModelItem> links = new CopyOnWriteArrayList<>();
 
-
+    /** PV for value of this item */
     private final AtomicReference<PV> value_pv = new AtomicReference<PV>();
     private final PVListener value_listener = new PVListenerAdapter()
     {
@@ -72,6 +91,7 @@ public class TreeModelItem
         }
     };
 
+    /** PV for type of this item (released after read once) */
     private AtomicReference<PV> type_pv = new AtomicReference<>();
     private final PVListener type_listener = new PVListenerAdapter()
     {
@@ -87,8 +107,10 @@ public class TreeModelItem
         }
     };
 
+    /** List of links to read (empty when done) */
     private final ConcurrentLinkedQueue<String> links_to_read = new ConcurrentLinkedQueue<>();
 
+    /** Current link to read (released when all links were read) */
     private AtomicReference<PV> link_pv = new AtomicReference<>();
     private final PVListener link_listener = new PVListenerAdapter()
     {
@@ -168,6 +190,7 @@ public class TreeModelItem
                 new Object[] { pv_name, record_name});
     }
 
+    /** @return Parent or <code>null</code> for root */
     public TreeModelItem getParent()
     {
         return parent;
@@ -319,7 +342,7 @@ public class TreeModelItem
         PVPool.releasePV(pv);
     }
 
-    public void dispose()
+    void dispose()
     {
         disposeValuePV();
         disposeLinkPV();

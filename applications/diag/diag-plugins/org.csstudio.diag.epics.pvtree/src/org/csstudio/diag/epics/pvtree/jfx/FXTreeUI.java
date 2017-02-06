@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree.jfx;
 
 import static org.csstudio.diag.epics.pvtree.Plugin.logger;
@@ -25,11 +32,13 @@ import javafx.scene.layout.Priority;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FXTreeUI extends BorderPane
 {
     private final FXTree tree;
     private final TextField pv_name;
 
+    /** @param model Model to represent */
     public FXTreeUI(final TreeModel model)
     {
         tree = new FXTree(model);
@@ -70,6 +79,7 @@ public class FXTreeUI extends BorderPane
         setCenter(tree.getNode());
     }
 
+    /** @param pv_name PV name to show in tree */
     public void setPVName(final String pv_name)
     {
         this.pv_name.setText(pv_name);

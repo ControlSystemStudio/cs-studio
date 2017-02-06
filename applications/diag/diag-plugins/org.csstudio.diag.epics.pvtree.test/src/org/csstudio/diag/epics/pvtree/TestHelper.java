@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.Collection;
@@ -10,6 +17,15 @@ import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 
+/** Helper for tests
+ *
+ *  <p>Hardcoded values for interactive demos
+ *  that require the db/test.db
+ *  and also access other site-specific PVs.
+ *
+ *  @author Kay Kasemir
+ */
+@SuppressWarnings("nls")
 public class TestHelper
 {
     public static void setupLogging()
