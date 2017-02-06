@@ -27,6 +27,7 @@ public class Preferences
 {
     public static final String UPDATE_PERIOD = "update_period";
     public static final String MAX_ALARM_PVs = "max_alarm_pvs";
+    public static final String READ_LONG_FIELDS = "read_long_fields";
     public static final String FIELDS = "fields";
 
     /** @return Max update period in seconds */
@@ -44,6 +45,16 @@ public class Preferences
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
         return preferences.getInt(Plugin.ID, MAX_ALARM_PVs, 100, null);
+    }
+
+    /** @return Read fields as long string? */
+    public static boolean readLongFields()
+    {
+        final IPreferencesService preferences = Platform.getPreferencesService();
+        boolean read_long = true;
+        if (preferences != null)
+            read_long = preferences.getBoolean(Plugin.ID, READ_LONG_FIELDS, read_long, null);
+        return read_long;
     }
 
     /** @return Field info for all record types

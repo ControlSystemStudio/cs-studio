@@ -39,6 +39,9 @@ public class TreeModelItem
     /** Map of record type to fields for that record type */
     private final static Map<String, List<String>> field_info = Preferences.getFieldInfo();
 
+    /** Read links as long fields? */
+    private final static boolean read_long_fields = Preferences.readLongFields();
+
     /** The model to which this whole tree belongs. */
     private final TreeModel model;
 
@@ -290,7 +293,9 @@ public class TreeModelItem
         if (field == null)
             return;
 
-        final String link_name = record_name + "." + field;
+        String link_name = record_name + "." + field;
+        if (read_long_fields)
+            link_name += "$";
         try
         {
             final PV pv = PVPool.getPV(link_name);
