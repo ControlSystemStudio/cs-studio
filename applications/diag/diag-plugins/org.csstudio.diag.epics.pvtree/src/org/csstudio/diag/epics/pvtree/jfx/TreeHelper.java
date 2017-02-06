@@ -71,8 +71,10 @@ public class TreeHelper
     public static void expandItemPath(final TreeItem<?> node)
     {
         TreeItem<?> parent = node.getParent();
-        if (parent != null)
+        while (parent != null)
+        {
             parent.setExpanded(true);
-        // XXX No need to traverse up the parent chain to expand to root?
+            parent = parent.getParent();
+        }
     }
 }

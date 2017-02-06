@@ -12,27 +12,23 @@ import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
 import org.csstudio.diag.epics.pvtree.model.TreeModelListener;
 
 import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
-/** JFX UI for {@link TreeModel}
+/** Basic JFX Tree for {@link TreeModel}
  *
  *  @author Kay Kasemir
  */
-public class TreeUI extends BorderPane
+public class FXTree
 {
-    private final TreeModel model;
+    protected final TreeModel model;
 
     private final Map<TreeModelItem, TreeItem<TreeModelItem>> model2ui = new ConcurrentHashMap<>();
 
@@ -88,23 +84,19 @@ public class TreeUI extends BorderPane
         }
     };
 
-    public TreeUI(final TreeModel model)
+    public FXTree(final TreeModel model)
     {
         this.model = model;
-
-        final Label label = new Label("PV:");
-        final TextField pv_name = new TextField();
-        pv_name.setPromptText("PV Name");
-        pv_name.setOnAction(event -> setPVName(pv_name.getText()));
 
         tree_view = new TreeView<>();
         tree_view.setCellFactory(cell -> new TreeModelItemCell());
 
-        HBox.setHgrow(pv_name, Priority.ALWAYS);
-        setTop(new HBox(5, label, pv_name));
-        setCenter(tree_view);
-
         model.addListener(model_listener);
+    }
+
+    public Node getNode()
+    {
+        return tree_view;
     }
 
     public void setPVName(String pv_name)

@@ -69,4 +69,28 @@
             file="tocChangelog.xml"
             primary="true"/>
    </extension>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.diag.epics.pvtree.StandaloneApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.diag.epics.pvtree.application"
+            name="EPICS PV Tree">
+         <property
+               name="appName"
+               value="EPICS PV Tree">
+         </property>
+      </product>
+   </extension>
 </plugin>
