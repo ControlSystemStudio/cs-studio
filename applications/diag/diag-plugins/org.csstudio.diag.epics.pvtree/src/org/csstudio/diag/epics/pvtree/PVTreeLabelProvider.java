@@ -10,6 +10,7 @@ package org.csstudio.diag.epics.pvtree;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -20,7 +21,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.vtype.AlarmSeverity;
 
 /** Label provider for PVTreeItem entries.
  *  @author Kay Kasemir
@@ -39,6 +39,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
         images.put(AlarmSeverity.MAJOR,
                 createImage(display, display.getSystemColor(SWT.COLOR_RED)));
         images.put(AlarmSeverity.INVALID,
+                createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
+        images.put(AlarmSeverity.UNDEFINED,
                 createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
 
         // Arrange for image disposal
@@ -93,6 +95,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
             return null;
         switch (severity)
         {
+        case UNDEFINED:
+            return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
         case INVALID:
             return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
         case MAJOR:

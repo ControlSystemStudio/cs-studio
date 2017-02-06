@@ -7,8 +7,12 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import java.util.ArrayList;
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
@@ -50,13 +54,16 @@ class PVTreeItem
     private final String record_name;
 
     /** The PV used for getting the current value. */
-    private PV pv;
+    private volatile PV pv;
 
     /** Value received while updates might have been were frozen */
     private volatile String current_value = null;
 
     /** Alarm received while updates might have been were frozen */
     private volatile AlarmSeverity current_severity = AlarmSeverity.UNDEFINED;
+
+    /** Marker used for values that are not from PV but constant */
+    private static final String CONSTANT_VALUE = Messages.Constant;
 
     /** Most recent value to show (may be frozen). */
     private volatile String value = null;
@@ -65,7 +72,7 @@ class PVTreeItem
     private volatile AlarmSeverity severity = AlarmSeverity.UNDEFINED;
 
     /** Listener to value updates for this item */
-    final private PVListener value_listener = new PVListenerAdapter()
+    private final PVListener value_listener = new PVListenerAdapter()
     {
         @Override
         public void valueChanged(final PV pv, final VType pv_value)
@@ -84,22 +91,51 @@ class PVTreeItem
         }
     };
 
+    /** Listener to type_pv */
+    private volatile StringListener type_listener;
+
     /** The PV used for getting the record type. */
-    private PV type_pv;
-    private String type;
+    private AtomicReference<PV> type_pv = new AtomicReference<>();
+
+    /** Type received from type_pv */
+    private volatile String type;
 
     /** Array of fields to read for this record type.
      *  Fields are removed as they are read, so in the end this
      *  array will be empty
      */
-    final private ArrayList<String> links_to_read = new ArrayList<String>();
+    private final ConcurrentLinkedQueue<String> links_to_read = new ConcurrentLinkedQueue<>();
+
+    /** Listener to link_pv */
+    private final StringListener link_listener = new StringListener()
+    {
+        @Override
+        public void handleText(String text)
+        {
+            // The value could be
+            // a) a record name followed by "... NPP NMS". Remove that.
+            // b) a hardware input/output "@... " or "#...". Keep that.
+            if (text.length() > 1 &&
+                    text.charAt(0) != '@' &&
+                            text.charAt(0) != '#')
+            {
+                int i = text.indexOf(' ');
+                if (i > 0)
+                    text = text.substring(0, i);
+            }
+            link_value = text;
+            updateLink();
+        }
+    };
 
     /** Used to read the links of this pv. */
-    private PV link_pv = null;
-    private String link_value;
+    private AtomicReference<PV> link_pv = new AtomicReference<>();
+
+    /** Link's value */
+    private volatile String link_value;
 
     /** Tree item children, populated with info from the input links. */
-    private ArrayList<PVTreeItem> links = new ArrayList<PVTreeItem>();
+    private List<PVTreeItem> links = new CopyOnWriteArrayList<>();
 
     /** Create a new PV tree item.
      *  @param model The model to which this whole tree belongs.
@@ -125,7 +161,7 @@ class PVTreeItem
         else
             record_name = pv_name;
 
-        Plugin.getLogger().log(Level.FINE,
+        logger.log(Level.FINE,
                 "New Tree item {0}, record name {1}",
                 new Object[] { pv_name, record_name});
 
@@ -138,8 +174,11 @@ class PVTreeItem
         // Hardware links "@vme..." or constant numbers "-12.3"
         // cause us to stop here:
         if (! PVNameFilter.isPvName(pv_name))
-        {
+        {   // No PV
             pv = null;
+            // Clear alarm
+            severity = null;
+            value = CONSTANT_VALUE;
             return;
         }
 
@@ -150,7 +189,7 @@ class PVTreeItem
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e);
+            logger.log(Level.SEVERE, "PV creation error" , e);
         }
 
         // Avoid loops.
@@ -159,18 +198,21 @@ class PVTreeItem
         // follow its input links.
         // Behavior is not fully predictable:
         // When PV is in tree multiple times, instances receive their RTYP
-        // into at various times. Once they have it, there are no more loops.
+        // info at various times. Once they have it, there are no more loops.
         // Until they have it, they'll look for it in parallel.
         final PVTreeItem other = model.findPV(pv_name);
         if (other != null  &&  other.type != null)
         {
             type = other.type;
-            Plugin.getLogger().fine("Known item, not traversing inputs (again)");
+            logger.fine("Known item, not traversing inputs (again)");
             return;
         }
+        // Determine record type.
+        // This is where this tool starts to only support IOCs with records,
+        // since generic CA servers lack ".RTYP"
         try
         {
-            final PVListener listener = new StringListener()
+            type_listener = new StringListener()
             {
                 @Override
                 public void handleText(final String text)
@@ -178,21 +220,19 @@ class PVTreeItem
                     // type should be a text.
                     // If it starts with a number, it's probably not an
                     // EPICS record type but a simulated PV
-                    final char first_char = text.charAt(0);
+                    final char first_char = text.length() > 0  ?  text.charAt(0)  : '\0';
                     if (first_char >= 'a' && first_char <= 'z')
                         type = text;
                     else
                         type = Messages.UnknownPVType;
-                    // Only need one update
-                    type_pv.removeListener(this);
                     updateType();
                 }
             };
-            type_pv = createPV(record_name + ".RTYP", listener);
+            type_pv.set(createPV(record_name + ".RTYP", type_listener));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e);
+            logger.log(Level.SEVERE, "PV.RTYP creation error" , ex);
         }
     }
 
@@ -224,52 +264,32 @@ class PVTreeItem
         disposeTypePV();
     }
 
-    /** @return PV for the given name */
-    private PV createLinkPV(final String name) throws Exception
+    /** Delete the type_pv
+     *  @return <code>true</code> if disposing, <code>false</code> if was already disposed
+     */
+    private boolean disposeTypePV()
     {
-        final PVListener listener = new StringListener()
-        {
-            @Override
-            public void handleText(final String text)
-            {
-                link_value = text;
-                // The value could be
-                // a) a record name followed by "... NPP NMS". Remove that.
-                // b) a hardware input/output "@... " or "#...". Keep that.
-                if (link_value.length() > 1 &&
-                    link_value.charAt(0) != '@' &&
-                    link_value.charAt(0) != '#')
-                {
-                    int i = link_value.indexOf(' ');
-                    if (i > 0)
-                        link_value = link_value.substring(0, i);
-                }
-                // Only one update
-                link_pv.removeListener(this);
-                updateLink();
-            }
-        };
-        return createPV(name, listener);
+        final PV pv = type_pv.getAndSet(null);
+        if (pv == null)
+            return false;
+        pv.removeListener(type_listener);
+        type_listener = null;
+        PVPool.releasePV(pv);
+        return true;
     }
 
-    /** Delete the type_pv */
-    private void disposeTypePV()
+    /** Delete the link_pv
+     *  @return Name of link PV that was disposed, <code>null</code> if no PV to dispose
+     */
+    private String disposeLinkPV()
     {
-        if (type_pv != null)
-        {
-            PVPool.releasePV(type_pv);
-            type_pv = null;
-        }
-    }
-
-    /** Delete the link_pv */
-    private void disposeLinkPV()
-    {
-        if (link_pv != null)
-        {
-            PVPool.releasePV(link_pv);
-            link_pv = null;
-        }
+        final PV pv = link_pv.getAndSet(null);
+        if (pv == null)
+            return null;
+        final String name = pv.getName();
+        pv.removeListener(link_listener);
+        PVPool.releasePV(pv);
+        return name;
     }
 
     /** @return Returns the name of this PV. */
@@ -308,39 +328,16 @@ class PVTreeItem
         return links.size() > 0;
     }
 
-    /** @return Returns a String. No really, it does! */
-    @Override
-    public String toString()
-    {
-        StringBuffer b = new StringBuffer();
-        b.append(info);
-        b.append(" '");
-        b.append(pv_name);
-        b.append("'");
-        if (type != null)
-        {
-            b.append("  (");
-            b.append(type);
-            b.append(")");
-        }
-        if (value != null)
-        {
-            b.append("  =  ");
-            b.append(value);
-        }
-        return b.toString();
-    }
-
     /** Thread-safe handling of the 'type' update. */
     private void updateType()
     {
-        Plugin.getLogger().log(Level.FINE,
+        logger.log(Level.FINE,
                 "{0} received type {1}", new Object[] { pv_name, type });
-        // Already disposed?
-        if (type_pv == null)
-            return;
+
         // We got the type, so close the connection.
-        disposeTypePV();
+        if (! disposeTypePV())
+            return; // Already disposed
+
         // Display the received type of this record.
         model.itemChanged(PVTreeItem.this);
 
@@ -350,10 +347,11 @@ class PVTreeItem
             links_to_read.addAll(fields);
         if (links_to_read.size() <= 0)
         {
-            Plugin.getLogger().log(Level.FINE,
+            logger.log(Level.FINE,
                     "{0} has unknown record type {1}", new Object[] { pv_name, type });
             return;
         }
+        model.incrementLinks(links_to_read.size());
         getNextLink();
     }
 
@@ -363,45 +361,41 @@ class PVTreeItem
         // Probably superfluous, but can't hurt
         disposeLinkPV();
         // Any more links to read?
-        if (links_to_read.size() <= 0)
+        final String field = links_to_read.peek();
+        if (field == null)
             return;
-        final String field = links_to_read.get(0);
         final String link_name = record_name + "." + field;
         try
         {
-            link_pv = createLinkPV(link_name);
+            link_pv.set(createPV(link_name, link_listener));
         }
         catch (Exception e)
         {
-            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e);
+            logger.log(Level.SEVERE, "PV." + field + " creation error" , e);
         }
     }
 
     /** Thread-safe handling of the 'link_pv' update. */
     private void updateLink()
     {
-        if (link_pv == null)
+        // Only one update
+        final String link_name = disposeLinkPV();
+        if (link_name == null)
         {
-            Plugin.getLogger().log(Level.FINE,
-                    "{0} already disposed", pv_name);
+            logger.log(Level.FINE, "{0} already disposed link", pv_name);
             return;
         }
         else
-        {
-            Plugin.getLogger().log(Level.FINE,
-                    "{0} received ''{1}''", new Object[] { link_pv.getName(), link_value });
-        }
-        disposeLinkPV();
+            logger.log(Level.FINE, "{0} received ''{1}''", new Object[] { link_name, link_value });
 
         // Remove field for which we received update from
         // list of links to read
-        if (links_to_read.size() <= 0)
+        final String field = links_to_read.poll();
+        if (field == null)
         {
-            Plugin.getLogger().log(Level.FINE,
-                    "{0} update without active link?",link_pv.getName());
+            logger.log(Level.FINE, "{0} update without active link?", link_name);
             return;
         }
-        final String field = links_to_read.remove(0);
         // If there is a value in the link, display this
         // (and sub-items)
         // TODO: This is not 100% correct. If a link happens to contain
@@ -412,6 +406,13 @@ class PVTreeItem
             new PVTreeItem(model, PVTreeItem.this, field, link_value);
             model.itemChanged(PVTreeItem.this);
         }
+        // This could decrement the links read so far to zero,
+        // since the new PVTreeItem just created has not
+        // started to request its links.
+        // Tree will thus expand a few times,
+        // whenever a bunch of links have resolved,
+        // but at least not for every single change
+        model.decrementLinks();
         getNextLink();
     }
 
@@ -425,5 +426,22 @@ class PVTreeItem
         value = current_value;
         severity = current_severity;
         model.itemUpdated(PVTreeItem.this);
+    }
+
+    /** @return Returns a String. No really, it does! */
+    @Override
+    public String toString()
+    {
+        final StringBuffer b = new StringBuffer();
+        b.append(info).append(" '").append(pv_name).append("'");
+        if (type != null)
+            b.append("  (").append(type).append(")");
+        if (value == CONSTANT_VALUE)
+            b.append(" ").append(CONSTANT_VALUE);
+        else if (value != null)
+            b.append("  =  ").append(value);
+        else
+            b.append(" [DISCONNECTED]");
+        return b.toString();
     }
 }

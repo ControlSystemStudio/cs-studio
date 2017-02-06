@@ -7,17 +7,21 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
-import org.diirt.vtype.AlarmSeverity;
 
 /** The PV Tree Model
  *  <p>
@@ -29,13 +33,19 @@ import org.diirt.vtype.AlarmSeverity;
  *  @see PVTreeItem
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
 {
     /** The view to which we are connected. */
-    final private TreeViewer viewer;
+    private final TreeViewer viewer;
+
+    private final TreeValueUpdateThrottle value_throttle;
 
     /** Root PV of the tree */
-    private PVTreeItem root;
+    private volatile PVTreeItem root;
+
+    /** Number of items in the tree to resolve, where fields are still to be fetched */
+    private AtomicInteger links_to_resolve = new AtomicInteger();
 
     /** Map from record type to fields to read for that type */
     final private Map<String, List<String>> field_info;
@@ -51,11 +61,12 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     PVTreeModel(final TreeViewer viewer) throws Exception
     {
         this.viewer = viewer;
+        value_throttle = new TreeValueUpdateThrottle(viewer);
         field_info = Preferences.getFieldInfo();
         root = null;
     }
 
-    /** @return Field info for all record types
+    /** @return Map of record type to fields of that record type
      *  @see FieldParser
      */
     Map<String, List<String>> getFieldInfo()
@@ -111,13 +122,43 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             final Tree tree = viewer.getTree();
             tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         }
+        viewer.collapseAll();
         if (root != null)
         {
             root.dispose();
+            value_throttle.clearPendingUpdates();
             root = null;
         }
+        links_to_resolve.set(0);
         root = new PVTreeItem(this, null, Messages.PV, name);
         itemChanged(root);
+    }
+
+    /** @param size Additional links that a PV tree item starts to resolve */
+    protected void incrementLinks(final int size)
+    {
+        links_to_resolve.addAndGet(size);
+    }
+
+    /** PVItem resolved another link
+     *
+     *  <p>Triggers tree expansion when no links left to resolve
+     */
+    protected void decrementLinks()
+    {
+        final int left = links_to_resolve.decrementAndGet();
+        if (left > 0)
+            return;
+
+        final Control tree = viewer.getControl();
+        if (tree.isDisposed())
+            return;
+        tree.getDisplay().asyncExec(() ->
+        {
+            if (tree.isDisposed())
+                return;
+            viewer.expandAll();
+        });
     }
 
     /** @return Returns a model item with given PV name or <code>null</code>. */
@@ -159,7 +200,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
      */
     private void addAlarmPVs(final List<PVTreeItem> alarms, final PVTreeItem item)
     {
-        if (item.getSeverity() != AlarmSeverity.NONE)
+        final AlarmSeverity severity = item.getSeverity();
+        if (severity != null  &&  severity != AlarmSeverity.NONE)
             alarms.add(item);
         for (PVTreeItem sub : item.getLinks())
             addAlarmPVs(alarms, sub);
@@ -175,9 +217,10 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     @Override
     public void dispose()
     {
+        value_throttle.shutdown();
         if (root != null)
         {
-            Plugin.getLogger().fine("PVTreeModel disposed"); //$NON-NLS-1$
+            logger.fine("PVTreeModel disposed");
             root.dispose();
             root = null;
         }
@@ -230,19 +273,20 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             item.getSeverity() != AlarmSeverity.NONE)
             frozen = true;
 
-        final Tree tree = viewer.getTree();
-        if (tree.isDisposed())
-            return;
+        value_throttle.scheduleUpdate(item);
 
-        tree.getDisplay().asyncExec(() ->
+        if (frozen && !was_frozen)
         {
-               if (tree.isDisposed())
-                   return;
-
-            viewer.update(item, null);
-            if (frozen && !was_frozen)
+            final Tree tree = viewer.getTree();
+            if (tree.isDisposed())
+                return;
+            tree.getDisplay().asyncExec(() ->
+            {
+                if (tree.isDisposed())
+                    return;
                 tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
-        });
+            });
+        }
     }
 
     /** Used by item to refresh the tree from the item on down. */
@@ -259,7 +303,20 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
                 viewer.refresh();
             else
                 viewer.refresh(item);
-            viewer.expandAll();
         });
+    }
+
+    public int getItemCount()
+    {   // Root itself
+        return 1 + getItemCount(root);
+    }
+
+    private int getItemCount(final PVTreeItem item)
+    {
+        final PVTreeItem[] links = item.getLinks();
+        int count = links.length;
+        for (PVTreeItem link : links)
+            count += getItemCount(link);
+        return count;
     }
 }

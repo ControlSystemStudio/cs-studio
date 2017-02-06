@@ -27,16 +27,14 @@ public class PVTreeItemAdapter implements IAdapterFactory
         return targets;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(final Object adaptableObject, final Class adapterType)
+    public <T> T getAdapter(final Object adaptableObject, final Class<T> adapterType)
     {
         final String pv_name = ((PVTreeItem)adaptableObject).getPVName();
-
         if (adapterType == String.class)
-            return pv_name;
+            return adapterType.cast(pv_name);
         else if (adapterType == ProcessVariable.class)
-            return new ProcessVariable(pv_name);
+            return adapterType.cast(new ProcessVariable(pv_name));
         else
             return null;
     }

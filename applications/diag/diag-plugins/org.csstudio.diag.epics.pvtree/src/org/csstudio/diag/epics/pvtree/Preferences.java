@@ -20,15 +20,22 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     public static final String UPDATE_PERIOD = "update_period";
+    public static final String MAX_ALARM_PVs = "max_alarm_pvs";
     public static final String FIELDS = "fields";
 
     /** @return Max update period in seconds */
     public static double getUpdatePeriod()
     {
         final IPreferencesService preferences = Platform.getPreferencesService();
-        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.1, null);
+        return preferences.getDouble(Plugin.ID, UPDATE_PERIOD, 0.2, null);
     }
 
+    /** @return Max number of alarm PVs to reveal */
+    public static int getMaxAlarmPVs()
+    {
+        final IPreferencesService preferences = Platform.getPreferencesService();
+        return preferences.getInt(Plugin.ID, MAX_ALARM_PVs, 100, null);
+    }
 
     /** @return Field info for all record types
      *  @throws Exception on error in the preference setting

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import static org.csstudio.diag.epics.pvtree.Plugin.logger;
+
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
@@ -38,11 +40,11 @@ abstract public class StringListener extends PVListenerAdapter
         {
             handleText(VTypeHelper.format(value));
         }
-        catch (Exception e)
+        catch (Throwable ex)
         {
-            Plugin.getLogger().log(Level.SEVERE,
-                    "PV Listener error for '" + pv.getName() + "': " + e.getMessage(),
-                    e);
+            logger.log(Level.SEVERE,
+                    "PV Listener error for '" + pv.getName() + "': " + ex.getMessage(),
+                    ex);
         }
     }
 
@@ -51,5 +53,4 @@ abstract public class StringListener extends PVListenerAdapter
     {
         handleError(pv.getName() + " disconnected");
     }
-
 };

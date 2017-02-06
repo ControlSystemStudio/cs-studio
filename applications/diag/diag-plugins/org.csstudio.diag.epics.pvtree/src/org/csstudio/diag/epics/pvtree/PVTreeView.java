@@ -104,9 +104,9 @@ public class PVTreeView extends ViewPart
 
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new TreeModeAction(model));
-        toolbar.add(new CollapseTreeAction(viewer.getTree()));
+        toolbar.add(new CollapseTreeAction(viewer));
         toolbar.add(new ExpandAlarmTreeAction(viewer));
-        toolbar.add(new ExpandTreeAction(viewer.getTree()));
+        toolbar.add(new ExpandTreeAction(viewer));
     }
 
     private void createGUI(final Composite parent)
@@ -135,14 +135,6 @@ public class PVTreeView extends ViewPart
             }
         });
         new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
-        // pv_name_helper =
-        // new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-        // PV_LIST_TAG, pv_name)
-        // {
-        // @Override
-        // public void newSelection(String new_pv_name)
-        // { setPVName(new_pv_name); }
-        // };
 
         final Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
