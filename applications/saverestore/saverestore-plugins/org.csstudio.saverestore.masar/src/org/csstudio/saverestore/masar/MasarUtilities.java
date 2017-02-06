@@ -44,8 +44,10 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
+import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.BooleanArrayData;
 import org.epics.pvdata.pv.ByteArrayData;
+import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.DoubleArrayData;
 import org.epics.pvdata.pv.FloatArrayData;
 import org.epics.pvdata.pv.IntArrayData;
@@ -112,9 +114,11 @@ public final class MasarUtilities {
      * @return the list of save sets
      */
     static List<SaveSet> createSaveSetsList(PVStructure result, Branch service, Optional<BaseLevel> baseLevel) {
+        Convert converter = ConvertFactory.getConvert();
         PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-        PVLongArray pvIndices = (PVLongArray) value.getScalarArrayField(MasarConstants.P_CONFIG_INDEX,
-            ScalarType.pvLong);
+        long[] pvIndices = new long[value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX).getLength()];
+        converter.toLongArray(value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX), 0,
+                value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX).getLength(), pvIndices, 0);
         PVStringArray pvNames = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_NAME,
             ScalarType.pvString);
         PVStringArray pvDesciptions = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_DESCRIPTION,
@@ -137,7 +141,7 @@ public final class MasarUtilities {
         StringArrayData statuses = new StringArrayData();
         pvStatuses.get(0, pvStatuses.getLength(), statuses);
         LongArrayData indices = new LongArrayData();
-        pvIndices.get(0, pvIndices.getLength(), indices);
+        indices.set(pvIndices, 0);
 
         List<SaveSet> saveSets = new ArrayList<>(names.data.length);
         for (int i = 0; i < names.data.length; i++) {
