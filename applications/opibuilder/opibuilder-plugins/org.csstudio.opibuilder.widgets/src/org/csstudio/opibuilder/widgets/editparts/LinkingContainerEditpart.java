@@ -250,12 +250,13 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             conn.setLoadedFromLinkedOpi(true);
             if(conn.getPoints()!=null)
                 originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
         }
         if (originalPoints != null && !originalPoints.isEmpty()) {
             //update connections after the figure is repainted.
             getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
         }
-
+        getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionListForLinkedOpi(displayModel));
 
         UIBundlingThread.getInstance().addRunnable(() -> {
             layout();
@@ -334,11 +335,28 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 for(int i=0; i<points.size(); i++){
                     Point point = points.getPoint(i);
                     point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
-                    getContentPane().translateToAbsolute(point);
                     points.setPoint(point, i);
                 }
                 conn.setPoints(points);
             }
+        }
+
+    }
+
+    private void updateConnectionListForLinkedOpi(DisplayModel displayModel) {
+    	connectionList = displayModel.getConnectionList();
+        if(!connectionList.isEmpty()){
+            if(originalPoints != null)
+                originalPoints.clear();
+            else
+                originalPoints = new HashMap<ConnectionModel, PointList>();
+        }
+
+        for (ConnectionModel conn : connectionList) {
+            conn.setLoadedFromLinkedOpi(true);
+            if(conn.getPoints()!=null)
+                originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
         }
     }
 
