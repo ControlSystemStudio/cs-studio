@@ -14,5 +14,6 @@
     <module>org.csstudio.logbook.viewer.feature</module>
     <module>org.csstudio.olog.feature</module>
     <module>org.csstudio.applications.logbook.feature</module>
+    <module>org.csstudio.logbook.fault.feature</module>
   </modules>
 </project>
