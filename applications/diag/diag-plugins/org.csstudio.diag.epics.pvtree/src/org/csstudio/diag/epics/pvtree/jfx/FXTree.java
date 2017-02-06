@@ -20,6 +20,7 @@ import org.csstudio.diag.epics.pvtree.model.TreeModelListener;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.Border;
@@ -98,6 +99,15 @@ public class FXTree
 
         tree_view = new TreeView<>();
         tree_view.setCellFactory(cell -> new TreeModelItemCell());
+        final Tooltip tt = new Tooltip();
+        tt.setOnShowing(event ->
+        {
+            // Counting alarms on UI thread?
+            // Was OK in test with ~12000 items, ~4000 in alarm
+            final int alarm_count = model.getAlarmItems().size();
+            tt.setText(model.getItemCount() + " items, " + alarm_count + " in alarm");
+        });
+        tree_view.setTooltip(tt);
 
         model.addListener(model_listener);
     }

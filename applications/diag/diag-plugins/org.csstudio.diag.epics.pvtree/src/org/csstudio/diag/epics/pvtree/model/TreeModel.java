@@ -28,6 +28,8 @@ public class TreeModel
 
     private volatile boolean latch_alarm = false;
 
+    private AtomicInteger item_count = new AtomicInteger();
+
     /** Number of items in the tree to resolve, where fields are still to be fetched */
     private AtomicInteger links_to_resolve = new AtomicInteger();
 
@@ -52,6 +54,7 @@ public class TreeModel
      */
     public void setRootPV(final String pv_name)
     {
+        item_count.set(1);
         final TreeModelItem new_root = new TreeModelItem(this, null, Messages.PV, pv_name);
         final TreeModelItem old = root.getAndSet(new_root);
         if (old != null)
@@ -68,6 +71,12 @@ public class TreeModel
     public TreeModelItem getRoot()
     {
         return root.get();
+    }
+
+    /** @return Number of items in tree */
+    public int getItemCount()
+    {
+        return item_count.get();
     }
 
     /** @param size Additional links that a PV tree item starts to resolve */
@@ -183,6 +192,7 @@ public class TreeModel
 
     void itemLinkAdded(final TreeModelItem item, final TreeModelItem new_item)
     {
+        item_count.incrementAndGet();
         for (TreeModelListener listener : listeners)
             listener.itemLinkAdded(item, new_item);
     }
