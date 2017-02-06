@@ -97,11 +97,6 @@ public final class MediaService {
 
     private void loadPredefinedFonts() {
         FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0];
-        // String osName = getOSName();
-        //        if(osName.equals("linux_gtk")) //$NON-NLS-1$
-        //            defaultFont = new FontData("Sans", 10, SWT.NORMAL); //$NON-NLS-1$
-        //        else if(osName.equals("macosx")) //$NON-NLS-1$
-        //            defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
         fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
         int height = defaultFont.getHeight();
@@ -222,8 +217,6 @@ public final class MediaService {
 
         colorFilePath = PreferencesHelper.getColorFilePath();
         if (colorFilePath == null || colorFilePath.isEmpty()) {
-            // String message = "No color definition file was found.";
-            // ConsoleService.getInstance().writeInfo(message);
             return;
         }
 
@@ -266,8 +259,6 @@ public final class MediaService {
         Set<String> trimmedNameSet = new LinkedHashSet<String>();
         fontFilePath = PreferencesHelper.getFontFilePath();
         if (fontFilePath == null || fontFilePath.isEmpty()) {
-            // String message = "No font definition file was found.";
-            // ConsoleService.getInstance().writeInfo(message);
             return;
         }
 
@@ -377,28 +368,20 @@ public final class MediaService {
     }
 
     /**
-     * Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a
-     * name is found.
-     *
      * @param name
-     * @return
-     * @see #getOPIFont(String, FontData)
+     * @return true if the OPI color is defined.
      */
-    public OPIFont getOPIFont(String name) {
-        return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
-    }
-
-    public OPIFont getOPIFont(FontData fontData) {
-        return new OPIFont(fontData);
+    public boolean isColorNameDefined(String name) {
+        return colorMap.containsKey(name);
     }
 
     /**
-     * Get the OPIFont based on name. Use the provided fontData if no such a
-     * name is found.
+     * Get a copy the OPIFont from the configured defaults based on name.
+     * Use the provided fontData if the name is not in the cache.
      *
-     * @param name
-     * @param fontData
-     * @return
+     * @param name of predefined font
+     * @param fontData to use if name is not in cache
+     * @return new OPIFont
      */
     public OPIFont getOPIFont(String name, FontData fontData) {
         if (fontMap.containsKey(name))
@@ -406,29 +389,29 @@ public final class MediaService {
         return new OPIFont(name, fontData);
     }
 
-    public OPIFont getOPIFont(FontData fontData, boolean heightInPixels) {
-        return new OPIFont(fontData, heightInPixels);
+    /**
+     * Get a copy of the OPIFont from the configured defaults based on name.
+     * Use {@link #DEFAULT_UNKNOWN_FONT} if the name is not in the cache.
+     *
+     * @param name of predefined font
+     * @return new OPIFont
+     * @see #getOPIFont(String, FontData)
+     */
+    public OPIFont getOPIFont(String name) {
+        return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
     }
 
-    public OPIFont getOPIFont(String name, FontData fontData, boolean heightInPixels) {
-        return new OPIFont(name, fontData, heightInPixels);
-    }
-
+    /**
+     * Return an array of a copy of all predefined fonts.
+     * @return array of predefined fonts
+     */
     public OPIFont[] getAllPredefinedFonts() {
         OPIFont[] result = new OPIFont[fontMap.size()];
         int i = 0;
         for (OPIFont c : fontMap.values()) {
-            result[i++] = c;
+            result[i++] = new OPIFont(c);
         }
         return result;
-    }
-
-    /**
-     * @param name
-     * @return true if the OPI color is defined.
-     */
-    public boolean isColorNameDefined(String name) {
-        return colorMap.containsKey(name);
     }
 
 }
