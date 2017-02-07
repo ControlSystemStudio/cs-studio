@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 /**The dedicated font type which supports predefined font name in OPI builder font file.
@@ -24,8 +25,16 @@ public class OPIFont{
 
     private String fontName;
 
+    /**
+     * FontData object.  If sizeInPixels, the height represents
+     * height in pixels rather than the standard SWT representation
+     * in points.
+     */
     private FontData rawFontData;
 
+    /**
+     * Whether the font exists in the MediaService cache.
+     */
     private boolean preDefined;
 
     /**
@@ -35,61 +44,28 @@ public class OPIFont{
      */
     private boolean sizeInPixels = false;
 
-    /*
-     * All constructors are package-private to allow access only by MediaService.
-     * When sizeInPixels is provided, ensure that the rawFontData is scaled back
-     * to the equivalent in points if necessary.
-     */
-
-    OPIFont(String name, FontData fontData) {
+    public OPIFont(String name, FontData fontData) {
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
-    OPIFont(FontData fontData) {
+    public OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
-    }
-
-    OPIFont(String name, FontData fontData, boolean sizeInPixels) {
-        this(name, scaleFontData(fontData, sizeInPixels));
-        this.sizeInPixels = sizeInPixels;
-    }
-
-    OPIFont(FontData fontData, boolean sizeInPixels) {
-        this(scaleFontData(fontData, sizeInPixels));
-        this.sizeInPixels = sizeInPixels;
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     public OPIFont(OPIFont opiFont) {
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
+        this.preDefined = opiFont.isPreDefined();
+        this.sizeInPixels = opiFont.isSizeInPixels();
     }
 
-    private static int pointsToPixels(int points) {
-        return points * POINTS_PER_INCH / Display.getDefault().getDPI().y;
-    }
-
-    private static int pixelsToPoints(int pixels) {
-        return pixels * Display.getDefault().getDPI().y / POINTS_PER_INCH;
-    }
-
-    /**
-     * If FontData is provided with height in pixels, rescale it and return the
-     * 'raw' FontData with height in points.
-     * @param fontData  the provided FontData
-     * @param sizeInPixels whether the FontData is representing pixels or points
-     * @return the rescaled FontData
-     */
-    private static FontData scaleFontData(FontData fontData, boolean sizeInPixels) {
-        if (sizeInPixels) {
-            return new FontData(fontData.getName(), pixelsToPoints(fontData.getHeight()), fontData.getStyle());
-        } else {
-            return fontData;
-        }
+    private int pixelsToPoints(int pixels) {
+        return pixels * POINTS_PER_INCH / getDPI().y;
     }
 
     /**Returns the Macro Name of the OPIFont.
@@ -142,11 +118,11 @@ public class OPIFont{
      * @return the scaled FontData
      */
     public FontData getFontData() {
-        int height = rawFontData.getHeight();
+        int rawSize = rawFontData.getHeight();
         if (this.sizeInPixels) {
-            height = pointsToPixels(height);
+            rawSize = pixelsToPoints(rawSize);
         }
-        return new FontData(rawFontData.getName(), height, rawFontData.getStyle());
+        return new FontData(rawFontData.getName(), rawSize, rawFontData.getStyle());
     }
 
     /**
@@ -170,14 +146,6 @@ public class OPIFont{
      */
     public boolean isPreDefined() {
         return preDefined;
-    }
-
-    public void setFontName(String fontName) {
-        this.fontName = fontName;
-        OPIFont cachedFont =  MediaService.getInstance().getOPIFont(fontName);
-        this.rawFontData = cachedFont.getFontData();
-        this.sizeInPixels = cachedFont.isSizeInPixels();
-        preDefined = true;
     }
 
     @Override
@@ -226,6 +194,14 @@ public class OPIFont{
 
     public boolean isSizeInPixels() {
         return sizeInPixels;
+    }
+
+    protected boolean getDefaultIsInPixels() {
+        return PreferencesHelper.isDefaultFontSizeInPixels();
+    }
+
+    protected Point getDPI() {
+        return Display.getDefault().getDPI();
     }
 
 }
