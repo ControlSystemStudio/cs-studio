@@ -68,10 +68,9 @@ public class TreeValueUpdateThrottle<T>
     {
         try
         {
-            final List<T> items = new ArrayList<>();
             while (run)
-            {
-                items.clear();
+            {   // Create thread-safe copy of accumulated items for `updater`
+                final List<T> items = new ArrayList<>();
                 synchronized (updateable)
                 {
                     while (run  &&  updateable.isEmpty())
