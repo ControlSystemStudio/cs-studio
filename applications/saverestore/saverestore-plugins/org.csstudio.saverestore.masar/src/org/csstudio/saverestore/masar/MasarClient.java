@@ -54,6 +54,7 @@ import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Status.StatusType;
 import org.epics.pvdata.pv.StringArrayData;
 
+import static org.csstudio.saverestore.masar.MasarConstants.*;
 /**
  * <code>MasarClient<code> provide access to the masar features required by the save and restore application.
  *
@@ -685,10 +686,15 @@ public class MasarClient {
             if (index == null) {
                 throw new MasarException(String.format("Unknown snapshot: %s.", String.valueOf(snapshot)));
             }
+            //TODO fix backward compatability issues.
             PVStructure request = PVDataFactory.getPVDataCreate()
-                .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_DATA);
-            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SNAPSHOT_DATA);
-            request.getStringField(MasarConstants.F_EVENTID).put(index);
+                .createPVStructure(STRUCT_SNAPSHOT_DATA);
+            request.getStringField(F_FUNCTION).put(FC_LOAD_SNAPSHOT_DATA);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(F_NAME, ScalarType.pvString);
+            names.put(0, 1, new String[] { F_EVENTID }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(F_VALUE, ScalarType.pvString);
+            values.put(0, 1, new String[] { index }, 0);
+            
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
@@ -745,9 +751,11 @@ public class MasarClient {
             PVStructure request = PVDataFactory.getPVDataCreate()
                 .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_SAVE);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_SAVE_SNAPSHOT);
-            request.getStringField(MasarConstants.F_EVENTID).put(id);
-            request.getStringField(MasarConstants.F_USER).put(user);
-            request.getStringField(MasarConstants.F_DESCRIPTION).put(comment);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+            names.put(0, 3, new String[] { F_EVENTID, F_USER, F_DESCRIPTION }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+            values.put(0, 3, new String[] { id, user, comment }, 0);
+            
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
@@ -807,8 +815,11 @@ public class MasarClient {
             PVStructure request = PVDataFactory.getPVDataCreate()
                 .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_TAKE);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_TAKE_SNAPSHOT);
-            // request.getStringField(MasarConstants.F_SERVICENAME).put(set.getBranch().getShortName());
-            request.getStringField(MasarConstants.F_CONFIGNAME).put(name);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+            names.put(0, 1, new String[] { MasarConstants.F_CONFIGNAME }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+            values.put(0, 1, new String[] { name }, 0);
+//            request.getStringField(MasarConstants.F_CONFIGNAME).put(name);
 
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {

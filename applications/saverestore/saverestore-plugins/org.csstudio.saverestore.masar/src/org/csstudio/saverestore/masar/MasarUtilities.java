@@ -169,8 +169,16 @@ public final class MasarUtilities {
      */
     static List<Snapshot> createSnapshotsList(PVStructure result, Function<String, SaveSet> saveSetSupplier)
         throws ParseException {
-        PVLongArray pvEvents = (PVLongArray) result.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong);
-        PVLongArray pvConfigs = (PVLongArray) result.getScalarArrayField(MasarConstants.P_CONFIG_ID, ScalarType.pvLong);
+        Convert converter = ConvertFactory.getConvert();
+
+        long[] pvEvents = new long[result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID).getLength()];
+        converter.toLongArray(result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID), 0,
+                result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID).getLength(), pvEvents, 0);
+
+        long[] pvConfigs = new long[result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID).getLength()];
+        converter.toLongArray(result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID), 0,
+                result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID).getLength(), pvConfigs, 0);
+
         PVStringArray pvComments = (PVStringArray) result.getScalarArrayField(MasarConstants.P_COMMENT,
             ScalarType.pvString);
         PVStringArray pvTimes = (PVStringArray) result.getScalarArrayField(MasarConstants.P_EVENT_TIME,
@@ -184,9 +192,9 @@ public final class MasarUtilities {
         StringArrayData users = new StringArrayData();
         pvUsers.get(0, pvUsers.getLength(), users);
         LongArrayData events = new LongArrayData();
-        pvEvents.get(0, pvEvents.getLength(), events);
+        events.set(pvEvents, 0);
         LongArrayData configs = new LongArrayData();
-        pvConfigs.get(0, pvConfigs.getLength(), configs);
+        configs.set(pvConfigs, 0);
 
         List<Snapshot> snapshots = new ArrayList<>(events.data.length);
         DateFormat format = MasarConstants.DATE_FORMAT.get();
