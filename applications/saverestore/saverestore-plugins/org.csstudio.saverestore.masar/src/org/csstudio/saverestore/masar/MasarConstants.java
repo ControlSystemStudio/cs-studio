@@ -87,6 +87,8 @@ public final class MasarConstants {
     static final String F_END = "end";
     static final String F_USER = "user";
     static final String F_DESCRIPTION = "desc";
+    static final String F_NAME = "name";
+    static final String F_VALUE = "value";
     // Masar function names
     static final String FC_TAKE_SNAPSHOT = "saveSnapshot";
     static final String FC_LOAD_SNAPSHOT_DATA = "retrieveSnapshot";
@@ -120,23 +122,24 @@ public final class MasarConstants {
 
     // Structure description for loading the snapshot data
     static final Structure STRUCT_SNAPSHOT_DATA = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_EVENTID },
-        new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     // Structure description for taking a snapshot
     static final Structure STRUCT_SNAPSHOT_TAKE = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_CONFIGNAME },
-        new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     // Structure description for saving a snapshot
     static final Structure STRUCT_SNAPSHOT_SAVE = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_EVENTID, F_USER, F_DESCRIPTION },
+        new String[] { F_FUNCTION, F_NAME, F_VALUE },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     private MasarConstants() {
         // prevent instantiation
