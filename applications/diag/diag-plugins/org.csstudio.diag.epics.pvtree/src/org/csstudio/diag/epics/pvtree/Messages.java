@@ -15,6 +15,7 @@ public class Messages extends NLS
 
     public static String Collapse;
     public static String CollapseTT;
+    public static String Constant;
     public static String ExpandAlarms;
     public static String ExpandAlarmsTT;
     public static String ExpandAll;

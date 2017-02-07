@@ -1,15 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2017 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.epics.pvtree;
+package org.csstudio.diag.epics.pvtree.swt;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
+import org.diirt.vtype.AlarmSeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -20,9 +22,8 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.vtype.AlarmSeverity;
 
-/** Label provider for PVTreeItem entries.
+/** Label provider for {@link TreeModelItem} entries.
  *  @author Kay Kasemir
  */
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider, DisposeListener
@@ -39,6 +40,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
         images.put(AlarmSeverity.MAJOR,
                 createImage(display, display.getSystemColor(SWT.COLOR_RED)));
         images.put(AlarmSeverity.INVALID,
+                createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
+        images.put(AlarmSeverity.UNDEFINED,
                 createImage(display, display.getSystemColor(SWT.COLOR_MAGENTA)));
 
         // Arrange for image disposal
@@ -93,6 +96,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
             return null;
         switch (severity)
         {
+        case UNDEFINED:
+            return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
         case INVALID:
             return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
         case MAJOR:
@@ -109,8 +114,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider, Dispo
      */
     private AlarmSeverity getSeverity(final Object element)
     {
-        if (element instanceof PVTreeItem)
-            return ((PVTreeItem)element).getSeverity();
+        if (element instanceof TreeModelItem)
+            return ((TreeModelItem)element).getSeverity();
         return null;
     }
 }
