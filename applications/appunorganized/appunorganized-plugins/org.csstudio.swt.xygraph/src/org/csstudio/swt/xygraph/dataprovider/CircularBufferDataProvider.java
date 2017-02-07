@@ -204,7 +204,6 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
                 addDataPoint(currentYDataTimestamp);
             break;
         case TRIGGER:
-            addDataPoint(currentYDataTimestamp);
         default:
             break;
         }
@@ -214,7 +213,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
     /**
      * add a new data point to trace data.
      */
-    private void addDataPoint(double xValue) {
+    public void addDataPoint(double xValue) {
         double newXValue;
         if(!concatenate_data)
             traceData.clear();
@@ -295,7 +294,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
     /**
      * add a new data point to trace data.
      */
-    private void addDataArray() {
+    public void addDataArray() {
         if(!concatenate_data)
             traceData.clear();
 
