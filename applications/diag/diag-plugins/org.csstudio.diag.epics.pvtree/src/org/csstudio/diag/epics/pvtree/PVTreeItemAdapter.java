@@ -8,6 +8,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.diag.epics.pvtree.model.TreeModelItem;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /** Adapter from PV Tree model to {@link ProcessVariable}
@@ -27,16 +28,14 @@ public class PVTreeItemAdapter implements IAdapterFactory
         return targets;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(final Object adaptableObject, final Class adapterType)
+    public <T> T getAdapter(final Object adaptableObject, final Class<T> adapterType)
     {
-        final String pv_name = ((PVTreeItem)adaptableObject).getPVName();
-
+        final String pv_name = ((TreeModelItem)adaptableObject).getPVName();
         if (adapterType == String.class)
-            return pv_name;
+            return adapterType.cast(pv_name);
         else if (adapterType == ProcessVariable.class)
-            return new ProcessVariable(pv_name);
+            return adapterType.cast(new ProcessVariable(pv_name));
         else
             return null;
     }
