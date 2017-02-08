@@ -21,7 +21,6 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.editparts.WidgetConnectionEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
@@ -36,8 +35,6 @@ import org.csstudio.swt.widgets.figures.LinkingContainerFigure;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -259,7 +256,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             //update connections after the figure is repainted.
             getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
         }
-
+        getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionListForLinkedOpi(displayModel));
 
         UIBundlingThread.getInstance().addRunnable(() -> {
             layout();
@@ -342,6 +339,24 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 }
                 conn.setPoints(points);
             }
+        }
+
+    }
+
+    private void updateConnectionListForLinkedOpi(DisplayModel displayModel) {
+    	connectionList = displayModel.getConnectionList();
+        if(!connectionList.isEmpty()){
+            if(originalPoints != null)
+                originalPoints.clear();
+            else
+                originalPoints = new HashMap<ConnectionModel, PointList>();
+        }
+
+        for (ConnectionModel conn : connectionList) {
+            conn.setLoadedFromLinkedOpi(true);
+            if(conn.getPoints()!=null)
+                originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
         }
     }
 
