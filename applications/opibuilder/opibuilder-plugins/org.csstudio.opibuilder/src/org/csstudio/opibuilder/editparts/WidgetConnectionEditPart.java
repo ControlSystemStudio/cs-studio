@@ -31,7 +31,6 @@ import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PolylineDecoration;
 import org.eclipse.draw2d.RotatableDecoration;
-import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -201,7 +200,13 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                                     getWidgetModel().getLineJumpStyle());
                         }
                     });
-
+            getWidgetModel().getProperty(ConnectionModel.PROP_IS_LOADED_FROM_LINKING_CONTAINER)
+            .addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    updateRouter(getConnectionFigure());
+                }
+            });
         }
     }
 
@@ -296,7 +301,10 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         int lineJumpSize = connection.getLineJumpSize();
 
 
-        DisplayModel rootDisplayModel = widgetModel.getRootDisplayModel(true);
+        DisplayModel rootDisplayModel = widgetModel.getRootDisplayModel();
+        while(rootDisplayModel.getParentDisplayModel() != null) {
+           rootDisplayModel = rootDisplayModel.getParentDisplayModel();
+        }
         List<ConnectionModel> connectionList = rootDisplayModel.getConnectionList();
 
         for(int i=0; (i+1)<pointsInConnection.size(); i++) {

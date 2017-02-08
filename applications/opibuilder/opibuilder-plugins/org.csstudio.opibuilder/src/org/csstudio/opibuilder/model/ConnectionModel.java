@@ -214,6 +214,8 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     public static final String PROP_LINE_JUMP_SIZE = "line_jump_size"; //$NON-NLS-1$
 
+    public static final String PROP_IS_LOADED_FROM_LINKING_CONTAINER = "is_loaded_from_linking_container"; //$NON-NLS-1$
+
     /** True, if the connection is attached to its endpoints. */
     private boolean isConnected;
 
@@ -270,6 +272,12 @@ public class ConnectionModel extends AbstractWidgetModel {
                 WidgetPropertyCategory.Display, LineJumpStyle.stringValues(), 0));
         addProperty(new IntegerProperty(PROP_LINE_JUMP_SIZE, "Line Jump Size",
                 WidgetPropertyCategory.Display, 10, 1, 100));
+
+        AbstractWidgetProperty loadedFromLinkingContainer = new StringProperty(PROP_IS_LOADED_FROM_LINKING_CONTAINER,
+                        "Is Loaded From Linking Container", WidgetPropertyCategory.Behavior, "false");
+        addProperty(loadedFromLinkingContainer);
+        setPropertyVisibleAndSavable(PROP_IS_LOADED_FROM_LINKING_CONTAINER, false, false);
+
         setPropertyVisibleAndSavable(PROP_POINTS, false, true);
 
         AbstractWidgetProperty srcWUIDProp = new StringProperty(PROP_SRC_WUID,
@@ -656,6 +664,7 @@ public class ConnectionModel extends AbstractWidgetModel {
      */
     public void setScrollPane(ScrollPane scrollPane) {
         this.scrollPane = scrollPane;
+        setPropertyValue(PROP_IS_LOADED_FROM_LINKING_CONTAINER, "true", true);
     }
 
 }
