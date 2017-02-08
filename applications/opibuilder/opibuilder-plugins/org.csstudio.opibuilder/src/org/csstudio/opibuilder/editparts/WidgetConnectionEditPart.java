@@ -301,7 +301,10 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         int lineJumpSize = connection.getLineJumpSize();
 
 
-        DisplayModel rootDisplayModel = widgetModel.getRootDisplayModel(true);
+        DisplayModel rootDisplayModel = widgetModel.getRootDisplayModel();
+        while(rootDisplayModel.getParentDisplayModel() != null) {
+           rootDisplayModel = rootDisplayModel.getParentDisplayModel();
+        }
         List<ConnectionModel> connectionList = rootDisplayModel.getConnectionList();
 
         for(int i=0; (i+1)<pointsInConnection.size(); i++) {
