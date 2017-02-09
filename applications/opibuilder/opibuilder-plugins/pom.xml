@@ -30,6 +30,7 @@
     <module>org.csstudio.opibuilder.tools</module>
     <module>org.csstudio.opibuilder.widgets</module>
     <module>org.csstudio.opibuilder.widgets.extra</module>
+    <module>org.csstudio.opibuilder.widgets.detailpanel</module>
     <module>org.csstudio.opibuilder.widgets.rap</module>
     <module>org.csstudio.opibuilder.widgets.rcp</module>
     <module>org.csstudio.opibuilder.widgets.symbol</module>
