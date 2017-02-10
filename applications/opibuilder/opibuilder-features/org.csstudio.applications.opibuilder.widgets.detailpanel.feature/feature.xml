@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.applications.opibuilder.widgets.detailpanel.feature"
+      label="Detail panel widget feature"
+      version="0.0.1.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://controlsystemstudio.github.io/">
+      Detail panel widget for OPIBuilder.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License.
+   </license>
+
+   <plugin
+         id="org.csstudio.opibuilder.widgets.detailpanel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
