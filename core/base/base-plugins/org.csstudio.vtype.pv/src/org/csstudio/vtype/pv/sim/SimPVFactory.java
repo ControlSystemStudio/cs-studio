@@ -62,6 +62,8 @@ public class SimPVFactory implements PVFactory
             return SawtoothWavePV.forParameters(name, parseDoubles(parameters));
         else if (func.toLowerCase().startsWith("sinewave")) // diirt used "sineWaveform"
             return SineWavePV.forParameters(name, parseDoubles(parameters));
+        else if (func.toLowerCase().startsWith("gaussianwave")) // diirt used "gaussianWaveform"
+            return GaussianWavePV.forParameters(name, parseDoubles(parameters));
         else if (func.toLowerCase().startsWith("noisewave")) // diirt used "noiseWaveform"
             return NoiseWavePV.forParameters(name, parseDoubles(parameters));
         else if (func.equals("flipflop"))
