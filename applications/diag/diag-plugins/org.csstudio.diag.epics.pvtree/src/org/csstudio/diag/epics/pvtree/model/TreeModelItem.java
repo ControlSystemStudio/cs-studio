@@ -273,6 +273,12 @@ public class TreeModelItem
             logger.fine("Known item " + record_name + "." + info + ", not traversing inputs (again)");
             return;
         }
+        final List<String> type_links = field_info.get(type);
+        if (type_links == null)
+        {
+            logger.fine("Type " + type + " has no known links");
+            return;
+        }
         // Could fetch all links in parallel,
         // but to keep the model clean we drop empty links.
         // Reading them one by one, then adding only
@@ -282,7 +288,7 @@ public class TreeModelItem
         // to a tree that initially shows all yet-to-be-resolved links,
         // then removes the empty ones while
         // expanding the non-empty subtrees
-        links_to_read.addAll(field_info.get(type));
+        links_to_read.addAll(type_links);
         model.incrementLinks(links_to_read.size());
         resolveNextLink();
     }
