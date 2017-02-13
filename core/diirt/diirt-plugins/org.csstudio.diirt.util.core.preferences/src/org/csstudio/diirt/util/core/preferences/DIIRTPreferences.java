@@ -9,6 +9,7 @@
 package org.csstudio.diirt.util.core.preferences;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -722,6 +723,124 @@ public final class DIIRTPreferences {
 
         new DataSources(this).toFile(diirtHome);
         new ChannelAccess(this).toFile(diirtHome);
+
+    }
+
+    /**
+     * Export the current DIIRT configuration creating the relative files.
+     *
+     * @param diirtHome    The DIIRT configuration directory.
+     * @param deleteOnExit If {@code true} the {@link Runtime#addShutdownHook(Thread)} is
+     *                     invoked to add a thread that will delete the given {@code diirtHome}
+     *                     when the application exits.
+     * @throws JAXBException If there were some marshalling problems.
+     * @throws IOException  If an error occurred writing the configuration.
+     */
+    public void toFiles ( File diirtHome, boolean deleteOnExit ) throws IOException, JAXBException {
+
+        if ( deleteOnExit ) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteQuietly(diirtHome)));
+        }
+
+        toFiles(diirtHome);
+
+    }
+
+    private static void cleanDirectory ( final File directory ) throws IOException {
+
+        final File[] files = verifiedListFiles(directory);
+        IOException exception = null;
+
+        for ( final File file : files ) {
+            try {
+                forceDelete(file);
+            } catch ( final IOException ioe ) {
+                exception = ioe;
+            }
+        }
+
+        if ( null != exception ) {
+            throw exception;
+        }
+
+    }
+
+    private static void deleteDirectory ( final File directory ) throws IOException {
+
+        if ( !directory.exists() ) {
+            return;
+        }
+
+
+        if ( !Files.isSymbolicLink(directory.toPath()) ) {
+            cleanDirectory(directory);
+        }
+
+        if ( !directory.delete() ) {
+            throw new IOException("Unable to delete directory " + directory + ".");
+        }
+
+    }
+
+    private static boolean deleteQuietly ( final File file ) {
+
+        if ( file == null ) {
+            return false;
+        }
+
+        try {
+            if ( file.isDirectory() ) {
+                cleanDirectory(file);
+            }
+        } catch ( final Exception ignored ) {
+        }
+
+        try {
+            return file.delete();
+        } catch ( final Exception ignored ) {
+            return false;
+        }
+
+    }
+
+    private static void forceDelete ( final File file ) throws IOException {
+
+        if ( file.isDirectory() ) {
+            deleteDirectory(file);
+        } else {
+
+            final boolean filePresent = file.exists();
+
+            if ( !file.delete() ) {
+
+                if ( !filePresent ) {
+                    throw new FileNotFoundException("File does not exist: " + file);
+                }
+
+                throw new IOException("Unable to delete file: " + file);
+
+            }
+        }
+
+    }
+
+    private static File[] verifiedListFiles ( File directory ) throws IOException {
+
+        if ( !directory.exists() ) {
+            throw new IllegalArgumentException(directory + " does not exist");
+        }
+
+        if ( !directory.isDirectory() ) {
+            throw new IllegalArgumentException(directory + " is not a directory");
+        }
+
+        final File[] files = directory.listFiles();
+
+        if ( files == null ) {  // null if security restricted
+            throw new IOException("Failed to list contents of " + directory);
+        }
+
+        return files;
 
     }
 
