@@ -64,6 +64,8 @@ public class SimPVFactory implements PVFactory
             return SineWavePV.forParameters(name, parseDoubles(parameters));
         else if (func.toLowerCase().startsWith("noisewave")) // diirt used "noiseWaveform"
             return NoiseWavePV.forParameters(name, parseDoubles(parameters));
+        else if (func.equals("flipflop"))
+            return FlipFlopPV.forParameters(name, parseDoubles(parameters));
         else
             throw new Exception("Unknown simulated PV " + name);
     }
