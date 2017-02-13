@@ -54,6 +54,8 @@ public class SimPVFactory implements PVFactory
             return RampPV.forParameters(name, parseDoubles(parameters));
         else if (func.equals("noise"))
             return NoisePV.forParameters(name, parseDoubles(parameters));
+        else if (func.equalsIgnoreCase("gaussiannoise"))
+            return GaussianNoisePV.forParameters(name, parseDoubles(parameters));
         else if (func.equals("strings"))
             return StringsPV.forParameters(name, parseDoubles(parameters));
         else if (func.startsWith("intermittent"))           // diirt used "intermittentChannel"
