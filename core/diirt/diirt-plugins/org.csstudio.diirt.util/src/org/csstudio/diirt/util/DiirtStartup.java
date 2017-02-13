@@ -41,9 +41,9 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
         try {
 
-            File diirtHome = Files.createTempDirectory("DIIRT").toFile();
+            final File diirtHome = Files.createTempDirectory("DIIRT").toFile();
 
-            DIIRTPreferences.get().toFiles(diirtHome);
+            DIIRTPreferences.get().toFiles(diirtHome, true);
 
             log.config(MessageFormat.format("Setting 'diirt.home' system property [{0}].", diirtHome.toString()));
             System.setProperty("diirt.home", diirtHome.toString());
