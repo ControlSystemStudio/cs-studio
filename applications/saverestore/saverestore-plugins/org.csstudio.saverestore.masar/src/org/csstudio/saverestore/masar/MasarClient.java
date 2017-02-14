@@ -10,6 +10,15 @@
  */
 package org.csstudio.saverestore.masar;
 
+import static org.csstudio.saverestore.masar.MasarConstants.FC_LOAD_SNAPSHOT_DATA;
+import static org.csstudio.saverestore.masar.MasarConstants.F_DESCRIPTION;
+import static org.csstudio.saverestore.masar.MasarConstants.F_EVENTID;
+import static org.csstudio.saverestore.masar.MasarConstants.F_FUNCTION;
+import static org.csstudio.saverestore.masar.MasarConstants.F_NAME;
+import static org.csstudio.saverestore.masar.MasarConstants.F_USER;
+import static org.csstudio.saverestore.masar.MasarConstants.F_VALUE;
+import static org.csstudio.saverestore.masar.MasarConstants.STRUCT_SNAPSHOT_DATA;
+
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -37,6 +46,7 @@ import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
+import org.epics.nt.NTTable;
 import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
@@ -44,17 +54,23 @@ import org.epics.pvaccess.client.ChannelProviderRegistryFactory;
 import org.epics.pvaccess.client.ChannelRPC;
 import org.epics.pvaccess.client.ChannelRequester;
 import org.epics.pvaccess.util.logging.LoggingUtils;
+import org.epics.pvdata.factory.FieldFactory;
 import org.epics.pvdata.factory.PVDataFactory;
+import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.PVBoolean;
+import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
+import org.epics.pvdata.pv.PVUnion;
+import org.epics.pvdata.pv.PVUnionArray;
+import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Status.StatusType;
 import org.epics.pvdata.pv.StringArrayData;
-
-import static org.csstudio.saverestore.masar.MasarConstants.*;
+import org.epics.pvdata.pv.Structure;
+import org.epics.pvdata.pv.Union;
 /**
  * <code>MasarClient<code> provide access to the masar features required by the save and restore application.
  *
@@ -424,6 +440,124 @@ public class MasarClient {
         } catch (InterruptedException e) {
             throw new MasarException("Loading system configurations aborted.", e);
         }
+    }
+
+
+    /**
+     * Creates a new SaveSet configuration in masar.
+     * 
+     * @param set the new SaveSet configuration to be created
+     * @param comment a comment on the SaveSet configuration
+     * @return the successfully created SaveSetData
+     * @throws MasarException 
+     */
+    public synchronized SaveSetData createSaveSets(SaveSetData set, String comment) throws MasarException {
+        return createSaveSets(set, comment, true);
+    }
+
+    private SaveSetData createSaveSets(SaveSetData set, String comment, boolean retryOnError) throws MasarException{
+        try {
+           final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
+                    new String[] { F_FUNCTION, "name", "value" },
+                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createVariantUnionArray()
+                    });
+
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
+            request.getStringField(MasarConstants.F_FUNCTION).put("storeServiceConfig");
+
+            PVStringArray names = (PVStringArray) request.getScalarArrayField("name", ScalarType.pvString);
+            names.put(0, 4, new String[] { "configname", "oldidx", "desc", "config" }, 0);
+
+            PVUnion u1 = PVDataFactory.getPVDataCreate()
+                    .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
+            Scalar s1 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
+            PVString a1 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s1);
+            a1.put(set.getDescriptor().getDisplayName());
+            u1.set(a1);
+
+            PVUnion u2 = PVDataFactory.getPVDataCreate()
+                    .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
+            Scalar s2 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
+            PVString a2 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s2);
+            a2.put("0");
+            u2.set(a2);
+
+            PVUnion u3 = PVDataFactory.getPVDataCreate()
+                    .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
+            Scalar s3 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
+            PVString a3 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s3);
+            a3.put(set.getDescription());
+            u3.set(a3);
+
+            Union uu4 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
+            PVUnion u4 = PVDataFactory.getPVDataCreate().createPVUnion(uu4);
+
+            Structure val = FieldFactory.getFieldCreate().createStructure(new String[] { "labels", "value" },
+                    new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createStructure(
+                                    new String[] { "channelName", "readonly", "groupName", "tags" }, 
+                                    new Field[] {
+                                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) }) });
+
+            PVStructure valStruct = PVDataFactory.getPVDataCreate().createPVStructure(val);
+            PVStringArray labels = (PVStringArray) valStruct.getScalarArrayField("labels", ScalarType.pvString);
+            labels.put(0, 4, new String[] { "channelName", "readonly", "groupName", "tags" }, 0);
+            PVStructure config = valStruct.getStructureField("value");
+
+            // TODO (shroffk) the individual stream operations should be merged into one loop through
+            String[] pvNames = set.getEntries().stream().map(SaveSetEntry::getPVName).collect(Collectors.toList())
+                    .toArray(new String[set.getEntries().size()]);
+            PVStringArray channelName = (PVStringArray) config.getScalarArrayField("channelName", ScalarType.pvString);
+            channelName.put(0, 3, pvNames, 0);
+
+            PVStringArray readonly = (PVStringArray) config.getScalarArrayField("readonly", ScalarType.pvString);
+            readonly.put(0, 3, set.getEntries().stream().map(e -> {
+                if(e.isReadOnly()) {
+                    return "1";
+                } else {
+                    return "0";
+                }
+            } ).collect(Collectors.toList())
+                    .toArray(new String[set.getEntries().size()]), 0);
+
+            PVStringArray groupName = (PVStringArray) config.getScalarArrayField("groupName", ScalarType.pvString);
+            groupName.put(0, 3, new String[set.getEntries().size()], 0);
+
+            PVStringArray tags = (PVStringArray) config.getScalarArrayField("tags", ScalarType.pvString);
+            tags.put(0, 3, new String[set.getEntries().size()], 0);
+
+            u4.set(valStruct);
+
+            /**
+             * TODO (shroffk) replace the above table creation code with the following from the NTType utility library
+             * 
+            NTTable ntTable = NTTable.createBuilder()
+                    .addColumn("channelName", ScalarType.pvString)
+                    .addColumn("readonly", ScalarType.pvString)
+                    .addColumn("groupName", ScalarType.pvString)
+                    .addColumn("tags", ScalarType.pvString).create();
+            
+            ((PVStringArray) ntTable.getColumn("channelName")).put(0, 3, new String[] { "XF:31IDA-OP{Tbl-Ax:X1}Mtr", "XF:31IDA-OP{Tbl-Ax:X2}Mtr",
+            "XF:31IDA-OP{Tbl-Ax:X3}Mtr" }, 0);
+            ((PVStringArray) ntTable.getColumn("readonly")).put(0, 3, new String[] { "", "", "" }, 0);
+            ((PVStringArray) ntTable.getColumn("groupName")).put(0, 3, new String[] { "G1", "G1", "G1" }, 0);
+            ((PVStringArray) ntTable.getColumn("tags")).put(0, 3, new String[] { "T1", "T1", "t2" }, 0);
+            u4.set(ntTable.getPVStructure());
+            **/
+            
+            ((PVUnionArray) request.getUnionArrayField("value")).put(0, 4, new PVUnion[] { u1, u2, u3, u4 }, 0);
+
+            PVStructure result = channelRPCRequester.request(request);
+
+        } catch (Exception e) {
+            throw new MasarException("Creating new snapshots config failed: ", e);
+        }
+        return null;
     }
 
     /**
@@ -873,4 +1007,5 @@ public class MasarClient {
             .collect(Collectors.toList());
         return new SaveSetData(set, entries, null);
     }
+
 }
