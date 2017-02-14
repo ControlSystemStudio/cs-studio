@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2017 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,10 @@ import org.eclipse.osgi.util.NLS;
  * @author Xihui Chen
  * @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DisplayUtil
 {
-    private static final Logger log = Logger.getLogger(DisplayUtil.class.getName());
+    private static final Logger logger = Logger.getLogger(DisplayUtil.class.getName());
 
     /** Singleton instance */
     final private static DisplayUtil instance = new DisplayUtil();
@@ -39,7 +40,6 @@ public class DisplayUtil
     final private Map<String, IOpenDisplayAction> actions = new HashMap<String, IOpenDisplayAction>();
 
     /** Private constructor to prevent instantiation */
-    @SuppressWarnings("nls")
     private DisplayUtil()
     {
         final IExtensionRegistry extReg = Platform.getExtensionRegistry();
@@ -49,15 +49,34 @@ public class DisplayUtil
         {
             try
             {
-                final String ext = element.getAttribute("file_extension"); //$NON-NLS-1$
+                final String ext = element.getAttribute("file_extension");
                 final IOpenDisplayAction action =
-                        (IOpenDisplayAction) element.createExecutableExtension("class"); //$NON-NLS-1$
-                actions.put(ext, action);
-                // System.out.println("OPI: '" + ext + "' -> " + action.getClass().getName());
+                        (IOpenDisplayAction) element.createExecutableExtension("class");
+                final boolean is_default;
+                if (element.getAttribute("default") == null)
+                    is_default = true;
+                else
+                    is_default = Boolean.parseBoolean(element.getAttribute("default"));
+
+                logger.log(Level.FINE, () -> "IOpenDisplayAction for '" + ext + ": " +
+                                             action.getClass().getName() + (is_default ? " (default)" : ""));
+                final IOpenDisplayAction other = actions.get(ext);
+                if (other != null)
+                {
+                    if (is_default)
+                    {
+                        actions.put(ext, action);
+                        logger.log(Level.FINE, "replaces " + other.getClass().getName());
+                    }
+                    else
+                        logger.log(Level.FINE, "keeping " + other.getClass().getName());
+                }
+                else
+                    actions.put(ext, action);
             }
             catch (CoreException ex)
             {
-                log.log(Level.SEVERE, "Error locating IOpenDisplayActions", ex); //$NON-NLS-1$
+                logger.log(Level.SEVERE, "Error locating IOpenDisplayActions", ex);
             }
         }
     }
