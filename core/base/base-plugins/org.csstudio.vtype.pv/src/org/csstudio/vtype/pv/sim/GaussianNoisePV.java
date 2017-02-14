@@ -12,8 +12,8 @@ import java.util.Random;
 
 import org.csstudio.vtype.pv.PV;
 
-/** Simulated PV for sine
- *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
+/** Simulated PV for gaussian noise
+ *  @author Kay Kasemir, based on similar PV in diirt
  */
 @SuppressWarnings("nls")
 public class GaussianNoisePV extends SimulatedDoublePV
