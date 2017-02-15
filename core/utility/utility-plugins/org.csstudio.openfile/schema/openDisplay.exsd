@@ -9,6 +9,8 @@
          Extension point that allows generic operator interface tools to register so that programs like an alarm interface can open operator interface panels.
 
 Extensions register the file extension that they handle, and will then receive that file name and a generic string parameter for additional parameters like macros that are specific to the implementation of an operator interface tool.
+
+Multiple tools can register for the same file extension, but only one should then set &quot;default: true&quot; or leave it undefined, while all others need to set &quot;default: false&quot;. If more than one tool registers without &quot;default: false&quot;, the last one found in the registry will be invoked.
       </documentation>
    </annotation>
 
@@ -68,6 +70,16 @@ Extensions register the file extension that they handle, and will then receive t
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="default" type="boolean">
+            <annotation>
+               <documentation>
+                  Is this the default display tool for the file extension?
+When multiple handler classes register for the same file extension, the one defined as &apos;default&apos; will be chosen.
+A secondary handler class registered with &quot;default: false&quot; will only be invoked if there is no handler available with &quot;default: true&quot;.
+The &quot;default&quot; setting defaults to true.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -111,7 +123,7 @@ Extensions register the file extension that they handle, and will then receive t
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         org.csstudio.opibuilder implements this for 'opi' files
+         org.csstudio.opibuilder implements this for &apos;opi&apos; files
       </documentation>
    </annotation>
 
