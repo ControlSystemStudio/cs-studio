@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="EPICS PV Tree" id="org.csstudio.diag.epics.pvtree.product" application="org.csstudio.diag.epics.pvtree.application" useFeatures="false" includeLaunchers="true">
+<product name="EPICS PV Tree" uid="pvtree" id="org.csstudio.diag.epics.pvtree.product" application="org.csstudio.diag.epics.pvtree.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Dosgi.requiredJavaVersion=1.8 -Xms256m -Xmx1024m -Dorg.osgi.framework.bundle.parent=ext -Dosgi.framework.extensions=org.eclipse.fx.osgi -Dorg.osgi.framework.system.packages.extra=sun.misc
+      </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
 
+   <launcher name="pv_tree">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
    <plugins>
-      <plugin id="com.diffplug.osgi.extension.sun.misc" fragment="true"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
@@ -20,13 +31,16 @@
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
+      <plugin id="org.apache.commons.lang3"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.autocomplete"/>
       <plugin id="org.csstudio.autocomplete.ui"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.diirt.util.core.preferences"/>
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.ui.util"/>
@@ -101,5 +115,11 @@
       <plugin id="org.w3c.dom.svg"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+   </configurations>
 
 </product>
