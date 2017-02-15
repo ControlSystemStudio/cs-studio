@@ -133,8 +133,8 @@ public class LinkingContainerFigure extends Figure implements Introspectable {
         }
     }
 
-
-
-
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
 
 }
