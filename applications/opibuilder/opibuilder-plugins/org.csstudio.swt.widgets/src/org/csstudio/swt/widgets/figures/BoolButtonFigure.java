@@ -193,89 +193,113 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
             graphics.setAntialias(SWT.ON);
             Rectangle clientArea = getClientArea().getCopy();
             boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+            int border;
+
             if(effect3D && support3D){
 //                graphics.fillRectangle(new Rectangle());
 
                 //draw up border
                 Pattern pattern;
-                if(booleanValue)
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                            clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, GRAY_COLOR, DARK_GRAY_COLOR);
-                else
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                            clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, WHITE_COLOR, LIGHT_GRAY_COLOR);
+                if(booleanValue) {
+                    border = SQURE_BORDER_WIDTH_THICK;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x, clientArea.y,
+                        clientArea.x, clientArea.y + SQURE_BORDER_WIDTH_THICK,
+                        BLACK_COLOR, GRAY_COLOR);
+                } else {
+                    border = SQURE_BORDER_WIDTH_THIN;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x, clientArea.y,
+                        clientArea.x, clientArea.y + SQURE_BORDER_WIDTH_THIN,
+                        WHITE_COLOR, WHITE_COLOR);
+                }
+
                 graphics.setBackgroundPattern(pattern);
                 graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
-                    clientArea.x+SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, clientArea.y + SQURE_BORDER_WIDTH,
+                    clientArea.x + border, clientArea.y + border,
+                    clientArea.x + clientArea.width - border, clientArea.y + border,
                     clientArea.x + clientArea.width, clientArea.y});
                 pattern.dispose();
 
                 //draw left border
-                if(booleanValue)
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                        clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, GRAY_COLOR, DARK_GRAY_COLOR);
-                else
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                        clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, WHITE_COLOR, LIGHT_GRAY_COLOR);
+                if(booleanValue) {
+                    border = SQURE_BORDER_WIDTH_THICK;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x, clientArea.y,
+                        clientArea.x + SQURE_BORDER_WIDTH_THICK, clientArea.y,
+                        BLACK_COLOR, GRAY_COLOR);
+                } else {
+                    border = SQURE_BORDER_WIDTH_THIN;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x, clientArea.y,
+                        clientArea.x + SQURE_BORDER_WIDTH_THIN, clientArea.y,
+                        WHITE_COLOR, WHITE_COLOR);
+                }
+
                 graphics.setBackgroundPattern(pattern);
                 graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
-                        clientArea.x+SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                        clientArea.x+SQURE_BORDER_WIDTH, clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
+                        clientArea.x + border,clientArea.y + border,
+                        clientArea.x + border, clientArea.y + clientArea.height - border,
                         clientArea.x, clientArea.y + clientArea.height});
                 pattern.dispose();
 
                 //draw bottom border
-                if(booleanValue)
+                if(booleanValue) {
+                    border = SQURE_BORDER_WIDTH_THIN;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x, clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH_THIN,
+                        clientArea.x, clientArea.y+clientArea.height,
+                        WHITE_COLOR, WHITE_COLOR);
+                } else {
+                    border = SQURE_BORDER_WIDTH_THICK;
                     pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,
-                            clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH,
+                            clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH_THICK,
                             clientArea.x, clientArea.y+clientArea.height,
-                            LIGHT_GRAY_COLOR, WHITE_COLOR);
-                else
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,
-                            clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH,
-                            clientArea.x, clientArea.y+clientArea.height,
-                            LIGHT_GRAY_COLOR, DARKER_GRAY_COLOR);
+                            GRAY_COLOR, BLACK_COLOR);
+                }
 
                 graphics.setBackgroundPattern(pattern);
                 graphics.fillPolygon(new int[]{clientArea.x, clientArea.y + clientArea.height,
-                    clientArea.x+SQURE_BORDER_WIDTH,clientArea.y +clientArea.height - SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                    clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
+                    clientArea.x + border, clientArea.y + clientArea.height - border,
+                    clientArea.x + clientArea.width - border,
+                    clientArea.y + clientArea.height - border,
                     clientArea.x + clientArea.width, clientArea.y + clientArea.height});
                 pattern.dispose();
 
                 //draw right border
-                if(booleanValue)
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                            clientArea.y,
-                            clientArea.x + clientArea.width, clientArea.y,
-                            LIGHT_GRAY_COLOR, WHITE_COLOR);
-                else
-                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                            clientArea.y,
-                            clientArea.x + clientArea.width, clientArea.y,
-                            LIGHT_GRAY_COLOR, DARKER_GRAY_COLOR);
+                if(booleanValue) {
+                    border = SQURE_BORDER_WIDTH_THIN;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x + clientArea.width - SQURE_BORDER_WIDTH_THIN, clientArea.y,
+                        clientArea.x + clientArea.width, clientArea.y,
+                        WHITE_COLOR, WHITE_COLOR);
+                } else {
+                    border = SQURE_BORDER_WIDTH_THICK;
+                    pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        clientArea.x + clientArea.width - SQURE_BORDER_WIDTH_THICK,
+                        clientArea.y, clientArea.x + clientArea.width, clientArea.y,
+                        GRAY_COLOR, BLACK_COLOR);
+                }
+
                 graphics.setBackgroundPattern(pattern);
                 graphics.fillPolygon(new int[]{clientArea.x + clientArea.width, clientArea.y,
-                    clientArea.x+ clientArea.width - SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                    clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
+                    clientArea.x + clientArea.width - border, clientArea.y + border,
+                    clientArea.x + clientArea.width - border, clientArea.y + clientArea.height - border,
                     clientArea.x + clientArea.width, clientArea.y + clientArea.height});
                 pattern.dispose();
 
                 //draw button
-                clientArea.shrink(SQURE_BORDER_WIDTH, SQURE_BORDER_WIDTH);
+                clientArea.shrink(SQURE_BORDER_WIDTH_THICK, SQURE_BORDER_WIDTH_THICK);
                 graphics.setBackgroundColor(getBackgroundColor());
                 graphics.fillRectangle(clientArea);
-                   pattern.dispose();
+                pattern.dispose();
 
             }else { //if not 3D
-                clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
+                clientArea.shrink(SQURE_BORDER_WIDTH_THICK / 2, SQURE_BORDER_WIDTH_THICK / 2);
                 graphics.setForegroundColor(booleanValue ? WHITE_COLOR : DARK_GRAY_COLOR);
-                graphics.setLineWidth(SQURE_BORDER_WIDTH);
+                graphics.setLineWidth(SQURE_BORDER_WIDTH_THICK);
                 graphics.drawRectangle(clientArea);
-                clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
+                clientArea.shrink(SQURE_BORDER_WIDTH_THICK / 2, SQURE_BORDER_WIDTH_THICK / 2);
                 graphics.setBackgroundColor(getBackgroundColor());
                 graphics.fillRectangle(clientArea);
             }
@@ -314,20 +338,14 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
             super.paintClientArea(graphics);
         }
     }
-    private final static int ELLIPSE_BORDER_WIDTH = 3;
-    private final static int SQURE_BORDER_WIDTH = 3;
+    private final static int ELLIPSE_BORDER_WIDTH = 2;
+    private final static int SQURE_BORDER_WIDTH_THIN = 1;
+    private final static int SQURE_BORDER_WIDTH_THICK = 2 * SQURE_BORDER_WIDTH_THIN;
     private final static double LED_POSITION = 4.8/6.0;
-    private final static Color LIGHT_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-            new RGB(240, 240, 240));
-    private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-            new RGB(200, 200, 200));
-    private final static Color DARK_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-            new RGB(127, 127, 127));
-
-    private final static Color DARKER_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-            new RGB(100, 100, 100));
-    private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
-            CustomMediaFactory.COLOR_WHITE);
+    private final static Color DARK_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(new RGB(127, 127, 127));
+    private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE);
+    private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
+    private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(new RGB(164, 164, 161));
     private boolean effect3D = true;
 
     private boolean squareButton = true;

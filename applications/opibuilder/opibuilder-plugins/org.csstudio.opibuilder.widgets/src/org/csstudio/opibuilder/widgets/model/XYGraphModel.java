@@ -188,6 +188,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
     /** The default value of the width property. */
     private static final int DEFAULT_WIDTH = 400;
 
+    /** The default value of the scrolling  property. */
+    private boolean scrollingDisabled = false;
+
     public XYGraphModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setForegroundColor(CustomMediaFactory.COLOR_BLUE);
@@ -221,6 +224,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
         addAxisProperties();
         addTraceProperties();
         setPropertyVisible(PROP_FONT, false);
+        scrollingDisabled = false;
     }
 
     @Override
@@ -487,5 +491,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
     @Override
     public String getTypeID() {
         return ID;
+    }
+
+    public boolean isScrollingDisabled() {
+        return scrollingDisabled;
     }
 }

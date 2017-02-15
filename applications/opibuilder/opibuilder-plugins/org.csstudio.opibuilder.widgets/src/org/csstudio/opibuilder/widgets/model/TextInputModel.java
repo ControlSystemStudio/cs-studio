@@ -270,9 +270,9 @@ public class TextInputModel extends TextUpdateModel {
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if(adapter == IWidgetInfoProvider.class)
-            return new IWidgetInfoProvider() {
+            return adapter.cast(new IWidgetInfoProvider() {
 
                 @Override
                 public Object getInfo(String key) {
@@ -281,7 +281,7 @@ public class TextInputModel extends TextUpdateModel {
                         return Arrays.asList(PROP_TEXT);
                     return null;
                 }
-            };
+            });
         return super.getAdapter(adapter);
     }
 }

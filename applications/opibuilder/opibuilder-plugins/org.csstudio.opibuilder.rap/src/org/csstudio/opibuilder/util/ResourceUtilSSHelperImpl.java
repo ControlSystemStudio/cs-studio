@@ -190,4 +190,9 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
     public Image getScreenShotImage(GraphicalViewer viewer) {
         throw new RuntimeException(NOT_IMPLEMENTED);
     }
+
+    @Override
+    public IEditorInput editorInputFromPath(IPath path) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
 }

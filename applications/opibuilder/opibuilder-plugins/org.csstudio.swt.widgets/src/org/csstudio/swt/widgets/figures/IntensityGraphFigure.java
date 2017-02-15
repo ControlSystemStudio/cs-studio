@@ -756,8 +756,6 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
         add(yAxis);
 
         roiMap = new HashMap<String, ROIFigure>(2);
-        setFocusTraversable(true);
-        setRequestFocusEnabled(true);
     }
 
 

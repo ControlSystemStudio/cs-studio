@@ -264,8 +264,6 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         };
         clickable.setOpaque(true);
         clickable.setBackgroundColor(COLOR_TRACK);
-        clickable.setRequestFocusEnabled(false);
-        clickable.setFocusTraversable(false);
         clickable.addChangeListener(new ChangeListener() {
             public void handleStateChanged(ChangeEvent evt) {
                 if (clickable.getModel().isArmed())
@@ -365,8 +363,6 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      *
      */
     private void initializeListeners() {
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
         addKeyListener(new KeyListener() {
 
                 public void keyPressed(KeyEvent ke) {

@@ -1,11 +1,15 @@
 package org.csstudio.diirt.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.logging.Logger;
 
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
 import org.diirt.datasource.CompositeDataSource;
 import org.diirt.datasource.CompositeDataSourceConfiguration;
@@ -14,9 +18,6 @@ import org.diirt.datasource.PVManager;
 import org.diirt.util.config.Configuration;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.WorkbenchException;
 
@@ -34,31 +35,43 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
     private Logger log = Logger.getLogger(DiirtStartup.ID);
 
     @Override
-    public void preWindowOpen() {
-        log.config("DIIRT: preWindowOpen");
-        try {
-            final Location instanceLoc = Platform.getInstanceLocation();
-            final String defaultDiirtConfig = new URL(instanceLoc.getURL(),"diirt").toURI().getPath();
+    public void preWindowOpen ( ) {
 
-            IPreferencesService prefs = Platform.getPreferencesService();
-            String diirtHome = getSubstitutedPath(prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null));
-            log.config("Setting Diirt configuration folder to :" + diirtHome);
-            System.setProperty("diirt.home", diirtHome);
-//            Configuration;
-            log.config("Resetting the configuration folder");
+        log.config("DIIRT: preWindowOpen");
+
+        try {
+
+            final File diirtHome = Files.createTempDirectory("DIIRT").toFile();
+
+            DIIRTPreferences.get().toFiles(diirtHome, true);
+
+            log.config(MessageFormat.format("Setting 'diirt.home' system property [{0}].", diirtHome.toString()));
+            System.setProperty("diirt.home", diirtHome.toString());
+
+            // Configuration.
+            log.config("Resetting the DIIRT configuration folder.");
             Configuration.reset();
+
             DataSource defaultDataSource = PVManager.getDefaultDataSource();
-            if (defaultDataSource instanceof CompositeDataSource) {
-                CompositeDataSource ds = ((CompositeDataSource) defaultDataSource);
-                try (InputStream input = Configuration.getFileAsStream("datasources" + "/datasources.xml", ds, "datasources.default.xml")) {
+
+            if ( defaultDataSource instanceof CompositeDataSource ) {
+
+                CompositeDataSource ds = (CompositeDataSource) defaultDataSource;
+
+                try ( InputStream input = Configuration.getFileAsStream("datasources" + "/datasources.xml", ds, "datasources.default.xml") ) {
+
                     CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(input);
+
                     ds.setConfiguration(conf);
                     PVManager.setDefaultDataSource(ds);
-                } catch (Exception e) {
+
+                } catch ( Exception e ) {
                     log.severe(e.getMessage());
                 }
+
             }
-        } catch (Exception e) {
+
+        } catch ( Exception e ) {
             log.severe(e.getMessage());
             e.printStackTrace();
         }

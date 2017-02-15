@@ -7,7 +7,6 @@
     <artifactId>appunorganized-features</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.graphene.feature</artifactId>
   <version>3.0.1-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>

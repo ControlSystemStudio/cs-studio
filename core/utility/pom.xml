@@ -14,5 +14,4 @@
     <module>utility-features</module>
     <module>utility-repository</module>
   </modules>
-  <groupId>org.csstudio</groupId>
 </project>

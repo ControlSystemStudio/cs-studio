@@ -133,7 +133,7 @@ public class NotifierUtils {
     public static String getDurationString(Instant t) {
         if (t == null)
             return "";
-        Duration duration = Duration.between(Instant.now(), t);
+        Duration duration = Duration.between(t, Instant.now());
         if (duration.isNegative())
             return "";
         double seconds = TimeDuration.toSecondsDouble(duration);

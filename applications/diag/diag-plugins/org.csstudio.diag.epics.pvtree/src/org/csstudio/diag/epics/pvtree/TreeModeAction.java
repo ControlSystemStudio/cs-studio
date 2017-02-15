@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import org.csstudio.diag.epics.pvtree.model.TreeModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -18,9 +19,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class TreeModeAction extends Action
 {
     private static ImageDescriptor run, pause_on_alarm;
-    final private PVTreeModel model;
+    final private TreeModel model;
 
-    public TreeModeAction(final PVTreeModel model)
+    public TreeModeAction(final TreeModel model)
     {
         super(Messages.TreeMode);
         setToolTipText(Messages.TreeMode_TT);
@@ -42,7 +43,7 @@ public class TreeModeAction extends Action
     /** Update icon to reflect current mode of model */
     private void reflectModelMode()
     {
-        if (model.isFreezingOnAlarm())
+        if (model.isLatchingOnAlarm())
             setImageDescriptor(pause_on_alarm);
         else
             setImageDescriptor(run);
@@ -52,7 +53,7 @@ public class TreeModeAction extends Action
     @Override
     public void run()
     {
-        model.freezeOnAlarm(! model.isFreezingOnAlarm());
+        model.latchOnAlarm(! model.isLatchingOnAlarm());
         reflectModelMode();
     }
 }

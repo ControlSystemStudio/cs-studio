@@ -9,10 +9,11 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class PVWidgetAdapterFactory implements IAdapterFactory {
 
-    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
+    @Override
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if(adaptableObject instanceof IPVWidgetEditpart){
             if (adapterType == ProcessVariable.class) {
-                return new ProcessVariable(((IPVWidgetEditpart) adaptableObject).getPVName());
+                return adapterType.cast(new ProcessVariable(((IPVWidgetEditpart) adaptableObject).getPVName()));
             }else if(adapterType == ProcessVariable[].class) {
                 String[] allPVNames = ((IPVWidgetEditpart) adaptableObject)
                         .getAllPVNames();
@@ -21,7 +22,7 @@ public class PVWidgetAdapterFactory implements IAdapterFactory {
                 for (String s : allPVNames) {
                     pvs[i++] = new ProcessVariable(s);
                 }
-                return pvs;
+                return adapterType.cast(pvs);
             }
 
         }

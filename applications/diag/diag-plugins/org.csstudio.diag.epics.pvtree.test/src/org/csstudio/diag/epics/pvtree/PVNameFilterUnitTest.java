@@ -10,6 +10,7 @@ package org.csstudio.diag.epics.pvtree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.csstudio.diag.epics.pvtree.model.PVNameFilter;
 import org.junit.Test;
 
 /** JUnit test of FieldParser

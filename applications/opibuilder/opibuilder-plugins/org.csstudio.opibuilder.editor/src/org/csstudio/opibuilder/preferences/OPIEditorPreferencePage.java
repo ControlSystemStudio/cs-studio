@@ -57,6 +57,13 @@ public class OPIEditorPreferencePage extends FieldEditorPreferencePage
                                 {"Prompt", MessageDialogWithToggle.PROMPT}},
                 parent, true);
         addField(perspectiveEditor);
+        RadioGroupFieldEditor fontInPixelsEditor = new RadioGroupFieldEditor(
+                PreferencesHelper.FONT_DEFAULT_PIXELS_OR_POINTS,
+                "Default sizing for fonts", 2,
+                new String[][] {{"Points", PreferencesHelper.POINTS},
+                                {"Pixels", PreferencesHelper.PIXELS}},
+                parent, true);
+        addField(fontInPixelsEditor);
 
     }
 

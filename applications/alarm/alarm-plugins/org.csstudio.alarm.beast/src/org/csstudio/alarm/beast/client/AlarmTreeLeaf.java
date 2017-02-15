@@ -83,7 +83,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
         final Instant safe_copy = timestamp;
         if (safe_copy == null)
             return ""; //$NON-NLS-1$
-        final Duration duration = Duration.between(Instant.now(), safe_copy);
+        final Duration duration = Duration.between(safe_copy, Instant.now());
         if (duration.isNegative())
             return ""; //$NON-NLS-1$
         return SecondsParser.formatSeconds(TimeDuration.toSecondsDouble(duration));
