@@ -62,11 +62,9 @@ echo "APP=${APPLICATIONS}"
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$REPO_ORG" == "ControlSystemStudio" ] && ([[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+\.x ]] || [ "$TRAVIS_BRANCH" == "master" ]); then
     echo "Deploying"
     doCompileWithDeploy
-    catTests
 else
     echo "Skipping deploy; just doing a build."
     doCompile
-    catTests
 fi
 
 exit 0
