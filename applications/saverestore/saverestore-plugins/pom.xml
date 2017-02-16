@@ -25,4 +25,25 @@
     <!-- MAVEN complains that it cannot find javafx.scene.Node when executing the tests in these plugins -->
     <!--module>org.csstudio.saverestore.ui.test</module-->
   </modules>
+  <!-- Filter the javax.xml.jre plugin, which appears to be functionally
+       the same as javax.xml from Orbit.  Under specific circumstances
+       this can cause build problems.   -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+           <filters>
+              <filter>
+                 <type>p2-installable-unit</type>
+                 <id>javax.xml.jre</id>
+                 <removeAll />
+              </filter>
+           </filters>
+        </configuration>
+      </plugin>
+    </plugins>
+ </build>
 </project>
