@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
+import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.PointType;
+import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
@@ -35,6 +37,12 @@ import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -49,6 +57,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
 
@@ -248,6 +257,25 @@ public class WaveformView extends DataBrowserAwareView
         l.setLayoutData(new GridData());
         status = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+
+        final MenuManager mm = new MenuManager();
+        mm.setRemoveAllWhenShown(true);
+      
+        final Menu menu = mm.createContextMenu(plot.getPlotControl());
+        plot.getPlotControl().setMenu(menu);
+        getSite().registerContextMenu(mm, null);
+
+        mm.addMenuListener(new IMenuListener(){
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                mm.add(plot.getToolbarAction());
+                mm.add(plot.getLegendAction());
+                mm.add(new Separator());
+                mm.add(new ToggleYAxisAction<Double>(plot, true));
+            }
+        });
+        
     }
 
     /** {@inheritDoc} */
@@ -477,5 +505,27 @@ public class WaveformView extends DataBrowserAwareView
         changing_annotations = true;
         model.setAnnotations(annotations);
         changing_annotations = false;
+    }
+
+    public class ToggleYAxisAction<XTYPE extends Comparable<XTYPE>> extends Action
+    {
+        final private RTPlot<XTYPE> plot;
+
+        public ToggleYAxisAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+        {
+            super(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis", null);
+            this.plot = plot;
+        }
+
+        public void updateText()
+        {
+            setText(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis");
+        }
+
+        @Override
+        public void run()
+        {
+            plot.getYAxes().get(0).setLogarithmic(!plot.getYAxes().get(0).isLogarithmic());
+        }
     }
 }
