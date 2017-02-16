@@ -516,6 +516,7 @@ public class XMLUtil {
 
                 final DisplayModel inside = new DisplayModel(path);
                 inside.setDisplayID(container.getRootDisplayModel(false).getDisplayID());
+                inside.setParentDisplayModel(container.getRootDisplayModel());
 
                 try
                 {
