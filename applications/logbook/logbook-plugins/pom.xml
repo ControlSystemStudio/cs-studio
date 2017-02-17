@@ -18,7 +18,7 @@
     <module>org.csstudio.logbook.olog.properties.test</module>
     <module>org.csstudio.logbook.olog.property.shift</module>
     <module>org.csstudio.logbook.olog.property.fault</module>
-    <!-- <module>org.csstudio.logbook.olog.property.fault.test</module> -->
+    <module>org.csstudio.logbook.olog.property.fault.test</module>
     <module>org.csstudio.logbook.test</module>
     <module>org.csstudio.logbook.ui</module>
     <module>org.csstudio.logbook.ui.extra</module>
