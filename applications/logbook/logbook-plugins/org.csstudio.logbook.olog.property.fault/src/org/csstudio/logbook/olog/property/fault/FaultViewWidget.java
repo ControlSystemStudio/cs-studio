@@ -22,7 +22,7 @@ import org.eclipse.swt.layout.FormAttachment;
 
 /**
  * Displays the fault and the associated log entries
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -54,14 +54,14 @@ public class FaultViewWidget extends Composite {
     public FaultViewWidget(Composite parent, int style) {
         super(parent, SWT.NONE);
         setLayout(new FillLayout(SWT.HORIZONTAL));
-        
+
         scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
 
         composite = new Composite(scrolledComposite, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));
-        
+
         faultComposite = new Composite(composite, SWT.NONE);
         faultComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         faultComposite.setLayout(new GridLayout(3, false));
@@ -167,7 +167,7 @@ public class FaultViewWidget extends Composite {
     }
 
     List<FaultLogWidget> faultWidgets = new ArrayList<FaultLogWidget>();
-    
+
     private void updateUI() {
         if (fault.getId() != 0) {
             textFaultId.setText(String.valueOf(fault.getId()));

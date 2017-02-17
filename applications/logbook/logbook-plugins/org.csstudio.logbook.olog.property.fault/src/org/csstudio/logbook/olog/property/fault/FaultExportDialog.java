@@ -35,15 +35,15 @@ import org.eclipse.swt.widgets.Text;
 public class FaultExportDialog extends Dialog {
 
     private static final Logger log = Logger.getLogger(ExportFault.class.getCanonicalName());
-    
+
     private Text text;
     private Combo combo;
-    
+
     private String filePath;
     private final List<Fault> faults;
     private String delimiter = ";";
 
-    
+
     protected FaultExportDialog(Shell parentShell, List<Fault> faults) {
         super(parentShell);
         setShellStyle(SWT.CLOSE | SWT.MODELESS | SWT.BORDER | SWT.TITLE);
@@ -54,13 +54,13 @@ public class FaultExportDialog extends Dialog {
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
         container.setLayout(new GridLayout(3, false));
-        
+
         Label lblNewLabel = new Label(container, SWT.CENTER);
         lblNewLabel.setText("File:");
-        
+
         text = new Text(container, SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        
+
         Button btnNewButton = new Button(container, SWT.NONE);
         btnNewButton.addSelectionListener(new SelectionAdapter() {
 
@@ -78,11 +78,11 @@ public class FaultExportDialog extends Dialog {
             }
         });
         btnNewButton.setText("Browse");
-        
+
         Label lblNewLabel_1 = new Label(container, SWT.NONE);
         lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel_1.setText("Delimiter:");
-        
+
         combo = new Combo(container, SWT.NONE);
         combo.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -95,7 +95,7 @@ public class FaultExportDialog extends Dialog {
         new Label(container, SWT.NONE);
         return container;
     }
-    
+
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
@@ -103,27 +103,27 @@ public class FaultExportDialog extends Dialog {
         createButton(parent, IDialogConstants.OK_ID, "Export", true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
-    
+
     @Override
     protected void okPressed() {
         // Export the log entries
         new ExportJob(faults, filePath, delimiter).schedule();
         super.okPressed();
     }
-    
+
     private static class ExportJob extends Job {
 
         private final List<Fault> faults;
         private final String filePath;
         private final String delimiter;
-        
+
         public ExportJob(List<Fault> faults, String filePath, String delimiter) {
             super("Export Faults");
             this.faults = faults;
             this.filePath = filePath;
             this.delimiter = delimiter;
         }
-        
+
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -143,6 +143,6 @@ public class FaultExportDialog extends Dialog {
             }
             return Status.OK_STATUS;
         }
-        
+
     }
 }

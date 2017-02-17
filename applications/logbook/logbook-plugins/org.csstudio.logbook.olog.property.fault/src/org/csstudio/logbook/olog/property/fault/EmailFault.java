@@ -14,7 +14,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class EmailFault extends AbstractAdaptedHandler<Fault> implements IHandler {
 
     private static final Logger log = Logger.getLogger(EmailFault.class.getCanonicalName());
-    
+
     public EmailFault() {
         super(Fault.class);
     }
@@ -25,9 +25,9 @@ public class EmailFault extends AbstractAdaptedHandler<Fault> implements IHandle
             if (fault.getContact() != null && !fault.getContact().isEmpty()) {
                 EMailSender mailer;
                 try {
-                    EMailSenderDialog dialog = new EMailSenderDialog(HandlerUtil.getActiveShell(event), 
-                            Preferences.getSMTP_Host(), 
-                            "cs-studio", 
+                    EMailSenderDialog dialog = new EMailSenderDialog(HandlerUtil.getActiveShell(event),
+                            Preferences.getSMTP_Host(),
+                            "cs-studio",
                             fault.getContact(),
                             FaultAdapter.faultSummaryString(fault),
                             FaultAdapter.faultString(fault));
@@ -36,7 +36,7 @@ public class EmailFault extends AbstractAdaptedHandler<Fault> implements IHandle
                     log.log(Level.WARNING, "Failed to send fault message", e);
                 }
             }
-            
+
         }
     }
 

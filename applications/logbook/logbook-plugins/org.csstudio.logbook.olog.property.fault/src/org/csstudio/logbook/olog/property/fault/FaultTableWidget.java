@@ -79,7 +79,7 @@ public class FaultTableWidget extends BeanComposite implements ISelectionProvide
         table = tableViewer.getTable();
         table.setHeaderVisible(true);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         tableViewer.setContentProvider(new ArrayContentProvider());
 
         TableViewerColumn tableViewerColumnArea = new TableViewerColumn(tableViewer, SWT.DOUBLE_BUFFERED);
@@ -131,7 +131,7 @@ public class FaultTableWidget extends BeanComposite implements ISelectionProvide
         new TableViewerColumnSorter(tableViewerColumnDevice) {
             @Override
             protected Object getValue(Object o) {
-                String device = ((Fault)o).getDevice(); 
+                String device = ((Fault)o).getDevice();
                 return device == null ? "" : device;
             }
         };
@@ -207,7 +207,7 @@ public class FaultTableWidget extends BeanComposite implements ISelectionProvide
         new TableViewerColumnSorter(tableViewerColumnBeamloss) {
             @Override
             protected Object getValue(Object o) {
-                BeamLossState state = ((Fault)o).getBeamLossState(); 
+                BeamLossState state = ((Fault)o).getBeamLossState();
                 return state == null ? "" : state.toString();
             }
         };
@@ -302,7 +302,7 @@ public class FaultTableWidget extends BeanComposite implements ISelectionProvide
             }
 
         };
-        
+
         // create the periodic logbook query
         ExecutorService ex = Executors.newFixedThreadPool(1);
         ex.execute(() -> {
@@ -397,7 +397,7 @@ public class FaultTableWidget extends BeanComposite implements ISelectionProvide
     public void setSelection(ISelection selection) {
         selectionProvider.setSelection(selection);
     }
-    
+
     @Override
     public void setMenu(Menu menu) {
         super.setMenu(menu);

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2011-2016, JFXtras
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of the organization nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -53,7 +53,7 @@ public class AgendaLastWeekDaysFromDisplayedSkin
         extends AgendaSkinTimeScale24HourAbstract<AgendaLastWeekDaysFromDisplayedSkin> {
 
     /**
-     * 
+     *
      */
     public AgendaLastWeekDaysFromDisplayedSkin(Agenda control) {
         super(control);
@@ -62,7 +62,7 @@ public class AgendaLastWeekDaysFromDisplayedSkin
     }
 
     /**
-     * 
+     *
      */
     private void construct() {
         // days back
@@ -105,7 +105,7 @@ public class AgendaLastWeekDaysFromDisplayedSkin
     final private int daysForwardDefault = 1;
 
     /**
-     * 
+     *
      */
     protected void reconstruct() {
         super.reconstruct();
@@ -240,7 +240,7 @@ public class AgendaLastWeekDaysFromDisplayedSkin
     /**
      * This method should delegate to {@link Node#getClassCssMetaData()} so that
      * a Node's CssMetaData can be accessed without the need for reflection.
-     * 
+     *
      * @return The CssMetaData associated with this node, which may include the
      *         CssMetaData of its super classes.
      */

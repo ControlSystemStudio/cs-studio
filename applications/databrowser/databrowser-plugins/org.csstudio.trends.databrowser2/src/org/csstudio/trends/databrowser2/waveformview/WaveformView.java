@@ -260,7 +260,7 @@ public class WaveformView extends DataBrowserAwareView
 
         final MenuManager mm = new MenuManager();
         mm.setRemoveAllWhenShown(true);
-      
+
         final Menu menu = mm.createContextMenu(plot.getPlotControl());
         plot.getPlotControl().setMenu(menu);
         getSite().registerContextMenu(mm, null);
@@ -275,7 +275,7 @@ public class WaveformView extends DataBrowserAwareView
                 mm.add(new ToggleYAxisAction<Double>(plot, true));
             }
         });
-        
+
     }
 
     /** {@inheritDoc} */

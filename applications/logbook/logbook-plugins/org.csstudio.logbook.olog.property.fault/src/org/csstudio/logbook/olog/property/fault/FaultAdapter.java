@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
 
 
 /**
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -55,7 +55,7 @@ public class FaultAdapter implements IAdapterFactory{
     /**
      * A utility method that helps convert the input from the the
      * faultEditorWidget into a logbook property
-     * 
+     *
      * @param fault to be converted to the {@link PropertyBuilder}
      * @param list of log entries to be added to this fault
      * @return PropertyBuilder representing this fault
@@ -86,11 +86,11 @@ public class FaultAdapter implements IAdapterFactory{
             pb.attribute(FAULT_PROPERTY_ATTR_LOGIDS, String.join(";", list));
         return pb;
     }
-    
+
     /**
      * A utility method that helps convert the input from the the
      * faultEditorWidget into a logbook property
-     * 
+     *
      * @param fault to be converted to the {@link PropertyBuilder}
      * @return PropertyBuilder for the given fault
      */
@@ -126,7 +126,7 @@ public class FaultAdapter implements IAdapterFactory{
     /**
      * A utility method for creating a single log entry text from the various
      * fields of the faultEditorWidget
-     * 
+     *
      * @param fault
      * @return
      */
@@ -144,7 +144,7 @@ public class FaultAdapter implements IAdapterFactory{
         sb.append(fault.getCorrectiveAction());
         return sb.toString();
     }
-    
+
     /**
      * A helper method to create string representation of fault for this calender view
      * @return
@@ -157,10 +157,10 @@ public class FaultAdapter implements IAdapterFactory{
         sb.append(":");
         sb.append(fault.getDevice() != null ? fault.getDevice():"None");
         sb.append(System.lineSeparator());
-        
+
         sb.append(fault.getAssigned() != null ? fault.getAssigned() : "no owner");
         sb.append(System.lineSeparator());
-        
+
         sb.append(fault.getDescription());
         sb.append(System.lineSeparator());
 
@@ -169,12 +169,12 @@ public class FaultAdapter implements IAdapterFactory{
 
         sb.append(fault.getRepairAction());
         sb.append(System.lineSeparator());
-        
+
         sb.append(fault.getCorrectiveAction());
         sb.append(System.lineSeparator());
         return sb.toString();
     }
-    
+
     /**
      * A helper method to create string representation of fault for this calender view
      * @return
@@ -187,7 +187,7 @@ public class FaultAdapter implements IAdapterFactory{
         sb.append(":");
         sb.append(fault.getDevice() != null ? fault.getDevice():"None");
         sb.append(System.lineSeparator());
-        
+
         sb.append(fault.getAssigned() != null ? fault.getAssigned() : "no owner");
         sb.append(System.lineSeparator());
 
@@ -195,7 +195,7 @@ public class FaultAdapter implements IAdapterFactory{
         sb.append(System.lineSeparator());
         return sb.toString();
     }
-    
+
     public static String createFaultExportText(Fault fault, String delimiter) {
         StringJoiner sj = new StringJoiner(delimiter);
         sj.add(fault.getArea());
@@ -203,33 +203,33 @@ public class FaultAdapter implements IAdapterFactory{
         sj.add(fault.getDevice());
         sj.add(fault.getAssigned());
         sj.add(fault.getContact());
-        
+
         sj.add(fault.getFaultOccuredTime() != null ? fault.getFaultOccuredTime().toString() : null);
         sj.add(fault.getFaultClearedTime() != null ? fault.getFaultClearedTime().toString() : null);
-        
+
         sj.add(fault.getBeamLossState() != null ? fault.getBeamLossState().toString() : null);
 
         sj.add(fault.getBeamlostTime() != null ? fault.getBeamlostTime().toString() : null);
         sj.add(fault.getBeamRestoredTime() != null ? fault.getBeamRestoredTime().toString() : null);
-        
+
         sj.add(fault.getDescription());
         sj.add(fault.getRootCause());
         sj.add(fault.getRepairAction());
         sj.add(fault.getCorrectiveAction());
-        
+
         sj.add(!fault.getLogIds().isEmpty() ? String.join(":",
                 fault.getLogIds().stream().sorted().map(String::valueOf).collect(Collectors.toList())) : null);
 
         return sj.toString();
     }
-   
-    
+
+
 
     /**
      * A utility method that takes a single string and using the special fault
      * comment key words parses out the description, cause, repair and
      * corrective actions comments from the string
-     * 
+     *
      * @param text
      * @return
      */
@@ -265,7 +265,7 @@ public class FaultAdapter implements IAdapterFactory{
     }
 
     /**
-     * 
+     *
      * @param logEntry
      * @return
      */

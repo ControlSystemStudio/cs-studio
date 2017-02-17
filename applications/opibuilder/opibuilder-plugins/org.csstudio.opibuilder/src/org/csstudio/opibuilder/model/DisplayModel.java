@@ -101,7 +101,7 @@ public class DisplayModel extends AbstractContainerModel {
     private int displayID;
 
     private DisplayModel parentDisplayModel;
-    
+
     private static AtomicInteger displayIDCounter = new AtomicInteger(0);
 
     /**

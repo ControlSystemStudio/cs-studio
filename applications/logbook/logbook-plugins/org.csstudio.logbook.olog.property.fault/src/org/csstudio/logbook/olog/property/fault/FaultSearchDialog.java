@@ -76,7 +76,7 @@ public class FaultSearchDialog extends Dialog {
     private CCombo deviceCombo;
     private CCombo ownerCombo;
     private CCombo beamStateCombo;
-    
+
     private FaultConfiguration fc;
 
     public FaultSearchDialog(Shell parentShell, FaultConfiguration fc) {
@@ -145,7 +145,7 @@ public class FaultSearchDialog extends Dialog {
         });
         systemCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         systemCombo.setItems(fc.getSubsystems().toArray(new String[fc.getSubsystems().size()]));
-        
+
         Label lblDevice = new Label(container, SWT.NONE);
         lblDevice.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblDevice.setText("Device:");
@@ -160,7 +160,7 @@ public class FaultSearchDialog extends Dialog {
         });
         deviceCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         deviceCombo.setItems(fc.getDevices().toArray(new String[fc.getDevices().size()]));
-        
+
         Label lblOwner = new Label(container, SWT.NONE);
         lblOwner.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblOwner.setText("Owner:");
