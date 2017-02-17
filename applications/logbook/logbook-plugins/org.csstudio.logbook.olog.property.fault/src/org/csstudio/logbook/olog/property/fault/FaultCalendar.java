@@ -39,7 +39,7 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.AppointmentImplLocal;
 /**
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -50,7 +50,7 @@ public class FaultCalendar extends FXViewPart {
     }
 
     private LogbookClient logbookClient;
-    
+
     private Agenda agenda;
     private AgendaLastWeekDaysFromDisplayedSkin skin;
 
@@ -64,7 +64,7 @@ public class FaultCalendar extends FXViewPart {
         @Override
         public void queryExecuted(final LogResult result) {
             map = new HashMap<Appointment, LogEntry>();
-            
+
             for (LogEntry log : result.logs) {
                 Fault fault = FaultAdapter.extractFaultFromLogEntry(log);
                 if (fault.getFaultOccuredTime() != null) {
@@ -90,7 +90,7 @@ public class FaultCalendar extends FXViewPart {
                         }
                     }
                     map.put(appointment, log);
-                    
+
                     if(fault.getBeamLossState() != null && fault.getBeamLossState().equals(BeamLossState.True)){
                         // This fault has additional information about beam loss
                         // create an additional appointment for this
@@ -149,7 +149,7 @@ public class FaultCalendar extends FXViewPart {
         final Scene scene = new Scene(anchorpane);
         agenda = new Agenda();
         agenda.setEditAppointmentCallback(new Callback<Agenda.Appointment, Void>() {
-            
+
             @Override
             public Void call(Appointment param) {
                 // show context menu
@@ -171,7 +171,7 @@ public class FaultCalendar extends FXViewPart {
             }
             return null;
         });
-        
+
         agenda.allowDraggingProperty().set(false);
         agenda.allowResizeProperty().set(false);
         // find the css file

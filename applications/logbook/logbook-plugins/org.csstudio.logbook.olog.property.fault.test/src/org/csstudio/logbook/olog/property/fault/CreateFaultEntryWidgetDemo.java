@@ -44,12 +44,12 @@ public class CreateFaultEntryWidgetDemo extends ApplicationWindow {
         List<Integer> logIds = Arrays.asList(1234, 222, 2345);
         List<String> logbooks = Arrays.asList("Operations", "LOTO", "Commisioning");
         List<String> tags = Arrays.asList("Fault", "MASAR", "RF");
-        
+
         FaultEditorWidget faultEditorWidget = new FaultEditorWidget(container, SWT.NONE,
                 FaultConfigurationFactory.getConfiguration(), logbooks, tags);
         faultEditorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
-        
+
+
         Button btnNewButton = new Button(container, SWT.NONE);
         btnNewButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -63,7 +63,7 @@ public class CreateFaultEntryWidgetDemo extends ApplicationWindow {
         });
         btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnNewButton.setText("Add a simple fault");
-        
+
         Button btnNewButton_1 = new Button(container, SWT.NONE);
         btnNewButton_1.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -78,8 +78,8 @@ public class CreateFaultEntryWidgetDemo extends ApplicationWindow {
         });
         btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         btnNewButton_1.setText("Add fault with logs");
-        
-        
+
+
         return container;
     }
 

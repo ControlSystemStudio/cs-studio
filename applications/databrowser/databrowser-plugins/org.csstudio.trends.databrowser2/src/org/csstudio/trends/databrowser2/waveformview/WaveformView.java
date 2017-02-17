@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.PointType;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.RTValuePlot;
@@ -38,7 +37,6 @@ import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -260,7 +258,7 @@ public class WaveformView extends DataBrowserAwareView
 
         final MenuManager mm = new MenuManager();
         mm.setRemoveAllWhenShown(true);
-      
+
         final Menu menu = mm.createContextMenu(plot.getPlotControl());
         plot.getPlotControl().setMenu(menu);
         getSite().registerContextMenu(mm, null);
@@ -275,7 +273,7 @@ public class WaveformView extends DataBrowserAwareView
                 mm.add(new ToggleYAxisAction<Double>(plot, true));
             }
         });
-        
+
     }
 
     /** {@inheritDoc} */

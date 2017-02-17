@@ -22,7 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * This command is to handle 2 cases
  * 1. a single fault is selected and is being edited.
  * 2. a single fault is being updated with a list of log entries.
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -49,7 +49,7 @@ public class OpenFaultEditorDialog extends AbstractHandler{
 
         logIds.addAll(selectedLogs.stream().map((logEntry)->{
           return Integer.valueOf(String.valueOf(logEntry.getId()));}).collect(Collectors.toList()));
-        
+
         // Find the log entries with faults associated with them.
         List<LogEntry> faultEntries = Arrays.asList(AdapterUtil.convert(selection, LogEntry.class));
         if(faultEntries != null) {

@@ -34,7 +34,7 @@ import org.eclipse.ui.part.FileEditorInput;
 /**
  * A stripped down version of the LogEntryWidget - it is simply for viewing and
  * has no edit support.
- * 
+ *
  * @author Kunal Shroff
  *
  */

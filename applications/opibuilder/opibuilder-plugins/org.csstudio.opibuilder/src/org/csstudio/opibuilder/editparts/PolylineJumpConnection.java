@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import org.csstudio.opibuilder.model.ConnectionModel.LineJumpAdd;
 import org.csstudio.opibuilder.model.ConnectionModel.LineJumpStyle;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IClippingStrategy;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.PolylineConnection;

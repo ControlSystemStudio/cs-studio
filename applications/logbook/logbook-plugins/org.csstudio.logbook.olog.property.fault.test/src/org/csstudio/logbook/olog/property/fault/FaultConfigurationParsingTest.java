@@ -23,7 +23,7 @@ public class FaultConfigurationParsingTest {
 
         JAXBContext context = JAXBContext.newInstance(FaultConfiguration.class);
         Unmarshaller um = context.createUnmarshaller();
-        JAXBElement<FaultConfiguration> fc2 = um.unmarshal(new StreamSource(new File("resources/fault_config.xml")),
+        JAXBElement<FaultConfiguration> fc2 = um.unmarshal(new StreamSource(new File("resources/default_fault_config.xml")),
                 FaultConfiguration.class);
         FaultConfiguration fc = fc2.getValue();
         assertEquals("areas not equal", fc.getAreas(), Arrays.asList("Global", "Linac", "BR", "SR"));

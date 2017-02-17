@@ -66,7 +66,7 @@ public class TableView extends ViewPart {
 
         text = new Text(composite, SWT.BORDER);
         text.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 faultTableWidget.setQuery(text.getText());

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Reads the fault configuration gets a list of Areas, Subsystems, Devices,
  * Groups
- * 
+ *
  * @author Kunal Shroff
  *
  */
