@@ -1,7 +1,6 @@
 package org.csstudio.logbook.olog.property.fault;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +14,7 @@ import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
 import org.csstudio.logbook.olog.property.fault.Fault.BeamLossState;
-import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
-import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.PlatformUI;
 
 
 /**

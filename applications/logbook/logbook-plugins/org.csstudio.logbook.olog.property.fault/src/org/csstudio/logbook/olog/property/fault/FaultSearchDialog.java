@@ -6,24 +6,19 @@ package org.csstudio.logbook.olog.property.fault;
 import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchMap;
 import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchString;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.csstudio.logbook.olog.property.fault.Fault.BeamLossState;
 import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
-import org.csstudio.ui.util.DelayedNotificator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
