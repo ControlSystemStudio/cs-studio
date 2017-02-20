@@ -6,7 +6,7 @@
 -->
 <!--
     Checkstyle-Configuration: cs-studio
-    Description: 
+    Description:
 Checkstyle configuration that checks the sun coding conventions.
 -->
 <module name="Checker">
@@ -29,20 +29,20 @@ Checkstyle configuration that checks the sun coding conventions.
   <module name="FileTabCharacter">
     <property name="severity" value="error"/>
     <property name="eachLine" value="true"/>
-    <property name="fileExtensions" value="java,xml,product,html"/>
+    <property name="fileExtensions" value="java,xml,product,html,classpath"/>
   </module>
   <module name="RegexpSingleline">
     <metadata name="net.sf.eclipsecs.core.comment" value="To check line do not have trailing spaces"/>
     <property name="severity" value="error"/>
     <property name="format" value=" +$"/>
     <property name="message" value="Trailing whitespaces"/>
-    <property name="fileExtensions" value="java,xml,product,html"/>
+    <property name="fileExtensions" value="java,xml,product,html,classpath"/>
   </module>
   <module name="RegexpMultiline">
     <metadata name="net.sf.eclipsecs.core.comment" value="To check line endings do not use carriage return"/>
     <property name="severity" value="error"/>
     <property name="format" value="\r"/>
     <property name="message" value="Invalid Eol"/>
-    <property name="fileExtensions" value="java,xml,product,html"/>
+    <property name="fileExtensions" value="java,xml,product,html,classpath"/>
   </module>
 </module>
