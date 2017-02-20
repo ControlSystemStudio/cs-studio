@@ -173,10 +173,10 @@ public class FaultEditorWidget extends Composite {
         });
         new Label(composite, SWT.NONE);
         new Label(composite, SWT.NONE);
-        
+
                 lblAssign = new Label(composite, SWT.NONE);
                 lblAssign.setText("Assign:");
-        
+
                 comboAssign = new CCombo(composite, SWT.BORDER);
                 comboAssign.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
                 comboAssign.addSelectionListener(new SelectionAdapter() {
@@ -198,10 +198,10 @@ public class FaultEditorWidget extends Composite {
 
                     }
                 });
-        
+
                 lblContact = new Label(composite, SWT.NONE);
                 lblContact.setText("Contact:");
-        
+
                 textContact = new Text(composite, SWT.BORDER);
                 textContact.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
@@ -587,7 +587,7 @@ public class FaultEditorWidget extends Composite {
 
     /**
      * Initialize the widget with the defaults form the
-     * 
+     *
      */
     private void initialize() {
         comboArea.setItems(fc.getAreas().toArray(new String[fc.getAreas().size()]));
@@ -613,7 +613,7 @@ public class FaultEditorWidget extends Composite {
     private Label labelLogs;
 
     /**
-     * 
+     *
      */
     private void updateUI() {
         if (fault.getId() != 0) {

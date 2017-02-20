@@ -100,8 +100,8 @@ public class DisplayModel extends AbstractContainerModel {
 
     private int displayID;
 
-	private DisplayModel parentDisplayModel;
-	
+    private DisplayModel parentDisplayModel;
+
     private static AtomicInteger displayIDCounter = new AtomicInteger(0);
 
     /**
@@ -381,11 +381,11 @@ public class DisplayModel extends AbstractContainerModel {
         setPropertyValue(PROP_FRAME_RATE, rate);
     }
 
-	public void setParentDisplayModel(DisplayModel rootDisplayModel) {
-		this.parentDisplayModel = rootDisplayModel;
-	}
+    public void setParentDisplayModel(DisplayModel rootDisplayModel) {
+        this.parentDisplayModel = rootDisplayModel;
+    }
 
-	public DisplayModel getParentDisplayModel() {
+    public DisplayModel getParentDisplayModel() {
         return parentDisplayModel;
     }
 

@@ -56,7 +56,7 @@ public class FaultAdapterTest {
         expectedMap.put(FaultAdapter.FAULT_COMMENT_REPAIR, "Fault repair action description");
         assertEquals(expectedMap, map);
     }
-    
+
     @Test
     public void checkCauseCorrectionFaultTextParsin() {
         StringBuilder sb = new StringBuilder();

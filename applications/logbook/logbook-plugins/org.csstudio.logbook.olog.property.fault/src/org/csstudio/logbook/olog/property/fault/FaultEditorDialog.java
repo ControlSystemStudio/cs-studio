@@ -3,12 +3,10 @@ package org.csstudio.logbook.olog.property.fault;
 import static org.csstudio.logbook.LogbookBuilder.logbook;
 import static org.csstudio.logbook.TagBuilder.tag;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -36,19 +34,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
  * A dialog to create a new Fault Entry
- * 
+ *
  * @author Kunal Shroff
  *
  */
 public class FaultEditorDialog extends Dialog {
-    
+
     private static final Logger log = Logger.getLogger(FaultEditorDialog.class.getCanonicalName());
-    
+
     private LogbookClient client;
     private List<String> tags = Collections.emptyList();
     private List<String> logbooks = Collections.emptyList();
@@ -57,16 +54,16 @@ public class FaultEditorDialog extends Dialog {
     private List<Integer> logEntries;
     private Fault fault;
     private LogEntry faultLog;
-    
+
     private FaultEditorWidget faultEditorWidget;
-    
+
     private String faultLevel;
     private TagBuilder faultTag;
     private LogbookBuilder faultLogbook;
-    
 
-    /** 
-     * 
+
+    /**
+     *
      * @param parentShell parent shell
      * @param create specify if you are creating of updating a fault
      * @param fault the fault with which to initialize the dialog
@@ -87,7 +84,7 @@ public class FaultEditorDialog extends Dialog {
                 client = LogbookClientManager.getLogbookClientFactory().getClient();
                 tags = client.listTags().stream().map(Tag::getName).collect(Collectors.toList());
                 logbooks = client.listLogbooks().stream().map(Logbook::getName).collect(Collectors.toList());
-                
+
                 faultLevel = Platform.getPreferencesService().getString(
                         "org.csstudio.logbook.olog.property.fault", "fault.level",
                         "Problem",
@@ -117,12 +114,12 @@ public class FaultEditorDialog extends Dialog {
         } else {
             getShell().setText("Update Fault Report");
         }
-        
+
         Composite container = (Composite) super.createDialogArea(parent);
         container.setLayout(new FillLayout(SWT.HORIZONTAL));
-        
+
         FaultConfiguration fc = FaultConfigurationFactory.getConfiguration();
-        
+
         faultEditorWidget = new FaultEditorWidget(container, SWT.NONE, fc, logbooks, tags);
         if(create){
             // Create a brand new fault entry
@@ -134,7 +131,7 @@ public class FaultEditorDialog extends Dialog {
             if(fault != null) {
                 faultEditorWidget.setFault(fault);
             }
-            
+
             if(logEntries != null && !logEntries.isEmpty()) {
                 // combine all logIds
                 logEntries.addAll(fault.getLogIds());
@@ -224,5 +221,5 @@ public class FaultEditorDialog extends Dialog {
     protected boolean isResizable() {
         return true;
     }
-    
+
 }

@@ -32,7 +32,7 @@ public class Fault {
     private String rootCause;
     private String repairAction;
     private String correctiveAction;
-    
+
     // list of associated logs
     private List<Integer> logIds = Collections.emptyList();
 
@@ -125,7 +125,7 @@ public class Fault {
     public String getCorrectiveAction() {
         return correctiveAction;
     }
-    
+
     public List<Integer> getLogIds() {
         return Collections.unmodifiableList(logIds);
     }
@@ -189,7 +189,7 @@ public class Fault {
     public void setCorrectiveAction(String correctiveAction) {
         this.correctiveAction = correctiveAction;
     }
-    
+
     public void setLogIds(List<Integer> logIds){
         this.logIds = Collections.unmodifiableList(logIds);
     }

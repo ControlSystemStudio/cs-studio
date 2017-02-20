@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 public class DetailsView extends ViewPart {
-    
+
     public static final String ID = "org.csstudio.logbook.olog.property.fault.detailsView";
 
     private LogbookClient logbookClient;
@@ -39,10 +39,10 @@ public class DetailsView extends ViewPart {
         this.fault = fault;
     }
 
-    
+
     @Override
     public void createPartControl(Composite parent) {
-        
+
         Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new GridLayout(1, false));
 
@@ -66,14 +66,14 @@ public class DetailsView extends ViewPart {
                         }
                         updateUI();
                     } catch (Exception e) {
-                        
+
                     }
                 }
             }
         };
         ss.addSelectionListener(org.csstudio.logbook.ui.LogTableView.ID, selectionListener);
         ss.addSelectionListener(org.csstudio.logbook.ui.LogTreeView.ID, selectionListener);
-        
+
         updateUI();
     }
 

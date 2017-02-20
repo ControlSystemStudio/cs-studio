@@ -344,7 +344,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
     }
 
     private void updateConnectionListForLinkedOpi(DisplayModel displayModel) {
-    	connectionList = displayModel.getConnectionList();
+        connectionList = displayModel.getConnectionList();
         if(!connectionList.isEmpty()){
             if(originalPoints != null)
                 originalPoints.clear();
