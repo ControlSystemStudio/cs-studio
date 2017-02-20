@@ -524,6 +524,7 @@ public class WaveformView extends DataBrowserAwareView
         public void run()
         {
             plot.getYAxes().get(0).setLogarithmic(!plot.getYAxes().get(0).isLogarithmic());
+            plot.requestUpdate();
         }
     }
 }

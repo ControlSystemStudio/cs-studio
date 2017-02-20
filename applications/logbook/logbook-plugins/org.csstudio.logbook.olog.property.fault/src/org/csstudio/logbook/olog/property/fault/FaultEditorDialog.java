@@ -3,6 +3,8 @@ package org.csstudio.logbook.olog.property.fault;
 import static org.csstudio.logbook.LogbookBuilder.logbook;
 import static org.csstudio.logbook.TagBuilder.tag;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.csstudio.logbook.util.LogEntryUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -61,7 +64,7 @@ public class FaultEditorDialog extends Dialog {
     private TagBuilder faultTag;
     private LogbookBuilder faultLogbook;
 
-
+    private final IPreferencesService prefs = Platform.getPreferencesService();
     /**
      *
      * @param parentShell parent shell
@@ -187,18 +190,34 @@ public class FaultEditorDialog extends Dialog {
             try {
 
                 if (create) {
-                    client.createLogEntry(LogEntryBuilder.withText(faultText).setLevel(faultLevel)
+                    LogEntry faultLog = client.createLogEntry(LogEntryBuilder.withText(faultText).setLevel(faultLevel)
                             .setLogbooks(newLogbooks).addProperty(prop).build());
+                    fault.setId(Integer.valueOf(faultLog.getId().toString()));
                     // Since this is a new Fault inform the contactee
                     Executors.newSingleThreadExecutor().execute(() -> {
                         if (Platform.getPreferencesService().getBoolean("org.csstudio.logbook.olog.property.fault",
                                 "notify", true, null)) {
                             if (fault.getContact() != null && !fault.getContact().isEmpty()) {
                                 EMailSender mailer;
+                                StringBuffer faultString = new StringBuffer(faultText);
                                 try {
+                                    String LogURLFormatt = prefs.getString("org.csstudio.logbook.ui",
+                                            "Log.url.format",
+                                            "http://localhost:8080/Olog/resources/logs/{logId}", null);
+                                    try {
+                                         URL url = new URL(LogURLFormatt.replace("{logId}", String.valueOf(fault.getId())));
+                                         if(url != null){
+                                            faultString.append(System.getProperty("line.separator"));
+                                            faultString.append("Fault link:");
+                                            faultString.append(System.getProperty("line.separator"));
+                                            faultString.append(url.toURI().toString());
+                                         }
+                                    } catch (MalformedURLException e) {
+                                        log.log(Level.SEVERE, "failed to email the fault report:" + e);
+                                    }
                                     mailer = new EMailSender(Preferences.getSMTP_Host(), "cs-studio@bnl.gov",
                                             fault.getContact(), "Fault Report");
-                                    mailer.addText(faultText);
+                                    mailer.addText(faultString.toString());
                                     mailer.close();
                                 } catch (Exception e) {
                                     log.log(Level.WARNING, "Failed to send fault message", e);
