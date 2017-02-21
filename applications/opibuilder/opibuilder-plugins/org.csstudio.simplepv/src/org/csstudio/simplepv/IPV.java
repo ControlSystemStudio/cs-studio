@@ -65,7 +65,7 @@ public interface IPV {
 
     /**If the PV is connected. If the PV is an aggregate of multiple PVs,
      * the connection state should be determined by the aggregator. For example,
-     * the aggregator countConnected(‘pv1’, ‘pv2’, ‘pv3’,…) should always return
+     * the aggregator countConnected(ï¿½pv1ï¿½, ï¿½pv2ï¿½, ï¿½pv3ï¿½,ï¿½) should always return
      * connected.
      * @return true if the PV is connected.
      */
@@ -112,16 +112,20 @@ public interface IPV {
     public void setValue(Object value) throws Exception;
 
     /**Set PV to a given value synchronously. It will block the current thread
-     * until write operation finished or timeout. It is not necessary to call {@link #start()}
+     * until write operation was submitted or timeout.
+     * Note that this call will only issue the write request, it will not await a put-callback
+     * to indicate complete processing of a write on the server.
+     *
+     * @param value Value to write to the PV
+     * It is not necessary to call {@link #start()}
      * before calling this method, because it will handle the connection with timeout in this method.
-    *  Should accept number, number array,
-    *  <code>String</code>, maybe more.
-    *  @param value Value to write to the PV
-    *  @param timeout timeout in millisecond for both pv connection and write operation, so
-    *  in very rare case, it could take maximum 2*timeout ms for the timeout.
-    *  @return true if write successful or false otherwise.
-    *  @throws Exception on error such as connection failed.
-    */
+     * Should accept number, number array,
+     * <code>String</code>, maybe more.
+     * @param timeout timeout in millisecond for both pv connection and write operation, so
+     * in very rare case, it could take maximum 2*timeout ms for the timeout.
+     * @return true if write successful or false otherwise.
+     * @throws Exception on error such as connection failed.
+     */
     public boolean setValue(Object value, int timeout) throws Exception;
 
 

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.csstudio.simplepv.ExceptionHandler;
@@ -268,21 +266,11 @@ public class VTypePV implements IPV
 
         // opibuilder will call this method for temporary PVs that
         // were just created, not waiting for connection.
-        // Quirk: We use timeout once for the connection and once for the write,
-        // potentially waiting 2 * timeout ms
         if (! isConnected(timeout))
             throw new Exception("Cannot write to " + name + ", not connected");
 
-        final Future<?> done = safe_pv.asyncWrite(value);
-        try
-        {
-            done.get(timeout, TimeUnit.MILLISECONDS);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
+        safe_pv.write(value);
+        return true;
     }
 
     /** {@inheritDoc} */
