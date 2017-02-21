@@ -13,13 +13,10 @@ import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,7 +28,6 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -128,22 +124,10 @@ public class OpiWriter {
 
                 Element element = widget.widgetContext.getElement();
                 NodeList unsortedNodes = element.getChildNodes();
-                List<Node> nodes = new ArrayList<Node>();
-                for(int i=0; i<unsortedNodes.getLength(); i++) {
-                    nodes.add(unsortedNodes.item(i));
-                }
-                Collections.sort(
-                    nodes,
-                    new Comparator<Node>() {
-                        @Override
-                        public int compare(Node o1, Node o2) {
-                            return o1.getNodeName().compareTo(o2.getNodeName());
-                        }
-                    });
-                for(Node node : nodes) {
-                    element.removeChild(node);
-                    element.appendChild(node);
-                }
+                IntStream.range(0, unsortedNodes.getLength())
+                    .mapToObj(i -> unsortedNodes.item(i))
+                    .sorted((o1, o2) -> o1.getNodeName().compareTo(o2.getNodeName()))
+                    .forEach(n -> {element.removeChild(n); element.appendChild(n);});
             } catch (ClassNotFoundException exception) {
                 log.warning("Class not declared: " + opiClassName);
             } catch (Exception exception) {
