@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.preferencePages">
+   <extension point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.diirt.util.preferences.DiirtPreferencePage"
-            id="org.csstudio.diirt.util.preferences.diirt"
-            name="Diirt preferences">
+         category="org.csstudio.platform.ui.css.platform"
+         class="org.csstudio.diirt.util.preferences.DataSourcesPreferencePage"
+         id="org.csstudio.diirt.util.preferences.datasources"
+         name="Data Sources">
+      </page>
+      <page
+         category="org.csstudio.diirt.util.preferences.datasources"
+         class="org.csstudio.diirt.util.preferences.ChannelAccessPreferencePage"
+         id="org.csstudio.diirt.util.preferences.channelaccess"
+         name="Channel Access">
       </page>
    </extension>
-
+   <extension point="org.eclipse.help.toc">
+      <toc
+        file="toc.xml"
+        primary="true"/>
+   </extension>
 </plugin>

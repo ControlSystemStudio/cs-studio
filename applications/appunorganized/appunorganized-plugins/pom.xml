@@ -6,7 +6,6 @@
     <artifactId>appunorganized</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>appunorganized-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>

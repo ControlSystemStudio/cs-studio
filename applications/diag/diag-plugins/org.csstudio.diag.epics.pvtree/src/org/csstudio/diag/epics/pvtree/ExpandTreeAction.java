@@ -8,8 +8,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.jface.viewers.TreeViewer;
 
 /** Action to expand the full PV tree
  *  @author Kay Kasemir
@@ -17,33 +16,20 @@ import org.eclipse.swt.widgets.TreeItem;
 @SuppressWarnings("nls")
 public class ExpandTreeAction extends Action
 {
-    final private Tree tree;
+    final private TreeViewer viewer;
 
-    public ExpandTreeAction(final Tree tree)
+    public ExpandTreeAction(final TreeViewer viewer)
     {
         super(Messages.ExpandAll,
             Plugin.imageDescriptorFromPlugin(Plugin.ID, "icons/pvtree.png"));
         setToolTipText(Messages.ExpandAllTT);
-        this.tree = tree;
+        this.viewer = viewer;
     }
 
     /** {@inheritDoc} */
     @Override
     public void run()
     {
-        tree.setRedraw(false);
-
-        final TreeItem[] items = tree.getItems();
-        for (TreeItem item : items)
-            expand(item);
-
-        tree.setRedraw(true);
-    }
-
-    private void expand(TreeItem item)
-    {
-        item.setExpanded(true);
-        for (int i=0; i<item.getItemCount(); ++i)
-            expand(item.getItem(i));
+        viewer.expandAll();
     }
 }

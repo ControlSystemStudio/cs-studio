@@ -1,6 +1,5 @@
 package org.csstudio.alarm.beast.history.views;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;

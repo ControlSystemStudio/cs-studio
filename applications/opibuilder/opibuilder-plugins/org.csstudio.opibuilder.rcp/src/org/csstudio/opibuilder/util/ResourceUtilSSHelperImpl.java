@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.ui.util.NoResourceEditorInput;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -241,4 +243,21 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         gc.dispose();
         return image;
     }
+
+    public IEditorInput editorInputFromPath(IPath path) {
+        IEditorInput editorInput = null;
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+        // Files outside the workspace are handled differently
+        // by Eclipse.
+        if (!ResourceUtil.isExistingWorkspaceFile(path)
+                && ResourceUtil.isExistingLocalFile(path)) {
+            IFileStore fileStore = EFS.getLocalFileSystem()
+                    .getStore(file.getFullPath());
+            editorInput = new FileStoreEditorInput(fileStore);
+        } else {
+            editorInput = new FileEditorInput(file);
+        }
+        return editorInput;
+    }
+
 }

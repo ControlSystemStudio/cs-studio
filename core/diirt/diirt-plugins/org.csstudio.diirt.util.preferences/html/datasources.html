@@ -1,0 +1,199 @@
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Data Sources and EPICS</title>
+        <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" />
+    </head>
+
+    <body>
+
+
+
+        <h1>Data Sources and EPICS</h1>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="table_of_contents">Table of Contents</a></h2>
+        <!-- ====================================================== -->
+
+        <ul style="border-left: 5px solid #51515a;background-color: #f1f1fa;list-style-type: none;padding: 6px 12px;">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#preferences">Preferences</a></li>
+            <li><a href="#diirt_home">DIIRT Configuration Directory</a></li>
+            <li><a href="#composite_data_source">Composite Data Source</a></li>
+            <li><a href="#exporting_configuration">Exporting Configuration Data</a></li>
+            <li>&nbsp;</li>
+            <li>&blacktriangleright;<a href="channelaccess.html"><i>Channel Access</i></a></li>
+            <li>&blacktriangleright;<a href="programmersnotes.html"><i>Programmer's Notes</i></a></li>
+        </ul>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="overview">Overview</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            This chapter will explain the preferences used to define and
+            configure data sources for CS-Studio.
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="preferences">Preferences</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            The preference pages will allow to configure data sources. It can be
+            found opening the <b>Preferences</b> dialog, and navigating to the
+            <b>CSS Core &RightTriangle; Data Sources</b> category. These pages
+            take place of the old <b>CSS Core &RightTriangle; EPICS</b> and
+            <b>CSS Core &RightTriangle; Diirt preferences</b>, allowing to
+            configure EPICS <a href="channelaccess.html">Channel Access</a>
+            parameters, and other data sources available in the future.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/data-sources.png" alt="Data Sources preferences page." width="728" style="vertical-align:top"/>
+        </p>
+
+        <h3>Restarting CS-Studio</h3>
+
+        <p>
+            When a preference is changed inside the <b>Data Sources</b> page or
+            in one of its sub-pages, CS-Studio requires to be restarted to apply
+            the new values.
+            For this reason a dialog is displayed allowing to restart the
+            application immediately, or postpone it for a later time.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/restart-required.png" alt="DIIRT Preferences Changed dialog." width="516" style="vertical-align:top"/>
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="diirt_home">DIIRT Configuration Directory</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            The <b>DIIRT Configuration Directory</b> preference defines where
+            DIIRT (the library used to talk with data sources) will find its
+            configuration files.
+        </p>
+
+        <p>
+            If a <i>valid configuration directory</i> (see
+            <a href="programmersnotes.html">Programmer's Notes</a>) is found,
+            then all other preferences in this page and all the sub-pages will
+            have their default values set from the DIIRT configuration files.
+            If not, then the values in the <code>configuration/plugin_customization.ini</code>
+            file (inside the CS-Studio application's folder) are used.
+        </p>
+
+        <h3>Overriding Preferences</h3>
+
+        <p>
+            When a preference is overridden inside the <b>Composite Data Source</b>
+            group, or in any of the <b>Data Sources</b> sub-pages, the
+            corresponding preference's caption will be painted in blue. Reverting
+            the preference to its default value (manually or through the
+            <b>Restore Defaults</b> button) will revert the caption's color to
+            its default.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/preference-override.png" alt="Preference override." width="525" style="vertical-align:top"/>
+        </p>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="composite_data_source">Composite Data Source</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            The preferences in this section control the configuration of how the
+            different data sources are combined and made accessible to the DIIRT
+            library.
+        </p>
+
+        <p>
+            The composite data source allows multiple data sources to be made
+            available by breaking up the channel name into three parts:
+        </p>
+
+        <blockquote>
+            [<i>data-source-name</i>][<i>delimiter</i>][<i>channel-name</i>]
+        </blockquote>
+
+        <p>
+            It also allows to set a default data source so that channel names
+            that do not match the pattern are forwarded to that data source.
+        </p>
+
+        <blockquote>
+            [<i>unmatched-channel-name</i>] &rightarrow; [<i>default-data-source</i>][<i>delimiter</i>][<i>unmatched-channel-name</i>]
+        </blockquote>
+
+        <p>
+            The preferences in the <b>Composite Data Source</b> section are
+            listed below.
+        </p>
+
+        <p style="text-align:center;">
+            <img src="images/composite-data-source.png" alt="Composite Data Source preferences." width="525" style="vertical-align:top"/>
+        </p>
+
+        <table style="border-style:none;width:100%;">
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Default&nbsp;Data&nbsp;Source</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    The data source used by channel names not matching the
+                    default name pattern, so that:
+                    <blockquote>
+                        [<i>unmatched-channel-name</i>] &rightarrow; [<i>default-data-source</i>][<i>delimiter</i>][<i>unmatched-channel-name</i>]
+                    </blockquote>
+                    The possible values are: <b><code>None</code></b>,
+                    <b><code>Channel Access</code></b>, <b><code>File</code></b>,
+                    <b><code>Local</code></b>, <b><code>PV Access</code></b>,
+                    <b><code>Simulation</code></b>, and <b><code>System</code></b>.
+                    The default data source is <b><code>None</code></b>.
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" style="vertical-align:top;text-align:right;padding:0px;">Delimiter</th>
+                <td style="width:6px;"></td>
+                <td style="text-align:left;padding:0px;">
+                    The delimiter used in the pattern to parse the channel name.
+                    The default value is <b><code>://</code></b>.
+                </td>
+            </tr>
+        </table>
+
+
+
+        <!-- ====================================================== -->
+        <h2><a name="exporting_configuration">Exporting Configuration Data</a></h2>
+        <!-- ====================================================== -->
+
+        <p>
+            Pressing the <b>Export&hellip;</b> button will allow to save the
+            current <b>Data Sources</b> settings as a <i>valid configuration
+                directory</i> (see <a href="programmersnotes.html">Programmer's
+                Notes</a>). A dialog will be displayed to select the directory
+            where to the settings will be saved. A confirmation message will
+            be shown inside the <b>Preferences</b> dialog.
+        </p>
+
+
+
+    </body>
+
+</html>
+

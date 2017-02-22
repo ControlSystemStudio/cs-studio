@@ -138,18 +138,21 @@ public class OPIRuntimeDelegate implements IAdaptable{
                     inputStream = run_input.getInputStream();
                 displayOpenManager = run_input.getDisplayOpenManager();
             }
-            else
+            else  {
                 inputStream = ResourceUtil.getInputStreamFromEditorInput(input);
-
+            }
             if (inputStream != null)
             {
+                MacrosInput macrosInput = null;
+                if(input instanceof IRunnerInput) {
+                    macrosInput = ((IRunnerInput) input).getMacrosInput();
+                }
                 XMLUtil.fillDisplayModelFromInputStream(inputStream,
-                        displayModel);
+                        displayModel, null, macrosInput);
                 displayModelFilled = true;
                 if (input instanceof IRunnerInput)
                     addRunnerInputMacros(input);
             }
-
         }
         catch (Exception e)
         {
@@ -398,6 +401,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
     private void addRunnerInputMacros(final IEditorInput input) {
         MacrosInput macrosInput = ((IRunnerInput) input).getMacrosInput();
+
         if (macrosInput != null) {
             macrosInput = macrosInput.getCopy();
             macrosInput.getMacrosMap().putAll(
@@ -437,8 +441,9 @@ public class OPIRuntimeDelegate implements IAdaptable{
                                             SingleSourceHelper.removePaintListener(
                                                     viewer.getControl(), loadingMessagePaintListener);
                                         }
+                                        MacrosInput macrosInput = ((IRunnerInput) input).getMacrosInput();
                                         XMLUtil.fillDisplayModelFromInputStream(
-                                                stream, displayModel);
+                                                stream, displayModel, null, macrosInput);
                                         displayModel.setOpiRuntime(opiRuntime);
                                         displayModelFilled = true;
                                         addRunnerInputMacros(input);

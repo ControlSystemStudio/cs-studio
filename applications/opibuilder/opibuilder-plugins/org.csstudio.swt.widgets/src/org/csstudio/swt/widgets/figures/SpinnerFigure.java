@@ -95,8 +95,6 @@ public class SpinnerFigure extends Figure implements Introspectable {
     public SpinnerFigure() {
         formatType = NumericFormatType.DECIMAL;
         spinnerListeners = new ArrayList<IManualValueChangeListener>();
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
         addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent ke) {

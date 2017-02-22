@@ -7,7 +7,6 @@
     <artifactId>shift-plugins</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.utility.shift</artifactId>
   <version>1.0.3-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>

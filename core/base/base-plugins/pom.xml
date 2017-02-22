@@ -15,9 +15,7 @@
     <!--     <module>org.csstudio.csdata.test</module> -->
     <module>org.csstudio.vtype.pv</module>
     <module>org.csstudio.vtype.pv.test</module>
-    <module>org.csstudio.vtype.pv.ui</module>
     <module>org.csstudio.workspace</module>
   </modules>
-  <groupId>org.csstudio</groupId>
   <version>0.0.1-SNAPSHOT</version>
 </project>

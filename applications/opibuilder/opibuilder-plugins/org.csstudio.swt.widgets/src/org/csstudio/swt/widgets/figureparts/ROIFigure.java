@@ -335,8 +335,6 @@ public class ROIFigure extends Figure {
             ROIRectDragger roiRectDragger = new ROIRectDragger();
             roiRectFigure.addMouseListener(roiRectDragger);
             roiRectFigure.addMouseMotionListener(roiRectDragger);
-            setFocusTraversable(true);
-            setRequestFocusEnabled(true);
             resizeHandlers = new ResizeHandler[HANDLERS_COUNT];
             add(roiRectFigure);
             for(int i=0; i<HANDLERS_COUNT; i++){

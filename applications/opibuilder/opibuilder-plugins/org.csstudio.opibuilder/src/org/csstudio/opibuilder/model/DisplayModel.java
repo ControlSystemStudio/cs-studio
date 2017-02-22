@@ -99,6 +99,9 @@ public class DisplayModel extends AbstractContainerModel {
     private boolean FreshRateEnabled= false;
 
     private int displayID;
+
+    private DisplayModel parentDisplayModel;
+
     private static AtomicInteger displayIDCounter = new AtomicInteger(0);
 
     /**
@@ -376,6 +379,14 @@ public class DisplayModel extends AbstractContainerModel {
      */
     public void setFrameRate(double rate) {
         setPropertyValue(PROP_FRAME_RATE, rate);
+    }
+
+    public void setParentDisplayModel(DisplayModel rootDisplayModel) {
+        this.parentDisplayModel = rootDisplayModel;
+    }
+
+    public DisplayModel getParentDisplayModel() {
+        return parentDisplayModel;
     }
 
 }

@@ -20,6 +20,7 @@ import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
+import org.csstudio.swt.xygraph.util.EventManager;
 import org.csstudio.swt.xygraph.util.Log10;
 import org.csstudio.swt.xygraph.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
@@ -42,7 +43,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Kay Kasemir (performStagger)
  * @author Laurent PHILIPPE (property change support)
  */
-public class XYGraph extends Figure{
+public class XYGraph extends Figure {
 
     public void fireConfigChanged() {
         firePropertyChange("config", null, this);
@@ -97,6 +98,7 @@ public class XYGraph extends Figure{
     private boolean showLegend = true;
     private boolean showValueLabels = false;
     private boolean showAxisTrace = false;
+    private boolean scrollingDisabled = false;
 
     private Map<Axis, Legend> legendMap;
 
@@ -124,6 +126,7 @@ public class XYGraph extends Figure{
     final public Axis primaryYAxis;
 
     private OperationsManager operationsManager;
+    private EventManager eventManager;
 
     private ZoomType zoomType = ZoomType.NONE;
 
@@ -160,6 +163,7 @@ public class XYGraph extends Figure{
         addAxis(primaryXAxis);
 
         operationsManager = new OperationsManager();
+        eventManager = new EventManager();
     }
 
     @Override
@@ -599,6 +603,13 @@ public class XYGraph extends Figure{
     }
 
     /**
+     * @return the eventManager
+     */
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    /**
      * @return the xAxisList
      */
     public List<Axis> getXAxisList() {
@@ -711,5 +722,16 @@ public class XYGraph extends Figure{
 
         command.saveState();
         operationsManager.addCommand(command);
+    }
+
+    public boolean isScrollingDisabled() {
+        return scrollingDisabled;
+    }
+
+    public void setScrollingDisabled(boolean scrollingDisabled) {
+        this.scrollingDisabled = scrollingDisabled;
+        if(plotArea != null) {
+            plotArea.setScrollingDisabled(this.scrollingDisabled);
+        }
     }
 }

@@ -1,6 +1,9 @@
-# whitelist
+# whitelist 
+language: java
 
-langauge: java
+env:  
+  global:  
+   - DISPLAY=:99.0
 
 sudo: false
 
@@ -19,7 +22,9 @@ before_script:
 
 script:
  - java -version
- - ./build/travis.sh
+ - ./build/travis.sh --core
+ - ./build/travis.sh --applications
 
 after_failure:
  - find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat
+ - find . -type f -name "*.log" -print0 -exec cat {} \;

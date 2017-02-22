@@ -182,8 +182,10 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
                 executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
                 getAlarmTable().getActiveAlarmTable().getTable().setEnabled(false);
             }
-            else
+            else {
+                getAlarmTable().getActiveAlarmTable().getTable().setEnabled(true);
                 getAlarmTable().setFilterItem(item, model);
+            }
         }
     }
 

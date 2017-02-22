@@ -37,7 +37,8 @@ public class TextTableUnitTest
 
         final String result = out.toString();
         System.out.println(out);
+        String eol = System.getProperty("line.separator");
 
-        assertEquals("Time       Value\n========== =====\n2012/01/17 41   \n2012/01/19 42   \n", result);
+        assertEquals("Time       Value"+eol+"========== ====="+eol+"2012/01/17 41   "+eol+"2012/01/19 42   "+eol+"", result);
     }
 }

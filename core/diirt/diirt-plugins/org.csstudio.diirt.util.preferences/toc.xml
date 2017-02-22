@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc link_to="../org.csstudio.ui.help/tocCore.xml#core" label="Data Sources and EPICS">
+  <topic label="Data Sources and EPICS" href="html/datasources.html">
+     <topic href="html/channelaccess.html" label="Channel Access">
+     </topic>
+     <topic href="html/programmersnotes.html" label="Programmer&apos;s Notes">
+     </topic>
+  </topic>
+</toc>

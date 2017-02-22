@@ -67,6 +67,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         ToolbarArmedXYGraph xyGraphFigure = new ToolbarArmedXYGraph();
         XYGraph xyGraph = xyGraphFigure.getXYGraph();
         xyGraph.setTitle(model.getTitle());
+        xyGraph.setScrollingDisabled(model.isScrollingDisabled());
         xyGraph.setTitleFont(CustomMediaFactory.getInstance().getFont(
                 model.getTitleFont().getFontData()));
         xyGraph.getPlotArea().setShowBorder(model.isShowPlotAreaBorder());
@@ -471,9 +472,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                                     getViewer().getControl().getDisplay(), new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(isActive())
-                                        handler.handleChange(
-                                            evt.getOldValue(), evt.getNewValue(), getFigure());
+                                    if(isActive()) {
+                                         handler.handleChange(
+                                               evt.getOldValue(), evt.getNewValue(), getFigure());
+                                           }
                                     }
                                 });
                         }
