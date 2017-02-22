@@ -44,6 +44,7 @@ products/KEK/plugins/org.csstudio.kek.build/*/build.log
 !core/utility/utility-plugins/org.csstudio.logging.ui/.classpath
 !applications/opibuilder/opibuilder-plugins/org.csstudio.opibuilder.rcp/.classpath
 !applications/saverestore/saverestore-plugins/org.csstudio.saverestore.ui/.classpath
+!applications/saverestore/saverestore-plugins/org.csstudio.saverestore.ui.browser/.classpath
 !applications/saverestore/saverestore-plugins/org.csstudio.ui.fx.util/.classpath
 
 # The rest seems to be a copy/paste of the Mercurial ingnore rules,
