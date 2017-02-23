@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.diirt.datasource.ScanDataSource.REQUEST_TYPE;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanState;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.util.array.ArrayDouble;
@@ -50,7 +52,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     private final REQUEST_TYPE requestType;
 
     ScanChannelHandler(ScanDataSource datasource, URI uri, Long id, REQUEST_TYPE requestType) {
-        super(uri.toASCIIString());
+        super(uri.toASCIIString().replaceFirst("^http://", ""));
         this.datasource = datasource;
         this.uri = uri;
         this.id = id;
@@ -59,7 +61,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     }
 
     ScanChannelHandler(ScanDataSource datasource, URI uri, REQUEST_TYPE requestType) {
-        super(uri.toASCIIString());
+        super(uri.toASCIIString().replaceFirst("^http://", ""));
         this.datasource = datasource;
         this.uri = uri;
         this.id = null;
@@ -75,6 +77,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     @Override
     public void disconnect() {
         pollResult = null;
+        processConnection(null);
     }
 
     @Override
@@ -128,6 +131,8 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
 
     private static final Object NO_POLL_DATA = new Object();
     private volatile Object pollResult;
+    private volatile VTable oldVTable = null;
+    private static final Random random = new Random();
 
     void poll() {
         // Skip poll if channel is no usage on the channel
@@ -143,8 +148,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
 
                 // Execute the poll and compare with the old value
                 Object newPollResult = executePollQuery(scanClient);
-                if (shouldReadData(pollResult, newPollResult)) {
-                    pollResult = newPollResult;
+                if (shouldReadData(pollResult, newPollResult) || requestType == REQUEST_TYPE.SERVER_INFO) {
                     pollQuerySuccessful = true;
                     switch(requestType){
                         case SCAN_DATA:
@@ -169,11 +173,19 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
                             VTable newServerInfo = executeServerInfoQuery(scanClient);
                             dataQuerySuccessful = true;
                             processConnection(new ConnectionPayload(connected, pollQuerySuccessful, dataQuerySuccessful));
-                            processMessage(newServerInfo);
+                            if (oldVTable == null){
+                                processMessage(newServerInfo);
+                                oldVTable = newServerInfo;
+                            } else if (shouldReadData(oldVTable.getColumnData(0), newServerInfo.getColumnData(0)) ||
+                                    shouldReadData(pollResult, newPollResult) ) {
+                                processMessage(newServerInfo);
+                                oldVTable = newServerInfo;
+                            }
                             break;
                         default:
                             break;
                     }
+                    pollResult = newPollResult;
                 }
             } catch (Exception ex) {
                 processConnection(new ConnectionPayload(connected, pollQuerySuccessful, dataQuerySuccessful));
@@ -201,8 +213,13 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     }
 
     private Object executePollQuery(ScanClient scanClient) throws Exception {
-        if(requestType == REQUEST_TYPE.SERVER_INFO){
-            return 1;
+        if(requestType == REQUEST_TYPE.SERVER_INFO) {
+            long count = scanClient.getScanInfos().stream().filter(info -> info.getState()==ScanState.Running).count();
+            if(count > 0){
+                return random.nextInt();
+            } else {
+                return NO_POLL_DATA;
+            }
         } else {
             long serial = scanClient.getLastScanDataSerial(id);
             if (serial == -1) {
@@ -245,7 +262,6 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             names.add(device);
             values.add(new ArrayDouble(sampleData));
         }
-
         return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
 

@@ -70,7 +70,7 @@ public class ScanDataSource extends DataSource {
 
     @Override
     public void close() {
-        exec.shutdown();
+        exec.shutdownNow();
         super.close();
     }
 
