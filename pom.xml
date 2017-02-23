@@ -329,33 +329,6 @@
           </environments>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-compiler-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <!--
-            Without this argument I get an error in the plugin 'org.csstudio.rap.core'
-          -->
-          <compilerArgument>-err:-forbidden</compilerArgument>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-packaging-plugin</artifactId>
-        <configuration>
-          <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
-          <strictBinIncludes>false</strictBinIncludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-surefire-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
