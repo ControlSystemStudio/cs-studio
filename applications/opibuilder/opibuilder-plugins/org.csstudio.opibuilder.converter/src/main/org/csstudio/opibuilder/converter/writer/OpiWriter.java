@@ -121,6 +121,8 @@ public class OpiWriter {
                 Class<?> opiClass = Class.forName(opiClassName);
                 Constructor<?> opiConstructor = opiClass.getConstructor(Context.class, edmClass);
                 OpiWidget widget = (OpiWidget) opiConstructor.newInstance(context, e);
+                // Sort widget properties into alphabetical order as this is the order in which
+                // CS-Studio will save them. This makes diffing the xml easier.
                 sortChildNodes(widget);
             } catch (ClassNotFoundException exception) {
                 log.warning("Class not declared: " + opiClassName);
