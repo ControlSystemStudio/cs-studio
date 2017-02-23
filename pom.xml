@@ -343,7 +343,6 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-packaging-plugin</artifactId>
-        <version>${tycho.version}</version>
         <configuration>
           <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
           <strictBinIncludes>false</strictBinIncludes>
