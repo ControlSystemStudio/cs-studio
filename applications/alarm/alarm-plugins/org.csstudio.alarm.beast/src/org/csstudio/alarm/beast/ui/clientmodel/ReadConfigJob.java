@@ -47,10 +47,8 @@ public class ReadConfigJob extends Job
     protected IStatus run(final IProgressMonitor monitor)
     {
         model.readConfiguration(monitor);
-        if (listener != null) {
+        if (listener != null)
             listener.newAlarmConfiguration(model);
-            model.fireNewConfig();
-        }
         return Status.OK_STATUS;
     }
 }
