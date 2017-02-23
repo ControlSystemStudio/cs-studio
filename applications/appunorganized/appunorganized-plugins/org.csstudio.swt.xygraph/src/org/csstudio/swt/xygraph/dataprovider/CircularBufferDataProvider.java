@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.dataprovider;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Iterator;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
@@ -187,24 +187,23 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
         case X_OR_Y:
             if((chronological && currentYDataChanged) ||
                     (!chronological && (currentXDataChanged || currentYDataChanged)))
-                addDataPoint();
+                addDataPoint(currentYDataTimestamp);
             break;
         case X_AND_Y:
             if((chronological && currentYDataChanged) ||
                     (!chronological && (currentXDataChanged && currentYDataChanged)))
-                addDataPoint();
+                addDataPoint(currentYDataTimestamp);
             break;
         case X:
             if((chronological && currentYDataChanged) ||
                     (!chronological && currentXDataChanged))
-                addDataPoint();
+                addDataPoint(currentYDataTimestamp);
             break;
         case Y:
             if(currentYDataChanged)
-                addDataPoint();
+                addDataPoint(currentYDataTimestamp);
             break;
         case TRIGGER:
-
         default:
             break;
         }
@@ -214,16 +213,13 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
     /**
      * add a new data point to trace data.
      */
-    private void addDataPoint() {
+    public void addDataPoint(double xValue) {
         double newXValue;
         if(!concatenate_data)
             traceData.clear();
         if(chronological){
             if(xAxisDateEnabled){
-                if(updateMode != UpdateMode.TRIGGER)
-                    newXValue = currentYDataTimestamp;
-                else
-                    newXValue = Calendar.getInstance().getTimeInMillis();
+                newXValue = xValue;
             }
             else{
                 if(traceData.size() == 0)
@@ -298,7 +294,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
     /**
      * add a new data point to trace data.
      */
-    private void addDataArray() {
+    public void addDataArray() {
         if(!concatenate_data)
             traceData.clear();
 
@@ -376,7 +372,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
         if(currentYDataArray.length > 0)
             addDataArray();
         else
-            addDataPoint();
+            addDataPoint(Instant.now().toEpochMilli());
     }
 
     @Override
