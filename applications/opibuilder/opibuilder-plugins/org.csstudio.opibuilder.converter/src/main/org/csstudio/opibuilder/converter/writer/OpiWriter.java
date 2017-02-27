@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +27,8 @@ import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -117,7 +120,10 @@ public class OpiWriter {
             try {
                 Class<?> opiClass = Class.forName(opiClassName);
                 Constructor<?> opiConstructor = opiClass.getConstructor(Context.class, edmClass);
-                opiConstructor.newInstance(context, e);
+                OpiWidget widget = (OpiWidget) opiConstructor.newInstance(context, e);
+                // Sort widget properties into alphabetical order as this is the order in which
+                // CS-Studio will save them. This makes diffing the xml easier.
+                sortChildNodes(widget);
             } catch (ClassNotFoundException exception) {
                 log.warning("Class not declared: " + opiClassName);
             } catch (Exception exception) {
@@ -174,5 +180,18 @@ public class OpiWriter {
         } catch (Exception e) {
             throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
         }
+    }
+
+    /**
+     * Sort child nodes of the current <code>widgetContext</code> into alphabetical order.
+     * @param widget The widget who's current context will be sorted.
+     */
+    private static void sortChildNodes(OpiWidget widget) {
+        Element element = widget.widgetContext.getElement();
+        NodeList unsortedNodes = element.getChildNodes();
+        IntStream.range(0, unsortedNodes.getLength())
+            .mapToObj(i -> unsortedNodes.item(i))
+            .sorted((o1, o2) -> o1.getNodeName().compareTo(o2.getNodeName()))
+            .forEach(n -> {element.removeChild(n); element.appendChild(n);});
     }
 }

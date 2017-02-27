@@ -780,6 +780,7 @@ public class Axis extends LinearScale{
         }
         setScrollingDisabled(false);
         setRange(t1, t2);
+        xyGraph.getEventManager().fireSetFixedRange(t1, t2);
         setScrollingDisabled(true);
     }
 
@@ -807,6 +808,7 @@ public class Axis extends LinearScale{
         }
         setScrollingDisabled(false);
         setRange(t1, t2, true);
+        xyGraph.getEventManager().fireSetFixedRange(t1, t2);
         setScrollingDisabled(true);
     }
 

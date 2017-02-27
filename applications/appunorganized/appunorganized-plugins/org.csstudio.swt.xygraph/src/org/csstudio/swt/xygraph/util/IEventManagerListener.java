@@ -12,5 +12,9 @@ package org.csstudio.swt.xygraph.util;
  *
  */
 public interface IEventManagerListener {
-    public void dataChanged(EventManager manager);
+    default public void dataChanged(EventManager manager) {}
+
+    default public void scrollingChanged(boolean isScrollingDisabled_) {}
+
+    default public void setFixedRange(double t1, double t2) {}
 }
