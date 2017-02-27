@@ -18,6 +18,7 @@
     
     <module>org.csstudio.platform.libs.easymock</module>
     <module>org.csstudio.platform.libs.hibernate</module>
+    <module>org.csstudio.platform.libs.gauges</module>
     <module>org.csstudio.platform.libs.jdbc</module>
     
     <module>org.csstudio.platform.libs.jmock</module>
