@@ -15,14 +15,20 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.core.preferences.ExceptionUtilities.CompoundIOException;
 import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSources;
 import org.eclipse.core.runtime.FileLocator;
@@ -724,6 +730,25 @@ public final class DIIRTPreferences {
         new DataSources(this).toFile(diirtHome);
         new ChannelAccess(this).toFile(diirtHome);
 
+        String confDir = getString(PREF_CONFIGURATION_DIRECTORY);
+
+        if ( StringUtils.isNoneBlank(confDir) ) {
+
+            File confFile = new File(confDir);
+
+            if ( confFile.exists() && confFile.isDirectory() ) {
+                copyFiles(
+                    confFile,
+                    diirtHome,
+                    Arrays.asList(
+                        new File(DataSources.DATASOURCES_DIR, DataSources.DATASOURCES_FILE),
+                        new File(new File(DataSources.DATASOURCES_DIR, ChannelAccess.CA_DIR), ChannelAccess.CA_FILE)
+                    )
+                );
+            }
+
+        }
+
     }
 
     /**
@@ -743,6 +768,66 @@ public final class DIIRTPreferences {
         }
 
         toFiles(diirtHome);
+
+    }
+
+    /**
+     * Copy recursively all the files in the {@code from} the given directory
+     * {@code to} the given one, {@code excluding} everything inside the
+     * provided {@link List}.
+     *
+     * @param from      The directory source of the files to be copied.
+     * @param to        The directory where files must be copied into.
+     * @param excluding The {@link List} of files/folder that must not be copied.
+     *                  Inside this list, pathnames must be relative to the
+     *                  {@code from} directory.
+     * @throws IOException If {@code to} is not a directory or some problems
+     *              occurs while copying the files.
+     * @throws CompoundIOException If problems occurs copying files.
+     */
+    private static void copyFiles ( final File from, final File to, final List<File> excluding ) throws IOException, CompoundIOException {
+
+        if ( from == null || !from.exists() || !from.isDirectory() ) {
+            return;
+        }
+
+        if ( to == null ) {
+            throw new NullPointerException("'to' directory.");
+        } else if ( !to.exists() ) {
+            if ( !to.mkdirs() ) {
+                throw new IOException(MessageFormat.format("Unable to create 'to' directory [{0}].", to.getPath()));
+            }
+        }
+
+        List<Exception> exceptions = new ArrayList<>();
+
+        Arrays.asList(from.listFiles()).stream().filter(f -> !excluding.stream().anyMatch(ff -> f.toString().endsWith(ff.toString()))).forEach(f -> {
+            if ( f.isDirectory() ) {
+
+                File destination = new File(to, f.getName());
+
+                try {
+                    copyFiles(f, destination, excluding);
+                } catch ( IOException ioex ) {
+                    exceptions.add(new IOException(MessageFormat.format("Unable to create to copy files [from: {0}, to: {1}].", f.toString(), destination.toString())));
+                }
+            } else {
+
+                Path source = f.toPath();
+                Path destination = new File(to, f.getName()).toPath();
+
+                try {
+                    Files.copy(source, destination, StandardCopyOption.COPY_ATTRIBUTES);
+                } catch ( IOException ioex ) {
+                    exceptions.add(new IOException(MessageFormat.format("Unable to create to copy a file [from: {0}, to: {1}].", source.toString(), destination.toString())));
+                }
+
+            }
+        });
+
+        if ( !exceptions.isEmpty() ) {
+            throw new CompoundIOException(MessageFormat.format("Problems copying files [from: {0}, to: {1}].", from.toString(), to.toString()), exceptions);
+        }
 
     }
 
