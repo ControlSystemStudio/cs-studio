@@ -8,6 +8,9 @@
  */
 package org.csstudio.diirt.util.core.preferences;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
@@ -70,6 +73,26 @@ public class ExceptionUtilities {
     }
 
     private ExceptionUtilities ( ) {
+    }
+
+    public static class CompoundIOException extends IOException {
+
+        private static final long serialVersionUID = 728916648848944404L;
+
+        private final List<Exception> causes;
+
+        public CompoundIOException ( String message, final List<Exception> causes ) {
+
+            super(message);
+
+            this.causes = causes;
+
+        }
+
+        public List<Exception> getCauses() {
+            return causes;
+        }
+
     }
 
 }
