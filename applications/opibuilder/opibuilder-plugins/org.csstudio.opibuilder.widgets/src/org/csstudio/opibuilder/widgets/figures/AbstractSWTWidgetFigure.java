@@ -111,6 +111,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         super();
         this.editPart = editpart;
         this.composite = (Composite) editpart.getViewer().getControl();
+        // Disable tab traversal
+        this.composite.setTabList(new Control[]{});
         //In RAP, FigureCanvas has an inner canvas wrapped, so everything should be on the inner canvas.
         if(OPIBuilderPlugin.isRAP()){
             Control[] children = composite.getChildren();
