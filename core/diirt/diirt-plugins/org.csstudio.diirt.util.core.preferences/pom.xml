@@ -9,6 +9,6 @@
         <version>4.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>org.csstudio.diirt.util.core.preferences</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>eclipse-plugin</packaging>
 </project>
