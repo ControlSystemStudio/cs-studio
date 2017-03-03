@@ -181,8 +181,7 @@ public final class DIIRTPreferences {
 
             URL resolvedURL = FileLocator.resolve(new URL(path));
 
-            LOGGER.log(Level.CONFIG,
-                    "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
+            LOGGER.log(Level.CONFIG, "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
 
             String escapedURL = htmlEncode(resolvedURL.toExternalForm());
 
