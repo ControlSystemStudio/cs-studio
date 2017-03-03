@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -120,8 +121,14 @@ public final class DIIRTPreferences {
 
             try {
                 path = resolvePlatformPath(path);
-            } catch ( IOException | NullPointerException | IllegalArgumentException ex ) {
-                return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
+            } catch ( IOException | NullPointerException | IllegalArgumentException | URISyntaxException ex ) {
+
+                String message = NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
+
+                LOGGER.log(Level.WARNING, MessageFormat.format("{0}\n{1}", message, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
+
+                return message;
+
             }
 
             if ( !StringUtils.equals(beforeResolving, path) ) {
@@ -152,10 +159,13 @@ public final class DIIRTPreferences {
      * @throws IOException If {@code path} cannot be resolved.
      * @throws NullPointerException If {@code path} is {@code null}.
      * @throws IllegalArgumentException If {@code path} is empty or blank.
+     * @throws URISyntaxException If {@code path} cannot be resolved to a filesystem pathname.
      */
     public static String resolvePlatformPath ( String path )
-            throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException
+            throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException, URISyntaxException
     {
+
+        LOGGER.log(Level.CONFIG, "About to resolve platform path [path: {0}].", path);
 
         if ( path == null ) {
             throw new NullPointerException("Null 'path'.");
@@ -168,7 +178,30 @@ public final class DIIRTPreferences {
         }
 
         if ( path.startsWith(PLATFORM_URI_PREFIX) ) {
-            return FileLocator.resolve(new URL(path)).getPath().toString();
+
+            URL resolvedURL = FileLocator.resolve(new URL(path));
+
+            LOGGER.log(Level.CONFIG,
+                    "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
+
+            String escapedURL = htmlEncode(resolvedURL.toExternalForm());
+
+            LOGGER.log(Level.CONFIG, "Escaped URL\n    before: {0}\n     after: {1}", new Object[] { resolvedURL.toString(), escapedURL });
+
+            URI resolvedURI = new URI(escapedURL);
+
+            LOGGER.log(Level.CONFIG, "Resolved URI\n    before: {0}\n     after: {1}", new Object[] { escapedURL, resolvedURI.toString() });
+
+            File resolvedFile = URIUtil.toFile(resolvedURI);
+
+            LOGGER.log(Level.CONFIG, "Resolved File\n    before: {0}\n     after: {1}", new Object[] { resolvedURI.toString(), resolvedFile.toString() });
+
+            String resolvedString = resolvedFile.getCanonicalPath();
+
+            LOGGER.log(Level.CONFIG, "Resolved String\n    before: {0}\n     after: {1}", new Object[] { resolvedFile.toString(), resolvedString });
+
+            return resolvedString;
+
         } else {
             return new File(path).getCanonicalPath();
         }
@@ -195,7 +228,7 @@ public final class DIIRTPreferences {
                     try {
                         diirtHome = URIUtil.toFile(URIUtil.append(location.getURL().toURI(), "diirt")).toString();
                     } catch ( URISyntaxException ex ) {
-                        LOGGER.log(Level.WARNING, MessageFormat.format("Unable to setup fallback DIIRT directory [{0}].", location.toString()), ex);
+                        LOGGER.log(Level.WARNING, MessageFormat.format("Unable to setup fallback DIIRT directory [{0}].\n{1}", location.toString(), ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
                     }
                 }
 
@@ -215,8 +248,8 @@ public final class DIIRTPreferences {
                     fromFiles(new File(diirtHome));
                     setString(PREF_CONFIGURATION_DIRECTORY, diirtHome);
 
-                } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                    LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT directory [{0}].", diirtHome), ex);
+                } catch ( NullPointerException | IllegalArgumentException | IOException | URISyntaxException ex ) {
+                    LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT directory [{0}].\n{1}", diirtHome, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
                 }
             }
 
@@ -225,7 +258,7 @@ public final class DIIRTPreferences {
             try {
                 flush();
             } catch ( BackingStoreException ex ) {
-                LOGGER.log(Level.WARNING, "Unable to flush preferences.", ex);
+                LOGGER.log(Level.WARNING, "Unable to flush preferences.\n{0}", ExceptionUtilities.reducedStackTrace(ex, "org.csstudio"));
             }
 
         }
@@ -906,6 +939,110 @@ public final class DIIRTPreferences {
 
             }
         }
+
+    }
+
+    private static String htmlEncode ( String s ) {
+
+        if ( StringUtils.isBlank(s) ) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder(s.length() + 16);
+
+        for ( int i = 0; i < s.length(); i++ ) {
+
+            char c = s.charAt(i);
+
+            switch ( c ) {
+                case ' ':
+                    sb.append("%20");
+                    break;
+                case '!':
+                    sb.append("%21");
+                    break;
+                case '#':
+                    sb.append("%23");
+                    break;
+                case '$':
+                    sb.append("%24");
+                    break;
+                case '%':
+                    sb.append("%25");
+                    break;
+                case '&':
+                    sb.append("%26");
+                    break;
+                case '\'':
+                    sb.append("%27");
+                    break;
+                case '(':
+                    sb.append("%28");
+                    break;
+                case ')':
+                    sb.append("%29");
+                    break;
+                case '*':
+                    sb.append("%2A");
+                    break;
+                case '+':
+                    sb.append("%2B");
+                    break;
+                case ',':
+                    sb.append("%2C");
+                    break;
+                case '<':
+                    sb.append("%3C");
+                    break;
+                case '=':
+                    sb.append("%3D");
+                    break;
+                case '>':
+                    sb.append("%3E");
+                    break;
+                case '?':
+                    sb.append("%3F");
+                    break;
+                case '@':
+                    sb.append("%40");
+                    break;
+                case '[':
+                    sb.append("%5B");
+                    break;
+                case ']':
+                    sb.append("%5D");
+                    break;
+                case '^':
+                    sb.append("%5E");
+                    break;
+                case '`':
+                    sb.append("%60");
+                    break;
+                case '{':
+                    sb.append("%7B");
+                    break;
+                case '|':
+                    sb.append("%7C");
+                    break;
+                case '}':
+                    sb.append("%7D");
+                    break;
+                case '"':   //  %22
+                case '-':   //  %2D
+                case '.':   //  %2E
+                case '/':   //  %2F
+                case ':':   //  %3A
+                case ';':   //  %3B
+                case '\\':  //  %5C
+                case '_':   //  %5F
+                case '~':   //  %7E
+                default:
+                    sb.append(c);
+            }
+
+        }
+
+        return sb.toString();
 
     }
 
