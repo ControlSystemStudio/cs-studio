@@ -99,17 +99,17 @@ font_name2(OS name[_swt platform]) = name-style-height
     </p>
       <h4>Font sizes</h4>
     <p>
-      Font sizes may be defined in either 'points' or 'pixels'.  Points uses
-      the standard SWT method of rendering, but may change size relative to
-      rest of an OPI file on screens of different resolution.
+      Font sizes may be defined in either 'points' or 'pixels'.  A point sized
+      font uses the standard SWT method of rendering, but may change size relative
+      to rest of an OPI file on screens of different resolution.
     </p>
     <p>
-      Pixels scales the height of the font to use the specified number of pixels
-      on the screen.  This is consistent with other widgets in an OPI file.
+      For a pixel sized font the height of the font is scaled to specified number
+      of pixels on the screen.  This is consistent with other widgets in an OPI file.
     </p>
     <p>
-      In the font definition file, 18 or 18pt is interpreted as 18 points, and
-      18px is interpreted as 18 pixels.
+      In the font definition file a font with a size specified as <code>18</code> or
+      <code>18pt</code> is point sized, and <code>18px</code> is pixel sized.
     </p>
     <p>For example:</p>
     <pre class="example_code">
