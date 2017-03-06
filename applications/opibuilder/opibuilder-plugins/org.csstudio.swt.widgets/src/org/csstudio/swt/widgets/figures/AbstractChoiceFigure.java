@@ -237,4 +237,12 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
         }
     }
 
+    @Override
+    public void setRequestFocusEnabled(boolean requestFocusEnabled) {
+        super.setRequestFocusEnabled(requestFocusEnabled);
+        for (Toggle toggle : toggles) {
+            toggle.setRequestFocusEnabled(requestFocusEnabled);
+        }
+    }
+
 }
