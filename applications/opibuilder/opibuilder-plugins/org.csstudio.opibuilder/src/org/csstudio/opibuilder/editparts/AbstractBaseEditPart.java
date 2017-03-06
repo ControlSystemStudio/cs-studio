@@ -565,6 +565,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         }
         // Disable tab traversal
         figure.setFocusTraversable(false);
+        figure.setRequestFocusEnabled(false);
     }
 
     @Override
