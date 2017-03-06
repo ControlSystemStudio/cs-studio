@@ -797,4 +797,13 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         pageUp.setFocusTraversable(focusTraversable);
         pageDown.setFocusTraversable(focusTraversable);
     }
+
+    @Override
+    public void setRequestFocusEnabled(boolean requestFocusEnabled) {
+        super.setRequestFocusEnabled(requestFocusEnabled);
+        buttonUp.setRequestFocusEnabled(requestFocusEnabled);
+        buttonDown.setRequestFocusEnabled(requestFocusEnabled);
+        pageUp.setRequestFocusEnabled(requestFocusEnabled);
+        pageDown.setRequestFocusEnabled(requestFocusEnabled);
+    }
 }
