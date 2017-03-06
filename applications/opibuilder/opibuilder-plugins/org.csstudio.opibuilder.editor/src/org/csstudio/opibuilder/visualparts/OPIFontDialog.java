@@ -45,10 +45,53 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
  */
 public class OPIFontDialog extends HelpTrayDialog {
 
+    /**
+     * Private class to encapsulate logic for the pixel or points
+     * radio button group.
+     */
+    private class PixelsOrPointsBox {
+
+        private final Button pixelsButton;
+        private final Button pointsButton;
+        private final Group radioGroup;
+
+        public PixelsOrPointsBox(Composite parent, int style) {
+            radioGroup = new Group(parent, style);
+            radioGroup.setText("Font size");
+            pointsButton = new Button(radioGroup, SWT.RADIO);
+            pointsButton.setText("points");
+            pixelsButton = new Button(radioGroup, SWT.RADIO);
+            pixelsButton.setText("pixels");
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 2;
+            radioGroup.setLayout(layout);
+            radioGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        }
+
+        public void setSizeInPixels(boolean isSizeInPixels) {
+            pointsButton.setSelection(!isSizeInPixels);
+            pixelsButton.setSelection(isSizeInPixels);
+        }
+
+        public void setEnabled(boolean enabled) {
+            radioGroup.setEnabled(enabled);
+            pixelsButton.setEnabled(enabled);
+            pointsButton.setEnabled(enabled);
+        }
+
+        public boolean isSizeInPixels() {
+            return pixelsButton.getSelection();
+        }
+
+        public void addSelectionListener(SelectionListener listener) {
+            pixelsButton.addSelectionListener(listener);
+            pointsButton.addSelectionListener(listener);
+        }
+    }
+
     private OPIFont opiFont;
     private TableViewer preDefinedFontsViewer;
-    private Button pixelsButton;
-    private Button pointsButton;
+    private PixelsOrPointsBox pixelsOrPointsBox;
     private Label outputTextLabel;
     private String title;
 
@@ -106,18 +149,8 @@ public class OPIFontDialog extends HelpTrayDialog {
         GridData gd2 = new GridData();
         gd2.grabExcessVerticalSpace = true;
         spacer2.setLayoutData(gd2);
-        Group radioGroup = new Group(rightComposite, SWT.NONE);
-        radioGroup.setText("Font size");
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        radioGroup.setLayout(layout);
-        radioGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        pointsButton = new Button(radioGroup, SWT.RADIO);
-        pointsButton.setText("points");
-        pixelsButton = new Button(radioGroup, SWT.RADIO);
-        pixelsButton.setText("pixels");
-        pixelsButton.setSelection(opiFont.isSizeInPixels());
-        pointsButton.setSelection(!opiFont.isSizeInPixels());
+        pixelsOrPointsBox = new PixelsOrPointsBox(rightComposite, SWT.NONE);
+        pixelsOrPointsBox.setSizeInPixels((opiFont.isSizeInPixels()));
 
         fontDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         fontDialogButton.setText("Choose from Font Dialog");
@@ -127,9 +160,10 @@ public class OPIFontDialog extends HelpTrayDialog {
                 FontDialog dialog = new FontDialog(Display.getCurrent().getActiveShell());
                 dialog.setFontList(new FontData[] {opiFont.getRawFontData()});
                 FontData fontdata = dialog.open();
+                pixelsOrPointsBox.setEnabled(true);
                 if(fontdata != null){
                     opiFont = new OPIFont(fontdata);
-                    opiFont.setSizeInPixels(pixelsButton.getSelection());
+                    opiFont.setSizeInPixels(pixelsOrPointsBox.isSizeInPixels());
                     preDefinedFontsViewer.setSelection(null);
                     outputTextLabel.setText(opiFont.getFontMacroName());
                     outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
@@ -141,14 +175,13 @@ public class OPIFontDialog extends HelpTrayDialog {
         SelectionListener radioSelectionListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                opiFont.setSizeInPixels(pixelsButton.getSelection());
+                opiFont.setSizeInPixels(pixelsOrPointsBox.isSizeInPixels());
                 outputTextLabel.setText(opiFont.getFontMacroName());
                 outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
                 getShell().layout(true, true);
             }
         };
-        pixelsButton.addSelectionListener(radioSelectionListener);
-        pointsButton.addSelectionListener(radioSelectionListener);
+        pixelsOrPointsBox.addSelectionListener(radioSelectionListener);
 
         Group group = new Group(mainComposite, SWT.None);
         gd = new GridData(SWT.FILL, SWT.END, true, true, 2, 1);
@@ -225,9 +258,10 @@ public class OPIFontDialog extends HelpTrayDialog {
         if(!selection.isEmpty()
                 && selection.getFirstElement() instanceof OPIFont){
             opiFont = new OPIFont((OPIFont)selection.getFirstElement());
-            opiFont.setSizeInPixels(pixelsButton.getSelection());
             outputTextLabel.setText(opiFont.getFontMacroName());
             outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
+            pixelsOrPointsBox.setSizeInPixels(opiFont.isSizeInPixels());
+            pixelsOrPointsBox.setEnabled(false);
             getShell().layout(true, true);
         }
     }
