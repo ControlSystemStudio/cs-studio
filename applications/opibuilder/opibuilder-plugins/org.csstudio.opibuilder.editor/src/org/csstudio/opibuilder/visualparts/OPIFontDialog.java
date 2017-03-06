@@ -150,7 +150,7 @@ public class OPIFontDialog extends HelpTrayDialog {
         gd2.grabExcessVerticalSpace = true;
         spacer2.setLayoutData(gd2);
         pixelsOrPointsBox = new PixelsOrPointsBox(rightComposite, SWT.NONE);
-        pixelsOrPointsBox.setSizeInPixels((opiFont.isSizeInPixels()));
+        pixelsOrPointsBox.setSizeInPixels(opiFont.isSizeInPixels());
 
         fontDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         fontDialogButton.setText("Choose from Font Dialog");
