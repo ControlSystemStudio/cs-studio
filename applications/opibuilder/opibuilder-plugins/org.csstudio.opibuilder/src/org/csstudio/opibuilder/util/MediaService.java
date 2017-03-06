@@ -275,17 +275,27 @@ public final class MediaService {
                     continue;
                 int i;
                 if ((i = line.indexOf('=')) != -1) {
+                    boolean isPixels = false;
                     String name = line.substring(0, i).trim();
                     String trimmedName = name;
                     if (name.contains("(")) //$NON-NLS-1$
                         trimmedName = name.substring(0, name.indexOf("(")); //$NON-NLS-1$
                     trimmedNameSet.add(trimmedName);
                     try {
-                        FontData fontdata = StringConverter
-                                .asFontData(line.substring(i + 1).trim());
+                        String trimmedLine = line.substring(i + 1).trim();
+                        if (trimmedLine.endsWith("px")) { //$NON-NLS-1$
+                            isPixels = true;
+                            trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
+                        } else if (line.endsWith("pt")) { //$NON-NLS-1$
+                            trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
+                        }
+
+                        FontData fontdata = StringConverter.asFontData(trimmedLine);
                         if (fontdata.getName().equals("SystemDefault")) //$NON-NLS-1$
                             fontdata.setName(systemFontName);
-                        rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
+                        OPIFont font = new OPIFont(trimmedName, fontdata);
+                        font.setSizeInPixels(isPixels);
+                        rawFontMap.put(name, font);
                     } catch (DataFormatException e) {
                         String message = "Format error in font definition file.";
                         OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
