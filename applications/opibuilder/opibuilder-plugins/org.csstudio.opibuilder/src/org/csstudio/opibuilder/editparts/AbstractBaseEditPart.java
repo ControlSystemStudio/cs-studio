@@ -563,6 +563,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 figure.setToolTip(tooltipLabel);
             }
         }
+        // Disable tab traversal
+        figure.setFocusTraversable(false);
     }
 
     @Override
