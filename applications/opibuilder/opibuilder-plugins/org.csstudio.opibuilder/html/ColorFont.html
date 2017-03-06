@@ -97,38 +97,52 @@ font_name2(OS name[_swt platform]) = name-style-height
         is the default font for all widgets. It can also be overwritten by
         redefining it in font file.
     </p>
+      <h4>Font sizes</h4>
+    <p>
+      Font sizes may be defined in either 'points' or 'pixels'.  Points uses
+      the standard SWT method of rendering, but may change size relative to
+      rest of an OPI file on screens of different resolution.
+    </p>
+    <p>
+      Pixels scales the height of the font to use the specified number of pixels
+      on the screen.  This is consistent with other widgets in an OPI file.
+    </p>
+    <p>
+      In the font definition file, 18 or 18pt is interpreted as 18 points, and
+      18px is interpreted as 18 pixels.
+    </p>
     <p>For example:</p>
     <pre class="example_code">
 //Default Title Font. It will used in case the OS specified font macro was not defined.
-Title = Arial-bold-18
+Title = Arial-bold-18px
 
 //Title Font for Linux GTK
-Title(linux_gtk) = Sans-bold-18
+Title(linux_gtk) = Sans-bold-18px
 
 //Title Font for MacOS
-Title(macosx) = Lucida Grande-bold-18
+Title(macosx) = Lucida Grande-bold-18px
 
 Header1 = Arial-bold-16
-Header1(linux_gtk) = Sans-bold-16
+Header1(linux_gtk) = Sans-bold-16px
 
 Header2 = Arial-bold-14
-Header2(linux_gtk) = Sans-bold-14
+Header2(linux_gtk) = Sans-bold-14px
 
 Text = Arial-regular-10
-Text(linux_gtk) = Sans-regular-10
-Text(macosx) = Lucida Grande-regular-10
+Text(linux_gtk) = Sans-regular-10px
+Text(macosx) = Lucida Grande-regular-10px
 
-LinkText = Arial-italic-10
-LinkText(linux_gtk) = Monospace-italic-10
+LinkText = Arial-italic-10px
+LinkText(linux_gtk) = Monospace-italic-10px
 
-LinkText2 = Arial-bold italic-10
-LinkText2(linux_gtk) = Monospace-bold italic-10
+LinkText2 = Arial-bold italic-10px
+LinkText2(linux_gtk) = Monospace-bold italic-10px
 </pre>
-    <p>In font editing dialog, right click the predifined fonts list
-        will popup a menu which allows reloading the list from font file.</p>
+    <p>In the font dialog, right-clicking the predifined fonts list
+        will pop up a menu which allows reloading the list from the font file.</p>
 
     <p>
-        <img src="img/FontMacro.gif" alt="Choose Font Dialog"/>
+        <img src="img/font-dialog.png" alt="Font Dialog"/>
     </p>
 
 </body>
