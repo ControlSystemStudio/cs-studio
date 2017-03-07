@@ -229,4 +229,20 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
 
+    @Override
+    public void setFocusTraversable(boolean focusTraversable) {
+        super.setFocusTraversable(focusTraversable);
+        for (Toggle toggle : toggles) {
+            toggle.setFocusTraversable(focusTraversable);
+        }
+    }
+
+    @Override
+    public void setRequestFocusEnabled(boolean requestFocusEnabled) {
+        super.setRequestFocusEnabled(requestFocusEnabled);
+        for (Toggle toggle : toggles) {
+            toggle.setRequestFocusEnabled(requestFocusEnabled);
+        }
+    }
+
 }

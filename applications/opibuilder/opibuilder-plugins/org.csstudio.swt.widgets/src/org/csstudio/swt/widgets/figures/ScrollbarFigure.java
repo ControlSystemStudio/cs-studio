@@ -788,4 +788,22 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                 tempPattern = DEFAULT_DECIMAL_FORMAT;
         decimalFormat = new DecimalFormat(tempPattern);
     }
+
+    @Override
+    public void setFocusTraversable(boolean focusTraversable) {
+        super.setFocusTraversable(focusTraversable);
+        buttonUp.setFocusTraversable(focusTraversable);
+        buttonDown.setFocusTraversable(focusTraversable);
+        pageUp.setFocusTraversable(focusTraversable);
+        pageDown.setFocusTraversable(focusTraversable);
+    }
+
+    @Override
+    public void setRequestFocusEnabled(boolean requestFocusEnabled) {
+        super.setRequestFocusEnabled(requestFocusEnabled);
+        buttonUp.setRequestFocusEnabled(requestFocusEnabled);
+        buttonDown.setRequestFocusEnabled(requestFocusEnabled);
+        pageUp.setRequestFocusEnabled(requestFocusEnabled);
+        pageDown.setRequestFocusEnabled(requestFocusEnabled);
+    }
 }
