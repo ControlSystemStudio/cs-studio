@@ -187,13 +187,15 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
      */
     static class WrawwingPreferenceStore implements IPreferenceStore {
 
-        private final ListenerList<IPropertyChangeListener> propertyChangeListeners = new ListenerList<>();
+        @SuppressWarnings( "rawtypes" )
+        private final ListenerList propertyChangeListeners = new ListenerList();
         private final DIIRTPreferences preferences;
 
         WrawwingPreferenceStore ( DIIRTPreferences preferences ) {
             this.preferences = preferences;
         }
 
+        @SuppressWarnings( "unchecked" )
         @Override
         public void addPropertyChangeListener ( IPropertyChangeListener listener ) {
             propertyChangeListeners.add(listener);
@@ -209,8 +211,8 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
             PropertyChangeEvent e = new PropertyChangeEvent(this, name, oldValue, newValue);
 
-            for ( IPropertyChangeListener pcl : propertyChangeListeners ) {
-                pcl.propertyChange(e);
+            for ( Object pcl : propertyChangeListeners.getListeners() ) {
+                ((IPropertyChangeListener) pcl).propertyChange(e);
             }
 
         }
