@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +29,7 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.core.preferences.ExceptionUtilities.CompoundIOException;
 import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
@@ -892,6 +894,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @throws IOException
+     */
     private static void cleanDirectory ( final File directory ) throws IOException {
 
         final File[] files = verifiedListFiles(directory);
@@ -911,6 +921,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @throws IOException
+     */
     private static void deleteDirectory ( final File directory ) throws IOException {
 
         if ( !directory.exists() ) {
@@ -928,6 +946,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param file
+     * @return
+     */
     private static boolean deleteQuietly ( final File file ) {
 
         if ( file == null ) {
@@ -949,6 +975,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param file
+     * @throws IOException
+     */
     private static void forceDelete ( final File file ) throws IOException {
 
         if ( file.isDirectory() ) {
@@ -970,6 +1004,20 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * Encode the given URL string.
+     * <p>
+     * <b>Note:</b> {@link URIUtil#toFile(URI)} requires the URI to be encoded
+     * otherwise the filesystem mapping will work. The whole URI must be encoded
+     * but in a sensible way: this is why {@link URLEncoder#encode(String)}
+     * cannot be used.
+     * <p>
+     * This implementation is based on testing each "switch case" on MacOS X,
+     * Linux (CentOS 7.1) and Windows 7 against {@link URIUtil#toFile(URI)}.
+     *
+     * @param s The string to be encoded.
+     * @return The encoded string.
+     */
     private static String htmlEncode ( String s ) {
 
         if ( StringUtils.isBlank(s) ) {
@@ -1074,6 +1122,15 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @return
+     * @throws IOException
+     */
     private static File[] verifiedListFiles ( File directory ) throws IOException {
 
         if ( !directory.exists() ) {
