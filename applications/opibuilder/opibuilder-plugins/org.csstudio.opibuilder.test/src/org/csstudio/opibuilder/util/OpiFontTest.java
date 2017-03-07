@@ -91,6 +91,20 @@ public class OpiFontTest {
     }
 
     @Test
+    public void testFontSizeConversionIsCorrectForDifferentSizesAt120DPI() throws Exception {
+        Point dpi = new Point(120,120);
+        // These answers have been manually calculated using the above dpi.
+        List<Integer> pointSizes = new ArrayList<>(Arrays.asList(10, 12, 13, 15, 17, 18, 20));
+        List<Integer> pixelSizes = new ArrayList<>(Arrays.asList( 6,  7,  8,  9, 10, 11, 12));
+
+        for (int i = 0; i < pointSizes.size(); i++) {
+            OPIFont font = new TestableOPIFont(new FontData("monospace", pointSizes.get(i), DUMMY_STYLE), dpi);
+            font.setSizeInPixels(true);
+            assertEquals(font.getFontData().getHeight(), pixelSizes.get(i).intValue());
+        }
+    }
+
+    @Test
     public void testGetRawFontDataDoesNotChangeIfSizeInPixelsIsTrue() throws Exception {
         // Set font size to be in pixels
         testOPIFont.setSizeInPixels(true);
