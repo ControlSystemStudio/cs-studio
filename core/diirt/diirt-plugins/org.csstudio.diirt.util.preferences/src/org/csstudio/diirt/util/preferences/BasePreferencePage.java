@@ -178,6 +178,8 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     @Override
     public boolean performOk ( ) {
 
+        DIIRTPreferencesPlugin.get().performFlush();
+
         if ( editors.values().stream().anyMatch(e -> e.isRestartRequired()) ) {
 
             boolean restart = MessageDialog.openConfirm(getShell(), Messages.BPP_performOk_title, Messages.BPP_performOk_message);

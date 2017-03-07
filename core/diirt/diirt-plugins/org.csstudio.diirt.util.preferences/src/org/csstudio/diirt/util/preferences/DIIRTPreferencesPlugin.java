@@ -174,12 +174,19 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         copyDataSources(cancelStore, DIIRTPreferences.get());
         copyChannelAccess(cancelStore, DIIRTPreferences.get());
 
+        performFlush();
+
+    }
+
+    /**
+     * Flush the backing store.
+     */
+    public void performFlush ( ) {
         try {
             DIIRTPreferences.get().flush();
         } catch ( BackingStoreException ex ) {
             LOGGER.log(Level.WARNING, "Unable to flush tge preferences backing store.", ex);
         }
-
     }
 
     /**
@@ -187,7 +194,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
      */
     static class WrawwingPreferenceStore implements IPreferenceStore {
 
-        @SuppressWarnings( "rawtypes" )
         private final ListenerList propertyChangeListeners = new ListenerList();
         private final DIIRTPreferences preferences;
 
@@ -195,7 +201,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
             this.preferences = preferences;
         }
 
-        @SuppressWarnings( "unchecked" )
         @Override
         public void addPropertyChangeListener ( IPropertyChangeListener listener ) {
             propertyChangeListeners.add(listener);
