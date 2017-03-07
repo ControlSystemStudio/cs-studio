@@ -165,7 +165,7 @@ public final class DIIRTPreferences {
             throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException, URISyntaxException
     {
 
-        LOGGER.log(Level.CONFIG, "About to resolve platform path [path: {0}].", path);
+        LOGGER.log(Level.FINE, "About to resolve platform path [path: {0}].", path);
 
         if ( path == null ) {
             throw new NullPointerException("Null 'path'.");
@@ -181,23 +181,23 @@ public final class DIIRTPreferences {
 
             URL resolvedURL = FileLocator.resolve(new URL(path));
 
-            LOGGER.log(Level.CONFIG, "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
+            LOGGER.log(Level.FINE, "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
 
             String escapedURL = htmlEncode(resolvedURL.toExternalForm());
 
-            LOGGER.log(Level.CONFIG, "Escaped URL\n    before: {0}\n     after: {1}", new Object[] { resolvedURL.toString(), escapedURL });
+            LOGGER.log(Level.FINE, "Escaped URL\n    before: {0}\n     after: {1}", new Object[] { resolvedURL.toString(), escapedURL });
 
             URI resolvedURI = new URI(escapedURL);
 
-            LOGGER.log(Level.CONFIG, "Resolved URI\n    before: {0}\n     after: {1}", new Object[] { escapedURL, resolvedURI.toString() });
+            LOGGER.log(Level.FINE, "Resolved URI\n    before: {0}\n     after: {1}", new Object[] { escapedURL, resolvedURI.toString() });
 
             File resolvedFile = URIUtil.toFile(resolvedURI);
 
-            LOGGER.log(Level.CONFIG, "Resolved File\n    before: {0}\n     after: {1}", new Object[] { resolvedURI.toString(), resolvedFile.toString() });
+            LOGGER.log(Level.FINE, "Resolved File\n    before: {0}\n     after: {1}", new Object[] { resolvedURI.toString(), resolvedFile.toString() });
 
             String resolvedString = resolvedFile.getCanonicalPath();
 
-            LOGGER.log(Level.CONFIG, "Resolved String\n    before: {0}\n     after: {1}", new Object[] { resolvedFile.toString(), resolvedString });
+            LOGGER.log(Level.FINE, "Resolved String\n    before: {0}\n     after: {1}", new Object[] { resolvedFile.toString(), resolvedString });
 
             return resolvedString;
 
@@ -339,6 +339,35 @@ public final class DIIRTPreferences {
         }
 
         return diirtHome;
+
+    }
+
+    /**
+     * Returns whether the named preference is known to this preference store.
+     *
+     * @param name The name of the preference.
+     * @return {@code true} if either a current value or a default value is
+     *         known for the named preference, and {@code false} otherwise.
+     */
+    public boolean contains ( String name ) {
+
+        String value;
+
+        if ( preferencesService != null ) {
+            value = preferencesService.getString(QUALIFIER, name, null, null);
+        } else {
+            value = getPreferences().get(name, null);
+        }
+
+        if ( value == null ) {
+            if ( preferencesService != null ) {
+                value = preferencesService.getString(QUALIFIER, defaultPreferenceName(name), null, null);
+            } else {
+                value = getPreferences().get(defaultPreferenceName(name), null);
+            }
+        }
+
+        return ( value != null );
 
     }
 

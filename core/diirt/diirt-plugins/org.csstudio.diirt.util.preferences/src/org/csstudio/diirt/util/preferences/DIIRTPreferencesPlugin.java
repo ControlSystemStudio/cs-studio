@@ -26,9 +26,6 @@ import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_V
 import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DEFAULT;
 import static org.csstudio.diirt.util.core.preferences.pojo.DataSources.PREF_DELIMITER;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,11 +50,10 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public static final Logger LOGGER = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
 
-    private static DIIRTPreferencesPlugin instance    = null;
-    private static boolean                firstAccess = true;
+    private static DIIRTPreferencesPlugin instance = null;
 
     private final PreferenceStore cancelStore = new PreferenceStore();
-    private IPreferenceStore      prefStore   = null;
+    private IPreferenceStore      prefStore   = new WrawwingPreferenceStore(DIIRTPreferences.get());
 
     public static void copyChannelAccess ( IPreferenceStore source, DIIRTPreferences destination ) {
 
@@ -157,32 +153,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     @Override
     public IPreferenceStore getPreferenceStore ( ) {
-
-        if ( prefStore == null ) {
-            prefStore = new InMemoryPreferenceStore(DIIRTPreferences.QUALIFIER);
-        }
-
-        IPreferenceStore store = prefStore;
-
-        if ( firstAccess && store != null ) {
-
-            DIIRTPreferences dp = DIIRTPreferences.get();
-
-            //  Can be null when getPreferenceStore() is automatically called
-            //  while DIIRTPreferences is constructed.
-            if ( dp != null ) {
-
-                copyDataSources(dp, store);
-                copyChannelAccess(dp, store);
-
-                firstAccess = false;
-
-            }
-
-        }
-
-        return store;
-
+        return prefStore;
     }
 
     /**
@@ -212,18 +183,15 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * An in-memory implementation of an {@link IPreferenceStore}.
+     * An {@link IPreferenceStore} wrapped around {@link DIIRTPreferences}.
      */
-    private class InMemoryPreferenceStore implements IPreferenceStore {
+    static class WrawwingPreferenceStore implements IPreferenceStore {
 
-        private final String currentPrefix;
-        private final String defaultPrefix;
-        private final Map<String, Object> store = Collections.synchronizedMap(new TreeMap<>());
         private final ListenerList<IPropertyChangeListener> propertyChangeListeners = new ListenerList<>();
+        private final DIIRTPreferences preferences;
 
-        InMemoryPreferenceStore ( String qualifier ) {
-            this.currentPrefix = qualifier + ".current.";
-            this.defaultPrefix = qualifier + ".default.";
+        WrawwingPreferenceStore ( DIIRTPreferences preferences ) {
+            this.preferences = preferences;
         }
 
         @Override
@@ -233,7 +201,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
         @Override
         public boolean contains ( String name ) {
-            return store.containsKey(currentName(name));
+            return preferences.contains(name);
         }
 
         @Override
@@ -249,283 +217,241 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
         @Override
         public boolean getBoolean ( String name ) {
+            return preferences.getBoolean(name);
+        }
 
-            Object value = store.get(currentName(name));
+        @Override
+        public boolean getDefaultBoolean ( String name ) {
+            return preferences.getDefaultBoolean(name);
+        }
 
-            if ( value == null ) {
-                value = store.get(defaultName(name));
-            }
+        @Override
+        public double getDefaultDouble ( String name ) {
+            return preferences.getDefaultDouble(name);
+        }
 
-            if ( value == null ) {
-                return BOOLEAN_DEFAULT_DEFAULT;
+        @Override
+        public float getDefaultFloat ( String name ) {
+            return preferences.getDefaultFloat(name);
+        }
+
+        @Override
+        public int getDefaultInt ( String name ) {
+            return preferences.getDefaultInteger(name);
+        }
+
+        @Override
+        public long getDefaultLong ( String name ) {
+            return preferences.getDefaultLong(name);
+        }
+
+        @Override
+        public String getDefaultString ( String name ) {
+            return preferences.getDefaultString(name);
+        }
+
+        @Override
+        public double getDouble ( String name ) {
+            return preferences.getDouble(name);
+        }
+
+        @Override
+        public float getFloat ( String name ) {
+            return preferences.getFloat(name);
+        }
+
+        @Override
+        public int getInt ( String name ) {
+            return preferences.getInteger(name);
+        }
+
+        @Override
+        public long getLong ( String name ) {
+            return preferences.getLong(name);
+        }
+
+        @Override
+        public String getString ( String name ) {
+            return preferences.getString(name);
+        }
+
+        @Override
+        public boolean isDefault ( String name ) {
+            if ( contains(name) ) {
+                return ( preferences.getString(name).equals(preferences.getDefaultString(name)) );
             } else {
-                try {
-                    return (boolean) value;
-                } catch ( Exception ex ) {
-                    return BOOLEAN_DEFAULT_DEFAULT;
-                }
+                return false;
             }
-
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultBoolean(java.lang.String)
-         */
-        @Override
-        public boolean getDefaultBoolean ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultDouble(java.lang.String)
-         */
-        @Override
-        public double getDefaultDouble ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultFloat(java.lang.String)
-         */
-        @Override
-        public float getDefaultFloat ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultInt(java.lang.String)
-         */
-        @Override
-        public int getDefaultInt ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultLong(java.lang.String)
-         */
-        @Override
-        public long getDefaultLong ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultString(java.lang.String)
-         */
-        @Override
-        public String getDefaultString ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getDouble(java.lang.String)
-         */
-        @Override
-        public double getDouble ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getFloat(java.lang.String)
-         */
-        @Override
-        public float getFloat ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getInt(java.lang.String)
-         */
-        @Override
-        public int getInt ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getLong(java.lang.String)
-         */
-        @Override
-        public long getLong ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#getString(java.lang.String)
-         */
-        @Override
-        public String getString ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#isDefault(java.lang.String)
-         */
-        @Override
-        public boolean isDefault ( String arg0 ) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#needsSaving()
-         */
         @Override
         public boolean needsSaving ( ) {
-            // TODO Auto-generated method stub
             return false;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#putValue(java.lang.String, java.lang.String)
-         */
         @Override
-        public void putValue ( String arg0, String arg1 ) {
-            // TODO Auto-generated method stub
-
+        public void putValue ( String name, String value ) {
+            preferences.setString(name, value);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-         */
         @Override
-        public void removePropertyChangeListener ( IPropertyChangeListener arg0 ) {
-            // TODO Auto-generated method stub
-
+        public void removePropertyChangeListener ( IPropertyChangeListener listener ) {
+            propertyChangeListeners.remove(listener);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, double)
-         */
         @Override
-        public void setDefault ( String arg0, double arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, boolean value ) {
+
+            boolean valueWasDefault = ( preferences.getBoolean(name) == preferences.getDefaultBoolean(name) );
+
+            preferences.setDefaultBoolean(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, float)
-         */
         @Override
-        public void setDefault ( String arg0, float arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, double value ) {
+
+            boolean valueWasDefault = ( preferences.getDouble(name) == preferences.getDefaultDouble(name) );
+
+            preferences.setDefaultDouble(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, int)
-         */
         @Override
-        public void setDefault ( String arg0, int arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, float value ) {
+
+            boolean valueWasDefault = ( preferences.getFloat(name) == preferences.getDefaultFloat(name) );
+
+            preferences.setDefaultFloat(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, long)
-         */
         @Override
-        public void setDefault ( String arg0, long arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, int value ) {
+
+            boolean valueWasDefault = ( preferences.getInteger(name) == preferences.getDefaultInteger(name) );
+
+            preferences.setDefaultInteger(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, java.lang.String)
-         */
         @Override
-        public void setDefault ( String arg0, String arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, long value ) {
+
+            boolean valueWasDefault = ( preferences.getLong(name) == preferences.getDefaultLong(name) );
+
+            preferences.setDefaultLong(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, boolean)
-         */
         @Override
-        public void setDefault ( String arg0, boolean arg1 ) {
-            // TODO Auto-generated method stub
+        public void setDefault ( String name, String value ) {
+
+            boolean valueWasDefault = ( preferences.getString(name) == preferences.getDefaultString(name) );
+
+            preferences.setDefaultString(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setToDefault(java.lang.String)
-         */
         @Override
-        public void setToDefault ( String arg0 ) {
-            // TODO Auto-generated method stub
-
+        public void setToDefault ( String name ) {
+            setValue(name, preferences.getDefaultString(name));
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, double)
-         */
         @Override
-        public void setValue ( String arg0, double arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, boolean newValue ) {
+
+            boolean oldValue = getBoolean(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setBoolean(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, float)
-         */
         @Override
-        public void setValue ( String arg0, float arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, double newValue ) {
+
+            double oldValue = getDouble(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setDouble(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, int)
-         */
         @Override
-        public void setValue ( String arg0, int arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, float newValue ) {
+
+            float oldValue = getFloat(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setFloat(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, long)
-         */
         @Override
-        public void setValue ( String arg0, long arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, int newValue ) {
+
+            int oldValue = getInt(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setInteger(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, java.lang.String)
-         */
         @Override
-        public void setValue ( String arg0, String arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, long newValue ) {
+
+            long oldValue = getLong(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setLong(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, boolean)
-         */
         @Override
-        public void setValue ( String arg0, boolean arg1 ) {
-            // TODO Auto-generated method stub
+        public void setValue ( String name, String newValue ) {
 
-        }
+            String oldValue = getString(name);
 
-        private String currentName ( String name ) {
-            return currentPrefix + name;
-        }
+            if ( !oldValue.equals(newValue) ) {
+                preferences.setString(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
 
-        private String defaultName ( String name ) {
-            return defaultPrefix + name;
         }
 
     }
