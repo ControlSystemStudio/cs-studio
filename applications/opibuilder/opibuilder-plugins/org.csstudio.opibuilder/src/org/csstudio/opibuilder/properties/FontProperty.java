@@ -163,14 +163,16 @@ public class FontProperty extends AbstractWidgetProperty {
                 } else {
                     font = MediaService.getInstance().getOPIFont(fontElement.getText());
                 }
-                // If this was serialised without a height in pixels attribute, it was from
-                // an older verison of BOY where points were assumed.  To ensure the screens are not
-                // changed when re-saved, make this explicit.
-                if (heightInPixels != null) {
-                    boolean inPixels = Boolean.parseBoolean(heightInPixels);
-                    font.setSizeInPixels(inPixels);
-                } else {
-                    font.setSizeInPixels(false);
+                if (!font.isPreDefined()) {
+                    // If this was serialised without a height in pixels attribute, it was from
+                    // an older verison of BOY where points were assumed.  To ensure the screens are not
+                    // changed when re-saved, make this explicit.
+                    if (heightInPixels != null) {
+                        boolean inPixels = Boolean.parseBoolean(heightInPixels);
+                        font.setSizeInPixels(inPixels);
+                    } else {
+                        font.setSizeInPixels(false);
+                    }
                 }
                 return font;
             }
