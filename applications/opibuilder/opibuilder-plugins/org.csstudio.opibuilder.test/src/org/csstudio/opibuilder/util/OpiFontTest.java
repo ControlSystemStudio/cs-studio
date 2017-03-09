@@ -3,6 +3,9 @@ package org.csstudio.opibuilder.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -14,7 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class OpiFontTest {
 
-    private final int FONT_SIZE = 10;
+    private final int FONT_SIZE = 15;
 
     private final int DUMMY_STYLE = 5;
 
@@ -28,8 +31,10 @@ public class OpiFontTest {
      * All relevant logic should still be the same.
      */
     private class TestableOPIFont extends OPIFont {
-        public TestableOPIFont(FontData fontData) {
+        private Point dpi;
+        public TestableOPIFont(FontData fontData, Point dpi) {
             super(fontData);
+            this.dpi = dpi;
         }
         public TestableOPIFont(OPIFont font) {
             super(font);
@@ -40,13 +45,13 @@ public class OpiFontTest {
         }
         @Override
         protected Point getDPI() {
-            return DUMMY_DPI;
+            return this.dpi;
         }
     }
 
     @Before
     public void setUp() {
-        this.testOPIFont = new TestableOPIFont(new FontData("Arial", FONT_SIZE, DUMMY_STYLE));
+        this.testOPIFont = new TestableOPIFont(new FontData("Arial", FONT_SIZE, DUMMY_STYLE), DUMMY_DPI);
     }
 
     @Test
@@ -68,8 +73,35 @@ public class OpiFontTest {
         // Set font size to be in pixels
         testOPIFont.setSizeInPixels(true);
         // Returned size should be 10 pixels converted to points based on the display DPI
-        int expected = FONT_SIZE * OPIFont.POINTS_PER_INCH / DUMMY_DPI.y;
+        int expected = Math.round((float) FONT_SIZE * OPIFont.POINTS_PER_INCH / DUMMY_DPI.y);
         assertEquals(expected, testOPIFont.getFontData().getHeight());
+    }
+
+    @Test
+    public void testFontSizeConversionIsCorrectForDifferentSizes() throws Exception {
+        Point dpi = new Point(96, 96);
+        // These answers have been manually calculated using the above dpi.
+        List<Integer> pointSizes = new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17, 18));
+        List<Integer> pixelSizes = new ArrayList<>(Arrays.asList(8, 8, 9, 10, 11, 11, 12, 13, 14));
+        for (int i = 0; i < pointSizes.size(); i++) {
+            OPIFont font = new TestableOPIFont(new FontData("Arial", pointSizes.get(i), DUMMY_STYLE), dpi);
+            font.setSizeInPixels(true);
+            assertEquals(font.getFontData().getHeight(), pixelSizes.get(i).intValue());
+        }
+    }
+
+    @Test
+    public void testFontSizeConversionIsCorrectForDifferentSizesAt120DPI() throws Exception {
+        Point dpi = new Point(120,120);
+        // These answers have been manually calculated using the above dpi.
+        List<Integer> pointSizes = new ArrayList<>(Arrays.asList(10, 12, 13, 15, 17, 18, 20));
+        List<Integer> pixelSizes = new ArrayList<>(Arrays.asList( 6,  7,  8,  9, 10, 11, 12));
+
+        for (int i = 0; i < pointSizes.size(); i++) {
+            OPIFont font = new TestableOPIFont(new FontData("monospace", pointSizes.get(i), DUMMY_STYLE), dpi);
+            font.setSizeInPixels(true);
+            assertEquals(font.getFontData().getHeight(), pixelSizes.get(i).intValue());
+        }
     }
 
     @Test
