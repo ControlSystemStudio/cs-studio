@@ -22,6 +22,7 @@
 
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
@@ -37,15 +38,14 @@ import org.eclipse.draw2d.IFigure;
  */
 public class RectangleEditpart extends AbstractShapeEditPart {
 
-
-
     @Override
     protected IFigure doCreateFigure() {
-        OPIRectangleFigure figure = new OPIRectangleFigure();
+        OPIRectangleFigure figure = new OPIRectangleFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
         RectangleModel model = getWidgetModel();
         figure.setFill(model.getFillLevel());
         figure.setHorizontalFill(model.isHorizontalFill());
         figure.setTransparent(model.isTransparent());
+        figure.setSelectable(determineSelectable());
         figure.setLineColor(model.getLineColor());
         figure.setGradient(model.isGradient());
         figure.setBackGradientStartColor(model.getBackgroundGradientStartColor());
@@ -161,6 +161,16 @@ public class RectangleEditpart extends AbstractShapeEditPart {
         return ((OPIRectangleFigure)getFigure()).getFill();
     }
 
-
+    /**
+     * The rectangle is selectable if it has any actions, has a tooltip defined
+     * or is opaque.  A transparent rectangle should pass clicks or tooltips through.
+     * @return whether the rectangle is selectable
+     */
+    private boolean determineSelectable(){
+        boolean hasActions = !getWidgetModel().getActionsInput().getActionsList().isEmpty();
+        boolean hasTooltip = getWidgetModel().getTooltip().trim().length() > 0;
+        boolean opaque = !getWidgetModel().isTransparent();
+        return hasActions || hasTooltip || opaque;
+    }
 
 }
