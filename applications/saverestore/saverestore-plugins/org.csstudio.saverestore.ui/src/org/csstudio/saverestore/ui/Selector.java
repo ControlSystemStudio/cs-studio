@@ -101,11 +101,17 @@ public class Selector implements CompletionNotifier {
      * Dispose of this selector. Once disposed, it can no longer be used.
      */
     public void dispose() {
+        if (this.dataProvider != null) {
+            this.dataProvider.getProvider().removeCompletionNotifier(this);
+        }
         SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, pcl);
     }
 
     private void init(DataProviderWrapper wrapper, boolean initIfEqual) {
         if (Objects.equals(this.dataProvider,wrapper) && !initIfEqual) return;
+        if (this.dataProvider != null) {
+            this.dataProvider.getProvider().removeCompletionNotifier(this);
+        }
         this.dataProvider = wrapper;
         if (wrapper != null) {
             wrapper.getProvider().addCompletionNotifier(this);
