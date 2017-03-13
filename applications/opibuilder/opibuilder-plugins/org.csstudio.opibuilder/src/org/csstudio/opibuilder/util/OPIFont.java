@@ -65,7 +65,8 @@ public class OPIFont{
     }
 
     private int pixelsToPoints(int pixels) {
-        return pixels * POINTS_PER_INCH / getDPI().y;
+        float result = (float) pixels * POINTS_PER_INCH / getDPI().y;
+        return Math.round(result);
     }
 
     /**Returns the Macro Name of the OPIFont.
