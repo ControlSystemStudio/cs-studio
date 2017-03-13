@@ -43,7 +43,6 @@ import org.junit.Test;
 /**
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 22 Dec 2016
- *
  */
 public class DIIRTPreferencesTest {
 
