@@ -9,6 +9,8 @@
 package org.csstudio.diirt.util.preferences;
 
 
+import static org.csstudio.diirt.util.core.preferences.DIIRTPreferences.PREF_CONFIGURATION_DIRECTORY;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,7 +48,8 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
     private static final Set<BasePreferencePage> DIIRT_PAGES = new HashSet<>();
 
-    private final Map<FieldEditor, Editor> editors = new HashMap<>();
+    private Editor                         directoryEditor = null;
+    private final Map<FieldEditor, Editor> editors         = new HashMap<>();
 
     public BasePreferencePage ( ) {
         DIIRT_PAGES.add(this);
@@ -137,6 +140,10 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
         editor.updateCaptionColor();
         editors.put(fieldEditor, editor);
 
+        if ( PREF_CONFIGURATION_DIRECTORY.equals(fieldEditor.getPreferenceName()) ) {
+            directoryEditor = editor;
+        }
+
     }
 
     /**
@@ -177,6 +184,8 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
     @Override
     public boolean performOk ( ) {
+
+        DIIRTPreferencesPlugin.get().performFlush();
 
         if ( editors.values().stream().anyMatch(e -> e.isRestartRequired()) ) {
 
@@ -333,7 +342,7 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      * Updates the color of the given {@code editor}'s caption, depending on
      * the current value compared with the default one. If they are equals, the
      * caption foreground color will be {@link SWT#COLOR_WIDGET_FOREGROUND},
-     * otherwise {@link SWT#COLOR_DARK_BLUE}.
+     * otherwise {@link SWT#COLOR_BLUE}.
      *
      * @param editor The {@link FieldEditor} whose caption's color must be
      *            updated.
@@ -341,11 +350,11 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
      * @param defaultValue The {@code editor}'s default value.
      * @param currentValue The {@code editor}'s current value.
      */
-    protected void updateCaptionColor ( FieldEditor editor, Composite parent, Object defaultValue, Object currentValue ) {
+    protected void updateCaptionColor ( final FieldEditor editor, final Composite parent, Object defaultValue, Object currentValue ) {
 
-        Color captionColor = Objects.equals(defaultValue, currentValue)
-                ? SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND)
-                : SWTResourceManager.getColor(SWT.COLOR_BLUE);
+        final Color captionColor = Objects.equals(defaultValue, currentValue)
+                                 ? SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND)
+                                 : SWTResourceManager.getColor(SWT.COLOR_BLUE);
 
         Display.getDefault().asyncExec(() -> {
 
@@ -353,6 +362,38 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
             if ( !l.isDisposed() ) {
                 l.setForeground(captionColor);
+            }
+
+        });
+
+    }
+
+    /**
+     * Updates the color of the given {@code editor}'s caption, depending on
+     * the current {@code error} value. If {@code false}, the caption foreground
+     * color will be {@link SWT#COLOR_WIDGET_FOREGROUND}, otherwise
+     * {@link SWT#COLOR_RED}.
+     *
+     * @param editor The {@link FieldEditor} whose caption's color must be
+     *            updated.
+     * @param parent The {@link Composite} owning the given {@code editor}.
+     * @param error {@code true} if the caption must be colored in
+     *            {@link SWT#COLOR_RED}.
+     * @param tooltip The tooltip assigned to the {@code editor}'s caption.
+     */
+    protected void updateCaptionColor ( final Composite parent, final FieldEditor editor, boolean error, final String tooltip ) {
+
+        final Color captionColor = error
+                                 ? SWTResourceManager.getColor(SWT.COLOR_RED)
+                                 : SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND);
+
+        Display.getDefault().asyncExec(() -> {
+
+            Label l = editor.getLabelControl(parent);
+
+            if ( !l.isDisposed() ) {
+                l.setForeground(captionColor);
+                l.setToolTipText(tooltip);
             }
 
         });
@@ -368,9 +409,25 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
 
         String message = DIIRTPreferences.resolveAndVerifyDIIRTPath(path);
 
-        notifyWarning(message);
+        if ( message == null ) {
 
-        return ( message == null );
+            if ( directoryEditor != null ) {
+                directoryEditor.updateCaptionColor(false);
+            }
+
+            return true;
+
+        } else {
+
+            if ( directoryEditor != null ) {
+                directoryEditor.updateCaptionColor(true, message);
+            }
+
+            DIIRTPreferencesPlugin.LOGGER.warning(message);
+
+            return false;
+
+        }
 
     }
 
@@ -413,6 +470,14 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
             if ( defaultGetter != null ) {
                 BasePreferencePage.this.updateCaptionColor(editor, parent, defaultGetter.get(), value);
             }
+        }
+
+        void updateCaptionColor ( final boolean error ) {
+            BasePreferencePage.this.updateCaptionColor(parent, editor, error, null);
+        }
+
+        void updateCaptionColor ( final boolean error, final String tooltip ) {
+            BasePreferencePage.this.updateCaptionColor(parent, editor, error, tooltip);
         }
 
         void setRestartRequired ( boolean restartRequired ) {

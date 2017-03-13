@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DIIRT Util Preferences Test
+Bundle-SymbolicName: org.csstudio.diirt.util.preferences.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: European Spallation Source ERIC
+Fragment-Host: org.csstudio.diirt.util.preferences;bundle-version="1.0.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0"
