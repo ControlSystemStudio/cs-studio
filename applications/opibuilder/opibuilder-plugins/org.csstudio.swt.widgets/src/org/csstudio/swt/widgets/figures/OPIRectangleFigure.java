@@ -47,16 +47,17 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
      * The fill grade (0 - 100%).
      */
     private double fill = 100;
+    private boolean runMode;
 
     /**
      * The orientation (horizontal==true | vertical==false).
      */
     private boolean horizontalFill = true;
 
-    /**
-     * The transparent state of the background.
-     */
+    /** The transparent state of the background. */
     private boolean transparent = false;
+    /** Whether the rectangle should be selectable at runtime. */
+    private boolean selectable;
 
     private Color lineColor = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_PURPLE);
@@ -65,6 +66,10 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
     private Color foreGradientStartColor =ColorConstants.white;
     private boolean gradient=false;
     private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
+
+    public OPIRectangleFigure(boolean runMode) {
+        this.runMode = runMode;
+    }
 
     /**
      * {@inheritDoc}
@@ -250,6 +255,16 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
         repaint();
     }
 
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
 
+    @Override
+    public boolean containsPoint(int x, int y) {
+        if(runMode && !selectable)
+            return false;
+        else
+            return super.containsPoint(x, y);
+    }
 
 }

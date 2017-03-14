@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DIIRT Core Preferences
-Bundle-SymbolicName: org.csstudio.diirt.util.core.preferences
-Bundle-Version: 1.0.1.qualifier
+Bundle-SymbolicName: org.csstudio.diirt.util.core.preferences;singleton:=true
+Bundle-Version: 1.0.2.qualifier
 Bundle-Activator: org.csstudio.diirt.util.core.preferences.Activator
 Bundle-Vendor: European Spallation Source ERIC
 Require-Bundle: org.apache.commons.io;bundle-version="2.5.0",
@@ -10,6 +10,6 @@ Require-Bundle: org.apache.commons.io;bundle-version="2.5.0",
  org.eclipse.core.runtime,
  org.epics.jca;bundle-version="2.3.6"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.diirt.util.core.preferences;uses:="org.osgi.framework,org.eclipse.osgi.util,org.eclipse.core.runtime.preferences",
  org.csstudio.diirt.util.core.preferences.pojo;uses:="org.csstudio.diirt.util.core.preferences"
+Bundle-ActivationPolicy: lazy
