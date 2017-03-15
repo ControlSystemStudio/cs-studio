@@ -30,11 +30,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 
@@ -49,11 +50,10 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     public static final Logger LOGGER = Logger.getLogger(DIIRTPreferencesPlugin.class.getName());
 
-    private static DIIRTPreferencesPlugin instance    = null;
-    private static boolean                firstAccess = true;
+    private static DIIRTPreferencesPlugin instance = null;
 
     private final PreferenceStore cancelStore = new PreferenceStore();
-    private IPreferenceStore      prefStore   = null;
+    private IPreferenceStore      prefStore   = new WrawwingPreferenceStore(DIIRTPreferences.get());
 
     public static void copyChannelAccess ( IPreferenceStore source, DIIRTPreferences destination ) {
 
@@ -153,32 +153,7 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
 
     @Override
     public IPreferenceStore getPreferenceStore ( ) {
-
-        if ( prefStore == null ) {
-            prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, DIIRTPreferences.QUALIFIER);
-        }
-
-        IPreferenceStore store = prefStore;
-
-        if ( firstAccess && store != null ) {
-
-            DIIRTPreferences dp = DIIRTPreferences.get();
-
-            //  Can be null when getPreferenceStore() is automatically called
-            //  while DIIRTPreferences is constructed.
-            if ( dp != null ) {
-
-                copyDataSources(DIIRTPreferences.get(), store);
-                copyChannelAccess(DIIRTPreferences.get(), store);
-
-                firstAccess = false;
-
-            }
-
-        }
-
-        return store;
-
+        return prefStore;
     }
 
     /**
@@ -199,10 +174,291 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         copyDataSources(cancelStore, DIIRTPreferences.get());
         copyChannelAccess(cancelStore, DIIRTPreferences.get());
 
+        performFlush();
+
+    }
+
+    /**
+     * Flush the backing store.
+     */
+    public void performFlush ( ) {
         try {
             DIIRTPreferences.get().flush();
         } catch ( BackingStoreException ex ) {
             LOGGER.log(Level.WARNING, "Unable to flush tge preferences backing store.", ex);
+        }
+    }
+
+    /**
+     * An {@link IPreferenceStore} wrapped around {@link DIIRTPreferences}.
+     */
+    static class WrawwingPreferenceStore implements IPreferenceStore {
+
+        private final ListenerList propertyChangeListeners = new ListenerList();
+        private final DIIRTPreferences preferences;
+
+        WrawwingPreferenceStore ( DIIRTPreferences preferences ) {
+            this.preferences = preferences;
+        }
+
+        @Override
+        public void addPropertyChangeListener ( IPropertyChangeListener listener ) {
+            propertyChangeListeners.add(listener);
+        }
+
+        @Override
+        public boolean contains ( String name ) {
+            return preferences.contains(name);
+        }
+
+        @Override
+        public void firePropertyChangeEvent ( String name, Object oldValue, Object newValue ) {
+
+            PropertyChangeEvent e = new PropertyChangeEvent(this, name, oldValue, newValue);
+
+            for ( Object pcl : propertyChangeListeners.getListeners() ) {
+                ((IPropertyChangeListener) pcl).propertyChange(e);
+            }
+
+        }
+
+        @Override
+        public boolean getBoolean ( String name ) {
+            return preferences.getBoolean(name);
+        }
+
+        @Override
+        public boolean getDefaultBoolean ( String name ) {
+            return preferences.getDefaultBoolean(name);
+        }
+
+        @Override
+        public double getDefaultDouble ( String name ) {
+            return preferences.getDefaultDouble(name);
+        }
+
+        @Override
+        public float getDefaultFloat ( String name ) {
+            return preferences.getDefaultFloat(name);
+        }
+
+        @Override
+        public int getDefaultInt ( String name ) {
+            return preferences.getDefaultInteger(name);
+        }
+
+        @Override
+        public long getDefaultLong ( String name ) {
+            return preferences.getDefaultLong(name);
+        }
+
+        @Override
+        public String getDefaultString ( String name ) {
+            return preferences.getDefaultString(name);
+        }
+
+        @Override
+        public double getDouble ( String name ) {
+            return preferences.getDouble(name);
+        }
+
+        @Override
+        public float getFloat ( String name ) {
+            return preferences.getFloat(name);
+        }
+
+        @Override
+        public int getInt ( String name ) {
+            return preferences.getInteger(name);
+        }
+
+        @Override
+        public long getLong ( String name ) {
+            return preferences.getLong(name);
+        }
+
+        @Override
+        public String getString ( String name ) {
+            return preferences.getString(name);
+        }
+
+        @Override
+        public boolean isDefault ( String name ) {
+            if ( contains(name) ) {
+                return ( preferences.getString(name).equals(preferences.getDefaultString(name)) );
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean needsSaving ( ) {
+            return false;
+        }
+
+        @Override
+        public void putValue ( String name, String value ) {
+            preferences.setString(name, value);
+        }
+
+        @Override
+        public void removePropertyChangeListener ( IPropertyChangeListener listener ) {
+            propertyChangeListeners.remove(listener);
+        }
+
+        @Override
+        public void setDefault ( String name, boolean value ) {
+
+            boolean valueWasDefault = ( preferences.getBoolean(name) == preferences.getDefaultBoolean(name) );
+
+            preferences.setDefaultBoolean(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setDefault ( String name, double value ) {
+
+            boolean valueWasDefault = ( preferences.getDouble(name) == preferences.getDefaultDouble(name) );
+
+            preferences.setDefaultDouble(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setDefault ( String name, float value ) {
+
+            boolean valueWasDefault = ( preferences.getFloat(name) == preferences.getDefaultFloat(name) );
+
+            preferences.setDefaultFloat(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setDefault ( String name, int value ) {
+
+            boolean valueWasDefault = ( preferences.getInteger(name) == preferences.getDefaultInteger(name) );
+
+            preferences.setDefaultInteger(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setDefault ( String name, long value ) {
+
+            boolean valueWasDefault = ( preferences.getLong(name) == preferences.getDefaultLong(name) );
+
+            preferences.setDefaultLong(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setDefault ( String name, String value ) {
+
+            boolean valueWasDefault = ( preferences.getString(name) == preferences.getDefaultString(name) );
+
+            preferences.setDefaultString(name, value);
+
+            if ( valueWasDefault ) {
+                setValue(name, value);
+            }
+
+        }
+
+        @Override
+        public void setToDefault ( String name ) {
+            setValue(name, preferences.getDefaultString(name));
+        }
+
+        @Override
+        public void setValue ( String name, boolean newValue ) {
+
+            boolean oldValue = getBoolean(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setBoolean(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
+        }
+
+        @Override
+        public void setValue ( String name, double newValue ) {
+
+            double oldValue = getDouble(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setDouble(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
+        }
+
+        @Override
+        public void setValue ( String name, float newValue ) {
+
+            float oldValue = getFloat(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setFloat(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
+        }
+
+        @Override
+        public void setValue ( String name, int newValue ) {
+
+            int oldValue = getInt(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setInteger(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
+        }
+
+        @Override
+        public void setValue ( String name, long newValue ) {
+
+            long oldValue = getLong(name);
+
+            if ( oldValue != newValue ) {
+                preferences.setLong(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
+        }
+
+        @Override
+        public void setValue ( String name, String newValue ) {
+
+            String oldValue = getString(name);
+
+            if ( !oldValue.equals(newValue) ) {
+                preferences.setString(name, newValue);
+                firePropertyChangeEvent(name, oldValue, newValue);
+            }
+
         }
 
     }
