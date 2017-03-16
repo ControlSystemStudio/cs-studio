@@ -100,9 +100,13 @@ public class Opi_xyGraphClass extends OpiWidget {
         new OpiDouble(widgetContext, "axis_1_maximum", r.getyMax());
         new OpiDouble(widgetContext, "axis_2_maximum", r.getY2Max());
 
-        new OpiBoolean(widgetContext, "axis_0_show_grid", r.isxShowMajorGrid());
-        new OpiBoolean(widgetContext, "axis_1_show_grid", r.isyShowMajorGrid());
-        new OpiBoolean(widgetContext, "axis_2_show_grid", r.isY2ShowMajorGrid());
+        // CSS only has coarse grid lines, show them if any EDM Grid is enabled
+        new OpiBoolean(widgetContext, "axis_0_show_grid",
+                r.isxShowMajorGrid() || r.isxShowMinorGrid() || r.isxShowLabelGrid());
+        new OpiBoolean(widgetContext, "axis_1_show_grid",
+                r.isyShowMajorGrid() || r.isyShowMinorGrid() || r.isyShowLabelGrid());
+        new OpiBoolean(widgetContext, "axis_2_show_grid",
+                r.isY2ShowMajorGrid() || r.isY2ShowMinorGrid() || r.isY2ShowLabelGrid());
 
         // There is no legend on EDM xygraphs.
         new OpiBoolean(widgetContext, "show_legend", false);
@@ -142,29 +146,44 @@ public class Opi_xyGraphClass extends OpiWidget {
             new OpiString(widgetContext, "trigger_pv", r.getTriggerPv());
 
 
-        // axis properties
+        // Axis properties. EDM doesn't instantly scale in even with no threshold
         for (int i = 0; i < 2; i++) {
             new OpiBoolean(widgetContext, "axis_" + i + "_auto_scale",
                     r.isAutoScaleBothDirections());
             new OpiDouble(widgetContext, "axis_" + i + "_auto_scale_threshold",
-                    r.getAutoScaleThreshPct() / 100);
-
+                    Math.max(r.getAutoScaleThreshPct() / 100, 0.95));
         }
-        if(r.getxAxisSrc()!=null && r.getxAxisSrc().equals("AutoScale"))
+
+        // Don't assume defaults are true or false
+        if(r.getxAxisSrc()!=null && r.getxAxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_0_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_0_auto_scale",    false);
+        }
 
-        if(r.getyAxisSrc()!=null && r.getyAxisSrc().equals("AutoScale"))
+        if(r.getyAxisSrc()!=null && r.getyAxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_1_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_1_auto_scale",    false);
+        }
 
-
-        if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale"))
+        if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_2_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_2_auto_scale",    false);
+        }
 
-        if(r.getxAxisStyle()!=null && r.getxAxisStyle().equals("log10"))
+        if(r.getxAxisStyle()!=null && r.getxAxisStyle().equals("log10")) {
             new OpiBoolean(widgetContext, "axis_0_log_scale", true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_0_log_scale", false);
+        }
 
-        if(r.getyAxisStyle()!=null && r.getyAxisStyle().equals("log10"))
+        if(r.getyAxisStyle()!=null && r.getyAxisStyle().equals("log10")) {
             new OpiBoolean(widgetContext, "axis_1_log_scale", true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_1_log_scale", false);
+        }
 
         // trace properties
         new OpiInt(widgetContext, "trace_count", r.getNumTraces());
@@ -184,7 +203,7 @@ public class Opi_xyGraphClass extends OpiWidget {
             new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());
             if(r.getPlotMode()==null && r.getnPts()<5){//assume it is a waveform
                 new OpiBoolean(widgetContext, "trace_"+i+"_concatenate_data", false);
-                new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 5000);
+                new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 65536);
             }
         }
 
