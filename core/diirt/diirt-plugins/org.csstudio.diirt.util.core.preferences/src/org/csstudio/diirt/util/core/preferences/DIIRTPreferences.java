@@ -569,17 +569,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setBoolean ( String name, boolean value ) {
-
-        boolean oldValue = getBoolean(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultBoolean(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putBoolean(name, value);
-            }
-        }
-
+        getPreferences().putBoolean(name, value);
     }
 
     /**
@@ -656,17 +646,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setDouble ( String name, double value ) {
-
-        double oldValue = getDouble(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultDouble(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putDouble(name, value);
-            }
-        }
-
+        getPreferences().putDouble(name, value);
     }
 
     /**
@@ -677,17 +657,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setFloat ( String name, float value ) {
-
-        float oldValue = getFloat(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultFloat(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putFloat(name, value);
-            }
-        }
-
+        getPreferences().putFloat(name, value);
     }
 
     /**
@@ -698,17 +668,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setInteger ( String name, int value ) {
-
-        int oldValue = getInteger(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultInteger(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putInt(name, value);
-            }
-        }
-
+        getPreferences().putInt(name, value);
     }
 
     /**
@@ -719,17 +679,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setLong ( String name, long value ) {
-
-        long oldValue = getLong(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultLong(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putLong(name, value);
-            }
-        }
-
+        getPreferences().putLong(name, value);
     }
 
     /**
@@ -740,17 +690,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setString ( String name, String value ) {
-
-        String oldValue = getString(name);
-
-        if ( ! StringUtils.equals(oldValue, value) ) {
-            if ( StringUtils.equals(getDefaultString(name), value) ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().put(name, value);
-            }
-        }
-
+        getPreferences().put(name, value);
     }
 
     /**

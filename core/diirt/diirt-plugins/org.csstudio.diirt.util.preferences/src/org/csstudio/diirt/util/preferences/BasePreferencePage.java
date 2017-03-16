@@ -185,6 +185,7 @@ public abstract class BasePreferencePage extends PreferencePage implements IWork
     @Override
     public boolean performOk ( ) {
 
+        editors.keySet().stream().forEach(e -> e.store());
         DIIRTPreferencesPlugin.get().performFlush();
 
         if ( editors.values().stream().anyMatch(e -> e.isRestartRequired()) ) {
