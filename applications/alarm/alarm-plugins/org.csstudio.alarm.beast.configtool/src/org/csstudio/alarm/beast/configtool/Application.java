@@ -76,6 +76,8 @@ public class Application implements IApplication
                 "Convert ALH config into XML config file");
         final StringOption file = new StringOption(parser, "-file",
                 "XML config file to import", "");
+        final BooleanOption send_jms_config = new BooleanOption(parser, "-send_jms_config",
+                "Send JMS message for clients to read new configuration");
         parser.addEclipseParameters();
         try
         {
@@ -162,7 +164,20 @@ public class Application implements IApplication
         if (file.get().isEmpty())
             return "Missing file name\n" + parser.getHelp();
         this.filename = file.get();
-
+        if (send_jms_config.get()){
+            try
+            {
+                final JMSSender sender = new JMSSender(this.url, this.user,
+                    this.password, this.root+"_CLIENT");
+                sender.send("alarm", "ConfigTool", "CONFIG");
+                sender.disconnect();
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Error sending JMS CONFIG message:");
+                ex.printStackTrace();
+            }
+        }
         return null;
     }
 
