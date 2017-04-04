@@ -26,6 +26,8 @@ import javax.security.auth.Subject;
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
@@ -156,6 +158,36 @@ public final class MasarUtilities {
                 new SaveSet(service, baseLevel, new String[] { names.data[i] }, MasarDataProvider.ID, parameters));
         }
         return saveSets;
+    }
+
+    static List<SaveSetEntry> createSaveSetEntryList(PVStructure result) {
+        PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+        PVStringArray channelNames = (PVStringArray) value.getScalarArrayField("channelName",
+                ScalarType.pvString);
+        PVBooleanArray readonly = (PVBooleanArray) value.getScalarArrayField("readonly",
+                ScalarType.pvBoolean);
+        PVStringArray groupName = (PVStringArray) value.getScalarArrayField("groupName",
+                ScalarType.pvString);
+        PVStringArray tags = (PVStringArray) value.getScalarArrayField("tags",
+                ScalarType.pvString);
+
+        StringArrayData names = new StringArrayData();
+        channelNames.get(0, channelNames.getLength(), names);
+
+        BooleanArrayData readOnly = new BooleanArrayData();
+        readonly.get(0, readonly.getLength(), readOnly);
+
+        StringArrayData dates = new StringArrayData();
+        groupName.get(0, groupName.getLength(), dates);
+
+        StringArrayData versions = new StringArrayData();
+        tags.get(0, tags.getLength(), versions);
+
+        List<SaveSetEntry> entries = new ArrayList<SaveSetEntry>(channelNames.getLength());
+        for (int i = 0; i < names.data.length; i++) {
+            entries.add(new SaveSetEntry(names.data[i], "", "", readOnly.data[i]));
+        }
+        return entries;
     }
 
     /**
@@ -582,6 +614,5 @@ public final class MasarUtilities {
         }
         return subj == null ? System.getProperty("user.name") : SecuritySupport.getSubjectName(subj);
     }
-
 
 }

@@ -18,3 +18,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.saverestore.masar.Activator
 Import-Package: gov.aps.jca,
  gov.aps.jca.dbr
+Bundle-ClassPath: libs/normativeTypesJava-0.2.0-20150904.133346-1.jar,
+ .

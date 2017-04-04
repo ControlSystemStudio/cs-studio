@@ -97,6 +97,7 @@ public final class MasarConstants {
     static final String FC_SAVE_SNAPSHOT = "updateSnapshotEvent";
     static final String FC_LOAD_SNAPSHOTS = "retrieveServiceEvents";
     static final String FC_FIND_SNAPSHOTS = FC_LOAD_SNAPSHOTS;
+    static final String FC_LOAD_SAVE_SET_DATA = "loadServiceConfig";
 
     // Structure description for loading the base levels
     static final Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(

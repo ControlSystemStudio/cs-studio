@@ -46,7 +46,6 @@ import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.epics.nt.NTTable;
 import org.epics.pvaccess.client.Channel;
 import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
@@ -509,14 +508,15 @@ public class MasarClient {
             labels.put(0, 4, new String[] { "channelName", "readonly", "groupName", "tags" }, 0);
             PVStructure config = valStruct.getStructureField("value");
 
+            int entryListLength = set.getEntries().size();
             // TODO (shroffk) the individual stream operations should be merged into one loop through
             String[] pvNames = set.getEntries().stream().map(SaveSetEntry::getPVName).collect(Collectors.toList())
                     .toArray(new String[set.getEntries().size()]);
             PVStringArray channelName = (PVStringArray) config.getScalarArrayField("channelName", ScalarType.pvString);
-            channelName.put(0, 3, pvNames, 0);
+            channelName.put(0, entryListLength, pvNames, 0);
 
             PVStringArray readonly = (PVStringArray) config.getScalarArrayField("readonly", ScalarType.pvString);
-            readonly.put(0, 3, set.getEntries().stream().map(e -> {
+            readonly.put(0, entryListLength, set.getEntries().stream().map(e -> {
                 if(e.isReadOnly()) {
                     return "1";
                 } else {
@@ -526,10 +526,10 @@ public class MasarClient {
                     .toArray(new String[set.getEntries().size()]), 0);
 
             PVStringArray groupName = (PVStringArray) config.getScalarArrayField("groupName", ScalarType.pvString);
-            groupName.put(0, 3, new String[set.getEntries().size()], 0);
+            groupName.put(0, entryListLength, new String[set.getEntries().size()], 0);
 
             PVStringArray tags = (PVStringArray) config.getScalarArrayField("tags", ScalarType.pvString);
-            tags.put(0, 3, new String[set.getEntries().size()], 0);
+            tags.put(0, entryListLength, new String[set.getEntries().size()], 0);
 
             u4.set(valStruct);
 
@@ -553,7 +553,13 @@ public class MasarClient {
             ((PVUnionArray) request.getUnionArrayField("value")).put(0, 4, new PVUnion[] { u1, u2, u3, u4 }, 0);
 
             PVStructure result = channelRPCRequester.request(request);
-
+            List<SaveSet> parsed = MasarUtilities.createSaveSetsList(result, set.getDescriptor().getBranch(),
+                    set.getDescriptor().getBaseLevel());
+            if (parsed.size() == 1) {
+                SaveSet createdSaveSet = parsed.get(0);
+                List<SaveSetEntry> entries = getSaveSetData(createdSaveSet.getBaseLevel(), createdSaveSet.getBranch(), "1", true);
+                return new SaveSetData(createdSaveSet, entries, comment);
+            }
         } catch (Exception e) {
             throw new MasarException("Creating new snapshots config failed: ", e);
         }
@@ -605,6 +611,86 @@ public class MasarClient {
             throw new MasarException("Loading save sets aborted.", e);
         }
     }
+
+    
+    /**
+     * Returns the list of all available save sets in the current branch which matches the config name.
+     * 
+     * TODO currently this method is private but there may be a case to make it public 
+     *
+     * @param baseLevel the base level for which the save sets are requested (optional, if base levels are not used)
+     * @param service the service to switch to
+     * @param confingName the name of the config to be retrieved
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the list of save sets
+     * @throws MasarException in case of an error
+     */
+    private List<SaveSet> getSaveSet(Optional<BaseLevel> baseLevel, Branch service, String configName, boolean retryOnError)
+        throws MasarException {
+        setService(service);
+        try {
+            final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
+                    new String[] { F_FUNCTION, "name", "value" },
+                    new Field[] { 
+                            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString)
+                    });
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+            names.put(0, 2, new String[] { MasarConstants.F_SYSTEM, MasarConstants.F_CONFIGNAME }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+            values.put(0, 2, new String[] { baseLevel.get().getStorageName(), configName }, 0);
+            PVStructure result = channelRPCRequester.request(request);
+            if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return getSaveSet(baseLevel, service, configName, false);
+                }
+                throw new MasarException(
+                    channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
+            }
+
+            return MasarUtilities.createSaveSetsList(result, service, baseLevel);
+        } catch (InterruptedException e) {
+            throw new MasarException("Loading save sets aborted.", e);
+        }
+    }
+
+    private List<SaveSetEntry> getSaveSetData(Optional<BaseLevel> baseLevel, Branch service, String configId, boolean retryOnError)
+            throws MasarException {
+            setService(service);
+            try {
+                final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
+                        new String[] { F_FUNCTION, "name", "value" },
+                        new Field[] { 
+                                FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString)
+                        });
+                PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
+                request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
+                PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+                names.put(0, 1, new String[] { MasarConstants.F_CONFIGID }, 0);
+                PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+                values.put(0, 1, new String[] { configId }, 0);
+                PVStructure result = channelRPCRequester.request(request);
+                if (result == null) {
+                    if (retryOnError && channelRPCRequester.isConnected()) {
+                        connect();
+                        return getSaveSetData(baseLevel, service, configId, false);
+                    }
+                    throw new MasarException(
+                        channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
+                }
+
+                return MasarUtilities.createSaveSetEntryList(result);
+            } catch (InterruptedException e) {
+                throw new MasarException("Loading save sets aborted.", e);
+            }
+        }
 
     /**
      * Search for snapshots that match the given criteria. Snapshot is accepted if the search is performed by user or by
