@@ -456,18 +456,12 @@ public class MasarClient {
 
     private SaveSetData createSaveSets(SaveSetData set, String comment, boolean retryOnError) throws MasarException{
         try {
-           final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
-                    new String[] { F_FUNCTION, "name", "value" },
-                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createVariantUnionArray()
-                    });
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_REQUEST);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_SAVE_SAVE_SETS);
 
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
-            request.getStringField(MasarConstants.F_FUNCTION).put("storeServiceConfig");
-
-            PVStringArray names = (PVStringArray) request.getScalarArrayField("name", ScalarType.pvString);
-            names.put(0, 4, new String[] { "configname", "oldidx", "desc", "config" }, 0);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(F_NAME, ScalarType.pvString);
+            names.put(0, 4, new String[] { MasarConstants.F_CONFIGNAME, MasarConstants.F_OLDCONFIGID,
+                    MasarConstants.F_DESCRIPTION, MasarConstants.F_CONFIG }, 0);
 
             PVUnion u1 = PVDataFactory.getPVDataCreate()
                     .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
@@ -493,10 +487,14 @@ public class MasarClient {
             Union uu4 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
             PVUnion u4 = PVDataFactory.getPVDataCreate().createPVUnion(uu4);
 
-            Structure val = FieldFactory.getFieldCreate().createStructure(new String[] { "labels", "value" },
+            Structure val = FieldFactory.getFieldCreate().createStructure(new String[] { MasarConstants.F_LABELS, F_VALUE},
                     new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
                             FieldFactory.getFieldCreate().createStructure(
-                                    new String[] { "channelName", "readonly", "groupName", "tags" }, 
+                                    new String[] { 
+                                            MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
+                                            MasarConstants.P_SNAPSHOT_READONLY, 
+                                            MasarConstants.P_SNAPSHOT_GROUP_NAME,
+                                            MasarConstants.P_SNAPSHOT_TAG }, 
                                     new Field[] {
                                             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
                                             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
@@ -504,18 +502,22 @@ public class MasarClient {
                                             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) }) });
 
             PVStructure valStruct = PVDataFactory.getPVDataCreate().createPVStructure(val);
-            PVStringArray labels = (PVStringArray) valStruct.getScalarArrayField("labels", ScalarType.pvString);
-            labels.put(0, 4, new String[] { "channelName", "readonly", "groupName", "tags" }, 0);
-            PVStructure config = valStruct.getStructureField("value");
+            PVStringArray labels = (PVStringArray) valStruct.getScalarArrayField(MasarConstants.F_LABELS, ScalarType.pvString);
+            labels.put(0, 4, new String[] { 
+                    MasarConstants.P_SNAPSHOT_CHANNEL_NAME, 
+                    MasarConstants.P_SNAPSHOT_READONLY,
+                    MasarConstants.P_SNAPSHOT_GROUP_NAME, 
+                    MasarConstants.P_SNAPSHOT_TAG }, 0);
+            PVStructure config = valStruct.getStructureField(F_VALUE);
 
             int entryListLength = set.getEntries().size();
             // TODO (shroffk) the individual stream operations should be merged into one loop through
             String[] pvNames = set.getEntries().stream().map(SaveSetEntry::getPVName).collect(Collectors.toList())
                     .toArray(new String[set.getEntries().size()]);
-            PVStringArray channelName = (PVStringArray) config.getScalarArrayField("channelName", ScalarType.pvString);
+            PVStringArray channelName = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME, ScalarType.pvString);
             channelName.put(0, entryListLength, pvNames, 0);
 
-            PVStringArray readonly = (PVStringArray) config.getScalarArrayField("readonly", ScalarType.pvString);
+            PVStringArray readonly = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY, ScalarType.pvString);
             readonly.put(0, entryListLength, set.getEntries().stream().map(e -> {
                 if(e.isReadOnly()) {
                     return "1";
@@ -525,10 +527,10 @@ public class MasarClient {
             } ).collect(Collectors.toList())
                     .toArray(new String[set.getEntries().size()]), 0);
 
-            PVStringArray groupName = (PVStringArray) config.getScalarArrayField("groupName", ScalarType.pvString);
+            PVStringArray groupName = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME, ScalarType.pvString);
             groupName.put(0, entryListLength, new String[set.getEntries().size()], 0);
 
-            PVStringArray tags = (PVStringArray) config.getScalarArrayField("tags", ScalarType.pvString);
+            PVStringArray tags = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString);
             tags.put(0, entryListLength, new String[set.getEntries().size()], 0);
 
             u4.set(valStruct);
@@ -550,14 +552,15 @@ public class MasarClient {
             u4.set(ntTable.getPVStructure());
             **/
             
-            ((PVUnionArray) request.getUnionArrayField("value")).put(0, 4, new PVUnion[] { u1, u2, u3, u4 }, 0);
+            ((PVUnionArray) request.getUnionArrayField(F_VALUE)).put(0, 4, new PVUnion[] { u1, u2, u3, u4 }, 0);
 
             PVStructure result = channelRPCRequester.request(request);
             List<SaveSet> parsed = MasarUtilities.createSaveSetsList(result, set.getDescriptor().getBranch(),
                     set.getDescriptor().getBaseLevel());
             if (parsed.size() == 1) {
                 SaveSet createdSaveSet = parsed.get(0);
-                List<SaveSetEntry> entries = getSaveSetData(createdSaveSet.getBaseLevel(), createdSaveSet.getBranch(), "1", true);
+                String id = createdSaveSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
+                List<SaveSetEntry> entries = getSaveSetData(createdSaveSet.getBaseLevel(), createdSaveSet.getBranch(), id, true);
                 return new SaveSetData(createdSaveSet, entries, comment);
             }
         } catch (Exception e) {
@@ -626,22 +629,23 @@ public class MasarClient {
      * @return the list of save sets
      * @throws MasarException in case of an error
      */
-    private List<SaveSet> getSaveSet(Optional<BaseLevel> baseLevel, Branch service, String configName, boolean retryOnError)
-        throws MasarException {
+    @SuppressWarnings("unused")
+    private List<SaveSet> getSaveSet(Optional<BaseLevel> baseLevel, Branch service, String configName,
+            boolean retryOnError) throws MasarException {
         setService(service);
         try {
-            final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
-                    new String[] { F_FUNCTION, "name", "value" },
-                    new Field[] { 
-                            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+            final Structure STRUCT_REQUEST_NAME_VALUE = FieldFactory.getFieldCreate().createStructure(
+                    new String[] { F_FUNCTION, F_NAME, F_VALUE },
+                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
                             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString)
-                    });
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_REQUEST_NAME_VALUE);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
-            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
+                    ScalarType.pvString);
             names.put(0, 2, new String[] { MasarConstants.F_SYSTEM, MasarConstants.F_CONFIGNAME }, 0);
-            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE,
+                    ScalarType.pvString);
             values.put(0, 2, new String[] { baseLevel.get().getStorageName(), configName }, 0);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
@@ -650,7 +654,7 @@ public class MasarClient {
                     return getSaveSet(baseLevel, service, configName, false);
                 }
                 throw new MasarException(
-                    channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
+                        channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
 
             return MasarUtilities.createSaveSetsList(result, service, baseLevel);
@@ -659,38 +663,38 @@ public class MasarClient {
         }
     }
 
-    private List<SaveSetEntry> getSaveSetData(Optional<BaseLevel> baseLevel, Branch service, String configId, boolean retryOnError)
-            throws MasarException {
-            setService(service);
-            try {
-                final Structure STRUCT_CONFIG_CREATE = FieldFactory.getFieldCreate().createStructure(
-                        new String[] { F_FUNCTION, "name", "value" },
-                        new Field[] { 
-                                FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-                                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-                                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString)
-                        });
-                PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_CONFIG_CREATE);
-                request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
-                PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
-                names.put(0, 1, new String[] { MasarConstants.F_CONFIGID }, 0);
-                PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
-                values.put(0, 1, new String[] { configId }, 0);
-                PVStructure result = channelRPCRequester.request(request);
-                if (result == null) {
-                    if (retryOnError && channelRPCRequester.isConnected()) {
-                        connect();
-                        return getSaveSetData(baseLevel, service, configId, false);
-                    }
-                    throw new MasarException(
-                        channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
+    private List<SaveSetEntry> getSaveSetData(Optional<BaseLevel> baseLevel, Branch service, String configId,
+            boolean retryOnError) throws MasarException {
+        setService(service);
+        try {
+            final Structure STRUCT_REQUEST_NAME_VALUE = FieldFactory.getFieldCreate().createStructure(
+                    new String[] { F_FUNCTION, F_NAME, F_VALUE},
+                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_REQUEST_NAME_VALUE);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
+                    ScalarType.pvString);
+            names.put(0, 1, new String[] { MasarConstants.F_CONFIGID }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE,
+                    ScalarType.pvString);
+            values.put(0, 1, new String[] { configId }, 0);
+            PVStructure result = channelRPCRequester.request(request);
+            if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return getSaveSetData(baseLevel, service, configId, false);
                 }
-
-                return MasarUtilities.createSaveSetEntryList(result);
-            } catch (InterruptedException e) {
-                throw new MasarException("Loading save sets aborted.", e);
+                throw new MasarException(
+                        channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
+
+            return MasarUtilities.createSaveSetEntryList(result);
+        } catch (InterruptedException e) {
+            throw new MasarException("Loading save sets aborted.", e);
         }
+    }
 
     /**
      * Search for snapshots that match the given criteria. Snapshot is accepted if the search is performed by user or by
