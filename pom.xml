@@ -14,7 +14,7 @@
   <name>maven-osgi-bundles</name>
 
   <properties>
-    <tycho.version>0.23.1</tycho.version>
+    <tycho.version>1.0.0</tycho.version>
     <manifest-location>META-INF</manifest-location>
     <cs-studio.version>4.5</cs-studio.version>
     <epics.util.version>0.3.2</epics.util.version>
