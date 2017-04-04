@@ -26,7 +26,6 @@ import javax.security.auth.Subject;
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
-import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.SnapshotEntry;
@@ -160,15 +159,21 @@ public final class MasarUtilities {
         return saveSets;
     }
 
+    /**
+     * Transform the result structure of <code>loadServiceConfig</code> call to a list of save set entries.
+     * 
+     * @param result PVStructure from the loadServiceConfig
+     * @return A list of {@link SaveSetEntry}
+     */
     static List<SaveSetEntry> createSaveSetEntryList(PVStructure result) {
         PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-        PVStringArray channelNames = (PVStringArray) value.getScalarArrayField("channelName",
+        PVStringArray channelNames = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
                 ScalarType.pvString);
-        PVBooleanArray readonly = (PVBooleanArray) value.getScalarArrayField("readonly",
+        PVBooleanArray readonly = (PVBooleanArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY,
                 ScalarType.pvBoolean);
-        PVStringArray groupName = (PVStringArray) value.getScalarArrayField("groupName",
+        PVStringArray groupName = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME,
                 ScalarType.pvString);
-        PVStringArray tags = (PVStringArray) value.getScalarArrayField("tags",
+        PVStringArray tags = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG,
                 ScalarType.pvString);
 
         StringArrayData names = new StringArrayData();
