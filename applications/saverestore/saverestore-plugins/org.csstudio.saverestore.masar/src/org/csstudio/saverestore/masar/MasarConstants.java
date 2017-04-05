@@ -113,6 +113,13 @@ public final class MasarConstants {
                     FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
                     FieldFactory.getFieldCreate().createVariantUnionArray() });
 
+    // Structure description for all requests, simplified with both the name and value fields set as string arrays
+    static final Structure STRUCT_SIMPLE_REQUEST = FieldFactory.getFieldCreate().createStructure(
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
+
     // Structure description for loading the base levels
     static final Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION }, new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
