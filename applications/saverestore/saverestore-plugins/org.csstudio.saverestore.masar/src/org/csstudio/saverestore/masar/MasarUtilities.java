@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -159,6 +161,8 @@ public final class MasarUtilities {
         return saveSets;
     }
 
+    static final Pattern readbackPattern = Pattern.compile("RB:([\\S]*);");
+    static final Pattern deltaPattern = Pattern.compile("DELTA:([\\S]*);");
     /**
      * Transform the result structure of <code>loadServiceConfig</code> call to a list of save set entries.
      * 
@@ -182,15 +186,20 @@ public final class MasarUtilities {
         BooleanArrayData readOnly = new BooleanArrayData();
         readonly.get(0, readonly.getLength(), readOnly);
 
-        StringArrayData dates = new StringArrayData();
-        groupName.get(0, groupName.getLength(), dates);
+        StringArrayData groupname = new StringArrayData();
+        groupName.get(0, groupName.getLength(), groupname);
 
         StringArrayData versions = new StringArrayData();
         tags.get(0, tags.getLength(), versions);
 
         List<SaveSetEntry> entries = new ArrayList<SaveSetEntry>(channelNames.getLength());
         for (int i = 0; i < names.data.length; i++) {
-            entries.add(new SaveSetEntry(names.data[i], "", "", readOnly.data[i]));
+            String readback = "";
+            Matcher m = readbackPattern.matcher(groupname.data[i]);
+            if (m.matches()) {
+                readback = m.group(1);
+            }
+            entries.add(new SaveSetEntry(names.data[i], readback, "", readOnly.data[i]));
         }
         return entries;
     }
@@ -276,7 +285,13 @@ public final class MasarUtilities {
         PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_STATUS,
             ScalarType.pvInt);
         PVUnionArray array = result.getUnionArrayField(MasarConstants.P_STRUCTURE_VALUE);
-
+        PVBooleanArray pvIsReadonly = (PVBooleanArray) result
+                .getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY, ScalarType.pvBoolean);
+        PVStringArray pvgroupName = (PVStringArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME,
+                ScalarType.pvString);
+        PVStringArray pvtags = (PVStringArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG,
+                ScalarType.pvString);
+        
         StringArrayData pvName = new StringArrayData();
         pvPVName.get(0, pvPVName.getLength(), pvName);
         StringArrayData alarmMessage = new StringArrayData();
@@ -297,6 +312,12 @@ public final class MasarUtilities {
         pvAlarmStatus.get(0, pvAlarmStatus.getLength(), alarmStatus);
         UnionArrayData data = new UnionArrayData();
         array.get(0, array.getLength(), data);
+        BooleanArrayData isReadonly = new BooleanArrayData();
+        pvIsReadonly.get(0, pvIsReadonly.getLength(), isReadonly);
+        StringArrayData groupName = new StringArrayData();
+        pvgroupName.get(0, pvgroupName.getLength(), groupName);
+        StringArrayData tags = new StringArrayData();
+        pvtags.get(0, pvtags.getLength(), tags);
 
         int length = pvName.data.length;
         List<SnapshotEntry> entries = new ArrayList<>(length);
@@ -308,7 +329,17 @@ public final class MasarUtilities {
             boolean isarray = data.data[i].get() instanceof PVArray;
             VType value = isarray ? toValue((PVArray) data.data[i].get(), time, alarm, dbrType.data[i] % 7)
                 : toValue(data.data[i].get(), time, alarm, dbrType.data[i] % 7);
-            entries.add(new SnapshotEntry(name, value));
+            String readback = "";
+            Matcher m = readbackPattern.matcher(groupName.data[i]);
+            if (m.matches()) {
+                readback = m.group(1);
+            }
+            String delta = "";
+            Matcher m2 = readbackPattern.matcher(tags.data[i]);
+            if (m2.matches()) {
+                delta = m2.group(1);
+            }
+            entries.add(new SnapshotEntry(name, value, true, readback, null, delta, isReadonly.data[i]));
         }
         return new VSnapshot(snapshot, entries, snapshotTime, null);
     }

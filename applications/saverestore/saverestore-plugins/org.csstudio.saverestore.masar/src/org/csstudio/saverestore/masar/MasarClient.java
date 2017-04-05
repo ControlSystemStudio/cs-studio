@@ -528,10 +528,14 @@ public class MasarClient {
                     .toArray(new String[set.getEntries().size()]), 0);
 
             PVStringArray groupName = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME, ScalarType.pvString);
-            groupName.put(0, entryListLength, new String[set.getEntries().size()], 0);
-
+            groupName.put(0, entryListLength, set.getEntries().stream().map(e -> {
+                return "RB:" + e.getReadback() + ";";
+            }).collect(Collectors.toList()).toArray(new String[entryListLength]), 0);
+            
             PVStringArray tags = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString);
-            tags.put(0, entryListLength, new String[set.getEntries().size()], 0);
+            tags.put(0, entryListLength, set.getEntries().stream().map(e -> {
+                return "DELTA:" + e.getDelta() + ";";
+            }).collect(Collectors.toList()).toArray(new String[entryListLength]), 0);
 
             u4.set(valStruct);
 
@@ -1098,8 +1102,9 @@ public class MasarClient {
         } else {
             snapshot = loadSnapshotData(snapshots.get(0));
         }
-        List<SaveSetEntry> entries = snapshot.getEntries().stream().map(e -> new SaveSetEntry(e.getPVName()))
-            .collect(Collectors.toList());
+        List<SaveSetEntry> entries = snapshot.getEntries().stream()
+                .map(e -> new SaveSetEntry(e.getPVName(), e.getReadbackName(), e.getDelta(), e.isReadOnly()))
+                .collect(Collectors.toList());
         return new SaveSetData(set, entries, null);
     }
 
