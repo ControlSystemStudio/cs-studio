@@ -467,7 +467,7 @@ public class MasarClient {
                     .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
             Scalar s1 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
             PVString a1 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s1);
-            a1.put(set.getDescriptor().getDisplayName());
+            a1.put(set.getDescriptor().getName());
             u1.set(a1);
 
             PVUnion u2 = PVDataFactory.getPVDataCreate()
