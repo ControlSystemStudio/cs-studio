@@ -529,12 +529,12 @@ public class MasarClient {
 
             PVStringArray groupName = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME, ScalarType.pvString);
             groupName.put(0, entryListLength, set.getEntries().stream().map(e -> {
-                return "RB:" + e.getReadback() + ";";
+                return "".equals(e.getReadback())? "" : "RB:" + e.getReadback() + ";";
             }).collect(Collectors.toList()).toArray(new String[entryListLength]), 0);
             
             PVStringArray tags = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString);
             tags.put(0, entryListLength, set.getEntries().stream().map(e -> {
-                return "DELTA:" + e.getDelta() + ";";
+                return "".equals(e.getDelta()) ? "" : "DELTA:" + e.getDelta() + ";";
             }).collect(Collectors.toList()).toArray(new String[entryListLength]), 0);
 
             u4.set(valStruct);
@@ -563,7 +563,7 @@ public class MasarClient {
                 SaveSet createdSaveSet = parsed.get(0);
                 String id = createdSaveSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
                 List<SaveSetEntry> entries = getSaveSetData(createdSaveSet.getBaseLevel(), createdSaveSet.getBranch(), id, true);
-                return new SaveSetData(createdSaveSet, entries, comment);
+                return new SaveSetData(createdSaveSet, entries, createdSaveSet.getParameters().get(MasarConstants.P_CONFIG_DESCRIPTION));
             }
         } catch (Exception e) {
             throw new MasarException("Creating new snapshots config failed: ", e);
@@ -1095,6 +1095,7 @@ public class MasarClient {
      */
     public synchronized SaveSetData loadSaveSetData(SaveSet set) throws MasarException, ParseException {
         setService(set.getBranch());
+        String description = set.getParameters().get(MasarConstants.P_CONFIG_DESCRIPTION);
         List<Snapshot> snapshots = getSnapshots(set);
         VSnapshot snapshot;
         if (snapshots.isEmpty()) {
@@ -1105,7 +1106,7 @@ public class MasarClient {
         List<SaveSetEntry> entries = snapshot.getEntries().stream()
                 .map(e -> new SaveSetEntry(e.getPVName(), e.getReadbackName(), e.getDelta(), e.isReadOnly()))
                 .collect(Collectors.toList());
-        return new SaveSetData(set, entries, null);
+        return new SaveSetData(set, entries, description);
     }
 
 }
