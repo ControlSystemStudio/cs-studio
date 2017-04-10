@@ -743,26 +743,43 @@ public class MasarClient {
         Optional<Date> start, Optional<Date> end, boolean retryOnError) throws MasarException, ParseException {
         setService(service);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(
-                MasarConstants.createSearchStructure(true, true, start.isPresent(), end.isPresent()));
+//            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(
+//                MasarConstants.createSearchStructure(true, true, start.isPresent(), end.isPresent()));
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SIMPLE_REQUEST);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_FIND_SNAPSHOTS);
-            request.getStringField(MasarConstants.F_COMMENT).put("*");
-            request.getStringField(MasarConstants.F_USER).put("*");
+            List<String> nameParameters = new ArrayList<String>();
+            List<String> valueParameters = new ArrayList<String>();
+
             String newExpression = new StringBuilder(expression.length() + 2).append('*').append(expression).append('*')
                 .toString();
             if (byComment) {
-                request.getStringField(MasarConstants.F_COMMENT).put(newExpression);
+                nameParameters.add(MasarConstants.F_COMMENT);
+                valueParameters.add(newExpression);
+                nameParameters.add(MasarConstants.F_USER);
+                valueParameters.add("*");
             }
             if (byUser) {
-                request.getStringField(MasarConstants.F_USER).put(newExpression);
+                nameParameters.add(MasarConstants.F_COMMENT);
+                valueParameters.add("*");
+                nameParameters.add(MasarConstants.F_USER);
+                valueParameters.add(newExpression);
             }
             if (start.isPresent()) {
-                request.getStringField(MasarConstants.F_START)
-                    .put(MasarConstants.DATE_FORMAT.get().format(start.get()));
+                nameParameters.add(MasarConstants.F_START);
+                valueParameters.add(MasarConstants.DATE_FORMAT.get().format(start.get()));
             }
             if (end.isPresent()) {
-                request.getStringField(MasarConstants.F_END).put(MasarConstants.DATE_FORMAT.get().format(end.get()));
+                nameParameters.add(MasarConstants.F_END);
+                valueParameters.add(MasarConstants.DATE_FORMAT.get().format(end.get()));
             }
+
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
+                    ScalarType.pvString);
+            names.put(0, nameParameters.size(), nameParameters.toArray(new String[nameParameters.size()]), 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE,
+                    ScalarType.pvString);
+            values.put(0, valueParameters.size(), valueParameters.toArray(new String[valueParameters.size()]), 0);
+
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
