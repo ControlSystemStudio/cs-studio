@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.config.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +19,9 @@ import java.io.PrintStream;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.config.EngineConfig;
+import org.csstudio.archive.config.XMLExport;
+import org.csstudio.archive.config.XMLImport;
 import org.csstudio.archive.config.rdb.RDBArchiveConfig;
-import org.csstudio.archive.config.rdb.XMLExport;
-import org.csstudio.archive.config.rdb.XMLImport;
 import org.junit.Test;
 
 /** JUnit demo of {@link XMLExport} and {@link XMLImport}
@@ -51,7 +54,7 @@ public class RDBArchiveExportImportDemo
         final PrintStream out = new PrintStream(filename);
         try
         {
-            new XMLExport().export(out, url, user, password, schema, engine_name);
+            new XMLExport().export(out, new RDBArchiveConfig(url, user, password, schema), engine_name);
         }
         finally
         {
@@ -110,7 +113,7 @@ public class RDBArchiveExportImportDemo
 
         final File file = new File(filename);
         assertTrue(file.exists());
-        final XMLImport importer = new XMLImport(url, user, password, schema, true, false);
+        final XMLImport importer = new XMLImport(new RDBArchiveConfig(url, user, password, schema), true, false);
         try
         {
             final InputStream stream = new FileInputStream(file);

@@ -19,6 +19,9 @@ import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.config.EngineConfig;
+import org.csstudio.archive.config.XMLExport;
+import org.csstudio.archive.config.XMLImport;
+import org.csstudio.archive.config.XMLImportException;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.security.PasswordInput;
@@ -151,8 +154,8 @@ public class ArchiveConfigApplication implements IApplication
                     System.out.println("Exporting config for engine " + engine_name.get()
                             + " to " + filename.get());
                 }
-                new XMLExport().export(out, rdb_url.get(), rdb_user.get(),
-                        rdb_password.get(), rdb_schema.get(),
+                new XMLExport().export(out,
+                        new RDBArchiveConfig(rdb_url.get(), rdb_user.get(), rdb_password.get(), rdb_schema.get()),
                         engine_name.get());
                 if (out != System.out)
                     out.close();
@@ -204,8 +207,8 @@ public class ArchiveConfigApplication implements IApplication
                 System.out.println("URL           : " + engine_url);
                 System.out.println("Replace engine: " + replace_engine.get());
                 System.out.println("Steal channels: " + steal_channels.get());
-                final XMLImport importer = new XMLImport(rdb_url.get(), rdb_user.get(),
-                        rdb_password.get(), rdb_schema.get(),
+                final XMLImport importer = new XMLImport(
+                        new RDBArchiveConfig(rdb_url.get(), rdb_user.get(), rdb_password.get(), rdb_schema.get()),
                         replace_engine.get(), steal_channels.get());
                 try
                 {

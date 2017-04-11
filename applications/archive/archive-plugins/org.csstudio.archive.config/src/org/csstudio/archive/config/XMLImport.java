@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.config.rdb;
+package org.csstudio.archive.config;
 
 import java.io.InputStream;
 
@@ -14,7 +14,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.SecondsParser;
-import org.csstudio.archive.config.EngineConfig;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -60,7 +59,7 @@ public class XMLImport extends DefaultHandler
     final private boolean steal_channels;
 
     /** Connection to RDB archive */
-    final private RDBArchiveConfig config;
+    final private ArchiveConfig config;
 
     /** Accumulator for characters within a tag */
     final private StringBuffer accumulator = new StringBuffer();
@@ -103,24 +102,25 @@ public class XMLImport extends DefaultHandler
     private EngineConfig engine;
 
     /** Current archive group */
-    private RDBGroupConfig group;
+    private GroupConfig group;
 
-    /** Initialize
-     *  @param rdb_url
-     *  @param rdb_user
-     *  @param rdb_password
-     *  @param rdb_schema
-     *  @param replace Replace existing engine configuration?
-     *  @param steal_channels Steal channels that currently belong to a different engine?
-     *  @throws Exception
+    /**
+     * Initialize
+     *
+     * @param config
+     *            The config to import into
+     * @param replace
+     *            Replace existing engine configuration?
+     * @param steal_channels
+     *            Steal channels that currently belong to a different engine?
+     * @throws Exception
      */
-    public XMLImport(final String rdb_url, final String rdb_user, final String rdb_password,
-            final String rdb_schema,
+    public XMLImport(final ArchiveConfig config,
             final boolean replace, final boolean steal_channels) throws Exception
     {
+        this.config = config;
         this.replace = replace;
         this.steal_channels = steal_channels;
-        config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
     }
 
     /** Parse an XML configuration into the RDB
@@ -290,7 +290,7 @@ public class XMLImport extends DefaultHandler
             {
                 // System.out.println(group.getName() + " - " + name);
                 // Check if channel is already in another group
-                final RDBGroupConfig other_group = config.getChannelGroup(name);
+                final GroupConfig other_group = config.getChannelGroup(name);
                 if (other_group != null)
                 {
                     final EngineConfig other_engine = config.getEngine(other_group);
@@ -311,8 +311,8 @@ public class XMLImport extends DefaultHandler
                     }
                 }
 
-                final RDBSampleMode mode = config.getSampleMode(monitor, sample_value, period);
-                final RDBChannelConfig channel = config.addChannel(group, name, mode);
+                final SampleMode mode = config.getSampleMode(monitor, sample_value, period);
+                final ChannelConfig channel = config.addChannel(group, name, mode);
                 if (is_enabling)
                 {
                     config.setEnablingChannel(group, channel);

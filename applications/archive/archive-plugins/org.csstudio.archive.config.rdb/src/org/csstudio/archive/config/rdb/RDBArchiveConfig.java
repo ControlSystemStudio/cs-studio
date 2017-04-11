@@ -142,6 +142,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return {@link SampleMode}
      *  @throws Exception
      */
+    @Override
     public RDBSampleMode getSampleMode(final boolean monitor, final double sample_value, final double period) throws Exception
     {
         return new RDBSampleMode(monitor ? monitor_mode_id : scan_mode_id, monitor, sample_value, period);
@@ -169,6 +170,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return
      *  @throws Exception
      */
+    @Override
     public EngineConfig createEngine(final String engine_name, final String description,
             final String engine_url) throws Exception
     {
@@ -223,8 +225,10 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return {@link EngineConfig} for that group or <code>null</code>
      *  @throws Exception on error
      */
-    public EngineConfig getEngine(final RDBGroupConfig group) throws Exception
+    @Override
+    public EngineConfig getEngine(final GroupConfig the_group) throws Exception
     {
+        RDBGroupConfig group = (RDBGroupConfig) the_group;
         try
         (
             final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.smpl_eng_sel_by_group_id);
@@ -247,6 +251,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @param engine Engine info to remove
      *  @throws Exception on error
      */
+    @Override
     public void deleteEngine(final EngineConfig engine) throws Exception
     {
         // Unlink all channels from engine's groups
@@ -319,6 +324,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return {@link RDBGroupConfig}
      *  @throws Exception on error
      */
+    @Override
     public RDBGroupConfig addGroup(final EngineConfig engine, final String name) throws Exception
     {
         final Connection connection = rdb.getConnection();
@@ -398,6 +404,7 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return {@link GroupConfig} for that channel or <code>null</code>
      *  @throws Exception on error
      */
+    @Override
     public RDBGroupConfig getChannelGroup(final String channel_name) throws Exception
     {
         try
@@ -422,8 +429,12 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @param channel Channel or <code>null</code> to 'always' activate the group
      *  @throws Exception on error
      */
-    public void setEnablingChannel(final RDBGroupConfig group, final RDBChannelConfig channel) throws Exception
+    @Override
+    public void setEnablingChannel(final GroupConfig the_group, final ChannelConfig the_channel) throws Exception
     {
+        RDBGroupConfig group = (RDBGroupConfig) the_group;
+        RDBChannelConfig channel = (RDBChannelConfig) the_channel;
+
         final Connection connection = rdb.getConnection();
         connection.setAutoCommit(false);
         try
@@ -481,8 +492,13 @@ public class RDBArchiveConfig implements ArchiveConfig
      *  @return {@link RDBChannelConfig}
      *  @throws Exception on error
      */
-    public RDBChannelConfig addChannel(final RDBGroupConfig group, final String name, final RDBSampleMode mode) throws Exception
+    @Override
+    public RDBChannelConfig addChannel(final GroupConfig the_group, final String name, final SampleMode the_mode)
+            throws Exception
     {
+        RDBGroupConfig group = (RDBGroupConfig) the_group;
+        RDBSampleMode mode = (RDBSampleMode) the_mode;
+
         boolean new_channel = true;
         int channel_id = -1;
 
