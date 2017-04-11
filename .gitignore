@@ -2,3 +2,6 @@
 # Ignore Tycho/Maven build directories
 target/
 
+# Ignore Eclipse .settings directories.
+.settings/
+

@@ -20,7 +20,7 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.23.1</tycho.version>
+    <tycho.version>1.0.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.5</cs-studio.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -215,7 +215,10 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--<compilerArgument>-err:-forbidden</compilerArgument> -->
+          <!-- We don't commit the project settings files
+          (.settings/org.eclipse.jdt.core.prefs), so we
+          don't want the Eclipse defaults affecting the build. -->
+          <useProjectSettings>false</useProjectSettings>
         </configuration>
       </plugin>
       <plugin>
