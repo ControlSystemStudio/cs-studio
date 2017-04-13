@@ -123,15 +123,25 @@ public class XMLImport extends DefaultHandler
         this.steal_channels = steal_channels;
     }
 
-    /** Parse an XML configuration into the RDB
-     *  @param stream
-     *  @param engine_name
-     *  @param description
-     *  @param engine_url
-     *  @throws Exception
+    public void import_engine(final InputStream stream, final String engine_name, final String description,
+            final String engine_url) throws Exception, XMLImportException {
+        engine = config.createEngine(engine_name, description, engine_url);
+
+        final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+        parser.parse(stream, this);
+    }
+
+    /**
+     * Parse an XML configuration into the config
+     * 
+     * @param stream
+     * @param engine_name
+     * @param description
+     * @param engine_url
+     * @throws Exception
      */
     public void parse(final InputStream stream, final String engine_name, final String description,
-            final String engine_url) throws Exception, XMLImportException
+            final String engine_url) throws Exception
     {
         engine = config.findEngine(engine_name);
         if (engine != null)
@@ -145,10 +155,8 @@ public class XMLImport extends DefaultHandler
                 throw new XMLImportException("Error: Engine config '" + engine_name +
                 "' already exists");
         }
-        engine = config.createEngine(engine_name, description, engine_url);
 
-        final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-        parser.parse(stream, this);
+        import_engine(stream, engine_name, description, engine_url);
     }
 
     /** Reset the accumulator at the start of each element */
