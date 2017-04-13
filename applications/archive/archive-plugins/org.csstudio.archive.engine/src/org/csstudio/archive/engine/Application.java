@@ -165,7 +165,7 @@ public class Application implements IApplication
 
         if (engine_name == null)
         {
-            System.out.println("Must specificy engine or engine file option: " + engine_name_opt.getOption());
+            System.out.println("Must specificy engine option: " + engine_name_opt.getOption());
             System.out.println(parser.getHelp());
             return false;
         }

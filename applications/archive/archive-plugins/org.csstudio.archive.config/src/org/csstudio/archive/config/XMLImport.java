@@ -59,7 +59,7 @@ public class XMLImport extends DefaultHandler
     final private boolean steal_channels;
 
     /** Connection to RDB archive */
-    final private ArchiveConfig config;
+    final private ImportableArchiveConfig config;
 
     /** Accumulator for characters within a tag */
     final private StringBuffer accumulator = new StringBuffer();
@@ -115,7 +115,7 @@ public class XMLImport extends DefaultHandler
      *            Steal channels that currently belong to a different engine?
      * @throws Exception
      */
-    public XMLImport(final ArchiveConfig config,
+    public XMLImport(final ImportableArchiveConfig config,
             final boolean replace, final boolean steal_channels) throws Exception
     {
         this.config = config;

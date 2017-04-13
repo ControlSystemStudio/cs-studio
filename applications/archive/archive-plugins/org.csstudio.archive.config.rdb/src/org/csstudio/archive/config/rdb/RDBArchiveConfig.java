@@ -23,6 +23,7 @@ import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
+import org.csstudio.archive.config.ImportableArchiveConfig;
 import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -39,7 +40,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
  *  @author Takashi Nakamoto - Added an option to skip reading last sampled time.
  */
 @SuppressWarnings("nls")
-public class RDBArchiveConfig implements ArchiveConfig
+public class RDBArchiveConfig implements ImportableArchiveConfig
 {
     /** RDB connection */
     private RDBUtil rdb;
