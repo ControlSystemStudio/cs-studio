@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Others"
+            description="Detailed information panel"
+            editpart_class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelEditpart"
+            icon="icons/DetailPanel.png"
+            model_class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelModel"
+            name="Detail Panel"
+            typeId="org.csstudio.opibuilder.widgets.detailpanel">
+      </widget>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.detailpanel"
+            objectClass="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelEditpart">
+         <action
+               class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelDisplayLevelLowAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.detailpanel.displayLevelLow"
+               label="Low Display Level"
+               menubarPath="detailpanel"
+               tooltip="Set the display level to low">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelDisplayLevelMediumAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.detailpanel.displayLevelMedium"
+               label="Medium Display Level"
+               menubarPath="detailpanel"
+               tooltip="Set the display level to medium">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelDisplayLevelHighAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.detailpanel.displayLevelHigh"
+               label="High Display Level"
+               menubarPath="detailpanel"
+               tooltip="Set the display level to high">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelIndentAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.detailpanel.indent"
+               label="Indent"
+               menubarPath="detailpanel"
+               tooltip="Indent selected rows">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.detailpanel.DetailPanelOutdentAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.detailpanel.outdent"
+               label="Outdent"
+               menubarPath="detailpanel"
+               tooltip="Outdent selected rows">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.dataprovider;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Iterator;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
@@ -372,7 +372,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
         if(currentYDataArray.length > 0)
             addDataArray();
         else
-            addDataPoint(Calendar.getInstance().getTimeInMillis());
+            addDataPoint(Instant.now().toEpochMilli());
     }
 
     @Override

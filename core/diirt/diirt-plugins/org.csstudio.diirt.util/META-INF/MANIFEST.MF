@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Diirt Util
 Bundle-SymbolicName: org.csstudio.diirt.util;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/ds_consumer.xml,OSGI-INF/ffs_consumer.xml,
  OSGI-INF/s_consumer.xml
@@ -18,5 +18,6 @@ Require-Bundle: org.eclipse.equinox.preferences;bundle-version="3.5.200",
  org.eclipse.osgi,
  org.csstudio.startup;bundle-version="3.2.1",
  org.csstudio.utility.product;bundle-version="1.3.0",
+ org.csstudio.diirt.util.core.preferences;bundle-version="1.0.2",
  org.diirt.util;bundle-version="3.0.1"
 Export-Package: org.csstudio.diirt.util

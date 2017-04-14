@@ -2,13 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS PV Tree Plug-in
 Bundle-SymbolicName: org.csstudio.diag.epics.pvtree;singleton:=true
-Bundle-Version: 4.0.1.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-Activator: org.csstudio.diag.epics.pvtree.Plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Display EPICS record link hierarchy
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
+ org.eclipse.fx.javafx;bundle-version="2.2.0",
+ org.eclipse.fx.ui.workbench3;bundle-version="2.1.0",
  org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.apputil,

@@ -16,9 +16,9 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.23.1</tycho.version>
+    <tycho.version>1.0.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
-    <cs-studio.version>4.4</cs-studio.version>
+    <cs-studio.version>4.5</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20160221192158/repository/</orbit-site>
@@ -356,6 +356,10 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
+          <!-- We don't commit the project settings files
+          (.settings/org.eclipse.jdt.core.prefs), so we
+          don't want the Eclipse defaults affecting the build. -->
+          <useProjectSettings>false</useProjectSettings>
           <!-- This is to avoid errors when using restricted API from sun.*:
             org.csstudio.rap.core, org.csstudio.security -->
           <compilerArgument>-err:-forbidden</compilerArgument>

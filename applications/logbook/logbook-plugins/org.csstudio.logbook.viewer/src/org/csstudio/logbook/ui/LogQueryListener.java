@@ -8,7 +8,7 @@ import org.csstudio.logbook.ui.PeriodicLogQuery.LogResult;
  * @author Kunal Shroff
  *
  */
-interface LogQueryListener {
+public interface LogQueryListener {
 
     /**
      * This method is called whenever a new set of log results are obtained.

@@ -48,6 +48,8 @@ public class FontProperty extends AbstractWidgetProperty {
      */
     public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
 
+    public static final String XML_ATTRIBUTE_FONT_PIXELS = "pixels";
+
 
     private static final String QUOTE = "\""; //$NON-NLS-1$
 
@@ -89,7 +91,8 @@ public class FontProperty extends AbstractWidgetProperty {
         Object acceptedValue = value;
 
         if(value instanceof OPIFont){
-            if(((OPIFont)value).getFontData() == null)
+            // Avoid getFontData() as this method can be called from off the UI thread.
+            if(((OPIFont)value).getRawFontData() == null)
                 acceptedValue = null;
         }else if (value instanceof FontData) {
             acceptedValue = new OPIFont((FontData)value);
@@ -123,12 +126,13 @@ public class FontProperty extends AbstractWidgetProperty {
             fontElement = new Element(XML_ELEMENT_FONTNAME);
             fontElement.setText(opiFont.getFontMacroName());
         }
-        FontData fontData = opiFont.getFontData();
+        FontData fontData = opiFont.getRawFontData();
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_HEIGHT,
                 "" + fontData.getHeight()); //$NON-NLS-1$
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
                 "" + fontData.getStyle()); //$NON-NLS-1$
+        fontElement.setAttribute(XML_ATTRIBUTE_FONT_PIXELS, "" + opiFont.isSizeInPixels());
 
         propElement.addContent(fontElement);
     }
@@ -137,21 +141,40 @@ public class FontProperty extends AbstractWidgetProperty {
     public Object readValueFromXML(Element propElement) {
         Element fontElement = propElement.getChild(XML_ELEMENT_FONT);
         if(fontElement !=null){
-            return new OPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
-                (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
-                Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
+            // Create the OPIFont with the raw font data from the XML.
+            OPIFont font = new OPIFont(
+                    new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME),
+                                 (int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
+                                 Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
+            font.setSizeInPixels(Boolean.parseBoolean(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_PIXELS)));
+            return font;
         }else{
             fontElement = propElement.getChild(XML_ELEMENT_FONTNAME);
             if(fontElement != null){
+                OPIFont font = null;
                 String fontName = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME);
-                String fontHeight=fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
+                String fontHeight = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
                 String fontStyle = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
+                String heightInPixels = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_PIXELS);
                 if(fontName != null && fontHeight != null && fontStyle != null){
                     FontData fd = new FontData(fontName, (int) Double.parseDouble(fontHeight),
                             Integer.parseInt(fontStyle));
-                    return MediaService.getInstance().getOPIFont(fontElement.getText(), fd);
+                    font = MediaService.getInstance().getOPIFont(fontElement.getText(), fd);
+                } else {
+                    font = MediaService.getInstance().getOPIFont(fontElement.getText());
                 }
-                return MediaService.getInstance().getOPIFont(fontElement.getText());
+                if (!font.isPreDefined()) {
+                    // If this was serialised without a height in pixels attribute, it was from
+                    // an older verison of BOY where points were assumed.  To ensure the screens are not
+                    // changed when re-saved, make this explicit.
+                    if (heightInPixels != null) {
+                        boolean inPixels = Boolean.parseBoolean(heightInPixels);
+                        font.setSizeInPixels(inPixels);
+                    } else {
+                        font.setSizeInPixels(false);
+                    }
+                }
+                return font;
             }
             else
                 return null;
@@ -174,7 +197,5 @@ public class FontProperty extends AbstractWidgetProperty {
                 fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
         }
     }
-
-
 
 }

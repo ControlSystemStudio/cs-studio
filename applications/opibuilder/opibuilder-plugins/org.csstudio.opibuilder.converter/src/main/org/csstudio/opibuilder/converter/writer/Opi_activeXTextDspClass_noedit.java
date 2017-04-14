@@ -37,7 +37,8 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
 
         new OpiBoolean(widgetContext, "precision_from_pv", r.isLimitsFromDb());
         new OpiBoolean(widgetContext, "show_units", r.isShowUnits());
-        new OpiBoolean(widgetContext, "border_alarm_sensitive", r.isUseAlarmBorder());
+        // Border alarm sensitivity only applies in EDM if already alarm sensitive.
+        new OpiBoolean(widgetContext, "border_alarm_sensitive", r.isUseAlarmBorder() && r.isFgAlarm());
         new OpiInt(widgetContext, "precision", r.getPrecision());
 
         int a=0;

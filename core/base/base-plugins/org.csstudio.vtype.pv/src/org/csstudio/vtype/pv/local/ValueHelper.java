@@ -137,7 +137,7 @@ public class ValueHelper
     /** @param items Items from <code>splitInitialItems</code>
      *  @return All items as strings, surrounding quotes removed, un-escaping quotes
      */
-    public static List<String> getInitialStrings(List<String> items)
+    private static List<String> getInitialStrings(List<String> items)
     {
         final List<String> strings = new ArrayList<>(items.size());
         for (String item : items)
@@ -212,13 +212,17 @@ public class ValueHelper
             final int initial;
             try
             {
-                initial = Integer.parseInt(items.remove(0));
+                initial = Integer.parseInt(items.get(0));
             }
             catch (NumberFormatException ex)
             {
                 throw new Exception("Cannot parse enum index", ex);
             }
-            final List<String> labels = getInitialStrings(items);
+            // Preserve original list
+            final List<String> copy = new ArrayList<>(items.size()-1);
+            for (int i=1; i<items.size(); ++i)
+                copy.add(items.get(i));
+            final List<String> labels = getInitialStrings(copy);
             return ValueFactory.newVEnum(initial, labels, ValueFactory.alarmNone(), ValueFactory.timeNow());
         }
 

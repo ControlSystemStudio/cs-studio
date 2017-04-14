@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.jca.JCA_Preferences.MonitorMask;
 import org.diirt.vtype.VType;
 
 import gov.aps.jca.CAStatus;
@@ -44,7 +43,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     private static final int LARGE_ARRAY_THRESHOLD = JCA_Preferences.getInstance().largeArrayThreshold();
 
     /** Priority to use for channel */
-    private static final short base_priority = JCA_Preferences.getInstance().getMonitorMask() == MonitorMask.VALUE
+    private static final short base_priority = ((JCA_Preferences.getInstance().getMonitorMask() & Monitor.VALUE) == Monitor.VALUE)
                                              ? Channel.PRIORITY_OPI
                                              : Channel.PRIORITY_ARCHIVE;
 
@@ -191,7 +190,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     {
         try
         {
-            channel.get(DBRHelper.getCtrlType(plain_dbr, channel.getFieldType()), 1, meta_get_listener);
+            // With very old IOCs, could only get one element for Ctrl type.
+            // With R3.15.5, fetching just one element for a record.INP$
+            // (i.e. fetching the string as a BYTE[])
+            // crashes the IOC.
+            // --> Using the same request count as for the subscription
+            final int request_count = JCAContext.getInstance().getRequestCount(channel);
+            channel.get(DBRHelper.getCtrlType(plain_dbr, channel.getFieldType()), request_count, meta_get_listener);
             channel.getContext().flushIO();
         }
         catch (Exception ex)
@@ -212,7 +217,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         try
         {
             logger.log(Level.FINE, getName() + " subscribes");
-            final int mask = JCA_Preferences.getInstance().getMonitorMask().getMask();
+            final int mask = JCA_Preferences.getInstance().getMonitorMask();
             final int request_count = JCAContext.getInstance().getRequestCount(channel);
             final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), request_count, mask, this);
 
@@ -234,7 +239,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             }
 
             // Subscribe to metadata changes (DBE_PROPERTY)
-            final DBRType meta_request = getRequestForMetadata((DBR)metadata);
+            final DBRType meta_request = getRequestForMetadata(metadata);
             if (JCA_Preferences.getInstance().isDbePropertySupported()  &&  meta_request != null)
             {
                 Monitor old_metadata_monitor = null;

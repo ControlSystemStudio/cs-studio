@@ -522,7 +522,8 @@ public class GitManager {
             if (bbranch == null || !bbranch.equals(branch)) {
                 bbranch = branch;
             }
-            Optional<BaseLevel> bl = Optional.of(new BaseLevel(bbranch, base, basePresentation));
+            Optional<BaseLevel> bl = base == null ? Optional.empty() :
+                                     Optional.of(new BaseLevel(bbranch, base, basePresentation));
             for (File f : files) {
                 if (f.getName().equals(base)) {
                     File b = new File(f, FileType.SAVE_SET.directory);

@@ -157,7 +157,9 @@ public class XMLFileHandler {
         assertTrue(fontElement.hasAttribute("fontName"));
         assertEquals(f.getName(), fontElement.getAttribute("fontName"));
         assertTrue(fontElement.hasAttribute("height"));
-        //assertEquals(String.valueOf(f.getSize()), fontElement.getAttribute("height"));
+        assertEquals(
+                (int) (OpiFont.FONT_SCALE * f.getSize()),
+                Integer.parseInt(fontElement.getAttribute("height")));
         int s = 0;
         if (f.isItalic())
             s = s + 2;

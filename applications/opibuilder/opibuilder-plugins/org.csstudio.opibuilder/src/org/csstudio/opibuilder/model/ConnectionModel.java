@@ -666,5 +666,4 @@ public class ConnectionModel extends AbstractWidgetModel {
         this.scrollPane = scrollPane;
         setPropertyValue(PROP_IS_LOADED_FROM_LINKING_CONTAINER, "true", true);
     }
-
 }

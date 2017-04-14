@@ -264,8 +264,6 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         };
         clickable.setOpaque(true);
         clickable.setBackgroundColor(COLOR_TRACK);
-        clickable.setRequestFocusEnabled(false);
-        clickable.setFocusTraversable(false);
         clickable.addChangeListener(new ChangeListener() {
             public void handleStateChanged(ChangeEvent evt) {
                 if (clickable.getModel().isArmed())
@@ -365,8 +363,6 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      *
      */
     private void initializeListeners() {
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
         addKeyListener(new KeyListener() {
 
                 public void keyPressed(KeyEvent ke) {
@@ -791,5 +787,23 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             else
                 tempPattern = DEFAULT_DECIMAL_FORMAT;
         decimalFormat = new DecimalFormat(tempPattern);
+    }
+
+    @Override
+    public void setFocusTraversable(boolean focusTraversable) {
+        super.setFocusTraversable(focusTraversable);
+        buttonUp.setFocusTraversable(focusTraversable);
+        buttonDown.setFocusTraversable(focusTraversable);
+        pageUp.setFocusTraversable(focusTraversable);
+        pageDown.setFocusTraversable(focusTraversable);
+    }
+
+    @Override
+    public void setRequestFocusEnabled(boolean requestFocusEnabled) {
+        super.setRequestFocusEnabled(requestFocusEnabled);
+        buttonUp.setRequestFocusEnabled(requestFocusEnabled);
+        buttonDown.setRequestFocusEnabled(requestFocusEnabled);
+        pageUp.setRequestFocusEnabled(requestFocusEnabled);
+        pageDown.setRequestFocusEnabled(requestFocusEnabled);
     }
 }

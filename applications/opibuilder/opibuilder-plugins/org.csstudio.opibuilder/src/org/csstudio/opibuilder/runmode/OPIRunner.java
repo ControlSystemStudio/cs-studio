@@ -122,11 +122,10 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
     @Override
     public void setFocus() {}
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (opiRuntimeDelegate != null) {
-            Object obj = opiRuntimeDelegate.getAdapter(adapter);
+            T obj = opiRuntimeDelegate.getAdapter(adapter);
             if(obj != null)
                 return obj;
         }

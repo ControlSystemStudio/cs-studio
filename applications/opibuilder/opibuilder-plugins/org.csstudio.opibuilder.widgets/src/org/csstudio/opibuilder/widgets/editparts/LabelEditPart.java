@@ -43,6 +43,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
         labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
         labelFigure.setSelectable(determinSelectable());
         labelFigure.setText(getWidgetModel().getText());
+        labelFigure.setFontPixels(getWidgetModel().getFont().isSizeInPixels());
         if(labelFigure instanceof WrappableTextFigure)
             ((WrappableTextFigure) labelFigure).setShowScrollbar(getWidgetModel().isShowScrollbar());
         updatePropertyVisibility();

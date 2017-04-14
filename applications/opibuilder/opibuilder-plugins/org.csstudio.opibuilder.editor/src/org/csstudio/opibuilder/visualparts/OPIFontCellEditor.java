@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +48,7 @@ public class OPIFontCellEditor extends AbstractDialogCellEditor {
     @Override
     protected void doSetValue(Object value) {
         if(value == null || !(value instanceof OPIFont))
-            opiFont = new OPIFont("unknown");
+            opiFont = MediaService.getInstance().getOPIFont("unknown");
         else
             opiFont = (OPIFont)value;
     }

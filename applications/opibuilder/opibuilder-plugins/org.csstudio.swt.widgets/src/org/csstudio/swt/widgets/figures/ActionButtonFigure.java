@@ -111,9 +111,6 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
         mousePressed = false;
         listeners = new ArrayList<ButtonActionListener>();
 
-        setRequestFocusEnabled(true);
-        setFocusTraversable(true);
-
         setLayoutManager(new StackLayout());
 
 
@@ -652,7 +649,7 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
      */
     ButtonScheme BUTTON = new ButtonScheme(
             new Color[] {ColorConstants.buttonLightest},
-            new Color[] {ColorConstants.buttonDarker}
+            new Color[] {ColorConstants.black, ColorConstants.buttonDarker}
     );
     /**
      * Constructs a ButtonBorder with a predefined button scheme set as its default.

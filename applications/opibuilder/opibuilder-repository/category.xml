@@ -12,5 +12,8 @@
    <feature id="org.csstudio.applications.opibuilder.medm.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.applications.opibuilder.widgets.detailpanel.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
 </site>

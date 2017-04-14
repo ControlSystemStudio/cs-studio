@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.diirt.datasource.ScanDataSource.REQUEST_TYPE;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanState;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
 import org.diirt.util.array.ArrayDouble;
@@ -42,31 +44,31 @@ import org.diirt.vtype.table.Column;
  * @author Eric Berryman
  */
 class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.ConnectionPayload, Object> {
-    
+
     private final ScanDataSource datasource;
     private final URI uri;
-    private final Map<String,String> queryMap = new ConcurrentHashMap<String,String>(); 
+    private final Map<String,String> queryMap = new ConcurrentHashMap<String,String>();
     private final Long id;
     private final REQUEST_TYPE requestType;
-    
+
     ScanChannelHandler(ScanDataSource datasource, URI uri, Long id, REQUEST_TYPE requestType) {
-        super(uri.toASCIIString());
+        super(uri.toASCIIString().replaceFirst("^http://", ""));
         this.datasource = datasource;
         this.uri = uri;
         this.id = id;
         this.requestType = requestType;
         this.queryMap.putAll(getQueryMap(uri.getQuery()));
     }
-    
+
     ScanChannelHandler(ScanDataSource datasource, URI uri, REQUEST_TYPE requestType) {
-        super(uri.toASCIIString());
+        super(uri.toASCIIString().replaceFirst("^http://", ""));
         this.datasource = datasource;
         this.uri = uri;
         this.id = null;
         this.requestType = requestType;
         this.queryMap.putAll(getQueryMap(uri.getQuery()));
     }
-    
+
     @Override
     public void connect() {
         poll();
@@ -75,13 +77,14 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
     @Override
     public void disconnect() {
         pollResult = null;
+        processConnection(null);
     }
 
     @Override
     protected boolean isConnected(ScanChannelHandler.ConnectionPayload payload) {
         return payload != null && payload.connected;
     }
-    
+
     @Override
     protected boolean isWriteConnected(ScanChannelHandler.ConnectionPayload payload) {
         return requestType == REQUEST_TYPE.SCAN_INFO;
@@ -113,7 +116,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
         }
         callback.channelWritten(null);
     }
-    
+
     static class ConnectionPayload {
         final boolean connected;
         final boolean pollQuerySuccessful;
@@ -125,26 +128,27 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             this.dataQuerySuccessful = dataQuerySuccessful;
         }
     }
-    
+
     private static final Object NO_POLL_DATA = new Object();
     private volatile Object pollResult;
-    
+    private volatile VTable oldVTable = null;
+    private static final Random random = new Random();
+
     void poll() {
         // Skip poll if channel is no usage on the channel
         if (getUsageCounter() > 0) {
             boolean connected = false;
             boolean pollQuerySuccessful = false;
             boolean dataQuerySuccessful = false;
-            
+
             // Retrieve scan connection
             try {
                 ScanClient scanClient = datasource.getConnection(uri.getHost());
                 connected = true;
-                
+
                 // Execute the poll and compare with the old value
                 Object newPollResult = executePollQuery(scanClient);
-                if (shouldReadData(pollResult, newPollResult)) {
-                    pollResult = newPollResult;
+                if (shouldReadData(pollResult, newPollResult) || requestType == REQUEST_TYPE.SERVER_INFO) {
                     pollQuerySuccessful = true;
                     switch(requestType){
                         case SCAN_DATA:
@@ -169,11 +173,19 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
                             VTable newServerInfo = executeServerInfoQuery(scanClient);
                             dataQuerySuccessful = true;
                             processConnection(new ConnectionPayload(connected, pollQuerySuccessful, dataQuerySuccessful));
-                            processMessage(newServerInfo);
+                            if (oldVTable == null){
+                                processMessage(newServerInfo);
+                                oldVTable = newServerInfo;
+                            } else if (shouldReadData(oldVTable.getColumnData(0), newServerInfo.getColumnData(0)) ||
+                                    shouldReadData(pollResult, newPollResult) ) {
+                                processMessage(newServerInfo);
+                                oldVTable = newServerInfo;
+                            }
                             break;
                         default:
                             break;
                     }
+                    pollResult = newPollResult;
                 }
             } catch (Exception ex) {
                 processConnection(new ConnectionPayload(connected, pollQuerySuccessful, dataQuerySuccessful));
@@ -181,7 +193,7 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             }
         }
     }
-    
+
     private static Map<String, String> getQueryMap(String query) {
         if(query == null){
             return new ConcurrentHashMap<String, String>();
@@ -195,14 +207,19 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
         }
         return map;
     }
-    
+
     private boolean shouldReadData(Object oldPollResult, Object newPollResult) {
         return !Objects.equals(oldPollResult, newPollResult);
     }
-    
+
     private Object executePollQuery(ScanClient scanClient) throws Exception {
-        if(requestType == REQUEST_TYPE.SERVER_INFO){
-            return 1;
+        if(requestType == REQUEST_TYPE.SERVER_INFO) {
+            long count = scanClient.getScanInfos().stream().filter(info -> info.getState()==ScanState.Running).count();
+            if(count > 0){
+                return random.nextInt();
+            } else {
+                return NO_POLL_DATA;
+            }
         } else {
             long serial = scanClient.getLastScanDataSerial(id);
             if (serial == -1) {
@@ -212,12 +229,12 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             }
         }
     }
-    
+
     // This is awful
     private VTable executeDataQuery(ScanClient scanClient) throws Exception{
         ScanData scanData = scanClient.getScanData(id);
         final Comparator<ScanSample> comp = (p1, p2) -> p1.getTimestamp().compareTo(p2.getTimestamp());;
-        
+
         List<Class<?>> types = new ArrayList<Class<?>>();
         List<String> names = new ArrayList<String>();
         List<Object> values = new ArrayList<Object>();
@@ -245,148 +262,147 @@ class ScanChannelHandler extends MultiplexedChannelHandler<ScanChannelHandler.Co
             names.add(device);
             values.add(new ArrayDouble(sampleData));
         }
-        
         return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
-    
+
     private VTable executeDevicesQuery(ScanClient scanClient) throws Exception{
         Collection<DeviceInfo> scanDevices = scanClient.getScanDevices(id);
         List<Column> columns = new ArrayList<Column>();
-        
+
         List<String> names = scanDevices.stream().map(deviceInfo -> deviceInfo.getName()).collect(Collectors.toList());
         columns.add(column("name", newVStringArray(names, alarmNone(),timeNow())));
-        
+
         List<String> aliases = scanDevices.stream().map(deviceInfo -> deviceInfo.getAlias()).collect(Collectors.toList());
         columns.add(column("alias", newVStringArray(aliases, alarmNone(),timeNow())));
-        
+
         List<String> status = scanDevices.stream().map(deviceInfo -> deviceInfo.getStatus()).collect(Collectors.toList());
         columns.add(column("status", newVStringArray(status, alarmNone(),timeNow())));
-        
+
         return newVTable(columns.toArray(new Column[columns.size()]));
     }
-    
+
     private VTable executeScanInfoQuery(ScanClient scanClient) throws Exception{
         ScanInfo scanInfo = scanClient.getScanInfo(id);
 
         List<Class<?>> types = new ArrayList<Class<?>>();
         List<String> names = new ArrayList<String>();
         List<Object> values = new ArrayList<Object>();
-        
+
         // id - possible overflow from long
         types.add(Integer.TYPE);
         names.add(Messages.Id);
         values.add(new ArrayInt((int)scanInfo.getId()));
-        
+
         // created
         types.add(Instant.class);
         names.add(Messages.Created);
         values.add(Arrays.asList(scanInfo.getCreated()));
-        
+
         // name
         types.add(String.class);
         names.add(Messages.Name);
         values.add(Arrays.asList(scanInfo.getName()));
-        
+
         // currentCommand
         types.add(String.class);
         names.add(Messages.CurrentCommand);
         values.add(Arrays.asList(scanInfo.getCurrentCommand()));
-        
+
         // finishTime
         types.add(Instant.class);
         names.add(Messages.FinishTime);
         values.add(Arrays.asList(scanInfo.getFinishTime()));
-        
+
         // percentage
         types.add(Integer.TYPE);
         names.add(Messages.Percentage);
         values.add(new ArrayInt(scanInfo.getPercentage()));
-        
+
         // state
         types.add(String.class);
         names.add(Messages.State);
         values.add(Arrays.asList(scanInfo.getState().toString()));
-        
+
         // error
         types.add(String.class);
         names.add(Messages.Error);
         values.add(Arrays.asList(scanInfo.getError().isPresent()?scanInfo.getError().get():""));
-        
+
         return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
-    
+
     private VTable executeServerInfoQuery(ScanClient scanClient) throws Exception{
         List<ScanInfo> scanInfos = scanClient.getScanInfos();
 
         int maxSize = Integer.parseInt(queryMap.getOrDefault("max", "1000"));
-        
+
         List<Class<?>> types = new ArrayList<Class<?>>();
         List<String> names = new ArrayList<String>();
         List<Object> values = new ArrayList<Object>();
-        
+
         // id - possible overflow from long
         types.add(Integer.TYPE);
         names.add(Messages.Id);
         int[] scanIds = scanInfos.stream().limit(maxSize).map(scanInfo -> (int)scanInfo.getId()).mapToInt(i -> i).toArray();
         values.add(new ArrayInt(scanIds));
-        
+
         // created
         types.add(Instant.class);
         names.add(Messages.Created);
         List<Instant> createds = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getCreated()).collect(Collectors.toList());
         values.add(createds);
-        
+
         // name
         types.add(String.class);
         names.add(Messages.Name);
         List<String> scan_names = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getName()).collect(Collectors.toList());
         values.add(scan_names);
-        
+
         // currentCommand
         types.add(String.class);
         names.add(Messages.CurrentCommand);
         List<String> currentCommands = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getCurrentCommand()).collect(Collectors.toList());
         values.add(currentCommands);
-        
+
         // finishTime
         types.add(Instant.class);
         names.add(Messages.FinishTime);
         List<Instant> finishTimes = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getFinishTime()).collect(Collectors.toList());
         values.add(finishTimes);
-        
+
         // percentage
         types.add(Integer.TYPE);
         names.add(Messages.Percentage);
         int[] percentages = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getPercentage()).mapToInt(i -> i).toArray();;
         values.add(new ArrayInt(percentages));
-        
+
         // state
         types.add(String.class);
         names.add(Messages.State);
         List<String> states = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getState().toString()).collect(Collectors.toList());
         values.add(states);
-        
+
         // error
         types.add(String.class);
         names.add(Messages.Error);
         List<String> errors = scanInfos.stream().limit(maxSize).map(scanInfo -> scanInfo.getError().isPresent()?scanInfo.getError().get():"").collect(Collectors.toList());
         values.add(errors);
-        
+
         return org.diirt.vtype.ValueFactory.newVTable(types, names, values);
     }
-    
+
     private void pause (ScanClient scanClient) throws Exception {
         scanClient.pauseScan(id);
     }
-    
+
     private void resume (ScanClient scanClient) throws Exception {
         scanClient.resumeScan(id);
     }
-    
+
     private void abort (ScanClient scanClient) throws Exception {
         scanClient.abortScan(id);
     }
-    
+
     private void remove (ScanClient scanClient) throws Exception {
         scanClient.removeScan(id);
     }
