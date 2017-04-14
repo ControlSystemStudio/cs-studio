@@ -12,10 +12,8 @@ package org.csstudio.saverestore.ui;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.DataProviderWrapper;
@@ -24,15 +22,19 @@ import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.SaveSetEntry;
-import org.csstudio.saverestore.ui.TableViewSample.ObservableSaveSetEntry;
 import org.csstudio.saverestore.ui.util.RunnableWithID;
 import org.csstudio.ui.fx.util.FXEditorPart;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -41,7 +43,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -52,22 +53,19 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
-import javafx.util.Callback;
 
 /**
  *
@@ -84,8 +82,10 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
     private final PseudoClass alertedPseudoClass = PseudoClass.getPseudoClass("alerted");
 
+    // UI components
     private TextArea descriptionArea;
-    private TableView<ObservableSaveSetEntry> contentTable;
+    private SaveSetEditorTable contentTable;
+    private Menu contextMenu;
 
     private boolean dirty;
     private final SaveSetController controller;
@@ -107,6 +107,32 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
+
+        MenuManager menu = new MenuManager();
+        final Action openChartTableAction = new Action("Add Pv's") {
+            @Override
+            public void run() {
+                //TODO
+            }
+        };
+        menu.add(openChartTableAction);
+        openChartTableAction.setEnabled(true);
+        final Action removePV = new Action("Remove Pv's") {
+            @Override
+            public void run() {
+                ISelection selection = contentTable.getSelection();
+                if (selection instanceof IStructuredSelection) {
+                    @SuppressWarnings("unchecked")
+                    List<ObservableSaveSetEntry> selectedEntries = ((IStructuredSelection) contentTable.getSelection()).toList();
+                    observableList.removeAll(selectedEntries);
+                }
+            }
+        };
+        menu.add(removePV);
+        contextMenu = menu.createContextMenu(parent);
+        parent.setMenu(contextMenu);
+        getSite().registerContextMenu(menu, contentTable);
+
         PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.saveseteditor");
     }
 
@@ -280,7 +306,6 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             Platform.runLater(() -> {
                 controller.setSavedSaveSetData(data);
                 descriptionArea.setText(data.getDescription());
-//                contentArea.setText(sb.toString().trim());
                 contentTable.setItems(observableList);
                 setDirty(false);
             });
@@ -312,8 +337,6 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         return scene;
     }
 
-    private ObservableList<ObservableSaveSetEntry> data;
-
     private Node createCenterPane() {
         GridPane grid = new GridPane();
         grid.setVgap(3);
@@ -330,56 +353,25 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
         Label contentLabel = new Label("PV List:");
         contentLabel.setFont(Font.font(15));
-//
-//        contentArea = new TextArea();
-//        contentArea.getStylesheets().add(SaveSetEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
-//        contentArea.setEditable(true);
-//        contentArea.setTooltip(new Tooltip("The list of PVs in this save set"));
-//        contentArea.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-//        contentArea.setWrapText(false);
-//        contentArea.textProperty().addListener((a, o, n) -> {
-//            setDirty(true);
-//            final String description = descriptionArea.getText();
-//            final String content = n;
-//            // execute the content check in the background thread, but only if
-//            // the same task is not already being
-//            // executed
-//            Activator.getDefault().getBackgroundWorker().execute(new RunnableWithID() {
-//                @Override
-//                public void run() {
-//                    final SaveSetData data = createData(description, content, false);
-//                    Platform.runLater(() -> contentArea.pseudoClassStateChanged(alertedPseudoClass, data == null));
-//                }
-//
-//                @Override
-//                public int getID() {
-//                    return SaveSetEditor.this.hashCode();
-//                }
-//            });
-//        });
         TextField titleArea = new StaticTextField();
         titleArea.setText(FileUtilities.SAVE_SET_HEADER);
 
         GridPane contentPanel = new GridPane();
         contentPanel.setVgap(-1);
         setGridConstraints(titleArea, true, false, Priority.ALWAYS, Priority.NEVER);
-//        setGridConstraints(contentArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
         contentPanel.add(titleArea, 0, 0);
-//        contentPanel.add(contentArea, 0, 1);
 
-        contentTable = new TableView<ObservableSaveSetEntry>();
+        contentTable = new SaveSetEditorTable();
+        contentTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         contentTable.getProperties().addListener(new MapChangeListener<Object, Object>() {
 
             @Override
             public void onChanged(
                     javafx.collections.MapChangeListener.Change<? extends Object, ? extends Object> change) {
-                setDirty(true);
-                final String description = descriptionArea.getText();
                 Activator.getDefault().getBackgroundWorker().execute(new RunnableWithID() {
                     @Override
                     public void run() {
-//                        final SaveSetData data = createData(description, content, false);
-//                        Platform.runLater(() -> contentArea.pseudoClassStateChanged(alertedPseudoClass, data == null));
+
                     }
 
                     @Override
@@ -391,68 +383,23 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
         });
 
-        TableColumn<ObservableSaveSetEntry, String> pvName = new TableColumn<>("PV Name");
-        pvName.setCellValueFactory(new PropertyValueFactory<>("pvname"));
-        pvName.setCellFactory(TextFieldTableCell.forTableColumn());
-        pvName.setOnEditCommit((CellEditEvent<ObservableSaveSetEntry, String> t) -> {
-            ((ObservableSaveSetEntry) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                    .setPvname(t.getNewValue());
+        contentTable.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
+        contentTable.setOnKeyPressed(e -> {
+            KeyCodeCombination pasteKeyCodeCompination = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);
+            System.out.println(e);
+            if (pasteKeyCodeCompination.match(e)) {
+                System.out.println("ctrlv "+ Clipboard.getSystemClipboard().getString());
+            }
         });
-        pvName.prefWidthProperty().bind(contentTable.widthProperty().multiply(0.25));
-
-        TableColumn<ObservableSaveSetEntry, String> readback = new TableColumn<>("Readback");
-        readback.setCellValueFactory(new PropertyValueFactory<>("readback"));
-        readback.setCellFactory(TextFieldTableCell.forTableColumn());
-        readback.setOnEditCommit((CellEditEvent<ObservableSaveSetEntry, String> t) -> {
-            ((ObservableSaveSetEntry) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                    .setReadback(t.getNewValue());
-        });
-        readback.prefWidthProperty().bind(contentTable.widthProperty().multiply(0.25));
-
-        TableColumn<ObservableSaveSetEntry, String> delta = new TableColumn<>("Delta");
-        delta.setCellValueFactory(new PropertyValueFactory<>("delta"));
-        delta.setCellFactory(TextFieldTableCell.forTableColumn());
-        delta.setOnEditCommit((CellEditEvent<ObservableSaveSetEntry, String> t) -> {
-            ((ObservableSaveSetEntry) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                    .setDelta(t.getNewValue());
-        });
-        delta.prefWidthProperty().bind(contentTable.widthProperty().multiply(0.25));
-
-        TableColumn<ObservableSaveSetEntry, Boolean> readonly = new TableColumn<>("Readonly");
-        readonly.setCellValueFactory(
-                new Callback<CellDataFeatures<ObservableSaveSetEntry, Boolean>, ObservableValue<Boolean>>() {
-                    @Override
-                    public ObservableValue<Boolean> call(CellDataFeatures<ObservableSaveSetEntry, Boolean> param) {
-                        return param.getValue().readonly;
-                    }
-                });
-        readonly.setCellFactory(
-                new Callback<TableColumn<ObservableSaveSetEntry, Boolean>, TableCell<ObservableSaveSetEntry, Boolean>>() {
-                    public TableCell<ObservableSaveSetEntry, Boolean> call(
-                            TableColumn<ObservableSaveSetEntry, Boolean> p) {
-                        return new CheckBoxTableCell<ObservableSaveSetEntry, Boolean>();
-                    }
-                });
-        readonly.setOnEditCommit((CellEditEvent<ObservableSaveSetEntry, Boolean> t) -> {
-            ((ObservableSaveSetEntry) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                    .setReadonly(t.getNewValue());
-        });
-        readonly.prefWidthProperty().bind(contentTable.widthProperty().multiply(0.25));
-
-        contentTable.getColumns().addAll(pvName, readback, delta, readonly);
-        contentTable.setItems(data);
-        contentTable.setEditable(true);
         
         setGridConstraints(descriptionLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(contentLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(descriptionArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-//        setGridConstraints(contentPanel, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
         setGridConstraints(contentTable, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
 
         grid.add(descriptionLabel, 0, 0);
         grid.add(descriptionArea, 0, 1);
         grid.add(contentLabel, 0, 2);
-//        grid.add(contentPanel, 0, 3);
         grid.add(contentTable, 0, 3);
 
         return grid;
