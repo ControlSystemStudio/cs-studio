@@ -46,7 +46,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -80,8 +79,6 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.saveseteditor";
 
-    private final PseudoClass alertedPseudoClass = PseudoClass.getPseudoClass("alerted");
-
     // UI components
     private TextArea descriptionArea;
     private SaveSetEditorTable contentTable;
@@ -112,7 +109,13 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         final Action openChartTableAction = new Action("Add Pv's") {
             @Override
             public void run() {
-                //TODO
+                // Launch a dialog with the previous text field and format
+                final AddPvDialog dialog = new AddPvDialog(getShell(), "Add SaveSet Entries",
+                        "Add MASAR entires including PV name, readbacks, deltas, and readonly", null, null);
+                dialog.openAndWait().ifPresent(expr -> {
+                    contentTable.getItems()
+                            .addAll(expr.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                });
             }
         };
         menu.add(openChartTableAction);
@@ -301,7 +304,6 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
                 observableList.add(new ObservableSaveSetEntry(
                         new SaveSetEntry(e.getPVName(), e.getReadback(), e.getDelta(), e.isReadOnly())));
             });
-            
 
             Platform.runLater(() -> {
                 controller.setSavedSaveSetData(data);
@@ -391,7 +393,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
                 System.out.println("ctrlv "+ Clipboard.getSystemClipboard().getString());
             }
         });
-        
+
         setGridConstraints(descriptionLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(contentLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(descriptionArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
