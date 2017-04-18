@@ -394,10 +394,10 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
         contentTable.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
         contentTable.setOnKeyPressed(keyEvent -> {
-            
+
             KeyCodeCombination copyKeyCodeCompination = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_ANY);
             KeyCodeCombination pasteKeyCodeCompination = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);
-            
+
             if (copyKeyCodeCompination.match(keyEvent)) {
                 try {
                     Map<DataFormat, Object> map = new HashMap<DataFormat, Object>();
@@ -473,7 +473,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
      * @return parse out a list of {@link SaveSetEntry}s from a string
      */
     public static List<SaveSetEntry> parseClipboardString(String text) {
-        
+
         String[] content = text.split(eol);
         if (content.length == 0) {
             return null;

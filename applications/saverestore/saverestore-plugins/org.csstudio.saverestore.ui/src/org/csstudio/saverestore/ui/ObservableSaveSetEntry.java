@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  * An observable built around a {@link SaveSetEntry} to simplify the use of javafx controls
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -56,7 +56,7 @@ public class ObservableSaveSetEntry {
     public void setReadonly(boolean readonly) {
         this.readonly.set(readonly);
     }
-    
+
     public SaveSetEntry getEntry(){
         return new SaveSetEntry(getPvname(), getReadback(), getDelta(), isReadonly());
     }

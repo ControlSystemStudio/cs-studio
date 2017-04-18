@@ -537,7 +537,7 @@ public class MasarClient {
             groupName.put(0, entryListLength, set.getEntries().stream().map(e -> {
                 return "".equals(e.getReadback())? "" : "RB:" + e.getReadback() + ";";
             }).collect(Collectors.toList()).toArray(new String[entryListLength]), 0);
-            
+
             PVStringArray tags = (PVStringArray) config.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString);
             tags.put(0, entryListLength, set.getEntries().stream().map(e -> {
                 return "".equals(e.getDelta()) ? "" : "DELTA:" + e.getDelta() + ";";
