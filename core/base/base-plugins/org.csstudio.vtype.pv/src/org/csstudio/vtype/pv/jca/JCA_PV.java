@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.jca.JCA_Preferences.MonitorMask;
 import org.diirt.vtype.VType;
 
 import gov.aps.jca.CAStatus;
@@ -44,7 +43,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     private static final int LARGE_ARRAY_THRESHOLD = JCA_Preferences.getInstance().largeArrayThreshold();
 
     /** Priority to use for channel */
-    private static final short base_priority = JCA_Preferences.getInstance().getMonitorMask() == MonitorMask.VALUE
+    private static final short base_priority = ((JCA_Preferences.getInstance().getMonitorMask() & Monitor.VALUE) == Monitor.VALUE)
                                              ? Channel.PRIORITY_OPI
                                              : Channel.PRIORITY_ARCHIVE;
 
@@ -212,7 +211,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         try
         {
             logger.log(Level.FINE, getName() + " subscribes");
-            final int mask = JCA_Preferences.getInstance().getMonitorMask().getMask();
+            final int mask = JCA_Preferences.getInstance().getMonitorMask();
             final int request_count = JCAContext.getInstance().getRequestCount(channel);
             final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), request_count, mask, this);
 
