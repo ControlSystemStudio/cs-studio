@@ -8,8 +8,27 @@
 package org.csstudio.archive.config;
 
 /** Archive configuration info
- *  @author Kay Kasemir
- *  @author Takashi Nakamoto - Added an option to skip reading last sample time.
+ *  @author Megan Grodowitz
+ */
+
+/**
+ * This is a bad interface
+ *
+ * The story here is that the XML Import and Export functions were written
+ * specifically for the RDB archive config They used this set of functions to
+ * setup the configuration object, except with RDB???Config objects instead of
+ * these ???Config object superclasses
+ *
+ * Passing objects into and out of these functions is not good, because there is
+ * not enough information in the superclass to use the objects. For example,
+ * when I call getEngine(GroupConfig), each object that implements this
+ * interface also has to implement a specific type of GroupConfig, then cast the
+ * input object to this group Moreover, passing the objects into the functions
+ * is a good way to accidentally let archiveConigs operate on objects that they
+ * do not own. This should all be redone passing in Strings or (better yet)
+ * unique IDs instead of objects
+ *
+ * The ArchiveConfig interface has the same problem...
  */
 public interface ImportableArchiveConfig extends ArchiveConfig
 {
