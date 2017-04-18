@@ -70,7 +70,7 @@
         <eclipse-site>${eclipse.mirror.url}/releases/mars</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.5</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/3.0</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
+        <rap-gef-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
         <platform-version>[4.4,4.5)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/mars/dev-build/update-site</swtbot-site>
       </properties>
