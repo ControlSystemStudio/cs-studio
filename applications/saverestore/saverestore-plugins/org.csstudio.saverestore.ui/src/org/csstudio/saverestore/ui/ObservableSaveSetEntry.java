@@ -60,4 +60,26 @@ public class ObservableSaveSetEntry {
     public SaveSetEntry getEntry(){
         return new SaveSetEntry(getPvname(), getReadback(), getDelta(), isReadonly());
     }
+
+    /**
+     * Returns the string with which this save set is represented in the file.
+     *
+     * @return the string representing this save set
+     */
+    public String getSaveString() {
+        StringBuilder sb = new StringBuilder(200);
+        sb.append(getPvname()).append(',').append(getReadback()).append(',');
+        if (getDelta().indexOf(',') > -1) {
+            sb.append('"').append(getDelta()).append('"');
+        } else {
+            sb.append(getDelta());
+        }
+        sb.append(',').append(isReadonly());
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return getSaveString();
+    }
 }

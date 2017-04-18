@@ -12,8 +12,12 @@ package org.csstudio.saverestore.ui;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.DataProviderWrapper;
@@ -38,6 +42,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
@@ -46,6 +51,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -53,13 +59,16 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -132,6 +141,8 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             }
         };
         menu.add(removePV);
+        menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, contentTable);
@@ -386,11 +397,41 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         });
 
         contentTable.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
-        contentTable.setOnKeyPressed(e -> {
+        contentTable.setOnKeyPressed(keyEvent -> {
+            
+            KeyCodeCombination copyKeyCodeCompination = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_ANY);
             KeyCodeCombination pasteKeyCodeCompination = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);
-            System.out.println(e);
-            if (pasteKeyCodeCompination.match(e)) {
-                System.out.println("ctrlv "+ Clipboard.getSystemClipboard().getString());
+            
+            if (copyKeyCodeCompination.match(keyEvent)) {
+                try {
+                    Map<DataFormat, Object> map = new HashMap<DataFormat, Object>();
+                    ISelection selection = contentTable.getSelection();
+                    if (selection instanceof IStructuredSelection) {
+                        @SuppressWarnings("unchecked")
+                        List<ObservableSaveSetEntry> selectedEntries = ((IStructuredSelection) contentTable
+                                .getSelection()).toList();
+                        map.put(SaveSetEntryFormatt, selectedEntries.stream().map(ObservableSaveSetEntry::getSaveString)
+                                .collect(Collectors.joining(eol)));
+                        map.put(DataFormat.PLAIN_TEXT, selectedEntries.stream().map(ObservableSaveSetEntry::getPvname)
+                                .collect(Collectors.joining(",")));
+                        Clipboard.getSystemClipboard().setContent(map);
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                keyEvent.consume();
+            } else if (pasteKeyCodeCompination.match(keyEvent)) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                if (clipboard.hasContent(SaveSetEntryFormatt)) {
+                    List<SaveSetEntry> list = parseClipboardString((String) clipboard.getContent(SaveSetEntryFormatt));
+                    contentTable.getItems()
+                            .addAll(list.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                } else if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
+                    List<SaveSetEntry> list = parseClipboardString(
+                            ((String) clipboard.getContent(DataFormat.PLAIN_TEXT)).replace(",", eol));
+                    contentTable.getItems()
+                            .addAll(list.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                }
             }
         });
 
@@ -419,13 +460,57 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.window.IShellProvider#getShell()
-     */
     @Override
     public Shell getShell() {
         return getSite().getShell();
+    }
+
+    /**
+     * A dataformat for identifying save set entries in the clipboard
+     */
+    public static final DataFormat SaveSetEntryFormatt = new DataFormat("text/savesetentry");
+    public static final String eol = System.getProperty("line.separator");
+
+    /**
+     * A utility method for parsing SaveSetEntries
+     * @param text string to be parsed
+     * @return parse out a list of {@link SaveSetEntry}s from a string
+     */
+    public static List<SaveSetEntry> parseClipboardString(String text) {
+        
+        String[] content = text.split(eol);
+        if (content.length == 0) {
+            return null;
+        }
+        String[] d = FileUtilities.split(content[0]);
+        if (d == null) {
+            return null;
+        }
+        int length = d.length;
+        List<SaveSetEntry> entries = new ArrayList<>(content.length);
+        for (String s : content) {
+            s = s.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            d = FileUtilities.split(s);
+            if (d == null || d.length != length) {
+                return null;
+            }
+            String name = d[0].trim();
+            String readback = null, delta = null;
+            boolean readOnly = false;
+            if (d.length > 1) {
+                readback = d[1].trim();
+            }
+            if (d.length > 2) {
+                delta = d[2].trim();
+            }
+            if (d.length > 3) {
+                readOnly = Boolean.valueOf(d[3].trim());
+            }
+            entries.add(new SaveSetEntry(name, readback, delta, readOnly));
+        }
+        return entries;
     }
 }
