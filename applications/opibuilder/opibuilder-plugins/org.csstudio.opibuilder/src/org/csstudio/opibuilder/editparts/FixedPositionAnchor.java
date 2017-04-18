@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
-import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -17,9 +16,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Xihui Chen
  *
  */
-public class FixedPositionAnchor extends AbstractConnectionAnchor {
+public class FixedPositionAnchor extends AbstractOpiBuilderAnchor {
 
-    public enum AnchorPosition{
+    public enum AnchorPosition {
         TOP,
         LEFT,
 //        CENTER,
@@ -106,6 +105,7 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
         return p;
     }
 
+    @Override
     public Point getSlantDifference(Point anchorPoint, Point midPoint) {
         int x=0, y=0;
 

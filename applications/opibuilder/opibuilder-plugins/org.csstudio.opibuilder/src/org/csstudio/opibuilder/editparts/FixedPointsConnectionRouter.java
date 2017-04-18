@@ -50,7 +50,6 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
         this.scrollPane = scrollPane;
     }
 
-
     @Override
     public void route(Connection conn) {
         PointList connPoints = conn.getPoints().getCopy();
@@ -93,10 +92,10 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
             newPoints.addPoint(point);
         }
 
-        FixedPositionAnchor anchor = (FixedPositionAnchor)conn.getSourceAnchor();
+        AbstractOpiBuilderAnchor anchor = (AbstractOpiBuilderAnchor)conn.getSourceAnchor();
         Point sourcePoint = anchor.getSlantDifference(startPoint, newPoints.getFirstPoint());
 
-        anchor = (FixedPositionAnchor)conn.getTargetAnchor();
+        anchor = (AbstractOpiBuilderAnchor)conn.getTargetAnchor();
         Point targetPoint = anchor.getSlantDifference(endPoint, newPoints.getLastPoint());
 
         // figures with rules to move horizontally/vertically
