@@ -53,6 +53,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
@@ -77,6 +79,8 @@ import org.eclipse.ui.handlers.IHandlerService;
 public class GUI implements ScanInfoModelListener
 {
     final private ScanInfoModel model;
+
+    final private ScanInfoComparator comparator = new ScanInfoComparator();
 
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
@@ -130,7 +134,7 @@ public class GUI implements ScanInfoModelListener
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        createColumn(table_viewer, table_layout, Messages.ID, 30, 25, new CellLabelProvider()
+        createColumn(0, table_viewer, table_layout, Messages.ID, 30, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -146,7 +150,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(Long.toString(info.getId()));
             }
         });
-        createColumn(table_viewer, table_layout, Messages.CreateTime, 150, 25, new CellLabelProvider()
+        createColumn(1, table_viewer, table_layout, Messages.CreateTime, 150, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -163,7 +167,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(ScanSampleFormatter.format(info.getCreated()));
             }
         });
-        createColumn(table_viewer, table_layout, Messages.Name, 120, 100, new CellLabelProvider()
+        createColumn(2, table_viewer, table_layout, Messages.Name, 120, 100, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -179,7 +183,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(info.getName());
             }
         });
-        createColumn(table_viewer, table_layout, Messages.State, 90, 50, new CellLabelProvider()
+        createColumn(3, table_viewer, table_layout, Messages.State, 90, 50, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -196,7 +200,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setForeground(getStateColor(display, info));
             }
         });
-        final TableViewerColumn perc_col = createColumn(table_viewer, table_layout, Messages.Percent, 25, 25, new CellLabelProvider()
+        final TableViewerColumn perc_col = createColumn(4, table_viewer, table_layout, Messages.Percent, 25, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -220,7 +224,7 @@ public class GUI implements ScanInfoModelListener
                 */
             }
         });
-        createColumn(table_viewer, table_layout, Messages.Runtime, 65, 5, new CellLabelProvider()
+        createColumn(5, table_viewer, table_layout, Messages.Runtime, 65, 5, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -236,7 +240,7 @@ public class GUI implements ScanInfoModelListener
                     cell.setText(info.getRuntimeText());
             }
         });
-        createColumn(table_viewer, table_layout, Messages.FinishTime, 65, 5, new CellLabelProvider()
+        createColumn(6, table_viewer, table_layout, Messages.FinishTime, 65, 5, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -253,7 +257,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(TimestampFormats.formatCompactDateTime(info.getFinishTime()));
             }
         });
-        createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
+        createColumn(7, table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -273,7 +277,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(info.getCurrentCommand());
             }
         });
-        createColumn(table_viewer, table_layout, Messages.Error, 80, 150, new CellLabelProvider()
+        createColumn(8, table_viewer, table_layout, Messages.Error, 80, 150, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -319,6 +323,8 @@ public class GUI implements ScanInfoModelListener
             }
         });
 
+        table_viewer.setComparator(comparator);
+
         ColumnViewerToolTipSupport.enableFor(table_viewer);
         table_viewer.setContentProvider(new ScanInfoModelContentProvider());
 
@@ -361,7 +367,8 @@ public class GUI implements ScanInfoModelListener
     /** Helper for creating a resizable column
      *  @return {@link TableViewerColumn}
      */
-    private TableViewerColumn createColumn(final TableViewer table_viewer,
+    private TableViewerColumn createColumn(final int column_index,
+            final TableViewer table_viewer,
             final TableColumnLayout table_layout, final String header,
             final int width, final int weight, final CellLabelProvider label)
     {
@@ -372,6 +379,20 @@ public class GUI implements ScanInfoModelListener
         col.setResizable(true);
         table_layout.setColumnData(col, new ColumnWeightData(weight, width));
         view_col.setLabelProvider(label);
+        // Sort when column header is clicked
+        col.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                // Update sorting
+                comparator.setColumn(column_index);
+                // Show sort indicator
+                table_viewer.getTable().setSortColumn(col);
+                table_viewer.getTable().setSortDirection(comparator.getDirection());
+                table_viewer.refresh();
+            }
+        });
         return view_col;
     }
 
