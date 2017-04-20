@@ -5,12 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.epics.pvtree;
+package org.csstudio.diag.epics.pvtree.model;
 
+import java.nio.charset.Charset;
 import java.text.NumberFormat;
 
+import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VByteArray;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VString;
@@ -23,6 +26,9 @@ import org.diirt.vtype.ValueUtil;
 @SuppressWarnings("nls")
 public class VTypeHelper
 {
+    /** [85, 84, 70, 45, 56] */
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+
     public static AlarmSeverity getSeverity(final VType value)
     {
         final Alarm alarm = ValueUtil.alarmOf(value);
@@ -60,6 +66,23 @@ public class VTypeHelper
             {
                 buf.append("'null'");
             }
+        }
+        else if (value instanceof VByteArray)
+        {
+            final ListNumber data = ((VByteArray) value).getData();
+            final byte[] bytes = new byte[data.size()];
+            // Copy bytes until end or '\0'
+            int len = 0;
+            while (len < bytes.length)
+            {
+                final byte b = data.getByte(len);
+                if (b == 0)
+                    break;
+                else
+                    bytes[len++] = b;
+            }
+            // Use actual 'len', not data.size()
+            buf.append(new String(bytes, 0, len, UTF8));
         }
         else if (value instanceof VEnum)
         {

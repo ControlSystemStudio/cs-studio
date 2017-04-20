@@ -44,7 +44,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -57,6 +60,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -64,6 +68,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
@@ -275,7 +280,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     /**
      * A dedicated CellEditor for displaying delta only.
      * TODO can be simplified further
-     *
+     * 
      * @author Kunal Shroff
      *
      * @param <T>
@@ -390,6 +395,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             }
         }
     }
+    
 
     /**
      * <code>TooltipTableColumn</code> is the common table column implementation, which can also provide the tooltip.
@@ -608,7 +614,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
         TableColumn<TableEntry, ?> storedValueBaseColumn = new TooltipTableColumn<>(
                 "Stored Setpoint", "", -1);
-
+        
         TableColumn<TableEntry, VType> storedValueColumn = new TooltipTableColumn<>(
             "Stored Setpoint",
             "Setpoint PV value when the snapshot was taken", 100);
@@ -732,7 +738,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             TooltipTableColumn<VTypePair> baseSnapshotCol = new TooltipTableColumn<>(snapshotName,
                     "Setpoint PV value when the " + snapshotName + " snapshot was taken", 100);
             baseSnapshotCol.label.setContextMenu(menu);
-
+            
             TooltipTableColumn<VTypePair> setpointValueCol = new TooltipTableColumn<>(
                     "Setpoint",
                     "Setpoint PV value when the " + snapshotName + " snapshot was taken", 66);
@@ -752,7 +758,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 }
             });
             baseSnapshotCol.getColumns().add(setpointValueCol);
-
+            
             TooltipTableColumn<VTypePair> deltaCol = new TooltipTableColumn<>(
                  Utilities.DELTA_CHAR + " Base Setpoint",
                 "Setpoint PV value when the " + snapshotName + " snapshot was taken", 50);
@@ -767,7 +773,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             });
             baseSnapshotCol.getColumns().add(deltaCol);
             storedValueColumn.getColumns().add(baseSnapshotCol);
-
+            
             if (showStoredReadback) {
                 TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
                     "Readback\n(" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);

@@ -11,12 +11,14 @@ import static org.csstudio.vtype.pv.PV.logger;
 
 import java.util.logging.Level;
 
+import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
+import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.MonitorMask;
+import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.VariableArraySupport;
 import org.csstudio.vtype.pv.PVPlugin;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import gov.aps.jca.jni.JNITargetArch;
 
@@ -37,85 +39,20 @@ public class JCA_Preferences
 {
     private static final JCA_Preferences instance = new JCA_Preferences();
 
-    /** Use pure java or not? Values "true", "false" */
-    final public static String PURE_JAVA = "use_pure_java";
+    /** Use CAJ or JNI ? */
+    private boolean use_pure_java = true;
 
-    /** How to monitor (subscribe): Values "VALUE", "ARCHIVE", "ALARM" */
-    final public static String MONITOR = "monitor";
-
-    /** List of IP addresses, separated by space */
-    final public static String ADDR_LIST = "addr_list";
-
-    /** Add automatic IP entries? Values "true", "false" */
-    final public static String AUTO_ADDR_LIST = "auto_addr_list";
-
-    /** Should we use metadata update? Values "true", "false" */
-    final public static String DBE_PROPERTY_SUPPORTED = "dbe_property_supported";
-
-    /** Should we enable variable array support? Values "Auto", "Enabled", "Disabled" */
-    final public static String VAR_ARRAY_SUPPORT = "var_array_support";
-
-    // See Channel Access docu for rest
-    final public static String TIMEOUT = "conn_tmo";
-    final public static String BEACON_PERIOD = "beacon_period";
-    final public static String REPEATER_PORT = "repeater_port";
-    final public static String SERVER_PORT = "server_port";
-    final public static String MAX_ARRAY_BYTES = "max_array_bytes";
-
-
-
-
-    /** How should subscriptions be established? */
-    public enum MonitorMask
-    {
-        /** Listen to changes in value beyond 'MDEL' threshold or alarm state*/
-        VALUE(1 | 4),
-
-        /** Listen to changes in value beyond 'ADEL' archive limit */
-        ARCHIVE(2),
-
-        /** Listen to changes in alarm state */
-        ALARM(4);
-
-        final private int mask;
-
-        private MonitorMask(final int mask)
-        {
-            this.mask = mask;
-        }
-
-        /** @return Mask bits used in underlying CA call */
-        public int getMask()
-        {
-            return mask;
-        }
-    }
-
-    private MonitorMask monitor_mask = MonitorMask.VALUE;
+    private int monitor_mask = 5; // VALUE | ALARM
 
     private boolean dbe_property_supported = false;
 
-    private Boolean var_array_supported = Boolean.TRUE;
+    private VariableArraySupport var_array_supported = VariableArraySupport.FALSE;
 
     private int large_array_threshold = 100000;
-
-    /** Use CAJ or JNI ? */
-    private boolean use_pure_java = true;
 
     /** Initialize */
     private JCA_Preferences()
     {
-        //If it is in rap, set server preference in lookup order.
-        if(Platform.getBundle("org.eclipse.rap.ui") != null)
-            Platform.getPreferencesService().setDefaultLookupOrder(PVPlugin.ID, null,
-                new String[]
-                {
-                    InstanceScope.SCOPE,
-                    ConfigurationScope.SCOPE,
-                    "server",
-                    DefaultScope.SCOPE
-                });
-
         installPreferences();
         if (! use_pure_java)
             loadJCA();
@@ -124,51 +61,55 @@ public class JCA_Preferences
     /** Update the JCA/CAJ related properties from preferences */
     public void installPreferences()
     {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null)
-            return;
         try
         {
-            use_pure_java = prefs.getBoolean(PVPlugin.ID, PURE_JAVA, use_pure_java, null);
-            monitor_mask = MonitorMask.valueOf(prefs.getString(PVPlugin.ID, MONITOR, monitor_mask.name(), null));
-            dbe_property_supported = prefs.getBoolean(PVPlugin.ID, DBE_PROPERTY_SUPPORTED, dbe_property_supported, null);
+            final IPreferencesService prefs = Platform.getPreferencesService();
+            if (prefs == null)
+                return;
 
-            String var_array_config = prefs.getString(PVPlugin.ID, VAR_ARRAY_SUPPORT, "Auto", null);
-            var_array_supported = null;
-            if ("enabled".equalsIgnoreCase(var_array_config)  || "true".equalsIgnoreCase(var_array_config))
-                var_array_supported = true;
-            if ("disabled".equalsIgnoreCase(var_array_config) || "false".equalsIgnoreCase(var_array_config))
-                var_array_supported = false;
+            final DIIRTPreferences dp = DIIRTPreferences.get();
+
+            use_pure_java = dp.getBoolean(ChannelAccess.PREF_PURE_JAVA);
+
+            final DataSourceOptions.MonitorMask mask = DataSourceOptions.MonitorMask.fromString(dp.getString(ChannelAccess.PREF_MONITOR_MASK));
+            if (mask == MonitorMask.CUSTOM)
+                monitor_mask = dp.getInteger(ChannelAccess.PREF_CUSTOM_MASK);
+            else
+                monitor_mask = mask.mask();
+
+            dbe_property_supported = dp.getBoolean(ChannelAccess.PREF_DBE_PROPERTY_SUPPORTED);
+
+            var_array_supported = VariableArraySupport.fromString(dp.getString(ChannelAccess.PREF_VARIABLE_LENGTH_ARRAY));
 
             large_array_threshold = prefs.getInt(PVPlugin.ID, "large_array_threshold", large_array_threshold, null);
 
             // Set the 'CAJ' and 'JNI' copies of the settings
             setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
-            final String addr_list = prefs.getString(PVPlugin.ID, ADDR_LIST, null, null);
+            final String addr_list = dp.getString(ChannelAccess.PREF_ADDR_LIST);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list", addr_list);
             setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list", addr_list);
 
-            final String auto_addr = Boolean.toString(prefs.getBoolean(PVPlugin.ID, AUTO_ADDR_LIST, true, null));
+            final String auto_addr = dp.getString(ChannelAccess.PREF_AUTO_ADDR_LIST);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", auto_addr);
             setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", auto_addr);
 
-            final String timeout = prefs.getString(PVPlugin.ID, TIMEOUT, "30.0", null);
+            final String timeout = dp.getString(ChannelAccess.PREF_CONNECTION_TIMEOUT);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.connection_timeout", timeout);
             setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout", timeout);
 
-            final String beacon_period = prefs.getString(PVPlugin.ID, BEACON_PERIOD, "15.0", null);
+            final String beacon_period = dp.getString(ChannelAccess.PREF_BEACON_PERIOD);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period", beacon_period);
             setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period", beacon_period);
 
-            final String repeater_port = prefs.getString(PVPlugin.ID, REPEATER_PORT, "5065", null);
+            final String repeater_port = dp.getString(ChannelAccess.PREF_REPEATER_PORT);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.repeater_port", repeater_port);
             setSystemProperty("gov.aps.jca.jni.JNIContext.repeater_port", repeater_port);
 
-            final String server_port = prefs.getString(PVPlugin.ID, SERVER_PORT, "5064", null);
+            final String server_port = dp.getString(ChannelAccess.PREF_SERVER_PORT);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port", server_port);
             setSystemProperty("gov.aps.jca.jni.JNIContext.server_port", server_port);
 
-            final String max_array_bytes = prefs.getString(PVPlugin.ID, MAX_ARRAY_BYTES, "16384", null);
+            final String max_array_bytes = dp.getString(ChannelAccess.PREF_MAX_ARRAY_SIZE);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", max_array_bytes);
             setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", max_array_bytes);
 
@@ -259,7 +200,7 @@ public class JCA_Preferences
     }
 
     /** @return Mask used to create CA monitors (subscriptions) */
-    public MonitorMask getMonitorMask()
+    public int getMonitorMask()
     {
         return monitor_mask;
     }
@@ -270,8 +211,8 @@ public class JCA_Preferences
         return dbe_property_supported;
     }
 
-    /** @return whether variable array should be supported (true/false), or auto-detect (null) */
-    public Boolean isVarArraySupported()
+    /** @return whether variable array should be supported (true/false), or auto-detect */
+    public VariableArraySupport isVarArraySupported()
     {
         return var_array_supported;
     }
