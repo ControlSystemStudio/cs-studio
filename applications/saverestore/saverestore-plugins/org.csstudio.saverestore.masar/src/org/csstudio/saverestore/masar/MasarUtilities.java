@@ -20,12 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetEntry;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.SnapshotEntry;
 import org.csstudio.saverestore.data.VDisconnectedData;
@@ -44,8 +47,10 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
+import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.BooleanArrayData;
 import org.epics.pvdata.pv.ByteArrayData;
+import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.DoubleArrayData;
 import org.epics.pvdata.pv.FloatArrayData;
 import org.epics.pvdata.pv.IntArrayData;
@@ -112,9 +117,11 @@ public final class MasarUtilities {
      * @return the list of save sets
      */
     static List<SaveSet> createSaveSetsList(PVStructure result, Branch service, Optional<BaseLevel> baseLevel) {
+        Convert converter = ConvertFactory.getConvert();
         PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-        PVLongArray pvIndices = (PVLongArray) value.getScalarArrayField(MasarConstants.P_CONFIG_INDEX,
-            ScalarType.pvLong);
+        long[] pvIndices = new long[value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX).getLength()];
+        converter.toLongArray(value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX), 0,
+                value.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_INDEX).getLength(), pvIndices, 0);
         PVStringArray pvNames = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_NAME,
             ScalarType.pvString);
         PVStringArray pvDesciptions = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_DESCRIPTION,
@@ -137,7 +144,7 @@ public final class MasarUtilities {
         StringArrayData statuses = new StringArrayData();
         pvStatuses.get(0, pvStatuses.getLength(), statuses);
         LongArrayData indices = new LongArrayData();
-        pvIndices.get(0, pvIndices.getLength(), indices);
+        indices.set(pvIndices, 0);
 
         List<SaveSet> saveSets = new ArrayList<>(names.data.length);
         for (int i = 0; i < names.data.length; i++) {
@@ -154,6 +161,49 @@ public final class MasarUtilities {
         return saveSets;
     }
 
+    static final Pattern readbackPattern = Pattern.compile("RB:([\\S]*);");
+    static final Pattern deltaPattern = Pattern.compile("DELTA:([\\S]*);");
+    /**
+     * Transform the result structure of <code>loadServiceConfig</code> call to a list of save set entries.
+     * 
+     * @param result PVStructure from the loadServiceConfig
+     * @return A list of {@link SaveSetEntry}
+     */
+    static List<SaveSetEntry> createSaveSetEntryList(PVStructure result) {
+        PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+        PVStringArray channelNames = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
+                ScalarType.pvString);
+        PVBooleanArray readonly = (PVBooleanArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY,
+                ScalarType.pvBoolean);
+        PVStringArray groupName = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME,
+                ScalarType.pvString);
+        PVStringArray tags = (PVStringArray) value.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG,
+                ScalarType.pvString);
+
+        StringArrayData names = new StringArrayData();
+        channelNames.get(0, channelNames.getLength(), names);
+
+        BooleanArrayData readOnly = new BooleanArrayData();
+        readonly.get(0, readonly.getLength(), readOnly);
+
+        StringArrayData groupname = new StringArrayData();
+        groupName.get(0, groupName.getLength(), groupname);
+
+        StringArrayData versions = new StringArrayData();
+        tags.get(0, tags.getLength(), versions);
+
+        List<SaveSetEntry> entries = new ArrayList<SaveSetEntry>(channelNames.getLength());
+        for (int i = 0; i < names.data.length; i++) {
+            String readback = "";
+            Matcher m = readbackPattern.matcher(groupname.data[i]);
+            if (m.matches()) {
+                readback = m.group(1);
+            }
+            entries.add(new SaveSetEntry(names.data[i], readback, "", readOnly.data[i]));
+        }
+        return entries;
+    }
+
     /**
      * Transform the result of the <code>retrieveServiceEvents</code> to a list of snapshots.
      *
@@ -165,8 +215,16 @@ public final class MasarUtilities {
      */
     static List<Snapshot> createSnapshotsList(PVStructure result, Function<String, SaveSet> saveSetSupplier)
         throws ParseException {
-        PVLongArray pvEvents = (PVLongArray) result.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong);
-        PVLongArray pvConfigs = (PVLongArray) result.getScalarArrayField(MasarConstants.P_CONFIG_ID, ScalarType.pvLong);
+        Convert converter = ConvertFactory.getConvert();
+
+        long[] pvEvents = new long[result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID).getLength()];
+        converter.toLongArray(result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID), 0,
+                result.getSubField(PVScalarArray.class, MasarConstants.P_EVENT_ID).getLength(), pvEvents, 0);
+
+        long[] pvConfigs = new long[result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID).getLength()];
+        converter.toLongArray(result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID), 0,
+                result.getSubField(PVScalarArray.class, MasarConstants.P_CONFIG_ID).getLength(), pvConfigs, 0);
+
         PVStringArray pvComments = (PVStringArray) result.getScalarArrayField(MasarConstants.P_COMMENT,
             ScalarType.pvString);
         PVStringArray pvTimes = (PVStringArray) result.getScalarArrayField(MasarConstants.P_EVENT_TIME,
@@ -180,9 +238,9 @@ public final class MasarUtilities {
         StringArrayData users = new StringArrayData();
         pvUsers.get(0, pvUsers.getLength(), users);
         LongArrayData events = new LongArrayData();
-        pvEvents.get(0, pvEvents.getLength(), events);
+        events.set(pvEvents, 0);
         LongArrayData configs = new LongArrayData();
-        pvConfigs.get(0, pvConfigs.getLength(), configs);
+        configs.set(pvConfigs, 0);
 
         List<Snapshot> snapshots = new ArrayList<>(events.data.length);
         DateFormat format = MasarConstants.DATE_FORMAT.get();
@@ -227,7 +285,13 @@ public final class MasarUtilities {
         PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_STATUS,
             ScalarType.pvInt);
         PVUnionArray array = result.getUnionArrayField(MasarConstants.P_STRUCTURE_VALUE);
-
+        PVBooleanArray pvIsReadonly = (PVBooleanArray) result
+                .getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY, ScalarType.pvBoolean);
+        PVStringArray pvgroupName = (PVStringArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME,
+                ScalarType.pvString);
+        PVStringArray pvtags = (PVStringArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG,
+                ScalarType.pvString);
+        
         StringArrayData pvName = new StringArrayData();
         pvPVName.get(0, pvPVName.getLength(), pvName);
         StringArrayData alarmMessage = new StringArrayData();
@@ -248,6 +312,12 @@ public final class MasarUtilities {
         pvAlarmStatus.get(0, pvAlarmStatus.getLength(), alarmStatus);
         UnionArrayData data = new UnionArrayData();
         array.get(0, array.getLength(), data);
+        BooleanArrayData isReadonly = new BooleanArrayData();
+        pvIsReadonly.get(0, pvIsReadonly.getLength(), isReadonly);
+        StringArrayData groupName = new StringArrayData();
+        pvgroupName.get(0, pvgroupName.getLength(), groupName);
+        StringArrayData tags = new StringArrayData();
+        pvtags.get(0, pvtags.getLength(), tags);
 
         int length = pvName.data.length;
         List<SnapshotEntry> entries = new ArrayList<>(length);
@@ -259,7 +329,17 @@ public final class MasarUtilities {
             boolean isarray = data.data[i].get() instanceof PVArray;
             VType value = isarray ? toValue((PVArray) data.data[i].get(), time, alarm, dbrType.data[i] % 7)
                 : toValue(data.data[i].get(), time, alarm, dbrType.data[i] % 7);
-            entries.add(new SnapshotEntry(name, value));
+            String readback = "";
+            Matcher m = readbackPattern.matcher(groupName.data[i]);
+            if (m.matches()) {
+                readback = m.group(1);
+            }
+            String delta = "";
+            Matcher m2 = readbackPattern.matcher(tags.data[i]);
+            if (m2.matches()) {
+                delta = m2.group(1);
+            }
+            entries.add(new SnapshotEntry(name, value, true, readback, null, delta, isReadonly.data[i]));
         }
         return new VSnapshot(snapshot, entries, snapshotTime, null);
     }
@@ -570,6 +650,5 @@ public final class MasarUtilities {
         }
         return subj == null ? System.getProperty("user.name") : SecuritySupport.getSubjectName(subj);
     }
-
 
 }

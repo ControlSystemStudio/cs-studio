@@ -60,4 +60,14 @@
             name="Save Set Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.saverestore.ui.ObservableSaveSetEntry"
+            class="org.csstudio.saverestore.ui.util.DataAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>

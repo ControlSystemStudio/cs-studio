@@ -12,7 +12,12 @@ package org.csstudio.saverestore.ui.browser;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -182,12 +187,20 @@ public class SearchDialog extends FXBaseDialog<String> {
         checkExclusiveSelection();
 
         final DatePicker startPicker = new DatePicker();
+        if (startDate != null) {
+            startPicker.setValue(LocalDateTime
+                    .ofInstant(Instant.ofEpochMilli(startDate.getTime()), ZoneId.systemDefault()).toLocalDate());
+        }
         startPicker.setOnAction(e -> {
             LocalDate date = startPicker.getValue();
             startDate = date == null ? null : java.sql.Date.valueOf(date);
             validateInput();
         });
         final DatePicker endPicker = new DatePicker();
+        if (endDate != null) {
+            endPicker.setValue(LocalDateTime
+                    .ofInstant(Instant.ofEpochMilli(endDate.getTime()), ZoneId.systemDefault()).toLocalDate());
+        }
         endPicker.setOnAction(e -> {
             LocalDate date = endPicker.getValue();
             endDate = date == null ? null : java.sql.Date.valueOf(date);
