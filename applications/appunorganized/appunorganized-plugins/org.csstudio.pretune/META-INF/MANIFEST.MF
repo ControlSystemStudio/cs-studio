@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.ui,
  org.diirt.graphene,
  org.diirt.datasource-graphene;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
