@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.time.Instant;
 
-import org.csstudio.simplepv.VTypeHelper;
 import org.diirt.util.text.NumberFormats;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
