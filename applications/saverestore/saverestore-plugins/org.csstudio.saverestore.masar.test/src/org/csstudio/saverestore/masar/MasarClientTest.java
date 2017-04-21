@@ -231,7 +231,7 @@ public class MasarClientTest {
                         for (int i = 0; i < nameArray.data.length; i++) {
                             fields.put(nameArray.data[i], valueArray.data[i]);
                         }
-                    }  
+                    }
                     if ("42".equals(fields.get(MasarConstants.F_EVENTID))) {
                         if (!"Sylvester".equals(fields.get(MasarConstants.F_USER))) {
                             fail("Incorrect username sent to service");

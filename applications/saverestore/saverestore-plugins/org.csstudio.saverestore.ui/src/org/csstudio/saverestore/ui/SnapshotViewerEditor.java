@@ -72,7 +72,6 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -608,7 +607,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                     spinner.getStyleClass().add("diff-cell");
                     spinner.setTooltip(new Tooltip(e.getMessage()));
                 }
-                
             }
         });
         spinner.setValueFactory(new SpinnerValueFactory<Double>() {
@@ -626,7 +624,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                 });
                 return;
             }
-           
+
             @Override
             public void increment(int steps) {
                 if (suppress.get()) {
