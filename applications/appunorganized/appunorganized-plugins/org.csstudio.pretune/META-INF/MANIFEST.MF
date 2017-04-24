@@ -15,10 +15,10 @@ Require-Bundle: org.eclipse.ui,
  org.diirt.vtype;bundle-version="3.0.1",
  com.sun.jersey;bundle-version="1.17.0",
  org.codehaus.jackson.core;bundle-version="1.6.0",
- com.google.guava;bundle-version="18.0.0",
  org.codehaus.jackson.mapper;bundle-version="1.6.0",
  org.diirt.datasource;bundle-version="3.0.1",
  org.diirt.datasource-formula;bundle-version="3.0.1",
  org.diirt.graphene,
  org.diirt.datasource-graphene;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

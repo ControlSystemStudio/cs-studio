@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.csstudio.graphene.MultiAxisLineGraph2DWidget;
 import org.csstudio.ui.util.PopupMenuUtil;
@@ -60,10 +61,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 
 /**
  * @author Kunal Shroff
@@ -544,15 +541,9 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append("column(\"" + columnHeader + "_name\"");
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
-                columnFormula.append(Joiner.on(",").join(
-                        Lists.transform(setPointPvNames,
-                                new Function<String, String>() {
-
-                                    @Override
-                                    public String apply(String setPointPv) {
-                                        return "\"" + setPointPv + "\"";
-                                    }
-                                })));
+                columnFormula.append(setPointPvNames.stream().map(setPointPv -> {
+                    return "\"" + setPointPv + "\"";
+                }).collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -562,15 +553,9 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
                 //
-                columnFormula.append(Joiner.on(",").join(
-                        Lists.transform(setPointPvNames,
-                                new Function<String, String>() {
-
-                                    @Override
-                                    public String apply(String setPointPv) {
-                                        return "'" + setPointPv + "'";
-                                    }
-                                })));
+                columnFormula.append(setPointPvNames.stream().map(setPointPv -> {
+                    return "'" + setPointPv + "'";
+                }).collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -584,15 +569,9 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append("column(\"" + columnHeader + "_name\"");
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
-                columnFormula.append(Joiner.on(",").join(
-                        Lists.transform(readBackPvNames,
-                                new Function<String, String>() {
-
-                                    @Override
-                                    public String apply(String input) {
-                                        return "\"" + input + "\"";
-                                    }
-                                })));
+                columnFormula.append(readBackPvNames.stream().map(readbackPv -> {
+                    return "\"" + readbackPv + "\"";
+                }).collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -601,15 +580,9 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append("column(\"" + columnHeader + "\"");
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
-                columnFormula.append(Joiner.on(",").join(
-                        Lists.transform(readBackPvNames,
-                                new Function<String, String>() {
-
-                                    @Override
-                                    public String apply(String input) {
-                                        return "'" + input + "'";
-                                    }
-                                })));
+                columnFormula.append(readBackPvNames.stream().map(readbackPv -> {
+                    return "'" + readbackPv + "'";
+                }).collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -624,7 +597,7 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append("column(\"" + columnHeader + "\"");
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
-                columnFormula.append(Joiner.on(",").join(weights));
+                columnFormula.append(weights.stream().map(String::valueOf).collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -639,7 +612,7 @@ public class PreTuneEditor extends EditorPart implements
                 columnFormula.append("column(\"" + columnHeader + "\"");
                 columnFormula.append(",");
                 columnFormula.append("arrayOf(");
-                columnFormula.append(Joiner.on(",").join(values));
+                columnFormula.append(values.stream().collect(Collectors.joining(",")));
                 columnFormula.append(")");
                 columnFormula.append(")");
                 columns.add(columnFormula.toString());
@@ -667,14 +640,13 @@ public class PreTuneEditor extends EditorPart implements
             weightedSetPointFormula.append("column(\"weighted_setpoints\"");
             weightedSetPointFormula.append(",");
             weightedSetPointFormula.append("arrayOf(");
-            weightedSetPointFormula.append(Joiner.on(",").join(
-                    weightedSetPointPvNames));
+            weightedSetPointFormula.append(weightedSetPointPvNames.stream().collect(Collectors.joining(",")));
             weightedSetPointFormula.append(")");
             weightedSetPointFormula.append(")");
             columns.add(weightedSetPointFormula.toString());
         }
 
-        fileTableFormula.append(Joiner.on(",").join(columns));
+        fileTableFormula.append(columns.stream().collect(Collectors.joining(",")));
         fileTableFormula.append(")");
 
         pvFormula.append(fileTableFormula.toString());
@@ -716,7 +688,7 @@ public class PreTuneEditor extends EditorPart implements
         // Create the PV for the multi line plot
         StringBuilder dataFormula = new StringBuilder();
         dataFormula.append("=tableOf(");
-        dataFormula.append(Joiner.on(",").join(plotColumns));
+        dataFormula.append(plotColumns.stream().collect(Collectors.joining(",")));
         dataFormula.append(")");
 
         widget.setDataFormula(dataFormula.toString());
