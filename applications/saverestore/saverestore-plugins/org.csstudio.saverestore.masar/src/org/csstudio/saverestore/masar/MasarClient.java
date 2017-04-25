@@ -239,8 +239,6 @@ public class MasarClient {
     private RPCRequester channelRPCRequester;
     private CompletionNotifier connectionNotifier;
 
-    private boolean enableUpdate = Activator.getInstance().getPreferenceStore().getBoolean("enable.update");
-
     /**
      * Creates a new client, but does not initialise it. {@link #initialise(String[])} has to be called before anything
      * can be done with this client.
@@ -476,7 +474,7 @@ public class MasarClient {
                     .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
             Scalar s2 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
             PVString a2 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s2);
-            if (enableUpdate) {
+            if (Activator.getInstance().isEnableUpdate()) {
                 List<SaveSet> existing = getSaveSets(set.getDescriptor().getBaseLevel(),
                         set.getDescriptor().getBranch(), set.getDescriptor().getName(), false);
                 if (existing == null || existing.isEmpty()) {
