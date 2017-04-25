@@ -47,7 +47,7 @@ public class TitlePart extends PlotPart
      * Invoked to paint the part.
      *  <p>Is invoked on background thread.
      *  <p>Derived part can override, should invoke super.
-     * @param gc {@link GC} for painting in background thread 
+     * @param gc {@link GC} for painting in background thread
      * @param media {@link SWTMediaPool}
      * @param font {@link Font}
      */
