@@ -24,7 +24,10 @@ public abstract class NumericAxis extends AxisPart<Double>
               new LinearScreenTransform(), new LinearTicks());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Use a logarithmic scale
+     * @param use_log set logarithmic scale
+     */
     public void setLogarithmic(boolean use_log)
     {
         if (use_log == isLogarithmic())
