@@ -108,6 +108,7 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getHandleBounds() {
         return getPoints().getBounds();
     }

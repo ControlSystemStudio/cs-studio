@@ -125,12 +125,15 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
      *  @param base_name Base name without optional prefix
      *  @throws Exception on error
      */
-    public JCA_PV(final String name, final String base_name) throws Exception
+    public JCA_PV(final String name, String base_name) throws Exception
     {
         super(name);
         logger.fine("JCA PV " + base_name);
         // Read-only until connected and we learn otherwise
         notifyListenersOfPermissions(true);
+        base_name = base_name.trim();
+        if (base_name.isEmpty())
+            throw new Exception("Empty PV name '" + name + "'");
         // .RTYP does not provide meta data
         plain_dbr = base_name.endsWith(".RTYP");
         createChannel(base_name);

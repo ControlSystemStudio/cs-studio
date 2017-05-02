@@ -25,7 +25,7 @@ import sun.net.smtp.SmtpClient;
  *  @author Kay Kasemir
  *  @author Bastian Knerr - documented specific exception types
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({ "nls", "restriction" })
 public class EMailSender
 {
     /** Message boundary marker */

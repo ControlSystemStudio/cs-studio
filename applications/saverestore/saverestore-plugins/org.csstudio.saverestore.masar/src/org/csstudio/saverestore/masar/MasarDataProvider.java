@@ -236,7 +236,13 @@ public class MasarDataProvider implements DataProvider {
      */
     @Override
     public SaveSetData saveSaveSet(SaveSetData set, String comment) throws DataProviderException {
-        throw new UnsupportedActionException("MASAR does not support save set editing.");
+        try {
+            return mc.createSaveSets(set, comment);
+        } catch (Exception e) {
+            throw new DataProviderException(
+                    String.format("Error creating snapshot config for '%s'.", set.toString()),
+                    e);
+        }
     }
 
     /*
@@ -402,7 +408,7 @@ public class MasarDataProvider implements DataProvider {
      */
     @Override
     public boolean isSaveSetSavingSupported() {
-        return false;
+        return true;
     }
 
     /*
