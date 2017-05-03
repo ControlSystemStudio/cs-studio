@@ -21,7 +21,7 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
+      point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.opibuilder.editor.OPIEditorPerspective"
             icon="icons/OPIBuilder.png"
@@ -159,14 +159,6 @@
             id="org.csstudio.opibuilder.editor.actionSet"
             label="BOY Editor Actions"
             visible="true">
-         <action
-               class="org.csstudio.opibuilder.actions.OpenOPIPerspectiveAction"
-               icon="icons/OPIBuilder.png"
-               id="org.csstudio.opibuilder.OpenOPIEditorPerspectiveAction"
-               label="OPI Editor Perspective"
-               menubarPath="css/display/"
-               style="push">
-         </action>
          <action
                class="org.csstudio.opibuilder.actions.RunOPIAction"
                definitionId="org.csstudio.opibuilder.runopi"
