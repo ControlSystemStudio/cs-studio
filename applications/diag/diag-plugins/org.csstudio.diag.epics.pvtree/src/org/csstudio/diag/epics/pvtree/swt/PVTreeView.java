@@ -286,7 +286,9 @@ public class PVTreeView extends ViewPart
 
         model.setRootPV(new_pv_name);
         viewer.refresh();
-        model.getRoot().start();
+
+        if (new_pv_name.length() > 0)
+            model.getRoot().start();
     }
 
     private void hookContextMenu()

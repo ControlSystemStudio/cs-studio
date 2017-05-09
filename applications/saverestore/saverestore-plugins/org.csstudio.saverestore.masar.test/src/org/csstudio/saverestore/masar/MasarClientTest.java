@@ -62,6 +62,7 @@ import org.epics.pvdata.pv.PVUnionArray;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.Union;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,8 +121,19 @@ public class MasarClientTest {
                         .put(0, 3, new String[] { "sts1", "sts2", "sts3" }, 0);
                 } else if (MasarConstants.FC_LOAD_SNAPSHOTS
                     .equals(in.getStringField(MasarConstants.F_FUNCTION).get())) {
-                    PVString field = in.getStringField(MasarConstants.F_EVENTID);
-                    if (field != null && "5".equals(field.get())) {
+                    PVStringArray names = (PVStringArray) in.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+                    PVStringArray values = (PVStringArray) in.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+                    Map<String, String> fields = new HashMap<String, String>();
+                    if (names != null && values != null) {
+                        StringArrayData nameArray = new StringArrayData();
+                        names.get(0, names.getLength(), nameArray);
+                        StringArrayData valueArray = new StringArrayData();
+                        values.get(0, values.getLength(), valueArray);
+                        for (int i = 0; i < nameArray.data.length; i++) {
+                            fields.put(nameArray.data[i], valueArray.data[i]);
+                        }
+                    }
+                    if (fields != null && "5".equals(fields.get(MasarConstants.F_EVENTID))) {
                         DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
@@ -135,7 +147,7 @@ public class MasarClientTest {
                             .put(0, 1, new String[] { format.format(date1) }, 0);
                         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString)).put(0,
                             1, new String[] { "taz-mania" }, 0);
-                    } else if (in.getStringField(MasarConstants.F_CONFIGID) == null) {
+                    } else if (fields != null && fields.get(MasarConstants.F_CONFIGID) == null) {
                         DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
@@ -150,7 +162,7 @@ public class MasarClientTest {
                                 new String[] { format.format(date1), format.format(date2), format.format(date3) }, 0);
                         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString)).put(0,
                             3, new String[] { "bugsbunny", "elmerfudd", "daffyduck" }, 0);
-                    } else if (in.getStringField(MasarConstants.F_EVENTID) == null) {
+                    } else if (fields != null && fields.get(MasarConstants.F_EVENTID) == null) {
                         DateFormat format = MasarConstants.DATE_FORMAT.get();
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SNAPSHOT);
                         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
@@ -186,6 +198,12 @@ public class MasarClientTest {
                         ScalarType.pvInt)).put(0, 3, new int[] { 1, 2, 3 }, 0);
                     ((PVIntArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_STATUS, ScalarType.pvInt))
                         .put(0, 3, new int[] { 1, 2, 3 }, 0);
+                    ((PVBooleanArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY, ScalarType.pvBoolean)).put(0, 3,
+                            new boolean[] { false, false, false }, 0);
+                    ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME, ScalarType.pvString)).put(0,
+                            3, new String[] { "", "", "" }, 0);
+                    ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString)).put(0,
+                            3, new String[] { "", "", "" }, 0);
                     Union uu1 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
                     PVUnion u1 = PVDataFactory.getPVDataCreate().createPVUnion(uu1);
                     ScalarArray s1 = FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvDouble);
@@ -208,16 +226,28 @@ public class MasarClientTest {
                         new PVUnion[] { u1, u2, u3 }, 0);
                     structure = struct;
                 } else if (MasarConstants.FC_SAVE_SNAPSHOT.equals(in.getStringField(MasarConstants.F_FUNCTION).get())) {
-                    if ("42".equals(in.getStringField(MasarConstants.F_EVENTID).get())) {
-                        if (!"Sylvester".equals(in.getStringField(MasarConstants.F_USER).get())) {
+                    PVStringArray names = (PVStringArray) in.getScalarArrayField(MasarConstants.F_NAME, ScalarType.pvString);
+                    PVStringArray values = (PVStringArray) in.getScalarArrayField(MasarConstants.F_VALUE, ScalarType.pvString);
+                    Map<String, String> fields = new HashMap<String, String>();
+                    if (names != null && values != null) {
+                        StringArrayData nameArray = new StringArrayData();
+                        names.get(0, names.getLength(), nameArray);
+                        StringArrayData valueArray = new StringArrayData();
+                        values.get(0, values.getLength(), valueArray);
+                        for (int i = 0; i < nameArray.data.length; i++) {
+                            fields.put(nameArray.data[i], valueArray.data[i]);
+                        }
+                    }
+                    if ("42".equals(fields.get(MasarConstants.F_EVENTID))) {
+                        if (!"Sylvester".equals(fields.get(MasarConstants.F_USER))) {
                             fail("Incorrect username sent to service");
-                        } else if (!"saprans succotash".equals(in.getStringField(MasarConstants.F_DESCRIPTION).get())) {
+                        } else if (!"saprans succotash".equals(fields.get(MasarConstants.F_DESCRIPTION))) {
                             fail("Incorrect comment sent to service");
                         }
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SAVE_SNAPSHOT);
                         PVBoolean status = (PVBoolean) structure.getBooleanField(MasarConstants.P_STRUCTURE_VALUE);
                         status.put(true);
-                    } else if ("45".equals(in.getStringField(MasarConstants.F_EVENTID).get())) {
+                    } else if ("45".equals(fields.get(MasarConstants.F_EVENTID))) {
                         structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SAVE_SNAPSHOT);
                         PVBoolean status = (PVBoolean) structure.getBooleanField(MasarConstants.P_STRUCTURE_VALUE);
                         status.put(false);
@@ -248,6 +278,12 @@ public class MasarClientTest {
                         ScalarType.pvInt)).put(0, 3, new int[] { 1, 2, 3 }, 0);
                     ((PVIntArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_STATUS, ScalarType.pvInt))
                         .put(0, 3, new int[] { 1, 2, 3 }, 0);
+                    ((PVBooleanArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_READONLY, ScalarType.pvBoolean)).put(0, 3,
+                            new boolean[] { false, false, false }, 0);
+                    ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_GROUP_NAME, ScalarType.pvString)).put(0,
+                            3, new String[] { "", "", "" }, 0);
+                    ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_TAG, ScalarType.pvString)).put(0,
+                            3, new String[] { "", "", "" }, 0);
                     Union uu1 = FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]);
                     PVUnion u1 = PVDataFactory.getPVDataCreate().createPVUnion(uu1);
                     ScalarArray s1 = FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvDouble);

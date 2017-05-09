@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -42,6 +43,9 @@ import org.csstudio.ui.fx.util.StaticTextField;
 import org.csstudio.ui.fx.util.UnfocusableButton;
 import org.csstudio.ui.fx.util.UnfocusableToggleButton;
 import org.diirt.vtype.Array;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -84,6 +88,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -99,6 +105,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javafx.util.converter.DoubleStringConverter;
 
 /**
  *
@@ -129,6 +136,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
     private TextArea parametersField;
     private Button saveSnapshotButton;
     private Menu contextMenu;
+
+    private Double percentage = 0.0;
+    private int index;
+
+    private static final DoubleStringConverter doubleStringConverter = new DoubleStringConverter();
 
     /**
      * Constructs a new editor.
@@ -559,10 +571,109 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         separator2.getStylesheets().add(style);
         Separator separator3 = new Separator(Orientation.VERTICAL);
         separator3.getStylesheets().add(style);
+
         leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, showStoredReadbacksButton,
             separator2, importButton, separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
 
         HBox rightToolbar = new HBox(5);
+
+        Spinner<Double> spinner = new Spinner<Double>();
+        spinner.setMinWidth(140);
+        spinner.getStylesheets().add(style);
+        spinner.setEditable(true);
+        spinner.getEditor().setText("0.0");
+        spinner.getEditor().setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    spinner.getEditor().getStyleClass().remove("diff-cell");
+                    percentage = doubleStringConverter.fromString(spinner.getEditor().getText());
+                    List<VSnapshot> snapshots = controller.getAllSnapshots();
+                    Optional<VSnapshot> selectedSnapshot;
+                    if (snapshots.isEmpty()) {
+                        return;
+                    } else if (snapshots.size() == 1) {
+                        selectedSnapshot = Optional.of(snapshots.get(0));
+                    } else {
+                        selectedSnapshot = FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+                                "Select the snapshot that you wish to tune", snapshots.get(0), snapshots);
+                    }
+                    if (selectedSnapshot.isPresent()){
+                        index = snapshots.indexOf(selectedSnapshot.get());
+                    }
+                } catch (Exception e) {
+                    spinner.getEditor().getStyleClass().add("diff-cell");
+                    spinner.getStyleClass().add("diff-cell");
+                    spinner.setTooltip(new Tooltip(e.getMessage()));
+                }
+            }
+        });
+        spinner.setValueFactory(new SpinnerValueFactory<Double>() {
+            private AtomicBoolean suppress = new AtomicBoolean();
+
+            @Override
+            public void decrement(int steps) {
+                if (suppress.get())
+                    return;
+                Double multiplier = (100.0 - (percentage * steps)) / 100.0;
+                Platform.runLater(() -> {
+                    suppress.set(true);
+                    tune(multiplier);
+                    suppress.set(false);
+                });
+                return;
+            }
+
+            @Override
+            public void increment(int steps) {
+                if (suppress.get()) {
+                    return;
+                }
+                Double multiplier = (100.0 + (percentage * steps)) / 100.0;
+                Platform.runLater(() -> {
+                    suppress.set(true);
+                    tune(multiplier);
+                    suppress.set(false);
+                });
+                return;
+            }
+
+            private void tune(Double multiplier) {
+                table.getItems().stream().forEach(t -> {
+                    VType s;
+                    if (index > 0) {
+                        s = t.compareStoredReadbackProperty(index).getValue().base;
+                    } else {
+                        s = t.snapshotValProperty().getValue();
+                    }
+                    if (s instanceof VNumber) {
+                        VNumber n = (VNumber) s;
+                        Double m = n.getValue().doubleValue() * multiplier;
+                        VNumber newNumber = ValueFactory.newVNumber(m, n, n, n);
+                        t.setSnapshotValue(newNumber, index);
+                        controller.updateSnapshot(index, t);
+                    }
+                });
+            }
+
+//            private void init(){
+//                // allow to restore non saved snapshots as well
+//                List<VSnapshot> snapshots = controller.getAllSnapshots();
+//                if (snapshots.isEmpty()) {
+//                    return;
+//                } else if (snapshots.size() == 1) {
+//                    controller.restoreSnapshot(snapshots.get(0));
+//                } else {
+//                    Optional<VSnapshot> f = FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+//                        "Select the snapshot that you wish to restore", snapshots.get(0), snapshots);
+//                    if(f.isPresent()){
+//                        index = snapshots.indexOf(f.get());
+//                    }
+//                }
+//            }
+        });
+
         ComboBox<String> filterCombo = new ComboBox<>();
         filterCombo.setTooltip(new Tooltip("Pnly PVs that fully or partially match the expression will be displayed"));
         filterCombo.getItems().add(ALL_ITEMS);
@@ -637,7 +748,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                 Platform.runLater(() -> table.updateTable(entries));
             }));
         rightToolbar.setAlignment(Pos.CENTER_RIGHT);
-        rightToolbar.getChildren().addAll(new Label("Filter (partial match):"), filterCombo, hideEqualItemsButton);
+        rightToolbar.getChildren().addAll(
+                new Label("Tune Setpoints(%):"), spinner,
+                new Label("Filter (partial match):"), filterCombo, hideEqualItemsButton);
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);

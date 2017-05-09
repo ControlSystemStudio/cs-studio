@@ -8,7 +8,6 @@
 package org.csstudio.swt.widgets.figures;
 import java.beans.PropertyDescriptor;
 
-import org.csstudio.swt.widgets.figures.ImageFigure;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Figure;
 
