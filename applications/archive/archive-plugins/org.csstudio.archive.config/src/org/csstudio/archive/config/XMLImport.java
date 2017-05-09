@@ -133,7 +133,7 @@ public class XMLImport extends DefaultHandler
 
     /**
      * Parse an XML configuration into the config
-     * 
+     *
      * @param stream
      * @param engine_name
      * @param description
@@ -220,8 +220,8 @@ public class XMLImport extends DefaultHandler
                 try
                 {
                     group = config.addGroup(engine, name);
-                    System.out.println("Import '" + engine.getName()
-                            + "', Group '" + name + "'");
+                    // System.out.println("Import '" + engine.getName()
+                    // + "', Group '" + name + "'");
                 }
                 catch (Exception ex)
                 {
