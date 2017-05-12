@@ -102,6 +102,7 @@
                 <li><code>Bottom</code>: Bottom View</li>
                 <li><code>Default_View</code>: Default View</li>
                 <li><code>Detached</code>: Detached View</li>
+                <li><code>NEW_SHELL</code>: Standalone Window</li>
             </ul>
             <p>
                 If macro
@@ -109,6 +110,18 @@
                 is not set or is not in one of above positions, it will be opened in
                 editor area.
             </p>
+            <p>
+                In case macro
+                <code>Position</code>
+                assumes
+               <code>NEW_SHELL</code>
+               value, it is possible to define also the macro
+               <code>MinimizeEditor</code>
+               . The available values are:</p>
+            <ul>
+                <li><code>true</code>: The editor windows is minimized after start-up.</li>
+                <li><code>false</code>: No actions are taken.
+            </ul>
             <p>
                 Multiple top OPIs are separated by
                 <code>|</code>
