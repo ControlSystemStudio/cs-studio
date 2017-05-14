@@ -404,8 +404,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
         if (macrosInput != null) {
             macrosInput = macrosInput.getCopy();
-            macrosInput.getMacrosMap().putAll(
-                    displayModel.getMacrosInput().getMacrosMap());
+            macrosInput.putAll(displayModel.getMacrosInput());
             displayModel.setPropertyValue(
                     AbstractContainerModel.PROP_MACROS, macrosInput);
         }

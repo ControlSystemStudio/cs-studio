@@ -43,8 +43,8 @@ public class MacrosInputDialog extends Dialog {
         super(parentShell);
         this.title = dialogTitle;
         this.contents = new ArrayList<String[]>();
-        for(String key : macrosInput.getMacrosMap().keySet()){
-            this.contents.add(new String[]{key, macrosInput.getMacrosMap().get(key)});
+        for(String key : macrosInput.keySet()){
+            this.contents.add(new String[]{key, macrosInput.get(key)});
         }
         this.includeParentMacros = macrosInput.isInclude_parent_macros();
 

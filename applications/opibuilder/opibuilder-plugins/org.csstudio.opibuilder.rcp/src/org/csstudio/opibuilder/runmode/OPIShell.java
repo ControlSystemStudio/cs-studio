@@ -247,7 +247,7 @@ public final class OPIShell implements IOPIRuntime {
         XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
         if (macrosInput != null) {
             macrosInput = macrosInput.getCopy();
-            macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
+            macrosInput.putAll(displayModel.getMacrosInput());
             displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
         }
         viewer.setContents(displayModel);

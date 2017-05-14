@@ -212,7 +212,7 @@ public class PreferencesHelper {
     /**Get the macros map from preference store.
      * @return the macros map. null if failed to get macros from preference store.
      */
-    public static LinkedHashMap<String, String> getMacros(){
+    public static Map<String, String> getMacros(){
         if(getString(RUN_MACROS) != null){
             try {
                 LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
@@ -250,7 +250,7 @@ public class PreferencesHelper {
                 else{
                     String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
                     if(macro.length == 2)
-                        macrosInput.getMacrosMap().put(macro[0], macro[1]);
+                        macrosInput.put(macro[0], macro[1]);
                 }
             }
             if(path != null)
