@@ -71,7 +71,7 @@
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.6</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/3.0</rap-site>
         <rap-gef-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
-        <platform-version>[4.4,4.5,4.6)</platform-version>
+        <platform-version>[4.4,4.6)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/releases/latest/</swtbot-site>
       </properties>
     </profile>
