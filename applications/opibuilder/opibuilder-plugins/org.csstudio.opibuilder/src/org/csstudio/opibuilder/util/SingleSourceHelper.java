@@ -47,7 +47,7 @@ public abstract class SingleSourceHelper {
                         }
                         catch (Exception ex)
                         {
-                            // Ignore
+                            ErrorHandlerUtil.handleError("Failed to minimize editor", ex);
                         }
                     }
                 }
