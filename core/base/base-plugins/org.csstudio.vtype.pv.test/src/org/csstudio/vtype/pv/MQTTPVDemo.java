@@ -9,6 +9,7 @@ package org.csstudio.vtype.pv;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
+
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Handler;
@@ -33,10 +34,9 @@ import org.junit.rules.ErrorCollector;
 /** JUnit tests
  *  @author Megan Grodowitz
  */
-
+@SuppressWarnings("nls")
 public class MQTTPVDemo implements PVListener
 {
-
     public class StatusListener implements PVListener
     {
         private volatile boolean is_online;
@@ -444,6 +444,4 @@ public class MQTTPVDemo implements PVListener
         PVPool.releasePV(pv1);
         PVPool.releasePV(pv2);
     }
-
-
 }

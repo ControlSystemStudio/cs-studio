@@ -7,14 +7,19 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 /** JUnit test of the {@link RefCountMap}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RefCountMapUnitTest
 {
     @Test
