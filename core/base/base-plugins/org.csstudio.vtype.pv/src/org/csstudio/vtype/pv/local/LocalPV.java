@@ -8,9 +8,15 @@
 package org.csstudio.vtype.pv.local;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VStringArray;
 import org.diirt.vtype.VType;
 
 /** Local Process Variable
@@ -32,7 +38,7 @@ import org.diirt.vtype.VType;
 @SuppressWarnings("nls")
 public class LocalPV extends PV
 {
-    private final Class<? extends VType> type;
+    private volatile Class<? extends VType> type;
     private final List<String> initial_value;
 
     protected LocalPV(final String actual_name, final Class<? extends VType> type, final List<String> initial_value) throws Exception
@@ -47,22 +53,26 @@ public class LocalPV extends PV
 
     protected void checkInitializer(final Class<? extends VType> type, final List<String> initial_value)
     {
-        if (type != this.type  ||  !initial_value.equals(this.initial_value))
+        if (type != this.type  ||  ! Objects.equals(initial_value, this.initial_value))
             logger.log(Level.WARNING, "PV " + getName() + " was initialized as " + formatInit(this.type, this.initial_value) +
                     " and is now requested as " +  formatInit(type, initial_value));
     }
 
-    private String formatInit(Class<? extends VType> type, List<String> value)
+    private String formatInit(final Class<? extends VType> type, final List<String> value)
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("<").append(type.getSimpleName()).append(">(");
-        for (int i=0; i<value.size(); ++i)
+        buf.append('<').append(type.getSimpleName()).append('>');
+        if (value != null)
         {
-            if (i > 0)
-                buf.append(",");
-            buf.append(value.get(i));
+            buf.append('(');
+            for (int i=0; i<value.size(); ++i)
+            {
+                if (i > 0)
+                    buf.append(",");
+                buf.append(value.get(i));
+            }
+            buf.append(')');
         }
-        buf.append(")");
         return buf.toString();
     }
 
@@ -74,12 +84,30 @@ public class LocalPV extends PV
 
         try
         {
-            final VType value = ValueHelper.adapt(new_value, type, read());
+            final VType last_value = read();
+            final boolean change_from_double = initial_value == null  &&
+                                               last_value instanceof VDouble  &&
+                                               ((VDouble)last_value).getAlarmSeverity() == AlarmSeverity.UNDEFINED;
+            final VType value = ValueHelper.adapt(new_value, type, last_value, change_from_double);
+            if (change_from_double  &&  ! type.isInstance(value))
+            {
+                final Class<? extends VType> new_type;
+                if (value instanceof VDoubleArray)
+                    new_type = VDoubleArray.class;
+                else if (value instanceof VStringArray)
+                    new_type = VStringArray.class;
+                else
+                    new_type = VString.class;
+                logger.log(Level.WARNING, "PV " + getName() + " changed from " + type.getSimpleName() + " to " + new_type.getSimpleName());
+                type = new_type;
+            }
             notifyListenersOfValue(value);
         }
         catch (Exception ex)
         {
-            throw new Exception("Failed to write '" + new_value + "' to " + getName(), ex);
+            if (new_value != null  &&  new_value.getClass().isArray())
+                throw new Exception("Failed to write " + new_value.getClass().getSimpleName() + " to " + getName(), ex);
+            throw new Exception("Failed to write '" + new_value + "' to " + this, ex);
         }
      }
 

@@ -7,6 +7,13 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -23,9 +30,6 @@ import org.diirt.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 /** JUnit tests
  *
  *  <p>These require a softIoc with
@@ -33,6 +37,7 @@ import static org.hamcrest.CoreMatchers.*;
  *  and org.csstudio.vtype.pv.test/examples/test.db
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class JCAPVDemo implements PVListener
 {
     private static final String NETWORK = "127.0.0.1 webopi.sns.gov:5066";
