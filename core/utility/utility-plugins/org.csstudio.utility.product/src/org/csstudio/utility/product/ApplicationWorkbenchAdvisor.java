@@ -29,13 +29,13 @@ import org.osgi.framework.Bundle;
 
 /**
  * Tell the workbench how to behave.
- * 
+ *
  * @author Kay Kasemir
  * @author Xihui Chen - IDE-specific workbench images
- * 
+ *
  * Updated {@link ApplicationWorkbenchAdvisor#declareWorkbenchImages()} with new IDE specific images to
- * be in line with Eclipse 4.6 Neon. CSS uses same IDE specific images as Eclipse.
- * 
+ * be in line with Eclipse 4.6 Neon. CSS uses same IDE specific images as Eclipse. Ref: bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=234252
+ *
  * @author <a href="mailto:borut.terpinc@cosylab.com">Borut Terpinc</a>
  */
 
@@ -63,6 +63,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
         IDE.registerAdapters();
 
         // declare workbench specific images
+        // According to bug -- bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=234252
         declareWorkbenchImages();
     }
 
@@ -90,7 +91,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
     /**
-     * Declares all IDE-specific workbench images. CSS uses the same IDE-specific images as Eclipse product. 
+     * Declares all IDE-specific workbench images. CSS uses the same IDE-specific images as Eclipse product.
      * This includes both "shared"
      * images (named in {@link org.eclipse.ui.ide.IDE.SharedImages}) and
      * internal images (named in
@@ -100,19 +101,18 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
      */
     private void declareWorkbenchImages() {
 
-        
         /**
          * prefix:
          * e - enabled icons
          * d - disabled icons
-         * 
+         *
          * lcl - toolbar icons
          * tool - toolbar icons
-         * obj - model object icons 
-         * wizban - wizdard icons 
+         * obj - model object icons
+         * wizban - wizdard icons
          * eviewview - icons
          */
-        
+
         final String ICONS_PATH = "$nl$/icons/full/";//$NON-NLS-1$
         final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; //$NON-NLS-1$
         final String PATH_DLOCALTOOL = ICONS_PATH + "dlcl16/"; //$NON-NLS-1$
