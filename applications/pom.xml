@@ -296,7 +296,7 @@
             </configuration>
         </plugin>
       </plugins>
-    </pluginManagement> 
+    </pluginManagement>
     <!-- PLUGIN CONFIGURATION -->
     <plugins>
       <plugin>
