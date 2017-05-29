@@ -201,21 +201,28 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
     }
 
     private ScrollPane getScrollPaneForContained(AbstractScrollableEditpart one, AbstractScrollableEditpart two) {
-        EditPart part = two;
+        if (isAAncestorOfB(one, two))
+            return one.getScrollPane();
+        else if (isAAncestorOfB(two, one))
+            return two.getScrollPane();
+        else
+            return null;
+    }
+
+    /**
+     * @param a scrollable A
+     * @param b scrollable B
+     * @return <code>true</code> if A is ancestor of B, <code>false</code> otherwise
+     */
+    private boolean isAAncestorOfB(AbstractScrollableEditpart a, AbstractScrollableEditpart b) {
+        EditPart part = b;
         // is two child of one?
         while (part != null) {
-            if (part == one)
-                return one.getScrollPane();
+            if (part == a)
+                return true;
             part = part.getParent();
         }
-        // is one child of two?
-        part = one;
-        while (part != null) {
-            if (part == two)
-                return two.getScrollPane();
-            part = part.getParent();
-        }
-        return null;
+        return false;
     }
 
     private ScrollPane getCommonScrollableParent(AbstractScrollableEditpart one, AbstractScrollableEditpart two) {
