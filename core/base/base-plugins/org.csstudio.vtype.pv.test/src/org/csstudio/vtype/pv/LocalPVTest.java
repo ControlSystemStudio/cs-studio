@@ -29,7 +29,9 @@ import org.csstudio.vtype.pv.RefCountMap.ReferencedEntry;
 import org.csstudio.vtype.pv.local.LocalPV;
 import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.csstudio.vtype.pv.local.ValueHelper;
+import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VDoubleArray;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VLong;
 import org.diirt.vtype.VNumberArray;
@@ -359,6 +361,85 @@ public class LocalPVTest implements PVListener
         assertThat(ValueUtil.numericValueOf(value), equalTo(47.11));
         PVPool.releasePV(pv);
     }
+
+    @Test
+    public void testUninitializedThenDouble() throws Exception
+    {
+        // PVs without initializer default to double 0.0
+        System.out.println("PV without initializer");
+        PV pv = PVPool.getPV("x");
+        System.out.println(pv);
+        VType value = pv.read();
+        assertThat(value, instanceOf(VDouble.class));
+        assertThat(((VDouble)value).getValue(), equalTo(0.0));
+        // with undefined alarm
+        assertThat(((VDouble)value).getAlarmSeverity(), equalTo(AlarmSeverity.UNDEFINED));
+
+        // Alarm clears when writing a value
+        pv.write(3.14);
+        System.out.println(pv);
+        value = pv.read();
+        assertThat(((VDouble)value).getValue(), equalTo(3.14));
+        // with undefined alarm
+        assertThat(((VDouble)value).getAlarmSeverity(), equalTo(AlarmSeverity.NONE));
+
+        // Can also write string, it's parsed into number
+        pv.write("42");
+        System.out.println(pv);
+        value = pv.read();
+        // Type stays as double
+        assertThat(value, instanceOf(VDouble.class));
+        assertThat(((VDouble)value).getValue(), equalTo(42.0));
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testUninitializedThenDoubleArray() throws Exception
+    {
+        // When there is no initializer, allow changing the type
+        System.out.println("PV without initializer");
+        PV pv = PVPool.getPV("x");
+        System.out.println(pv);
+        VType value = pv.read();
+        assertThat(value, instanceOf(VDouble.class));
+        pv.write(new double[] { 4, 5, 6 });
+        System.out.println(pv);
+        value = pv.read();
+        assertThat(value, instanceOf(VDoubleArray.class));
+        // Once set, the PV is a double array, parsing string into numeric array
+        pv.write("7, 8, 9");
+        System.out.println(pv);
+        value = pv.read();
+        assertThat(value, instanceOf(VDoubleArray.class));
+        // Writing a non-number string is now an error
+        try
+        {
+            pv.write("not allowed");
+            fail("Allowed writing a string to double[]");
+        }
+        catch (Exception ex)
+        {
+            // NOP
+        }
+        PVPool.releasePV(pv);
+    }
+
+    @Test
+    public void testUninitializedThenString() throws Exception
+    {
+        // Similar: Not initialized, then set to string
+        System.out.println("PV without initializer");
+        PV pv = PVPool.getPV("x");
+        VType value = pv.read();
+        assertThat(value, instanceOf(VDouble.class));
+        pv.write("Some text");
+        System.out.println(pv);
+        value = pv.read();
+        assertThat(value, instanceOf(VString.class));
+
+        PVPool.releasePV(pv);
+    }
+
 
     @Override
     public void permissionsChanged(PV pv, boolean readonly)

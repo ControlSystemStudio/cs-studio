@@ -9,18 +9,19 @@ package org.csstudio.vtype.pv;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.List;
+
 import org.csstudio.vtype.pv.mqtt.VTypeToFromString;
 import org.junit.Test;
-import static org.junit.Assert.fail;
 
 /** JUnit tests
  *  @author Megan Grodowitz
  */
+@SuppressWarnings("nls")
 public class VTypeToFromStringTest
 {
-
-
     @Test
     public void testListSplit() throws Exception
     {
@@ -103,6 +104,5 @@ public class VTypeToFromStringTest
         {
             System.out.println("Successful error catch of no closing quote: " + ex.getMessage());
         }
-
     }
 }

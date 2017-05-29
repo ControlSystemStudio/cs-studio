@@ -24,6 +24,7 @@ import org.junit.Before;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LongMonitorDemo implements PVListener
 {
     @Before
