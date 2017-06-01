@@ -266,6 +266,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
     /**
      * {@inheritDoc}
      */
+    @Override
     public Rectangle getHandleBounds() {
         return getPoints().getBounds();
     }

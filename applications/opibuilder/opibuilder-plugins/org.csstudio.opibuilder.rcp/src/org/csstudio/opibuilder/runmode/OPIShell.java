@@ -159,7 +159,9 @@ public final class OPIShell implements IOPIRuntime {
                 sendUpdateCommand();
             }
             @Override
-            public void shellActivated(ShellEvent e) {}
+            public void shellActivated(ShellEvent e) {
+                activeShell = OPIShell.this;
+            }
         });
         shell.addDisposeListener(new DisposeListener() {
             @Override

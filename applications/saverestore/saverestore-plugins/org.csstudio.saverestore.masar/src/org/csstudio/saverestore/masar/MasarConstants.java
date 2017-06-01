@@ -75,26 +75,50 @@ public final class MasarConstants {
     static final String P_SNAPSHOT_ALARM_SEVERITY = "severity";
     static final String P_SNAPSHOT_ALARM_STATUS = "status";
     static final String P_SNAPSHOT_ALARM_MESSAGE = "message";
+    static final String P_SNAPSHOT_READONLY = "readonly";
+    static final String P_SNAPSHOT_GROUP_NAME = "groupName";
+    static final String P_SNAPSHOT_TAG = "tags";
     // The input parameter IDs
     static final String F_FUNCTION = "function";
     static final String F_SYSTEM = "system";
+    static final String F_CONFIG = "config";
     static final String F_CONFIGNAME = "configname";
     static final String F_SERVICENAME = "servicename";
     static final String F_CONFIGID = "configid";
+    static final String F_OLDCONFIGID = "oldidx";
     static final String F_EVENTID = "eventid";
     static final String F_COMMENT = "comment";
     static final String F_START = "start";
     static final String F_END = "end";
     static final String F_USER = "user";
     static final String F_DESCRIPTION = "desc";
+    static final String F_NAME = "name";
+    static final String F_VALUE = "value";
+    static final String F_LABELS = "labels";
     // Masar function names
     static final String FC_TAKE_SNAPSHOT = "saveSnapshot";
     static final String FC_LOAD_SNAPSHOT_DATA = "retrieveSnapshot";
+    static final String FC_SAVE_SAVE_SETS = "storeServiceConfig";
     static final String FC_LOAD_SAVE_SETS = "retrieveServiceConfigs";
     static final String FC_LOAD_BASE_LEVELS = "retrieveServiceConfigProps";
     static final String FC_SAVE_SNAPSHOT = "updateSnapshotEvent";
     static final String FC_LOAD_SNAPSHOTS = "retrieveServiceEvents";
     static final String FC_FIND_SNAPSHOTS = FC_LOAD_SNAPSHOTS;
+    static final String FC_LOAD_SAVE_SET_DATA = "loadServiceConfig";
+
+    // Structure description for all requests
+    static final Structure STRUCT_REQUEST = FieldFactory.getFieldCreate().createStructure(
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createVariantUnionArray() });
+
+    // Structure description for all requests, simplified with both the name and value fields set as string arrays
+    static final Structure STRUCT_SIMPLE_REQUEST = FieldFactory.getFieldCreate().createStructure(
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     // Structure description for loading the base levels
     static final Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(
@@ -120,23 +144,24 @@ public final class MasarConstants {
 
     // Structure description for loading the snapshot data
     static final Structure STRUCT_SNAPSHOT_DATA = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_EVENTID },
-        new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     // Structure description for taking a snapshot
     static final Structure STRUCT_SNAPSHOT_TAKE = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_CONFIGNAME },
-        new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            new String[] { F_FUNCTION, F_NAME, F_VALUE },
+            new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+                    FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     // Structure description for saving a snapshot
     static final Structure STRUCT_SNAPSHOT_SAVE = FieldFactory.getFieldCreate().createStructure(
-        new String[] { F_FUNCTION, F_EVENTID, F_USER, F_DESCRIPTION },
+        new String[] { F_FUNCTION, F_NAME, F_VALUE },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
     private MasarConstants() {
         // prevent instantiation

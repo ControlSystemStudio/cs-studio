@@ -54,10 +54,19 @@ public final class Utilities {
         .createStructure(new String[] { MasarConstants.P_STRUCTURE_VALUE }, new Field[] { SNAPSHOT_VALUE_STRUCTURE });
 
     static final Structure STRUCT_VSNAPSHOT = FieldFactory.getFieldCreate().createStructure(
-        new String[] { MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, MasarConstants.P_SNAPSHOT_SECONDS,
-            MasarConstants.P_SNAPSHOT_CHANNEL_NAME, MasarConstants.P_SNAPSHOT_DBR_TYPE,
-            MasarConstants.P_SNAPSHOT_IS_CONNECTED, MasarConstants.P_SNAPSHOT_NANOS, MasarConstants.P_SNAPSHOT_USER_TAG,
-            MasarConstants.P_SNAPSHOT_ALARM_SEVERITY, MasarConstants.P_SNAPSHOT_ALARM_STATUS,
+        new String[] {
+            MasarConstants.P_SNAPSHOT_ALARM_MESSAGE,
+            MasarConstants.P_SNAPSHOT_SECONDS,
+            MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
+            MasarConstants.P_SNAPSHOT_DBR_TYPE,
+            MasarConstants.P_SNAPSHOT_IS_CONNECTED,
+            MasarConstants.P_SNAPSHOT_NANOS,
+            MasarConstants.P_SNAPSHOT_USER_TAG,
+            MasarConstants.P_SNAPSHOT_ALARM_SEVERITY,
+            MasarConstants.P_SNAPSHOT_ALARM_STATUS,
+            MasarConstants.P_SNAPSHOT_READONLY,
+            MasarConstants.P_SNAPSHOT_GROUP_NAME,
+            MasarConstants.P_SNAPSHOT_TAG,
             MasarConstants.P_STRUCTURE_VALUE },
         new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
@@ -67,7 +76,11 @@ public final class Utilities {
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt), FieldFactory.getFieldCreate()
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvBoolean),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+            FieldFactory.getFieldCreate()
                 .createUnionArray(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0])) });
 
     static final Structure BASE_LEVEL_VALUE_STRUCTURE = FieldFactory.getFieldCreate().createStructure(
@@ -92,12 +105,23 @@ public final class Utilities {
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvInt), });
 
     static final Structure STRUCT_TAKE_SNAPSHOT = FieldFactory.getFieldCreate().createStructure(
-        new String[] { MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, MasarConstants.P_SNAPSHOT_SECONDS,
-            MasarConstants.P_SNAPSHOT_CHANNEL_NAME, MasarConstants.P_SNAPSHOT_DBR_TYPE,
-            MasarConstants.P_SNAPSHOT_IS_CONNECTED, MasarConstants.P_SNAPSHOT_NANOS, MasarConstants.P_SNAPSHOT_USER_TAG,
-            MasarConstants.P_SNAPSHOT_ALARM_SEVERITY, MasarConstants.P_SNAPSHOT_ALARM_STATUS,
-            MasarConstants.P_STRUCTURE_VALUE, MasarConstants.P_TIMESTAMP },
-        new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+        new String[] {
+            MasarConstants.P_SNAPSHOT_ALARM_MESSAGE,
+            MasarConstants.P_SNAPSHOT_SECONDS,
+            MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
+            MasarConstants.P_SNAPSHOT_DBR_TYPE,
+            MasarConstants.P_SNAPSHOT_IS_CONNECTED,
+            MasarConstants.P_SNAPSHOT_NANOS,
+            MasarConstants.P_SNAPSHOT_USER_TAG,
+            MasarConstants.P_SNAPSHOT_ALARM_SEVERITY,
+            MasarConstants.P_SNAPSHOT_ALARM_STATUS,
+            MasarConstants.P_STRUCTURE_VALUE,
+            MasarConstants.P_TIMESTAMP,
+            MasarConstants.P_SNAPSHOT_READONLY,
+            MasarConstants.P_SNAPSHOT_GROUP_NAME,
+            MasarConstants.P_SNAPSHOT_TAG },
+        new Field[] {
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
@@ -108,6 +132,9 @@ public final class Utilities {
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
             FieldFactory.getFieldCreate()
                 .createUnionArray(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0])),
-            STRUCT_TIMESTAMP });
+            STRUCT_TIMESTAMP,
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvBoolean),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
+            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
 
 }

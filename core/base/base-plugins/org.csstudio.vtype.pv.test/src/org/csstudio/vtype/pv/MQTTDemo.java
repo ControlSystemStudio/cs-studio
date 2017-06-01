@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.vtype.pv;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -9,7 +16,12 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 
-public class MQTTDemo implements MqttCallback {
+/** JUnit tests
+ *  @author Megan Grodowitz
+ */
+@SuppressWarnings("nls")
+public class MQTTDemo implements MqttCallback
+{
 
     MqttClient myClient;
     MqttConnectOptions connOpt;

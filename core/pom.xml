@@ -21,7 +21,7 @@
     <cs-studio.version>4.5</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
-    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20160221192158/repository/</orbit-site>
+    <orbit-site>${eclipse.mirror.url}/tools/orbit/R-builds/R20170307180635/repository</orbit-site>
     <rap-e4-site>${eclipse.mirror.url}/rt/rap/incubator/3.0/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -35,9 +35,7 @@
     <sonar.language>java</sonar.language>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-    <sonar.junit.reportsPath>
-      ../${project.artifactId}.test/target/surefire-reports/
-    </sonar.junit.reportsPath>
+    <sonar.junit.reportsPath>../${project.artifactId}.test/target/surefire-reports/</sonar.junit.reportsPath>
     <!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url -->
     <!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url -->
     <!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver -->
@@ -67,12 +65,13 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/mars</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.5</eclipse-update-site>
+        <eclipse-site>${eclipse.mirror.url}/releases/neon</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.6</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/3.1</rap-site>
         <rap-gef-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
-        <platform-version>[4.4,4.5)</platform-version>
-        <swtbot-site>${eclipse.central.url}/technology/swtbot/mars/dev-build/update-site</swtbot-site>
+        <platform-version>[4.4,4.6)</platform-version>
+        <swtbot-site>${eclipse.central.url}/technology/swtbot/releases/latest/</swtbot-site>
+        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/2.4.0/site</efx-site>
       </properties>
     </profile>
     <profile>
@@ -172,7 +171,7 @@
         </repository>
         <repository>
           <id>efx</id>
-          <url>${eclipse.mirror.url}/efxclipse/runtime-released/2.1.0/site</url>
+          <url>${efx-site}</url>
           <layout>p2</layout>
         </repository>
       </repositories>
