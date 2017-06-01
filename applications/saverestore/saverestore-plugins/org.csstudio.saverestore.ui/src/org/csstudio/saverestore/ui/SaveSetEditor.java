@@ -232,7 +232,7 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
                         "There is an error in the file contents.");
                 return;
             }
-            if (data.equalContent(controller.getSavedSaveSetData().orElse(null)) && MessageDialog.openQuestion(
+            if (data.equalContent(controller.getSavedSaveSetData().orElse(null)) && !MessageDialog.openQuestion(
                     getSite().getShell(), "Save Save Set As",
                     "Theare are no changes between the saved and this save set. Are you sure you want to save it as a new save set?")) {
                 setDirty(false);
