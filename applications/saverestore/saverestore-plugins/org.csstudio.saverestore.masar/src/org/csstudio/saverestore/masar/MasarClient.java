@@ -460,8 +460,8 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_SAVE_SAVE_SETS);
 
             PVStringArray names = (PVStringArray) request.getScalarArrayField(F_NAME, ScalarType.pvString);
-            names.put(0, 4, new String[] { MasarConstants.F_CONFIGNAME, MasarConstants.F_OLDCONFIGID,
-                    MasarConstants.F_DESCRIPTION, MasarConstants.F_CONFIG }, 0);
+            names.put(0, 5, new String[] { MasarConstants.F_CONFIGNAME, MasarConstants.F_OLDCONFIGID,
+                    MasarConstants.F_DESCRIPTION, MasarConstants.F_CONFIG, MasarConstants.F_SYSTEM}, 0);
 
             PVUnion u1 = PVDataFactory.getPVDataCreate()
                     .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
@@ -549,6 +549,13 @@ public class MasarClient {
 
             u4.set(valStruct);
 
+            PVUnion u5 = PVDataFactory.getPVDataCreate()
+                    .createPVUnion(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0]));
+            Scalar s5 = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);
+            PVString a5 = (PVString) PVDataFactory.getPVDataCreate().createPVScalar(s5);
+            a5.put(set.getDescriptor().getBaseLevel().get().getStorageName());
+            u5.set(a5);
+
             /**
              * TODO (shroffk) replace the above table creation code with the following from the NTType utility library
              *
@@ -564,7 +571,7 @@ public class MasarClient {
             ((PVStringArray) ntTable.getColumn("tags")).put(0, 3, new String[] { "T1", "T1", "t2" }, 0);
             u4.set(ntTable.getPVStructure());
             **/
-            ((PVUnionArray) request.getUnionArrayField(F_VALUE)).put(0, 4, new PVUnion[] { u1, u2, u3, u4 }, 0);
+            ((PVUnionArray) request.getUnionArrayField(F_VALUE)).put(0, 5, new PVUnion[] { u1, u2, u3, u4, u5 }, 0);
 
             PVStructure result = channelRPCRequester.request(request);
             List<SaveSet> parsed = MasarUtilities.createSaveSetsList(result, set.getDescriptor().getBranch(),
@@ -607,10 +614,14 @@ public class MasarClient {
         throws MasarException {
         setService(service);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SAVE_SET);
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SIMPLE_REQUEST);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SETS);
-            request.getStringField(MasarConstants.F_SYSTEM).put(baseLevel.get().getStorageName());
-            request.getStringField(MasarConstants.F_CONFIGNAME).put("*");
+            PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
+                    ScalarType.pvString);
+            names.put(0, 2, new String[] { MasarConstants.F_SYSTEM, MasarConstants.F_CONFIGNAME }, 0);
+            PVStringArray values = (PVStringArray) request.getScalarArrayField(MasarConstants.F_VALUE,
+                    ScalarType.pvString);
+            values.put(0, 2, new String[] { baseLevel.get().getStorageName(), "*" }, 0);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
@@ -644,12 +655,7 @@ public class MasarClient {
             boolean retryOnError) throws MasarException {
         setService(service);
         try {
-            final Structure STRUCT_REQUEST_NAME_VALUE = FieldFactory.getFieldCreate().createStructure(
-                    new String[] { F_FUNCTION, F_NAME, F_VALUE },
-                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_REQUEST_NAME_VALUE);
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SIMPLE_REQUEST);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SETS);
             PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
                     ScalarType.pvString);
@@ -677,12 +683,7 @@ public class MasarClient {
             boolean retryOnError) throws MasarException {
         setService(service);
         try {
-            final Structure STRUCT_REQUEST_NAME_VALUE = FieldFactory.getFieldCreate().createStructure(
-                    new String[] { F_FUNCTION, F_NAME, F_VALUE},
-                    new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-                            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString) });
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_REQUEST_NAME_VALUE);
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SIMPLE_REQUEST);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SET_DATA);
             PVStringArray names = (PVStringArray) request.getScalarArrayField(MasarConstants.F_NAME,
                     ScalarType.pvString);
