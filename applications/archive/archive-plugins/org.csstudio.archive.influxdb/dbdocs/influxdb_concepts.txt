@@ -1,0 +1,88 @@
+Author: Megan Grodowitz
+
+InfluxDB is a time series database. It is optimized for the purpose of storing a sequences of data each of which has a unique timestamp. 
+For example, it is heavily used for logging system metrics for large scale server deployments. 
+It contains a query language similar to SQL, but with key differences due to the different database structure.
+
+Key concepts:
+
+* Measurement:      Whereas RDB like Oracle have tables, InfluxDB has measurements. 
+                    Each database entry belongs uniquely to one measurement. 
+
+* Timestamp:        Each measurement contains a series of timestamped data entries. 
+                    For a given measurement, each database entry contains a unique timestamp.
+
+* Field Value:      Each data base entry can contain an arbitrary number of fields. 
+                    Fields are the measurement data, and can be strings, floats, integers, or booleans. 
+                    It is very inefficient to query the entire database using field values.
+
+* Tags:             Each database entry can contain an arbitrary number of tags. 
+                    Tags are metadata. Tag vaues are always strings. 
+                    It is efficient to query the entire database using tag values.
+                    It is much better to place metadata in tags rather than encoding it in measurement names.
+                    There is no point in trying to reduce the number of tags by concatenating strings. Use separate tags instead. 
+                    Influx will merge tag data very efficiently within a measurement, 
+                    so it is fine to have a huge series of data with the same tags over and over. 
+
+* Retention Policy: Each database entry has a retention policy that describes how long the entry is stored (duration),
+                    and, if the database in deployed over multiple nodes, how many copies of the data are stored (replication).
+                    If no retention policy is given, the default retention policy -- 1 copy stored forever -- is used.
+
+* Series:           A collection of data that share a measurement, tag set, and retention policy.
+                    It is best to minimize the total number of series in the database.
+
+
+Example:
+
+- I have fifty computers in a cluster. 
+- I want to store the cpu load and memory usage over time for my cluster. 
+- I want to retrieve data based on the computer hostname, whether the cpu load exceeds 80%, and whether the memory load exceeds 90%. 
+- I also want to be able to calculate standard deviation of cpu load and memory use.
+
+
+The "cpu_load" and "memory_use" are my measurements. Over time, I will log all of may data into one of these two measurements.
+
+The computer hostname is clearly a tag, since it is a string and I only use it to query data.
+
+The cpu load and memory use are numeric values that I want to use in calculations, so these ought to be fields. 
+I will have to query based on these values, which might become slow if my database becomes very large
+... so I might also consider adding two more tags that just indicate "HI" or "LO" cpu and memory load if this becomes a problem.
+
+----------------------------------------------------------------------
+Series cardinality:
+
+If I don't use hi/lo tags, the database will contain 100 series, 2 measurements * 50 hostname tags.
+If I decide to add hi/lo level tags, I will have 400 series: 2 measurements * 50 hostnames * 2 cpu load levels * 2 memory load levels.
+
+For a point of reference, InfluxDB considers anything under 100,000 unique series to be a low load.
+
+----------------------------------------------------------------------
+Inserting data:
+
+For everything we do here, we are acting through the REST API to the /write endpoint. Each sample is written with a timestamp,
+some fields, and some tags. See the official documentation for examples of what the http API looks like.
+In this code, we use the Java API, which translates into the REST API behind the scenes.
+
+A sample is considered unique if it has a unique set of (measurement, timestamp, tags). So, this is
+pretty key, you can overwrite a sample with the same timestamp and tags with one of a different value.
+
+For example, say I write two samples, with one tag for the hostname and one field for the load
+
+Sample 1: measurement=cpu, time=1254858729900000, hostname=joe, load=99.9
+Sample 2: measurement=cpu, time=1254858729900000, hostname=joe, load=10.0
+
+Only one of these samples will get stored, whichever arrives last. If I query the cpu measurement later, it will not have both of these samples
+
+Say I write another two samples, but this time, the tags don't match:
+
+Sample 1: measurement=cpu, time=1254858729900000, hostname=joe, load=99.9
+Sample 2: measurement=cpu, time=1254858729900000, hostname=bob, load=10.0
+
+In this case, both samples gets stores. So, when I query cpu data later, both of them will show up.
+
+----------------------------------------------------------------------
+Querying data:
+
+At the root, everything goes through a REST API. There is a query language that is used at the /query endpoint. 
+Best to look up the documentation on querying, rather than try to record a bunch of examples here.
+
