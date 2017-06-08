@@ -166,6 +166,9 @@
                   <id>org.hibernate:hibernate-validator:4.3.0.Final</id>
                 </artifact>
                 <artifact>
+                  <id>org.influxdbe:influxdb-java:2.6</id>
+                </artifact>
+                <artifact>
                   <id>org.glassfish:javax.json:1.0.4</id>
                 </artifact>
                 <artifact>
