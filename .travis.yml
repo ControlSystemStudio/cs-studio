@@ -1,0 +1,29 @@
+# whitelist 
+language: java
+
+env:  
+  global:  
+   - DISPLAY=:99.0
+
+sudo: false
+
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+install: echo 'Skipping mvn install'
+
+before_script:
+ - chmod +x build/travis.sh
+ - echo "MAVEN_OPTS='-Xmx2g -Xms1g'" > ~/.mavenrc
+
+script:
+ - java -version
+ - ./travis.sh 
+
+after_failure:
+ - find . -type f -name "*.log" -print0 -exec cat {} \;
+
