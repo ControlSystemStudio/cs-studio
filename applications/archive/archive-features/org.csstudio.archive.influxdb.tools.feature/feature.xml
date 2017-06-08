@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.archive.influxdb.tools.feature"
+      label="InfluxDB Archive Tools Feature"
+      version="1.0.0.qualifier"
+      provider-name="ITER">
+
+   <description>
+      Plugins used by archive tools: Engine, ...
+   </description>
+
+   <copyright>
+      Copyright (c) 2015 Oak Ridge National Laboratory.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License
+   </license>
+
+   <plugin
+         id="org.csstudio.archive.config.influxdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.writer.influxdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.config.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

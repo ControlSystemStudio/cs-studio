@@ -12,7 +12,9 @@
     <module>org.csstudio.archive.reader.appliance.feature</module>
     <module>org.csstudio.archive.reader.ea4.feature</module>
     <module>org.csstudio.archive.reader.rdb.feature</module>
+    <module>org.csstudio.archive.reader.influxdb.feature</module>
     <module>org.csstudio.archive.tools.feature</module>
+    <module>org.csstudio.archive.influxdb.tools.feature</module>
     <module>org.csstudio.archive.reader.channelarchiver.feature</module>
     <module>org.csstudio.archive.diirt.datasource.feature</module>
   </modules>
