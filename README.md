@@ -1,4 +1,4 @@
-# maven-osgi-bundles
+# maven-osgi-bundles [![Build Status](https://travis-ci.org/ControlSystemStudio/maven-osgi-bundles.svg?branch=master)](https://travis-ci.org/ControlSystemStudio/maven-osgi-bundles)
 
 External CS-Studio dependencies that are used "as is".
 
