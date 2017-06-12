@@ -13,13 +13,13 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.vtype;bundle-version="2.0.0",
  org.diirt.vtype;bundle-version="3.1.6",
  org.influxdb.java;bundle-version="2.6.0",
- com.squareup.okhttp3.logging-interceptor;bundle-version="3.6.0",
- com.squareup.okhttp3.okhttp;bundle-version="3.6.0",
- com.squareup.retrofit2.converter-moshi;bundle-version="2.1.0",
- com.squareup.retrofit2.retrofit;bundle-version="2.1.0",
- com.squareup.moshi;bundle-version="1.2.0",
- com.squareup.okio;bundle-version="1.11.0",
- com.google.guava;bundle-version="20.0.0"
+ com.squareup.okhttp3.logging-interceptor,
+ com.squareup.okhttp3.okhttp,
+ com.squareup.retrofit2.converter-moshi,
+ com.squareup.retrofit2.retrofit,
+ com.squareup.moshi,
+ com.squareup.okio,
+ com.google.guava,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.csstudio.archive.influxdb
