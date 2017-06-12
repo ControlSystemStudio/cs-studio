@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.core.runtime,
  com.squareup.retrofit2.retrofit,
  com.squareup.moshi,
  com.squareup.okio,
- com.google.guava,
+ com.google.guava
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.csstudio.archive.influxdb
