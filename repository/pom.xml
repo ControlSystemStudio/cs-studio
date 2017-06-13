@@ -250,7 +250,9 @@
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.12</id>
                 </artifact>
-
+                <artifact>
+                  <id>de.codecentric.centerdevice:javafxsvg:1.2.1</id>
+                </artifact>
 
                 <!-- pvmanager-plugins from reactor -->
                 <artifact>
