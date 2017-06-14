@@ -251,6 +251,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
             // Allows the removal of the connection model element
             installEditPolicy(EditPolicy.CONNECTION_ROLE,
                     new ConnectionEditPolicy() {
+                        @Override
                         protected Command getDeleteCommand(GroupRequest request) {
                             return new ConnectionDeleteCommand(getWidgetModel());
                         }
@@ -452,11 +453,12 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
             // Edge Case: While calculating intersection points, iterating on connections does
             // not guarantee order. Sort so that points are in order.
             Collections.sort(intersectionPointsList, new Comparator<Point>() {
-                   public int compare(Point x1_, Point x2_) {
-                     int result = Double.compare(x1_.getDistance(x1y1), x2_.getDistance(x1y1));
-                     return result;
-                  }
-                });
+                @Override
+                public int compare(Point x1_, Point x2_) {
+                    int result = Double.compare(x1_.getDistance(x1y1), x2_.getDistance(x1y1));
+                    return result;
+                }
+            });
 
             for(Point p : intersectionPointsList) {
                 intersections.addPoint(p);
@@ -561,10 +563,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
             }
             //has points, use points for routing
             router = new FixedPointsConnectionRouter();
-            if (getWidgetModel().isLoadedFromLinkedOpi() == true) {
-                ((FixedPointsConnectionRouter) router).setScrollPane(getWidgetModel().getScrollPane());
-                ((FixedPointsConnectionRouter) router).setConnectionFigure(connection);
-            }
+            ((FixedPointsConnectionRouter) router).setConnectionModel(getWidgetModel());
             connection.setConnectionRouter(router);
             refreshBendpoints(connection);
             return;
