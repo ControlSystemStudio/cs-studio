@@ -52,7 +52,6 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
         for (int i = 1; i < points.size() - 2; i++) {
             handles.add(new BendpointMoveHandle(getConnectionEditPart(), i - 1,
                     new MidpointLocator(getConnection(), i)){
-//                    new MiddlePointLocator(getConnection(), i)) {
 
                 @Override
                 protected Color getBorderColor() {

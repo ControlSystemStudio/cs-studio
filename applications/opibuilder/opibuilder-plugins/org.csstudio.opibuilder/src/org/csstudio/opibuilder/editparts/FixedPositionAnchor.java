@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
-import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -17,9 +16,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Xihui Chen
  *
  */
-public class FixedPositionAnchor extends AbstractConnectionAnchor {
+public class FixedPositionAnchor extends AbstractOpiBuilderAnchor {
 
-    public enum AnchorPosition{
+    public enum AnchorPosition {
         TOP,
         LEFT,
 //        CENTER,
@@ -32,6 +31,25 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
     }
 
     private AnchorPosition anchorPosition;
+
+    @Override
+    public ConnectorOrientation getOrientation() {
+        switch (anchorPosition) {
+        case LEFT:
+        case RIGHT:
+            return ConnectorOrientation.HORIZONTAL;
+        case BOTTOM:
+        case BOTTOM_LEFT:
+        case BOTTOM_RIGHT:
+        case TOP:
+        case TOP_LEFT:
+        case TOP_RIGHT:
+            return ConnectorOrientation.VERTICAL;
+        default:
+            throw new IllegalStateException("Unknown constant of " + AnchorPosition.class.getCanonicalName() + ": " + anchorPosition.toString());
+        }
+
+    }
 
 
     public FixedPositionAnchor(IFigure owner, AnchorPosition anchorPosition) {
@@ -104,28 +122,6 @@ public class FixedPositionAnchor extends AbstractConnectionAnchor {
         Point p= new Point(x, y);
         getOwner().translateToAbsolute(p);
         return p;
-    }
-
-    public Point getSlantDifference(Point anchorPoint, Point midPoint) {
-        int x=0, y=0;
-
-        switch (anchorPosition) {
-        case LEFT:
-        case RIGHT:
-            y=(anchorPoint.y() - midPoint.y());
-            break;
-        case BOTTOM:
-        case BOTTOM_LEFT:
-        case BOTTOM_RIGHT:
-        case TOP:
-        case TOP_LEFT:
-        case TOP_RIGHT:
-            x=(anchorPoint.x() - midPoint.x());
-            break;
-        default:
-            break;
-        }
-        return new Point(x, y);
     }
 
     /**

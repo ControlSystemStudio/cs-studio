@@ -15,7 +15,4 @@ package org.csstudio.opibuilder.editparts;
  */
 public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {
 
-
-
-
 }

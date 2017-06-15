@@ -24,15 +24,14 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.util.HashMap;
 
+import org.csstudio.opibuilder.editparts.PolyGraphAnchor;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.swt.widgets.util.PointsUtil;
-import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.EditPart;
 
@@ -129,25 +128,4 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
             anchorMap.put(Integer.toString(i), new PolyGraphAnchor(getFigure(), i));
         }
     }
-
-
-    public static class PolyGraphAnchor extends AbstractConnectionAnchor {
-        private  int pointIndex;
-        private Polyline polyline;
-        public PolyGraphAnchor(final Polyline owner, final int pointIndex) {
-            setOwner(owner);
-            this.polyline = owner;
-            this.pointIndex = pointIndex;
-        }
-
-        @Override
-        public Point getLocation(Point reference) {
-            Point p = polyline.getPoints().getPoint(pointIndex);
-            polyline.translateToAbsolute(p);
-            return p;
-        }
-
-    }
-
-
 }
