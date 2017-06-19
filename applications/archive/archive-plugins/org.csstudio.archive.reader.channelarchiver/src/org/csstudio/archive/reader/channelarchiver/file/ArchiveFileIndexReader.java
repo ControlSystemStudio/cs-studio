@@ -20,27 +20,24 @@ import org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.DataFi
  */
 public class ArchiveFileIndexReader implements AutoCloseable
 {
-	private final FileChannel file;
-	private final ByteBuffer buffer;
+	private final ArchiveFileBuffer buffer;
 	
-	public ArchiveFileIndexReader(FileChannel indexFile, ByteBuffer buffer) throws IOException
+	public ArchiveFileIndexReader(FileChannel indexFile) throws IOException
 	{
-		this.file = indexFile;
-		this.buffer = buffer;
-		buffer.limit(buffer.position());
+		buffer = new ArchiveFileBuffer(indexFile);
 	}
 	
 	private Queue<Long> readHashTable() throws IOException
 	{
-		ArchiveFileReader.prepBuffer(4, 8, buffer, file);
-		long start = Integer.toUnsignedLong(buffer.getInt());
-		long size = Integer.toUnsignedLong(buffer.getInt());
+		buffer.offset(4);
+		long start = buffer.getUnsignedInt();
+		long size = buffer.getUnsignedInt();
 
 		Queue<Long> ret = new ArrayDeque<Long>();
-		ArchiveFileReader.prepBuffer(start, 4, buffer, file);
+		buffer.offset(start);
 		while (--size > 0)
 		{
-			long res = ArchiveFileReader.getContinuousUnsigned16(buffer, file);
+			long res = buffer.getUnsignedInt();
 			if (res != 0)
 				ret.add(res);
 		}
@@ -94,16 +91,13 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		while (!offsets.isEmpty())
 		{
 			long offset = offsets.poll();
-			ArchiveFileReader.prepBuffer(offset, 10, buffer, file);
+			buffer.offset(offset);
 			
 			//read next, "id", and name_len
-			long next_offset = Integer.toUnsignedLong(buffer.getInt());
-			long anchor_offset = Integer.toUnsignedLong(buffer.getInt());
+			long next_offset = buffer.getUnsignedInt();
+			long anchor_offset = buffer.getUnsignedInt();
 			short nameLen = buffer.getShort();
 
-			//make sure all of name is in buffer
-			ArchiveFileReader.prepBuffer(offset+12, nameLen, buffer, file);
-			
 			byte name [] = new byte [nameLen];
 			buffer.get(name);
 			ret.put(new String(name), readLeftmostDatablocks(anchor_offset));
@@ -121,10 +115,10 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		//An RTree Anchor is laid out as follows:
 		//	long root - offset of RTree root
 		//	long numRecords - number of records per RTree node
-		ArchiveFileReader.prepBuffer(anchor_offset, 8, buffer, file);
+		buffer.offset(anchor_offset);
 		
-		long root = Integer.toUnsignedLong(buffer.getInt());
-		long numRecords = Integer.toUnsignedLong(buffer.getInt()); //number of records per RTree node
+		long root = buffer.getUnsignedInt();
+		long numRecords = buffer.getUnsignedInt(); //number of records per RTree node
 		
 		long datablock = readLeftmostDescendant(root, numRecords);
 		List<DataFileEntry> ret = readDatablocks(datablock);
@@ -139,9 +133,9 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		// byte isLeaf (if false, 0; otherwise, true)
 		// long parent (if root, 0; otherwise, offset of parent node)
 		// Record[M] records, where a Record is 20 bytes
-		ArchiveFileReader.prepBuffer(node, 1, buffer, file);
-		boolean isLeaf = buffer.getChar() != 0;
-		buffer.position(buffer.position() + 3);
+		buffer.offset(node);
+		boolean isLeaf = buffer.get() != 0;
+		buffer.skip(4);
 		//read all currently available (in-buffer) records
 		Deque<Long> records = new ArrayDeque<>();
 		long numRecordsRem = readLeftmostRecords(records, numRecords, isLeaf);
@@ -149,16 +143,20 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		{
 			while (records.isEmpty())
 			{ // read more records
-				ArchiveFileReader.prepContinousGet(buffer, file, 20); //prepare to read a least 1 record
+				buffer.prepareGet(20); //prepare to read a least 1 record
 				numRecordsRem = readLeftmostRecords(records, numRecords, isLeaf);
-				if (numRecordsRem == 0) return 0;
+				if (numRecordsRem == 0)
+				{
+					if (records.isEmpty()) return 0;
+					else break;
+				}
 			}
 			if (isLeaf) return records.poll();
 			// Need to save current file offset before reading the child node's descendants
-			long records_offset = file.position() - buffer.remaining();
+			long records_offset = buffer.offset();
 			long result = readLeftmostDescendant(records.poll(), numRecords);
 			if (result > 0) return result;
-			ArchiveFileReader.prepBuffer(records_offset, 20, buffer, file);
+			buffer.offset(records_offset);
 		}
 	}
 
@@ -167,20 +165,18 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	//stops when first non-zero record is found, if any are found.
 	//Preconditions: buffer's position is at first record.
 	//Returns number of records remaining to be read.
-	private long readLeftmostRecords(Queue<Long> records, long numRecords, boolean stopLeftmost)
+	private long readLeftmostRecords(Queue<Long> records, long numRecords, boolean stopLeftmost) throws IOException
 	{
 		//A Record in an RTree Node is 20 bytes, arranged as follows:
 		//	EpicsTime start time, where an EpicsTime is 8 bytes long
 		//	EpicsTime end time
 		//	long child - if empty, 0; if Node is not leaf, offset of child node; if Node is leaf, offset of child Datablock
 		//We're just looking for non-zero children.
-		int pos = buffer.position() + 16; //position of child
 		while (buffer.remaining() >= 20)
 		{
-			buffer.position(pos);
-			long child = Integer.toUnsignedLong(buffer.getInt());
+			buffer.skip(16);
+			long child = buffer.getUnsignedInt();
 			numRecords--;
-			pos += 16;
 			if (child != 0)
 			{
 				records.add(child);
@@ -205,12 +201,11 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		while (offset != 0)
 		{
 			long name_offset = offset + 10;
-			ArchiveFileReader.prepBuffer(offset, 10, buffer, file);
+			buffer.offset(offset);
 			
-			offset = Integer.toUnsignedLong(buffer.getInt());
-			final long dataOffset = Integer.toUnsignedLong(buffer.getInt());
+			offset = buffer.getUnsignedInt();
+			final long dataOffset = buffer.getUnsignedInt();
 			int nameSize = buffer.getShort();
-			ArchiveFileReader.prepBuffer(name_offset, nameSize, buffer, file);
 			
 			byte name [] = new byte [nameSize];
 			buffer.get(name);
@@ -218,26 +213,10 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 		return ret;
 	}
-	
-	public String toString()
-	{
-		long position = 0;
-		try
-		{
-			position = file.position();
-		}
-		catch (IOException e) {}
-		return String.format("ArchiveFileReader:file@0x%x(%d), buffer pos=0x%x(%d) from 0x%x(%d): %02x,%02x,%02x,%02x",
-				position, position,
-				buffer.position(), buffer.position(),
-				position - buffer.limit(), position - buffer.limit(),
-				buffer.get(buffer.position()), buffer.get(buffer.position()+1),
-				buffer.get(buffer.position()+2), buffer.get(buffer.position()+3));
-	}
 
 	@Override
 	public void close() throws Exception
 	{
-		file.close();
+		buffer.close();
 	}
 }
