@@ -73,7 +73,18 @@ abstract public class AbstractSendEMailAction extends Action
         // Presumably, the X11 display update queue is not 'flushed'?
         // By delaying the getImage() call into another Runnable, the context menu
         // was successfully closed in tests on Linux.
+
         final Display display = shell == null ? Display.getCurrent() : shell.getDisplay();
+
+        /*
+         * Change parent shell to null if in full-screen mode, so the dialog is detached from main shell.
+         * The change was made to fix the appearance of dialog in full-screen mode.
+         *
+         * Changed made by Borut Terpinc -- borut.terpinc@cosylab.com
+         */
+
+        final Shell fixupShell = shell.getFullScreen() == true ? null : shell;
+
         display.asyncExec(new Runnable()
         {
             @Override
@@ -83,10 +94,10 @@ abstract public class AbstractSendEMailAction extends Action
 
                 final Dialog dlg;
                 if (image_filename == null)
-                    dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+                    dlg = new EMailSenderDialog(fixupShell, Preferences.getSMTP_Host(), from,
                             Messages.DefaultDestination, subject, body);
                 else
-                    dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+                    dlg = new EMailSenderDialog(fixupShell, Preferences.getSMTP_Host(), from,
                             Messages.DefaultDestination, subject, body, image_filename);
                 dlg.open();
             }
