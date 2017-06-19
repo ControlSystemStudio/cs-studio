@@ -13,6 +13,85 @@ import org.csstudio.archive.reader.ArchiveReader;
 
 public class ArchiveFileReader implements AutoCloseable //implements ArchiveReader
 {
+	//Dbr types
+	enum DbrType
+	{
+		DBR_TIME_STRING(14, 12, 40),
+		DBR_TIME_SHORT(15, 14, 2),
+		DBR_TIME_FLOAT(16, 12, 4),
+		DBR_TIME_ENUM(17, 14, 2),
+		DBR_TIME_CHAR(18, 15, 1),
+		DBR_TIME_LONG(19, 12, 4),
+		DBR_TIME_DOUBLE(20, 16, 8);
+
+		public final int type;
+		public final int valueOffset;
+		public final int valueSize;
+		private DbrType(int type, int valueOffset, int valueSize)
+		{
+			this.type = type;
+			this.valueOffset = valueOffset;
+			this.valueSize = valueSize;
+		}
+		
+		public static DbrType getDbrType(int type)
+		{
+			return DbrType.values()[type-14];
+		}
+		
+		public int getSize(int count)
+		{
+			return valueOffset + valueSize * count;
+		}
+	}
+	
+	private abstract class DbrSample<T>
+	{
+		protected final short status;
+		protected final short severity;
+		protected final long secsPastEpoch;
+		protected final long nanos;
+		protected T[] data;
+		DbrSample(DbrType type, short dbrCount, byte rawData [])
+		{
+			assert type.getSize(dbrCount) == rawData.length : "Error creating sample: data size (" +
+					rawData.length + ") != expected size for data type (" + type.toString() +
+					") and count (" + dbrCount + ")";
+			ByteBuffer dataBuff = ByteBuffer.wrap(rawData);
+			status = dataBuff.getShort();
+			severity = dataBuff.getShort();
+			secsPastEpoch = dataBuff.getLong();
+			nanos = dataBuff.getLong();
+			dataBuff.position(type.valueOffset);
+			data = getData(dataBuff);
+		}
+		
+		protected abstract T[] getData(ByteBuffer dataBuff);
+		
+		//static getDbrSample(short drbType, short dbrCount, byte data[])
+			//DbrType type = DbrType.getDbrType(dbrType);
+	}
+	
+	private class DbrDoubleSample extends DbrSample<Double>
+	{
+		DbrDoubleSample(short dbrCount, byte[] data)
+		{
+			super(DbrType.DBR_TIME_DOUBLE, dbrCount, data);
+		}
+
+		@Override
+		protected Double[] getData(ByteBuffer dataBuff)
+		{
+			int numValues = dataBuff.remaining() / 8;
+			Double ret [] = new Double [numValues];
+			for (int i = 0; i < numValues; ++i)
+			{
+				ret[i] = dataBuff.getDouble();
+			}
+			return ret;
+		}
+	}
+	
 	private final ArchiveFileIndexReader index;
 	private final File parent;
 	
@@ -175,7 +254,7 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 	 * @param filename Filename (DataFile name)
 	 * @param offset Offset (of data header)
 	 * @param dataParams an array of at least two; on return, dataParams[0] and dataParams[1] contain
-	 * 		with the DbrType and DbrCount of the data, respectively, as shorts
+	 * 		the DbrType and DbrCount of the data, respectively, as shorts
 	 * @return A list of all raw samples associated with the 
 	 * @throws IOException
 	 * @throws {@link ArrayIndexOutOfBoundsException} if dataParams.length < 2
@@ -217,11 +296,11 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			getContinuousUnsigned16(buffer, file); //curr_offset
 			long numSamples = getContinuousUnsigned16(buffer, file);
 			long ctrlInfoOffset = getContinuousUnsigned16(buffer, file);
-			// compute amount of data this data file entry: (bytes allocated) - (bytes free) - (bytes in header)
+			// compute amount of data in this data file entry: (bytes allocated) - (bytes free) - (bytes in header)
 			long buffDataSize = getContinuousUnsigned16(buffer, file) - getContinuousUnsigned16(buffer, file) - 152;
 			prepContinousGet(buffer, file, 4);
-			dataParams[0] = buffer.getShort();
-			dataParams[1] = buffer.getShort();
+			dataParams[0] = buffer.getShort(); //dbr type
+			dataParams[1] = buffer.getShort(); //dbr count
 			// last part of data file header:
 			//	4 bytes padding (used to align the period)
 			//	8 bytes (double) period
@@ -246,6 +325,7 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			// Prepare to get the next entry
 			nextOffset += 4; // skip first 4 bytes
 			String nextName = new String(nameBytes);
+			nextName = nextName.substring(0, nextName.indexOf('\0'));
 			if (filename.equals(nextName))
 			{
 				prepBuffer(nextOffset, 0, buffer, file);
