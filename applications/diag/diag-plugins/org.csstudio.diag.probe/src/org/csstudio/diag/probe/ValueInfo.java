@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VEnum;
@@ -48,7 +49,7 @@ public class ValueInfo
     /** The most recent value of the PV, as a string. */
     private volatile String value_str = "";
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.000");
+    private DateTimeFormatter formatter = TimestampFormats.MILLI_FORMAT;
 
     public String getValueString()
     {
