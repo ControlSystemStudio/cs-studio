@@ -9,11 +9,14 @@ package org.csstudio.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
+
+import org.csstudio.java.time.TimestampFormats;
 
 /** Log output formatter based on {@link SimpleFormatter}
  *  but one-line summary, maybe followed by exception stack
@@ -26,7 +29,7 @@ public class LogFormatter extends Formatter
     final private LogFormatDetail detail;
 
     /** Date format */
-    final private SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    final private DateTimeFormatter date_format =  TimestampFormats.MILLI_FORMAT;
 
     /** As in SimpleFormatter, re-use Date to minimize memory allocations */
     final private Date date = new Date();
@@ -51,7 +54,7 @@ public class LogFormatter extends Formatter
         synchronized (this)
         {
             date.setTime(record.getMillis());
-            sb.append(date_format.format(date));
+            sb.append(date_format.format(Instant.ofEpochMilli(record.getMillis())));
         }
 
         // Level
