@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.vtype.ArchiveVType;
@@ -113,8 +114,11 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			buffer.skip(76);
 			buffer.get(nameBytes);
 			
-			ArchiveVType sample = ArchiveFileSampleReader.getSample(dbrType, dbrCount, ctrlInfo, buffer);
-			ret.add(sample);
+			while (numSamples -- > 0)
+			{
+				ArchiveVType sample = ArchiveFileSampleReader.getSample(dbrType, dbrCount, ctrlInfo, buffer);
+				ret.add(sample);
+			}
 
 			// Is there a next entry?
 			if (offset == 0)
@@ -158,12 +162,16 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 		ArchiveFileReader reader = new ArchiveFileReader(args[0]);
 		HashMap<String, List<DataFileEntry>> channelsMap = reader.index.readLeftmostDataFileEntries(); 
 		System.out.println(channelsMap);
-		List<ArchiveVType> samples = new LinkedList<>();
-		for (DataFileEntry dataEntry : channelsMap.get("DoublePV"))
+		for (Map.Entry<String, List<DataFileEntry>> entry : channelsMap.entrySet())
 		{
-			samples.addAll(reader.readDataFileEntries(dataEntry.filename, dataEntry.offset));
+			System.out.print(entry.getKey() + "\n   ");
+			List<ArchiveVType> samples = new LinkedList<>();
+			for (DataFileEntry dataEntry : entry.getValue())
+			{
+				samples.addAll(reader.readDataFileEntries(dataEntry.filename, dataEntry.offset));
+			}
+			System.out.println(samples);
 		}
-		//System.out.println(samples); //can't convert to string with null control info
 		reader.close();
 	}
 

@@ -50,6 +50,12 @@ public class ArchiveFileBuffer implements AutoCloseable
 		return buffer.getShort();
 	}
 
+	public float getFloat() throws IOException
+	{
+		prepareGet(4);
+		return buffer.getFloat();
+	}
+
 	public double getDouble() throws IOException
 	{
 		prepareGet(8);
@@ -104,6 +110,12 @@ public class ArchiveFileBuffer implements AutoCloseable
 		}
 	}
 	
+	public int getInt() throws IOException
+	{
+		prepareGet(4);
+		return buffer.getInt();
+	}
+
 	long offset() throws IOException
 	{
 		return file.position() - buffer.limit() + buffer.position();

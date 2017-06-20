@@ -11,39 +11,32 @@ import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 
 //VType: relevant classes: ArchiveVNumber, ArchiveVnumberArray, ArchiveVEnum, ArchiveVString
-public abstract class ArchiveFileSampleReader
+public class ArchiveFileSampleReader
 {
-	private final ArchiveVType value;
-	
-	protected ArchiveFileSampleReader(DbrType type, short dbrCount, CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
+	public static ArchiveVType getSample(short dbrType, short dbrCount,
+			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
 	{
+		
+		DbrType type = DbrType.getDbrType(dbrType);
 		short status = dataBuff.getShort();
 		short severity = dataBuff.getShort();
 		long secsPastEpoch = dataBuff.getUnsignedInt();
 		long nanos = dataBuff.getUnsignedInt();
 		Instant timestamp = Instant.ofEpochSecond(secsPastEpoch, nanos); //TODO: is java epoch same as data writer epoch? (seems java's is -20 to data writer)
 		dataBuff.skip(type.padding);
-		value = createVType(dataBuff, dbrCount, status, severity, timestamp, info);
-	}
-	
-	protected abstract ArchiveVType createVType(ArchiveFileBuffer dataBuff, short count, short status, short severity, Instant timestamp, CtrlInfoReader info) throws IOException;
-	
-	public ArchiveVType getValue()
-	{
-		return value;
-	}
-	
-	public static ArchiveVType getSample(short dbrType, short dbrCount,
-			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
-	{
-		
-		DbrType type = DbrType.getDbrType(dbrType);
 		switch (type)
 		{
+			case DBR_TIME_STRING: break;
+			case DBR_TIME_SHORT: //==DBR_TIME_INT
+				return createShortVType(dataBuff, dbrCount, status, severity, timestamp, info);
+			case DBR_TIME_FLOAT:
+				return createFloatVType(dataBuff, dbrCount, status, severity, timestamp, info);
+			case DBR_TIME_ENUM:
+			case DBR_TIME_CHAR: break;
+			case DBR_TIME_LONG:
+				return createLongVType(dataBuff, dbrCount, status, severity, timestamp, info);
 			case DBR_TIME_DOUBLE:
-			{
-				return new ArchiveFileDoubleReader(dbrCount, info, dataBuff).getValue();
-			}
+				return createDoubleVType(dataBuff, dbrCount, status, severity, timestamp, info);
 			//TODO: other types
 		}
 		return null;
@@ -53,7 +46,7 @@ public abstract class ArchiveFileSampleReader
 	enum DbrType
 	{
 		DBR_TIME_STRING(14, 0, 40),
-		DBR_TIME_SHORT(15, 2, 2),
+		DBR_TIME_SHORT(15, 2, 2), //==DBR_TIME_INT
 		DBR_TIME_FLOAT(16, 0, 4),
 		DBR_TIME_ENUM(17, 2, 2),
 		DBR_TIME_CHAR(18, 3, 1),
@@ -75,26 +68,18 @@ public abstract class ArchiveFileSampleReader
 			return DbrType.values()[type-14];
 		}
 	}
-}
-
-class ArchiveFileDoubleReader extends ArchiveFileSampleReader
-{
-	protected ArchiveFileDoubleReader(short dbrCount, CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
-	{
-		super(DbrType.DBR_TIME_DOUBLE, dbrCount, info, dataBuff);
-	}
-
-	@Override
-	protected ArchiveVType createVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
+	
+	//TODO: refactor: a few createNumberVType methods, with various ways of reading data
+	protected static ArchiveVType createDoubleVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
 			Instant timestamp, CtrlInfoReader info) throws IOException
 	{
 		if (count == 1)
 		{
 			double value = dataBuff.getDouble();
-			 //TODO: init using info
-			AlarmSeverity sev = null;
-			String stat = "";
-			Display display = null;
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
 			
 			return new ArchiveVNumber(timestamp, sev, stat, display, value);
 		}
@@ -103,12 +88,94 @@ class ArchiveFileDoubleReader extends ArchiveFileSampleReader
 			double value [] = new double [count];
 			for (int i = 0; i < count; ++i)
 				value[i] = dataBuff.getDouble();
-			//TODO: init using info
-			AlarmSeverity sev = null;
-			String stat = "";
-			Display display = null;
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
 			
 			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
 		}
 	}
+	
+	protected static ArchiveVType createFloatVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
+			Instant timestamp, CtrlInfoReader info) throws IOException
+	{
+		if (count == 1)
+		{
+			float value = dataBuff.getFloat();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumber(timestamp, sev, stat, display, value);
+		}
+		else
+		{
+			double value [] = new double [count];
+			for (int i = 0; i < count; ++i)
+				value[i] = dataBuff.getFloat();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+		}
+	}
+	
+	protected static ArchiveVType createLongVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
+			Instant timestamp, CtrlInfoReader info) throws IOException
+	{
+		if (count == 1)
+		{
+			int value = dataBuff.getInt();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumber(timestamp, sev, stat, display, value);
+		}
+		else
+		{
+			int value [] = new int [count];
+			for (int i = 0; i < count; ++i)
+				value[i] = dataBuff.getInt();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+		}
+	}
+
+	protected static ArchiveVType createShortVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
+			Instant timestamp, CtrlInfoReader info) throws IOException
+	{
+		if (count == 1)
+		{
+			short value = dataBuff.getShort();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumber(timestamp, sev, stat, display, value);
+		}
+		else
+		{
+			int value [] = new int [count];
+			for (int i = 0; i < count; ++i)
+				value[i] = dataBuff.getShort();
+
+			AlarmSeverity sev = info.getSeverity(severity);
+			String stat = info.getStatus(status);
+			Display display = info.getDisplay();
+			
+			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+		}
+	}
+
 }
