@@ -94,15 +94,16 @@ public class ArchiveFileIndexReader implements AutoCloseable
 			buffer.offset(offset);
 			
 			//read next, "id", and name_len
-			long next_offset = buffer.getUnsignedInt();
+			offset = buffer.getUnsignedInt();
 			long anchor_offset = buffer.getUnsignedInt();
 			short nameLen = buffer.getShort();
+			buffer.skip(2);
 
 			byte name [] = new byte [nameLen];
 			buffer.get(name);
 			ret.put(new String(name), readLeftmostDatablocks(anchor_offset));
-			if (next_offset != 0)
-				offsets.add(next_offset);
+			if (offset != 0)
+				offsets.add(offset);
 		}
 		return ret;
 	}

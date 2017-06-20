@@ -11,7 +11,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 	
 	public ArchiveFileBuffer(FileChannel file)
 	{
-		this.buffer = ByteBuffer.allocateDirect(Integer.MAX_VALUE);
+		this.buffer = ByteBuffer.allocateDirect(1024); //TODO: what size? Bigger means less fetching, but too big means memory runs out
 		setFile(file);
 	}
 	
@@ -50,6 +50,12 @@ public class ArchiveFileBuffer implements AutoCloseable
 		return buffer.getShort();
 	}
 
+	public double getDouble() throws IOException
+	{
+		prepareGet(8);
+		return buffer.getDouble();
+	}
+	
 	public byte get() throws IOException
 	{
 		if (!buffer.hasRemaining())
@@ -109,7 +115,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 	}
 	
 	@Override
-	public void close() throws Exception
+	public void close() throws IOException
 	{
 		file.close();
 	}

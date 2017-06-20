@@ -9,9 +9,9 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.vtype.ArchiveVType;
 
 public class ArchiveFileReader implements AutoCloseable //implements ArchiveReader
 {
@@ -65,23 +65,21 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 	 * @throws {@link ArrayIndexOutOfBoundsException} if dataParams.length < 2
 	 */
 	@SuppressWarnings("unused")
-	//TODO: Can type and/or count change between data headers? What about info? Have to keep all of those with their data.
-		//an idea: A sample class instead of byte []. Let it reference a ControlInfo instance for its control info.
-		//note: there exist pv-related classes in org.diirt.vtype; most useful here is Display
-	private List<byte[]> readDataFileEntries(String filename, long offset, short dataParams []) throws IOException
+	private List<ArchiveVType> readDataFileEntries(String filename, long offset) throws IOException
 	{
 		File dataFile = new File(parent, filename);
 		// Note on parents: The parent directory of the data file might be different from the parent
 		// of the index file if the index file is a master file, and the data file associated with the
 		// entry is in a sub-archive. 
 		File dataParent = dataFile.getParentFile();
-		List<byte []> ret = new LinkedList<>();
+		List<ArchiveVType> ret = new LinkedList<>();
 		byte nameBytes [] = new byte [40];
 		FileChannel file = FileChannel.open(dataFile.toPath());
 		buffer = new ArchiveFileBuffer(file);
+		CtrlInfoReader ctrlInfo = new CtrlInfoReader(0);
 
 		// prepare to read header
-		buffer.offset(4);
+		buffer.offset(offset+4); //(skip first 4 bytes)
 		do {
 			// first part of data file header:
 			//	4 bytes directory_offset (skipped)
@@ -94,14 +92,16 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			//	"		buff_free (number of un-used, allocated bytes for this header)
 			//  2 bytes DbrType (type of data stored in buffer)
 			//	2 bytes	DbrCount (count of values for each buffer element, i.e. 1 for scalar types, >1 for array types)
-			long nextOffset = buffer.getUnsignedInt();
+			offset = buffer.getUnsignedInt();
 			buffer.skip(8);
 			long numSamples = buffer.getUnsignedInt();
 			long ctrlInfoOffset = buffer.getUnsignedInt();
+			if (!ctrlInfo.isOffset(ctrlInfoOffset))
+				ctrlInfo = new CtrlInfoReader(ctrlInfoOffset);
 			// compute amount of data in this data file entry: (bytes allocated) - (bytes free) - (bytes in header)
 			long buffDataSize = buffer.getUnsignedInt() - buffer.getUnsignedInt() - 152;
-			dataParams[0] = buffer.getShort(); //dbr type
-			dataParams[1] = buffer.getShort(); //dbr count
+			short dbrType = buffer.getShort();
+			short dbrCount = buffer.getShort();
 			// last part of data file header:
 			//	4 bytes padding (used to align the period)
 			//	8 bytes (double) period
@@ -113,34 +113,31 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			buffer.skip(76);
 			buffer.get(nameBytes);
 			
-			// Get raw sample data
-			addRawBufferData(ret, numSamples, buffDataSize);
+			ArchiveVType sample = ArchiveFileSampleReader.getSample(dbrType, dbrCount, ctrlInfo, buffer);
+			ret.add(sample);
 
 			// Is there a next entry?
-			if (nextOffset == 0)
+			if (offset == 0)
 			{
 				file.close();
 				return ret;
 			}
 			// Prepare to get the next entry
-			nextOffset += 4; // skip first 4 bytes
+			offset += 4; // skip first 4 bytes
 			String nextName = new String(nameBytes);
 			nextName = nextName.substring(0, nextName.indexOf('\0'));
-			if (filename.equals(nextName))
-			{
-				buffer.offset(nextOffset);
-			}
-			else
-			{
+			if (!filename.equals(nextName))
+			{	//close the file and open the next one
 				filename = nextName;
-				file.close();
+				buffer.close();
 				file = FileChannel.open(new File(parent, nextName).toPath());
 				buffer.setFile(file);
 			}
+			buffer.offset(offset);
 		} while (true);
 	}
 	
-	public void addRawBufferData(List<byte[]> list, long numSamples, long buffDataSize) throws IOException
+	/*public void addRawBufferData(List<byte[]> list, long numSamples, long buffDataSize) throws IOException
 	{
 		assert buffDataSize % numSamples == 0 : "Error reading file: numSamples does not divide size of data";
 		final int rawValueSize = (int) (buffDataSize / numSamples);
@@ -150,9 +147,9 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			buffer.get(rawValue);
 			list.add(rawValue);
 		}
-	}
+	}*/
 	
-	public static void main(String [] args) throws Exception
+	public static void main(String [] args) throws IOException
 	{
 		//TODO: In a master archive, the leftmost data file entries might not include
 		//all sub-archives. The data file entries in sub-archives can't point to entries
@@ -161,17 +158,17 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 		ArchiveFileReader reader = new ArchiveFileReader(args[0]);
 		HashMap<String, List<DataFileEntry>> channelsMap = reader.index.readLeftmostDataFileEntries(); 
 		System.out.println(channelsMap);
-		List<byte[]> data = new LinkedList<>();
+		List<ArchiveVType> samples = new LinkedList<>();
 		for (DataFileEntry dataEntry : channelsMap.get("DoublePV"))
 		{
-			data.addAll(reader.readDataFileEntries(dataEntry.filename, dataEntry.offset, new short [2]));
+			samples.addAll(reader.readDataFileEntries(dataEntry.filename, dataEntry.offset));
 		}
-		System.out.println(data);
+		//System.out.println(samples); //can't convert to string with null control info
 		reader.close();
 	}
 
 	@Override
-	public void close() throws Exception
+	public void close() throws IOException
 	{
 		if (buffer != null)
 			buffer.close();
