@@ -2,6 +2,7 @@ package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
@@ -13,7 +14,7 @@ import org.diirt.vtype.VType;
 //VType: relevant classes: ArchiveVNumber, ArchiveVnumberArray, ArchiveVEnum, ArchiveVString
 public class ArchiveFileSampleReader
 {
-	public static ArchiveVType getSample(short dbrType, short dbrCount,
+	public static void getSamples(List<ArchiveVType> dst, short dbrType, short dbrCount, long numSamples,
 			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
 	{
 		
@@ -22,24 +23,33 @@ public class ArchiveFileSampleReader
 		short severity = dataBuff.getShort();
 		long secsPastEpoch = dataBuff.getUnsignedInt();
 		long nanos = dataBuff.getUnsignedInt();
-		Instant timestamp = Instant.ofEpochSecond(secsPastEpoch, nanos); //TODO: is java epoch same as data writer epoch? (seems java's is -20 to data writer)
+		Instant timestamp = Instant.ofEpochSecond(secsPastEpoch, nanos);
+			//TODO: is java epoch same as data writer epoch? (seems java's is -20 to data writer)
 		dataBuff.skip(type.padding);
 		switch (type)
 		{
 			case DBR_TIME_STRING: break;
 			case DBR_TIME_SHORT: //==DBR_TIME_INT
-				return createShortVType(dataBuff, dbrCount, status, severity, timestamp, info);
+				while (numSamples-- > 0)
+					dst.add(createShortVType(dataBuff, dbrCount, status, severity, timestamp, info));
+				break;
 			case DBR_TIME_FLOAT:
-				return createFloatVType(dataBuff, dbrCount, status, severity, timestamp, info);
+				while (numSamples-- > 0)
+					dst.add(createFloatVType(dataBuff, dbrCount, status, severity, timestamp, info));
+				break;
 			case DBR_TIME_ENUM:
 			case DBR_TIME_CHAR: break;
 			case DBR_TIME_LONG:
-				return createLongVType(dataBuff, dbrCount, status, severity, timestamp, info);
+				while (numSamples-- > 0)
+					dst.add(createLongVType(dataBuff, dbrCount, status, severity, timestamp, info));
+				break;
 			case DBR_TIME_DOUBLE:
-				return createDoubleVType(dataBuff, dbrCount, status, severity, timestamp, info);
+				while (numSamples-- > 0)
+					dst.add(createDoubleVType(dataBuff, dbrCount, status, severity, timestamp, info));
+				break;
 			//TODO: other types
 		}
-		return null;
+		return;
 	}
 
 	//Dbr types (defines how data is written to file)

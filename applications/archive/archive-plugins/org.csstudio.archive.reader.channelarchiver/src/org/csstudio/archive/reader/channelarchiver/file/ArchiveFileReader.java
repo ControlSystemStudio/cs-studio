@@ -2,10 +2,6 @@ package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,19 +10,15 @@ import java.util.Map;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.vtype.ArchiveVType;
 
-public class ArchiveFileReader implements AutoCloseable //implements ArchiveReader
+public class ArchiveFileReader//implements ArchiveReader
 {
 	private final ArchiveFileIndexReader index;
 	private final File parent;
 	
-	private ArchiveFileBuffer buffer;
-	
 	public ArchiveFileReader(File index) throws IOException
 	{
 		parent = index.getParentFile();
-		final FileChannel indexFile = FileChannel.open(index.toPath());
-		this.index = new ArchiveFileIndexReader(indexFile);
-		buffer = null;
+		this.index = new ArchiveFileIndexReader(index);
 	}
 	
 	public ArchiveFileReader(String string) throws IOException
@@ -66,17 +58,15 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 	 * @throws {@link ArrayIndexOutOfBoundsException} if dataParams.length < 2
 	 */
 	@SuppressWarnings("unused")
-	private List<ArchiveVType> readDataFileEntries(String filename, long offset) throws IOException
+	private void readDataFileEntries(List<ArchiveVType> dst, String filename, long offset) throws IOException
 	{
 		File dataFile = new File(parent, filename);
 		// Note on parents: The parent directory of the data file might be different from the parent
 		// of the index file if the index file is a master file, and the data file associated with the
 		// entry is in a sub-archive. 
 		File dataParent = dataFile.getParentFile();
-		List<ArchiveVType> ret = new LinkedList<>();
 		byte nameBytes [] = new byte [40];
-		FileChannel file = FileChannel.open(dataFile.toPath());
-		buffer = new ArchiveFileBuffer(file);
+		ArchiveFileBuffer buffer = new ArchiveFileBuffer(dataFile);
 		CtrlInfoReader ctrlInfo = new CtrlInfoReader(0);
 
 		// prepare to read header
@@ -114,17 +104,14 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			buffer.skip(76);
 			buffer.get(nameBytes);
 			
-			while (numSamples -- > 0)
-			{
-				ArchiveVType sample = ArchiveFileSampleReader.getSample(dbrType, dbrCount, ctrlInfo, buffer);
-				ret.add(sample);
-			}
+			ArchiveFileSampleReader.getSamples(dst, dbrType, dbrCount, numSamples, ctrlInfo, buffer);
+			//System.out.print("Have " + ret.size() + " samples\n   "); //for debug
 
 			// Is there a next entry?
 			if (offset == 0)
 			{
-				file.close();
-				return ret;
+				buffer.close();
+				return;
 			}
 			// Prepare to get the next entry
 			offset += 4; // skip first 4 bytes
@@ -134,8 +121,8 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			{	//close the file and open the next one
 				filename = nextName;
 				buffer.close();
-				file = FileChannel.open(new File(parent, nextName).toPath());
-				buffer.setFile(file);
+				dataFile = new File(parent, nextName);
+				buffer.setFile(dataFile);
 			}
 			buffer.offset(offset);
 		} while (true);
@@ -168,17 +155,18 @@ public class ArchiveFileReader implements AutoCloseable //implements ArchiveRead
 			List<ArchiveVType> samples = new LinkedList<>();
 			for (DataFileEntry dataEntry : entry.getValue())
 			{
-				samples.addAll(reader.readDataFileEntries(dataEntry.filename, dataEntry.offset));
+				reader.readDataFileEntries(samples, dataEntry.filename, dataEntry.offset); 
+				//System.out.print("Done. Have " + samples.size() + " samples\n   ");
 			}
-			System.out.println(samples);
+			if (samples.size() > 100)
+			{
+				System.out.print("first 100: ");
+				System.out.println(samples.subList(0, 100).toString());
+			}
+			else
+			{
+				System.out.println(samples);
+			}
 		}
-		reader.close();
-	}
-
-	@Override
-	public void close() throws IOException
-	{
-		if (buffer != null)
-			buffer.close();
 	}
 }

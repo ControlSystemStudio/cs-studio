@@ -1,23 +1,25 @@
 package org.csstudio.archive.reader.channelarchiver.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 
 public class ArchiveFileBuffer implements AutoCloseable
 {
 	private final ByteBuffer buffer;
 	private FileChannel file;
 	
-	public ArchiveFileBuffer(FileChannel file)
+	public ArchiveFileBuffer(File file) throws IOException
 	{
-		this.buffer = ByteBuffer.allocateDirect(1024); //TODO: what size? Bigger means less fetching, but too big means memory runs out
+		this.buffer = ByteBuffer.allocate(65536); //TODO: what size? Bigger means less fetching, but too big means memory runs out
 		setFile(file);
 	}
 	
-	public void setFile(FileChannel file)
+	public void setFile(File file) throws IOException
 	{
-		this.file = file;
+		this.file = FileChannel.open(file.toPath(), StandardOpenOption.READ);
 		buffer.position(0).limit(0);
 	}
 	

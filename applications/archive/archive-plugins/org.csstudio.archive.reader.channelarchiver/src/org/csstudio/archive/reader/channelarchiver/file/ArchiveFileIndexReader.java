@@ -1,8 +1,7 @@
 package org.csstudio.archive.reader.channelarchiver.file;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -22,7 +21,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 {
 	private final ArchiveFileBuffer buffer;
 	
-	public ArchiveFileIndexReader(FileChannel indexFile) throws IOException
+	public ArchiveFileIndexReader(File indexFile) throws IOException
 	{
 		buffer = new ArchiveFileBuffer(indexFile);
 	}
