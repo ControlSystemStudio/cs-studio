@@ -1,104 +1,78 @@
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import org.diirt.vtype.AlarmSeverity;
+import org.diirt.util.text.NumberFormats;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.ValueFactory;
 
 public class CtrlInfoReader
 {
 	private final long offset;
-	//todo: reference to info
+	private Display display; //display, for number/display types
+	private List<String> labels; //labels, for enum types
 	
 	public CtrlInfoReader(long offset)
 	{
 		this.offset = offset;
+		display = null;
+		labels = null;
 	}
 
 	public void read(ArchiveFileBuffer buffer) throws IOException
 	{
-		//todo: if info is init'd, return
 		long oldOffset = buffer.offset();
 		buffer.offset(offset);
 		short size = buffer.getShort();
 		short type = buffer.getShort();
 		switch(type)
-		{	//TODO: implement
+		{
 			case 0: //invalid
 				break;
-			case 1: //Numeric ?
-				;
-			case 2: //Enum ?
+			case 1: //Numeric
+			    double upperDisplayLimit = buffer.getFloat();
+			    double lowerDisplayLimit = buffer.getFloat();
+			    double lowerWarningLimit = buffer.getFloat();
+			    double lowerAlarmLimit = buffer.getFloat();
+			    double upperWarningLimit = buffer.getFloat();
+			    double upperAlarmLimit = buffer.getFloat();
+			    int precision = buffer.getInt();
+				size -= 32; //two shorts, 6 floats, and a 32-bit int
+				byte unitsBytes [] = new byte [size];
+				buffer.get(unitsBytes);
+				String units = new String(unitsBytes).split("\0", 2)[0];
+				display = ValueFactory.newDisplay(lowerDisplayLimit, lowerAlarmLimit, lowerWarningLimit, units,
+						NumberFormats.format(precision), upperWarningLimit, upperAlarmLimit, upperDisplayLimit,
+						Double.NaN, Double.NaN);
+				break;
+			case 2: //Enum
+			    short num_states = buffer.getShort();
+			    buffer.skip(2); //skip pad
+			    size -= 4;
+			    byte stateNamesBytes [] = new byte [size];
+			    buffer.get(stateNamesBytes);
+			    String stateNames [] = new String(stateNamesBytes).split("\0", num_states + 1);
+			    labels = Arrays.asList(stateNames).subList(0, num_states);
 				break;
 		}
 		buffer.offset(oldOffset);
-		//todo: return info?
 	}
 	
-	public Display getDisplay()
+	public Display getDisplay(ArchiveFileBuffer buffer) throws IOException
 	{
-		//TODO: implement
-		return ValueFactory.displayNone();
+		if (display == null)
+			read(buffer);
+		return display;
 	}
 	
-	public AlarmSeverity getSeverity(short severity)
+	public List<String> getLabels(ArchiveFileBuffer buffer) throws IOException
 	{
-		return AlarmSeverity.NONE;
+		if (labels == null)
+			read(buffer);
+		return labels;
 	}
-	
-	public String getStatus(short status)
-	{
-		return "";
-	}
-	
-	/*// NumericInfo is the CtrlInfo for numeric values.
-	// So far, the structure's layout matches the binary
-	// layout (except for the byte order of the individual elements),
-	// so this strcuture must not be changed!
-	class NumericInfo
-	{
-	public:
-	    float    disp_high; // high display range
-	    float    disp_low;  // low display range
-	    float    low_warn;
-	    float    low_alarm;
-	    float    high_warn;
-	    float    high_alarm;
-	    int32_t  prec;      // display precision
-	    char     units[1];  // actually as long as needed,
-	};
-
-	// Similar to NumericInfo, this is for enumerated channels
-	class EnumeratedInfo
-	{
-	public:
-	    int16_t num_states;     // state_strings holds num_states strings
-	    int16_t pad;        // one after the other, separated by '\0'
-	    char    state_strings[1];
-	};
-
-	// A glorified union of NumericInfo and EnumeratedInfo.
-	//
-	// type == CtrlInfo::Type
-	// Info::size includes the "size" and "type" field.
-	// The original archiver read/wrote "Info" that way,
-	// but didn't properly initialize it:
-	// size excluded size/type and was then rounded up by 8 bytes... ?!
-	class CtrlInfoData
-	{
-	public:
-	    uint16_t  size;
-	    uint16_t  type;
-	    union
-	    {
-	        NumericInfo     analog;
-	        EnumeratedInfo  index;
-	    }         value;
-	    // class will be as long as necessary
-	    // to hold the units or all the state_strings
-	};*/
-
 	
 	public boolean isOffset(long offset)
 	{

@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
+import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
+import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
-import org.diirt.vtype.VType;
+
+//TODO: imported package gov.aps.jca, better to require bundle?
+import gov.aps.jca.dbr.Status;
 
 //VType: relevant classes: ArchiveVNumber, ArchiveVnumberArray, ArchiveVEnum, ArchiveVString
 public class ArchiveFileSampleReader
@@ -17,42 +21,106 @@ public class ArchiveFileSampleReader
 	public static void getSamples(List<ArchiveVType> dst, short dbrType, short dbrCount, long numSamples,
 			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
 	{
-		
-		DbrType type = DbrType.getDbrType(dbrType);
-		short status = dataBuff.getShort();
-		short severity = dataBuff.getShort();
-		long secsPastEpoch = dataBuff.getUnsignedInt();
-		long nanos = dataBuff.getUnsignedInt();
-		Instant timestamp = Instant.ofEpochSecond(secsPastEpoch, nanos);
-			//TODO: is java epoch same as data writer epoch? (seems java's is -20 to data writer)
-		dataBuff.skip(type.padding);
-		switch (type)
+		DbrType type = DbrType.forValue(dbrType);
+		while (numSamples-- > 0)
 		{
-			case DBR_TIME_STRING: break;
-			case DBR_TIME_SHORT: //==DBR_TIME_INT
-				while (numSamples-- > 0)
-					dst.add(createShortVType(dataBuff, dbrCount, status, severity, timestamp, info));
-				break;
-			case DBR_TIME_FLOAT:
-				while (numSamples-- > 0)
-					dst.add(createFloatVType(dataBuff, dbrCount, status, severity, timestamp, info));
-				break;
-			case DBR_TIME_ENUM:
-			case DBR_TIME_CHAR: break;
-			case DBR_TIME_LONG:
-				while (numSamples-- > 0)
-					dst.add(createLongVType(dataBuff, dbrCount, status, severity, timestamp, info));
-				break;
-			case DBR_TIME_DOUBLE:
-				while (numSamples-- > 0)
-					dst.add(createDoubleVType(dataBuff, dbrCount, status, severity, timestamp, info));
-				break;
-			//TODO: other types
-		}
+			short statusCode = dataBuff.getShort();
+			short severity = dataBuff.getShort();
+			long secsPastEpoch = dataBuff.getUnsignedInt();
+			long nanos = dataBuff.getUnsignedInt();
+			Instant timestamp = Instant.ofEpochSecond(secsPastEpoch, nanos);
+				//TODO: is java epoch same as data writer epoch? (seems java's is -20 to data writer)
+			dataBuff.skip(type.padding);
+			AlarmSeverity sev = getSeverity(severity);
+			String stat = getStatus(statusCode);
+			Display display = info.getDisplay(dataBuff);
+			ArchiveVType sample = null;
+			switch (type)
+			{
+				case DBR_TIME_STRING:
+					assert dbrCount == 1 : "String type DBR value must be scalar (count = 1).";
+					dbrCount = 40; //read as a string of 40 chars
+				case DBR_TIME_CHAR:
+					byte valueBytes [] = new byte [dbrCount];
+					dataBuff.get(valueBytes);
+					dataBuff.skip(type.getValuePad(dbrCount));
+					String strValue = new String(valueBytes).split("\0", 2)[0];
+					sample = new ArchiveVString(timestamp, sev, stat, strValue);
+					break;
+				case DBR_TIME_ENUM:
+					assert dbrCount == 1 : "Enum type DBR value must be scalar (count = 1).";
+					List<String> labels = info.getLabels(dataBuff);
+					int index = dataBuff.getShort(); 
+					sample = new ArchiveVEnum(timestamp, sev, stat, labels, index);
+					break;
+				case DBR_TIME_FLOAT:
+					if (dbrCount == 1)
+					{
+						float value = dataBuff.getFloat();
+						sample = new ArchiveVNumber(timestamp, sev, stat, display, value);
+					}
+					else
+					{
+						double value [] = new double [dbrCount];
+						for (int i = 0; i < dbrCount; ++i)
+							value[i] = dataBuff.getFloat();
+						dataBuff.skip(type.getValuePad(dbrCount));
+						sample = new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+					}
+					break;
+				case DBR_TIME_DOUBLE:
+					if (dbrCount == 1)
+					{
+						double value = dataBuff.getDouble();
+						sample = new ArchiveVNumber(timestamp, sev, stat, display, value);
+					}
+					else
+					{
+						double value [] = new double [dbrCount];
+						for (int i = 0; i < dbrCount; ++i)
+							value[i] = dataBuff.getDouble();
+						dataBuff.skip(type.getValuePad(dbrCount));
+						sample = new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+					}
+					break;
+				case DBR_TIME_SHORT: //==DBR_TIME_INT
+					if (dbrCount == 1)
+					{
+						short value = dataBuff.getShort();
+						sample = new ArchiveVNumber(timestamp, sev, stat, display, value);
+						dataBuff.skip(type.getValuePad(dbrCount));
+					}
+					else
+					{
+						int value [] = new int [dbrCount];
+						for (int i = 0; i < dbrCount; ++i)
+							value[i] = dataBuff.getShort();
+						dataBuff.skip(type.getValuePad(dbrCount));
+						sample = new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+					}
+					break;
+				case DBR_TIME_LONG:
+					if (dbrCount == 1)
+					{
+						int value = dataBuff.getInt();
+						sample = new ArchiveVNumber(timestamp, sev, stat, display, value);
+					}
+					else
+					{
+						int value [] = new int [dbrCount];
+						for (int i = 0; i < dbrCount; ++i)
+							value[i] = dataBuff.getInt();
+						dataBuff.skip(type.getValuePad(dbrCount));
+						sample = new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+					}
+					break;
+			} //end switch(type)
+			dst.add(sample);
+		} //end while(numSamples-- > 0)
 		return;
 	}
 
-	//Dbr types (defines how data is written to file)
+	//Dbr types (defines how data is arranged in file)
 	enum DbrType
 	{
 		DBR_TIME_STRING(14, 0, 40),
@@ -73,119 +141,46 @@ public class ArchiveFileSampleReader
 			this.valueSize = valueSize;
 		}
 		
-		public static DbrType getDbrType(int type)
+		public static DbrType forValue(int type)
 		{
 			return DbrType.values()[type-14];
 		}
-	}
-	
-	//TODO: refactor: a few createNumberVType methods, with various ways of reading data
-	protected static ArchiveVType createDoubleVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
-			Instant timestamp, CtrlInfoReader info) throws IOException
-	{
-		if (count == 1)
+		
+		//DBR types, when stored in files, are padded for alignment;
+		//that is, so that their size is a multiple of 8. This includes
+		//both the struct as defined (which only includes the first value)
+		//and the "true" data structure (which includes an array of values
+		//of arbitrary size).
+		public int getValuePad(int count)
 		{
-			double value = dataBuff.getDouble();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumber(timestamp, sev, stat, display, value);
-		}
-		else
-		{
-			double value [] = new double [count];
-			for (int i = 0; i < count; ++i)
-				value[i] = dataBuff.getDouble();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
+			int remainder = (12 + padding + valueSize * count) % 8;
+			return remainder != 0 ? 8 - remainder : 0;
 		}
 	}
 	
-	protected static ArchiveVType createFloatVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
-			Instant timestamp, CtrlInfoReader info) throws IOException
+	private static AlarmSeverity getSeverity(short severity)
 	{
-		if (count == 1)
-		{
-			float value = dataBuff.getFloat();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumber(timestamp, sev, stat, display, value);
-		}
-		else
-		{
-			double value [] = new double [count];
-			for (int i = 0; i < count; ++i)
-				value[i] = dataBuff.getFloat();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
-		}
+		if ((severity & 0x0F00) != 0) //special archiver values
+			return AlarmSeverity.NONE;
+		AlarmSeverity severities [] = AlarmSeverity.values();
+		if (severity < severities.length && severity >= 0)
+			return severities[severity];
+		return AlarmSeverity.NONE;
 	}
 	
-	protected static ArchiveVType createLongVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
-			Instant timestamp, CtrlInfoReader info) throws IOException
+	private static String getStatus(short statusCode)
 	{
-		if (count == 1)
-		{
-			int value = dataBuff.getInt();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumber(timestamp, sev, stat, display, value);
-		}
-		else
-		{
-			int value [] = new int [count];
-			for (int i = 0; i < count; ++i)
-				value[i] = dataBuff.getInt();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
-		}
-	}
-
-	protected static ArchiveVType createShortVType(ArchiveFileBuffer dataBuff, short count, short status, short severity,
-			Instant timestamp, CtrlInfoReader info) throws IOException
-	{
-		if (count == 1)
-		{
-			short value = dataBuff.getShort();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumber(timestamp, sev, stat, display, value);
-		}
-		else
-		{
-			int value [] = new int [count];
-			for (int i = 0; i < count; ++i)
-				value[i] = dataBuff.getShort();
-
-			AlarmSeverity sev = info.getSeverity(severity);
-			String stat = info.getStatus(status);
-			Display display = info.getDisplay();
-			
-			return new ArchiveVNumberArray(timestamp, sev, stat, display, value);
-		}
-	}
-
+        String statusText;
+        try
+        {
+            final Status status = Status.forValue(statusCode);
+            //statusText = status.toString();
+            statusText = status.getName();
+        }
+        catch (Exception e)
+        {
+            statusText = "<" + statusCode + ">";
+        }
+        return statusText;
+    }
 }

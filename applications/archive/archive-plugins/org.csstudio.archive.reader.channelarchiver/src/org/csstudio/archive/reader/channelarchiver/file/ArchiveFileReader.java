@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.archive.reader.ArchiveReader;
+//import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.vtype.ArchiveVType;
 
 public class ArchiveFileReader//implements ArchiveReader
@@ -104,7 +104,9 @@ public class ArchiveFileReader//implements ArchiveReader
 			buffer.skip(76);
 			buffer.get(nameBytes);
 			
+			buffDataSize += buffer.offset(); // Compute expected buffer offset after reading samples, as a sanity check
 			ArchiveFileSampleReader.getSamples(dst, dbrType, dbrCount, numSamples, ctrlInfo, buffer);
+			assert buffer.offset() == buffDataSize : "Size of sample buffer does not match amount of data read.";
 			//System.out.print("Have " + ret.size() + " samples\n   "); //for debug
 
 			// Is there a next entry?
@@ -128,18 +130,6 @@ public class ArchiveFileReader//implements ArchiveReader
 		} while (true);
 	}
 	
-	/*public void addRawBufferData(List<byte[]> list, long numSamples, long buffDataSize) throws IOException
-	{
-		assert buffDataSize % numSamples == 0 : "Error reading file: numSamples does not divide size of data";
-		final int rawValueSize = (int) (buffDataSize / numSamples);
-		while (numSamples-- > 0)
-		{
-			byte rawValue [] = new byte [rawValueSize];
-			buffer.get(rawValue);
-			list.add(rawValue);
-		}
-	}*/
-	
 	public static void main(String [] args) throws IOException
 	{
 		//TODO: In a master archive, the leftmost data file entries might not include
@@ -147,7 +137,7 @@ public class ArchiveFileReader//implements ArchiveReader
 		//in other sub-archives. Thus, to dump a master archive, we have to identify and
 		//enter all sub-archives.
 		ArchiveFileReader reader = new ArchiveFileReader(args[0]);
-		HashMap<String, List<DataFileEntry>> channelsMap = reader.index.readLeftmostDataFileEntries(); 
+		HashMap<String, List<DataFileEntry>> channelsMap = reader.index.readLeftmostDataFileEntries();
 		System.out.println(channelsMap);
 		for (Map.Entry<String, List<DataFileEntry>> entry : channelsMap.entrySet())
 		{
@@ -155,7 +145,7 @@ public class ArchiveFileReader//implements ArchiveReader
 			List<ArchiveVType> samples = new LinkedList<>();
 			for (DataFileEntry dataEntry : entry.getValue())
 			{
-				reader.readDataFileEntries(samples, dataEntry.filename, dataEntry.offset); 
+				reader.readDataFileEntries(samples, dataEntry.filename, dataEntry.offset);
 				//System.out.print("Done. Have " + samples.size() + " samples\n   ");
 			}
 			if (samples.size() > 100)
