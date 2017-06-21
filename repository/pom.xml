@@ -167,6 +167,9 @@
                 </artifact>
                 <artifact>
                   <id>org.influxdb:influxdb-java:2.6</id>
+		  <instructions>
+		    <Require-Bundle>com.squareup.retrofit2.converter-moshi,com.squareup.okhttp3.logging-interceptor</Require-Bundle>
+                  </instructions>
                 </artifact>
                 <artifact>
                   <id>org.glassfish:javax.json:1.0.4</id>
