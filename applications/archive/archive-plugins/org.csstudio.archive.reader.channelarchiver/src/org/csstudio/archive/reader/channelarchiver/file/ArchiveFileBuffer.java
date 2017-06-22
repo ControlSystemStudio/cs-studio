@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 
 public class ArchiveFileBuffer implements AutoCloseable
 {
 	private final ByteBuffer buffer;
-	private FileChannel file;
+	private FileChannel fileChannel;
+	private File file;
 	
 	public ArchiveFileBuffer(File file) throws IOException
 	{
@@ -19,8 +21,14 @@ public class ArchiveFileBuffer implements AutoCloseable
 	
 	public void setFile(File file) throws IOException
 	{
-		this.file = FileChannel.open(file.toPath(), StandardOpenOption.READ);
+		this.file = file;
+		fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
 		buffer.position(0).limit(0);
+	}
+	
+	public File getFile()
+	{
+		return file;
 	}
 	
 	public void prepareGet(int numBytes) throws IOException
@@ -28,7 +36,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 		if (buffer.remaining() < numBytes)
 		{
 			buffer.compact();
-			file.read(buffer);
+			fileChannel.read(buffer);
 			buffer.limit(buffer.position()); //use limit to mark extent of read
 			buffer.position(0);
 		}
@@ -69,9 +77,16 @@ public class ArchiveFileBuffer implements AutoCloseable
 		if (!buffer.hasRemaining())
 		{
 			buffer.clear();
-			buffer.limit(file.read(buffer));
+			buffer.limit(fileChannel.read(buffer));
 		}
 		return buffer.get();
+	}
+	
+	//get epicsTime saved in file as java Instant; automatically
+	//converts from Channel Archiver epoch (1990) to java epoch (1970)
+	public Instant getEpicsTime() throws IOException
+	{
+		return Instant.ofEpochSecond(getUnsignedInt() + 631152000L, getInt());
 	}
 	
 	public void skip(int numBytes) throws IOException
@@ -81,7 +96,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 		{
 			numBytes -= numAlready;
 			buffer.clear();
-			numAlready = file.read(buffer);
+			numAlready = fileChannel.read(buffer);
 			buffer.limit(numAlready);
 			buffer.position(0);
 		}
@@ -90,20 +105,20 @@ public class ArchiveFileBuffer implements AutoCloseable
 	
 	public void offset(long offset) throws IOException
 	{
- 		if (offset < 0 || offset > file.size())
+ 		if (offset < 0 || offset > fileChannel.size())
 		{
 			//throw new RuntimeException("Offset is invalid.") ?
 			return;
 		}
 		//check if buffer contains the data
 		//(Buffer always represents a contiguous portion of the file's contents)
-		long buffer_start_offset = file.position() - buffer.limit();
-		boolean doesNotContain = buffer_start_offset > offset || file.position() < offset;
+		long buffer_start_offset = fileChannel.position() - buffer.limit();
+		boolean doesNotContain = buffer_start_offset > offset || fileChannel.position() < offset;
 		if (doesNotContain)
 		{
-			file.position(offset);
+			fileChannel.position(offset);
 			buffer.clear();
-			buffer.limit(file.read(buffer));
+			buffer.limit(fileChannel.read(buffer));
 			buffer.position(0);
 		}
 		else
@@ -120,7 +135,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 
 	long offset() throws IOException
 	{
-		return file.position() - buffer.limit() + buffer.position();
+		return fileChannel.position() - buffer.limit() + buffer.position();
 	}
 
 	public int remaining()
@@ -131,6 +146,22 @@ public class ArchiveFileBuffer implements AutoCloseable
 	@Override
 	public void close() throws IOException
 	{
-		file.close();
+		fileChannel.close();
+	}
+	
+	public String toString()
+	{
+		long offset = -1;
+		try
+		{
+			offset = offset();
+		}
+		catch (IOException e)
+		{
+			
+		}
+		return String.format("buffer@offset=%x(%d): %02x %02x %02x %02x %02x %02x %02x %02x", offset, offset, buffer.get(buffer.position()),
+				buffer.get(buffer.position()+1), buffer.get(buffer.position()+2), buffer.get(buffer.position()+3), buffer.get(buffer.position()+4),
+				buffer.get(buffer.position()+5), buffer.get(buffer.position()+6), buffer.get(buffer.position()+7));
 	}
 }
