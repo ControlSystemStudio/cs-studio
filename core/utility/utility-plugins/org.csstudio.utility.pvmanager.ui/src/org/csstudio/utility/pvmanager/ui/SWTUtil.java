@@ -2,6 +2,8 @@ package org.csstudio.utility.pvmanager.ui;
 
 import java.util.concurrent.Executor;
 
+import org.diirt.util.array.ListNumber;
+import org.diirt.vtype.VImage;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -10,7 +12,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.diirt.vtype.VImage;
 
 public class SWTUtil {
     private SWTUtil() {
@@ -49,9 +50,18 @@ public class SWTUtil {
     }
 
     public static Image toImage(GC gc, VImage vImage) {
-         ImageData imageData = new ImageData(vImage.getWidth(), vImage.getHeight(), 24, new PaletteData(0xFF, 0xFF00, 0xFF0000), vImage.getWidth()*3, vImage.getData());
-         Image image = new Image(gc.getDevice(), imageData);
-         return image;
+
+        ListNumber data = vImage.getData();
+        byte imageByteData[] = new byte[data.size()];
+
+        for (int i = 0; i < data.size(); i++) {
+            imageByteData[i] = data.getByte(i);
+        }
+
+        ImageData imageData = new ImageData(vImage.getWidth(), vImage.getHeight(), 24, new PaletteData(0xFF, 0xFF00, 0xFF0000), vImage.getWidth() * 3, imageByteData);
+
+        Image image = new Image(gc.getDevice(), imageData);
+        return image;
     }
 
 }
