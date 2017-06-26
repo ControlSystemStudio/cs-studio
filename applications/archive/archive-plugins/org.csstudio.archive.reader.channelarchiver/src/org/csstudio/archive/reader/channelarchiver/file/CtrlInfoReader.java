@@ -8,6 +8,12 @@ import org.diirt.util.text.NumberFormats;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.ValueFactory;
 
+/**
+ * Lazily reads CtrlInfo (Display- or Enum-related information) for Channel Archiver
+ * data files.
+ * @author Amanda Carpenter
+ *
+ */
 public class CtrlInfoReader
 {
 	private final long offset;

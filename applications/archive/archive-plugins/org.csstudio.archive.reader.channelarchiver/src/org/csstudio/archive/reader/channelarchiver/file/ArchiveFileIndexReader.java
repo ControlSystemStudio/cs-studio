@@ -2,28 +2,54 @@ package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
+import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.DataFileEntry;
 
 /**
  * Helper class for reading ChannelArchiver index files (both master index files
  * and sub-archive index files).
- * 
  * @author Amanda Carpenter
  */
 public class ArchiveFileIndexReader implements AutoCloseable
 {
+	//TODO: Right now, "find least time" (find leftmost) and "find a specific time" are
+	//handled separately and differently, adding an unnecessary level of complexity.
+	//However, it works, and it's not inefficient, so it's okay for now.
+
 	private final ArchiveFileBuffer buffer;
+	private final File indexParent;
+	private final HashMap<String, TreeAnchor> anchors;
+	
+	//glorified struct, if java had structs
+	private class TreeAnchor
+	{
+		public final long root;
+		public final long numRecords;
+		
+		public TreeAnchor(long offset) throws IOException
+		{
+			buffer.offset(offset);
+			this.root = buffer.getUnsignedInt();
+			this.numRecords = buffer.getUnsignedInt();
+		}
+	}
 	
 	public ArchiveFileIndexReader(File indexFile) throws IOException
 	{
 		buffer = new ArchiveFileBuffer(indexFile);
+		indexParent = indexFile.getParentFile();
+		anchors = getAnchors();
 	}
 	
 	private Queue<Long> readHashTable() throws IOException
@@ -43,7 +69,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		return ret;
 	}
 	
-	/*private HashMap<String, Long> readHashEntries(Queue<Long> offsets) throws IOException
+	private HashMap<String, TreeAnchor> getAnchors() throws IOException
 	{
 		//Hash table entries are stored as follows:
 		// long next - offset of next hash entry on the table
@@ -52,40 +78,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		// short id_text_len - length of channel id text
 		// char name [name_name] - channel name (without '/0' terminator)
 		// char id_text [id_text_len] - id text (without '/0' terminator)
-		HashMap<String, Long> ret = new HashMap<>();
-		while (!offsets.isEmpty())
-		{
-			long offset = offsets.poll();
-			ArchiveFileReader.prepBuffer(offset, 10, buffer, file);
-			
-			//read next, "id", and name_len
-			long next_offset = Integer.toUnsignedLong(buffer.getInt());
-			long anchor_offset = Integer.toUnsignedLong(buffer.getInt());
-			int nameLen = buffer.getShort();
-
-			//make sure all of name is in buffer
-			ArchiveFileReader.prepBuffer(offset+12, nameLen, buffer, file);
-			
-			byte name [] = new byte [nameLen];
-			buffer.get(name);
-			ret.put(new String(name), anchor_offset);
-			if (next_offset != 0)
-				offsets.add(next_offset);
-		}
-		return ret;
-	}*/
-
-	//Returns a map from channel names to their leftmost (earliest) data file entries
-	public HashMap<String, List<DataFileEntry>> readLeftmostDataFileEntries() throws IOException
-	{
-		//Hash table entries are stored as follows:
-		// long next - offset of next hash entry on the table
-		// long ID - offset of RTree anchor for channel name
-		// short name_len - length of channel name
-		// short id_text_len - length of channel id text
-		// char name [name_name] - channel name (without '/0' terminator)
-		// char id_text [id_text_len] - id text (without '/0' terminator)
-		HashMap<String, List<DataFileEntry>> ret = new HashMap<>();
+		HashMap<String, TreeAnchor> ret = new HashMap<>();
 		Queue<Long> offsets = readHashTable();
 		while (!offsets.isEmpty())
 		{
@@ -100,33 +93,72 @@ public class ArchiveFileIndexReader implements AutoCloseable
 
 			byte name [] = new byte [nameLen];
 			buffer.get(name);
-			ret.put(new String(name), readLeftmostDatablocks(anchor_offset));
+			ret.put(new String(name), new TreeAnchor(anchor_offset));
 			if (offset != 0)
 				offsets.add(offset);
 		}
 		return ret;
 	}
-
 	
-	//Given the offset of an RTree Anchor, returns a list of all data file entries
-	//attached to the RTree's leftmost non-empty record.
-	private List<DataFileEntry> readLeftmostDatablocks(long anchor_offset) throws IOException
+	/**
+	 * Get all data file entries (filename + offset) associated with the first RTree record
+	 * for the given channel name and the given start and end times.
+	 * If the index file has data for the given channel name, but no data for any time
+	 * at or before the given end time, an empty list will be returned.
+	 * For a sub-archive, at most one data file entry will be returned.
+	 * For a master archive, there may be multiple entries,
+	 * if multiple sub-archives contain data for the given start time.
+	 * @param channelName Channel name
+	 * @param startTime
+	 * @param endTime
+	 * @return data file entries (file + offset) for the given time range
+	 * @throws IOException
+	 * @throws UnknownChannelException If the index has no data for the given channel name.
+	 */
+	public List<DataFileEntry> getEntries(String channelName, Instant startTime, Instant endTime) throws IOException, UnknownChannelException
 	{
-		//An RTree Anchor is laid out as follows:
-		//	long root - offset of RTree root
-		//	long numRecords - number of records per RTree node
-		buffer.offset(anchor_offset);
-		
-		long root = buffer.getUnsignedInt();
-		long numRecords = buffer.getUnsignedInt(); //number of records per RTree node
-		
-		long datablock = readLeftmostDescendant(root, numRecords);
+		TreeAnchor anchor = anchors.get(channelName);
+		if (anchor == null)
+		{
+			throw new UnknownChannelException(channelName);
+		}
+		long result = searchRTreeNodes(anchor.root, anchor.numRecords, startTime);
+		if (result == 0) return Collections.emptyList();
+		// check end time: if record starts after end time, it's no good.
+		buffer.offset(buffer.offset() - 20);
+		Instant recordStartTime = buffer.getEpicsTime();
+		if (recordStartTime.compareTo(endTime) > 0)
+			return Collections.emptyList();
+		return readDatablocks(result);
+	}
+
+	/**
+	 * Find the leftmost data file entries (filename + offset) for all channels listed in the reader's
+	 * index file. For sub-archives, each channel will have one data file entry in its leftmost
+	 * record. For master archives, which collect multiple sub-archives, there may be more than one.
+	 * @return A map from channel names to the list of data file entries in its leftmost record.
+	 * @throws IOException
+	 */
+	public HashMap<String, List<DataFileEntry>> readLeftmostDataFileEntries() throws IOException
+	{
+		HashMap<String, List<DataFileEntry>> ret = new HashMap<>();
+		for (Map.Entry<String, TreeAnchor> entry : anchors.entrySet())
+		{
+			ret.put(entry.getKey(), readLeftmostDatablocks(entry.getValue()));
+		}
+		return ret;
+	}
+	
+	//Given an RTree Anchor, returns a list of all data file entries
+	//attached to the RTree's leftmost non-empty record.
+	private List<DataFileEntry> readLeftmostDatablocks(TreeAnchor anchor) throws IOException
+	{
+		long datablock = readLeftmostDescendant(anchor.root, anchor.numRecords);
 		List<DataFileEntry> ret = readDatablocks(datablock);
 		return ret;
 	}
 	
 	//Return the offset of the node's leftmost (least) descendant.
-	//Affects buffer contents and file position
 	private long readLeftmostDescendant(long node, long numRecords) throws IOException
 	{
 		//An RTree Node is laid out as follows:
@@ -135,61 +167,137 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		// Record[M] records, where a Record is 20 bytes
 		buffer.offset(node);
 		boolean isLeaf = buffer.get() != 0;
+		
 		buffer.skip(4);
-		//read all currently available (in-buffer) records
+		//read all currently available (in-buffer) records; or, if is leaf,
+			//continue until non-zero record
 		Deque<Long> records = new ArrayDeque<>();
-		long numRecordsRem = readLeftmostRecords(records, numRecords, isLeaf);
+		long numRecordsRem = numRecords;
+		long initOffset = buffer.offset();
 		while (true)
 		{
-			while (records.isEmpty())
-			{ // read more records
-				buffer.prepareGet(20); //prepare to read a least 1 record
-				numRecordsRem = readLeftmostRecords(records, numRecords, isLeaf);
+			while(records.isEmpty())
+			{
+				if (isLeaf)
+					readLeftmostRecords(records, numRecordsRem, 1, 1);
+				else
+					readLeftmostRecords(records, numRecordsRem, 0, 0);
+				numRecordsRem -= (buffer.offset() - initOffset)/20;
 				if (numRecordsRem == 0)
 				{
 					if (records.isEmpty()) return 0;
 					else break;
 				}
+				initOffset = buffer.offset();
 			}
 			if (isLeaf) return records.poll();
-			// Need to save current file offset before reading the child node's descendants
-			long records_offset = buffer.offset();
 			long result = readLeftmostDescendant(records.poll(), numRecords);
 			if (result > 0) return result;
-			buffer.offset(records_offset);
+			buffer.offset(initOffset); //need to return to offset from before reading descendants
 		}
 	}
 
-	//Looks for all records with a non-null child, puts them on queue.
-	//Stops when no records are available in buffer. If stopLeftmost is true,
-	//stops when first non-zero record is found, if any are found.
-	//Preconditions: buffer's position is at first record.
-	//Returns number of records remaining to be read.
-	private long readLeftmostRecords(Queue<Long> records, long numRecords, boolean stopLeftmost) throws IOException
+	//Looks for records with non-zero child offsets, adds the offset(s) to the collection.
+	//Continues adding non-zero offsets until one of the following:
+		//(1) maxRecordsLimit != 0, and maxRecordsLimit records have been added
+		//(2) minRecordsLimit != 0, minRecordsLimit records have been added,
+			//and no records remain in the buffer
+		//(3) numRecords records have been processed (including those not added)
+	//Preconditions: buffer's position is at first record to be searched.
+	//Returns last child found, if return was due to (1) or (2); otherwise, 0.
+	//Postconditions: buffer's position is immediately after last record read.
+	private long readLeftmostRecords(Collection<Long> records, long numRecords, int minRecordsLimit, int maxRecordsLimit) throws IOException
+	{
+		//A Record in an RTree Node is 20 bytes, arranged as follows:
+		//	EpicsTime start time, where an EpicsTime is 8 bytes long
+		//	EpicsTime end time
+		//	long child
+		do
+		{
+			buffer.prepareGet(20);
+			while (buffer.remaining() >= 20)
+			{
+				buffer.skip(16);
+				long child = buffer.getUnsignedInt();
+				numRecords--;
+				if (child != 0)
+				{
+					records.add(child);
+					if (--maxRecordsLimit == 0 || --minRecordsLimit == 0)
+						return child;
+				}
+			}
+		} while (minRecordsLimit > 0 && numRecords > 0);
+		return 0;
+	}
+	
+	//Performs a search through records with non-zero child offsets. Finds the record
+	//with the largest start time at or below the desired value. If no such record
+	//exists, returns the first (least) record's child.
+	private long searchRecords(long numRecords, Instant time) throws IOException
 	{
 		//A Record in an RTree Node is 20 bytes, arranged as follows:
 		//	EpicsTime start time, where an EpicsTime is 8 bytes long
 		//	EpicsTime end time
 		//	long child - if empty, 0; if Node is not leaf, offset of child node; if Node is leaf, offset of child Datablock
-		//We're just looking for non-zero children.
-		while (buffer.remaining() >= 20)
+		//note: a binary search will not work, because it is not known how many actual records
+			//are in an RTree node
+		long initOffset = buffer.offset();
+		long child = 0;
+		while (numRecords-- > 0)
 		{
-			buffer.skip(16);
-			long child = buffer.getUnsignedInt();
-			numRecords--;
-			if (child != 0)
-			{
-				records.add(child);
-				if (stopLeftmost)
-					return numRecords;
-			}
+			buffer.offset(initOffset + numRecords * 20);
+			Instant startTime = buffer.getEpicsTime();
+			buffer.skip(8);
+			child = buffer.getUnsignedInt();
+			if (child != 0 && startTime.compareTo(time) <= 0)
+				break;
 		}
-		return numRecords;
+		return child;
 	}
 	
-	//given the offset of an RTree datablock, gets the location of the entry in
-		//the data file for that datablock as well as any other datablocks for that
-		//time-frame
+	/**
+	 * Finds the leaf-node record whose start time is the largest start time
+	 * at or below the given Instant. Returns the offset of that record's child,
+	 * if the offset is non-zero; or else the first non-zero child offset of the
+	 * records that follow, if there is one; or zero if no non-zero child offsets
+	 * can be found. Upon return, the buffer is positioned immediately after the record
+	 * whose child was returned. (If zero was returned, buffer is immediately after last record.)
+	 * @param root Offset in index file of RTree's root node
+	 * @param numRecords Number of records per RTree node
+	 * @param time Start time to search for
+	 * @return Offset of datablock which is at or before
+	 * @throws IOException
+	 */
+	public long searchRTreeNodes(long root, long numRecords, Instant time) throws IOException
+	{
+		//An RTree Node is laid out as follows:
+		// byte isLeaf (if false, 0; otherwise, true)
+		// long parent (if root, 0; otherwise, offset of parent node)
+		// Record[M] records, where a Record is 20 bytes
+		long result = root;
+		boolean isLeaf;
+		do
+		{
+			buffer.offset(result);
+			isLeaf = buffer.get() != 0;
+			buffer.skip(4);
+			result = searchRecords(numRecords, time);
+			if (result == 0) return 0;
+		} while (!isLeaf);
+		return result;
+	}
+	
+	/**
+	 * Given the offset of an RTree datablock, gets the filename and offset
+	 * associated with that datablock, and the same for any child datablocks.
+	 * The returned values correspond to the same time frame, but should be in
+	 * different sub-archives, if there are more than one.
+	 * @param offset Offset of RTree datablock (child_id of leaf node's record)
+	 * @return List<DataFileEntry> corresponding to the respective files and offsets of
+	 * 			all datablocks associated with the RTree record which contains the given offset
+	 * @throws IOException
+	 */
 	private List<DataFileEntry> readDatablocks(long offset) throws IOException
 	{
 		//Datablocks (RTree entries) are stored as follows:
@@ -200,7 +308,6 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		List<DataFileEntry> ret = new ArrayList<>();
 		while (offset != 0)
 		{
-			long name_offset = offset + 10;
 			buffer.offset(offset);
 			
 			offset = buffer.getUnsignedInt();
@@ -209,14 +316,19 @@ public class ArchiveFileIndexReader implements AutoCloseable
 			
 			byte name [] = new byte [nameSize];
 			buffer.get(name);
-			ret.add(new DataFileEntry(new String(name), dataOffset));
+			ret.add(new DataFileEntry(new File(indexParent, new String(name)), dataOffset));
 		}
 		return ret;
 	}
 
 	@Override
-	public void close() throws Exception
+	public void close() throws IOException
 	{
 		buffer.close();
+	}
+
+	public java.util.Set<String> getChannelNames()
+	{
+		return anchors.keySet();
 	}
 }

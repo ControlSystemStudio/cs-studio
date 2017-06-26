@@ -2,11 +2,7 @@ package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.ReadOnlyFileSystemException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.archive.reader.ValueIterator;
@@ -22,12 +18,19 @@ import org.diirt.vtype.VType;
 //TODO: imported package gov.aps.jca, better to require bundle?
 import gov.aps.jca.dbr.Status;
 
+/**
+ * Obtains channel archiver samples from channel archiver
+ * data files, and translates them to ArchiveVTypes.
+ * <p>Note: Does not currently support data in multiple sub-archives.
+ * @author Amanda Carpenter
+ *
+ */
 public class ArchiveFileSampleReader implements ValueIterator
 {
 	private final Instant iteratorStop;
 	private final ArchiveFileBuffer buffer;
 	private DataHeader header;
-	private ArchiveVType next; //sample that will be returned by next, or else null
+	private ArchiveVType next; //sample that will be returned by nextSample(), or else null
 	
 	public ArchiveFileSampleReader(Instant iteratorStart, Instant iteratorStop,
 			File file, long offset) throws IOException
@@ -37,20 +40,84 @@ public class ArchiveFileSampleReader implements ValueIterator
 		buffer.offset(offset);
 		header = DataHeader.readDataHeader(buffer, new CtrlInfoReader(0));
 		//possible sanity check: is start between header's start and stop times?
-		//possible shortcut: use period field from header to est. how many samples to skip
-		//TODO: if header.endTime < iteratorStart, throw exception
-		ArchiveVType sample;
-		next = null;
-		while (header.numSamples-- > 0)
+		binarySearchSamples(iteratorStart);
+	}
+	
+	//Searches for samples in the buffer, starting from its current offset, using the information in
+	//this.header.
+	//Finds sample with closest timestamp to 'time', either at or below.
+	//Sets this.next = found sample, or null if not found, and sets this.header.numSamples = number of samples
+		//after current buffer position.
+	private void binarySearchSamples(Instant time)
+	{
+		ArchiveVType sample = null;
+		int size = header.dbrType.getSize(header.dbrCount);
+		long initOffset;
+		try
 		{
-			sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
-			if (sample.getTimestamp().compareTo(iteratorStart) >= 0 &&
-					sample.getTimestamp().compareTo(iteratorStop) <= 0)
+			initOffset = buffer.offset();
+		}
+		catch (IOException e)
+		{
+			next = null;
+			header.numSamples = 0;
+			return;
+		}
+		long minOffset = initOffset;
+		long maxOffset = minOffset + (header.numSamples-1) * size;
+		long midOffset;
+		do
+		{
+			// need to make sure midOffset > minOffset unless minOffset == maxOffset
+			midOffset = minOffset + (maxOffset - minOffset)/(2*size) * size;
+			try
 			{
-				next = sample;
+				buffer.offset(midOffset);
+				sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
+			}
+			catch (IOException e)
+			{
+				next = null;
+				header.numSamples = 0;
+			}
+			int compare = sample.getTimestamp().compareTo(time);
+			if (compare == 0)
+			{
 				break;
 			}
-		}
+			else if (compare < 0) //sample time < 'time'
+			{
+				if (minOffset == midOffset)
+				{	//'time' is after min sample's time; it might be at or above max sample's time
+					try
+					{
+						ArchiveVType maxSample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
+						if (maxSample.getTimestamp().compareTo(time) <= 0)
+						{
+							sample = maxSample;
+						}
+						else
+						{
+							buffer.offset(buffer.offset() - size);
+						}
+						break;
+					}
+					catch (IOException e)
+					{
+						next = null;
+						header.numSamples = 0;
+						break;
+					}
+				}
+				minOffset = midOffset;
+			}
+			else
+			{
+				maxOffset = midOffset - size;
+			}
+		} while (minOffset <= maxOffset);
+		next = sample;
+		header.numSamples -= (midOffset - initOffset)/size + 1;
 	}
 	
 	private boolean hasNextHeader()
@@ -232,7 +299,6 @@ public class ArchiveFileSampleReader implements ValueIterator
 			// Is there a next entry?
 			if (header.nextOffset == 0)
 			{
-				buffer.close();
 				return;
 			}
 			// Prepare to get the next entry
@@ -371,19 +437,19 @@ public class ArchiveFileSampleReader implements ValueIterator
 		DBR_TIME_LONG(19, 0, 4),
 		DBR_TIME_DOUBLE(20, 4, 8);
 
-		public final int type;
+		public final int typeCode;
 		public final int padding;
 		public final int valueSize;
 		private DbrType(int type, int padding, int valueSize)
 		{
-			this.type = type;
+			this.typeCode = type;
 			this.padding = padding;
 			this.valueSize = valueSize;
 		}
 		
-		public static DbrType forValue(int type)
+		public static DbrType forValue(int typeCode)
 		{
-			return DbrType.values()[type-14];
+			return DbrType.values()[typeCode-14];
 		}
 		
 		//DBR types, when stored in files, are padded for alignment;
@@ -413,7 +479,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 	
 	private static AlarmSeverity getSeverity(short severity)
 	{
-		if ((severity & 0x0F00) != 0) //TODO: special archiver values
+		if ((severity & 0x0F00) != 0) //special archiver values
 			return AlarmSeverity.NONE;
 		AlarmSeverity severities [] = AlarmSeverity.values();
 		if (severity < severities.length && severity >= 0)

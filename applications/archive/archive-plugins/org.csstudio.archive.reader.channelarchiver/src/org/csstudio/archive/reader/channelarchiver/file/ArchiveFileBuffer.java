@@ -7,6 +7,12 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 
+/**
+ * Implements ByteBuffer-like relative get methods for getting binary data
+ * from a file. Created for use with ArchiveFileReader and associated classes.
+ * @author Amanda Carpenter
+ *
+ */
 public class ArchiveFileBuffer implements AutoCloseable
 {
 	private final ByteBuffer buffer;
