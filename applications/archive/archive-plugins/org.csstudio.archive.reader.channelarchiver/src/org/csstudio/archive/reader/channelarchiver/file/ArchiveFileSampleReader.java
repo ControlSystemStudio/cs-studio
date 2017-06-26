@@ -299,13 +299,14 @@ public class ArchiveFileSampleReader implements ValueIterator
 			// Is there a next entry?
 			if (header.nextOffset == 0)
 			{
+				buffer.close();
 				return;
 			}
 			// Prepare to get the next entry
 			if (!dataFile.equals(header.nextFile))
 			{	//close the file and open the next one
 				buffer.close();
-				dataFile = new File(dataFile.getParent(), header.nextFile.getName());
+				dataFile = header.nextFile;
 				buffer.setFile(dataFile);
 			}
 			buffer.offset(header.nextOffset);
