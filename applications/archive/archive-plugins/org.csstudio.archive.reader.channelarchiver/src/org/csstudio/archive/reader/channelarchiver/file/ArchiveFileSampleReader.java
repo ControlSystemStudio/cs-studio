@@ -148,7 +148,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		if (header.numSamples == 0)
 		{
 			if (!hasNextHeader()) return null;
-			nextHeader();
+			header = nextHeader();
 		}
 		ArchiveVType sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
 		header.numSamples--;
@@ -192,95 +192,6 @@ public class ArchiveFileSampleReader implements ValueIterator
 			e.printStackTrace();
 		}
     }
-
-	//a sort-of-struct for holding data header info
-	static class DataHeader
-	{
-		public final File nextFile;
-		public final long nextOffset;
-		public final Instant nextTime; //start time for next file
-
-		//public final Instant startTime;
-		//public final Instant endTime;
-
-		public final CtrlInfoReader info;
-		public final DbrType dbrType; //dbr_time_xxx type of data
-		public final short dbrCount; //count of data (i.e. number of dbr_xxx_t values per dbr_time_xxx sample)
-		protected long numSamples; //number of dbr_time_xxx samples in the buffer which follows
-
-		private DataHeader(File nextFile, long nextOffset, Instant nextTime, CtrlInfoReader info,
-				DbrType dbrType, short dbrCount, long numSamples)
-		{
-			this.nextFile = nextFile;
-			this.nextOffset = nextOffset;
-			this.nextTime = nextTime;
-
-			//this.startTime = startTime;
-			//this.endTime = endTime;
-
-			this.info = info;
-			this.dbrType = dbrType;
-			this.dbrCount = dbrCount;
-			this.numSamples = numSamples;
-		}
-
-		@Override
-        public String toString()
-		{
-			return String.format("next=%s @ 0x%X, type %s[%d], %d samples", nextFile.getName(), nextOffset, dbrType.toString(), dbrCount, numSamples);
-		}
-
-		//assumes buffer is already opened and positioned
-		public static DataHeader readDataHeader(ArchiveFileBuffer buffer, CtrlInfoReader info) throws IOException
-		{
-			buffer.skip(4);
-			byte nameBytes [] = new byte [40];
-			// first part of data file header:
-			//	4 bytes directory_offset (skipped)
-			//	"		next_offset (offset of next entry in its file)
-			//	"		prev_offset (offset of previous entry in its file)
-			//	"		cur_offset (used by FileAllocator writing file)
-			//	"		num_samples (number of samples in the buffer)
-			//	"		ctrl_info_offset (offset in this file of control info header (units, limits, etc.))
-			//	"		buff_size (bytes allocated for this entry, including header)
-			//	"		buff_free (number of un-used, allocated bytes for this header)
-			//  2 bytes DbrType (type of data stored in buffer)
-			//	2 bytes	DbrCount (count of values for each buffer element, i.e. 1 for scalar types, >1 for array types)
-			long nextOffset = buffer.getUnsignedInt();
-			buffer.skip(8);
-			long numSamples = buffer.getUnsignedInt();
-			long ctrlInfoOffset = buffer.getUnsignedInt();
-			// compute amount of data in this data file entry: (bytes allocated) - (bytes free) - (bytes in header)
-			long buffDataSize = buffer.getUnsignedInt() - buffer.getUnsignedInt() - 152;
-			short dbrTypeCode = buffer.getShort();
-			short dbrCount = buffer.getShort();
-
-
-			if (!info.isOffset(ctrlInfoOffset))
-				info = new CtrlInfoReader(ctrlInfoOffset);
-			DbrType dbrType = DbrType.forValue(dbrTypeCode);
-			assert (12 + dbrType.padding + (dbrCount - 1) * dbrType.valueSize + dbrType.getValuePad(dbrCount)) *
-							numSamples == buffDataSize :
-								String.format("Anticipated size of type %s (%d) with count %d does not match size of data",
-										dbrType.toString(), dbrTypeCode, dbrCount);
-			// last part of data file header:
-			//	4 bytes padding (used to align the period)
-			//	8 bytes (double) period
-			//	8 bytes (epicsTimeStamp) begin_time
-			//	"						next_file_time
-			//	"						end_time
-			//	char [40] prev_file
-			//	char [40] next_file
-			buffer.skip(20);
-			Instant nextTime = buffer.getEpicsTime();
-			buffer.skip(48);
-			buffer.get(nameBytes);
-			String nextFilename = nextOffset != 0 ? new String(nameBytes).split("\0", 2)[0] : "*";
-			File nextFile = new File(buffer.getFile().getParentFile(), nextFilename);
-
-			return new DataHeader(nextFile, nextOffset, nextTime, info, dbrType, dbrCount, numSamples);
-		}
-	}
 
 	/**
 	 * Get all samples associated with a channel name, given the data file and offset of its first entry.
@@ -436,7 +347,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 	}
 
 	//Dbr types (defines how data is arranged in file)
-	private enum DbrType
+	enum DbrType
 	{
 		DBR_TIME_STRING(14, 0, 40),
 		DBR_TIME_SHORT(15, 2, 2), //==DBR_TIME_INT
