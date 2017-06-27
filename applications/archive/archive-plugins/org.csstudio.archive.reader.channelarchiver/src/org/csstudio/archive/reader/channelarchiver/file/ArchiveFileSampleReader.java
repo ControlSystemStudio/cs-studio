@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
+import static org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVEnum;
@@ -22,7 +25,6 @@ import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
 
-//TODO: imported package gov.aps.jca, better to require bundle?
 import gov.aps.jca.dbr.Status;
 
 /**
@@ -188,10 +190,9 @@ public class ArchiveFileSampleReader implements ValueIterator
     	{
 			buffer.close();
 		}
-    	catch (IOException e)
+    	catch (IOException ex)
     	{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    	    logger.log(Level.WARNING, "Cannot close data file buffer", ex);
 		}
     }
 
@@ -262,7 +263,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		Instant timestamp = dataBuff.getEpicsTime();
 		dataBuff.skip(dbrType.padding);
 		AlarmSeverity sev = getSeverity(severity);
-		String stat = getStatus(statusCode);
+		String stat = getStatus(severity, statusCode);
 		Display display = info.getDisplay(dataBuff);
 		ArchiveVType sample = null;
 		switch (dbrType)
@@ -399,29 +400,40 @@ public class ArchiveFileSampleReader implements ValueIterator
 		}
 	}
 
-	private static AlarmSeverity getSeverity(short severity)
+	private static AlarmSeverity getSeverity(final short severity)
 	{
 		if ((severity & 0x0F00) != 0) //special archiver values
-			return AlarmSeverity.NONE;
+			return AlarmSeverity.UNDEFINED;
 		AlarmSeverity severities [] = AlarmSeverity.values();
 		if (severity < severities.length && severity >= 0)
 			return severities[severity];
 		return AlarmSeverity.NONE;
 	}
 
-	private static String getStatus(short statusCode)
+	private static String getStatus(final short severity, final short status)
 	{
-        String statusText;
+	    if (severity == 0x0f80)
+	        return "Est_Repeat " + status;
+	    if (severity == 0x0f10)
+	        return "Repeat " + status;
+        if (severity == 0x0f40)
+            return "Disconnected";
+        if (severity == 0x0f20)
+            return "Archive_Off";
+        if (severity == 0x0f08)
+            return "Archive_Disabled";
+        if (severity == 0x0f02)
+            return "Change Sampling Period";
+
         try
         {
-            final Status status = Status.forValue(statusCode);
-            //statusText = status.toString();
-            statusText = status.getName();
+            final Status stat = Status.forValue(status);
+            // stat.toString()?
+            return stat.getName();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            statusText = "<" + statusCode + ">";
+            return  "<" + status + ">";
         }
-        return statusText;
     }
 }
