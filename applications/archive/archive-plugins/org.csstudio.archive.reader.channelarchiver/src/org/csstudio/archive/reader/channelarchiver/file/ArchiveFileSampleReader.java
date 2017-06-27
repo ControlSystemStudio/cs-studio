@@ -38,6 +38,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 	private final ArchiveFileBuffer buffer;
 	private DataHeader header;
 	private ArchiveVType next; //sample that will be returned by nextSample(), or else null
+	private long samples_left;
 
 	public ArchiveFileSampleReader(Instant iteratorStart, Instant iteratorStop,
 			File file, long offset) throws IOException
@@ -67,7 +68,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		catch (IOException e)
 		{
 			next = null;
-			header.numSamples = 0;
+			samples_left = 0;
 			return;
 		}
 		long minOffset = initOffset;
@@ -85,7 +86,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			catch (IOException e)
 			{
 				next = null;
-				header.numSamples = 0;
+				samples_left = 0;
 			}
 			int compare = sample.getTimestamp().compareTo(time);
 			if (compare == 0)
@@ -112,7 +113,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 					catch (IOException e)
 					{
 						next = null;
-						header.numSamples = 0;
+						samples_left = 0;
 						break;
 					}
 				}
@@ -124,7 +125,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			}
 		} while (minOffset <= maxOffset);
 		next = sample;
-		header.numSamples -= (midOffset - initOffset)/size + 1;
+		samples_left = header.numSamples - (midOffset - initOffset)/size + 1;
 	}
 
 	private boolean hasNextHeader()
@@ -145,13 +146,14 @@ public class ArchiveFileSampleReader implements ValueIterator
 
     private ArchiveVType nextSample() throws IOException
     {
-		if (header.numSamples == 0)
+		if (samples_left <= 0)
 		{
 			if (!hasNextHeader()) return null;
 			header = nextHeader();
+			samples_left = header.numSamples;
 		}
 		ArchiveVType sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
-		header.numSamples--;
+		--samples_left;
 		if (sample.getTimestamp().compareTo(iteratorStop) <= 0)
 			return sample;
 		else

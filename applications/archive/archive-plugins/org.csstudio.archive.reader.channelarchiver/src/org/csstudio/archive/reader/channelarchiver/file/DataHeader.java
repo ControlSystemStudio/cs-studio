@@ -33,7 +33,7 @@ class DataHeader
 	public final CtrlInfoReader info;
 	public final DbrType dbrType; //dbr_time_xxx type of data
 	public final short dbrCount; //count of data (i.e. number of dbr_xxx_t values per dbr_time_xxx sample)
-	protected long numSamples; //number of dbr_time_xxx samples in the buffer which follows
+	public final long numSamples; //number of dbr_time_xxx samples in the buffer which follows
 
 	private DataHeader(final File file, final long offset,
 	        final File nextFile, final long nextOffset,
