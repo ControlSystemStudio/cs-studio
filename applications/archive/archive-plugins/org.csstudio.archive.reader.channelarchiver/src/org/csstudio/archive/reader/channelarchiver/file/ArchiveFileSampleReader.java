@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
@@ -31,7 +38,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 	private final ArchiveFileBuffer buffer;
 	private DataHeader header;
 	private ArchiveVType next; //sample that will be returned by nextSample(), or else null
-	
+
 	public ArchiveFileSampleReader(Instant iteratorStart, Instant iteratorStop,
 			File file, long offset) throws IOException
 	{
@@ -42,7 +49,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		//possible sanity check: is start between header's start and stop times?
 		binarySearchSamples(iteratorStart);
 	}
-	
+
 	//Searches for samples in the buffer, starting from its current offset, using the information in
 	//this.header.
 	//Finds sample with closest timestamp to 'time', either at or below.
@@ -119,12 +126,12 @@ public class ArchiveFileSampleReader implements ValueIterator
 		next = sample;
 		header.numSamples -= (midOffset - initOffset)/size + 1;
 	}
-	
+
 	private boolean hasNextHeader()
 	{
 		return header.nextOffset != 0 && header.nextTime.compareTo(iteratorStop) <= 0;
 	}
-	
+
 	private DataHeader nextHeader() throws IOException
 	{
 		if (!buffer.getFile().equals(header.nextFile))
@@ -135,7 +142,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		buffer.offset(header.nextOffset);
 		return DataHeader.readDataHeader(buffer, header.info);
 	}
-	
+
     private ArchiveVType nextSample() throws IOException
     {
 		if (header.numSamples == 0)
@@ -171,7 +178,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		}
 		return ret;
     }
-    
+
 	@Override
     public void close()
     {
@@ -185,14 +192,14 @@ public class ArchiveFileSampleReader implements ValueIterator
 			e.printStackTrace();
 		}
     }
-	
+
 	//a sort-of-struct for holding data header info
 	static class DataHeader
 	{
 		public final File nextFile;
 		public final long nextOffset;
 		public final Instant nextTime; //start time for next file
-		
+
 		//public final Instant startTime;
 		//public final Instant endTime;
 
@@ -200,14 +207,14 @@ public class ArchiveFileSampleReader implements ValueIterator
 		public final DbrType dbrType; //dbr_time_xxx type of data
 		public final short dbrCount; //count of data (i.e. number of dbr_xxx_t values per dbr_time_xxx sample)
 		protected long numSamples; //number of dbr_time_xxx samples in the buffer which follows
-		
+
 		private DataHeader(File nextFile, long nextOffset, Instant nextTime, CtrlInfoReader info,
 				DbrType dbrType, short dbrCount, long numSamples)
 		{
 			this.nextFile = nextFile;
 			this.nextOffset = nextOffset;
 			this.nextTime = nextTime;
-			
+
 			//this.startTime = startTime;
 			//this.endTime = endTime;
 
@@ -216,12 +223,13 @@ public class ArchiveFileSampleReader implements ValueIterator
 			this.dbrCount = dbrCount;
 			this.numSamples = numSamples;
 		}
-		
-		public String toString()
+
+		@Override
+        public String toString()
 		{
 			return String.format("next=%s @ 0x%X, type %s[%d], %d samples", nextFile.getName(), nextOffset, dbrType.toString(), dbrCount, numSamples);
 		}
-		
+
 		//assumes buffer is already opened and positioned
 		public static DataHeader readDataHeader(ArchiveFileBuffer buffer, CtrlInfoReader info) throws IOException
 		{
@@ -246,8 +254,8 @@ public class ArchiveFileSampleReader implements ValueIterator
 			long buffDataSize = buffer.getUnsignedInt() - buffer.getUnsignedInt() - 152;
 			short dbrTypeCode = buffer.getShort();
 			short dbrCount = buffer.getShort();
-			
-			
+
+
 			if (!info.isOffset(ctrlInfoOffset))
 				info = new CtrlInfoReader(ctrlInfoOffset);
 			DbrType dbrType = DbrType.forValue(dbrTypeCode);
@@ -269,7 +277,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			buffer.get(nameBytes);
 			String nextFilename = nextOffset != 0 ? new String(nameBytes).split("\0", 2)[0] : "*";
 			File nextFile = new File(buffer.getFile().getParentFile(), nextFilename);
-			
+
 			return new DataHeader(nextFile, nextOffset, nextTime, info, dbrType, dbrCount, numSamples);
 		}
 	}
@@ -312,7 +320,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			buffer.offset(header.nextOffset);
 		} while (true);
 	}
-	
+
 	private static void getSamples(List<ArchiveVType> dst, DataHeader header, ArchiveFileBuffer buff) throws IOException
 	{
 		getSamples(dst, header.dbrType, header.dbrCount, header.numSamples, header.info, buff);
@@ -323,7 +331,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 	{
 		getSamples(dst, DbrType.forValue(dbrType), dbrCount, numSamples, info, dataBuff);
 	}
-	
+
 	private static void getSamples(List<ArchiveVType> dst, DbrType dbrType, short dbrCount, long numSamples,
 			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
 	{
@@ -359,7 +367,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			case DBR_TIME_ENUM:
 				assert dbrCount == 1 : "Enum type DBR value must be scalar (count = 1).";
 				List<String> labels = info.getLabels(dataBuff);
-				int index = dataBuff.getShort(); 
+				int index = dataBuff.getShort();
 				sample = new ArchiveVEnum(timestamp, sev, stat, labels, index);
 				break;
 			case DBR_TIME_FLOAT:
@@ -447,12 +455,12 @@ public class ArchiveFileSampleReader implements ValueIterator
 			this.padding = padding;
 			this.valueSize = valueSize;
 		}
-		
+
 		public static DbrType forValue(int typeCode)
 		{
 			return DbrType.values()[typeCode-14];
 		}
-		
+
 		//DBR types, when stored in files, are padded for alignment;
 		//that is, so that their size is a multiple of 8. This includes
 		//both the struct as defined (which only includes the first value)
@@ -471,13 +479,13 @@ public class ArchiveFileSampleReader implements ValueIterator
 				size += 8 - size%8;
 			return size;
 		}
-		
+
 		private int getUnpaddedSize(int count)
 		{
 			return 12 + padding + valueSize * count;
 		}
 	}
-	
+
 	private static AlarmSeverity getSeverity(short severity)
 	{
 		if ((severity & 0x0F00) != 0) //special archiver values
@@ -487,7 +495,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 			return severities[severity];
 		return AlarmSeverity.NONE;
 	}
-	
+
 	private static String getStatus(short statusCode)
 	{
         String statusText;

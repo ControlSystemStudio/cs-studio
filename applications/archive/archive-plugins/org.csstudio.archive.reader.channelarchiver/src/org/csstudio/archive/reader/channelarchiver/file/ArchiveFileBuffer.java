@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
@@ -18,25 +25,25 @@ public class ArchiveFileBuffer implements AutoCloseable
 	private final ByteBuffer buffer;
 	private FileChannel fileChannel;
 	private File file;
-	
+
 	public ArchiveFileBuffer(File file) throws IOException
 	{
 		this.buffer = ByteBuffer.allocate(65536); //TODO: what size? Bigger means less fetching, but too big means memory runs out
 		setFile(file);
 	}
-	
+
 	public void setFile(File file) throws IOException
 	{
 		this.file = file;
 		fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
 		buffer.position(0).limit(0);
 	}
-	
+
 	public File getFile()
 	{
 		return file;
 	}
-	
+
 	public void prepareGet(int numBytes) throws IOException
 	{
 		if (buffer.remaining() < numBytes)
@@ -47,19 +54,19 @@ public class ArchiveFileBuffer implements AutoCloseable
 			buffer.position(0);
 		}
 	}
-	
+
 	public void get(byte dst []) throws IOException
 	{
 		prepareGet(dst.length);
 		buffer.get(dst);
 	}
-	
+
 	public long getUnsignedInt() throws IOException
 	{
 		prepareGet(4);
 		return Integer.toUnsignedLong(buffer.getInt());
 	}
-	
+
 	public short getShort() throws IOException
 	{
 		prepareGet(2);
@@ -77,7 +84,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 		prepareGet(8);
 		return buffer.getDouble();
 	}
-	
+
 	public byte get() throws IOException
 	{
 		if (!buffer.hasRemaining())
@@ -87,14 +94,14 @@ public class ArchiveFileBuffer implements AutoCloseable
 		}
 		return buffer.get();
 	}
-	
+
 	//get epicsTime saved in file as java Instant; automatically
 	//converts from Channel Archiver epoch (1990) to java epoch (1970)
 	public Instant getEpicsTime() throws IOException
 	{
 		return Instant.ofEpochSecond(getUnsignedInt() + 631152000L, getInt());
 	}
-	
+
 	public void skip(int numBytes) throws IOException
 	{
 		int numAlready = buffer.remaining();
@@ -108,7 +115,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 		}
 		buffer.position(buffer.position() + numBytes);
 	}
-	
+
 	public void offset(long offset) throws IOException
 	{
  		if (offset < 0 || offset > fileChannel.size())
@@ -132,7 +139,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 			buffer.position((int)(offset - buffer_start_offset));
 		}
 	}
-	
+
 	public int getInt() throws IOException
 	{
 		prepareGet(4);
@@ -148,14 +155,15 @@ public class ArchiveFileBuffer implements AutoCloseable
 	{
 		return buffer.remaining();
 	}
-	
+
 	@Override
 	public void close() throws IOException
 	{
 		fileChannel.close();
 	}
-	
-	public String toString()
+
+	@Override
+    public String toString()
 	{
 		long offset = -1;
 		try
@@ -164,7 +172,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 		}
 		catch (IOException e)
 		{
-			
+
 		}
 		return String.format("buffer@offset=%x(%d): %02x %02x %02x %02x %02x %02x %02x %02x", offset, offset, buffer.get(buffer.position()),
 				buffer.get(buffer.position()+1), buffer.get(buffer.position()+2), buffer.get(buffer.position()+3), buffer.get(buffer.position()+4),

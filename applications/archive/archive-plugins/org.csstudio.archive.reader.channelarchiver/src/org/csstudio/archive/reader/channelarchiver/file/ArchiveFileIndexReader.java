@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
@@ -30,13 +37,13 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	private final ArchiveFileBuffer buffer;
 	private final File indexParent;
 	private final HashMap<String, TreeAnchor> anchors;
-	
+
 	//glorified struct, if java had structs
 	private class TreeAnchor
 	{
 		public final long root;
 		public final long numRecords;
-		
+
 		public TreeAnchor(long offset) throws IOException
 		{
 			buffer.offset(offset);
@@ -44,14 +51,14 @@ public class ArchiveFileIndexReader implements AutoCloseable
 			this.numRecords = buffer.getUnsignedInt();
 		}
 	}
-	
+
 	public ArchiveFileIndexReader(File indexFile) throws IOException
 	{
 		buffer = new ArchiveFileBuffer(indexFile);
 		indexParent = indexFile.getParentFile();
 		anchors = getAnchors();
 	}
-	
+
 	private Queue<Long> readHashTable() throws IOException
 	{
 		buffer.offset(4);
@@ -68,7 +75,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 		return ret;
 	}
-	
+
 	private HashMap<String, TreeAnchor> getAnchors() throws IOException
 	{
 		//Hash table entries are stored as follows:
@@ -84,7 +91,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		{
 			long offset = offsets.poll();
 			buffer.offset(offset);
-			
+
 			//read next, "id", and name_len
 			offset = buffer.getUnsignedInt();
 			long anchor_offset = buffer.getUnsignedInt();
@@ -99,7 +106,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Get all data file entries (filename + offset) associated with the first RTree record
 	 * for the given channel name and the given start and end times.
@@ -148,7 +155,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 		return ret;
 	}
-	
+
 	//Given an RTree Anchor, returns a list of all data file entries
 	//attached to the RTree's leftmost non-empty record.
 	private List<DataFileEntry> readLeftmostDatablocks(TreeAnchor anchor) throws IOException
@@ -157,7 +164,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		List<DataFileEntry> ret = readDatablocks(datablock);
 		return ret;
 	}
-	
+
 	//Return the offset of the node's leftmost (least) descendant.
 	private long readLeftmostDescendant(long node, long numRecords) throws IOException
 	{
@@ -167,7 +174,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		// Record[M] records, where a Record is 20 bytes
 		buffer.offset(node);
 		boolean isLeaf = buffer.get() != 0;
-		
+
 		buffer.skip(4);
 		//read all currently available (in-buffer) records; or, if is leaf,
 			//continue until non-zero record
@@ -230,7 +237,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		} while (minRecordsLimit > 0 && numRecords > 0);
 		return 0;
 	}
-	
+
 	//Performs a search through records with non-zero child offsets. Finds the record
 	//with the largest start time at or below the desired value. If no such record
 	//exists, returns the first (least) record's child.
@@ -255,7 +262,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 		return child;
 	}
-	
+
 	/**
 	 * Finds the leaf-node record whose start time is the largest start time
 	 * at or below the given Instant. Returns the offset of that record's child,
@@ -287,7 +294,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		} while (!isLeaf);
 		return result;
 	}
-	
+
 	/**
 	 * Given the offset of an RTree datablock, gets the filename and offset
 	 * associated with that datablock, and the same for any child datablocks.
@@ -309,11 +316,11 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		while (offset != 0)
 		{
 			buffer.offset(offset);
-			
+
 			offset = buffer.getUnsignedInt();
 			final long dataOffset = buffer.getUnsignedInt();
 			int nameSize = buffer.getShort();
-			
+
 			byte name [] = new byte [nameSize];
 			buffer.get(name);
 			ret.add(new DataFileEntry(new File(indexParent, new String(name)), dataOffset));

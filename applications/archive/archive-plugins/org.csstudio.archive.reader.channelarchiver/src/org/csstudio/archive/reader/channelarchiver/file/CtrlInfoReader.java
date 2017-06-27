@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.IOException;
@@ -19,7 +26,7 @@ public class CtrlInfoReader
 	private final long offset;
 	private Display display; //display, for number/display types
 	private List<String> labels; //labels, for enum types
-	
+
 	public CtrlInfoReader(long offset)
 	{
 		this.offset = offset;
@@ -65,21 +72,21 @@ public class CtrlInfoReader
 		}
 		buffer.offset(oldOffset);
 	}
-	
+
 	public Display getDisplay(ArchiveFileBuffer buffer) throws IOException
 	{
 		if (display == null)
 			read(buffer);
 		return display;
 	}
-	
+
 	public List<String> getLabels(ArchiveFileBuffer buffer) throws IOException
 	{
 		if (labels == null)
 			read(buffer);
 		return labels;
 	}
-	
+
 	public boolean isOffset(long offset)
 	{
 		return offset == this.offset;

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.io.File;
@@ -5,19 +12,16 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
+import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-//import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.archive.vtype.ArchiveVType;
-import org.csstudio.archive.writer.ArchiveWriter;
-import org.csstudio.archive.writer.WriteChannel;
 import org.diirt.vtype.VType;
 
 /**
@@ -29,18 +33,11 @@ import org.diirt.vtype.VType;
  */
 public class ArchiveFileReader implements ArchiveReader
 {
+    public static final Logger logger = Logger.getLogger(ArchiveFileReader.class.getName());
+
+    private final String index_name;
 	private final ArchiveFileIndexReader indexReader;
-	
-	/**
-	 * Construct an ArchiveFileReader.
-	 * @param index Index file for archive.
-	 * @throws IOException
-	 */
-	public ArchiveFileReader(File index) throws IOException
-	{
-		this.indexReader = new ArchiveFileIndexReader(index);
-	}
-	
+
 	/**
 	 * Construct an ArchiveFileReader.
 	 * @param index Index file for archive
@@ -48,9 +45,10 @@ public class ArchiveFileReader implements ArchiveReader
 	 */
 	public ArchiveFileReader(String index) throws IOException
 	{
-		this(new File(index));
+	    index_name = index;
+	    indexReader = new ArchiveFileIndexReader(new File(index));
 	}
-	
+
 	static class DataFileEntry //package-private //(belongs with index reader?)
 	{
 		private final File file;
@@ -60,147 +58,29 @@ public class ArchiveFileReader implements ArchiveReader
 			this.file = file;
 			this.offset = offset;
 		}
-		public String toString()
+		@Override
+        public String toString()
 		{
 			return String.format("data in '%s' @ 0x%08x(%d)", file.getName(), offset, offset);
 		}
-	}
-	
-	/**
-	 * Demonstrates ArchiveFileReader. Given a list of index files, prints all
-	 * data for each file.
-	 * @param args List of index files
-	 */
-	public static void main(String [] args)
-	{
-		//TODO: init writer
-		for (String arg : args)
-		{
-			System.out.println(String.format("\n* * Index file=%s * *", arg));
-			try
-			{
-				readAndWrite(arg, null);
-			}
-			catch (Exception e)
-			{
-				System.out.println("Exception reading file " + arg);
-				e.printStackTrace();
-			}
-		}
-		/*try {
-			ArchiveFileReader reader = new ArchiveFileReader(args[0]);
-			getAndPrint(reader, "BoolPV", Instant.MIN, Instant.MAX);
-			getAndPrint(reader, "BoolPV", Instant.parse("2004-03-05T23:58:10.0Z"), Instant.parse("2004-03-05T23:58:30.0Z"));
-			reader.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-	}
-	
-	/**
-	 * Demonstrates getRawValues(). Calls getRawValues(), then iterates through all values and prints them.
-	 * @param reader ArchiveFileReader
-	 * @param channelName channel name
-	 * @param min Start time for data
-	 * @param max End time
-	 * @throws UnknownChannelException
-	 * @throws Exception
-	 */
-	private static void getAndPrint(ArchiveFileReader reader, String channelName, Instant min, Instant max) throws UnknownChannelException, Exception
-	{
-		ValueIterator it = reader.getRawValues(0, channelName, min, max);
-		System.out.println(String.format("Getting %s from %s to %s", channelName, min.toString(), max.toString()));
-		while (it.hasNext())
-			System.out.println(it.next().toString());
-	}
-
-	/**
-	 * Demonstration method. Get all data for all channels described in the given index file.
-	 * If 'writer' is non-null, the data is then written to the writer;
-	 * if it is null, the data is printed to System.out.
-	 * @param indexFile Index file from which to get data.
-	 * @param writer Writer with which to write data; if null, data is printed to System.out.
-	 * @throws IOException
-	 */
-	//TODO: use value iterator from getRawValues()
-	private static void readAndWrite(String indexFile, ArchiveWriter writer) throws IOException
-	{
-		ArchiveFileReader reader = new ArchiveFileReader(indexFile);
-		HashMap<String, List<DataFileEntry>> indexMap = reader.indexReader.readLeftmostDataFileEntries();
-		for (Map.Entry<String, List<DataFileEntry>> entry : indexMap.entrySet())
-		{
-			List<ArchiveVType> samples = new LinkedList<>();
-			String channelName = entry.getKey();
-			WriteChannel channel = null;
-			if (writer != null)
-			{
-				try
-				{
-					channel = writer.getChannel(channelName);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					continue;
-				}
-			}
-			else
-			{
-				System.out.println("Channel name = " + channelName);
-			}
-			for (DataFileEntry dataEntry : entry.getValue())
-			{
-				ArchiveFileSampleReader.readDataFileEntries(samples, dataEntry.file, dataEntry.offset);
-				//System.out.print("Done. Have " + samples.size() + " samples\n   ");
-			}
-			if (writer != null)
-			{
-				for (ArchiveVType sample : samples)
-				{
-					try
-					{
-						writer.addSample(channel, sample);
-					}
-					catch (Exception e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			else
-			{
-				if (samples.size() > 100)
-				{
-					System.out.print(samples.subList(0, 100).toString());
-					System.out.println("...");
-				}
-				else
-				{
-					System.out.println(samples);
-				}
-			}
-		}
-		reader.close();
 	}
 
 	@Override
 	public String getServerName()
 	{
-		return "";
+		return "Channel Archiver";
 	}
 
 	@Override
 	public String getURL()
 	{
-		return "";
+		return ArchiveFileReaderFactory.PREFIX + index_name;
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "";
+		return "Data File";
 	}
 
 	@Override
@@ -212,30 +92,23 @@ public class ArchiveFileReader implements ArchiveReader
 	@Override
 	public ArchiveInfo[] getArchiveInfos()
 	{
-		return new ArchiveInfo[0];
+		return new ArchiveInfo[] { new ArchiveInfo(getServerName(), getDescription(), 0)};
 	}
 
 	@Override
-	public String[] getNamesByPattern(int key, String glob_pattern) throws Exception
+	public String[] getNamesByPattern(final int key, final String glob_pattern) throws Exception
 	{
-		List<String> result = new ArrayList<>();
-		for (String name : indexReader.getChannelNames())
-		{
-			if (false) //TODO: test matching
-				result.add(name);
-		}
-		return result.toArray(new String [result.size()]);
+        return getNamesByRegExp(key, RegExHelper.fullRegexFromGlob(glob_pattern));
 	}
 
 	@Override
-	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception
+	public String[] getNamesByRegExp(final int key, final String reg_exp) throws Exception
 	{
-		List<String> result = new ArrayList<>();
+	    final Pattern pattern = Pattern.compile(reg_exp, Pattern.CASE_INSENSITIVE);
+	    final List<String> result = new ArrayList<>();
 		for (String name : indexReader.getChannelNames())
-		{
-			if (name.matches(reg_exp))
+			if (pattern.matcher(name).matches())
 				result.add(name);
-		}
 		return result.toArray(new String [result.size()]);
 	}
 
@@ -253,13 +126,13 @@ public class ArchiveFileReader implements ArchiveReader
 				{
 					throw new Exception("This iterator has no values");
 				}
-				
+
 				@Override
 				public boolean hasNext()
 				{
 					return false;
 				}
-				
+
 				@Override
 				public void close() {} //do nothing
 			};
@@ -284,10 +157,13 @@ public class ArchiveFileReader implements ArchiveReader
 	@Override
 	public void close()
 	{
-		try {
+		try
+		{
 			indexReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		}
+		catch (Exception ex)
+		{
+		    logger.log(Level.WARNING, "Cannot close index", ex);
 		}
 	}
 }
