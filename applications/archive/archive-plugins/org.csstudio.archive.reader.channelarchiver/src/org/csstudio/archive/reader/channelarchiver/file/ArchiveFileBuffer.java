@@ -26,13 +26,13 @@ public class ArchiveFileBuffer implements AutoCloseable
 	private FileChannel fileChannel;
 	private File file;
 
-	public ArchiveFileBuffer(File file) throws IOException
+	public ArchiveFileBuffer(final File file) throws IOException
 	{
 		this.buffer = ByteBuffer.allocate(65536); //TODO: what size? Bigger means less fetching, but too big means memory runs out
 		setFile(file);
 	}
 
-	public void setFile(File file) throws IOException
+	public void setFile(final File file) throws IOException
 	{
 		this.file = file;
 		fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);

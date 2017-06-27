@@ -44,7 +44,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		public final long root;
 		public final long numRecords;
 
-		public TreeAnchor(long offset) throws IOException
+		public TreeAnchor(final long offset) throws IOException
 		{
 			buffer.offset(offset);
 			this.root = buffer.getUnsignedInt();
@@ -52,7 +52,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		}
 	}
 
-	public ArchiveFileIndexReader(File indexFile) throws IOException
+	public ArchiveFileIndexReader(final File indexFile) throws IOException
 	{
 		buffer = new ArchiveFileBuffer(indexFile);
 		indexParent = indexFile.getParentFile();
