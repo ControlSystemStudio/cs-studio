@@ -1,3 +1,10 @@
+/****************************************************************************
+* Copyright (c) 2010-2017 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+****************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
 import java.util.HashMap;
@@ -16,6 +23,12 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
+/**
+ * This class represents a polyline connection which is able to draw a
+ * "jump" over some other polyline connection.
+ *
+ * @author Rohit Sarpotdar <a href="mailto:rohit.n.sarpotdar@gmail.com">
+ */
 public class PolylineJumpConnection extends PolylineConnection {
     private WidgetConnectionEditPart widgetConnectionEditPart;
     private LineJumpAdd lineJumpAdd;
@@ -47,7 +60,7 @@ public class PolylineJumpConnection extends PolylineConnection {
         List<IFigure> children = getChildren();
         Iterator<IFigure> iterator = children.iterator();
         while(iterator.hasNext()) {
-            IFigure childFigure = (IFigure) iterator.next();
+            IFigure childFigure = iterator.next();
             childFigure.paint(graphics);
         }
 
