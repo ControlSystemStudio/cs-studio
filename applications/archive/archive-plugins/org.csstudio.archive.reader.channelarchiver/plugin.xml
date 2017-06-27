@@ -8,9 +8,6 @@
             name="org.csstudio.archive.reader.channelarchiver.archivereader"
             prefix="xnds">
       </ArchiveReader>
-   </extension>
-   <extension
-         point="org.csstudio.archive.reader.ArchiveReader">
       <ArchiveReader
             class="org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReaderFactory"
             name="org.csstudio.archive.reader.channelarchiver.file.reader"
