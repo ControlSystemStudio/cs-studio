@@ -107,15 +107,6 @@ class PVStructureHelper
             return decodeNTNDArray(actual_struct);
         if (type.equals("epics:nt/NTTable:1.0"))
         	return decodeNTTable(actual_struct);
-        
-        //TODO: (?) Attempt to handle arbitrary structure as table value (i.e., the
-        //"value" field of an NTTable type). Need to verify number of rows is consistent[1],
-        //and, if not, fall back to the current behavior for non-NT structures.
-        //[1] rows: All terminal fields of a table should be of the same
-        //length, since this is the number of rows in the table. The decoding
-        //function might throw an exception if the rows don't
-        //match. This could be caught by a handler, which would fall back to
-        //creating an alarmed string.
 
         // Handle data that contains a "value", even though not marked as NT*
         final Field value_field = actual_struct.getStructure().getField("value");
@@ -408,14 +399,17 @@ class PVStructureHelper
 	 * to the table in the order used by PVStructure.getSubField(int).
 	 * Labels of sub-structure fields are represented as "sub-structure-label/sub-structure-field-name".
 	 * This holds for any level of (sub-)(sub-)...(sub-)sub-structure.
+	 * <p>The NTTable requirement that all "columns" of the table have the same number of "rows" -- that is,
+	 * each scalar field in the "value" structure has the same number of scalar elements -- is enforced by
+	 * throwing an Exception if it is violated. This method is slightly more forgiving, since it allows
+	 * some types of non-scalar fields.
 	 * @param value_struct Structure to decode
 	 * @param names Column names. If these are the top-level labels of the value structure, there should be
 	 * 			as many names as there are fields. Otherwise, names should be an empty list. For each field,
 	 * 			if the corresponding name is null or not in the list, the field name is used as its label. If
 	 * 			the column name ends with a "slash" character ('/'), the field name is appended to it.
 	 * @return VTable representing the values of the structure
-	 * @throw Exception If the rows are not all the same size; that is, the lengths of the terminal fields
-	 * 						(array length for arrays, or 1 for scalars) are not the same.
+	 * @throw Exception If the row size constraint is violated, or if a field's type is not supported
 	 */
 	private static VTable decodeAsTableValue(final PVStructure value, final List<String> names) throws Exception
 	{
@@ -459,6 +453,10 @@ class PVStructureHelper
 				names.addAll(index, Collections.nCopies(subfields.length-1, name));
 				for (int i = subfields.length; i-- > 0; )
 					stack.push(subfields[i]);
+			}
+			else
+			{
+				throw new Exception(String.format("The field type %s is not supported as a VTable element", field.getField().getType()));
 			}
 			//TODO: other kinds of Field
 		} //end while not empty
