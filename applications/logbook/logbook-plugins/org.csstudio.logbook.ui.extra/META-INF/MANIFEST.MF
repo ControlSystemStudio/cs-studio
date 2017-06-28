@@ -13,4 +13,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.logbook.ui.extra
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
- com.google.common.collect
+ com.google.common.collect,
+ org.csstudio.java.time
