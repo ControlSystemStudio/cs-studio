@@ -105,16 +105,11 @@ public class ArchiveFileSampleReader implements ValueIterator
 			else
 			{   // Perfect match
                 next = sample;
-				return header.numSamples - mid;
+				return header.numSamples - mid - 1;
 			}
 		}
         next = null;
         return -1;
-	}
-
-	private boolean hasNextHeader()
-	{
-		return header.nextOffset != 0 && header.nextTime.compareTo(iteratorStop) <= 0;
 	}
 
 	private DataHeader nextHeader() throws IOException
@@ -132,7 +127,9 @@ public class ArchiveFileSampleReader implements ValueIterator
     {
 		if (samples_left <= 0)
 		{
-			if (!hasNextHeader())
+		    // TODO: Instead of using next data block in chain, check index for next data block
+		    // TODO: Add reference to IndexFileReader and/or RTreeNode to allow this.
+			if (header.nextOffset == 0)
 			    return null;
 			header = nextHeader();
 			samples_left = header.numSamples;
@@ -179,65 +176,6 @@ public class ArchiveFileSampleReader implements ValueIterator
     	    logger.log(Level.WARNING, "Cannot close data file buffer", ex);
 		}
     }
-
-	/**
-	 * Get all samples associated with a channel name, given the data file and offset of its first entry.
-	 * @param file File (DataFile name)
-	 * @param offset Offset (of data header)
-	 * @param dataParams an array of at least two; on return, dataParams[0] and dataParams[1] contain
-	 * 		the DbrType and DbrCount of the data, respectively, as shorts
-	 * @return A list of all samples associated with the channel, in bytes
-	 * @throws IOException
-	 * @throws {@link ArrayIndexOutOfBoundsException} if dataParams.length < 2
-	 */
-	public static void readDataFileEntries(List<ArchiveVType> dst, File dataFile, long offset) throws IOException
-	{
-		ArchiveFileBuffer buffer = new ArchiveFileBuffer(dataFile);
-		CtrlInfoReader ctrlInfo = new CtrlInfoReader(0);
-
-		// prepare to read header
-		buffer.offset(offset);
-		do {
-			DataHeader header = DataHeader.readDataHeader(buffer, ctrlInfo);
-			ArchiveFileSampleReader.getSamples(dst, header, buffer);
-			//System.out.print("Have " + ret.size() + " samples\n   "); //for debug
-
-			// Is there a next entry?
-			if (header.nextOffset == 0)
-			{
-				buffer.close();
-				return;
-			}
-			// Prepare to get the next entry
-			if (!dataFile.equals(header.nextFile))
-			{	//close the file and open the next one
-				buffer.close();
-				dataFile = header.nextFile;
-				buffer.setFile(dataFile);
-			}
-			buffer.offset(header.nextOffset);
-		} while (true);
-	}
-
-	private static void getSamples(List<ArchiveVType> dst, DataHeader header, ArchiveFileBuffer buff) throws IOException
-	{
-		getSamples(dst, header.dbrType, header.dbrCount, header.numSamples, header.info, buff);
-	}
-
-	public static void getSamples(List<ArchiveVType> dst, short dbrType, short dbrCount, long numSamples,
-			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
-	{
-		getSamples(dst, DbrType.forValue(dbrType), dbrCount, numSamples, info, dataBuff);
-	}
-
-	private static void getSamples(List<ArchiveVType> dst, DbrType dbrType, short dbrCount, long numSamples,
-			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
-	{
-		while (numSamples-- > 0)
-		{
-			dst.add(getSample(dbrType, dbrCount, info, dataBuff));
-		}
-	}
 
 	/** Read sample at current 'buffer' offset */
 	private static ArchiveVType getSample(DbrType dbrType, short dbrCount,

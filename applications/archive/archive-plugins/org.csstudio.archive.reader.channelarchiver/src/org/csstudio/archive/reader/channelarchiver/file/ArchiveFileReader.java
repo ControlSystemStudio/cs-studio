@@ -23,12 +23,8 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.diirt.vtype.VType;
 
-/**
- * Implementation of ArchiveReader for channel archiver files.
- * Created to import archiver files to new archives via their
- * ArchiveWriter implementations.
- * @author Amanda Carpenter
- *
+/** ArchiveReader for Channel Archiver index & data files.
+ *  @author Amanda Carpenter
  */
 public class ArchiveFileReader implements ArchiveReader
 {
@@ -37,12 +33,11 @@ public class ArchiveFileReader implements ArchiveReader
     private final String index_name;
 	private final ArchiveFileIndexReader indexReader;
 
-	/**
-	 * Construct an ArchiveFileReader.
-	 * @param index Index file for archive
-	 * @throws IOException
+	/** Construct an ArchiveFileReader.
+	 *  @param index Path to  Channel Archiver index file
+	 *  @throws IOException
 	 */
-	public ArchiveFileReader(String index) throws IOException
+	public ArchiveFileReader(final String index) throws IOException
 	{
 	    index_name = index;
 	    indexReader = new ArchiveFileIndexReader(new File(index));
