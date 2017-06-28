@@ -14,16 +14,14 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.DataFileEntry;
+import org.csstudio.archive.reader.channelarchiver.file.RTreeNode.RTreeNodeWithIndex;
 
 /**
  * Helper class for reading ChannelArchiver index files (both master index files
@@ -32,10 +30,6 @@ import org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.DataFi
  */
 public class ArchiveFileIndexReader implements AutoCloseable
 {
-	//TODO: Right now, "find least time" (find leftmost) and "find a specific time" are
-	//handled separately and differently, adding an unnecessary level of complexity.
-	//However, it works, and it's not inefficient, so it's okay for now.
-
 	private final ArchiveFileBuffer buffer;
 	private final File indexParent;
 	private final HashMap<String, TreeAnchor> anchors;
@@ -141,114 +135,15 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	    final TreeAnchor anchor = anchors.get(channelName);
 		if (anchor == null)
 			throw new UnknownChannelException(channelName);
-		final long result = searchRTreeNodes(anchor.root, anchor.numRecords, startTime);
-		if (result == 0)
+
+		final RTreeNodeWithIndex node_and_index = searchRTreeNodes(anchor.root, anchor.numRecords, startTime);
+		if (node_and_index == null)
 		    return Collections.emptyList();
-		// check end time: if record starts after end time, it's no good.
-		buffer.offset(buffer.offset() - 20);
-		final Instant recordStartTime = buffer.getEpicsTime();
-		if (recordStartTime.compareTo(endTime) > 0)
-			return Collections.emptyList();
-		return readDatablocks(result);
-	}
 
-	/**
-	 * Find the leftmost data file entries (filename + offset) for all channels listed in the reader's
-	 * index file. For sub-archives, each channel will have one data file entry in its leftmost
-	 * record. For master archives, which collect multiple sub-archives, there may be more than one.
-	 * @return A map from channel names to the list of data file entries in its leftmost record.
-	 * @throws IOException
-	 */
-	public HashMap<String, List<DataFileEntry>> readLeftmostDataFileEntries() throws IOException
-	{
-		HashMap<String, List<DataFileEntry>> ret = new HashMap<>();
-		for (Map.Entry<String, TreeAnchor> entry : anchors.entrySet())
-		{
-			ret.put(entry.getKey(), readLeftmostDatablocks(entry.getValue()));
-		}
-		return ret;
-	}
+		// Have node and index for the first data block.
+		// TODO Return the list of all data blocks, from the index, for start .. end
 
-	//Given an RTree Anchor, returns a list of all data file entries
-	//attached to the RTree's leftmost non-empty record.
-	private List<DataFileEntry> readLeftmostDatablocks(TreeAnchor anchor) throws IOException
-	{
-		long datablock = readLeftmostDescendant(anchor.root, anchor.numRecords);
-		List<DataFileEntry> ret = readDatablocks(datablock);
-		return ret;
-	}
-
-	//Return the offset of the node's leftmost (least) descendant.
-	private long readLeftmostDescendant(long node, long numRecords) throws IOException
-	{
-		//An RTree Node is laid out as follows:
-		// byte isLeaf (if false, 0; otherwise, true)
-		// long parent (if root, 0; otherwise, offset of parent node)
-		// Record[M] records, where a Record is 20 bytes
-		buffer.offset(node);
-		boolean isLeaf = buffer.get() != 0;
-
-		buffer.skip(4);
-		//read all currently available (in-buffer) records; or, if is leaf,
-			//continue until non-zero record
-		Deque<Long> records = new ArrayDeque<>();
-		long numRecordsRem = numRecords;
-		long initOffset = buffer.offset();
-		while (true)
-		{
-			while(records.isEmpty())
-			{
-				if (isLeaf)
-					readLeftmostRecords(records, numRecordsRem, 1, 1);
-				else
-					readLeftmostRecords(records, numRecordsRem, 0, 0);
-				numRecordsRem -= (buffer.offset() - initOffset)/20;
-				if (numRecordsRem == 0)
-				{
-					if (records.isEmpty()) return 0;
-					else break;
-				}
-				initOffset = buffer.offset();
-			}
-			if (isLeaf) return records.poll();
-			long result = readLeftmostDescendant(records.poll(), numRecords);
-			if (result > 0) return result;
-			buffer.offset(initOffset); //need to return to offset from before reading descendants
-		}
-	}
-
-	//Looks for records with non-zero child offsets, adds the offset(s) to the collection.
-	//Continues adding non-zero offsets until one of the following:
-		//(1) maxRecordsLimit != 0, and maxRecordsLimit records have been added
-		//(2) minRecordsLimit != 0, minRecordsLimit records have been added,
-			//and no records remain in the buffer
-		//(3) numRecords records have been processed (including those not added)
-	//Preconditions: buffer's position is at first record to be searched.
-	//Returns last child found, if return was due to (1) or (2); otherwise, 0.
-	//Postconditions: buffer's position is immediately after last record read.
-	private long readLeftmostRecords(Collection<Long> records, long numRecords, int minRecordsLimit, int maxRecordsLimit) throws IOException
-	{
-		//A Record in an RTree Node is 20 bytes, arranged as follows:
-		//	EpicsTime start time, where an EpicsTime is 8 bytes long
-		//	EpicsTime end time
-		//	long child
-		do
-		{
-			buffer.prepareGet(20);
-			while (buffer.remaining() >= 20)
-			{
-				buffer.skip(16);
-				long child = buffer.getUnsignedInt();
-				numRecords--;
-				if (child != 0)
-				{
-					records.add(child);
-					if (--maxRecordsLimit == 0 || --minRecordsLimit == 0)
-						return child;
-				}
-			}
-		} while (minRecordsLimit > 0 && numRecords > 0);
-		return 0;
+		return readDatablocks(node_and_index.selectedRecord().child);
 	}
 
 	/**
@@ -263,25 +158,29 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	 * @return Offset of datablock which is at or before, or 0 if there is no data block
 	 * @throws Exception on error
 	 */
-	public long searchRTreeNodes(final long root, final int numRecords, final Instant time) throws Exception
+	public RTreeNodeWithIndex searchRTreeNodes(final long root, final int numRecords, final Instant time) throws Exception
 	{
 	    RTreeNode node = new RTreeNode(buffer, root, numRecords);
 	    while (true)
 	    {
 	        // System.out.println(node);
+	        int i;
 	        long child = 0;
-	        for (int i=numRecords-1;  i>=0;  --i)
+	        for (i=numRecords-1;  i>=0;  --i)
 	        {
 	            child = node.records[i].child;
 	            if (child != 0  &&
 	                node.records[i].start.compareTo(time) <= 0)
 	                break;
 	        }
-	        if (node.isLeaf)
-	            return child;
 	        if (child == 0)
-	            return 0;
-            node = new RTreeNode(buffer, child, numRecords);
+	            return null;
+	        // If nothing found before the start time, use first record
+	        if (i < 0)
+	            i = 0;
+	        if (node.isLeaf)
+	            return new RTreeNodeWithIndex(node, i);
+	        node = new RTreeNode(buffer, child, numRecords);
 	    }
 	}
 

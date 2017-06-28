@@ -110,6 +110,7 @@ public class ArchiveFileReader implements ArchiveReader
 	public ValueIterator getRawValues(int key, String name, Instant start, Instant end)
 			throws UnknownChannelException, Exception
 	{
+	    // TODO Have this return the list of all data blocks, from the index, for start .. end
 		final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
 		if (entries.size() < 1)
 			return new ValueIterator()
@@ -129,7 +130,7 @@ public class ArchiveFileReader implements ArchiveReader
 				@Override
 				public void close() {} //do nothing
 			};
-		//TODO: if entries.size() > 1 (complicated)
+		// TODO Pass all entries so reader can loop over data blocks
 		DataFileEntry entry = entries.get(0);
 		return new ArchiveFileSampleReader(start, end, entry.file, entry.offset);
 	}

@@ -16,6 +16,27 @@ import java.time.Instant;
  */
 public class RTreeNode
 {
+    /** RTree node with index for selected record */
+    public static class RTreeNodeWithIndex
+    {
+        /** RTree node */
+        public RTreeNode node;
+
+        /** Selected record */
+        public int record_index;
+
+        public RTreeNodeWithIndex(final RTreeNode node, final int record_index)
+        {
+            this.node = node;
+            this.record_index = record_index;
+        }
+
+        public Record selectedRecord()
+        {
+            return node.records[record_index];
+        }
+    }
+
     static class Record
     {
         public final Instant start, end;
