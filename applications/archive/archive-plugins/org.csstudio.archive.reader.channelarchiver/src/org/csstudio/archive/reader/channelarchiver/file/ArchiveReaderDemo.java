@@ -8,6 +8,8 @@
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,13 +25,20 @@ import org.diirt.vtype.VType;
  */
 public class ArchiveReaderDemo
 {
+    private final static DateTimeFormatter parser =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn").withZone(ZoneId.systemDefault());
+
     private static void dump(final ArchiveReader reader) throws Exception
     {
+        // 2005-01-11 02:56:59.988856666    148.50 gpm
+
         for (String name : reader.getNamesByPattern(0, "CCL_HPRF:KlyCol3:Flw"))
         {
             System.out.println("Channel: " + name);
             final ValueIterator values = reader.getRawValues(0, name,
-                    Instant.ofEpochMilli(10),
+                    // Instant.ofEpochMilli(0),
+                    // Instant.from(parser.parse("2005-01-05 10:31:59.863343666")),
+                    Instant.from(parser.parse("2005-01-11 02:56:59.988856600")),
                     Instant.now());
             try
             {

@@ -50,84 +50,66 @@ public class ArchiveFileSampleReader implements ValueIterator
 		buffer.offset(offset);
 		header = DataHeader.readDataHeader(buffer, new CtrlInfoReader(0));
 		//possible sanity check: is start between header's start and stop times?
-		binarySearchSamples(iteratorStart);
+		samples_left = binarySearchSamples(iteratorStart);
 	}
 
-	//Searches for samples in the buffer, starting from its current offset, using the information in
-	//this.header.
-	//Finds sample with closest timestamp to 'time', either at or below.
-	//Sets this.next = found sample, or null if not found, and sets this.header.numSamples = number of samples
-		//after current buffer position.
-	private void binarySearchSamples(Instant time)
+	/** Searches for samples in the buffer, starting from its current offset, using the information in
+	 *  this.header.
+	 *  Finds sample with closest timestamp at-or-just-below 'time'.
+	 *  @return Samples left after 'next', with 'next' set to the first one, and buffer just after that sample,
+	 *          or -1 if no sample found.
+	 */
+	private long binarySearchSamples(final Instant time) throws IOException
 	{
-		ArchiveVType sample = null;
-		int size = header.dbrType.getSize(header.dbrCount);
-		long initOffset;
-		try
+		final int size = header.dbrType.getSize(header.dbrCount);
+		final long initOffset = buffer.offset();
+		long low = 0;
+		long high = header.numSamples-1;
+		while (low <= high)
 		{
-			initOffset = buffer.offset();
-		}
-		catch (IOException e)
-		{
-			next = null;
-			samples_left = 0;
-			return;
-		}
-		long minOffset = initOffset;
-		long maxOffset = minOffset + (header.numSamples-1) * size;
-		long midOffset;
-		do
-		{
-			// need to make sure midOffset > minOffset unless minOffset == maxOffset
-			midOffset = minOffset + (maxOffset - minOffset)/(2*size) * size;
-			try
+		    long mid = (low + high) / 2;
+			buffer.offset(initOffset + mid * size);
+			final ArchiveVType sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
+			final int compare = sample.getTimestamp().compareTo(time);
+			if (compare > 0)
 			{
-				buffer.offset(midOffset);
-				sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
+			    // 'mid' is after the start time, search lower half
+			    high = mid - 1;
+
+			    if (low > high)
+			    {   // No lower half, and mid is too large.
+			        // If there is a sample before mid, use that.
+			        if (mid > 0)
+			        {
+			            --mid;
+			            buffer.offset(initOffset + mid * size);
+			            next = getSample(header.dbrType, header.dbrCount, header.info, buffer);
+			            return header.numSamples - mid - 1;
+			        }
+			        // Mid is after the requested start time, so use it
+			        next = sample;
+                    return header.numSamples - mid - 1;
+			    }
 			}
-			catch (IOException e)
+			else if (compare < 0)
 			{
-				next = null;
-				samples_left = 0;
-			}
-			int compare = sample.getTimestamp().compareTo(time);
-			if (compare == 0)
-			{
-				break;
-			}
-			else if (compare < 0) //sample time < 'time'
-			{
-				if (minOffset == midOffset)
-				{	//'time' is after min sample's time; it might be at or above max sample's time
-					try
-					{
-						ArchiveVType maxSample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
-						if (maxSample.getTimestamp().compareTo(time) <= 0)
-						{
-							sample = maxSample;
-						}
-						else
-						{
-							buffer.offset(buffer.offset() - size);
-						}
-						break;
-					}
-					catch (IOException e)
-					{
-						next = null;
-						samples_left = 0;
-						break;
-					}
-				}
-				minOffset = midOffset;
+			    // 'mid' is before the start time, search upper half
+			    low = mid + 1;
+
+			    if (low > high)
+			    {   // There is no upper half, so 'mid' is it!
+			        next = sample;
+		            return header.numSamples - mid - 1;
+		        }
 			}
 			else
-			{
-				maxOffset = midOffset - size;
+			{   // Perfect match
+                next = sample;
+				return header.numSamples - mid;
 			}
-		} while (minOffset <= maxOffset);
-		next = sample;
-		samples_left = header.numSamples - (midOffset - initOffset)/size + 1;
+		}
+        next = null;
+        return -1;
 	}
 
 	private boolean hasNextHeader()
@@ -150,7 +132,8 @@ public class ArchiveFileSampleReader implements ValueIterator
     {
 		if (samples_left <= 0)
 		{
-			if (!hasNextHeader()) return null;
+			if (!hasNextHeader())
+			    return null;
 			header = nextHeader();
 			samples_left = header.numSamples;
 		}
@@ -179,6 +162,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		catch (IOException e)
 		{
 			next = null;
+			throw e;
 		}
 		return ret;
     }
@@ -255,6 +239,7 @@ public class ArchiveFileSampleReader implements ValueIterator
 		}
 	}
 
+	/** Read sample at current 'buffer' offset */
 	private static ArchiveVType getSample(DbrType dbrType, short dbrCount,
 			CtrlInfoReader info, ArchiveFileBuffer dataBuff) throws IOException
 	{
