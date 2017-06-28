@@ -8,6 +8,9 @@
 package org.csstudio.archive.reader.channelarchiver.file;
 
 import java.time.Instant;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
@@ -53,6 +56,13 @@ public class ArchiveReaderDemo
      */
     public static void main(final String[] args) throws Exception
     {
+        final Logger logger = Logger.getLogger("");
+        logger.setLevel(Level.ALL);
+        for (Handler handler : logger.getHandlers())
+            handler.setLevel(Level.ALL);
+
+        // /home/ky9/archdata/hprf/2005/01_05/index
+        // /home/ky9/archdata/hprf/test/index
         for (String arg : args)
         {
             System.out.println("Index file " + arg);

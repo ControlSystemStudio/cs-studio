@@ -99,7 +99,7 @@ public class ArchiveFileBuffer implements AutoCloseable
 	//converts from Channel Archiver epoch (1990) to java epoch (1970)
 	public Instant getEpicsTime() throws IOException
 	{
-		return Instant.ofEpochSecond(getUnsignedInt() + 631152000L, getInt());
+		return Instant.ofEpochSecond(getUnsignedInt() + ArchiveFileTime.EPICS_OFFSET, getInt());
 	}
 
 	public void skip(int numBytes) throws IOException

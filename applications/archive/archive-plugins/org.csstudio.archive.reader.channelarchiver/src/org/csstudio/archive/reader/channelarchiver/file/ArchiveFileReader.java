@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,8 +115,7 @@ public class ArchiveFileReader implements ArchiveReader
 	public ValueIterator getRawValues(int key, String name, Instant start, Instant end)
 			throws UnknownChannelException, Exception
 	{
-		List<DataFileEntry> entries = Collections.emptyList();
-		entries = indexReader.getEntries(name, start, end);
+		final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
 		if (entries.size() < 1)
 			return new ValueIterator()
 			{

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.channelarchiver.file;
 
+import static org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -38,17 +40,27 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	private final File indexParent;
 	private final HashMap<String, TreeAnchor> anchors;
 
-	//glorified struct, if java had structs
+	/** Anchor of an RTree
+	 *
+	 */
 	private class TreeAnchor
 	{
+        public final String name;
 		public final long root;
-		public final long numRecords;
+		public final int numRecords;
 
-		public TreeAnchor(final long offset) throws IOException
+		public TreeAnchor(final String name, final long offset) throws IOException
 		{
+		    this.name = name;
 			buffer.offset(offset);
 			this.root = buffer.getUnsignedInt();
-			this.numRecords = buffer.getUnsignedInt();
+			this.numRecords = (int) buffer.getUnsignedInt();
+		}
+
+		@Override
+		public String toString()
+		{
+		    return "RTree(" + name + "): " + numRecords + " records @ 0x" + Long.toHexString(root);
 		}
 	}
 
@@ -57,6 +69,7 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		buffer = new ArchiveFileBuffer(indexFile);
 		indexParent = indexFile.getParentFile();
 		anchors = getAnchors();
+		logger.fine(() -> "Opened " + indexFile + ", " + anchors.size() + " channels");
 	}
 
 	private Queue<Long> readHashTable() throws IOException
@@ -92,15 +105,16 @@ public class ArchiveFileIndexReader implements AutoCloseable
 			long offset = offsets.poll();
 			buffer.offset(offset);
 
-			//read next, "id", and name_len
+			// read next, "id" (offset to RTree), and name_len
 			offset = buffer.getUnsignedInt();
 			long anchor_offset = buffer.getUnsignedInt();
 			short nameLen = buffer.getShort();
 			buffer.skip(2);
 
-			byte name [] = new byte [nameLen];
-			buffer.get(name);
-			ret.put(new String(name), new TreeAnchor(anchor_offset));
+			byte name_buf [] = new byte [nameLen];
+			buffer.get(name_buf);
+			final String name = new String(name_buf);
+			ret.put(name, new TreeAnchor(name, anchor_offset));
 			if (offset != 0)
 				offsets.add(offset);
 		}
@@ -119,21 +133,20 @@ public class ArchiveFileIndexReader implements AutoCloseable
 	 * @param startTime
 	 * @param endTime
 	 * @return data file entries (file + offset) for the given time range
-	 * @throws IOException
 	 * @throws UnknownChannelException If the index has no data for the given channel name.
+	 * @throws Exception on error
 	 */
-	public List<DataFileEntry> getEntries(String channelName, Instant startTime, Instant endTime) throws IOException, UnknownChannelException
+	public List<DataFileEntry> getEntries(String channelName, Instant startTime, Instant endTime) throws Exception, UnknownChannelException
 	{
-		TreeAnchor anchor = anchors.get(channelName);
+	    final TreeAnchor anchor = anchors.get(channelName);
 		if (anchor == null)
-		{
 			throw new UnknownChannelException(channelName);
-		}
-		long result = searchRTreeNodes(anchor.root, anchor.numRecords, startTime);
-		if (result == 0) return Collections.emptyList();
+		final long result = searchRTreeNodes(anchor.root, anchor.numRecords, startTime);
+		if (result == 0)
+		    return Collections.emptyList();
 		// check end time: if record starts after end time, it's no good.
 		buffer.offset(buffer.offset() - 20);
-		Instant recordStartTime = buffer.getEpicsTime();
+		final Instant recordStartTime = buffer.getEpicsTime();
 		if (recordStartTime.compareTo(endTime) > 0)
 			return Collections.emptyList();
 		return readDatablocks(result);
@@ -238,61 +251,38 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		return 0;
 	}
 
-	//Performs a search through records with non-zero child offsets. Finds the record
-	//with the largest start time at or below the desired value. If no such record
-	//exists, returns the first (least) record's child.
-	private long searchRecords(long numRecords, Instant time) throws IOException
-	{
-		//A Record in an RTree Node is 20 bytes, arranged as follows:
-		//	EpicsTime start time, where an EpicsTime is 8 bytes long
-		//	EpicsTime end time
-		//	long child - if empty, 0; if Node is not leaf, offset of child node; if Node is leaf, offset of child Datablock
-		//note: a binary search will not work, because it is not known how many actual records
-			//are in an RTree node
-		long initOffset = buffer.offset();
-		long child = 0;
-		while (numRecords-- > 0)
-		{
-			buffer.offset(initOffset + numRecords * 20);
-			Instant startTime = buffer.getEpicsTime();
-			buffer.skip(8);
-			child = buffer.getUnsignedInt();
-			if (child != 0 && startTime.compareTo(time) <= 0)
-				break;
-		}
-		return child;
-	}
-
 	/**
 	 * Finds the leaf-node record whose start time is the largest start time
 	 * at or below the given Instant. Returns the offset of that record's child,
 	 * if the offset is non-zero; or else the first non-zero child offset of the
 	 * records that follow, if there is one; or zero if no non-zero child offsets
-	 * can be found. Upon return, the buffer is positioned immediately after the record
-	 * whose child was returned. (If zero was returned, buffer is immediately after last record.)
+	 * can be found.
 	 * @param root Offset in index file of RTree's root node
 	 * @param numRecords Number of records per RTree node
 	 * @param time Start time to search for
-	 * @return Offset of datablock which is at or before
-	 * @throws IOException
+	 * @return Offset of datablock which is at or before, or 0 if there is no data block
+	 * @throws Exception on error
 	 */
-	public long searchRTreeNodes(long root, long numRecords, Instant time) throws IOException
+	public long searchRTreeNodes(final long root, final int numRecords, final Instant time) throws Exception
 	{
-		//An RTree Node is laid out as follows:
-		// byte isLeaf (if false, 0; otherwise, true)
-		// long parent (if root, 0; otherwise, offset of parent node)
-		// Record[M] records, where a Record is 20 bytes
-		long result = root;
-		boolean isLeaf;
-		do
-		{
-			buffer.offset(result);
-			isLeaf = buffer.get() != 0;
-			buffer.skip(4);
-			result = searchRecords(numRecords, time);
-			if (result == 0) return 0;
-		} while (!isLeaf);
-		return result;
+	    RTreeNode node = new RTreeNode(buffer, root, numRecords);
+	    while (true)
+	    {
+	        // System.out.println(node);
+	        long child = 0;
+	        for (int i=numRecords-1;  i>=0;  --i)
+	        {
+	            child = node.records[i].child;
+	            if (child != 0  &&
+	                node.records[i].start.compareTo(time) <= 0)
+	                break;
+	        }
+	        if (node.isLeaf)
+	            return child;
+	        if (child == 0)
+	            return 0;
+            node = new RTreeNode(buffer, child, numRecords);
+	    }
 	}
 
 	/**
