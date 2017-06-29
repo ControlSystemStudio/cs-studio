@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.time;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import org.csstudio.apputil.time.AbsoluteTimeParser;
@@ -14,6 +15,7 @@ import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.RelativeTimeParser;
 import org.csstudio.apputil.time.RelativeTimeParserResult;
 import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.java.time.TimestampFormats;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -256,14 +258,16 @@ public class StartEndDialog extends Dialog
         }
     }
 
+    final static private DateTimeFormatter DATE_FORMAT =  TimestampFormats.SECONDS_FORMAT;
+
     // CalendarWidgetWidgetListener
     @Override
     public void updatedCalendar(CalendarWidget source, Calendar calendar)
     {
         if (source == abs_start)
-            start_text.setText(AbsoluteTimeParser.format(calendar));
+            start_text.setText(DATE_FORMAT.format(calendar.toInstant()));
         else
-            end_text.setText(AbsoluteTimeParser.format(calendar));
+            end_text.setText(DATE_FORMAT.format(calendar.toInstant()));
             /*
         if (start.isGreaterOrEqual(end))
             info.setText(Messages.StartExceedsEnd);

@@ -24,3 +24,4 @@ Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.workbench
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.csstudio.java.time
