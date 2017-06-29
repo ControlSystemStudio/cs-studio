@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-import org.eclipse.core.runtime.preferences.BundleDefaultsScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
@@ -41,11 +41,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 public class TimestampFormats {
 
     private static enum Format {
-        FULL, MILLI, SECONDS, TIME, DATE, MONTH
+        FULL, MILLI, SECONDS, TIME, DATE, DATESHORT, DATETIME, DATETIMESHORT, MONTH
     }
 
     final private static ZoneId zone = ZoneId.systemDefault();
-    final private static IEclipsePreferences preferenceNode = BundleDefaultsScope.INSTANCE.getNode("org.csstudio.java");
+    final private static IEclipsePreferences preferenceNode = DefaultScope.INSTANCE.getNode("org.csstudio.java");
 
     /** Time stamp format for 'full' time stamp */
     final public static DateTimeFormatter FULL_FORMAT = createFormatter(Format.FULL).withZone(zone);
@@ -56,11 +56,20 @@ public class TimestampFormats {
     /** Time stamp format for time stamp up to seconds, but not nanoseconds */
     final public static DateTimeFormatter SECONDS_FORMAT = createFormatter(Format.SECONDS).withZone(zone);
 
+    /** Time stamp format for time date and time, no seconds */
+    final public static DateTimeFormatter DATETIME_FORMAT = createFormatter(Format.DATETIME).withZone(zone);
+
+    /** Time stamp format for time date and time - short format */
+    final public static DateTimeFormatter DATETIMESHORT_FORMAT = createFormatter(Format.DATETIMESHORT).withZone(zone);
+
     /** Time stamp format for time stamp up to seconds, but no date */
     final public static DateTimeFormatter TIME_FORMAT = createFormatter(Format.TIME).withZone(zone);
 
     /** Time stamp format for date, no time */
     final public static DateTimeFormatter DATE_FORMAT = createFormatter(Format.DATE).withZone(zone);
+
+    /** Time stamp format for short date, no time */
+    final public static DateTimeFormatter DATESHORT_FORMAT = createFormatter(Format.DATESHORT).withZone(zone);
 
     // Internal
     final private static DateTimeFormatter MONTH_FORMAT = createFormatter(Format.MONTH).withZone(zone);
@@ -107,19 +116,28 @@ public class TimestampFormats {
     private static DateTimeFormatter createFormatter(Format format) {
 
         final String DATE_PATTERN = "yyyy-MM-dd";
+        final String DATE_SHORT_PATTERN = "yy-MM-dd";
         final String TIME_PATTERN = "HH:mm:ss";
         final String FULL_PATTERN = "yyyy-MM-dd HH:mm:ss.nnnnnnnnn";
         final String MILLI_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
         final String SECONDS_PATTERN = "yyyy-MM-dd HH:mm:ss";
+        final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
+        final String DATE_TIME_SHORT_PATTERN = "yy-MM-dd HH:mm";
         final String MONTH_PATTERN = "MM-dd HH:mm";
 
         switch (format) {
         case DATE:
             return getPatternFromPreference("custom_date_formatter_pattern", DATE_PATTERN);
+        case DATESHORT:
+            return getPatternFromPreference("#custom_short_date_formatter_pattern", DATE_SHORT_PATTERN);
         case MONTH:
             return getPatternFromPreference("custom_time_formatter_pattern", MONTH_PATTERN);
         case TIME:
             return getPatternFromPreference("custom_time_formatter_pattern", TIME_PATTERN);
+        case DATETIME:
+            return getPatternFromPreference("custom_datetime_formatter_pattern", DATE_TIME_PATTERN);
+        case DATETIMESHORT:
+            return getPatternFromPreference("custom_short_datetime_formatter_pattern", DATE_TIME_SHORT_PATTERN);
         case FULL:
             return getPatternFromPreference("custom_full_formatter_pattern", FULL_PATTERN);
         case MILLI:
