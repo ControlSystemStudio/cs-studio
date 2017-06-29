@@ -13,21 +13,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-import org.diirt.util.array.ArrayBoolean;
-import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ArrayFloat;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.Array;
 import org.diirt.vtype.VImage;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
-import org.diirt.vtype.table.ListNumberProvider;
-import org.diirt.vtype.table.VTableFactory;
 import org.epics.pvdata.factory.ConvertFactory;
 import org.epics.pvdata.pv.BooleanArrayData;
 import org.epics.pvdata.pv.Convert;
@@ -36,7 +31,6 @@ import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVBooleanArray;
 import org.epics.pvdata.pv.PVByteArray;
 import org.epics.pvdata.pv.PVField;
-import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStringArray;
@@ -48,7 +42,6 @@ import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Structure;
 import org.epics.pvdata.pv.StructureArrayData;
-import org.epics.pvdata.pv.Type;
 
 /** Helper for reading & writing PVStructure
  *
@@ -114,11 +107,23 @@ class PVStructureHelper
             return decodeNTScalar(actual_struct);
         else if (value_field instanceof ScalarArray)
             return decodeNTArray(actual_struct);
+        //TODO: not really sure how to handle arbitrary structures -- no solid use cases yet...
         else if (value_field instanceof Structure)
-        {
+        {	//Structures with a value field: Treat the value as the value of a VTable
         	try
         	{
         		return decodeAsTableValue(actual_struct.getStructureField("value"), new ArrayList<>());
+        	}
+        	catch (Exception e)
+        	{
+        		//fall through
+        	}
+        }
+        else //if (value_field == null) ?
+        {	//Structures with no value field: try to create a VTable
+        	try
+        	{
+        		return decodeAsTableValue(actual_struct, new ArrayList<String>());
         	}
         	catch (Exception e)
         	{
@@ -409,10 +414,18 @@ class PVStructureHelper
 	 * 			if the corresponding name is null or not in the list, the field name is used as its label. If
 	 * 			the column name ends with a "slash" character ('/'), the field name is appended to it.
 	 * @return VTable representing the values of the structure
-	 * @throw Exception If the row size constraint is violated, or if a field's type is not supported
+	 * @throw Exception If the column length constraint is violated, or if a field's type is not supported
 	 */
 	private static VTable decodeAsTableValue(final PVStructure value, final List<String> names) throws Exception
 	{
+		//	Right now, an exception is thrown if scalar values with different lengths are encountered
+		//in the same structure. For arbitrary structures, this might not be necessary.
+		//It would be simple to add a parameter for ignoring the column lengths constraint.
+		//However, this could cause exceptions when displaying the table.
+		//For that reason, it might be good to pad the values with null, after first finding the lengths
+		//of all columns and determining the maximum length.
+		//	On the other hand, since there isn't currently a well-defined case for displaying arbitrary
+		//structures, there's no real need to implement this at the moment.
     	final List<Class<?>> types = new ArrayList<>();
     	final List<Object> values  = new ArrayList<>();
 		int rowSize = -1;
@@ -463,7 +476,6 @@ class PVStructureHelper
     	return ValueFactory.newVTable(types, names, values);
     }
     
-    @SuppressWarnings("restriction")
 	private static void getTableTypeAndValue(PVScalar scalar, List<Class<?>> types, List<Object> values)
     {
 		switch(scalar.getScalar().getScalarType())
@@ -516,7 +528,6 @@ class PVStructureHelper
 		}
 	}
     
-    @SuppressWarnings("restriction")
 	private static int getTableTypeAndValue(PVScalarArray array, List<Class<?>> types, List<Object> values)
     {
     	final int length = array.getLength();
