@@ -22,20 +22,32 @@ import java.time.Instant;
  */
 public class ArchiveFileBuffer implements AutoCloseable
 {
-	private final ByteBuffer buffer;
+    // XXX: what size? Bigger means less fetching, but too big means memory runs out;
+	private final ByteBuffer buffer = ByteBuffer.allocate(65536);
 	private FileChannel fileChannel;
-	private File file;
+	private File file = null;
 
-	public ArchiveFileBuffer(final File file) throws IOException
+    public ArchiveFileBuffer()
+    {
+    }
+
+    public ArchiveFileBuffer(final File file) throws IOException
 	{
-		this.buffer = ByteBuffer.allocate(65536); //TODO: what size? Bigger means less fetching, but too big means memory runs out
 		setFile(file);
 	}
 
+    /** Set file
+     *  @param file
+     *  @throws IOException
+     */
 	public void setFile(final File file) throws IOException
 	{
-		this.file = file;
-		fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
+	    if (! file.equals(this.file))
+	    {
+    		this.file = file;
+    		close();
+    		fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
+	    }
 		buffer.position(0).limit(0);
 	}
 
@@ -159,7 +171,11 @@ public class ArchiveFileBuffer implements AutoCloseable
 	@Override
 	public void close() throws IOException
 	{
-		fileChannel.close();
+	    if (fileChannel != null)
+	    {
+	        fileChannel.close();
+	        fileChannel = null;
+	    }
 	}
 
 	@Override

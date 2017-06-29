@@ -37,8 +37,8 @@ public class ArchiveReaderDemo
             System.out.println("Channel: " + name);
             final ValueIterator values = reader.getRawValues(0, name,
                     // Instant.ofEpochMilli(0),
-                    Instant.from(parser.parse("2005-01-05 10:31:59.863343666")),
-                    // Instant.from(parser.parse("2005-01-11 02:56:59.988856600")),
+                    // Instant.from(parser.parse("2005-01-05 10:31:59.863343666")),
+                    Instant.from(parser.parse("2005-01-11 02:56:59.988856600")),
                     Instant.now());
             try
             {

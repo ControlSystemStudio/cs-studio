@@ -21,7 +21,6 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.diirt.vtype.VType;
 
 /** ArchiveReader for Channel Archiver index & data files.
  *  @author Amanda Carpenter
@@ -95,36 +94,14 @@ public class ArchiveFileReader implements ArchiveReader
 			throws UnknownChannelException, Exception
 	{
 		final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
-		if (entries.size() < 1)
-			return new ValueIterator()
-			{
-				@Override
-				public VType next() throws Exception
-				{
-					throw new Exception("This iterator has no values");
-				}
-
-				@Override
-				public boolean hasNext()
-				{
-					return false;
-				}
-
-				@Override
-				public void close() {} //do nothing
-			};
-		// TODO Pass all entries so reader can loop over data blocks
-		for (DataFileEntry entry : entries)
-		    System.out.println(entry);
-
-		DataFileEntry entry = entries.get(0);
-		return new ArchiveFileSampleReader(start, end, entry.file, entry.offset);
+		return new ArchiveFileSampleReader(start, end, entries);
 	}
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count)
 			throws UnknownChannelException, Exception
 	{
+	    // Not implemented, falling back to raw values
 		return getRawValues(key, name, start, end);
 	}
 
