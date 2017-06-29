@@ -19,13 +19,17 @@ public class ArchiveFileTime
     /** Seconds from Posix epoch (1917) to EPICS epoch (1990) */
     public static long EPICS_OFFSET = 631152000L;
 
+    public static boolean isZeroTime(final Instant timestamp)
+    {
+        return timestamp.getEpochSecond() == EPICS_OFFSET  &&
+               timestamp.getNano() == 0;
+    }
     /** @param timestamp Timestamp
      *  @return String representation, recognizing '0' time stamps
      */
     public static String format(final Instant timestamp)
     {
-        if (timestamp.getEpochSecond() == EPICS_OFFSET  &&
-            timestamp.getNano() == 0)
+        if (isZeroTime(timestamp))
             return "0";
         return TimestampHelper.format(timestamp);
     }

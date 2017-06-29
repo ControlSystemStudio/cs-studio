@@ -54,10 +54,20 @@ public class RTreeNode
             end = buffer.getEpicsTime();
             child = buffer.getUnsignedInt();
         }
+
+        public boolean isEmpty()
+        {
+            return ArchiveFileTime.isZeroTime(start)  &&  ArchiveFileTime.isZeroTime(end);
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Record " + ArchiveFileTime.format(start) + " - " + ArchiveFileTime.format(end);
+        }
     };
 
     public final long offset;
-    public final int M;
     public final boolean isLeaf;
     public final long parent;
     public final Record[] records;
@@ -69,13 +79,25 @@ public class RTreeNode
         // long parent (if root, 0; otherwise, offset of parent node)
         // Record[M] records, where a Record is 20 bytes
         this.offset = offset;
-        this.M = M;
         buffer.offset(offset);
         isLeaf = buffer.get() != 0;
         parent = buffer.getUnsignedInt();
         records = new Record[M];
         for (int i=0; i<M; ++i)
             records[i] = new Record(buffer);
+    }
+
+    public int getM()
+    {
+        return records.length;
+    }
+
+    public int findRecordForChild(final long child)
+    {
+        for (int i=0; i<getM(); ++i)
+            if (records[i].child == child)
+                return i;
+        throw new IllegalStateException("Cannot locate child 0x" + Long.toHexString(child) + " in " + this);
     }
 
     @Override
@@ -88,9 +110,8 @@ public class RTreeNode
         if (parent != 0)
             buf.append(" parent @ 0x" + Long.toHexString(parent));
         buf.append('\n');
-        for (int i=0; i<M; ++i)
+        for (int i=0; i<getM(); ++i)
         {
-
             buf.append('[').append(i).append("] ")
                .append(ArchiveFileTime.format(records[i].start))
                .append(" - ")

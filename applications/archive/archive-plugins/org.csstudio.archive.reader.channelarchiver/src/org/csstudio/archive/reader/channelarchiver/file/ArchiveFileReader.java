@@ -43,22 +43,6 @@ public class ArchiveFileReader implements ArchiveReader
 	    indexReader = new ArchiveFileIndexReader(new File(index));
 	}
 
-	static class DataFileEntry //package-private //(belongs with index reader?)
-	{
-		private final File file;
-		private final Long offset;
-		public DataFileEntry(final File file, final Long offset)
-		{
-			this.file = file;
-			this.offset = offset;
-		}
-		@Override
-        public String toString()
-		{
-			return String.format("data in '%s' @ 0x%08x(%d)", file.getName(), offset, offset);
-		}
-	}
-
 	@Override
 	public String getServerName()
 	{
@@ -110,7 +94,6 @@ public class ArchiveFileReader implements ArchiveReader
 	public ValueIterator getRawValues(int key, String name, Instant start, Instant end)
 			throws UnknownChannelException, Exception
 	{
-	    // TODO Have this return the list of all data blocks, from the index, for start .. end
 		final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
 		if (entries.size() < 1)
 			return new ValueIterator()
@@ -131,6 +114,9 @@ public class ArchiveFileReader implements ArchiveReader
 				public void close() {} //do nothing
 			};
 		// TODO Pass all entries so reader can loop over data blocks
+		for (DataFileEntry entry : entries)
+		    System.out.println(entry);
+
 		DataFileEntry entry = entries.get(0);
 		return new ArchiveFileSampleReader(start, end, entry.file, entry.offset);
 	}
