@@ -9,10 +9,11 @@ package org.csstudio.archive.reader.channelarchiver.file;
 
 import static org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 
 import org.csstudio.archive.reader.ValueIterator;
@@ -36,21 +37,43 @@ import gov.aps.jca.dbr.Status;
  */
 public class ArchiveFileSampleReader implements ValueIterator
 {
-	private final Instant iteratorStop;
-	private final ArchiveFileBuffer buffer;
-	private DataHeader header;
-	private ArchiveVType next; //sample that will be returned by nextSample(), or else null
+    private final Instant iteratorStop;
+
+    /** Data headers from which samples will be read.
+     *  Entries are removed as the 'buffer' and 'header' are set to them.
+     */
+    private final Queue<DataFileEntry> entries;
+
+    private final ArchiveFileBuffer buffer = new ArchiveFileBuffer();
+
+    private DataHeader header;
+
+    /** sample that will be returned by nextSample(), or else <code>null</code> */
+	private ArchiveVType next;
+
 	private long samples_left;
 
-	public ArchiveFileSampleReader(Instant iteratorStart, Instant iteratorStop,
-			File file, long offset) throws IOException
+
+	public ArchiveFileSampleReader(final Instant iteratorStart, final Instant iteratorStop,
+			                       final List<DataFileEntry> entries) throws Exception
 	{
 		this.iteratorStop = iteratorStop;
-		this.buffer = new ArchiveFileBuffer(file);
-		buffer.offset(offset);
-		header = DataHeader.readDataHeader(buffer, new CtrlInfoReader(0));
-		//possible sanity check: is start between header's start and stop times?
-		samples_left = binarySearchSamples(iteratorStart);
+
+		this.entries = new ArrayDeque<>(entries);
+
+		if (this.entries.isEmpty())
+		{
+		    next = null;
+		    samples_left = 0;
+		}
+		else
+		{
+		    final DataFileEntry entry = this.entries.remove();
+    		buffer.setFile(entry.file);
+    		buffer.offset(entry.offset);
+    		header = DataHeader.readDataHeader(buffer, new CtrlInfoReader(0));
+    		samples_left = binarySearchSamples(iteratorStart);
+		}
 	}
 
 	/** Searches for samples in the buffer, starting from its current offset, using the information in
@@ -112,27 +135,22 @@ public class ArchiveFileSampleReader implements ValueIterator
         return -1;
 	}
 
-	private DataHeader nextHeader() throws IOException
-	{
-		if (!buffer.getFile().equals(header.nextFile))
-		{
-			buffer.close();
-			buffer.setFile(header.nextFile);
-		}
-		buffer.offset(header.nextOffset);
-		return DataHeader.readDataHeader(buffer, header.info);
-	}
-
     private ArchiveVType nextSample() throws IOException
     {
 		if (samples_left <= 0)
 		{
-		    // TODO: Instead of using next data block in chain, check index for next data block
-		    // TODO: Add reference to IndexFileReader and/or RTreeNode to allow this.
-			if (header.nextOffset == 0)
-			    return null;
-			header = nextHeader();
+		    if (entries.isEmpty())
+		        return null;
+		    // Use next data block
+		    final DataFileEntry entry = this.entries.remove();
+		    buffer.setFile(entry.file);
+		    buffer.offset(entry.offset);
+		    header = DataHeader.readDataHeader(buffer, header.info);
+		    // Start on the first sample, no need to search for 'start' time
 			samples_left = header.numSamples;
+			// Is new data block empty?
+			if (samples_left <= 0)
+			    return null;
 		}
 		ArchiveVType sample = getSample(header.dbrType, header.dbrCount, header.info, buffer);
 		--samples_left;
@@ -151,15 +169,15 @@ public class ArchiveFileSampleReader implements ValueIterator
 	@Override
     public VType next() throws IOException
     {
-		VType ret = next;
+		final VType ret = next;
 		try
 		{
 			next = nextSample();
 		}
-		catch (IOException e)
+		catch (IOException ex)
 		{
 			next = null;
-			throw e;
+			throw ex;
 		}
 		return ret;
     }

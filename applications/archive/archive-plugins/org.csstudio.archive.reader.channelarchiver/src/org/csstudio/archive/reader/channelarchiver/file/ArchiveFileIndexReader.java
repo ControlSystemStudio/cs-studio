@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Queue;
 
 import org.csstudio.archive.reader.UnknownChannelException;
-import org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReader.DataFileEntry;
 import org.csstudio.archive.reader.channelarchiver.file.RTreeNode.RTreeNodeWithIndex;
 
 /**
@@ -115,22 +114,20 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		return ret;
 	}
 
-	/**
-	 * Get all data file entries (filename + offset) associated with the first RTree record
-	 * for the given channel name and the given start and end times.
-	 * If the index file has data for the given channel name, but no data for any time
-	 * at or before the given end time, an empty list will be returned.
-	 * For a sub-archive, at most one data file entry will be returned.
-	 * For a master archive, there may be multiple entries,
-	 * if multiple sub-archives contain data for the given start time.
-	 * @param channelName Channel name
-	 * @param startTime
-	 * @param endTime
-	 * @return data file entries (file + offset) for the given time range
-	 * @throws UnknownChannelException If the index has no data for the given channel name.
-	 * @throws Exception on error
+	/** Get all data file entries (filename + offset)
+	 *  for the given channel name and the given start and end times.
+	 *
+	 *  <p>If the index file has data for the given channel name, but no data for any time
+	 *  at or before the given end time, an empty list will be returned.
+	 *
+	 *  @param channelName Channel name
+	 *  @param startTime
+	 *  @param endTime
+	 *  @return data file entries (file + offset) for the given time range
+	 *  @throws UnknownChannelException If the index has no data for the given channel name.
+	 *  @throws Exception on error
 	 */
-	public List<DataFileEntry> getEntries(String channelName, Instant startTime, Instant endTime) throws Exception, UnknownChannelException
+	public List<DataFileEntry> getEntries(final String channelName, final Instant startTime, final Instant endTime) throws Exception, UnknownChannelException
 	{
 	    final TreeAnchor anchor = anchors.get(channelName);
 		if (anchor == null)
@@ -140,10 +137,47 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		if (node_and_index == null)
 		    return Collections.emptyList();
 
-		// Have node and index for the first data block.
-		// TODO Return the list of all data blocks, from the index, for start .. end
+	    final List<DataFileEntry> entries = new ArrayList<>();
+	    RTreeNode node = node_and_index.node;
+	    int index = node_and_index.record_index;
 
-		return readDatablocks(node_and_index.selectedRecord().child);
+	    while (! node.records[index].start.isAfter(endTime))
+	    {
+	        if (! node.records[index].isEmpty())
+	        {
+	            // A record might point to a chain of data blocks
+	            final List<DataFileEntry>  sub_entries = readDatablocks(node.records[index].child);
+	            // Use only the first data block, not the 'shadowed' data blocks below
+	            entries.add(sub_entries.get(0));
+	        }
+	        // Get next record from this node
+	        if (index < node.getM() - 1)
+	            ++index;
+	        else
+	        {
+	            // Go up to the parent node, maybe several levels
+	            while (true)
+	            {
+	                if (node.parent == 0)
+	                    return entries;
+	                final RTreeNode parent = new RTreeNode(buffer, node.parent, node.getM());
+    	            index = parent.findRecordForChild(node.offset) + 1;
+    	            if (index < node.getM()  &&   ! parent.records[index].isEmpty())
+    	            {   // From the _next_ parent record, descent into first child
+    	                node = new RTreeNode(buffer, parent.records[index].child, node.getM());
+    	                index = 0;
+    	                break;
+    	            }
+    	            // else: Need to go up to parent's parent, and find the next record there
+    	            node = parent;
+	            }
+	            // Keep descending via leftmost child to leaf
+	            while (! node.isLeaf)
+	                node = new RTreeNode(buffer, node.records[index].child, node.getM());
+	        }
+	    }
+
+	    return entries;
 	}
 
 	/**
@@ -201,16 +235,15 @@ public class ArchiveFileIndexReader implements AutoCloseable
 		// long data_offset - offset of data block in data file
 		// short name_size - size of name
 		// char name [name_size] - file name for data file (w/o '\0')
-		List<DataFileEntry> ret = new ArrayList<>();
+		final List<DataFileEntry> ret = new ArrayList<>();
 		while (offset != 0)
 		{
 			buffer.offset(offset);
 
 			offset = buffer.getUnsignedInt();
 			final long dataOffset = buffer.getUnsignedInt();
-			int nameSize = buffer.getShort();
-
-			byte name [] = new byte [nameSize];
+			final int nameSize = buffer.getShort();
+			final byte name [] = new byte [nameSize];
 			buffer.get(name);
 			ret.add(new DataFileEntry(new File(indexParent, new String(name)), dataOffset));
 		}

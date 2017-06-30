@@ -6,7 +6,7 @@ package org.csstudio.logbook.ui.extra;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
@@ -57,6 +58,7 @@ import org.eclipse.swt.widgets.Menu;
 public class LogEntryTree extends Composite implements ISelectionProvider {
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    final static private DateTimeFormatter DATE_FORMAT =  TimestampFormats.DATESHORT_FORMAT;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -154,16 +156,13 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
                 LogEntryTreeModel item = ((LogEntryTreeModel) cell.getElement());
                 StringBuffer date = new StringBuffer();
                 if (item != null) {
-                    date.append(item.logEntry.getCreateDate() == null ? "No Data"
-                            : DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                    .format(item.logEntry.getCreateDate()));
+                    date.append(item.logEntry.getCreateDate() == null ? "No Data" : DATE_FORMAT.format(item.logEntry.getCreateDate().toInstant()));
                     if (item.logEntry.getModifiedDate() != null && item.logEntry.getCreateDate().getTime()
                             / 1000 != item.logEntry.getModifiedDate().getTime() / 1000) {
                         date.append(System.getProperty("line.separator"));
                         date.append("modified at:");
                         date.append(System.getProperty("line.separator"));
-                        date.append(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(item.logEntry.getModifiedDate()));
+                        date.append(DATE_FORMAT.format(item.logEntry.getModifiedDate().toInstant()));
                     }
                     cell.setText(date.toString());
                 }
@@ -185,6 +184,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnDescription = new GridViewerColumn(gridTreeViewer, SWT.DOUBLE_BUFFERED);
         gridViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 LogEntry item = ((LogEntryTreeModel) element).logEntry;
                 return item == null ? "" : item.getText();
@@ -200,6 +200,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnOwner = new GridViewerColumn(gridTreeViewer,
                 SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
         gridViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
+            @Override
             public String getText(Object element) {
                 LogEntryTreeModel item = ((LogEntryTreeModel) element);
                 StringBuffer owner = new StringBuffer();
@@ -255,6 +256,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnTags = new GridViewerColumn(gridTreeViewer, SWT.DOUBLE_BUFFERED);
         gridViewerColumnTags.setLabelProvider(new ColumnLabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 LogEntry item = ((LogEntryTreeModel) element).logEntry;
                 if (item == null) {
@@ -393,20 +395,25 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
 
     private class LogEntryTreeContentProvider implements ITreeContentProvider {
 
+        @Override
         public Object[] getElements(Object inputElement) {
             return ((LogEntryTreeModel) inputElement).child.toArray();
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
+        @Override
         public Object[] getChildren(Object parentElement) {
             return getElements(parentElement);
         }
 
+        @Override
         public Object getParent(Object element) {
             if (element == null) {
                 return null;
@@ -414,6 +421,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             return ((LogEntryTreeModel) element).parent;
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             return ((LogEntryTreeModel) element).child.size() > 0;
         }
@@ -433,6 +441,7 @@ public class LogEntryTree extends Composite implements ISelectionProvider {
             this.creater = creater;
         }
 
+        @Override
         public String toString() {
             String rv = "Item ";
             if (parent != null) {

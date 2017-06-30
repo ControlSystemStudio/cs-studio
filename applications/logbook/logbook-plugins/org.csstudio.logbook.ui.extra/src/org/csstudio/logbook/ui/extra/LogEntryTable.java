@@ -6,12 +6,13 @@ package org.csstudio.logbook.ui.extra;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.csstudio.java.time.TimestampFormats;
 import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.Logbook;
 import org.csstudio.logbook.Tag;
@@ -49,6 +50,7 @@ import org.eclipse.swt.widgets.Menu;
 public class LogEntryTable extends Composite implements ISelectionProvider {
 
     protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+    final static private DateTimeFormatter DATE_FORMAT =  TimestampFormats.DATETIMESHORT_FORMAT;
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -105,6 +107,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
                 return selection;
             }
 
+            @Override
             protected ISelection reverseTransform(IStructuredSelection selection) {
                 return selection;
             }
@@ -149,14 +152,13 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
             public void update(ViewerCell cell) {
                 LogEntry item = ((LogEntry) cell.getElement());
                 String date = item == null || item.getCreateDate() == null ? "No Data"
-                        : DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(item.getCreateDate());
+                        : DATE_FORMAT.format(item.getCreateDate().toInstant());
                 cell.setText(date);
             }
         });
         column.getColumn().setText("Date");
         column.getColumn().setWordWrap(true);
-        new TableColumnViewerLayout(gridTableViewer, column, 15, 100);
+        new TableColumnViewerLayout(gridTableViewer, column, 15, 115);
         new ColumnViewerSorter(gridTableViewer, column) {
             @Override
             protected int doCompare(Viewer viewer, Object e1, Object e2) {
@@ -170,6 +172,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnDescription = new GridViewerColumn(gridTableViewer, SWT.DOUBLE_BUFFERED);
         gridViewerColumnDescription.setLabelProvider(new ColumnLabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 LogEntry item = ((LogEntry) element);
                 return item == null ? "" : item.getText();
@@ -185,6 +188,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnOwner = new GridViewerColumn(gridTableViewer,
                 SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
         gridViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
+            @Override
             public String getText(Object element) {
                 LogEntry item = ((LogEntry) element);
                 return item == null ? "" : item.getOwner();
@@ -227,6 +231,7 @@ public class LogEntryTable extends Composite implements ISelectionProvider {
         GridViewerColumn gridViewerColumnTags = new GridViewerColumn(gridTableViewer, SWT.DOUBLE_BUFFERED);
         gridViewerColumnTags.setLabelProvider(new ColumnLabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 LogEntry item = ((LogEntry) element);
                 if (item == null) {

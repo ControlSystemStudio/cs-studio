@@ -21,7 +21,6 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.diirt.vtype.VType;
 
 /** ArchiveReader for Channel Archiver index & data files.
  *  @author Amanda Carpenter
@@ -41,22 +40,6 @@ public class ArchiveFileReader implements ArchiveReader
 	{
 	    index_name = index;
 	    indexReader = new ArchiveFileIndexReader(new File(index));
-	}
-
-	static class DataFileEntry //package-private //(belongs with index reader?)
-	{
-		private final File file;
-		private final Long offset;
-		public DataFileEntry(final File file, final Long offset)
-		{
-			this.file = file;
-			this.offset = offset;
-		}
-		@Override
-        public String toString()
-		{
-			return String.format("data in '%s' @ 0x%08x(%d)", file.getName(), offset, offset);
-		}
 	}
 
 	@Override
@@ -110,35 +93,15 @@ public class ArchiveFileReader implements ArchiveReader
 	public ValueIterator getRawValues(int key, String name, Instant start, Instant end)
 			throws UnknownChannelException, Exception
 	{
-	    // TODO Have this return the list of all data blocks, from the index, for start .. end
 		final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
-		if (entries.size() < 1)
-			return new ValueIterator()
-			{
-				@Override
-				public VType next() throws Exception
-				{
-					throw new Exception("This iterator has no values");
-				}
-
-				@Override
-				public boolean hasNext()
-				{
-					return false;
-				}
-
-				@Override
-				public void close() {} //do nothing
-			};
-		// TODO Pass all entries so reader can loop over data blocks
-		DataFileEntry entry = entries.get(0);
-		return new ArchiveFileSampleReader(start, end, entry.file, entry.offset);
+		return new ArchiveFileSampleReader(start, end, entries);
 	}
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count)
 			throws UnknownChannelException, Exception
 	{
+	    // Not implemented, falling back to raw values
 		return getRawValues(key, name, start, end);
 	}
 
