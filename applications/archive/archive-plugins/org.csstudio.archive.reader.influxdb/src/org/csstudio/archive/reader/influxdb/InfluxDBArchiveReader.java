@@ -259,15 +259,30 @@ public class InfluxDBArchiveReader implements ArchiveReader
         //            counted = result.getInt(1);
         //        }
         // Fetch raw data and perform averaging
-        final ValueIterator raw_data = getRawValues(name, start, end);
+        //final ValueIterator raw_data = getRawValues(name, start, end);
 
         //        // If there weren't that many, that's it
         //        if (counted < count)
         //            return raw_data;
 
         // Else: Perform averaging to reduce sample count
-        final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
-        return new AveragedValueIterator(raw_data, seconds);
+        //final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
+        //return new AveragedValueIterator(raw_data, seconds);
+        return getOptimizedValues(name, start, end, count);
+    }
+    
+    /** Fetch optimized (averaged) samples.
+     *  @param channel_name Channel name in influxdb
+     *  @param start Start time
+     *  @param end End time
+     *  @return {@link ValueIterator} for optimized samples
+     *  @throws Exception on error
+     */
+    public ValueIterator getOptimizedValues(final String channel_name,
+            final Instant start, final Instant end, final long count) throws Exception
+    {
+    	//TODO: non-numeric data; also: too many empty "buckets"
+        return new OptimizedSampleIterator(this, channel_name, start, end, count);
     }
 
     //TODO: this comes from in-memory configuration object now

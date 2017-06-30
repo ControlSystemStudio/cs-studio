@@ -1,5 +1,6 @@
 package org.csstudio.archive.influxdb;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class InfluxDBQueries
 
 
     private static String get_points(final StringBuilder sb, final List<String> where_clauses,
-            final Long limit)
+            String group_by_what, final Long limit)
     {
         if ((where_clauses != null) && (where_clauses.size() > 0))
         {
@@ -108,6 +109,11 @@ public class InfluxDBQueries
                     sb.append(" AND ");
                 sb.append(where_clauses.get(idx));
             }
+        }
+        if (group_by_what != null)
+        {
+        	sb.append(" GROUP BY ");
+        	sb.append(group_by_what);
         }
         sb.append(" ORDER BY time ");
         if (limit != null)
@@ -133,13 +139,25 @@ public class InfluxDBQueries
         }
         return where_clauses;
     }
+    
+    private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count, final String requiredTags)
+    {
+    	//TODO: rounding/truncation problem?
+        StringBuilder ret = new StringBuilder();
+        if (requiredTags != null)
+        	ret.append(requiredTags).append(',');
+        ret.append("time(");
+        ret.append(InfluxDBUtil.toMicro(
+        		Duration.between(starttime, endtime).dividedBy(count)).toString());
+        ret.append("u) fill(none)"); //TODO: fill(previous) or fill(none) ?
+        return ret.toString();
+    }
 
-
-    public static String get_channel_points(final String select_what, final String channel_name,
-            final Instant starttime, final Instant endtime, final Long limit) {
+	public static String get_channel_points(final String select_what, final String channel_name,
+            final Instant starttime, final Instant endtime, String group_by_what, final Long limit) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ").append(select_what).append(" FROM \"").append(channel_name).append('\"');
-        return get_points(sb, getTimeClauses(starttime, endtime), limit);
+        return get_points(sb, getTimeClauses(starttime, endtime), group_by_what, limit);
     }
 
     public static String get_series_points(final InfluxDBSeriesInfo series, final Instant starttime,
@@ -155,14 +173,14 @@ public class InfluxDBQueries
         else if (time_clauses != null)
             where_clauses.addAll(time_clauses);
 
-        return get_points(sb, where_clauses, limit);
+        return get_points(sb, where_clauses, null, limit);
     }
 
     public static String get_pattern_points(final String select_what, final String pattern, final Instant starttime,
             final Instant endtime, final Long limit) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ").append(select_what).append(" FROM /").append(pattern).append('/');
-        return get_points(sb, getTimeClauses(starttime, endtime), limit);
+        return get_points(sb, getTimeClauses(starttime, endtime), null, limit);
     }
 
     ///////////////////////////// RAW DATA QUERIES
@@ -196,7 +214,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, 1L),
+                get_channel_points("*", channel_name, null, null, null, 1L),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -205,7 +223,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, -num),
+                get_channel_points("*", channel_name, starttime, endtime, null, -num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -214,7 +232,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, num),
+                get_channel_points("*", channel_name, starttime, endtime, null, num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -224,12 +242,24 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, limit),
+                get_channel_points("*", channel_name, starttime, endtime, null, limit),
                 dbnames.getDataDBName(channel_name));
     }
 
     public QueryResult get_newest_channel_datum_regex(final String pattern) throws Exception {
         return makeQuery(influxdb, get_pattern_points("*", pattern, null, null, -1L), dbnames.getDataDBName(pattern));
+    }
+    
+    //TODO: like chunk_get_channel_samples, add to testChunkQuery
+    public void chunk_get_mean_channel_samples(final int chunkSize,
+    		final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
+    {
+    	//TODO: check writer: could the regexp be more specific?
+    	makeChunkQuery(
+    			chunkSize, consumer, influxdb,
+    			get_channel_points("MEAN(/\\.[\\d]+/)", channel_name, starttime,
+    					endtime, getGroupByTimeClause(starttime, endtime, limit, null), null),
+    			dbnames.getDataDBName(channel_name));
     }
 
     ///////////////////////////// META DATA ARCHIVE QUERIES
@@ -239,7 +269,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, -num),
+                get_channel_points("*", channel_name, starttime, endtime, null, -num),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -247,7 +277,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, -1L),
+                get_channel_points("*", channel_name, null, null, null, -1L),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -260,7 +290,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null),
+                get_channel_points("*", channel_name, null, null, null, null),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -269,8 +299,21 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, limit),
+                get_channel_points("*", channel_name, starttime, endtime, null, limit),
                 dbnames.getMetaDBName(channel_name));
     }
+
+    //TODO: unit tests (somewhere?)
+	public void chunk_get_grouped_channel_metadata(final int chunkSize,
+			final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
+	{
+		//TODO: Group-by KILLS TAGS!
+		//However, using GROUP BY displaytype,time(...) doesn't work, either.
+    	makeChunkQuery(
+    			chunkSize, consumer, influxdb,
+    			get_channel_points("FIRST(*)", channel_name, starttime,
+    					endtime, getGroupByTimeClause(starttime, endtime, limit, "datatype"), null),
+    			dbnames.getMetaDBName(channel_name));
+	}
 
 }

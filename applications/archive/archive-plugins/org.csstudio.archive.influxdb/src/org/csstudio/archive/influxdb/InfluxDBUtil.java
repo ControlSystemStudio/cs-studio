@@ -2,6 +2,7 @@ package org.csstudio.archive.influxdb;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -15,6 +16,7 @@ import org.influxdb.InfluxDBFactory;
 public class InfluxDBUtil
 {
     private static final BigInteger nanomult = new BigInteger("1000000000");
+    private static final BigInteger micromult = new BigInteger("1000000");
 
     public static BigInteger toNano(Instant time)
     {
@@ -22,6 +24,14 @@ public class InfluxDBUtil
         ret = ret.multiply(nanomult);
         ret = ret.add(BigInteger.valueOf(time.getNano()));
         return ret;
+    }
+    
+    public static BigInteger toMicro(Duration duration)
+    {
+    	BigInteger ret = BigInteger.valueOf(duration.getSeconds());
+    	ret.multiply(micromult);
+    	ret = ret.add(BigInteger.valueOf(duration.getNano()/1000));
+    	return ret;
     }
 
     public static long toNanoLong(Instant time)
