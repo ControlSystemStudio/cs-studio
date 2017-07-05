@@ -18,4 +18,5 @@ Export-Package: org.csstudio.logbook.ui,
  org.csstudio.logbook.ui.util
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ org.csstudio.java.time,
  org.eclipse.ui.part
