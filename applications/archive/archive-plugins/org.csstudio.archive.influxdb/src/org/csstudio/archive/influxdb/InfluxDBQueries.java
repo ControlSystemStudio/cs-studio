@@ -13,6 +13,9 @@ import org.influxdb.dto.QueryResult;
 
 public class InfluxDBQueries
 {
+	//expression to select statistics (average, max, min, etc.)
+    private static final String SELECT_STATS = "MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),STDDEV(/\\.0/),COUNT(/\\.0/)";
+
     private final InfluxDB influxdb;
 
     abstract public static class DBNameMap {
@@ -149,15 +152,20 @@ public class InfluxDBQueries
         ret.append("time(");
         ret.append(InfluxDBUtil.toMicro(
         		Duration.between(starttime, endtime).dividedBy(count)).toString());
-        ret.append("u) fill(none)"); //TODO: fill(previous) or fill(none) ?
+        ret.append("u) fill(previous)"); //can't use fill(none), because it's possible that metadata and data might have a different number of values
         return ret.toString();
     }
 
 	public static String get_channel_points(final String select_what, final String channel_name,
-            final Instant starttime, final Instant endtime, String group_by_what, final Long limit) {
+            final Instant starttime, final Instant endtime, String where_what, String group_by_what,
+            final Long limit)
+	{
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ").append(select_what).append(" FROM \"").append(channel_name).append('\"');
-        return get_points(sb, getTimeClauses(starttime, endtime), group_by_what, limit);
+        List<String> where_clauses = getTimeClauses(starttime, endtime);
+        if (where_what != null)
+        	where_clauses.add(where_what);
+        return get_points(sb, where_clauses, group_by_what, limit);
     }
 
     public static String get_series_points(final InfluxDBSeriesInfo series, final Instant starttime,
@@ -214,7 +222,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, 1L),
+                get_channel_points("*", channel_name, null, null, null, null, 1L),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -223,7 +231,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, -num),
+                get_channel_points("*", channel_name, starttime, endtime, null, null, -num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -232,7 +240,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, num),
+                get_channel_points("*", channel_name, starttime, endtime, null, null, num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -242,7 +250,7 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, limit),
+                get_channel_points("*", channel_name, starttime, endtime, null, null, limit),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -251,14 +259,14 @@ public class InfluxDBQueries
     }
     
     //TODO: like chunk_get_channel_samples, add to testChunkQuery
-    public void chunk_get_mean_channel_samples(final int chunkSize,
+    public void chunk_get_channel_sample_stats(final int chunkSize,
     		final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
     {
-    	//TODO: check writer: could the regexp be more specific?
+    	//TODO: examine writer: could the regexp be more specific?
     	makeChunkQuery(
     			chunkSize, consumer, influxdb,
-    			get_channel_points("MEAN(/\\.[\\d]+/)", channel_name, starttime,
-    					endtime, getGroupByTimeClause(starttime, endtime, limit, null), null),
+    			get_channel_points(SELECT_STATS, channel_name, starttime,
+    					endtime, "status != 'NaN'", getGroupByTimeClause(starttime, endtime, limit, null), null),
     			dbnames.getDataDBName(channel_name));
     }
 
@@ -269,7 +277,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, -num),
+                get_channel_points("*", channel_name, starttime, endtime, null, null, -num),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -277,7 +285,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, -1L),
+                get_channel_points("*", channel_name, null, null, null, null, -1L),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -290,7 +298,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, null),
+                get_channel_points("*", channel_name, null, null, null, null, null),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -299,7 +307,7 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, limit),
+                get_channel_points("*", channel_name, starttime, endtime, null, null, limit),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -307,13 +315,24 @@ public class InfluxDBQueries
 	public void chunk_get_grouped_channel_metadata(final int chunkSize,
 			final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
 	{
-		//TODO: Group-by KILLS TAGS!
-		//However, using GROUP BY displaytype,time(...) doesn't work, either.
-    	makeChunkQuery(
-    			chunkSize, consumer, influxdb,
+		//  "GROUP BY" and tags: In effect, "GROUP BY" removes tags. The metadata reader needs to have a "datatype"
+		//column in its QueryResult. It should be safe enough to use "GROUP BY datatype", since the value of "datatype"
+		//should not change over time. This returns the value of "datatype" as a tag rather than as a column, but that
+		//can be handled by the MetaTypes class.
+		
+		//  A dead-end non-solution: "SELECT * FROM (SELECT (...) GROUP BY (...))" can cause tag keys mentioned in the
+		//GROUP BY clause to appear as columns in the query result, but ONLY if the sub-query selects 1 field; otherwise,
+		//there is an error, "cannot select fields when selecting multiple aggregates". Of course, the sub-query MUST be
+		//able to select multiple fields, since, for example, display metadata has quite a lot of fields for alarm limits
+		//and display ranges and such. So it's still on the reader to get the tag values.
+
+		/*final String statement = "SELECT * FROM (" +
     			get_channel_points("FIRST(*)", channel_name, starttime,
-    					endtime, getGroupByTimeClause(starttime, endtime, limit, "datatype"), null),
+    					endtime, getGroupByTimeClause(starttime, endtime, limit, "datatype"), null) +
+    			")";*/
+    	makeChunkQuery(chunkSize, consumer, influxdb,
+    			get_channel_points("FIRST(*)", channel_name, starttime, endtime, null,
+    					getGroupByTimeClause(starttime, endtime, limit, "datatype"), null),
     			dbnames.getMetaDBName(channel_name));
 	}
-
 }

@@ -33,7 +33,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
     /** Status string for <code>Double.NaN</code> samples */
     final private static String NOT_A_NUMBER_STATUS = "NaN";
 
-    private final AbstractInfluxDBValueLookup vals;
+    protected final AbstractInfluxDBValueLookup vals;
 
     public ArchiveDecoder(final AbstractInfluxDBValueLookup vals) {
         this.vals = vals;
@@ -125,7 +125,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 
     }
 
-    private Double fieldToDouble(Object val) throws Exception
+    protected final Double fieldToDouble(Object val) throws Exception
     {
         Double dbl;
         try
@@ -146,7 +146,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         return dbl;
     }
 
-    private Long fieldToLong(Object val) throws Exception
+    protected final Long fieldToLong(Object val) throws Exception
     {
         Long lval;
         //        try

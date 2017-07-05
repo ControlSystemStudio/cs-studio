@@ -290,15 +290,20 @@ public class MetaTypes
         return null;
     }
 
-    public static MetaObject toMetaObject(final List<String> cols, final List<Object> vals) throws Exception
+    public static MetaObject toMetaObject(final List<String> cols, final List<Object> vals, Map<String,String> tags, String col_prefix) throws Exception
     {
         Map<String, Object> map = new HashMap<String, Object>();
 
         final int N = cols.size();
         for (int i = 0; i < N; i++)
         {
-            map.put(cols.get(i), vals.get(i));
+        	String col = cols.get(i);
+        	if (col_prefix != null && col.startsWith(col_prefix))
+        		col = col.replace(col_prefix, "");
+            map.put(col, vals.get(i));
         }
+        if (tags != null)
+        	map.putAll(tags);
 
         final StoreAs storeas = storedTypeIs((String) map.get("datatype"));
         if (storeas == null)
@@ -327,6 +332,11 @@ public class MetaTypes
 
     public static List<MetaObject> toMetaObjects(QueryResult results) throws Exception
     {
+    	return toMetaObjects(results, null);
+    }
+    
+    public static List<MetaObject> toMetaObjects(QueryResult results, String col_prefix) throws Exception
+    {
         if (InfluxDBResults.getValueCount(results) < 1)
         {
             throw new Exception ("Could not extract meta objects from Query Results. No values: " + results.toString());
@@ -340,7 +350,7 @@ public class MetaTypes
             final List<String> cols = series.getColumns();
             for (final List<Object> vals : series.getValues())
             {
-                ret.add(toMetaObject(cols, vals));
+                ret.add(toMetaObject(cols, vals, series.getTags(), col_prefix));
             }
         }
         return ret;
