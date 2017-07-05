@@ -107,27 +107,16 @@ class PVStructureHelper
             return decodeNTScalar(actual_struct);
         else if (value_field instanceof ScalarArray)
             return decodeNTArray(actual_struct);
-        //TODO: not really sure how to handle arbitrary structures -- no solid use cases yet...
+        // TODO: not really sure how to handle arbitrary structures -- no solid use cases yet...
         else if (value_field instanceof Structure)
-        {	//Structures with a value field: Treat the value as the value of a VTable
+        {	// Structures with a value field: Treat the value as the value of a VTable
         	try
         	{
-        		return decodeAsTableValue(actual_struct.getStructureField("value"), new ArrayList<>());
+        		return decodeAsTableValue(actual_struct.getStructureField("value"), Collections.emptyList());
         	}
-        	catch (Exception e)
+        	catch (Exception ex)
         	{
-        		//fall through
-        	}
-        }
-        else //if (value_field == null) ?
-        {	//Structures with no value field: try to create a VTable
-        	try
-        	{
-        		return decodeAsTableValue(actual_struct, new ArrayList<String>());
-        	}
-        	catch (Exception e)
-        	{
-        		//fall through
+        		// fall through
         	}
         }
 
@@ -375,7 +364,7 @@ class PVStructureHelper
 
         return ValueFactory.newVImage(height, width, data);
     }
-    
+
     /**
      * Decode table from NTTable
      * @param struct
@@ -391,15 +380,15 @@ class PVStructureHelper
     	//create a new list for column names (labels), because if any field is a structure,
     		//labels need to be created for each element of the structure
     	final List<String> names  = new ArrayList<>(Arrays.asList(labels_strings));
-    	
+
     	final PVStructure value_struct = struct.getStructureField("value");
-    	
+
 		return decodeAsTableValue(value_struct, names);
     }
-	
+
 	/**
 	 * Decode a PVStructure (like an NTTable "value" field) as a VTable.
-	 * 
+	 *
 	 * <p>Sub-structures (fields which are structures) are handled recursively. Their fields are added
 	 * to the table in the order used by PVStructure.getSubField(int).
 	 * Labels of sub-structure fields are represented as "sub-structure-label/sub-structure-field-name".
@@ -475,7 +464,7 @@ class PVStructureHelper
 		} //end while not empty
     	return ValueFactory.newVTable(types, names, values);
     }
-    
+
 	private static void getTableTypeAndValue(PVScalar scalar, List<Class<?>> types, List<Object> values)
     {
 		switch(scalar.getScalar().getScalarType())
@@ -527,7 +516,7 @@ class PVStructureHelper
 			//default: //throw exception?
 		}
 	}
-    
+
 	private static int getTableTypeAndValue(PVScalarArray array, List<Class<?>> types, List<Object> values)
     {
     	final int length = array.getLength();
@@ -593,7 +582,7 @@ class PVStructureHelper
 		}
 		return length;
 	}
-    
+
     //based off double [] getArray(PVDoubleArray) example from pvDataJava documentation
     private static boolean[] getArray(PVBooleanArray pv, final int len)
     {
