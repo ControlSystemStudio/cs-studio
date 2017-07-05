@@ -287,6 +287,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         final Object value) throws Exception
     {
         final ScanCommand command = getCommandByAddress(address);
+        logger.log(Level.WARNING, "Updating running scan, changing " + property_id + " to " + value + " in " + command);
         try
         {
             command.setProperty(property_id, value);
