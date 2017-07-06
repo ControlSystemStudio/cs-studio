@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueLookup;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
+import org.csstudio.archive.vtype.ArchiveVType;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.Statistics;
@@ -14,7 +15,8 @@ import org.diirt.vtype.VType;
 public class ArchiveStatisticsDecoder extends ArchiveDecoder
 {
 	//lookup names of statistics fields; used for iteration
-	private static final String STATS_NAMES [] = {"mean", "max", "min", "stddev", "count"};
+	private static final String STATS_NAMES [] = {"mean", "max", "min", "stddev"};
+	public static final VType NULL_SAMPLE = new ArchiveVType(null, AlarmSeverity.INVALID, "NULL");
 	
 	public ArchiveStatisticsDecoder(AbstractInfluxDBValueLookup vals)
 	{
@@ -65,8 +67,14 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
     {
-    	//mean, max, min, stddev, count
-    	Object stats_vals [] = new Object [5];
+    	//first, check if count is zero
+    	Object count_val = vals.getValue("count_long.0");
+    	int count = fieldToInt(count_val);
+    	if (count == 0)
+    		return NULL_SAMPLE;
+    	
+    	//mean, max, min, stddev
+    	Object stats_vals [] = new Object [4];
     	int x = 0;
     	for (String stat : STATS_NAMES)
     	{
@@ -81,19 +89,25 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	{
     		mean_max_min_stddev[i] = (double) fieldToLong(stats_vals[i]);
     	}
-    	int count = fieldToInt(stats_vals[4]);
     	
     	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(mean_max_min_stddev, count));
     }
 
+    //TODO: two for-loops is inefficient
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
     {
-    	//mean, max, min, stddev, count
-    	Object stats_vals [] = new Object [5];
+    	//first, check if count is zero
+    	Object count_val = vals.getValue("count_double.0");
+    	int count = count_val != null ? fieldToInt(count_val) : 0;
+    	if (count == 0)
+    		return NULL_SAMPLE;
+    	
+    	//mean, max, min, stddev
+    	Object stats_vals [] = new Object [4];
     	int x = 0;
     	for (String stat : STATS_NAMES)
     	{
-    		stats_vals[x] = vals.getValue(stat + "_double.0");
+    		stats_vals[x] = vals.hasValue(stat + "_double.0") ? vals.getValue(stat + "_double.0") : null;
     		if (stats_vals[x] == null)
     			//throw new Exception("Did not find "+stat+"_double.0 field where expected");
     			stats_vals[x] = x < 4 ? Double.NaN : 0;
@@ -105,7 +119,6 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	{
     		mean_max_min_stddev[i] = fieldToDouble(stats_vals[i]);
     	}
-    	int count = fieldToInt(stats_vals[4]);
     	
     	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(mean_max_min_stddev, count));
     }

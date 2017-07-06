@@ -13,9 +13,6 @@ import org.influxdb.dto.QueryResult;
 
 public class InfluxDBQueries
 {
-	//expression to select statistics (average, max, min, etc.)
-    private static final String SELECT_STATS = "MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),STDDEV(/\\.0/),COUNT(/\\.0/)";
-
     private final InfluxDB influxdb;
 
     abstract public static class DBNameMap {
@@ -143,8 +140,13 @@ public class InfluxDBQueries
         return where_clauses;
     }
     
-    private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count, final String requiredTags)
+	private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count, final String requiredTags, String fillOption)
     {
+	    //Fill options (what to do if no data for a group by time() interval): <value>, linear, none, null, previous
+		//Most applicable options: none (no time, no value), null (time with no value), previous (time with previous value)
+		//Can't use fill(none) for metadata and sample data, because then the numbers of rows might not match (for example,
+		//maybe there are no samples for a time with existing metadata).
+		//Metadata uses fill(previous), so there is always some metadata. Sample data uses fill(null).
     	//TODO: rounding/truncation problem?
         StringBuilder ret = new StringBuilder();
         if (requiredTags != null)
@@ -152,7 +154,8 @@ public class InfluxDBQueries
         ret.append("time(");
         ret.append(InfluxDBUtil.toMicro(
         		Duration.between(starttime, endtime).dividedBy(count)).toString());
-        ret.append("u) fill(previous)"); //can't use fill(none), because it's possible that metadata and data might have a different number of values
+        ret.append("u) fill(").append(fillOption).append(")");
+        	//can't use fill(none), because it's possible that metadata and data might have a different number of values
         return ret.toString();
     }
 
@@ -265,8 +268,9 @@ public class InfluxDBQueries
     	//TODO: examine writer: could the regexp be more specific?
     	makeChunkQuery(
     			chunkSize, consumer, influxdb,
-    			get_channel_points(SELECT_STATS, channel_name, starttime,
-    					endtime, "status != 'NaN'", getGroupByTimeClause(starttime, endtime, limit, null), null),
+    			get_channel_points("MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),STDDEV(/\\.0/),COUNT(/\\.0/)",
+    					channel_name, starttime, endtime, "status != 'NaN'",
+    					getGroupByTimeClause(starttime, endtime, limit, null, "null"), null),
     			dbnames.getDataDBName(channel_name));
     }
 
@@ -332,7 +336,7 @@ public class InfluxDBQueries
     			")";*/
     	makeChunkQuery(chunkSize, consumer, influxdb,
     			get_channel_points("FIRST(*)", channel_name, starttime, endtime, null,
-    					getGroupByTimeClause(starttime, endtime, limit, "datatype"), null),
+    					getGroupByTimeClause(starttime, endtime, limit, "datatype", "previous"), null),
     			dbnames.getMetaDBName(channel_name));
 	}
 }

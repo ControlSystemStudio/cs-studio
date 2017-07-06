@@ -281,7 +281,7 @@ public class InfluxDBArchiveReader implements ArchiveReader
     public ValueIterator getOptimizedValues(final String channel_name,
             final Instant start, final Instant end, final long count) throws Exception
     {
-    	//TODO: non-numeric data; also: too many empty "buckets"
+    	//TODO: non-numeric data (currently, is ignored) (idea: in query, get first; in decoder, decode "first_<type>.0")
         return new OptimizedSampleIterator(this, channel_name, start, end, count);
     }
 

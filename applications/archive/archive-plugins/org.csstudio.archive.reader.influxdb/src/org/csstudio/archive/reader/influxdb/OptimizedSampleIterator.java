@@ -120,11 +120,14 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         final VType result = next_value;
 
         // ... and prepare next value
-        if (samples.step())
+        while (samples.step())
+        {	//make sure value is not "null" statistics (i.e., no values for time interval)
             next_value = samples.decodeSampleValue();
-        else
-            close();
+            if (next_value != ArchiveStatisticsDecoder.NULL_SAMPLE)
+        		return result;
+        }
 
+        close();
         return result;
     }
 

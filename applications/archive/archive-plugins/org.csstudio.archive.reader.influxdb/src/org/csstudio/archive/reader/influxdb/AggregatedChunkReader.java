@@ -19,8 +19,6 @@ import org.influxdb.dto.QueryResult;
  */
 public class AggregatedChunkReader extends ChunkReader
 {
-	//TODO: what happens if you query aggregate functions like mean() or stddev() for non-numeric/incompatible values?
-
 	AggregatedChunkReader(BlockingQueue<QueryResult> sample_queue, Instant last_sample_time,
 			BlockingQueue<QueryResult> metadata_queue, Instant last_metadata_time, int timeout_secs,
 			Factory decoder_factory)
