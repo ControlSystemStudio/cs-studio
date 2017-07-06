@@ -77,8 +77,10 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         //Get the timestamp of the last metadata at or before the sample start time.
         metadata_starttime = InfluxDBResults.getTimestamp(reader.getQueries().get_newest_meta_data(channel_name, null, sample_starttime, 1L));
 
-        reader.getQueries().chunk_get_channel_sample_stats(sample_chunk_size, channel_name, sample_starttime, end, count,
-                new Consumer<QueryResult>() {
+        final boolean stdDev = Preferences.getUseStdDev();
+        
+        reader.getQueries().chunk_get_channel_sample_stats(sample_chunk_size, channel_name, sample_starttime,
+        		end, count, stdDev, new Consumer<QueryResult>() {
             @Override
             public void accept(QueryResult result) {
                 sample_queue.add(result);
@@ -95,7 +97,7 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
             }});
 
         samples = new AggregatedChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime, reader.getTimeout(),
-                new ArchiveStatisticsDecoder.Factory());
+                new ArchiveStatisticsDecoder.Factory(stdDev));
 
         if (samples.step())
             next_value = samples.decodeSampleValue();

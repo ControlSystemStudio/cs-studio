@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueLookup;
+import org.csstudio.archive.reader.influxdb.raw.Preferences;
 import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
@@ -21,47 +22,62 @@ import org.diirt.vtype.VType;
 public class ArchiveStatisticsDecoder extends ArchiveDecoder
 {
 	//lookup names of statistics fields; used for iteration
-	private static final String STATS_NAMES [] = {"mean", "max", "min", "stddev"};
+	private static final String STATS_NAMES [] = {"mean", "max", "min"};
 	/**
 	 * Sample for statistics with a null or 0 count (number of values)
 	 */
 	public static final VType NULL_SAMPLE = new ArchiveVType(null, AlarmSeverity.INVALID, "NULL");
 	
-	public ArchiveStatisticsDecoder(AbstractInfluxDBValueLookup vals)
+	private final boolean useStdDev;
+	
+	public ArchiveStatisticsDecoder(AbstractInfluxDBValueLookup vals, final boolean stdDev)
 	{
 		super(vals);
+		useStdDev = stdDev;
 	}
 	
     public static class Factory extends AbstractInfluxDBValueDecoder.Factory
     {
+    	private final boolean useStdDev;
+    	public Factory()
+    	{
+    		this(Preferences.getUseStdDev());
+    	}
+    	public Factory(boolean stdDev)
+    	{
+    		useStdDev = stdDev;
+    	}
         @Override
         public AbstractInfluxDBValueDecoder create(AbstractInfluxDBValueLookup vals) {
-            return new ArchiveStatisticsDecoder(vals);
+            return new ArchiveStatisticsDecoder(vals, useStdDev);
         }
     }
     
     private static class StatisticsImpl implements Statistics
     {
-    	private Double mean_max_min_stddev [];
-    	private Integer count;
+    	private final Double mean, max, min, stddev;
+    	private final Integer count;
     	
     	public StatisticsImpl(Double mean_max_min_stddev [], Integer count)
     	{
-    		this.mean_max_min_stddev = mean_max_min_stddev;
+    		mean = mean_max_min_stddev[0];
+    		max = mean_max_min_stddev[1];
+    		min = mean_max_min_stddev[2];
+    		stddev = mean_max_min_stddev[3];
     		this.count = count;
     	}
     	
 		@Override
 		public Double getAverage() {
-			return mean_max_min_stddev[0];
+			return mean;
 		}
 		@Override
 		public Double getMax() {
-			return mean_max_min_stddev[1];
+			return max;
 		}
 		@Override
 		public Double getMin() {
-			return mean_max_min_stddev[2];
+			return min;
 		}
 		@Override
 		public Integer getNSamples() {
@@ -69,7 +85,7 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
 		}
 		@Override
 		public Double getStdDev() {
-			return mean_max_min_stddev[3];
+			return stddev;
 		}
     }
 
@@ -83,26 +99,27 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     		return NULL_SAMPLE;
     	
     	//mean, max, min, stddev
-    	Object stats_vals [] = new Object [4];
-    	int x = 0;
-    	for (String stat : STATS_NAMES)
+    	Double stats_vals [] = new Double [4];
+    	for (int i = 0; i < 3; ++i)
     	{
-    		stats_vals[x] = vals.getValue(stat + "_long.0");
-    		if (stats_vals[x] == null)
-    			throw new Exception("Did not find "+stat+"_long.0 field where expected");
-    		++x;
+    		Object val = vals.getValue(STATS_NAMES[i] + "_long.0");
+    		if (val == null)
+    			throw new Exception("Did not find "+STATS_NAMES[i]+"_long.0 field where expected");
+			stats_vals[i] = fieldToLong(val).doubleValue();
     	}
-    	
-    	Double mean_max_min_stddev [] = new Double [4];
-    	for (int i = 0; i < 4; ++i)
+    	if (useStdDev)
     	{
-    		mean_max_min_stddev[i] = (double) fieldToLong(stats_vals[i]);
+    		Object val = vals.getValue("stddev_long.0");
+    		if (val == null)
+    			throw new Exception("Did not find stddev_long.0 field where expected");
+			stats_vals[3] = fieldToLong(val).doubleValue();
     	}
+    	else
+    		stats_vals[3] = Double.NaN;
     	
-    	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(mean_max_min_stddev, count));
+    	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(stats_vals, count));
     }
 
-    //TODO: two for-loops is inefficient
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
     {
     	//first, check if count is zero
@@ -112,24 +129,25 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     		return NULL_SAMPLE;
     	
     	//mean, max, min, stddev
-    	Object stats_vals [] = new Object [4];
-    	int x = 0;
-    	for (String stat : STATS_NAMES)
+    	Double stats_vals [] = new Double [4];
+    	for (int i = 0; i < 3; ++i)
     	{
-    		stats_vals[x] = vals.hasValue(stat + "_double.0") ? vals.getValue(stat + "_double.0") : null;
-    		if (stats_vals[x] == null)
-    			//throw new Exception("Did not find "+stat+"_double.0 field where expected");
-    			stats_vals[x] = x < 4 ? Double.NaN : 0;
-    		++x;
+    		Object val = vals.getValue(STATS_NAMES[i] + "_double.0");
+    		if (val == null)
+    			throw new Exception("Did not find "+STATS_NAMES[i]+"_double.0 field where expected");
+			stats_vals[i] = fieldToLong(val).doubleValue();
     	}
-    	
-    	Double mean_max_min_stddev [] = new Double [4];
-    	for (int i = 0; i < 4; ++i)
+    	if (useStdDev)
     	{
-    		mean_max_min_stddev[i] = fieldToDouble(stats_vals[i]);
+    		Object val = vals.getValue("stddev_double.0");
+    		if (val == null)
+    			throw new Exception("Did not find stddev_double.0 field where expected");
+			stats_vals[3] = fieldToLong(val).doubleValue();
     	}
+    	else
+    		stats_vals[3] = Double.NaN;
     	
-    	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(mean_max_min_stddev, count));
+    	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(stats_vals, count));
     }
     
     @Override
