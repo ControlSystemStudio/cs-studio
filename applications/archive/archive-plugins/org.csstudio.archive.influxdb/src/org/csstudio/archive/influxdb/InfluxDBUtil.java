@@ -29,7 +29,7 @@ public class InfluxDBUtil
     public static BigInteger toMicro(Duration duration)
     {
     	BigInteger ret = BigInteger.valueOf(duration.getSeconds());
-    	ret.multiply(micromult);
+    	ret = ret.multiply(micromult);
     	ret = ret.add(BigInteger.valueOf(duration.getNano()/1000));
     	return ret;
     }
