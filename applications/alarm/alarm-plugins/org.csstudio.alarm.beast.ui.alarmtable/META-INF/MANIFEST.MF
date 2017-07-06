@@ -28,3 +28,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.csstudio.alarm.beast.ui.alarmtable.Activator
 Export-Package: org.csstudio.alarm.beast.ui.alarmtable
+Import-Package: org.csstudio.java.time
