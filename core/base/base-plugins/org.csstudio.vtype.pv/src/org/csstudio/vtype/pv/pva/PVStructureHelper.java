@@ -89,16 +89,18 @@ class PVStructureHelper
         }
 
         // Handle normative types
-        final String type = actual_struct.getStructure().getID();
-        if (type.equals("epics:nt/NTScalar:1.0"))
+        String type = actual_struct.getStructure().getID();
+        if (type.startsWith("epics:nt/"))
+            type = type.substring(9);
+        if (type.equals("NTScalar:1.0"))
             return decodeNTScalar(actual_struct);
-        if (type.equals("epics:nt/NTEnum:1.0"))
+        if (type.equals("NTEnum:1.0"))
             return new VTypeForEnum(actual_struct);
-        if (type.equals("epics:nt/NTScalarArray:1.0"))
+        if (type.equals("NTScalarArray:1.0"))
             return decodeNTArray(actual_struct);
-        if (type.equals("epics:nt/NTNDArray:1.0"))
+        if (type.equals("NTNDArray:1.0"))
             return decodeNTNDArray(actual_struct);
-        if (type.equals("epics:nt/NTTable:1.0"))
+        if (type.equals("NTTable:1.0"))
             return decodeNTTable(actual_struct);
 
         // Handle data that contains a "value", even though not marked as NT*
@@ -112,11 +114,12 @@ class PVStructureHelper
         {   // Structures with a value field: Treat the value as the value of a VTable
             try
             {
-                return decodeAsTableValue(actual_struct.getStructureField("value"), Collections.emptyList());
+                return decodeAsTableValue(actual_struct.getStructureField("value"), new ArrayList<>());
             }
             catch (Exception ex)
             {
                 // fall through
+                ex.printStackTrace();
             }
         }
 
