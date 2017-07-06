@@ -261,14 +261,12 @@ public class InfluxDBQueries
         return makeQuery(influxdb, get_pattern_points("*", pattern, null, null, -1L), dbnames.getDataDBName(pattern));
     }
     
-    //TODO: like chunk_get_channel_samples, add to testChunkQuery
     public void chunk_get_channel_sample_stats(final int chunkSize,
     		final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
     {
-    	//TODO: examine writer: could the regexp be more specific?
     	makeChunkQuery(
     			chunkSize, consumer, influxdb,
-    			get_channel_points("MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),STDDEV(/\\.0/),COUNT(/\\.0/)",
+    			get_channel_points("MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),STDDEV(/\\.0/),COUNT(/\\.0/),FIRST(/\\.0/)",
     					channel_name, starttime, endtime, "status != 'NaN'",
     					getGroupByTimeClause(starttime, endtime, limit, null, "null"), null),
     			dbnames.getDataDBName(channel_name));
@@ -315,25 +313,13 @@ public class InfluxDBQueries
                 dbnames.getMetaDBName(channel_name));
     }
 
-    //TODO: unit tests (somewhere?)
 	public void chunk_get_grouped_channel_metadata(final int chunkSize,
 			final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
 	{
 		//  "GROUP BY" and tags: In effect, "GROUP BY" removes tags. The metadata reader needs to have a "datatype"
-		//column in its QueryResult. It should be safe enough to use "GROUP BY datatype", since the value of "datatype"
-		//should not change over time. This returns the value of "datatype" as a tag rather than as a column, but that
-		//can be handled by the MetaTypes class.
+		//value in its QueryResult. "GROUP BY datatype" returns the value of "datatype" as a tag rather than as a column,
+		//but it should be safe enough to use, since the value of "datatype" should not change over time.
 		
-		//  A dead-end non-solution: "SELECT * FROM (SELECT (...) GROUP BY (...))" can cause tag keys mentioned in the
-		//GROUP BY clause to appear as columns in the query result, but ONLY if the sub-query selects 1 field; otherwise,
-		//there is an error, "cannot select fields when selecting multiple aggregates". Of course, the sub-query MUST be
-		//able to select multiple fields, since, for example, display metadata has quite a lot of fields for alarm limits
-		//and display ranges and such. So it's still on the reader to get the tag values.
-
-		/*final String statement = "SELECT * FROM (" +
-    			get_channel_points("FIRST(*)", channel_name, starttime,
-    					endtime, getGroupByTimeClause(starttime, endtime, limit, "datatype"), null) +
-    			")";*/
     	makeChunkQuery(chunkSize, consumer, influxdb,
     			get_channel_points("FIRST(*)", channel_name, starttime, endtime, null,
     					getGroupByTimeClause(starttime, endtime, limit, "datatype", "previous"), null),

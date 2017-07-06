@@ -111,12 +111,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         case ARCHIVE_STRING:
         case ARCHIVE_UNKNOWN:
         {
-            Object val = vals.getValue("string.0");
-            if (val == null)
-            {
-                throw new Exception ("Did not find string.0 field where expected");
-            }
-            return new ArchiveVString(time, severity, status, val.toString());
+        	return decodeStringSample(time, severity, status);
         }
         default:
             throw new Exception ("Tried to encode sample with unhandled store type: " + meta.storeas.name());
@@ -166,6 +161,16 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         //}
         return lval;
     }
+
+    protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status) throws Exception
+    {
+        Object val = vals.getValue("string.0");
+        if (val == null)
+        {
+            throw new Exception ("Did not find string.0 field where expected");
+        }
+        return new ArchiveVString(time, severity, status, val.toString());
+	}
 
     protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels) throws Exception
     {

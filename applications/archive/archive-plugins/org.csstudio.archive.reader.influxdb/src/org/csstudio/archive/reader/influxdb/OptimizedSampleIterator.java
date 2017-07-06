@@ -11,6 +11,11 @@ import org.csstudio.archive.reader.influxdb.raw.Preferences;
 import org.diirt.vtype.VType;
 import org.influxdb.dto.QueryResult;
 
+/**
+ * Iterator for optimized (downsampled) values.
+ * @author Amanda Carpenter
+ *
+ */
 public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
 {
 	

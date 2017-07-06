@@ -11,7 +11,6 @@ package org.csstudio.archive.reader.influxdb;
 //import java.sql.PreparedStatement;
 //import java.sql.ResultSet;
 //import java.sql.Statement;
-import java.time.Duration;
 import java.time.Instant;
 
 import org.csstudio.archive.influxdb.InfluxDBArchivePreferences;
@@ -26,12 +25,12 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.reader.influxdb.raw.ConnectionCache;
-import org.diirt.util.time.TimeDuration;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.QueryResult;
 
 /** ArchiveReader for InfluxDB data
  *  @author Megan Grodowitz
+ *  @author Amanda Carpenter - implemented getOptimizedValues()
  */
 @SuppressWarnings("nls")
 public class InfluxDBArchiveReader implements ArchiveReader
@@ -271,7 +270,7 @@ public class InfluxDBArchiveReader implements ArchiveReader
         return getOptimizedValues(name, start, end, count);
     }
     
-    /** Fetch optimized (averaged) samples.
+    /** Fetch optimized (downsampled) samples.
      *  @param channel_name Channel name in influxdb
      *  @param start Start time
      *  @param end End time
@@ -281,7 +280,6 @@ public class InfluxDBArchiveReader implements ArchiveReader
     public ValueIterator getOptimizedValues(final String channel_name,
             final Instant start, final Instant end, final long count) throws Exception
     {
-    	//TODO: non-numeric data (currently, is ignored) (idea: in query, get first; in decoder, decode "first_<type>.0")
         return new OptimizedSampleIterator(this, channel_name, start, end, count);
     }
 
