@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.reader.influxdb;
+package org.csstudio.archive.reader.influxdb.raw;
 
 import java.time.Duration;
 import java.time.Instant;

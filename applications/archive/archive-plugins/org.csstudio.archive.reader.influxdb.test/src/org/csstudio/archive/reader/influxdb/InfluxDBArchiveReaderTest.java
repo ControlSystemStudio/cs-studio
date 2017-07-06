@@ -27,6 +27,7 @@ import org.csstudio.archive.influxdb.InfluxDBUtil.ConnectionInfo;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.reader.influxdb.raw.AveragedValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.Display;

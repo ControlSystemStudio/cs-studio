@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.influxdb.raw;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.archive.reader.influxdb.raw.AveragedValueIterator;
+import org.diirt.util.time.TimeDuration;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.QueryResult;
 
@@ -219,13 +222,14 @@ public class InfluxDBRawReader implements ArchiveReader
     public ValueIterator getOptimizedValues(final int key, final String name,
             final Instant start, final Instant end, int count) throws UnknownChannelException, Exception
     {
-        // TODO: This function does not currently work. Do not use.
         if (count <= 1)
             throw new Exception("Count must be > 1");
 
         // TODO: Implement server side downsample query
-        // TODO: Implement fallback client side downsample
-        return new SampleIterator(this, InfluxDBSeriesInfo.decodeLineProtocol(name), start, end);
+        // Fallback client side downsample
+        final ValueIterator raw_data = getRawValues(name, start, end);
+        final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / count;
+        return new AveragedValueIterator(raw_data, seconds);
     }
 
 
