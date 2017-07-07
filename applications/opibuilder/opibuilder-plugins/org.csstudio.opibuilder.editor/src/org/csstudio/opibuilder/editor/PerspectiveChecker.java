@@ -1,12 +1,13 @@
 package org.csstudio.opibuilder.editor;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IStartup;
@@ -17,6 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Attach relevant listeners to workbench components in order that perspective
@@ -31,7 +33,7 @@ public class PerspectiveChecker implements IStartup {
     private static Logger log = Logger.getLogger(PerspectiveChecker.class.getName());
 
     public final String perspectiveID;
-    public final IPreferenceStore prefs;
+    public final ScopedPreferenceStore prefs;
     public final String preferenceKey;
     public final String dialogTitle;
     public final String dialogMessage;
@@ -40,7 +42,7 @@ public class PerspectiveChecker implements IStartup {
 
     public PerspectiveChecker() {
         perspectiveID = OPIEditorPerspective.ID;
-        prefs = OPIBuilderPlugin.getDefault().getPreferenceStore();
+        prefs = new ScopedPreferenceStore(InstanceScope.INSTANCE, OPIBuilderPlugin.PLUGIN_ID);
         preferenceKey = PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE;
         dialogTitle = "Switch to OPI Editor perspective?";
         dialogMessage = "The OPI Editor perspective contains the tools needed for creating and editing OPIs."
@@ -152,10 +154,17 @@ public class PerspectiveChecker implements IStartup {
          * @param window IWorkbenchWindow on which to centre the dialog
          * @return whether to change perspective
          */
-        private boolean promptForPerspectiveSwitch(IPreferenceStore prefs, IWorkbenchWindow window) {
+        private boolean promptForPerspectiveSwitch(ScopedPreferenceStore prefs, IWorkbenchWindow window) {
             MessageDialogWithToggle md = MessageDialogWithToggle.openYesNoQuestion(
                     window.getShell(), dialogTitle, dialogMessage, savePreferenceMessage, false,
                     prefs, preferenceKey);
+            if (md.getToggleState()) {
+                try {
+                    prefs.save();
+                } catch (IOException e) {
+                    OPIBuilderPlugin.getLogger().warning("Failed to save preferences: " + e.getMessage());
+                }
+            }
             return md.getReturnCode() == IDialogConstants.YES_ID;
         }
 
