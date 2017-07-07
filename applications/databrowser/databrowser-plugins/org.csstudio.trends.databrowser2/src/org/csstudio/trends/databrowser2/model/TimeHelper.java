@@ -12,6 +12,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.csstudio.java.time.TimestampFormats;
+
 /** Helper for <code>java.time</code>
  *  @author Kay Kasemir
  */
@@ -19,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 public class TimeHelper
 {
     // Java 8 DateTimeFormatter is thread safe!
-    final private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS xx");
+    final private static DateTimeFormatter formatter = TimestampFormats.MILLI_FORMAT;
     final public static ZoneId zone = ZoneId.systemDefault();
 
     /** Format instant as local time for persisting as string or debug printouts

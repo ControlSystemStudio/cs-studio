@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
-import org.csstudio.logging.JMSLogMessage;
+import org.csstudio.java.time.TimestampFormats;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -26,10 +26,10 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 @SuppressWarnings("nls")
 public class ReceivedMessage implements IPropertySource
 {
-    final private static SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+    final private static DateTimeFormatter date_format = TimestampFormats.MILLI_FORMAT;
 
-    final private Date date;
+
+    final private Instant date;
     final private String type;
     final private ArrayList<MessageProperty> content;
 
@@ -40,7 +40,7 @@ public class ReceivedMessage implements IPropertySource
     public ReceivedMessage(final String type,
             final ArrayList<MessageProperty> content)
     {
-        date = new Date();
+        date = Instant.now();
         this.type = type;
         this.content = content;
     }
@@ -58,7 +58,7 @@ public class ReceivedMessage implements IPropertySource
     }
 
     /** @return Time when message was received */
-    public Date getDate()
+    public Instant getDate()
     {
         return date;
     }
