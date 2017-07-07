@@ -3,8 +3,6 @@ package org.csstudio.archive.writer.influxdb;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.Objects;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
@@ -23,6 +21,8 @@ import org.csstudio.archive.writer.WriteChannel;
 public class DownsamplingDemo
 {
 	private static final int SAMPLE_COUNT = 800;
+	private static final int NUM_ITERATIONS = 3;
+	private static final boolean PRINT_PROGRESS = false;
 	
 	//usage: (copy | time) "<rdb, args>" "<influx, args>" <channel_name_glob_pattern>
 	//rdb args should be url, username, password, schema (optional), stored procedure (optional)
@@ -77,8 +77,8 @@ public class DownsamplingDemo
 		InfluxDBArchiveWriter writer = getInfluxWriter(influx_server_args);
         writer.getQueries().initDatabases(writer.getConnectionInfo().influxdb);
 		
-		/*final*/ String names [] = reader.getNamesByPattern(1, channel_pattern);
-        names = Arrays.copyOf(names, 3);
+		final String names [] = reader.getNamesByPattern(1, channel_pattern);
+        //names = Arrays.copyOf(names, 3);
         final Instant end = Instant.now();
         final Instant start = end.minus(Period.ofDays(1));
 		for (String name : names)
@@ -99,45 +99,35 @@ public class DownsamplingDemo
 		reader.close();
 	}
 	
-	private static void time(final String rdb_server_args [], final String influx_server_args [], final String channel_pattern) throws Exception
+	static void time(final String rdb_server_args [], final String influx_server_args [], final String channel_pattern) throws Exception
 	{
 		final ArchiveReader influx = getInfluxReader(influx_server_args);
 		final ArchiveReader rdb = getRdbReader(rdb_server_args);
 		
-		final Duration durations [] = {Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO,
-									Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO};
-		final long total_num_samples [] = new long [4];
+		final Duration first_durations [] = {Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO};
+		Duration total_durations [] = {Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO};
+		int total_num_samples [] = {0, 0, 0, 0};
 		//durations: rdb optimized, averaged rdb raw, influx optimized, averaged influx raw,
-		String channel_names [] = new String[0];
+		int num_channels = 0;
 		try
 		{
-			channel_names = influx.getNamesByPattern(1, channel_pattern);
+			final String channel_names [] = influx.getNamesByPattern(1, channel_pattern);
 			final Instant end = Instant.now();
 			for (final String name : channel_names)
 			{
 				final Instant start = VTypeHelper.getTimestamp(
 						influx.getRawValues(1, name, Instant.EPOCH, end).next());
-				ValueIterator its [] = {
-						rdb.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
-						new AveragedValueIterator(rdb.getRawValues(1, name, start, end), SAMPLE_COUNT),
-						influx.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
-						new AveragedValueIterator(influx.getRawValues(1, name, start, end), SAMPLE_COUNT)
-				};
-				for (int i = 0; i < 4; ++i)
+				getResults(rdb, influx, name, start, end, first_durations, total_num_samples);
+				final String msg = "Got results for 1/"+NUM_ITERATIONS+" tests of channel "+name+"("+(num_channels+1)+"/"+channel_names.length+")";
+				if (PRINT_PROGRESS)
+					System.out.println(msg);
+				for (int i = 1; i < NUM_ITERATIONS; ++i)
 				{
-					ValueIterator it = its[i];
-					try
-					{
-						timeValueIterator(it, durations, total_num_samples, i, i+4);
-					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
-					finally
-					{
-						it.close();
-					}
+					getResults(rdb, influx, name, start, end, total_durations, total_num_samples);
+					if (PRINT_PROGRESS)
+						System.out.println(msg.replaceFirst("1", ""+(i+1)));
 				}
+				++num_channels;
 			}
 		}
 		catch (Exception e)
@@ -150,30 +140,61 @@ public class DownsamplingDemo
 			rdb.close();
 		}
 		
-		double num_channels = (double) channel_names.length;
-		String msg = String.format("Measured total time and total average time per sample for %d channels\n" +
-				"Rdb optimized = %s (time per sample = %s, avg samples per channel = %f)\n"+
-				"Avg. rdb raw = %s (time per sample = %s, avg samples per channel = %f))\n"+
-				"Influx optimized = %s (time per sample = %s, avg samples per channel = %f))\n"+
-				"Avg. influx raw = %s (time per sample = %s, avg samples per channel = %f))\n",
-				channel_names.length,
-				format(durations[0]), format(durations[4]), total_num_samples[0]/num_channels,
-				format(durations[1]), format(durations[5]), total_num_samples[1]/num_channels,
-				format(durations[2]), format(durations[6]), total_num_samples[2]/num_channels,
-				format(durations[3]), format(durations[7]), total_num_samples[3]/num_channels);
+		Object results [] = new Object [12];
+		for (int i = 0; i < 4; ++i)
+		{
+			total_durations[i] = total_durations[i].plus(first_durations[i]);
+			results[3*i] = getSecondsDouble(first_durations[i]);
+			results[3*i+1] = getSecondsDouble(total_durations[i].dividedBy(NUM_ITERATIONS));
+			results[3*i+2] = ((double) total_num_samples[i]) / (num_channels * NUM_ITERATIONS);
+		}
+		String msg = String.format(
+				"Iterator\tFirst time (s)\tAvg. time (s)\tAvg. samples per request\n"+
+				"Rdb optimized\t%f\t%f\t%f\n"+
+				"Avg'd rdb raw\t%f\t%f\t%f\n"+
+				"Influx opt.\t%f\t%f\t%f\n"+
+				"Avg'd influx\t%f\t%f\t%f",
+				results);
 		System.out.println(msg);
 	}
 	
-	private static String format(Duration duration)
+	private static void getResults(final ArchiveReader rdb, final ArchiveReader influx, final String name,
+			final Instant start, final Instant end, final Duration durations [], final int num_samples [])
+					throws Exception
 	{
-		return Objects.toString(duration).replace("PT","").replace("H", " hours ").replace("M", " minutes ")
-				.replace("S", " seconds");
+		final ValueIterator its [] = {
+				rdb.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
+				new AveragedValueIterator(rdb.getRawValues(1, name, start, end), SAMPLE_COUNT),
+				influx.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
+				new AveragedValueIterator(influx.getRawValues(1, name, start, end), SAMPLE_COUNT)
+		};
+		for (int i = 0; i < 4; ++i)
+		{
+			ValueIterator it = its[i];
+			try
+			{
+				Duration duration = timeValueIterator(it, num_samples, i);
+				durations[i] = durations[i].plus(duration);
+				//TODO: what else?
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			finally
+			{
+				it.close();
+			}
+		}
 	}
-
-	private static void timeValueIterator(ValueIterator it, Duration [] durations, long [] total_num_samples, int total_index, int per_sample_index) throws Exception
+	
+	private static double getSecondsDouble(Duration duration)
+	{
+		return duration.getSeconds() + duration.getNano()/1_000_000_000.0;
+	}
+	
+	private static Duration timeValueIterator(ValueIterator it, int total_num_samples [], int index) throws Exception
 	{
 		Duration result = Duration.ZERO;
-		long num_its = 0;
 		while (it.hasNext())
 		{
 			Instant start = Instant.now();
@@ -181,12 +202,9 @@ public class DownsamplingDemo
 			it.next();
 			Instant end = Instant.now();
 			result = result.plus(Duration.between(start, end));
-			++num_its;
+			++total_num_samples[index];
 		}
-		System.out.println("Iterator #" + total_index + " got " + num_its + " iterations");
-		durations[total_index] = durations[total_index].plus(result);
-		durations[per_sample_index] = durations[per_sample_index].plus(result.dividedBy(num_its));
-		total_num_samples[total_index] += num_its;
+		return result;
 	}
 
 	private static ArchiveReader getRdbReader(String rdb_server_args []) throws Exception
