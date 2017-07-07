@@ -18,4 +18,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.diirt.vtype;bundle-version="2.7.1",
  org.diirt.util;bundle-version="0.3.2",
  org.csstudio.archive.writer.influxdb,
- org.csstudio.archive.reader.influxdb
+ org.csstudio.archive.reader.influxdb,
+ org.csstudio.archive.influxdb,
+ org.influxdb.java
