@@ -42,7 +42,8 @@ import org.osgi.framework.Bundle;
 
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
-    private OpenDocumentEventProcessor openDocProcessor;
+
+    protected OpenDocumentEventProcessor openDocProcessor;
 
     public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
         this.openDocProcessor = openDocProcessor;
