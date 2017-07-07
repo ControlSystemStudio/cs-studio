@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.editor;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -10,6 +9,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
@@ -17,7 +17,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
@@ -29,8 +28,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * that set up state in the constructor.
  */
 public class PerspectiveChecker implements IStartup {
-
-    private static Logger log = Logger.getLogger(PerspectiveChecker.class.getName());
 
     public final String perspectiveID;
     public final ScopedPreferenceStore prefs;
@@ -120,31 +117,42 @@ public class PerspectiveChecker implements IStartup {
         @Override
         public void partOpened(IWorkbenchPart part) {
             if (part instanceof OPIEditor) {
-                IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                if (activeWindow != null) {
-                    if (!activeWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
-                        boolean switchPerspective = false;
-                        String preferenceSetting = prefs.getString(preferenceKey);
-                        switch (preferenceSetting) {
-                            case MessageDialogWithToggle.PROMPT:
-                                switchPerspective = promptForPerspectiveSwitch(prefs, activeWindow);
-                                break;
-                            case MessageDialogWithToggle.ALWAYS:
-                                switchPerspective = true;
-                                break;
-                            default:
-                                switchPerspective = false;
-                        }
-                        if (switchPerspective) {
-                            try {
-                                PlatformUI.getWorkbench().showPerspective(perspectiveID, activeWindow);
-                            } catch (WorkbenchException we) {
-                                log.warning(switchFailedMessage + we);
+                IWorkbenchWindow partWindow = part.getSite().getWorkbenchWindow();
+                IPerspectiveDescriptor perspective = getPerspective(PlatformUI.getWorkbench(), perspectiveID);
+                if (perspective == null) {
+                    // log an error
+                } else {
+                    if (partWindow != null) {
+                        if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
+                            boolean switchPerspective = false;
+                            String preferenceSetting = prefs.getString(preferenceKey);
+                            switch (preferenceSetting) {
+                                case MessageDialogWithToggle.PROMPT:
+                                    switchPerspective = promptForPerspectiveSwitch(prefs, partWindow);
+                                    break;
+                                case MessageDialogWithToggle.ALWAYS:
+                                    switchPerspective = true;
+                                    break;
+                                default:
+                                    switchPerspective = false;
+                            }
+                            if (switchPerspective) {
+                                partWindow.getActivePage().setPerspective(perspective);
                             }
                         }
                     }
                 }
             }
+        }
+
+        IPerspectiveDescriptor getPerspective(IWorkbench workbench, String id) {
+            IPerspectiveDescriptor[] perspectives = workbench.getPerspectiveRegistry().getPerspectives();
+            for (IPerspectiveDescriptor perspective : perspectives) {
+                if (perspective.getId().equals(id)) {
+                    return perspective;
+                }
+            }
+            return null;
         }
 
         /**
