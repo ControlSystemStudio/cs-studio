@@ -114,12 +114,12 @@ public class PerspectiveChecker implements IStartup {
                 IPerspectiveDescriptor perspective = getPerspective(PlatformUI.getWorkbench(), perspectiveID);
                 if (perspective == null) {
                     OPIBuilderPlugin.getLogger().warning(MISSING_PERSPECTIVE_MESSAGE);
-                } else {
-                    if (partWindow != null) {
-                        if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
-                            if (switchRequired(partWindow)) {
-                                partWindow.getActivePage().setPerspective(perspective);
-                            }
+                } else if (partWindow != null) {
+                    // check if the perspective is already open in the correct window
+                    if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
+                        // check what the preferences say about switching perspectives
+                        if (switchRequired(partWindow)) {
+                            partWindow.getActivePage().setPerspective(perspective);
                         }
                     }
                 }
