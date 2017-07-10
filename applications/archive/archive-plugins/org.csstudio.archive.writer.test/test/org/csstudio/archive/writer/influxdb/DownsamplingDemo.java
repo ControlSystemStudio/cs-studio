@@ -3,6 +3,7 @@ package org.csstudio.archive.writer.influxdb;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
+import java.time.temporal.TemporalAmount;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ValueIterator;
@@ -14,6 +15,14 @@ import org.csstudio.archive.writer.WriteChannel;
 
 /**
  * Not really a test, just a "demo" class for rough timing of Archive Reader downsampling.
+ * Depending on the arguments, the main() method can do two things:
+ * <ol>
+ * <li>copy: Copy data from an RDB archive to an InfluxDB archive.</li>
+ * <li>time: Time iteration through different {@link ArchiveReader}.getOptimizedValues() implementations
+ * in RDB and InfluxDB for identical time periods of (presumably) identical data.</li>
+ * </ol>
+ * <p>With a little tweaking of constants, the "copy" method could be used to copy any amount
+ * (time period) of data for any start time.
  * 
  * @author Amanda Carpenter
  *
@@ -23,11 +32,25 @@ public class DownsamplingDemo
 	private static final int SAMPLE_COUNT = 800;
 	private static final int NUM_ITERATIONS = 3;
 	private static final boolean PRINT_PROGRESS = false;
+	private static final TemporalAmount COPY_AMOUNT = Duration.ofDays(1);
+	private static final Instant COPY_START = Instant.now().minus(COPY_AMOUNT);
 	
-	//usage: (copy | time) "<rdb, args>" "<influx, args>" <channel_name_glob_pattern>
-	//rdb args should be url, username, password, schema (optional), stored procedure (optional)
-	//influx args should be url, username (optional), password (optional)
+	/**
+	 * Compare times for getOptimizedValues() implementations for rdb and influx archive readers, or
+	 * copy data from an rdb archive to an influx archive.
+	 * 
+	 * <p>Command line arguments should be of the form<pre>
+	 * 		(copy | time) "&lt;rdb, args&gt;" "&lt;influx, args&gt;" &lt;channel_name_glob_pattern&gt;<\pre>.
+	 * 
+	 * <p>The "rdb args" and "influx args" arguments are the parameters for their respective archive readers; each
+	 * parameter should be separated by a comma and space (the string ", "). Of course, these should be quoted
+	 * or the space escaped with '/' so that they are parsed as single arguments.
+	 * The rdb parameters are url, username, password, schema (optional), stored procedure (optional).
+	 * The influx parameters are url, username (optional), password (optional).
 	//both kinds of "args" arguments should be separated by comma and space (", "), surrounded by " chars
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String [] args) throws Exception
 	{
 		if (args.length == 4)
@@ -79,8 +102,8 @@ public class DownsamplingDemo
 		
 		final String names [] = reader.getNamesByPattern(1, channel_pattern);
         //names = Arrays.copyOf(names, 3);
-        final Instant end = Instant.now();
-        final Instant start = end.minus(Period.ofDays(1));
+        final Instant start = COPY_START;
+        final Instant end = start.plus(COPY_AMOUNT);
 		for (String name : names)
 		{
 			WriteChannel channel = writer.getChannel(name);
@@ -112,11 +135,12 @@ public class DownsamplingDemo
 		try
 		{
 			final String channel_names [] = influx.getNamesByPattern(1, channel_pattern);
-			final Instant end = Instant.now();
+			final Instant now = Instant.now();
 			for (final String name : channel_names)
 			{
 				final Instant start = VTypeHelper.getTimestamp(
-						influx.getRawValues(1, name, Instant.EPOCH, end).next());
+						influx.getRawValues(1, name, Instant.EPOCH, now).next());
+				final Instant end = start.plus(COPY_AMOUNT);
 				getResults(rdb, influx, name, start, end, first_durations, total_num_samples);
 				final String msg = "Got results for 1/"+NUM_ITERATIONS+" tests of channel "+name+"("+(num_channels+1)+"/"+channel_names.length+")";
 				if (PRINT_PROGRESS)
