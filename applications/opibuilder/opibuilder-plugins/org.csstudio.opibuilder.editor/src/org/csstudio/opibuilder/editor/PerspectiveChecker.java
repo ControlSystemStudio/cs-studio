@@ -120,7 +120,7 @@ public class PerspectiveChecker implements IStartup {
                 IWorkbenchWindow partWindow = part.getSite().getWorkbenchWindow();
                 IPerspectiveDescriptor perspective = getPerspective(PlatformUI.getWorkbench(), perspectiveID);
                 if (perspective == null) {
-                    // log an error
+                    OPIBuilderPlugin.getLogger().warning("OPI Editor perspective not present and could not be loaded.");
                 } else {
                     if (partWindow != null) {
                         if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
