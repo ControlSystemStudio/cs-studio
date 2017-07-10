@@ -117,19 +117,7 @@ public class PerspectiveChecker implements IStartup {
                 } else {
                     if (partWindow != null) {
                         if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
-                            boolean switchPerspective = false;
-                            String preferenceSetting = prefs.getString(preferenceKey);
-                            switch (preferenceSetting) {
-                                case MessageDialogWithToggle.PROMPT:
-                                    switchPerspective = promptForPerspectiveSwitch(prefs, partWindow);
-                                    break;
-                                case MessageDialogWithToggle.ALWAYS:
-                                    switchPerspective = true;
-                                    break;
-                                default:
-                                    switchPerspective = false;
-                            }
-                            if (switchPerspective) {
+                            if (switchRequired(partWindow)) {
                                 partWindow.getActivePage().setPerspective(perspective);
                             }
                         }
@@ -167,6 +155,28 @@ public class PerspectiveChecker implements IStartup {
                 }
             }
             return md.getReturnCode() == IDialogConstants.YES_ID;
+        }
+
+        /**
+         * Determine if a perspective switch is necessary depending on existing preferences
+         * and a user prompt if appropriate.
+         * @param window IWorkbenchWindow on which to centre the prompt
+         * @return
+         */
+        private boolean switchRequired(IWorkbenchWindow window) {
+            boolean switchPerspective = false;
+            String preferenceSetting = prefs.getString(preferenceKey);
+            switch (preferenceSetting) {
+                case MessageDialogWithToggle.PROMPT:
+                    switchPerspective = promptForPerspectiveSwitch(prefs, window);
+                    break;
+                case MessageDialogWithToggle.ALWAYS:
+                    switchPerspective = true;
+                    break;
+                default:
+                    switchPerspective = false;
+            }
+            return switchPerspective;
         }
 
         @Override
