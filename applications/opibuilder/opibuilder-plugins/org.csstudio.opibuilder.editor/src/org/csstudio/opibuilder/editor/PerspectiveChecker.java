@@ -22,30 +22,23 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 /**
  * Attach relevant listeners to workbench components in order that perspective
  * handling can be triggered when an OPIEditor is opened.
- *
- * This class could be converted into an abstract class with no dependency on
- * OPIBuilder, then extended by different classes wanting similar behaviour
- * that set up state in the constructor.
  */
 public class PerspectiveChecker implements IStartup {
 
     public final String perspectiveID;
     public final ScopedPreferenceStore prefs;
     public final String preferenceKey;
-    public final String dialogTitle;
-    public final String dialogMessage;
-    public final String savePreferenceMessage;
-    public final String switchFailedMessage;
+
+    private static final String DIALOG_TITLE = "Switch to OPI Editor perspective?";
+    private static final String DIALOG_MESSAGE = "The OPI Editor perspective contains the tools needed for creating and editing OPIs. Would you like to switch to this perspective?";
+    private static final String SAVE_PREFERENCE_MESSAGE = "Remember my decision";
+    private static final String SAVE_FAILED_MESSAGE = "Failed to save preferences: ";
+    private static final String MISSING_PERSPECTIVE_MESSAGE = "OPI Editor perspective not present and could not be loaded.";
 
     public PerspectiveChecker() {
         perspectiveID = OPIEditorPerspective.ID;
         prefs = new ScopedPreferenceStore(InstanceScope.INSTANCE, OPIBuilderPlugin.PLUGIN_ID);
         preferenceKey = PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE;
-        dialogTitle = "Switch to OPI Editor perspective?";
-        dialogMessage = "The OPI Editor perspective contains the tools needed for creating and editing OPIs."
-                + "Would you like to switch to this perspective?";
-        savePreferenceMessage = "Remember my decision";
-        switchFailedMessage = "Failed to change to OPI Editor perspective: ";
     }
 
     /**
@@ -120,7 +113,7 @@ public class PerspectiveChecker implements IStartup {
                 IWorkbenchWindow partWindow = part.getSite().getWorkbenchWindow();
                 IPerspectiveDescriptor perspective = getPerspective(PlatformUI.getWorkbench(), perspectiveID);
                 if (perspective == null) {
-                    OPIBuilderPlugin.getLogger().warning("OPI Editor perspective not present and could not be loaded.");
+                    OPIBuilderPlugin.getLogger().warning(MISSING_PERSPECTIVE_MESSAGE);
                 } else {
                     if (partWindow != null) {
                         if (!partWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
@@ -164,13 +157,13 @@ public class PerspectiveChecker implements IStartup {
          */
         private boolean promptForPerspectiveSwitch(ScopedPreferenceStore prefs, IWorkbenchWindow window) {
             MessageDialogWithToggle md = MessageDialogWithToggle.openYesNoQuestion(
-                    window.getShell(), dialogTitle, dialogMessage, savePreferenceMessage, false,
+                    window.getShell(), DIALOG_TITLE, DIALOG_MESSAGE, SAVE_PREFERENCE_MESSAGE, false,
                     prefs, preferenceKey);
             if (md.getToggleState()) {
                 try {
                     prefs.save();
                 } catch (IOException e) {
-                    OPIBuilderPlugin.getLogger().warning("Failed to save preferences: " + e.getMessage());
+                    OPIBuilderPlugin.getLogger().warning(SAVE_FAILED_MESSAGE + e.getMessage());
                 }
             }
             return md.getReturnCode() == IDialogConstants.YES_ID;
