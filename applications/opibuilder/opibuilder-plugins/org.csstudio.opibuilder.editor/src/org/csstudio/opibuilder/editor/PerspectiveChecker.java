@@ -126,6 +126,12 @@ public class PerspectiveChecker implements IStartup {
             }
         }
 
+        /**
+         * Locate the IPerspectiveDescriptor object for the specified ID.  If not found, return null.
+         * @param workbench to query
+         * @param id of perspective
+         * @return IPerspectiveDescriptor or null if the ID is not found
+         */
         IPerspectiveDescriptor getPerspective(IWorkbench workbench, String id) {
             IPerspectiveDescriptor[] perspectives = workbench.getPerspectiveRegistry().getPerspectives();
             for (IPerspectiveDescriptor perspective : perspectives) {
