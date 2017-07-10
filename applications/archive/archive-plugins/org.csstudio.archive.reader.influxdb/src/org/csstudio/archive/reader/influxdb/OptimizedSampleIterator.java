@@ -88,8 +88,7 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
                 //sample_queue.add(result);
             }});
 
-        //TODO: calculate time interval and time offset so that metadata and sample times match
-        reader.getQueries().chunk_get_grouped_channel_metadata(metadata_chunk_size, channel_name, metadata_starttime, end, count,
+        reader.getQueries().chunk_get_channel_metadata(metadata_chunk_size, channel_name, metadata_starttime, end, null,
                 new Consumer<QueryResult>() {
             @Override
             public void accept(QueryResult result) {

@@ -12,7 +12,7 @@ import org.influxdb.dto.QueryResult;
 
 /**
  * Class for reading chunked data from aggregate queries
- * (i.e. "SELECT MEAN(),MAX(),MIN()", "SELECT FIRST()")
+ * (i.e. "SELECT MEAN(),MAX(),MIN()")
  * for both sample and metadata simultaneously.
  * @author Amanda Carpenter
  *
@@ -27,16 +27,10 @@ public class AggregatedChunkReader extends ChunkReader
 	}
 	
     @Override
-	protected List<MetaObject> getMetaObjects(QueryResult results) throws Exception
-	{
-		return MetaTypes.toMetaObjects(results, "first_");
-	}
-	
-    @Override
     public Object getValue(final String colname) throws Exception
     {
     	if ("status".equals(colname))
-    		return "NO_ALARM";
+    		return "";
     	else if ("severity".equals(colname))
     		return "NONE";
     	else
@@ -46,6 +40,6 @@ public class AggregatedChunkReader extends ChunkReader
     @Override
     public boolean hasValue(final String colname)
     {
-        return "status".equals(colname) || "severity".equals(colname) || cur_column_map.containsKey(colname);
+        return "status".equals(colname) || "severity".equals(colname) || super.hasValue(colname);
     }
 }

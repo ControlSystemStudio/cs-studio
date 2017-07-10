@@ -11,7 +11,6 @@ package org.csstudio.archive.reader.influxdb;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +64,7 @@ public class ChunkReader extends RawChunkReader
             {
                 final QueryResult results = metadata_queue.poll(timeout_secs, TimeUnit.SECONDS);
                 //Activator.getLogger().log(Level.FINEST, () -> "Got metadata chunk " + InfluxDBResults.toString(results) );
-                next_metadata.addAll(getMetaObjects(results));
+                next_metadata.addAll(MetaTypes.toMetaObjects(results));
             }
             catch (Exception e)
             {
@@ -74,11 +73,6 @@ public class ChunkReader extends RawChunkReader
             next_meta = next_metadata.poll();
         }
         Activator.getLogger().log(Level.FINER, () -> "Stepped next metadata " + next_meta.toString());
-    }
-    
-    protected List<MetaObject> getMetaObjects(final QueryResult results) throws Exception
-    {
-    	return MetaTypes.toMetaObjects(results, null);
     }
 
     private void update_meta() throws Exception

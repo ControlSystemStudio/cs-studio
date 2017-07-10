@@ -140,22 +140,16 @@ public class InfluxDBQueries
         return where_clauses;
     }
     
-	private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count, final String requiredTags, String fillOption)
+	private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count)
     {
-	    //Fill options (what to do if no data for a group by time() interval): <value>, linear, none, null, previous
-		//Most applicable options: none (no time, no value), null (time with no value), previous (time with previous value)
-		//Can't use fill(none) for metadata and sample data, because then the numbers of rows might not match (for example,
-		//maybe there are no samples for a time with existing metadata).
-		//Metadata uses fill(previous), so there is always some metadata. Sample data uses fill(null).
     	//TODO: rounding/truncation problem?
         StringBuilder ret = new StringBuilder();
-        if (requiredTags != null)
-        	ret.append(requiredTags).append(',');
         ret.append("time(");
         ret.append(InfluxDBUtil.toMicro(
         		Duration.between(starttime, endtime).dividedBy(count)).toString());
-        ret.append("u) fill(").append(fillOption).append(")");
-        	//can't use fill(none), because it's possible that metadata and data might have a different number of values
+		//Fill options: fill(none) is best, because empty time intervals (a.k.a. buckets) are automatically excluded.
+		//There is no need to try to sample data with metadata, because metadata exists independently of sample data.
+        ret.append("u) fill(none)");
         return ret.toString();
     }
 
@@ -270,7 +264,7 @@ public class InfluxDBQueries
     	select_what.append("COUNT(/\\.0/),FIRST(/\\.0/)");
 		makeChunkQuery(chunkSize, consumer, influxdb,
 				get_channel_points(select_what.toString(), channel_name, starttime, endtime, "status != 'NaN'",
-						getGroupByTimeClause(starttime, endtime, limit, null, "null"), null),
+						getGroupByTimeClause(starttime, endtime, limit), null),
 				dbnames.getDataDBName(channel_name));
     }
 
@@ -314,17 +308,4 @@ public class InfluxDBQueries
                 get_channel_points("*", channel_name, starttime, endtime, null, null, limit),
                 dbnames.getMetaDBName(channel_name));
     }
-
-	public void chunk_get_grouped_channel_metadata(final int chunkSize,
-			final String channel_name, final Instant starttime, final Instant endtime, Long limit, Consumer<QueryResult> consumer) throws Exception
-	{
-		//  "GROUP BY" and tags: In effect, "GROUP BY" removes tags. The metadata reader needs to have a "datatype"
-		//value in its QueryResult. "GROUP BY datatype" returns the value of "datatype" as a tag rather than as a column,
-		//but it should be safe enough to use, since the value of "datatype" should not change over time.
-		
-    	makeChunkQuery(chunkSize, consumer, influxdb,
-    			get_channel_points("FIRST(*)", channel_name, starttime, endtime, null,
-    					getGroupByTimeClause(starttime, endtime, limit, "datatype", "previous"), null),
-    			dbnames.getMetaDBName(channel_name));
-	}
 }
