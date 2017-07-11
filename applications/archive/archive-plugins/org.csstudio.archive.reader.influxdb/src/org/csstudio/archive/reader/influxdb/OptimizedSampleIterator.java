@@ -69,8 +69,8 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
             }
         }
 
-        //Get the timestamp of the last sample in the range.
-        sample_endtime = InfluxDBResults.getTimestamp(reader.getQueries().get_newest_channel_samples(channel_name, sample_starttime, end, 1L));
+        //Get the timestamp of the last sample *interval* in the range.
+        sample_endtime = InfluxDBResults.getTimestamp(reader.getQueries().get_newest_channel_sample_count_in_intervals(channel_name, sample_starttime, end, count, 1L));
 
         //Find the last timestamp of the metadata before the end time
         metadata_endtime = InfluxDBResults.getTimestamp(reader.getQueries().get_newest_meta_data(channel_name, null, end, 1L));

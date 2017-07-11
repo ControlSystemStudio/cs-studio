@@ -255,13 +255,33 @@ public class InfluxDBQueries
         return makeQuery(influxdb, get_pattern_points("*", pattern, null, null, -1L), dbnames.getDataDBName(pattern));
     }
     
+    public QueryResult get_newest_channel_sample_count_in_intervals(final String channel_name, final Instant starttime,
+            final Instant endtime, Long numIntervals, Long numResults) throws Exception
+    {
+        return makeQuery(
+                influxdb,
+                get_channel_points("COUNT(*)", channel_name, starttime, endtime, null,
+                		getGroupByTimeClause(starttime, endtime, numIntervals), -numResults),
+                dbnames.getDataDBName(channel_name));
+    }
+
+    public QueryResult get_channel_sample_count_in_intervals(final String channel_name, final Instant starttime,
+    		final Instant endtime, Long numIntervals, Long numResults) throws Exception
+    {
+    	return makeQuery(
+    			influxdb,
+    			get_channel_points("*", channel_name, starttime, endtime, null,
+    					getGroupByTimeClause(starttime, endtime, numIntervals), numResults),
+    			dbnames.getDataDBName(channel_name));
+    }
+    
 	public void chunk_get_channel_sample_stats(final int chunkSize, final String channel_name, final Instant starttime,
 			final Instant endtime, Long limit, boolean stdDev, Consumer<QueryResult> consumer) throws Exception
 	{
-    	StringBuilder select_what = new StringBuilder("MEAN(/\\.0/),MAX(/\\.0/),MIN(/\\.0/),");
+    	StringBuilder select_what = new StringBuilder("MEAN(*),MAX(*),MIN(*),");
     	if (stdDev)
-    		select_what.append("STDDEV(/\\.0/),");
-    	select_what.append("COUNT(/\\.0/),FIRST(/\\.0/)");
+    		select_what.append("STDDEV(*),");
+    	select_what.append("COUNT(*),FIRST(*)");
 		makeChunkQuery(chunkSize, consumer, influxdb,
 				get_channel_points(select_what.toString(), channel_name, starttime, endtime, "status != 'NaN'",
 						getGroupByTimeClause(starttime, endtime, limit), null),
