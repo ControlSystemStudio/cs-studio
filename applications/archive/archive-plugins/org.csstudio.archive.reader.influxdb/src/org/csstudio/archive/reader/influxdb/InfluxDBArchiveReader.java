@@ -12,6 +12,7 @@ package org.csstudio.archive.reader.influxdb;
 //import java.sql.ResultSet;
 //import java.sql.Statement;
 import java.time.Instant;
+import java.util.logging.Level;
 
 import org.csstudio.archive.influxdb.InfluxDBArchivePreferences;
 import org.csstudio.archive.influxdb.InfluxDBQueries;
@@ -280,7 +281,15 @@ public class InfluxDBArchiveReader implements ArchiveReader
     public ValueIterator getOptimizedValues(final String channel_name,
             final Instant start, final Instant end, final long count) throws Exception
     {
-        return new OptimizedSampleIterator(this, channel_name, start, end, count);
+    	try
+    	{
+    		return new OptimizedSampleIterator(this, channel_name, start, end, count);
+    	}
+    	catch (Exception e)
+    	{
+    		Activator.getLogger().log(Level.FINE, "Could not create optimized sample iterator for " + channel_name + "; falling back to raw", e);
+    		return getRawValues(channel_name, start, end);
+    	}
     }
 
     //TODO: this comes from in-memory configuration object now
