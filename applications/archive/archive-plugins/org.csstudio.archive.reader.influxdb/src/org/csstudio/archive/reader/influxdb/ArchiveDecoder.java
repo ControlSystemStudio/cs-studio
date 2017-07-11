@@ -87,31 +87,64 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 
         final Instant time = InfluxDBUtil.fromInfluxDBTimeFormat(vals.getValue("time"));
         final String status = (String) vals.getValue("status");
-        if (status == null)
+        //Status might be null if values were downsampled from within the InfluxDB database.
+        /*if (status == null)
         {
             throw new Exception ("No status field found when decoding sample");
-        }
-        final AlarmSeverity severity = filterSeverity((String) vals.getValue("severity"), status);
+        }*/
+        String severity_string = (String) vals.getValue("severity");
+        final AlarmSeverity severity = filterSeverity(severity_string != null ? severity_string : "", status);
 
         switch (meta.storeas)
         {
         case ARCHIVE_DOUBLE:
         case ARCHIVE_DOUBLE_ARRAY:
         {
-            return decodeDoubleSamples(time, severity, status, Display.class.cast(meta.object));
+        	final Display display = Display.class.cast(meta.object);
+        	try
+        	{
+        		return decodeDoubleSamples(time, severity, status, display, "");
+        	}
+        	catch (Exception e)
+        	{
+        		return decodeDoubleSamples(time, severity, status != null ? status : "", display, "average_");
+        	}
         }
         case ARCHIVE_LONG:
         {
-            return decodeLongSample(time, severity, status, Display.class.cast(meta.object));
+        	final Display display = Display.class.cast(meta.object);
+        	try
+        	{
+        		return decodeLongSample(time, severity, status, display, "");
+        	}
+        	catch (Exception e)
+        	{
+        		return decodeLongSample(time, severity, status != null ? status : "", display, "average_");
+        	}
         }
         case ARCHIVE_ENUM:
         {
-            return decodeEnumSample(time, severity, status, (List<String>)meta.object);
+        	final List<String> labels = (List<String>)meta.object;
+        	try
+        	{
+        		return decodeEnumSample(time, severity, status, labels, "");
+        	}
+        	catch (Exception e)
+        	{
+        		return decodeEnumSample(time, severity, status != null ? status : "", labels, "average_");
+        	}
         }
         case ARCHIVE_STRING:
         case ARCHIVE_UNKNOWN:
         {
-        	return decodeStringSample(time, severity, status);
+        	try
+        	{
+        		return decodeStringSample(time, severity, status, "");
+        	}
+        	catch (Exception e)
+        	{
+        		return decodeStringSample(time, severity, status != null ? status : "", "average_");
+        	}
         }
         default:
             throw new Exception ("Tried to encode sample with unhandled store type: " + meta.storeas.name());
@@ -162,43 +195,43 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         return lval;
     }
 
-    protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status) throws Exception
+    protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
-        Object val = vals.getValue("string.0");
+        Object val = vals.getValue(prefix + "string.0");
         if (val == null)
         {
-            throw new Exception ("Did not find string.0 field where expected");
+            throw new Exception ("Did not find "+prefix+"string.0 field where expected");
         }
         return new ArchiveVString(time, severity, status, val.toString());
 	}
 
-    protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels) throws Exception
+    protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
-        Object val = vals.getValue("long.0");
+        Object val = vals.getValue(prefix+"long.0");
         if (val == null)
         {
-            throw new Exception ("Did not find long.0 field where expected");
+            throw new Exception ("Did not find "+prefix+"long.0 field where expected");
         }
         return new ArchiveVEnum(time, severity, status, labels, fieldToLong(val).intValue());
     }
 
-    protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
+    protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
-        Object val = vals.getValue("long.0");
+        Object val = vals.getValue(prefix+"long.0");
         if (val == null)
         {
             Activator.getLogger().log(Level.SEVERE, this.toString());
-            throw new Exception ("Did not find long.0 field where expected");
+            throw new Exception ("Did not find "+prefix+"long.0 field where expected");
         }
         return new ArchiveVNumber(time, severity, status, display, fieldToLong(val));
     }
 
-    protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
+    protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
-        Object val = vals.getValue("double.0");
+        Object val = vals.getValue(prefix + "double.0");
         if (val == null)
         {
-            throw new Exception ("Did not find double.0 field where expected");
+            throw new Exception ("Did not find "+prefix+"double.0 field where expected");
         }
 
         List<Double> data = new ArrayList<Double>();

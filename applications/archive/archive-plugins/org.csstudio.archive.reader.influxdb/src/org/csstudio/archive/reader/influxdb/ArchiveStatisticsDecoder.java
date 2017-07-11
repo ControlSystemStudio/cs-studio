@@ -5,14 +5,13 @@ import java.util.List;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueLookup;
 import org.csstudio.archive.reader.influxdb.raw.Preferences;
-import org.csstudio.archive.vtype.ArchiveVEnum;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
-import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.Statistics;
 import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /**
  * Decode statistical values (mean/average, max, min, etc.) into VType
@@ -60,11 +59,16 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	
     	public StatisticsImpl(Double mean_max_min_stddev [], Integer count)
     	{
-    		mean = mean_max_min_stddev[0];
-    		max = mean_max_min_stddev[1];
-    		min = mean_max_min_stddev[2];
-    		stddev = mean_max_min_stddev[3];
+    		mean = valOrNaN(mean_max_min_stddev[0]);
+    		max = valOrNaN(mean_max_min_stddev[1]);
+    		min = valOrNaN(mean_max_min_stddev[2]);
+    		stddev = valOrNaN(mean_max_min_stddev[3]);
     		this.count = count;
+    	}
+    	
+    	private Double valOrNaN(Double val)
+    	{
+    		return val != null ? val : Double.NaN;
     	}
     	
 		@Override
@@ -90,28 +94,29 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     }
 
     @Override
-    protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
+    protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
     	//first, check if count is zero
-    	Object count_val = vals.getValue("count_long.0");
-    	int count = fieldToInt(count_val);
+    	Object count_val = vals.getValue("count_"+prefix+"long.0");
+    	int count = count_val != null ? fieldToInt(count_val) : 0;
     	if (count == 0)
-    		return NULL_SAMPLE;
+    		return new ArchiveVStatistics(time, severity, status, display,
+    				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
     	
     	//mean, max, min, stddev
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + "_long.0");
+    		Object val = vals.getValue(STATS_NAMES[i] + prefix + "_long.0");
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+"_long.0 field where expected");
+    			throw new Exception("Did not find "+STATS_NAMES[i]+prefix+"_long.0 field where expected");
 			stats_vals[i] = fieldToLong(val).doubleValue();
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev_long.0");
+    		Object val = vals.getValue("stddev"+prefix+"_long.0");
     		if (val == null)
-    			throw new Exception("Did not find stddev_long.0 field where expected");
+    			throw new Exception("Did not find stddev"+prefix+"_long.0 field where expected");
 			stats_vals[3] = fieldToLong(val).doubleValue();
     	}
     	else
@@ -120,29 +125,31 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(stats_vals, count));
     }
 
-    protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display) throws Exception
+    @Override
+    protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
     	//first, check if count is zero
-    	Object count_val = vals.getValue("count_double.0");
+    	Object count_val = vals.getValue("count_"+prefix+"double.0");
     	int count = count_val != null ? fieldToInt(count_val) : 0;
     	if (count == 0)
-    		return NULL_SAMPLE;
+    		return new ArchiveVStatistics(time, severity, status, display,
+    				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
     	
     	//mean, max, min, stddev
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + "_double.0");
+    		Object val = vals.getValue(STATS_NAMES[i] + prefix + "_double.0");
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+"_double.0 field where expected");
-			stats_vals[i] = fieldToLong(val).doubleValue();
+    			throw new Exception("Did not find "+STATS_NAMES[i]+prefix+"_double.0 field where expected");
+			stats_vals[i] = fieldToDouble(val);
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev_double.0");
+    		Object val = vals.getValue("stddev"+prefix+"_double.0");
     		if (val == null)
-    			throw new Exception("Did not find stddev_double.0 field where expected");
-			stats_vals[3] = fieldToLong(val).doubleValue();
+    			throw new Exception("Did not find stddev_"+prefix+"double.0 field where expected");
+			stats_vals[3] = fieldToDouble(val);
     	}
     	else
     		stats_vals[3] = Double.NaN;
@@ -151,40 +158,28 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     }
     
     @Override
-    protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels) throws Exception
+    protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
-    	//first, check if count is zero
-    	Object count_val = vals.getValue("count_long.0");
-    	int count = count_val != null ? fieldToInt(count_val) : 0;
-    	if (count == 0)
-    		return NULL_SAMPLE;
-    	
-        Object val = vals.getValue("first_long.0");
-        if (val == null)
-        {
-            throw new Exception ("Did not find first_long.0 field where expected");
-        }
-        return new ArchiveVEnum(time, severity, status, labels, fieldToLong(val).intValue());
+    	Object count_val = vals.getValue("count_"+prefix+"long.0");
+    	if (count_val == null)
+			throw new Exception("Did not find count_"+prefix+"long.0 field where expected");
+    	final int count = fieldToInt(count_val);
+    	final Display display = ValueFactory.displayNone();
+		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
     }
     
     @Override
-    protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status) throws Exception
+    protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
-    	//first, check if count is zero
-    	Object count_val = vals.getValue("count_string.0");
-    	int count = count_val != null ? fieldToInt(count_val) : 0;
-    	if (count == 0)
-    		return NULL_SAMPLE;
-    	
-        Object val = vals.getValue("first_string.0");
-        if (val == null)
-        {
-            throw new Exception ("Did not find first_string.0 field where expected");
-        }
-        return new ArchiveVString(time, severity, status, val.toString());
+    	Object count_val = vals.getValue("count_"+prefix+"string.0");
+    	if (count_val == null)
+			throw new Exception("Did not find count_"+prefix+"string.0 field where expected");
+    	final int count = fieldToInt(count_val);
+    	final Display display = ValueFactory.displayNone();
+		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
 	}
     
-    private Integer fieldToInt(Object val) throws Exception
+    private static Integer fieldToInt(Object val) throws Exception
     {
         Integer integer;
         //try

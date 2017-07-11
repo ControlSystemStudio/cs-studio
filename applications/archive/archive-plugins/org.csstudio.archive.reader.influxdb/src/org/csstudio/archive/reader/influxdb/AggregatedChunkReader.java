@@ -19,6 +19,10 @@ import org.influxdb.dto.QueryResult;
  */
 public class AggregatedChunkReader extends ChunkReader
 {
+	private static final String STATUS = "";
+	private static final String SEVERITY = "NONE";
+
+	
 	AggregatedChunkReader(BlockingQueue<QueryResult> sample_queue, Instant last_sample_time,
 			BlockingQueue<QueryResult> metadata_queue, Instant last_metadata_time, int timeout_secs,
 			Factory decoder_factory)
@@ -30,9 +34,9 @@ public class AggregatedChunkReader extends ChunkReader
     public Object getValue(final String colname) throws Exception
     {
     	if ("status".equals(colname))
-    		return "";
+    		return STATUS;
     	else if ("severity".equals(colname))
-    		return "NONE";
+    		return SEVERITY;
     	else
     		return super.getValue(colname);
     }

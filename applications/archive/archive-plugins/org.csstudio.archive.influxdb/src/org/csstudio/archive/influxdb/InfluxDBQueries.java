@@ -278,10 +278,9 @@ public class InfluxDBQueries
 	public void chunk_get_channel_sample_stats(final int chunkSize, final String channel_name, final Instant starttime,
 			final Instant endtime, Long limit, boolean stdDev, Consumer<QueryResult> consumer) throws Exception
 	{
-    	StringBuilder select_what = new StringBuilder("MEAN(*),MAX(*),MIN(*),");
+    	StringBuilder select_what = new StringBuilder("MEAN(*),MAX(*),MIN(*),COUNT(*)");
     	if (stdDev)
-    		select_what.append("STDDEV(*),");
-    	select_what.append("COUNT(*),FIRST(*)");
+    		select_what.append(",STDDEV(*)");
 		makeChunkQuery(chunkSize, consumer, influxdb,
 				get_channel_points(select_what.toString(), channel_name, starttime, endtime, "status != 'NaN'",
 						getGroupByTimeClause(starttime, endtime, limit), null),
