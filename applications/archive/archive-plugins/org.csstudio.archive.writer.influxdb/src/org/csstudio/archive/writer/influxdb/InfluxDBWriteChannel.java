@@ -20,13 +20,24 @@ public class InfluxDBWriteChannel implements WriteChannel
     final private String name;
     private Object meta = null;
     private StoreAs storeas = StoreAs.ARCHIVE_UNKNOWN;
+    final private String rp; //retention policy used for initial writes
 
     /** Initialize
+	 *  @param name Channel name
+	 */
+	public InfluxDBWriteChannel(final String name)
+	{
+		this(name, null);
+	}
+
+	/** Initialize
      *  @param name Channel name
+     * @param rp Retention policy name for incoming samples
      */
-    public InfluxDBWriteChannel(final String name)
+    public InfluxDBWriteChannel(final String name, String rp)
     {
         this.name = name;
+        this.rp = rp;
     }
 
     /** {@inheritDoc} */
@@ -52,6 +63,11 @@ public class InfluxDBWriteChannel implements WriteChannel
     public StoreAs getStorageType()
     {
         return storeas;
+    }
+    
+    public String getRP()
+    {
+    	return rp;
     }
 
     /** @param meta Current meta data of channel */

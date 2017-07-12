@@ -8,10 +8,11 @@
 package org.csstudio.archive.writer.influxdb;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.csstudio.archive.influxdb.InfluxDBArchivePreferences;
 import org.csstudio.archive.influxdb.InfluxDBQueries;
@@ -53,23 +54,41 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
 
     final static private DBNameMap dbnames = new DefaultDBNameMap();
 
-    static class batchPointSets
+    static class batchPointSets implements Iterable<BatchPoints>
     {
-        /** Batched points to be written, per database */
-        final private Map<String, BatchPoints> dbPoints = new HashMap<String, BatchPoints>();
+        /** Batched points to be written per retention policy, per database */
+        final private Map<String, Map<String, BatchPoints>> dbPoints = new HashMap<>();
 
         private BatchPoints getMakePoints(final String dbName)
         {
-            BatchPoints points = dbPoints.get(dbName);
+        	return getMakePoints(dbName, null);
+        }
+
+        private BatchPoints getMakePoints(final String dbName, final String rpName)
+        {
+            Map<String, BatchPoints> rp_points = dbPoints.get(dbName);
+            BatchPoints points;
+            if (rp_points == null)
+            {
+            	rp_points = new HashMap<String, BatchPoints>();
+            	dbPoints.put(dbName, rp_points);
+            	points = null;
+            }
+            else
+            	points = rp_points.get(rpName);
             if (points == null)
             {
                 //TODO: set retention and consistency policies
-                points = BatchPoints
-                        .database(dbName)
-                        .retentionPolicy("autogen")
-                        .consistency(ConsistencyLevel.ALL)
-                        .build();
-                dbPoints.put(dbName, points);
+            	BatchPoints.Builder builder = BatchPoints
+            			.database(dbName)
+            			.consistency(ConsistencyLevel.ALL);
+            	if (rpName != null)
+            		builder.retentionPolicy(rpName)
+            				.tag("retain", rpName);
+            	else
+            		builder.retentionPolicy("autogen");
+                points = builder.build();
+                rp_points.put(rpName, points);
             }
             return points;
         }
@@ -79,19 +98,13 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             return getMakePoints(dbnames.getDataDBName(channel_name));
         }
 
+        public BatchPoints getChannelSamplePoints(final String channel_name, final String rpname) throws Exception
+        {
+            return getMakePoints(dbnames.getDataDBName(channel_name), rpname);
+        }
         public BatchPoints getChannelMetaPoints(final String channel_name) throws Exception
         {
             return getMakePoints(dbnames.getMetaDBName(channel_name));
-        }
-
-        public BatchPoints getDBPoints(final String dbName) throws Exception
-        {
-            BatchPoints points = dbPoints.get(dbName);
-            if (points == null)
-            {
-                throw new Exception("No points stored for DB " + dbName);
-            }
-            return points;
         }
 
         public void removeDBPoints(final String dbName)
@@ -99,15 +112,37 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             dbPoints.remove(dbName);
         }
 
-        public Set<String> getDBNames()
-        {
-            return dbPoints.keySet();
-        }
-
         public void clear()
         {
             dbPoints.clear();
         }
+
+		@Override
+		public Iterator<BatchPoints> iterator()
+		{
+			return new Iterator<BatchPoints>()
+			{
+				private final Iterator<Map<String,BatchPoints>> dbs = dbPoints.values().iterator();
+				private Iterator<BatchPoints> points = Collections.emptyIterator();
+				@Override
+				public boolean hasNext()
+				{
+					while (!points.hasNext())
+					{
+						if (!dbs.hasNext()) return false;
+						points = dbs.next().values().iterator();
+					}
+					return true;
+				}
+
+				@Override
+				public BatchPoints next()
+				{
+					hasNext();
+					return points.next();
+				}
+			};
+		}
     };
 
     final batchPointSets batchSets = new batchPointSets();
@@ -160,18 +195,19 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
         InfluxDBWriteChannel channel = channels.get(name);
         if (channel == null)
         {    // Get channel information from InfluxDB
+            String rp = influxQuery.getDataRetentionPolicy(name);
             QueryResult results = influxQuery.get_newest_meta_datum(name);
             if (InfluxDBResults.getValueCount(results) <= 0)
             {
                 // throw new Exception("Unknown channel " + name);
-                return makeNewChannel(name);
+                return makeNewChannel(name, rp);
             }
             List<MetaObject> meta = MetaTypes.toMetaObjects(results);
             if (meta.size() != 1)
             {
                 throw new Exception("Metadata results for channel " + name + " did not parse into single object: " + results);
             }
-            channel = new InfluxDBWriteChannel(name);
+            channel = new InfluxDBWriteChannel(name, rp);
             channel.setMetaData(meta.get(0));
             channels.put(name, channel);
         }
@@ -179,6 +215,11 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
     }
 
     public WriteChannel makeNewChannel(final String name) throws Exception
+    {
+    	return makeNewChannel(name, null);
+    }
+    
+    public WriteChannel makeNewChannel(final String name, final String rp) throws Exception
     {
         // Check cache
         InfluxDBWriteChannel channel = channels.get(name);
@@ -192,7 +233,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
         {
             throw new Exception("Channel already exists in Database " + name);
         }
-        channel = new InfluxDBWriteChannel(name);
+        channel = new InfluxDBWriteChannel(name, rp);
         channels.put(name, channel);
 
         return channel;
@@ -206,7 +247,8 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
         final Instant stamp = VTypeHelper.getTimestamp(sample);
 
         writeMetaData(influxdb_channel, stamp, sample, storeas);
-        batchSets.getChannelSamplePoints(channel.getName()).point(InfluxDBSampleEncoder.encodeSample(influxdb_channel, stamp, sample, storeas));
+        batchSets.getChannelSamplePoints(channel.getName(), influxdb_channel.getRP())
+        	.point(InfluxDBSampleEncoder.encodeSample(influxdb_channel, stamp, sample, storeas));
     }
 
     /** Write meta data if it was never written or has changed
@@ -273,10 +315,8 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
     @Override
     public void flush() throws Exception
     {
-        Set<String> dbNames = batchSets.getDBNames();
-        for (String dbName : dbNames)
+        for (BatchPoints batchPoints : batchSets)
         {
-            BatchPoints batchPoints = batchSets.getDBPoints(dbName);
             try
             {
                 influxdb.write(batchPoints);
@@ -285,8 +325,6 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             {
                 throw new Exception("Write of points failed " + e.getMessage(), e);
             }
-            //TODO: Creates concurrent modification errors? Why?
-            //batchSets.removeDBPoints(dbName);
         }
         batchSets.clear();
     }
