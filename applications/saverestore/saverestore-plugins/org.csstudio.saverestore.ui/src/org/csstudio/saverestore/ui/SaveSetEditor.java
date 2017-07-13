@@ -13,8 +13,11 @@ package org.csstudio.saverestore.ui;
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.FileUtilities;
@@ -27,27 +30,42 @@ import org.csstudio.ui.fx.util.FXEditorPart;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 import javafx.application.Platform;
-import javafx.css.PseudoClass;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -55,8 +73,9 @@ import javafx.scene.text.Font;
 
 /**
  *
- * <code>SaveSetEditor</code> is an implementation of the {@link EditorPart} which allows editing the save sets.
- * User is allowed to change the description and the list of pvs in the set.
+ * <code>SaveSetEditor</code> is an implementation of the {@link EditorPart}
+ * which allows editing the save sets. User is allowed to change the description
+ * and the list of pvs in the set.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -65,10 +84,10 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.saveseteditor";
 
-    private final PseudoClass alertedPseudoClass = PseudoClass.getPseudoClass("alerted");
-
+    // UI components
     private TextArea descriptionArea;
-    private TextArea contentArea;
+    private SaveSetEditorTable contentTable;
+    private Menu contextMenu;
 
     private boolean dirty;
     private final SaveSetController controller;
@@ -83,30 +102,67 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.ui.fx.util.FXEditorPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.csstudio.ui.fx.util.FXEditorPart#createPartControl(org.eclipse.swt.
+     * widgets.Composite)
      */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
+
+        MenuManager menu = new MenuManager();
+        final Action openChartTableAction = new Action("Add Pv's") {
+            @Override
+            public void run() {
+                // Launch a dialog with the previous text field and format
+                final AddPvDialog dialog = new AddPvDialog(getShell(), "Add SaveSet Entries",
+                        "Add MASAR entires including PV name, readbacks, deltas, and readonly", null, null);
+                dialog.openAndWait().ifPresent(expr -> {
+                    contentTable.getItems()
+                            .addAll(expr.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                });
+            }
+        };
+        menu.add(openChartTableAction);
+        openChartTableAction.setEnabled(true);
+        final Action removePV = new Action("Remove Pv's") {
+            @Override
+            public void run() {
+                ISelection selection = contentTable.getSelection();
+                if (selection instanceof IStructuredSelection) {
+                    @SuppressWarnings("unchecked")
+                    List<ObservableSaveSetEntry> selectedEntries = ((IStructuredSelection) contentTable.getSelection()).toList();
+                    observableList.removeAll(selectedEntries);
+                }
+            }
+        };
+        menu.add(removePV);
+        menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        contextMenu = menu.createContextMenu(parent);
+        parent.setMenu(contextMenu);
+        getSite().registerContextMenu(menu, contentTable);
+
         PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.saveseteditor");
     }
 
     /**
-     * Checks if the data provider of edited save set supports saving or editing of save sets. If yes, the
-     * method returns true, otherwise it returns false.
+     * Checks if the data provider of edited save set supports saving or editing
+     * of save sets. If yes, the method returns true, otherwise it returns
+     * false.
      *
      * @return true if save set can be saved or false otherwise
      */
     private boolean canExecute() {
         return controller.getSavedSaveSetData().filter(d -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance()
-                .getDataProvider(d.getDescriptor().getDataProviderId());
+                    .getDataProvider(d.getDescriptor().getDataProviderId());
             if (wrapper == null) {
                 return false;
             }
             if (!wrapper.getProvider().isSaveSetSavingSupported()) {
                 FXMessageDialog.openInformation(getSite().getShell(), "Save Save Set",
-                    wrapper.getName() + " does not support editing or saving save sets.");
+                        wrapper.getName() + " does not support editing or saving save sets.");
                 return false;
             }
             return true;
@@ -116,7 +172,8 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
+     * IProgressMonitor)
      */
     @Override
     public void doSave(final IProgressMonitor monitor) {
@@ -128,12 +185,12 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             final SaveSetData data = createData();
             if (data == null) {
                 MessageDialog.openError(getSite().getShell(), "Save Save Set",
-                    "There is an error in the file contents.");
+                        "There is an error in the file contents.");
                 return;
             }
             if (data.equalContent(d.get())) {
                 MessageDialog.openInformation(getSite().getShell(), "Save Save Set",
-                    "Theare are no changes between the saved and this save set.");
+                        "There are no changes between the saved and this save set.");
                 setDirty(false);
                 return;
             }
@@ -149,50 +206,13 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     }
 
     private SaveSetData createData() {
-        return createData(descriptionArea.getText().trim(), contentArea.getText(), true);
+        return createData(descriptionArea.getText().trim(), contentTable.getItems(), true);
     }
 
-    private SaveSetData createData(String description, String text, boolean markError) {
-        String[] content = text.split("\\n");
-        if (content.length == 0) {
-            return null;
-        }
-        String[] d = FileUtilities.split(content[0]);
-        if (d == null) {
-            return null;
-        }
-        int length = d.length;
-        List<SaveSetEntry> entries = new ArrayList<>(content.length);
-        for (String s : content) {
-            s = s.trim();
-            if (s.isEmpty()) {
-                continue;
-            }
-            d = FileUtilities.split(s);
-            if (d == null || d.length != length) {
-                if (markError) {
-                    // if marError == true we are in the UI thread
-                    int idx = text.indexOf(s);
-                    if (idx > -1) {
-                        contentArea.selectRange(idx, idx + s.length());
-                    }
-                }
-                return null;
-            }
-            String name = d[0].trim();
-            String readback = null, delta = null;
-            boolean readOnly = false;
-            if (d.length > 1) {
-                readback = d[1].trim();
-            }
-            if (d.length > 2) {
-                delta = d[2].trim();
-            }
-            if (d.length > 3) {
-                readOnly = Boolean.valueOf(d[3].trim());
-            }
-            entries.add(new SaveSetEntry(name, readback, delta, readOnly));
-        }
+    private SaveSetData createData(String description, ObservableList<ObservableSaveSetEntry> observableList, boolean markError) {
+        List<SaveSetEntry> entries = observableList.stream().map(ObservableSaveSetEntry::getEntry)
+                .collect(Collectors.toList());
+
         Optional<SaveSetData> bsd = controller.getSavedSaveSetData();
         SaveSet descriptor = bsd.isPresent() ? bsd.get().getDescriptor() : new SaveSet();
         return new SaveSetData(descriptor, entries, description);
@@ -209,19 +229,20 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
             final SaveSetData data = createData();
             if (data == null) {
                 MessageDialog.openError(getSite().getShell(), "Save Save Set",
-                    "There is an error in the file contents.");
+                        "There is an error in the file contents.");
                 return;
             }
-            if (data.equalContent(controller.getSavedSaveSetData().orElse(null)) && MessageDialog.openQuestion(
-                getSite().getShell(), "Save Save Set As",
-                "Theare are no changes between the saved and this save set. Are you sure you want to save it as a new save set?")) {
+            if (data.equalContent(controller.getSavedSaveSetData().orElse(null)) && !MessageDialog.openQuestion(
+                    getSite().getShell(), "Save Save Set As",
+                    "Theare are no changes between the saved and this save set. Are you sure you want to save it as a new save set?")) {
                 setDirty(false);
                 return;
             }
             new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
-                .ifPresent(saveSet -> SaveRestoreService.getInstance().execute("Save Save Set",
-                    () -> controller.save(new SaveSetData(saveSet, data.getEntries(), data.getDescription())).ifPresent(
-                        d -> getSite().getShell().getDisplay().asyncExec(() -> setInput(new SaveSetEditorInput(d))))));
+                    .ifPresent(saveSet -> SaveRestoreService.getInstance().execute("Save Save Set",
+                            () -> controller.save(new SaveSetData(saveSet, data.getEntries(), data.getDescription()))
+                                    .ifPresent(d -> getSite().getShell().getDisplay()
+                                            .asyncExec(() -> setInput(new SaveSetEditorInput(d))))));
         }
     }
 
@@ -248,7 +269,9 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     /**
      * Sets the dirt property of this editor and fires a change event.
      *
-     * @param dirty true if the editor should be marked dirty or false if not dirty
+     * @param dirty
+     *            true if the editor should be marked dirty or false if not
+     *            dirty
      */
     private void setDirty(boolean dirty) {
         this.dirty = dirty;
@@ -258,7 +281,8 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+     * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
+     * org.eclipse.ui.IEditorInput)
      */
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
@@ -275,15 +299,23 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
         firePropertyChange(PROP_TITLE);
     }
 
+    ObservableList<ObservableSaveSetEntry> observableList;
+
     private void setSaveSet(final SaveSetData data) {
         if (descriptionArea != null) {
             List<SaveSetEntry> list = data.getEntries();
+            observableList = FXCollections.observableArrayList();
             final StringBuilder sb = new StringBuilder(list.size() * 200);
-            list.forEach(e -> sb.append(e).append('\n'));
+            list.forEach((e) -> {
+                sb.append(e).append('\n');
+                observableList.add(new ObservableSaveSetEntry(
+                        new SaveSetEntry(e.getPVName(), e.getReadback(), e.getDelta(), e.isReadOnly())));
+            });
+
             Platform.runLater(() -> {
                 controller.setSavedSaveSetData(data);
                 descriptionArea.setText(data.getDescription());
-                contentArea.setText(sb.toString().trim());
+                contentTable.setItems(observableList);
                 setDirty(false);
             });
         }
@@ -330,52 +362,84 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
 
         Label contentLabel = new Label("PV List:");
         contentLabel.setFont(Font.font(15));
-
-        contentArea = new TextArea();
-        contentArea.getStylesheets()
-            .add(SaveSetEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
-        contentArea.setEditable(true);
-        contentArea.setTooltip(new Tooltip("The list of PVs in this save set"));
-        contentArea.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        contentArea.setWrapText(false);
-        contentArea.textProperty().addListener((a, o, n) -> {
-            setDirty(true);
-            final String description = descriptionArea.getText();
-            final String content = n;
-            // execute the content check in the background thread, but only if the same task is not already being
-            // executed
-            Activator.getDefault().getBackgroundWorker().execute(new RunnableWithID() {
-                @Override
-                public void run() {
-                    final SaveSetData data = createData(description, content, false);
-                    Platform.runLater(() -> contentArea.pseudoClassStateChanged(alertedPseudoClass, data == null));
-                }
-
-                @Override
-                public int getID() {
-                    return SaveSetEditor.this.hashCode();
-                }
-            });
-        });
         TextField titleArea = new StaticTextField();
         titleArea.setText(FileUtilities.SAVE_SET_HEADER);
 
         GridPane contentPanel = new GridPane();
         contentPanel.setVgap(-1);
         setGridConstraints(titleArea, true, false, Priority.ALWAYS, Priority.NEVER);
-        setGridConstraints(contentArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
         contentPanel.add(titleArea, 0, 0);
-        contentPanel.add(contentArea, 0, 1);
+
+        contentTable = new SaveSetEditorTable();
+        contentTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        contentTable.getProperties().addListener(new MapChangeListener<Object, Object>() {
+
+            @Override
+            public void onChanged(
+                    javafx.collections.MapChangeListener.Change<? extends Object, ? extends Object> change) {
+                setDirty(true);
+                Activator.getDefault().getBackgroundWorker().execute(new RunnableWithID() {
+                    @Override
+                    public void run() {
+                    }
+
+                    @Override
+                    public int getID() {
+                        return SaveSetEditor.this.hashCode();
+                    }
+                });
+            }
+
+        });
+
+        contentTable.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
+        contentTable.setOnKeyPressed(keyEvent -> {
+
+            KeyCodeCombination copyKeyCodeCompination = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_ANY);
+            KeyCodeCombination pasteKeyCodeCompination = new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_ANY);
+
+            if (copyKeyCodeCompination.match(keyEvent)) {
+                try {
+                    Map<DataFormat, Object> map = new HashMap<DataFormat, Object>();
+                    ISelection selection = contentTable.getSelection();
+                    if (selection instanceof IStructuredSelection) {
+                        @SuppressWarnings("unchecked")
+                        List<ObservableSaveSetEntry> selectedEntries = ((IStructuredSelection) contentTable
+                                .getSelection()).toList();
+                        map.put(SaveSetEntryFormatt, selectedEntries.stream().map(ObservableSaveSetEntry::getSaveString)
+                                .collect(Collectors.joining(eol)));
+                        map.put(DataFormat.PLAIN_TEXT, selectedEntries.stream().map(ObservableSaveSetEntry::getPvname)
+                                .collect(Collectors.joining(",")));
+                        Clipboard.getSystemClipboard().setContent(map);
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                keyEvent.consume();
+            } else if (pasteKeyCodeCompination.match(keyEvent)) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                if (clipboard.hasContent(SaveSetEntryFormatt)) {
+                    List<SaveSetEntry> list = parseClipboardString((String) clipboard.getContent(SaveSetEntryFormatt));
+                    contentTable.getItems()
+                            .addAll(list.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                } else if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
+                    List<SaveSetEntry> list = parseClipboardString(
+                            ((String) clipboard.getContent(DataFormat.PLAIN_TEXT)).replace(",", eol));
+                    contentTable.getItems()
+                            .addAll(list.stream().map(ObservableSaveSetEntry::new).collect(Collectors.toList()));
+                }
+            }
+        });
 
         setGridConstraints(descriptionLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(contentLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
         setGridConstraints(descriptionArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-        setGridConstraints(contentPanel, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(contentTable, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
 
         grid.add(descriptionLabel, 0, 0);
         grid.add(descriptionArea, 0, 1);
         grid.add(contentLabel, 0, 2);
-        grid.add(contentPanel, 0, 3);
+        grid.add(contentTable, 0, 3);
 
         return grid;
     }
@@ -387,18 +451,62 @@ public class SaveSetEditor extends FXEditorPart implements IShellProvider {
      */
     @Override
     public void setFxFocus() {
-        if (contentArea != null) {
-            contentArea.requestFocus();
+        if (contentTable != null) {
+            contentTable.requestFocus();
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.window.IShellProvider#getShell()
-     */
     @Override
     public Shell getShell() {
         return getSite().getShell();
+    }
+
+    /**
+     * A dataformat for identifying save set entries in the clipboard
+     */
+    public static final DataFormat SaveSetEntryFormatt = new DataFormat("text/savesetentry");
+    public static final String eol = System.getProperty("line.separator");
+
+    /**
+     * A utility method for parsing SaveSetEntries
+     * @param text string to be parsed
+     * @return parse out a list of {@link SaveSetEntry}s from a string
+     */
+    public static List<SaveSetEntry> parseClipboardString(String text) {
+
+        String[] content = text.split(eol);
+        if (content.length == 0) {
+            return null;
+        }
+        String[] d = FileUtilities.split(content[0]);
+        if (d == null) {
+            return null;
+        }
+        int length = d.length;
+        List<SaveSetEntry> entries = new ArrayList<>(content.length);
+        for (String s : content) {
+            s = s.trim();
+            if (s.isEmpty()) {
+                continue;
+            }
+            d = FileUtilities.split(s);
+            if (d == null || d.length != length) {
+                return null;
+            }
+            String name = d[0].trim();
+            String readback = null, delta = null;
+            boolean readOnly = false;
+            if (d.length > 1) {
+                readback = d[1].trim();
+            }
+            if (d.length > 2) {
+                delta = d[2].trim();
+            }
+            if (d.length > 3) {
+                readOnly = Boolean.valueOf(d[3].trim());
+            }
+            entries.add(new SaveSetEntry(name, readback, delta, readOnly));
+        }
+        return entries;
     }
 }

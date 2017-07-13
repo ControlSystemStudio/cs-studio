@@ -9,7 +9,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class ExportFault extends AbstractAdaptedHandler<Fault> {
 
     private static final Logger log = Logger.getLogger(ExportFault.class.getCanonicalName());
-    
+
     public ExportFault() {
         super(Fault.class);
     }

@@ -35,6 +35,7 @@ import org.csstudio.swt.widgets.figures.LinkingContainerFigure;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -56,6 +57,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     private List<ConnectionModel> connectionList;
     private Map<ConnectionModel, PointList> originalPoints;
+    private Point cropTranslation;
 
     @Override
     protected IFigure doCreateFigure() {
@@ -164,6 +166,33 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
     }
 
     /**
+     * Automatically set the container size according its children's geography size.
+     */
+
+    @Override
+    public void performAutosize() {
+        Rectangle childrenRange = GeometryUtil.getChildrenRange(this);
+
+        if (connectionList != null) {
+            for (ConnectionModel connModel : connectionList) {
+                final PointList connectionPoints = connModel.getPoints();
+                childrenRange.union(connectionPoints.getBounds());
+            }
+        }
+
+        cropTranslation = new Point(-childrenRange.x, -childrenRange.y);
+
+        getWidgetModel().setSize(new Dimension(
+                childrenRange.width + figure.getInsets().left + figure.getInsets().right,
+                childrenRange.height + figure.getInsets().top + figure.getInsets().bottom));
+
+        for (Object editPart : getChildren()) {
+            AbstractWidgetModel widget = ((AbstractBaseEditPart)editPart).getWidgetModel();
+            widget.setLocation(widget.getLocation().translate(cropTranslation));
+        }
+    }
+
+    /**
      * Replace all macros in the name of the given path and construct a new path from the resolved name.
      *
      * @param original the original path to resolve
@@ -175,32 +204,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         return ResourceUtil.getPathFromString(path);
     }
 
-//    /**
-//     * @param path the path of the OPI file
-//     *
-//     * Removing this call because the add remove children in fillLinkingContainer overlap
-//     * with the add remove in configureDisplayModel, and cause pv connection issues.
-//     * This reverts some of the work from #912
-//     */
-//    private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
-//        try {
-//          //  model.removeAllChildren();
-//            XMLUtil.fillLinkingContainer(model);
-//        } catch (Exception e) {
-//            //log first
-//            String message = "Failed to load: " + model.getDisplayModel().getOpiFilePath() + "\n"+ e.getMessage();
-//            Activator.getLogger().log(Level.WARNING, message , e);
-//            ConsoleService.getInstance().writeError(message);
-//            //TODO because this might not work - depends on the type of exception that happened
-//            LabelModel loadingErrorLabel = new LabelModel();
-//            loadingErrorLabel.setLocation(0, 0);
-//            loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
-//            loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-//            loadingErrorLabel.setText(message);
-//            loadingErrorLabel.setName("Label");
-//            getWidgetModel().addChild(loadingErrorLabel);
-//        }
-//    }
 
     /**
      * @param path the path of the OPI file
@@ -237,25 +240,11 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             }
         });
 
-
-        connectionList = displayModel.getConnectionList();
-        if(!connectionList.isEmpty()){
-            if(originalPoints != null)
-                originalPoints.clear();
-            else
-                originalPoints = new HashMap<ConnectionModel, PointList>();
-        }
-
-        for (ConnectionModel conn : connectionList) {
-            conn.setLoadedFromLinkedOpi(true);
-            if(conn.getPoints()!=null)
-                originalPoints.put(conn, conn.getPoints().getCopy());
-        }
+        updateConnectionListForLinkedOpi(displayModel);
         if (originalPoints != null && !originalPoints.isEmpty()) {
             //update connections after the figure is repainted.
             getViewer().getControl().getDisplay().asyncExec(() -> updateConnectionList());
         }
-
 
         UIBundlingThread.getInstance().addRunnable(() -> {
             layout();
@@ -319,29 +308,83 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         DisplayModel parentDisplay2 = widgetModel.getRootDisplayModel(false);
         if (parentDisplay != parentDisplay2)
             parentDisplay2.syncConnections();
+
         if(getWidgetModel().isAutoSize()){
             performAutosize();
         }
     }
 
-
     private void updateConnectionList() {
-        if(connectionList==null || originalPoints==null)
+        if (connectionList==null || originalPoints==null)
             return;
-        for(ConnectionModel conn: connectionList){
-            if(conn.getPoints() != null && conn.getPoints().size()>0){
-                PointList points = originalPoints.get(conn).getCopy();
-                for(int i=0; i<points.size(); i++){
-                    Point point = points.getPoint(i);
-                    point.scale(((LinkingContainerFigure)getFigure()).getZoomManager().getZoom());
-                    getContentPane().translateToAbsolute(point);
-                    points.setPoint(point, i);
+        double scaleFactor = ((LinkingContainerFigure) getFigure()).getZoomManager().getZoom();
+        final Point tranlateSize = getRelativeToRoot();
+        tranlateSize.scale(scaleFactor);
+        log.log(Level.FINEST, String.format("Relative to root translation (scaled by %s): %s ", scaleFactor, tranlateSize));
+
+        Point scaledCropTranslation = new Point();
+        if (cropTranslation != null)
+            scaledCropTranslation = cropTranslation.getCopy();
+        scaledCropTranslation.scale(scaleFactor);
+
+        for (ConnectionModel conn : connectionList) {
+            PointList points = originalPoints.get(conn).getCopy();
+            if (points == null)
+                continue;
+
+            log.log(Level.FINER, "Connector: " + conn.getName());
+            for (int i = 0; i < points.size(); i++) {
+                Point point = points.getPoint(i);
+                if (getWidgetModel().isAutoSize()) {
+                    point.translate(scaledCropTranslation);
+                    // If translated connection falls outside the bounding box,
+                    // then we move the connection to the edge of the bounding
+                    // box
+                    if (point.x() <= tranlateSize.x())
+                        point.translate(conn.getLineWidth() / 2, 0);
+                    if (point.y() <= tranlateSize.y())
+                        point.translate(0, conn.getLineWidth() / 2);
                 }
-                conn.setPoints(points);
+                point.scale(scaleFactor);
+                points.setPoint(point, i);
             }
+            conn.setPoints(points);
         }
     }
 
+    /**
+     * This method transforms the point to be absolute to the root Figure including max figure edge in path.
+     * @param origin the origin {@link Point} in this Figure's relative coordinates.
+     * @return The {@link Point} translate to the relative coordinates according to the root Figure.
+     */
+    private Point getRelativeToRoot() {
+        Point cumulativeOffset = new Point(0, 0);
+        IFigure parent = getFigure();
+        while (parent.getParent() != null) {
+            Point inherited = new Point(parent.getBounds().x, parent.getBounds().y);
+            parent.translateToRelative(inherited);
+            cumulativeOffset.translate(inherited);
+            parent = parent.getParent();
+        }
+        return cumulativeOffset;
+    }
+
+    private void updateConnectionListForLinkedOpi(DisplayModel displayModel) {
+        connectionList = displayModel.getConnectionList();
+        if(!connectionList.isEmpty()){
+            if(originalPoints != null)
+                originalPoints.clear();
+            else
+                originalPoints = new HashMap<ConnectionModel, PointList>();
+        }
+
+        for (ConnectionModel conn : connectionList) {
+            conn.setLoadedFromLinkedOpi(true);
+            if(conn.getPoints()!=null)
+                originalPoints.put(conn, conn.getPoints().getCopy());
+            conn.setScrollPane(((LinkingContainerFigure)getFigure()).getScrollPane());
+        }
+    }
 
     /**
      * {@inheritDoc} Overidden, to set the selection behaviour of child
@@ -365,7 +408,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         return ((LinkingContainerFigure)getFigure()).getContentPane();
     }
 
-    @Override
+     @Override
     public void layout() {
         AbstractLayoutEditpart layoutter = getLayoutWidget();
         if(layoutter != null && layoutter.getWidgetModel().isEnabled()){
@@ -401,6 +444,11 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             }
         };
         return super.getAdapter(adapter);
+    }
+
+    @Override
+    public ScrollPane getScrollPane() {
+        return ((LinkingContainerFigure)getFigure()).getScrollPane();
     }
 
 }

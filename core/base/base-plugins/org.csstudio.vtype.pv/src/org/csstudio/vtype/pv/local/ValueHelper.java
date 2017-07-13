@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VDouble;
 import org.diirt.vtype.VDoubleArray;
 import org.diirt.vtype.VEnum;
@@ -76,13 +77,16 @@ public class ValueHelper
      *  <p>Spaces and commata inside quotes are retained.
      *  Quotes inside quotes need to be escaped.
      *
-     *  @param text Text to parse
-     *  @return Items from text
+     *  @param text Text to parse, may be <code>null</code> or empty
+     *  @return Items from text, <code>null</code> if nothing provided
      *  @throws Exception on error
      */
     public static List<String> splitInitialItems(final String text) throws Exception
     {
-        List<String> items = new ArrayList<>();
+        if (text == null  ||  text.isEmpty())
+            return null;
+
+        final List<String> items = new ArrayList<>();
 
         int pos = 0;
         while (pos < text.length())
@@ -139,6 +143,8 @@ public class ValueHelper
      */
     private static List<String> getInitialStrings(List<String> items)
     {
+        if (items == null)
+            return Arrays.asList("");
         final List<String> strings = new ArrayList<>(items.size());
         for (String item : items)
             if (item.startsWith("\""))
@@ -177,6 +183,11 @@ public class ValueHelper
     {
         if (type == VDouble.class)
         {
+            if (items == null)
+                return ValueFactory.newVDouble(0.0,
+                                               ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "UDF"),
+                                               ValueFactory.timeNow(),
+                                               ValueFactory.displayNone());
             if (items.size() == 1)
                 return ValueFactory.toVType(getInitialDoubles(items)[0]);
             else
@@ -193,7 +204,7 @@ public class ValueHelper
 
         if (type == VString.class)
         {
-            if (items.size() == 1)
+            if (items == null  ||  items.size() == 1)
                 return ValueFactory.toVType(getInitialStrings(items).get(0));
             else
                 throw new Exception("Expected one string, got " + items);
@@ -248,13 +259,15 @@ public class ValueHelper
      *
      *  <p>For numbers, allows writing strings which are then parsed into numbers.
      *
-     * @param new_value
-     * @param type
-     * @param old_value
-     * @return
+     * @param new_value New value
+     * @param type Current type of the PV
+     * @param old_value Old value of PV, will be used to inspect e.g. enum labels
+     * @param change_from_double Adapt to a new 'type' if 'new_value' doesn't match?
+     * @return Adapted value
      * @throws Exception
      */
-    public static VType adapt(final Object new_value, Class<? extends VType> type, final VType old_value) throws Exception
+    public static VType adapt(final Object new_value, Class<? extends VType> type, final VType old_value,
+                              final boolean change_from_double) throws Exception
     {
         // Already matching VType?
         if (type.isInstance(new_value))
@@ -274,6 +287,37 @@ public class ValueHelper
             }
             catch (NumberFormatException ex)
             {
+                // Does PV have the initial 0.0 UNDEFINED value,
+                // and the type may be changed to the first assigned data type?
+                if (change_from_double)
+                {   // Change to string?
+                    if (new_value instanceof String)
+                        return ValueFactory.newVString(Objects.toString(new_value), ValueFactory.alarmNone(), ValueFactory.timeNow());
+                    // Change to double[]?
+                    if (new_value instanceof double[])
+                        return ValueFactory.toVType((double[]) new_value);
+                    try
+                    {
+                        if (new_value instanceof List)
+                        {
+                            final double[] numbers = getInitialDoubles((List<?>)new_value);
+                            return ValueFactory.toVType(numbers);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Ignore, try next type
+                    }
+                    if (new_value instanceof String[])
+                        return ValueFactory.newVStringArray(Arrays.asList((String[]) new_value), ValueFactory.alarmNone(), ValueFactory.timeNow());
+                    if (new_value instanceof List)
+                    {   // Assert each list element is a String
+                        final List<String> strings = new ArrayList<>();
+                        for (Object item : (List<?>)new_value)
+                            strings.add(Objects.toString(item));
+                        return ValueFactory.newVStringArray(strings, ValueFactory.alarmNone(), ValueFactory.timeNow());
+                    }
+                }
                 throw new Exception("Cannot parse number from '" + new_value + "'");
             }
         }

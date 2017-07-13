@@ -102,4 +102,14 @@ public class Activator extends AbstractUIPlugin {
         int timeout = getPreferenceStore().getInt(PREF_CONNECTION_TIMEOUT);
         return timeout <= 0 ? 3 : timeout;
     }
+
+    /**
+     * Returns the true if MASAR service is allowed to update configurations.
+     *
+     * @return if update enabled
+     */
+    public boolean isEnableUpdate() {
+        boolean enableUpdate = getPreferenceStore().getBoolean("enable.update");
+        return enableUpdate;
+    }
 }

@@ -153,6 +153,7 @@ public class RepositoryTree extends TreeView<String> {
      * Dispose of all resources and listeners allocated by this class.
      */
     public void dispose() {
+        selector.dispose();
         SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.BUSY, busyListener);
     }
 

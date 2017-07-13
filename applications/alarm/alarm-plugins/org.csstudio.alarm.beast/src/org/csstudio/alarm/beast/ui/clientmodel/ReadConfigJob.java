@@ -49,7 +49,6 @@ public class ReadConfigJob extends Job
         model.readConfiguration(monitor);
         if (listener != null)
             listener.newAlarmConfiguration(model);
-        model.fireNewConfig();
         return Status.OK_STATUS;
     }
 }

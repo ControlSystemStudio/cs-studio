@@ -64,15 +64,25 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
             {
                 double low = Double.MAX_VALUE;
                 double high = -Double.MAX_VALUE;
+                final PlotDataSearch<XTYPE> search = new PlotDataSearch<>();
                 data.getLock().lock();
                 try
                 {
-                    final int N = data.size();
-                    for (int i=0; i<N; ++i)
-                    {
-                        final PlotDataItem<XTYPE> item = data.get(i);
-                        if (x_range.contains(item.getPosition()))
+                    if (data.size() > 0)
+                    {   // Consider first sample at-or-before start
+                        int start = search.findSampleLessOrEqual(data, x_range.getLow());
+                        if (start < 0)
+                            start = 0;
+                        // Last sample is the one just inside end of range.
+                        int stop = search.findSampleLessOrEqual(data, x_range.getHigh());
+                        if (stop < 0)
+                            stop = 0;
+                        // If data is completely outside the x_range,
+                        // we end up using just data[0]
+                        // Check [start .. stop], including stop
+                        for (int i=start; i<=stop; ++i)
                         {
+                            final PlotDataItem<XTYPE> item = data.get(i);
                             final double value = item.getValue();
                             if (! Double.isFinite(value))
                                 continue;

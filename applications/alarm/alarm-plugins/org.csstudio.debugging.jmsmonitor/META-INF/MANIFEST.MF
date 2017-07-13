@@ -19,3 +19,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.security;bundle-version="1.1.0",
  org.csstudio.ui.util;bundle-version="4.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.csstudio.java.time

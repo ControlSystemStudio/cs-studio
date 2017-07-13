@@ -27,7 +27,7 @@ public class CssEntityResolver implements EntityResolver {
                }
            }
        } catch (Exception e) {
-           e.printStackTrace();
+        // Entity may not be found and this may throw exception. This is normal and FileUtil will revert to xi:fallback
        }
 
        return null;

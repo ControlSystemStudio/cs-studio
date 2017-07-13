@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
@@ -20,6 +21,7 @@ import org.csstudio.opibuilder.properties.UnsavableListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.gef.GraphicalViewer;
 
 /**The model which could contain children.
  * @author Xihui Chen
@@ -270,5 +272,12 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
         for(AbstractWidgetModel child : getChildren()){
             child.scale(newWidthRatio, newHeightRatio);
         }
+    }
+
+    public AbstractContainerEditpart getEditPart() {
+        GraphicalViewer viewer = getRootDisplayModel().getViewer();
+        if (viewer == null)
+            return null;
+        return (AbstractContainerEditpart) viewer.getEditPartRegistry().get(this);
     }
 }

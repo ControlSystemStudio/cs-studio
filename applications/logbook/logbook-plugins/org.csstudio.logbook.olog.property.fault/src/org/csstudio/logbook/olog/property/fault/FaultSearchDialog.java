@@ -3,27 +3,18 @@
  */
 package org.csstudio.logbook.olog.property.fault;
 
-import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchMap;
-import static org.csstudio.logbook.util.LogEntrySearchUtil.parseSearchString;
-
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.csstudio.logbook.olog.property.fault.Fault.BeamLossState;
-import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
-import org.csstudio.ui.util.DelayedNotificator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -76,7 +67,7 @@ public class FaultSearchDialog extends Dialog {
     private CCombo deviceCombo;
     private CCombo ownerCombo;
     private CCombo beamStateCombo;
-    
+
     private FaultConfiguration fc;
 
     public FaultSearchDialog(Shell parentShell, FaultConfiguration fc) {
@@ -145,7 +136,7 @@ public class FaultSearchDialog extends Dialog {
         });
         systemCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         systemCombo.setItems(fc.getSubsystems().toArray(new String[fc.getSubsystems().size()]));
-        
+
         Label lblDevice = new Label(container, SWT.NONE);
         lblDevice.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblDevice.setText("Device:");
@@ -160,7 +151,7 @@ public class FaultSearchDialog extends Dialog {
         });
         deviceCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         deviceCombo.setItems(fc.getDevices().toArray(new String[fc.getDevices().size()]));
-        
+
         Label lblOwner = new Label(container, SWT.NONE);
         lblOwner.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblOwner.setText("Owner:");

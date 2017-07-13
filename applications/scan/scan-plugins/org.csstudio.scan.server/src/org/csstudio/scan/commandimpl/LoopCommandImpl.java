@@ -202,15 +202,25 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         else
             condition = null;
 
-        final double start = getLoopStart();
-        final double end   = getLoopEnd();
-        final double step  = getLoopStep();
+        double start = getLoopStart();
+        double end   = getLoopEnd();
+        double step  = getLoopStep();
         if (step > 0)
             for (double value = start; value <= end; value += step)
+            {
                 executeStep(context, device, condition, readback, value);
+                // Permit changed step and end, but keep the direction
+                end = getLoopEnd();
+                step = Math.abs(command.getStepSize());
+            }
         else // step is < 0, so stepping down
             for (double value = end; value >= start; value += step)
+            {
                 executeStep(context, device, condition, readback, value);
+                // Permit changed step and start, but keep the direction
+                start = getLoopStart();
+                step = - Math.abs(command.getStepSize());
+            }
     }
 
     /** Execute one step of the loop

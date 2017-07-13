@@ -232,10 +232,10 @@ public class XYGraphToolbar extends Figure {
                 scrollingButton.switchImage(scrollingButton.isSelected());
                 if(scrollingButton.isSelected()) {
                     scrollingButton.setToolTip(new Label("Disable Scrolling"));
-
                 } else {
                     scrollingButton.setToolTip(new Label("Enable Scrolling"));
                 }
+                xyGraph.getEventManager().fireScrollingChanged(!scrollingButton.isSelected());
             }
         });
 

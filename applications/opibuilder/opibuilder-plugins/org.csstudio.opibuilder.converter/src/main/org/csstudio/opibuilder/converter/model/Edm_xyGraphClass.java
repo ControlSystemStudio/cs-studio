@@ -45,6 +45,14 @@ public class Edm_xyGraphClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean yShowMajorGrid;
     @EdmAttributeAn @EdmOptionalAn private boolean y2ShowMajorGrid;
 
+    @EdmAttributeAn @EdmOptionalAn private boolean xShowMinorGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean yShowMinorGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean y2ShowMinorGrid;
+
+    @EdmAttributeAn @EdmOptionalAn private boolean xShowLabelGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean yShowLabelGrid;
+    @EdmAttributeAn @EdmOptionalAn private boolean y2ShowLabelGrid;
+
     @EdmAttributeAn @EdmOptionalAn private String xAxisSrc; //AutoScale, fromUser
     @EdmAttributeAn @EdmOptionalAn private String yAxisSrc;
     @EdmAttributeAn @EdmOptionalAn private String y2AxisSrc;
@@ -261,6 +269,63 @@ public class Edm_xyGraphClass extends EdmWidget {
         return y2ShowMajorGrid;
     }
 
+
+
+
+
+
+    public boolean isxShowMinorGrid() {
+        return xShowMinorGrid;
+    }
+
+
+
+
+
+
+
+    public boolean isyShowMinorGrid() {
+        return yShowMinorGrid;
+    }
+
+
+
+
+
+
+
+    public boolean isY2ShowMinorGrid() {
+        return y2ShowMinorGrid;
+    }
+
+
+
+
+
+
+    public boolean isxShowLabelGrid() {
+        return xShowLabelGrid;
+    }
+
+
+
+
+
+
+
+    public boolean isyShowLabelGrid() {
+        return yShowLabelGrid;
+    }
+
+
+
+
+
+
+
+    public boolean isY2ShowLabelGrid() {
+        return y2ShowLabelGrid;
+    }
 
 
 

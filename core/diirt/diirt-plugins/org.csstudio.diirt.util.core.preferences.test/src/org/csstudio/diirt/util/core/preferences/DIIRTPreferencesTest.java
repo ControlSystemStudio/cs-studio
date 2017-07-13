@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FileUtils;
 import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
@@ -42,7 +43,6 @@ import org.junit.Test;
 /**
  * @author claudiorosati, European Spallation Source ERIC
  * @version 1.0.0 22 Dec 2016
- *
  */
 public class DIIRTPreferencesTest {
 
@@ -426,6 +426,56 @@ public class DIIRTPreferencesTest {
 
         assertEquals(ds1,  ds2);
         assertEquals(ca1,  ca2);
+
+    }
+
+    /**
+     * Test method for {@link org.csstudio.diirt.util.core.preferences.DIIRTPreferences#toFiles(java.io.File)},
+     * where some other files exist in the home folder to be copied.
+     */
+    @Test
+    public final void testToFilesWithCopy ( ) throws IOException, JAXBException {
+
+        DIIRTPreferences store1 = new DIIRTPreferences(new TestScope());
+        DataSources ds1 = new DataSources(new CompositeDataSource(DataSourceProtocol.pva, "zxc"));
+        ChannelAccess ca1 = new ChannelAccess(
+            new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
+            new JCAContext("fuffa foffi faffo", false, 23, 43.2, 12345, false, 23414, 23453)
+        );
+
+        ds1.updateDefaultsAndValues(store1);
+        ca1.updateDefaultsAndValues(store1);
+
+        File confDirSrc = Files.createTempDirectory("diirt.test.source").toFile();
+
+        store1.toFiles(confDirSrc);
+
+        File dsDir = new File(confDirSrc, DataSources.DATASOURCES_DIR);
+
+        FileUtils.write(new File(confDirSrc, "f01.txt"),  "Some text\nsplitted in 2 lines.", (String) null);
+        FileUtils.write(new File(dsDir, "f02.xml"),  "Some other text\nsplitted in\n3 lines.", (String) null);
+        FileUtils.write(new File(new File(dsDir, "aSubDir"), "f03.log"),  "Some more text\nsplitted in\n4 lines\nto be read.", (String) null);
+
+        DIIRTPreferences store2 = new DIIRTPreferences(new TestScope());
+
+        store2.fromFiles(confDirSrc);
+        store2.setString(DIIRTPreferences.PREF_CONFIGURATION_DIRECTORY, confDirSrc.toString());
+
+        DataSources ds2 = new DataSources(store2);
+        ChannelAccess ca2 = new ChannelAccess(store2);
+        File confDirDst = Files.createTempDirectory("diirt.test.destination").toFile();
+
+        store2.toFiles(confDirDst);
+
+        DIIRTPreferences store3 = new DIIRTPreferences(new TestScope());
+
+        store3.fromFiles(confDirDst);
+
+        DataSources ds3 = new DataSources(store3);
+        ChannelAccess ca3 = new ChannelAccess(store3);
+
+        assertEquals(ds2,  ds3);
+        assertEquals(ca2,  ca3);
 
     }
 

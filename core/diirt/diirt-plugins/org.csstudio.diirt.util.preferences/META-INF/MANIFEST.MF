@@ -2,16 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Diirt Preferences
 Bundle-SymbolicName: org.csstudio.diirt.util.preferences;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.osgi,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osgi,
+ org.eclipse.osgi.util;bundle-version="3.3.100",
  org.eclipse.ui,
+ org.csstudio.diirt.util.core.preferences;bundle-version="1.0.2",
  org.csstudio.startup;bundle-version="3.2.1",
  org.apache.commons.io,
- org.apache.commons.lang3,
- org.csstudio.diirt.util.core.preferences
+ org.apache.commons.lang3
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Import-Package: org.csstudio.utility.product
 Bundle-Activator: org.csstudio.diirt.util.preferences.DIIRTPreferencesPlugin

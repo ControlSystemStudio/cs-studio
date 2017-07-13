@@ -54,3 +54,4 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.archive,
  org.csstudio.trends.databrowser2.ui
 Bundle-ClassPath: .
+Import-Package: org.csstudio.java.time

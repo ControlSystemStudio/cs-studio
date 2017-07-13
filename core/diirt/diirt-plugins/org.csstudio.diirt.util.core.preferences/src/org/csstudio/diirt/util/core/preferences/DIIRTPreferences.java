@@ -12,17 +12,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.csstudio.diirt.util.core.preferences.ExceptionUtilities.CompoundIOException;
 import org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSources;
 import org.eclipse.core.runtime.FileLocator;
@@ -114,8 +123,14 @@ public final class DIIRTPreferences {
 
             try {
                 path = resolvePlatformPath(path);
-            } catch ( IOException | NullPointerException | IllegalArgumentException ex ) {
-                return NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
+            } catch ( IOException | NullPointerException | IllegalArgumentException | URISyntaxException ex ) {
+
+                String message = NLS.bind(Messages.DIIRTPreferences_verifyDIIRTPath_resolvingPath_message, path);
+
+                LOGGER.log(Level.WARNING, MessageFormat.format("{0}\n{1}", message, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
+
+                return message;
+
             }
 
             if ( !StringUtils.equals(beforeResolving, path) ) {
@@ -146,10 +161,13 @@ public final class DIIRTPreferences {
      * @throws IOException If {@code path} cannot be resolved.
      * @throws NullPointerException If {@code path} is {@code null}.
      * @throws IllegalArgumentException If {@code path} is empty or blank.
+     * @throws URISyntaxException If {@code path} cannot be resolved to a filesystem pathname.
      */
     public static String resolvePlatformPath ( String path )
-            throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException
+            throws MalformedURLException, IOException, NullPointerException, IllegalArgumentException, URISyntaxException
     {
+
+        LOGGER.log(Level.FINE, "About to resolve platform path [path: {0}].", path);
 
         if ( path == null ) {
             throw new NullPointerException("Null 'path'.");
@@ -162,7 +180,29 @@ public final class DIIRTPreferences {
         }
 
         if ( path.startsWith(PLATFORM_URI_PREFIX) ) {
-            return FileLocator.resolve(new URL(path)).getPath().toString();
+
+            URL resolvedURL = FileLocator.resolve(new URL(path));
+
+            LOGGER.log(Level.FINE, "Resolved URL\n    before: {0}\n     after: {1}", new Object[] { path, resolvedURL.toString() });
+
+            String escapedURL = htmlEncode(resolvedURL.toExternalForm());
+
+            LOGGER.log(Level.FINE, "Escaped URL\n    before: {0}\n     after: {1}", new Object[] { resolvedURL.toString(), escapedURL });
+
+            URI resolvedURI = new URI(escapedURL);
+
+            LOGGER.log(Level.FINE, "Resolved URI\n    before: {0}\n     after: {1}", new Object[] { escapedURL, resolvedURI.toString() });
+
+            File resolvedFile = URIUtil.toFile(resolvedURI);
+
+            LOGGER.log(Level.FINE, "Resolved File\n    before: {0}\n     after: {1}", new Object[] { resolvedURI.toString(), resolvedFile.toString() });
+
+            String resolvedString = resolvedFile.getCanonicalPath();
+
+            LOGGER.log(Level.FINE, "Resolved String\n    before: {0}\n     after: {1}", new Object[] { resolvedFile.toString(), resolvedString });
+
+            return resolvedString;
+
         } else {
             return new File(path).getCanonicalPath();
         }
@@ -189,7 +229,7 @@ public final class DIIRTPreferences {
                     try {
                         diirtHome = URIUtil.toFile(URIUtil.append(location.getURL().toURI(), "diirt")).toString();
                     } catch ( URISyntaxException ex ) {
-                        LOGGER.log(Level.WARNING, MessageFormat.format("Unable to setup fallback DIIRT directory [{0}].", location.toString()), ex);
+                        LOGGER.log(Level.WARNING, MessageFormat.format("Unable to setup fallback DIIRT directory [{0}].\n{1}", location.toString(), ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
                     }
                 }
 
@@ -209,8 +249,8 @@ public final class DIIRTPreferences {
                     fromFiles(new File(diirtHome));
                     setString(PREF_CONFIGURATION_DIRECTORY, diirtHome);
 
-                } catch ( NullPointerException | IllegalArgumentException | IOException ex ) {
-                    LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT directory [{0}].", diirtHome), ex);
+                } catch ( NullPointerException | IllegalArgumentException | IOException | URISyntaxException ex ) {
+                    LOGGER.log(Level.WARNING, MessageFormat.format("Unable to resolve DIIRT directory [{0}].\n{1}", diirtHome, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
                 }
             }
 
@@ -219,7 +259,7 @@ public final class DIIRTPreferences {
             try {
                 flush();
             } catch ( BackingStoreException ex ) {
-                LOGGER.log(Level.WARNING, "Unable to flush preferences.", ex);
+                LOGGER.log(Level.WARNING, "Unable to flush preferences.\n{0}", ExceptionUtilities.reducedStackTrace(ex, "org.csstudio"));
             }
 
         }
@@ -301,6 +341,35 @@ public final class DIIRTPreferences {
         }
 
         return diirtHome;
+
+    }
+
+    /**
+     * Returns whether the named preference is known to this preference store.
+     *
+     * @param name The name of the preference.
+     * @return {@code true} if either a current value or a default value is
+     *         known for the named preference, and {@code false} otherwise.
+     */
+    public boolean contains ( String name ) {
+
+        String value;
+
+        if ( preferencesService != null ) {
+            value = preferencesService.getString(QUALIFIER, name, null, null);
+        } else {
+            value = getPreferences().get(name, null);
+        }
+
+        if ( value == null ) {
+            if ( preferencesService != null ) {
+                value = preferencesService.getString(QUALIFIER, defaultPreferenceName(name), null, null);
+            } else {
+                value = getPreferences().get(defaultPreferenceName(name), null);
+            }
+        }
+
+        return ( value != null );
 
     }
 
@@ -500,17 +569,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setBoolean ( String name, boolean value ) {
-
-        boolean oldValue = getBoolean(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultBoolean(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putBoolean(name, value);
-            }
-        }
-
+        getPreferences().putBoolean(name, value);
     }
 
     /**
@@ -587,17 +646,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setDouble ( String name, double value ) {
-
-        double oldValue = getDouble(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultDouble(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putDouble(name, value);
-            }
-        }
-
+        getPreferences().putDouble(name, value);
     }
 
     /**
@@ -608,17 +657,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setFloat ( String name, float value ) {
-
-        float oldValue = getFloat(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultFloat(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putFloat(name, value);
-            }
-        }
-
+        getPreferences().putFloat(name, value);
     }
 
     /**
@@ -629,17 +668,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setInteger ( String name, int value ) {
-
-        int oldValue = getInteger(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultInteger(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putInt(name, value);
-            }
-        }
-
+        getPreferences().putInt(name, value);
     }
 
     /**
@@ -650,17 +679,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setLong ( String name, long value ) {
-
-        long oldValue = getLong(name);
-
-        if ( oldValue != value ) {
-            if ( getDefaultLong(name) == value ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().putLong(name, value);
-            }
-        }
-
+        getPreferences().putLong(name, value);
     }
 
     /**
@@ -671,17 +690,7 @@ public final class DIIRTPreferences {
      * @param value The new current value of the preference.
      */
     public void setString ( String name, String value ) {
-
-        String oldValue = getString(name);
-
-        if ( ! StringUtils.equals(oldValue, value) ) {
-            if ( StringUtils.equals(getDefaultString(name), value) ) {
-                getPreferences().remove(name);
-            } else {
-                getPreferences().put(name, value);
-            }
-        }
-
+        getPreferences().put(name, value);
     }
 
     /**
@@ -724,6 +733,25 @@ public final class DIIRTPreferences {
         new DataSources(this).toFile(diirtHome);
         new ChannelAccess(this).toFile(diirtHome);
 
+        String confDir = getString(PREF_CONFIGURATION_DIRECTORY);
+
+        if ( StringUtils.isNoneBlank(confDir) ) {
+
+            File confFile = new File(confDir);
+
+            if ( confFile.exists() && confFile.isDirectory() ) {
+                copyFiles(
+                    confFile,
+                    diirtHome,
+                    Arrays.asList(
+                        new File(DataSources.DATASOURCES_DIR, DataSources.DATASOURCES_FILE),
+                        new File(new File(DataSources.DATASOURCES_DIR, ChannelAccess.CA_DIR), ChannelAccess.CA_FILE)
+                    )
+                );
+            }
+
+        }
+
     }
 
     /**
@@ -746,6 +774,74 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * Copy recursively all the files in the {@code from} the given directory
+     * {@code to} the given one, {@code excluding} everything inside the
+     * provided {@link List}.
+     *
+     * @param from      The directory source of the files to be copied.
+     * @param to        The directory where files must be copied into.
+     * @param excluding The {@link List} of files/folder that must not be copied.
+     *                  Inside this list, pathnames must be relative to the
+     *                  {@code from} directory.
+     * @throws IOException If {@code to} is not a directory or some problems
+     *              occurs while copying the files.
+     * @throws CompoundIOException If problems occurs copying files.
+     */
+    private static void copyFiles ( final File from, final File to, final List<File> excluding ) throws IOException, CompoundIOException {
+
+        if ( from == null || !from.exists() || !from.isDirectory() ) {
+            return;
+        }
+
+        if ( to == null ) {
+            throw new NullPointerException("'to' directory.");
+        } else if ( !to.exists() ) {
+            if ( !to.mkdirs() ) {
+                throw new IOException(MessageFormat.format("Unable to create 'to' directory [{0}].", to.getPath()));
+            }
+        }
+
+        List<Exception> exceptions = new ArrayList<>();
+
+        Arrays.asList(from.listFiles()).stream().filter(f -> !excluding.stream().anyMatch(ff -> f.toString().endsWith(ff.toString()))).forEach(f -> {
+            if ( f.isDirectory() ) {
+
+                File destination = new File(to, f.getName());
+
+                try {
+                    copyFiles(f, destination, excluding);
+                } catch ( IOException ioex ) {
+                    exceptions.add(new IOException(MessageFormat.format("Unable to create to copy files [from: {0}, to: {1}].", f.toString(), destination.toString())));
+                }
+            } else {
+
+                Path source = f.toPath();
+                Path destination = new File(to, f.getName()).toPath();
+
+                try {
+                    Files.copy(source, destination, StandardCopyOption.COPY_ATTRIBUTES);
+                } catch ( IOException ioex ) {
+                    exceptions.add(new IOException(MessageFormat.format("Unable to create to copy a file [from: {0}, to: {1}].", source.toString(), destination.toString())));
+                }
+
+            }
+        });
+
+        if ( !exceptions.isEmpty() ) {
+            throw new CompoundIOException(MessageFormat.format("Problems copying files [from: {0}, to: {1}].", from.toString(), to.toString()), exceptions);
+        }
+
+    }
+
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @throws IOException
+     */
     private static void cleanDirectory ( final File directory ) throws IOException {
 
         final File[] files = verifiedListFiles(directory);
@@ -765,6 +861,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @throws IOException
+     */
     private static void deleteDirectory ( final File directory ) throws IOException {
 
         if ( !directory.exists() ) {
@@ -782,6 +886,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param file
+     * @return
+     */
     private static boolean deleteQuietly ( final File file ) {
 
         if ( file == null ) {
@@ -803,6 +915,14 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param file
+     * @throws IOException
+     */
     private static void forceDelete ( final File file ) throws IOException {
 
         if ( file.isDirectory() ) {
@@ -824,6 +944,133 @@ public final class DIIRTPreferences {
 
     }
 
+    /**
+     * Encode the given URL string.
+     * <p>
+     * <b>Note:</b> {@link URIUtil#toFile(URI)} requires the URI to be encoded
+     * otherwise the filesystem mapping will work. The whole URI must be encoded
+     * but in a sensible way: this is why {@link URLEncoder#encode(String)}
+     * cannot be used.
+     * <p>
+     * This implementation is based on testing each "switch case" on MacOS X,
+     * Linux (CentOS 7.1) and Windows 7 against {@link URIUtil#toFile(URI)}.
+     *
+     * @param s The string to be encoded.
+     * @return The encoded string.
+     */
+    private static String htmlEncode ( String s ) {
+
+        if ( StringUtils.isBlank(s) ) {
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder(s.length() + 16);
+
+        for ( int i = 0; i < s.length(); i++ ) {
+
+            char c = s.charAt(i);
+
+            switch ( c ) {
+                case ' ':
+                    sb.append("%20");
+                    break;
+                case '!':
+                    sb.append("%21");
+                    break;
+                case '#':
+                    sb.append("%23");
+                    break;
+                case '$':
+                    sb.append("%24");
+                    break;
+                case '%':
+                    sb.append("%25");
+                    break;
+                case '&':
+                    sb.append("%26");
+                    break;
+                case '\'':
+                    sb.append("%27");
+                    break;
+                case '(':
+                    sb.append("%28");
+                    break;
+                case ')':
+                    sb.append("%29");
+                    break;
+                case '*':
+                    sb.append("%2A");
+                    break;
+                case '+':
+                    sb.append("%2B");
+                    break;
+                case ',':
+                    sb.append("%2C");
+                    break;
+                case '<':
+                    sb.append("%3C");
+                    break;
+                case '=':
+                    sb.append("%3D");
+                    break;
+                case '>':
+                    sb.append("%3E");
+                    break;
+                case '?':
+                    sb.append("%3F");
+                    break;
+                case '@':
+                    sb.append("%40");
+                    break;
+                case '[':
+                    sb.append("%5B");
+                    break;
+                case ']':
+                    sb.append("%5D");
+                    break;
+                case '^':
+                    sb.append("%5E");
+                    break;
+                case '`':
+                    sb.append("%60");
+                    break;
+                case '{':
+                    sb.append("%7B");
+                    break;
+                case '|':
+                    sb.append("%7C");
+                    break;
+                case '}':
+                    sb.append("%7D");
+                    break;
+                case '"':   //  %22
+                case '-':   //  %2D
+                case '.':   //  %2E
+                case '/':   //  %2F
+                case ':':   //  %3A
+                case ';':   //  %3B
+                case '\\':  //  %5C
+                case '_':   //  %5F
+                case '~':   //  %7E
+                default:
+                    sb.append(c);
+            }
+
+        }
+
+        return sb.toString();
+
+    }
+
+    /**
+     * This method is copied from {@link IOUtils} because when it is
+     * used (inside the runtime shutdown hook) all OSGI modules are
+     * already disposed.
+     *
+     * @param directory
+     * @return
+     * @throws IOException
+     */
     private static File[] verifiedListFiles ( File directory ) throws IOException {
 
         if ( !directory.exists() ) {

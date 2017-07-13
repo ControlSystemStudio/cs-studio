@@ -19,14 +19,14 @@ import org.eclipse.ui.menus.IContributionRoot;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
- * 
+ *
  * @author Kunal Shroff
  *
  */
 public class FaultCommands extends ExtensionContributionFactory {
 
     public FaultCommands() {
-        
+
     }
 
     @Override

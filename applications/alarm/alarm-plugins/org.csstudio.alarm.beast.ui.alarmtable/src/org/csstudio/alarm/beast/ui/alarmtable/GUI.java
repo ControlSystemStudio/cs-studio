@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -1057,7 +1057,7 @@ public class GUI extends Composite implements AlarmClientModelListener
 
     /**
      * Sets the format used for formatting the date and time column. The format has
-     * to be acceptable by the {@link SimpleDateFormat}.
+     * to be acceptable by the {@link DateTimeFormatter}.
      *
      * @param timeFormat the format string
      */

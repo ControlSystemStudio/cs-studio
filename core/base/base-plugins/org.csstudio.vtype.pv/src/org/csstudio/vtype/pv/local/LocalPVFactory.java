@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.local;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +49,8 @@ public class LocalPVFactory implements PVFactory
         // Actual name: loc://the_pv  without <type> or (initial value)
         final String actual_name = LocalPVFactory.TYPE + PVPool.SEPARATOR + ntv[0];
 
-        // Info for initial value, default to "0"
-        final List<String> initial_value = ntv[2] == null
-                                         ? Arrays.asList("0")
-                                         : ValueHelper.splitInitialItems(ntv[2]);
+        // Info for initial value, null if nothing provided
+        final List<String> initial_value = ValueHelper.splitInitialItems(ntv[2]);
 
         // Determine type from initial value or use given type
         final Class<? extends VType> type = ntv[1] == null
@@ -76,6 +73,9 @@ public class LocalPVFactory implements PVFactory
 
     private static Class<? extends VType> determineValueType(final List<String> items) throws Exception
     {
+        if (items == null)
+            return VDouble.class;
+
         if (ValueHelper.haveInitialStrings(items))
         {
             if (items.size() == 1)

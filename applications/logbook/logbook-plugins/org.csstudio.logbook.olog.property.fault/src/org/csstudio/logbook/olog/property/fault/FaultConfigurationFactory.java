@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Returns a faultConfiguration from the defined preferences
- * 
+ *
  * @author Kunal Shroff
  *
  */

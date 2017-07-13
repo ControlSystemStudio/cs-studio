@@ -34,6 +34,7 @@ public class Opi_activeMenuButtonClass extends OpiButtonClass {
         {
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
             new OpiBoolean(widgetContext, "actions_from_pv", true);
+            new OpiBoolean(widgetContext, "show_down_arrow", true);
         }
 
         log.config("Edm_activeMenuButtonClass written.");

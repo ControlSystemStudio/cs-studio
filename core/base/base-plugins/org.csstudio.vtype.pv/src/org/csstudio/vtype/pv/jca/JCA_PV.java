@@ -125,12 +125,15 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
      *  @param base_name Base name without optional prefix
      *  @throws Exception on error
      */
-    public JCA_PV(final String name, final String base_name) throws Exception
+    public JCA_PV(final String name, String base_name) throws Exception
     {
         super(name);
         logger.fine("JCA PV " + base_name);
         // Read-only until connected and we learn otherwise
         notifyListenersOfPermissions(true);
+        base_name = base_name.trim();
+        if (base_name.isEmpty())
+            throw new Exception("Empty PV name '" + name + "'");
         // .RTYP does not provide meta data
         plain_dbr = base_name.endsWith(".RTYP");
         createChannel(base_name);
@@ -190,7 +193,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     {
         try
         {
-            channel.get(DBRHelper.getCtrlType(plain_dbr, channel.getFieldType()), 1, meta_get_listener);
+            // With very old IOCs, could only get one element for Ctrl type.
+            // With R3.15.5, fetching just one element for a record.INP$
+            // (i.e. fetching the string as a BYTE[])
+            // crashes the IOC.
+            // --> Using the same request count as for the subscription
+            final int request_count = JCAContext.getInstance().getRequestCount(channel);
+            channel.get(DBRHelper.getCtrlType(plain_dbr, channel.getFieldType()), request_count, meta_get_listener);
             channel.getContext().flushIO();
         }
         catch (Exception ex)
@@ -233,7 +242,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             }
 
             // Subscribe to metadata changes (DBE_PROPERTY)
-            final DBRType meta_request = getRequestForMetadata((DBR)metadata);
+            final DBRType meta_request = getRequestForMetadata(metadata);
             if (JCA_Preferences.getInstance().isDbePropertySupported()  &&  meta_request != null)
             {
                 Monitor old_metadata_monitor = null;

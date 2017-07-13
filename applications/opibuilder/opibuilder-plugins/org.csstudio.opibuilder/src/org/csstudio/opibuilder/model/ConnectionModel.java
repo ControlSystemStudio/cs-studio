@@ -23,6 +23,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -80,6 +81,57 @@ public class ConnectionModel extends AbstractWidgetModel {
         @Override
         public String toString() {
             return description;
+        }
+    }
+
+    public enum LineJumpAdd {
+        NONE("none"),
+        HORIZONTAL_LINES("horizontal lines"),
+        VERTICAL_LINES("vertical lines");
+
+        String description;
+
+        LineJumpAdd(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public String toString() {
+            return description;
+        }
+
+        public static String[] stringValues() {
+            String[] sv = new String[values().length];
+            int i = 0;
+            for (LineJumpAdd p : values())
+                sv[i++] = p.toString();
+            return sv;
+        }
+    }
+
+    public enum LineJumpStyle {
+        ARC("arc"),
+        GAP("gap"),
+        SQUARE("square"),
+        SLIDES2("2 slides");
+
+        String description;
+
+        LineJumpStyle(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public String toString() {
+            return description;
+        }
+
+        public static String[] stringValues() {
+            String[] sv = new String[values().length];
+            int i = 0;
+            for (LineJumpStyle p : values())
+                sv[i++] = p.toString();
+            return sv;
         }
     }
 
@@ -156,6 +208,14 @@ public class ConnectionModel extends AbstractWidgetModel {
      */
     public static final String PROP_POINTS = "points"; //$NON-NLS-1$
 
+    public static final String PROP_LINE_JUMP_ADD = "line_jump_add"; //$NON-NLS-1$
+
+    public static final String PROP_LINE_JUMP_STYLE = "line_jump_style"; //$NON-NLS-1$
+
+    public static final String PROP_LINE_JUMP_SIZE = "line_jump_size"; //$NON-NLS-1$
+
+    public static final String PROP_IS_LOADED_FROM_LINKING_CONTAINER = "is_loaded_from_linking_container"; //$NON-NLS-1$
+
     /** True, if the connection is attached to its endpoints. */
     private boolean isConnected;
 
@@ -171,6 +231,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     private PointList originPoints;
 
+    private ScrollPane scrollPane;
 
     /**Construct a connection model which belongs to the displayModel.
      * If this is a temporary connection model which doesn't belong to any display model,
@@ -205,6 +266,18 @@ public class ConnectionModel extends AbstractWidgetModel {
                 WidgetPropertyCategory.Display, ""));
         addProperty(new PointListProperty(PROP_POINTS, "Points",
                 WidgetPropertyCategory.Display, new PointList()));
+        addProperty(new ComboProperty(PROP_LINE_JUMP_ADD, "Add Line Jump To",
+                WidgetPropertyCategory.Display, LineJumpAdd.stringValues(), 0));
+        addProperty(new ComboProperty(PROP_LINE_JUMP_STYLE, "Line Jump Style",
+                WidgetPropertyCategory.Display, LineJumpStyle.stringValues(), 0));
+        addProperty(new IntegerProperty(PROP_LINE_JUMP_SIZE, "Line Jump Size",
+                WidgetPropertyCategory.Display, 10, 1, 100));
+
+        AbstractWidgetProperty loadedFromLinkingContainer = new StringProperty(PROP_IS_LOADED_FROM_LINKING_CONTAINER,
+                        "Is Loaded From Linking Container", WidgetPropertyCategory.Behavior, "false");
+        addProperty(loadedFromLinkingContainer);
+        setPropertyVisibleAndSavable(PROP_IS_LOADED_FROM_LINKING_CONTAINER, false, false);
+
         setPropertyVisibleAndSavable(PROP_POINTS, false, true);
 
         AbstractWidgetProperty srcWUIDProp = new StringProperty(PROP_SRC_WUID,
@@ -524,7 +597,6 @@ public class ConnectionModel extends AbstractWidgetModel {
 
     public void setPoints(PointList points) {
         setPropertyValue(PROP_POINTS, points);
-
     }
 
     /**
@@ -566,4 +638,32 @@ public class ConnectionModel extends AbstractWidgetModel {
             return result;
     }
 
+    public LineJumpAdd getLineJumpAdd() {
+        int i = (Integer) getPropertyValue(PROP_LINE_JUMP_ADD);
+        return LineJumpAdd.values()[i];
+    }
+
+    public int getLineJumpSize() {
+        return (int)getPropertyValue(PROP_LINE_JUMP_SIZE);
+    }
+
+    public LineJumpStyle getLineJumpStyle() {
+        int i = (Integer) getPropertyValue(PROP_LINE_JUMP_STYLE);
+        return LineJumpStyle.values()[i];
+    }
+
+    /**
+     * @return the scrollPane
+     */
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    /**
+     * @param scrollPane the scrollPane to set
+     */
+    public void setScrollPane(ScrollPane scrollPane) {
+        this.scrollPane = scrollPane;
+        setPropertyValue(PROP_IS_LOADED_FROM_LINKING_CONTAINER, "true", true);
+    }
 }
