@@ -17,8 +17,7 @@ import org.influxdb.dto.QueryResult;
 public class InfluxDBQueries
 {
     private final InfluxDB influxdb;
-    //map from channel names to RPs associated with them
-    private final Map<String, String> rpnames; //TODO: use this data when making queries
+    //TODO: use rp names when making queries
 
     abstract public static class DBNameMap {
         public abstract String getDataDBName(final String channel_name) throws Exception;
@@ -70,73 +69,51 @@ public class InfluxDBQueries
             influxdb.createDatabase(db);
         }
     }
-    
-	public String getDataRetentionPolicy(String channel_name) throws Exception
-	{
-		if (!rpnames.containsKey(channel_name))
-		{	// query the database
-			final String dbname = dbnames.getDataDBName(channel_name);
-			final String statement = "SHOW TAG VALUES FROM \"" + channel_name + "\" WITH KEY = retain";
-			QueryResult query = influxdb.query(new Query(statement, dbname));
-			// get the "value" column (2nd column) of the query result
-			List<List<Object>> rows;
-			try
-			{
-				List<QueryResult.Series> series = query.getResults().get(0).getSeries();
-				if (series == null)
-					rows = Collections.emptyList();
-				else
-				{
-					rows = series.get(0).getValues();
-				}
-			}
-			catch (Exception e)
-			{
-				throw new Exception("Unable to get R.P. name from result " + query.toString(), e);
-			}
-			// put() the rpname
-			String result;
-			if (rows.size() == 0)
-				result = null;
-			//TODO: throw something if (values.size() != 1) ?
-			else
-				result = (String) rows.get(0).get(1);
-			rpnames.put(channel_name, result);
-			return result;
-		}
-		return rpnames.get(channel_name);
-	}
 
     //TODO: test this
-    //TODO: where to call this? same place as initDBs?
-    public void createDataRetentionPolicy(String duration, String channel_name) throws Exception
+    /**
+     * Create a retention policy.
+     * @param rpname
+     * @param dbname
+     * @param duration
+     */
+    public void createRetentionPolicy(final String rpname, final String dbname, final String duration)
     {	// Influxdb-java versions > 2.7 have retention policy APIs.
     	
     	//TODO: validate duration ?
     	
-    	String rpname = getDataRetentionPolicy(channel_name);
-    	if (rpname != null && rpname.equals(duration)) //there is already a retention policy assigned to that channel
-    		throw new Exception("There is already a retention policy ("+rpname+") for the channel " + channel_name);
-    	else if (rpname != null)
-    		return; //the given RP has already been assigned to that channel
-
-    	rpname = duration;
-    	String dbname = dbnames.getDataDBName(channel_name);
-
     	String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION 1",
     			rpname, dbname, duration);
-    	influxdb.query(new Query(command, dbname));
+    	QueryResult result = influxdb.query(new Query(command, dbname));
     	
-    	//TODO: test success? (could query SHOW RETENTION POLICIES)
-    		//also, seems like there would be an error in the QueryResult if it fails (result.getError() != null)
-    	
-    	// assign the new rp to the channel
-    	rpnames.put(channel_name, rpname);
+    	//TODO: test success?
+    		//seems like there would be an error in the QueryResult
+    		//if it fails (result.getError() != null), not sure
     }
     
-    public void createDownsampleContinuousQuery(String retentionPolicy, String channel_name, String downsampleDuration)
+    public void createDownsampleContinuousQuery(final String channelName, final String retentionPolicy,
+    		final String retainTime, final String decimateTime, final boolean isMedian)
     {
-    	//TODO: implement this
+    	try
+    	{
+    		final String dbname = dbnames.getDataDBName(channelName);
+	    	String statement = new StringBuilder("CREATE CONTINUOUS QUERY ")
+	    			.append('"').append(retainTime).append('_').append(decimateTime).append('"')
+	    			.append(" ON \"").append(dbname).append('"')
+	    			.append(" BEGIN")
+	    			.append(" SELECT ").append(isMedian ? "MEDIAN" : "MEAN").append("(*) AS average")
+	    			.append(" INTO \"").append(channelName).append('"')
+	    			.append(" FROM \"").append(retainTime).append("\".\"").append(channelName).append('"')
+	    			.append(" GROUP BY time(").append(decimateTime).append(")")
+	    			.append(" END")
+	    			.toString();
+	    	QueryResult result = influxdb.query(new Query(statement, dbname));
+	    	//TODO: check result for errors
+    	}
+    	catch (Exception e)
+    	{
+    		//TODO: log something
+    	}
     }
 
     public InfluxDBQueries(InfluxDB influxdb, final DBNameMap dbnames)
@@ -146,7 +123,6 @@ public class InfluxDBQueries
             this.dbnames = new DefaultDBNameMap();
         else
             this.dbnames = dbnames;
-        this.rpnames = new HashMap<String, String>();
     }
 
     //TODO: timestamps come back with wrong values stored in Double... would be faster if it worked.

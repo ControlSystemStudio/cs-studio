@@ -56,7 +56,9 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
 
     static class batchPointSets implements Iterable<BatchPoints>
     {
-        /** Batched points to be written per retention policy, per database */
+        /** Batched points to be written per retention policy, per database.
+         * Map from dbname to a retention policy map. Retention policies are mapped
+         * to their corresponding BatchPoints instance. */
         final private Map<String, Map<String, BatchPoints>> dbPoints = new HashMap<>();
 
         private BatchPoints getMakePoints(final String dbName)
@@ -78,16 +80,12 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             	points = rp_points.get(rpName);
             if (points == null)
             {
-                //TODO: set retention and consistency policies
-            	BatchPoints.Builder builder = BatchPoints
+                //TODO: set consistency policy
+            	BatchPoints
             			.database(dbName)
-            			.consistency(ConsistencyLevel.ALL);
-            	if (rpName != null)
-            		builder.retentionPolicy(rpName)
-            				.tag("retain", rpName);
-            	else
-            		builder.retentionPolicy("autogen");
-                points = builder.build();
+            			.consistency(ConsistencyLevel.ALL)
+            			.retentionPolicy(rpName != null ? rpName : "autogen")
+            			.build();
                 rp_points.put(rpName, points);
             }
             return points;
@@ -102,6 +100,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
         {
             return getMakePoints(dbnames.getDataDBName(channel_name), rpname);
         }
+        
         public BatchPoints getChannelMetaPoints(final String channel_name) throws Exception
         {
             return getMakePoints(dbnames.getMetaDBName(channel_name));
@@ -191,23 +190,28 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
     @Override
     public WriteChannel getChannel(final String name) throws Exception
     {
+    	return getChannel(name, null);
+    }
+
+    @Override
+    public WriteChannel getChannel(final String name, final String retention) throws Exception
+    {
         // Check cache
         InfluxDBWriteChannel channel = channels.get(name);
         if (channel == null)
         {    // Get channel information from InfluxDB
-            String rp = influxQuery.getDataRetentionPolicy(name);
             QueryResult results = influxQuery.get_newest_meta_datum(name);
             if (InfluxDBResults.getValueCount(results) <= 0)
             {
                 // throw new Exception("Unknown channel " + name);
-                return makeNewChannel(name, rp);
+                return makeNewChannel(name, retention);
             }
             List<MetaObject> meta = MetaTypes.toMetaObjects(results);
             if (meta.size() != 1)
             {
                 throw new Exception("Metadata results for channel " + name + " did not parse into single object: " + results);
             }
-            channel = new InfluxDBWriteChannel(name, rp);
+            channel = new InfluxDBWriteChannel(name, retention);
             channel.setMetaData(meta.get(0));
             channels.put(name, channel);
         }

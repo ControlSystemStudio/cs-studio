@@ -23,6 +23,11 @@ public interface ArchiveWriter
      *          could not be added to the archive
      */
     public WriteChannel getChannel(String name) throws Exception;
+    
+    public default WriteChannel getChannel(String name, String retention) throws Exception
+    {
+    	return getChannel(name);
+    }
 
     /** Add a sample to the archive.
      *

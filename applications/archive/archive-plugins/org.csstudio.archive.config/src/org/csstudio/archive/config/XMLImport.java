@@ -29,10 +29,10 @@ public class XMLImport extends DefaultHandler
     final static String TAG_ENGINECONFIG = "engineconfig";
 
     /** XML tag */
-    final private static String TAG_GROUP = "group";
+    final protected static String TAG_GROUP = "group";
 
     /** XML tag */
-    final private static String TAG_CHANNEL = "channel";
+    final protected static String TAG_CHANNEL = "channel";
 
     /** XML tag */
     final private static String TAG_NAME = "name";
@@ -52,6 +52,9 @@ public class XMLImport extends DefaultHandler
     /** XML tag */
     final private static String TAG_ENABLE = "enable";
 
+    /** XML tag */
+	final private static String TAG_RETAIN = "retain";
+	
     /** Replace existing engine configuration? */
     final private boolean replace;
 
@@ -62,10 +65,10 @@ public class XMLImport extends DefaultHandler
     final private ImportableArchiveConfig config;
 
     /** Accumulator for characters within a tag */
-    final private StringBuffer accumulator = new StringBuffer();
+    final protected StringBuffer accumulator = new StringBuffer();
 
     /** States of the parser */
-    private enum State
+    protected enum State
     {
         /** Looking for the initial element */
         NEED_FIRST_ELEMENT,
@@ -81,7 +84,7 @@ public class XMLImport extends DefaultHandler
     }
 
     /** Current parser state */
-    private State state = State.NEED_FIRST_ELEMENT;
+    protected State state = State.NEED_FIRST_ELEMENT;
 
     /** Most recent 'name' tag */
     private String name;
@@ -103,7 +106,10 @@ public class XMLImport extends DefaultHandler
 
     /** Current archive group */
     private GroupConfig group;
-
+    
+    /** Most recent 'retain' tag (contents) */
+	private String retain = null;
+	
     /**
      * Initialize
      *
@@ -192,6 +198,17 @@ public class XMLImport extends DefaultHandler
             monitor = false;
             is_enabling = false;
         }
+        else if (element.equals(TAG_RETAIN))
+		{
+        	//TODO: support group retain tags (overridden by channel retain tags)
+			//if (state != State.CHANNEL)
+				//retain_parent_tag = TAG_CHANNEL;
+			//else if (state == State.GROUP)
+				//retain_parent_tag = TAG_GROUP;
+        	//else
+			if (state != State.CHANNEL)
+                throw new XMLImportException("Unexpected retain entry while in state " + state);
+		}
     }
 
     /** Accumulate characters within (or also between) current element(s) */
@@ -326,6 +343,11 @@ public class XMLImport extends DefaultHandler
                     config.setEnablingChannel(group, channel);
                     group.setEnablingChannel(channel);
                 }
+                if (retain != null && !retain.isEmpty())
+                {
+                	channel.setRetention(retain);
+                	retain = null;
+                }
             }
             catch (Exception ex)
             {    // Must convert to SAXException
@@ -343,6 +365,10 @@ public class XMLImport extends DefaultHandler
         {
             group = null;
             state = State.PREAMBLE;
+        }
+        else if (element.equals(TAG_RETAIN))
+        {
+        	retain = accumulator.toString().trim();
         }
         // else: Ignore the unknown element
     }

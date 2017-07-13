@@ -251,7 +251,8 @@ public class WriteThread implements Runnable
             buffer.updateStats();
             // Write samples for one channel
             final String name = buffer.getChannelName();
-            final WriteChannel channel = writer.getChannel(name);
+            final String retention = buffer.getArchiveDataRetention();
+            final WriteChannel channel = writer.getChannel(name, retention);
             VType sample = buffer.remove();
             while (sample != null)
             {   // Write one value

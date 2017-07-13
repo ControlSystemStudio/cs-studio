@@ -32,15 +32,28 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     final private int max_repeats;
     private int repeats = 0;
 
-    /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
+    /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) 
+	 * @deprecated Use {@link #ScannedArchiveChannel(String,String,Enablement,int,VType,double,int)} instead*/
+	public ScannedArchiveChannel(final String name,
+	                             final Enablement enablement,
+	                             final int buffer_capacity,
+	                             final VType last_archived_value,
+	                             final double scan_period,
+	                             final int max_repeats) throws Exception
+	{
+		this(name, null, enablement, buffer_capacity, last_archived_value, scan_period, max_repeats);
+	}
+
+	/** @see ArchiveChannel#ArchiveChannel(String, String, int, IValue) */
     public ScannedArchiveChannel(final String name,
+                                 final String retention,
                                  final Enablement enablement,
                                  final int buffer_capacity,
                                  final VType last_archived_value,
                                  final double scan_period,
                                  final int max_repeats) throws Exception
     {
-        super(name, enablement, buffer_capacity, last_archived_value);
+        super(name, retention, enablement, buffer_capacity, last_archived_value);
         this.scan_period = scan_period;
         this.max_repeats = max_repeats;
     }
