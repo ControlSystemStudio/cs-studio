@@ -7,8 +7,14 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
+import java.util.logging.Level;
 
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ArrayFloat;
@@ -16,12 +22,15 @@ import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.epics.pvdata.factory.ConvertFactory;
+import org.epics.pvdata.pv.BooleanArrayData;
 import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.PVBoolean;
+import org.epics.pvdata.pv.PVBooleanArray;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVScalarArray;
@@ -31,6 +40,7 @@ import org.epics.pvdata.pv.PVUnion;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.Structure;
 
 /** Helper for reading & writing PVStructure
  *
@@ -88,7 +98,7 @@ class PVStructureHelper
         if (type.equals("NTScalarArray:1.0"))
             return decodeNTArray(actual_struct);
         if (type.equals("NTNDArray:1.0"))
-            return decodeNTNDArray(actual_struct);
+            return new VImageForNTNDArray(actual_struct);
         if (type.equals("NTTable:1.0"))
             return decodeNTTable(actual_struct);
 
@@ -107,9 +117,8 @@ class PVStructureHelper
             }
             catch (Exception ex)
             {
+                logger.log(Level.WARNING, "Cannot decode struct, returning string", ex);
                 // fall through
-                // TODO Logger!!
-                ex.printStackTrace();
             }
         }
 
@@ -325,7 +334,7 @@ class PVStructureHelper
                     ValueFactory.timeNow());
         }
     }
-    
+
    	/**
      * Decode table from NTTable
      * @param struct
