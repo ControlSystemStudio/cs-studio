@@ -23,6 +23,7 @@
     <module>org.csstudio.security.ui.test</module>
     <module>org.csstudio.startup</module>
     <module>org.csstudio.startup.helper</module>
+    <module>org.csstudio.trayicon</module>
     <module>org.csstudio.utility.batik</module>
     <module>org.csstudio.utility.product</module>
     <module>org.csstudio.utility.product.test</module>
