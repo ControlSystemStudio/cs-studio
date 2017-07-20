@@ -81,7 +81,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             if (points == null)
             {
                 //TODO: set consistency policy
-            	BatchPoints
+            	points = BatchPoints
             			.database(dbName)
             			.consistency(ConsistencyLevel.ALL)
             			.retentionPolicy(rpName != null ? rpName : "autogen")

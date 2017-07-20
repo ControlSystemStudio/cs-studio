@@ -17,7 +17,6 @@ import org.influxdb.dto.QueryResult;
 public class InfluxDBQueries
 {
     private final InfluxDB influxdb;
-    //TODO: use rp names when making queries
 
     abstract public static class DBNameMap {
         public abstract String getDataDBName(final String channel_name) throws Exception;
@@ -91,19 +90,22 @@ public class InfluxDBQueries
     		//if it fails (result.getError() != null), not sure
     }
     
-    public void createDownsampleContinuousQuery(final String channelName, final String retentionPolicy,
-    		final String retainTime, final String decimateTime, final boolean isMedian)
+    //this doesn't have a place to be used
+    private void createDownsampleContinuousQuery(final String channelName, final String retentionPolicy, final String decimateTime)
     {
     	try
     	{
     		final String dbname = dbnames.getDataDBName(channelName);
 	    	String statement = new StringBuilder("CREATE CONTINUOUS QUERY ")
-	    			.append('"').append(retainTime).append('_').append(decimateTime).append('"')
+	    			.append('"').append(retentionPolicy).append('_').append(decimateTime).append('"')
 	    			.append(" ON \"").append(dbname).append('"')
+	    			//.append("RESAMPLE EVERY ").append(resampleFreq)
 	    			.append(" BEGIN")
-	    			.append(" SELECT ").append(isMedian ? "MEDIAN" : "MEAN").append("(*) AS average")
+	    			.append(" SELECT ").append("MODE(*) AS average, MEAN(*) AS average")
+	    				//MODE(*) is compatible with non-numeric datatypes, but MEAN(*) overwrites average_<field> for numeric field values
 	    			.append(" INTO \"").append(channelName).append('"')
-	    			.append(" FROM \"").append(retainTime).append("\".\"").append(channelName).append('"')
+	    			//.append("WHERE 'status' != 'NaN'")
+	    			.append(" FROM \"").append(retentionPolicy).append("\".\"").append(channelName).append('"')
 	    			.append(" GROUP BY time(").append(decimateTime).append(")")
 	    			.append(" END")
 	    			.toString();
@@ -114,6 +116,49 @@ public class InfluxDBQueries
     	{
     		//TODO: log something
     	}
+    }
+    
+    private List<String> getRetentionPoliciesForChannel(String channel_name)
+    {
+    	//TODO: be more specific?
+    	try
+    	{
+    		//TODO: call once, then store in some variable?
+    		return getRetentionPoliciesForDB(dbnames.getDataDBName(channel_name));
+    	}
+    	catch (Exception e)
+    	{
+    		return Collections.emptyList();
+    	}
+    }
+    
+    private List<String> getRetentionPoliciesForDB(String dbname)
+    {
+    	final String stmt = "SHOW RETENTION POLICIES ON \"" + dbname + '"';
+    	final QueryResult results = makeQuery(influxdb, stmt, dbname);
+    	final List<String> rps = new ArrayList<String>();
+    	for (QueryResult.Series series : InfluxDBResults.getNonEmptySeries(results))
+		{
+    		final int iend = InfluxDBResults.getValueCount(series);
+    		for (int i = 0; i < iend; ++i)
+    			if (InfluxDBResults.getValue(series, "default", i).equals(false))
+    				rps.add((String) InfluxDBResults.getValue(series, "name", i));
+		}
+    	return rps;
+    }
+    
+    private String getFromClause(String channel_name, boolean isData)
+    {
+    	StringBuilder sb = new StringBuilder("\"").append(channel_name).append('"');
+    	if (isData)
+    	{
+	    	for (String rp : getRetentionPoliciesForChannel(channel_name))
+	    	{
+	    		//if (rp != null && !rp.isEmpty())
+	    		sb.append(", \"").append(rp).append("\".\"").append(channel_name).append("\"");
+	    	}
+    	}
+    	return sb.toString();
     }
 
     public InfluxDBQueries(InfluxDB influxdb, final DBNameMap dbnames)
@@ -203,12 +248,12 @@ public class InfluxDBQueries
         return ret.toString();
     }
 
-	public static String get_channel_points(final String select_what, final String channel_name,
+	public static String get_channel_points(final String select_what, final String from_what,
             final Instant starttime, final Instant endtime, String where_what, String group_by_what,
             final Long limit)
 	{
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ").append(select_what).append(" FROM \"").append(channel_name).append('\"');
+        sb.append("SELECT ").append(select_what).append(" FROM ").append(from_what);
         List<String> where_clauses = getTimeClauses(starttime, endtime);
         if (where_what != null)
         	where_clauses.add(where_what);
@@ -269,7 +314,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, null, 1L),
+                get_channel_points("*", getFromClause(channel_name, true), null, null, null, null, 1L),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -278,7 +323,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, null, -num),
+                get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null, null, -num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -287,7 +332,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, null, num),
+                get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null, null, num),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -297,7 +342,7 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, null, limit),
+                get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null, null, limit),
                 dbnames.getDataDBName(channel_name));
     }
 
@@ -310,7 +355,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("COUNT(*)", channel_name, starttime, endtime, null,
+                get_channel_points("COUNT(*)", getFromClause(channel_name, true), starttime, endtime, null,
                 		getGroupByTimeClause(starttime, endtime, numIntervals), -numResults),
                 dbnames.getDataDBName(channel_name));
     }
@@ -320,7 +365,7 @@ public class InfluxDBQueries
     {
     	return makeQuery(
     			influxdb,
-    			get_channel_points("*", channel_name, starttime, endtime, null,
+    			get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null,
     					getGroupByTimeClause(starttime, endtime, numIntervals), numResults),
     			dbnames.getDataDBName(channel_name));
     }
@@ -332,7 +377,7 @@ public class InfluxDBQueries
     	if (stdDev)
     		select_what.append(",STDDEV(*)");
 		makeChunkQuery(chunkSize, consumer, influxdb,
-				get_channel_points(select_what.toString(), channel_name, starttime, endtime, "status != 'NaN'",
+				get_channel_points(select_what.toString(), getFromClause(channel_name, true), starttime, endtime, "status != 'NaN'",
 						getGroupByTimeClause(starttime, endtime, limit), null),
 				dbnames.getDataDBName(channel_name));
     }
@@ -344,7 +389,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, null, -num),
+                get_channel_points("*", getFromClause(channel_name, false), starttime, endtime, null, null, -num),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -352,7 +397,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, null, -1L),
+                get_channel_points("*", getFromClause(channel_name, false), null, null, null, null, -1L),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -365,7 +410,7 @@ public class InfluxDBQueries
     {
         return makeQuery(
                 influxdb,
-                get_channel_points("*", channel_name, null, null, null, null, null),
+                get_channel_points("*", getFromClause(channel_name, false), null, null, null, null, null),
                 dbnames.getMetaDBName(channel_name));
     }
 
@@ -374,7 +419,7 @@ public class InfluxDBQueries
     {
         makeChunkQuery(
                 chunkSize, consumer, influxdb,
-                get_channel_points("*", channel_name, starttime, endtime, null, null, limit),
+                get_channel_points("*", getFromClause(channel_name, false), starttime, endtime, null, null, limit),
                 dbnames.getMetaDBName(channel_name));
     }
 }

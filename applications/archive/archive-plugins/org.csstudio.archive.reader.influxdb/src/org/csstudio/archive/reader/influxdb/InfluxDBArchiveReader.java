@@ -287,7 +287,7 @@ public class InfluxDBArchiveReader implements ArchiveReader
     	}
     	catch (Exception e)
     	{
-    		Activator.getLogger().log(Level.FINE, "Could not create optimized sample iterator for " + channel_name + "; falling back to raw", e);
+    		Activator.getLogger().log(Level.WARNING, "Could not create optimized sample iterator for " + channel_name + "; falling back to raw", e);
     		return getRawValues(channel_name, start, end);
     	}
     }
