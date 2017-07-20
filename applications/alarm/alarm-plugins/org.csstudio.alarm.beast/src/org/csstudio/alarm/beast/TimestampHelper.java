@@ -12,6 +12,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.csstudio.java.time.TimestampFormats;
+
 /** Helper for dealing with time stamps
  *  @author Kay Kasemir
  */
@@ -19,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 public class TimestampHelper
 {
     private static final ZoneId zone = ZoneId.systemDefault();
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter format = TimestampFormats.MILLI_FORMAT;
 
     /** Format EPICS time stamp as string
      *  @param time {@link Instant}
