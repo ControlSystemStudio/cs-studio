@@ -96,8 +96,10 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
+    	final String fieldname = prefix == null || vals.hasValue("count_long.0") && vals.getValue("count_long.0") != null ? "long.0" : prefix + "long.0";
+
     	//first, check if count is zero
-    	Object count_val = vals.getValue("count_"+prefix+"long.0");
+    	Object count_val = vals.getValue("count_"+fieldname);
     	int count = count_val != null ? fieldToInt(count_val) : 0;
     	if (count == 0)
     		return new ArchiveVStatistics(time, severity, status, display,
@@ -107,16 +109,16 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + prefix + "_long.0");
+    		Object val = vals.getValue(STATS_NAMES[i] + fieldname);
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+prefix+"_long.0 field where expected");
-			stats_vals[i] = fieldToLong(val).doubleValue();
+    			throw new Exception("Did not find "+STATS_NAMES[i]+fieldname+" field where expected");
+			stats_vals[i] = fieldToLong(val).doubleValue(); //TODO: if fieldToDouble is better, could extract a method decodeStatistics(fieldname)
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev"+prefix+"_long.0");
+    		Object val = vals.getValue("stddev_"+fieldname);
     		if (val == null)
-    			throw new Exception("Did not find stddev"+prefix+"_long.0 field where expected");
+    			throw new Exception("Did not find stddev_"+fieldname+" field where expected");
 			stats_vals[3] = fieldToLong(val).doubleValue();
     	}
     	else
@@ -128,8 +130,10 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
+    	final String fieldname = prefix == null || vals.hasValue("count_double.0") && vals.getValue("count_double.0") != null ? "double.0" : prefix + "double.0";
+
     	//first, check if count is zero
-    	Object count_val = vals.getValue("count_"+prefix+"double.0");
+    	Object count_val = vals.getValue("count_"+fieldname);
     	int count = count_val != null ? fieldToInt(count_val) : 0;
     	if (count == 0)
     		return new ArchiveVStatistics(time, severity, status, display,
@@ -139,16 +143,16 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + prefix + "_double.0");
+    		Object val = vals.getValue(STATS_NAMES[i] + fieldname);
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+prefix+"_double.0 field where expected");
+    			throw new Exception("Did not find "+STATS_NAMES[i]+fieldname+" field where expected");
 			stats_vals[i] = fieldToDouble(val);
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev"+prefix+"_double.0");
+    		Object val = vals.getValue("stddev_"+fieldname);
     		if (val == null)
-    			throw new Exception("Did not find stddev_"+prefix+"double.0 field where expected");
+    			throw new Exception("Did not find stddev_"+fieldname+" field where expected");
 			stats_vals[3] = fieldToDouble(val);
     	}
     	else
@@ -160,9 +164,10 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
-    	Object count_val = vals.getValue("count_"+prefix+"long.0");
-    	if (count_val == null)
-			throw new Exception("Did not find count_"+prefix+"long.0 field where expected");
+    	final String fieldname = prefix == null || vals.hasValue("count_long.0") ? "count_long.0" : "count_" + prefix + "long.0";
+        Object count_val = vals.getValue(fieldname);
+	    if (count_val == null)
+	        throw new Exception ("Did not find "+fieldname+" field where expected");
     	final int count = fieldToInt(count_val);
     	final Display display = ValueFactory.displayNone();
 		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
@@ -171,10 +176,15 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
-    	Object count_val = vals.getValue("count_"+prefix+"string.0");
-    	if (count_val == null)
-			throw new Exception("Did not find count_"+prefix+"string.0 field where expected");
-    	final int count = fieldToInt(count_val);
+    	//TODO: For supporting continuous queries, fix handling of missing String fields
+    	final String fieldname = prefix == null || vals.hasValue("count_string.0") ? "count_string.0" : "count_" + prefix + "string.0";
+        final Object count_val = vals.getValue(fieldname);
+        //	The value of the count field might be null if the channel has string (a) sample(s) before the beginning of the
+        //time interval (metadata's datatype indicates string), but the time interval itself contains only
+        //non-string data. (The metadata entry indicating a non-string type is not applied, since it occurs after
+        //the timestamp of the time interval).
+        //	A channel with non-string datatype can have string samples for "WriteError", "Disconnected", etc.
+    	final int count = count_val == null ? 0 : fieldToInt(count_val);
     	final Display display = ValueFactory.displayNone();
 		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
 	}
