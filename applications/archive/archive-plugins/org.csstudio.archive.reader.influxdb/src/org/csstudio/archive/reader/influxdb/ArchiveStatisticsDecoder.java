@@ -20,8 +20,8 @@ import org.diirt.vtype.ValueFactory;
  */
 public class ArchiveStatisticsDecoder extends ArchiveDecoder
 {
-	//lookup names of statistics fields; used for iteration
-	private static final String STATS_NAMES [] = {"mean", "max", "min"};
+	//lookup names (prefixes) of statistics fields; used for iteration
+	private static final String STATS_NAMES [] = {"mean_", "max_", "min_"};
 	/**
 	 * Sample for statistics with a null or 0 count (number of values)
 	 */
