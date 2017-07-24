@@ -86,25 +86,23 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         final MetaObject meta = vals.getMeta();
 
         final Instant time = InfluxDBUtil.fromInfluxDBTimeFormat(vals.getValue("time"));
-        final String status = (String) vals.getValue("status");
-        // Note: It might be useful to support using continuous queries + retention policies
-        // to downsample data over time -- e.g., after 1 month, replace data with daily averages.
-        // If this happens, it's no longer possible to ensure that status is non-null.
+        String status = (String) vals.getValue("status");
+        //	In order to support using continuous queries to downsample data
+        //(for example, keep raw data for 1 month, and daily averages forever),
+        //we can no longer be sure that "status" and "severity" tags are non-null.
         if (status == null)
-        {
-            throw new Exception ("No status field found when decoding sample");
-        }
+    	{
+        	status = "";
+    	}
         String severity_string = (String) vals.getValue("severity");
-        final AlarmSeverity severity = filterSeverity(severity_string != null ? severity_string : "", status);
+        final AlarmSeverity severity = filterSeverity(severity_string != null ? severity_string : "NONE", status);
         
-        //TODO: Support using continuous queries to downsample data.
-        //(For example, keep raw data for 1 month, and daily averages forever.)
         //	With continuous queries in InfluxDB, the field names must change.
         //It's possible to write queries in such a way that there is a known
-        //prefix added to all fields. It might be best to have some way to tell
-        //the reader/decoder (perhaps a preference) what prefix to expect.
-        //	Since that's not currently supported, setting it to null.
-        final String prefix = null;
+        //prefix added to all field keys. It might be good to have some way to
+        //tell the reader/decoder what prefix to expect (perhaps a preference).
+        //	Since that's not currently supported, setting it to "average_".
+        final String prefix = "average_";
 
         switch (meta.storeas)
         {
@@ -180,66 +178,64 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 
     protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
-    	//	About supporting continuous queries:
-    	//	If we DID support using continuous queries to downsample/decimate data over time (e.g., drop data after 1
-    	//month, but keep a daily average forever), there would be some concerns about "string.0" fields in numeric
-    	//measurements (like "WriteError" or "Disconnected" messages).
-    	//	This is because a simple continuous query (like "SELECT MEAN(*) AS average INTO ...") for a channel with
-    	//a numeric datatype would get null values for string fields.
-    	//	This could be avoided with either a single query like, "SELECT MODE(*) AS average, MEAN(*) AS average",
-    	//or a second continuous query which explicitly selects "string.*" fields from the short-term retention
-    	//policy to the long-term retention policy.
-    	//	However, there is no guarantee that the continuous query was created in this way.
-        Object val = null;
-    	final String fieldname = prefix == null || vals.hasValue("string.0") ? "string.0" : prefix + "string.0";
-
-        //if (vals.hasValue(fieldname))
-        //{
-			val = vals.getValue(fieldname);
-		    if (val == null)
-		        throw new Exception ("Did not find "+fieldname+" field where expected");
-    	//}
-        //else
-        //{
-        //	Activator.getLogger().log(Level.SEVERE, "Value with string-like datatype missing 'string.0'" +
-        //			(prefix.isEmpty() ? "" : (" or '"+prefix+"string.0'")) +
-        //			" field. Possibly, a continuous query was improperly implemented");
-        //	val = "";
-        //}
+    	//	In order to support using continuous queries to downsample/decimate data over time
+    	//(e.g., drop data after 1 month, but keep a daily average forever), we have to consider
+    	//the possibility that there may be no "string.0" field in the sample. That is, it might
+    	//not be exceptional if the value for "string.0" or "average_string.0" is null or if there
+    	//simply is no value. This might happen because the continuous query ignores fields with
+    	//a string datatype, or maybe because metadata and sample timestamps are mis-aligned due
+    	//to a group by time() clause, as with the ArchiveStatisticsDecoder.
+        Object val = getSingleValue("string.0", prefix);
+        if (val == null)
+        {
+            //	Activator.getLogger().log(Level.INFO, "Value with string-like datatype missing '"+fieldname+
+            //			"' field.");
+        	val = "";
+    	}
         return new ArchiveVString(time, severity, status, val.toString());
 	}
 
     protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
-    	final String fieldname = prefix == null || vals.hasValue("long.0") ? "long.0" : prefix + "long.0";
-        Object val = vals.getValue(fieldname);
-        if (val == null)
-        {
-            Activator.getLogger().log(Level.SEVERE, this.toString());
-            throw new Exception ("Did not find "+fieldname+" field where expected");
-        }
+    	final Object val = getSingleValue("long.0", prefix);
+    	if (val == null)
+    	{
+	        Activator.getLogger().log(Level.SEVERE, this.toString());
+	        throw new Exception ("Did not find long.0 or "+prefix+"long.0 field where expected");
+    	}
         return new ArchiveVEnum(time, severity, status, labels, fieldToLong(val).intValue());
     }
 
     protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
-    	final String fieldname = vals.hasValue("long.0") ? "long.0" : prefix + "long.0";
-        Object val = vals.getValue(fieldname);
-        if (val == null)
-        {
-            Activator.getLogger().log(Level.SEVERE, this.toString());
-            throw new Exception ("Did not find "+fieldname+" field where expected");
-        }
+    	final Object val = getSingleValue("long.0", prefix);
+    	if (val == null)
+    	{
+	        Activator.getLogger().log(Level.SEVERE, this.toString());
+	        throw new Exception ("Did not find long.0 or "+prefix+"long.0 field where expected");
+    	}
         return new ArchiveVNumber(time, severity, status, display, fieldToLong(val));
     }
-
+    
+    private Object getSingleValue(final String colname, final String prefix) throws Exception
+    {	// First, try to get value from "plain" field key
+        Object val;
+        if ( !vals.hasValue(colname) || (val = vals.getValue(colname)) == null )
+        	//Failed, so try to get value from prefix + field key
+        	val = vals.hasValue(prefix + colname) ? vals.getValue(prefix + colname) : null;
+        return val;
+    }
+    
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
-    {
-    	final String fieldname = vals.hasValue("double.0") ? "double." : prefix + "double.";
-        Object val = vals.getValue(fieldname + "0");
+    {	// First, try to get value from "plain" field key
+    	String part_name = "double."; //partial column name
+        Object val = vals.hasValue(part_name + "0") ? vals.getValue(part_name + "0") : null;
         if (val == null)
-        {
-            throw new Exception ("Did not find "+fieldname+"0 field where expected");
+        {	// Failed, so try to get value from prefix + field key
+        	part_name = prefix + part_name;
+        	val = vals.getValue(part_name + "0");
+        	if (val == null)
+        		throw new Exception ("Did not find double.0 or "+part_name+"0 field where expected");
         }
 
         List<Double> data = new ArrayList<Double>();
@@ -251,7 +247,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         int len = 1;
         while (val != null)
         {
-            String fname = fieldname + Integer.toString(len);
+            String fname = part_name + Integer.toString(len);
             if (vals.hasValue(fname))
                 val = vals.getValue(fname);
             else

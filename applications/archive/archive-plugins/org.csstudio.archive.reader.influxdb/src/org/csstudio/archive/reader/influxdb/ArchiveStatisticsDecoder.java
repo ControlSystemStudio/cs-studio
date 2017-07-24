@@ -2,6 +2,8 @@ package org.csstudio.archive.reader.influxdb;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.logging.Level;
+
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueLookup;
 import org.csstudio.archive.reader.influxdb.raw.Preferences;
@@ -96,29 +98,35 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeLongSample(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
-    	final String fieldname = prefix == null || vals.hasValue("count_long.0") && vals.getValue("count_long.0") != null ? "long.0" : prefix + "long.0";
-
-    	//first, check if count is zero
-    	Object count_val = vals.getValue("count_"+fieldname);
-    	int count = count_val != null ? fieldToInt(count_val) : 0;
-    	if (count == 0)
-    		return new ArchiveVStatistics(time, severity, status, display,
-    				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
-    	
+    	String part_name = "long.0"; //partial column name
+    	//First, check if count is zero
+    	// Try to get count using "plain" field key
+        Object count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        int count;
+        if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        {	// Failed, so try to get value from prefix + field key
+        	part_name = prefix + part_name;
+        	count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        	if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        		return new ArchiveVStatistics(time, severity, status, display,
+        				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
+        }
+        
+        //Second, get other values
     	//mean, max, min, stddev
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + fieldname);
+    		Object val = vals.getValue(STATS_NAMES[i] + part_name);
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+fieldname+" field where expected");
+    			throw new Exception("Did not find "+STATS_NAMES[i]+part_name+" field where expected");
 			stats_vals[i] = fieldToLong(val).doubleValue(); //TODO: if fieldToDouble is better, could extract a method decodeStatistics(fieldname)
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev_"+fieldname);
+    		Object val = vals.getValue("stddev_"+part_name);
     		if (val == null)
-    			throw new Exception("Did not find stddev_"+fieldname+" field where expected");
+    			throw new Exception("Did not find stddev_"+part_name+" field where expected");
 			stats_vals[3] = fieldToLong(val).doubleValue();
     	}
     	else
@@ -130,29 +138,35 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {
-    	final String fieldname = prefix == null || vals.hasValue("count_double.0") && vals.getValue("count_double.0") != null ? "double.0" : prefix + "double.0";
-
-    	//first, check if count is zero
-    	Object count_val = vals.getValue("count_"+fieldname);
-    	int count = count_val != null ? fieldToInt(count_val) : 0;
-    	if (count == 0)
-    		return new ArchiveVStatistics(time, severity, status, display,
-    				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
-    	
+    	String part_name = "double.0"; //partial column name
+    	//First, check if count is zero
+    	// Try to get count using "plain" field key
+        Object count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        int count;
+        if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        {	// Failed, so try to get value from prefix + field key
+        	part_name = prefix + part_name;
+        	count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        	if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        		return new ArchiveVStatistics(time, severity, status, display,
+        				Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
+        }
+        
+        //Second, get other values
     	//mean, max, min, stddev
     	Double stats_vals [] = new Double [4];
     	for (int i = 0; i < 3; ++i)
     	{
-    		Object val = vals.getValue(STATS_NAMES[i] + fieldname);
+    		Object val = vals.getValue(STATS_NAMES[i] + part_name);
     		if (val == null)
-    			throw new Exception("Did not find "+STATS_NAMES[i]+fieldname+" field where expected");
+    			throw new Exception("Did not find "+STATS_NAMES[i]+part_name+" field where expected");
 			stats_vals[i] = fieldToDouble(val);
     	}
     	if (useStdDev)
     	{
-    		Object val = vals.getValue("stddev_"+fieldname);
+    		Object val = vals.getValue("stddev_"+part_name);
     		if (val == null)
-    			throw new Exception("Did not find stddev_"+fieldname+" field where expected");
+    			throw new Exception("Did not find stddev_"+part_name+" field where expected");
 			stats_vals[3] = fieldToDouble(val);
     	}
     	else
@@ -164,11 +178,22 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
-    	final String fieldname = prefix == null || vals.hasValue("count_long.0") ? "count_long.0" : "count_" + prefix + "long.0";
-        Object count_val = vals.getValue(fieldname);
-	    if (count_val == null)
-	        throw new Exception ("Did not find "+fieldname+" field where expected");
-    	final int count = fieldToInt(count_val);
+    	String part_name = "long.0"; //partial column name
+    	//First, check if count is zero
+    	// Try to get count using "plain" field key
+        Object count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        int count;
+        if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        {	// Failed, so try to get value from prefix + field key
+        	part_name = prefix + part_name;
+        	count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        	if (count_val == null)
+        		count = 0;
+        	else
+        		count = fieldToInt(count_val);
+        }
+        
+        //Second, get other values
     	final Display display = ValueFactory.displayNone();
 		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
     }
@@ -176,15 +201,40 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
     @Override
     protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
-    	//TODO: For supporting continuous queries, fix handling of missing String fields
-    	final String fieldname = prefix == null || vals.hasValue("count_string.0") ? "count_string.0" : "count_" + prefix + "string.0";
-        final Object count_val = vals.getValue(fieldname);
-        //	The value of the count field might be null if the channel has string (a) sample(s) before the beginning of the
-        //time interval (metadata's datatype indicates string), but the time interval itself contains only
-        //non-string data. (The metadata entry indicating a non-string type is not applied, since it occurs after
-        //the timestamp of the time interval).
-        //	A channel with non-string datatype can have string samples for "WriteError", "Disconnected", etc.
-    	final int count = count_val == null ? 0 : fieldToInt(count_val);
+    	//Regarding timestamps:
+    	//	The data in vals is expected to represent the results of a "group by time()" query.
+    	//The timestamp of data in the results of by a "group by time()" query is the start time for
+    	//each time interval, not the timestamp of the first datum in the interval.
+    	//Thus, the timestamps of the metadata used to determine how to decode the data (i.e. what datatype)
+    	//might not align with the timestamps of the data in vals.
+    	//	Suppose a string value (like "Disconnected") occurs before the start of a group by interval, but the
+    	//interval contains only double values. The decoder will use the datatype of the metadata before
+    	//the start of the interval (i.e. string), not the datatype of the metadata whose timestamp matches the
+    	//first datum in the interval (i.e. double). In other words, we expect a string value where there is none.
+    	//	Since it's impractical to recover the true start time of the data in the interval, there's no
+    	//way to get the true datatype of the data. So, if we get a null value from the "string.0" column,
+    	//we'll just have to ignore it and move on.
+    	String part_name = "string.0";
+    	//First, check if count is zero
+    	// Try to get count using "plain" field key
+        Object count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        int count;
+        if (count_val == null || (count = fieldToInt(count_val)) == 0)
+        {	// Failed, so try to get value from prefix + field key
+        	part_name = prefix + part_name;
+        	count_val = vals.hasValue("count_" + part_name) ? vals.getValue("count_" + part_name) : null;
+        	if (count_val == null)
+        		count = 0;
+        	else
+        		count = fieldToInt(count_val);
+        }
+        
+        if (count == 0)
+        {
+        	Activator.getLogger().log(Level.FINE, "Expected string value, but no strings in\n" + vals.toString());
+        }
+        
+        //Second, get other values
     	final Display display = ValueFactory.displayNone();
 		return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
 	}
