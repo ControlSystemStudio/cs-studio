@@ -26,3 +26,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.alarm.beast.msghist.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.csstudio.java.time
