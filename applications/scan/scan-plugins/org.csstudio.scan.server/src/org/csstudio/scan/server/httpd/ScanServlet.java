@@ -162,7 +162,7 @@ public class ScanServlet extends HttpServlet
                     throw new Exception("Expected <patch>");
                 final long address = DOMHelper.getSubelementLong(root_node, "address", -1);
                 final String property = DOMHelper.getSubelementString(root_node, "property");
-                final String value = DOMHelper.getSubelementString(root_node, "value");
+                final Object value = DOMHelper.getSubelementStringOrDouble(root_node, "value");
                 scan_server.updateScanProperty(id, address, property, value);
                 break;
             default:

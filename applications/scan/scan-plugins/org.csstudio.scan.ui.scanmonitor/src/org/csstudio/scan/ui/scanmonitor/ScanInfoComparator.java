@@ -59,9 +59,15 @@ public class ScanInfoComparator extends ViewerComparator
         else if (column == 5) // Runtime
             cmp = Long.compareUnsigned(one.getRuntimeMillisecs(), other.getRuntimeMillisecs());
         else if (column == 6) // Finish
-            cmp = one.getFinishTime().compareTo(other.getFinishTime());
+        {
+            if (one.getFinishTime() != null  &&  other.getFinishTime() != null)
+                cmp = one.getFinishTime().compareTo(other.getFinishTime());
+        }
         else if (column == 7) // Current Command
-            cmp = one.getCurrentCommand().compareTo(other.getCurrentCommand());
+        {
+            if (one.getCurrentCommand() != null  &&  other.getCurrentCommand() != null)
+                cmp = one.getCurrentCommand().compareTo(other.getCurrentCommand());
+        }
         else if (column == 8) // Error
             cmp = one.getError().orElse("").compareTo(other.getError().orElse(""));
 

@@ -163,7 +163,7 @@ public class GUI implements ModelListener
         TableColumn col = view_col.getColumn();
         col.setText(Messages.DateColumn);
         col.setMoveable(true);
-        table_layout.setColumnData(col, new ColumnWeightData(5, 150));
+        table_layout.setColumnData(col, new ColumnWeightData(5, 200));
         view_col.setLabelProvider(new DateLabelProvider());
 
         view_col = new TableViewerColumn(table_viewer, 0);

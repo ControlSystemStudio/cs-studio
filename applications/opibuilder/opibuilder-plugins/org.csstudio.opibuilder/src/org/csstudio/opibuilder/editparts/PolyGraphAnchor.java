@@ -42,6 +42,7 @@ public class PolyGraphAnchor extends AbstractOpiBuilderAnchor {
     public Point getLocation(Point reference) {
         Point p = polyline.getPoints().getPoint(pointIndex);
         polyline.translateToAbsolute(p);
+        fixZoomEdgeRounding(p, getOwner());
         return p;
     }
 

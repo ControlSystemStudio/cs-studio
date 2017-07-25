@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -16,6 +17,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
+import org.csstudio.java.time.TimestampFormats;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
@@ -41,7 +43,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     final private ColumnInfo column;
 
     private String timeFormat;
-    private SimpleDateFormat formatter;
+    private DateTimeFormatter formatter;
 
     /** Initialize
      *  @param icon_provider icon provider
@@ -73,15 +75,15 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     /**
      * Sets the time format used for converting the time value to a string
      *
-     * @param timeFormat the format string acceptable by {@link SimpleDateFormat}
+     * @param timeFormat the format string acceptable by {@link DateTimeFormatter}
      */
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
         if (this.timeFormat == null || this.timeFormat.isEmpty()) {
-            formatter = null;
+            formatter = TimestampFormats.SECONDS_FORMAT;
         } else {
             try {
-                formatter = new SimpleDateFormat(timeFormat);
+                formatter = DateTimeFormatter.ofPattern(timeFormat);
             } catch (Exception e) {
                 formatter = null;
             }
@@ -145,8 +147,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 
             break;
         case TIME:
-            cell.setText(formatter == null ? alarm.getTimestampText()
-                    : (alarm.getTimestamp() == null ? "" : formatter.format(Date.from(alarm.getTimestamp()))));
+            cell.setText(formatter == null ? alarm.getTimestampText() : (alarm.getTimestamp() == null ? "" : formatter.format(ZonedDateTime.ofInstant(alarm.getTimestamp(), ZoneId.systemDefault()))));
             break;
         case CURRENT_SEVERITY:
             if (alarm.getParent() == null)

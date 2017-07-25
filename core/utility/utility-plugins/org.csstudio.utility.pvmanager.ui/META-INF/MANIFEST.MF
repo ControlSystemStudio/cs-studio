@@ -11,4 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides ui elements to configure PVManager
 Export-Package: org.csstudio.utility.pvmanager.ui
-Import-Package: org.diirt.vtype;version="3.0.0"
+Import-Package: org.diirt.util.array;version="3.1.6",
+ org.diirt.vtype;version="3.0.0"

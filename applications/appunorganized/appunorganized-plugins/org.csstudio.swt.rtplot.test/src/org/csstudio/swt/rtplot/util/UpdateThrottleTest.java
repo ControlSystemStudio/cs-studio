@@ -52,11 +52,9 @@ public class UpdateThrottleTest
         assertThat(updates.get(), equalTo(1));
 
         // Follow-up triggers are delayed...
-        System.out.println("-> Trigger..");
+        System.out.println("-> Trigger three times..");
         throttle.trigger();
-        System.out.println("-> Trigger..");
         throttle.trigger();
-        System.out.println("-> Trigger..");
         throttle.trigger();
         assertThat(updates.get(), equalTo(1));
 

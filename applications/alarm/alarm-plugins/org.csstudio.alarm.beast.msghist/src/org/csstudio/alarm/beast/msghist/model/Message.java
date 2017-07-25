@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.model;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.apputil.time.SecondsParser;
+import org.csstudio.java.time.TimestampFormats;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -30,8 +31,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public class Message implements IPropertySource
 {
     /** Suggested time stamp format */
-    final private static SimpleDateFormat date_format =
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");         //$NON-NLS-1$
+    final private static DateTimeFormatter date_format = TimestampFormats.MILLI_FORMAT;
 
     /** Property for sequential message number */
     public static final String SEQ = "SEQ"; //$NON-NLS-1$
@@ -76,7 +76,7 @@ public class Message implements IPropertySource
     {
         synchronized (date_format)
         {
-            return date_format.format(date);
+            return date_format.format(date.toInstant());
         }
     }
 

@@ -308,9 +308,33 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         }
         List<ConnectionModel> connectionList = rootDisplayModel.getConnectionList();
 
-        for(int i=0; (i+1)<pointsInConnection.size(); i++) {
+        for(int i=0; (i+1)<pointsInConnection.size();) {
             Point x1y1 = pointsInConnection.getPoint(i);
             Point x2y2 = pointsInConnection.getPoint(i+1);
+            /* The Manhattan connection in CS-Studio always has at least 3 segments, even if
+             * they are invisible to the user, because he sees a straight line. But if these
+             * invisible segments fall exactly where this connection intersects another
+             * connection, this may confuse the logic into thinking that the line jump
+             * should not be drawn because of the limitation that the line jump cannot be
+             * drawn too close to the bend in the connection.
+             * To overcome this problem, we do not simply follow the line segments, but
+             * check whether subsequent line segments are actually in the same line
+             * (vertically or horizontally). If this is the case, we join such segments
+             * until we reach an actual bend or the end of the connection.
+             * To achieve this we need to manipulate the index to skip the joined
+             * segments.
+             */
+            i++;   // increase 'i' once for the next point (simple case)
+            for (int j = (i+1); j < pointsInConnection.size(); j++) {
+                // we may increase 'i' some more if we detect joined segments
+                Point p = pointsInConnection.getPoint(j);
+                if ((p.x() == x1y1.x()) || (p.y() == x1y1.y())) {
+                    x2y2 = p;
+                    i = j;
+                } else {
+                    break;
+                }
+            }
             int x1 = x1y1.x;
             int y1 = x1y1.y;
             int x2 = x2y2.x;
