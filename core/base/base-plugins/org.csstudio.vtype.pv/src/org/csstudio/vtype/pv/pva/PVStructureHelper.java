@@ -335,7 +335,7 @@ class PVStructureHelper
         }
     }
 
-   	/**
+    /**
      * Decode table from NTTable
      * @param struct
      * @return
