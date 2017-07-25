@@ -22,6 +22,7 @@ import org.csstudio.archive.influxdb.MetaTypes.MetaObject;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder;
 import org.csstudio.archive.reader.influxdb.raw.Activator;
 import org.csstudio.archive.reader.influxdb.raw.RawChunkReader;
+import org.diirt.vtype.VType;
 import org.influxdb.dto.QueryResult;
 
 /** Manager of chunked data coming from both sample and metadata queries simultaneously
@@ -53,6 +54,17 @@ public class ChunkReader extends RawChunkReader
 
         this.cur_meta = null;
         this.next_meta = null;
+    }
+    
+    @Override
+    public VType decodeSampleValue() throws Exception
+    {
+    	VType result;
+    	do
+    	{
+    		result = super.decodeSampleValue();
+    	} while (result == null && step());
+		return result;
     }
 
     private void step_next_metadata() throws Exception

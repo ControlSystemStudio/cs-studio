@@ -35,6 +35,20 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 
     protected final AbstractInfluxDBValueLookup vals;
 
+    // 		When using continuous queries to resample archived data, the column
+    // names should be in one of two categories: either the default (raw) type
+    // (e.g. "double.0", "string.0"), or the  prefixed (resampled) type
+    // ("average_double.0", "average_string.0"). Results with default-type
+    // samples should be given preference over prefix-type results. Once
+    // the default type is found, prefix-type samples are ignored.
+    /**
+     * Whether or not to skip samples with prefix-type column names
+     * (e.g. average_double.0 instead of double.0)
+     */
+    protected boolean ignore_prefix_samples = false;
+    //		Indicates that the sample currently in vals should be ignored.
+    private static final Object IGNORE_SAMPLE = new Object();
+
     public ArchiveDecoder(final AbstractInfluxDBValueLookup vals) {
         this.vals = vals;
     }
@@ -86,23 +100,16 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         final MetaObject meta = vals.getMeta();
 
         final Instant time = InfluxDBUtil.fromInfluxDBTimeFormat(vals.getValue("time"));
-        String status = (String) vals.getValue("status");
         //	In order to support using continuous queries to downsample data
         //(for example, keep raw data for 1 month, and daily averages forever),
-        //we can no longer be sure that "status" and "severity" tags are non-null.
+        //we can no longer enforce non-null "status" and "severity" values.
+        String status = vals.hasValue("status") ? (String) vals.getValue("status") : "";
         if (status == null)
     	{
         	status = "";
     	}
-        String severity_string = (String) vals.getValue("severity");
+        String severity_string = vals.hasValue("severity") ? (String) vals.getValue("severity") : "NONE";
         final AlarmSeverity severity = filterSeverity(severity_string != null ? severity_string : "NONE", status);
-        
-        //	With continuous queries in InfluxDB, the field names must change.
-        //It's possible to write queries in such a way that there is a known
-        //prefix added to all field keys. It might be good to have some way to
-        //tell the reader/decoder what prefix to expect (perhaps a preference).
-        //	Since that's not currently supported, setting it to "average_".
-        final String prefix = "average_";
 
         switch (meta.storeas)
         {
@@ -110,22 +117,22 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
         case ARCHIVE_DOUBLE_ARRAY:
         {
         	final Display display = Display.class.cast(meta.object);
-    		return decodeDoubleSamples(time, severity, status, display, prefix);
+    		return decodeDoubleSamples(time, severity, status, display, "average_");
         }
         case ARCHIVE_LONG:
         {
         	final Display display = Display.class.cast(meta.object);
-    		return decodeLongSample(time, severity, status != null ? status : "", display, prefix);
+    		return decodeLongSample(time, severity, status != null ? status : "", display, "average_");
         }
         case ARCHIVE_ENUM:
         {
         	final List<String> labels = (List<String>)meta.object;
-    		return decodeEnumSample(time, severity, status != null ? status : "", labels, prefix);
+    		return decodeEnumSample(time, severity, status != null ? status : "", labels, "average_");
         }
         case ARCHIVE_STRING:
         case ARCHIVE_UNKNOWN:
         {
-    		return decodeStringSample(time, severity, status != null ? status : "", prefix);
+    		return decodeStringSample(time, severity, status != null ? status : "", "average_");
         }
         default:
             throw new Exception ("Tried to encode sample with unhandled store type: " + meta.storeas.name());
@@ -192,6 +199,8 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
             //			"' field.");
         	val = "";
     	}
+        else if (val == IGNORE_SAMPLE)
+        	return null;
         return new ArchiveVString(time, severity, status, val.toString());
 	}
 
@@ -203,6 +212,8 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 	        Activator.getLogger().log(Level.SEVERE, this.toString());
 	        throw new Exception ("Did not find long.0 or "+prefix+"long.0 field where expected");
     	}
+        else if (val == IGNORE_SAMPLE)
+        	return null;
         return new ArchiveVEnum(time, severity, status, labels, fieldToLong(val).intValue());
     }
 
@@ -214,6 +225,8 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
 	        Activator.getLogger().log(Level.SEVERE, this.toString());
 	        throw new Exception ("Did not find long.0 or "+prefix+"long.0 field where expected");
     	}
+        else if (val == IGNORE_SAMPLE)
+        	return null;
         return new ArchiveVNumber(time, severity, status, display, fieldToLong(val));
     }
     
@@ -221,8 +234,21 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
     {	// First, try to get value from "plain" field key
         Object val;
         if ( !vals.hasValue(colname) || (val = vals.getValue(colname)) == null )
-        	//Failed, so try to get value from prefix + field key
-        	val = vals.hasValue(prefix + colname) ? vals.getValue(prefix + colname) : null;
+        	//Failed ==> This is a prefix-type sample
+        	if (ignore_prefix_samples)
+        	{
+        		//Check: Is valid prefix-type sample?
+        		if (!vals.hasValue(prefix + colname) || vals.getValue(prefix + colname) == null)
+        			return null;
+        		// Ignore
+        		return IGNORE_SAMPLE;
+        	}
+        	else
+	        	// Try to get value from prefix-type field key
+	        	val = vals.hasValue(prefix + colname) ? vals.getValue(prefix + colname) : null;
+    	else
+    		//Succeeded ==> ignore prefix-type samples
+    		ignore_prefix_samples = true;
         return val;
     }
     
@@ -231,12 +257,26 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
     	String part_name = "double."; //partial column name
         Object val = vals.hasValue(part_name + "0") ? vals.getValue(part_name + "0") : null;
         if (val == null)
-        {	// Failed, so try to get value from prefix + field key
+        {	//Failed ==> This is a prefix-type sample
         	part_name = prefix + part_name;
-        	val = vals.getValue(part_name + "0");
-        	if (val == null)
-        		throw new Exception ("Did not find double.0 or "+part_name+"0 field where expected");
+        	if (ignore_prefix_samples)
+        	{
+        		// Check: Is valid prefix-type sample?
+        		if (!vals.hasValue(part_name+"0") || vals.getValue(part_name+"0") == null)
+	        		throw new Exception ("Did not find double.0 or "+part_name+"0 field where expected");
+        		// Ignore
+        		return null;
+        	}
+        	else
+        	{
+	        	val = vals.getValue(part_name + "0");
+	        	if (val == null)
+	        		throw new Exception ("Did not find double.0 or "+part_name+"0 field where expected");
+        	}
         }
+        else
+        	//Succeeded ==> ignore prefix-type samples
+        	ignore_prefix_samples = true;
 
         List<Double> data = new ArrayList<Double>();
         if (status.equals(NOT_A_NUMBER_STATUS))
