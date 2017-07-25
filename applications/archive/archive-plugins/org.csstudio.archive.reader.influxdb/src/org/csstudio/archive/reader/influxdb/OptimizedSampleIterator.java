@@ -68,6 +68,8 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
             }
         }
 
+        //TODO: More efficient to get total sample count for whole time range, then
+        //get counts by time for last_sample_time?
         //Get the sample intervals ("buckets") in the range
         final QueryResult interval_results = reader.getQueries().get_newest_channel_sample_count_in_intervals(channel_name, sample_starttime, end, count, count);
         // Does the data fill 'count' intervals ("buckets"), or is the number of samples
@@ -132,7 +134,7 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
     {
         // This should not happen...
         if (next_value == null)
-            throw new Exception("RawSampleIterator.next(" + measurement + ") called after end");
+            throw new Exception("OptimizedSampleIterator.next(" + measurement + ") called after end");
 
         // Remember value to return...
         final VType result = next_value;

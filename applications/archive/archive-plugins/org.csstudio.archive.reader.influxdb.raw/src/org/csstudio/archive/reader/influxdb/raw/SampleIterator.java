@@ -117,7 +117,7 @@ public class SampleIterator extends AbstractInfluxDBValueIterator
     {
         // This should not happen...
         if (next_value == null)
-            throw new Exception("SampleIterator.next(" + measurement + ") called after end");
+            throw new Exception("RawSampleIterator.next(" + measurement + ") called after end");
 
         // Remember value to return...
         final VType result = next_value;
