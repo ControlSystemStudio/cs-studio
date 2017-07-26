@@ -16,6 +16,7 @@
 package org.csstudio.scan.server;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /** Scan: ID, Name, Date
  *
@@ -43,7 +44,7 @@ public class Scan
     {
         this.id = id;
         this.name = name;
-        this.created = created;
+        this.created = Objects.requireNonNull(created);
     }
 
     /** Initialize
@@ -51,9 +52,7 @@ public class Scan
      */
     protected Scan(final Scan scan)
     {
-        this.id = scan.id;
-        this.name = scan.name;
-        this.created = scan.created;
+        this(scan.id, scan.name, scan.created);
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */

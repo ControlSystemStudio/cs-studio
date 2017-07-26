@@ -7,11 +7,14 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.pva;
 
+import static org.csstudio.vtype.pv.PV.logger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
 
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ArrayFloat;
@@ -19,7 +22,6 @@ import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VImage;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
@@ -29,19 +31,16 @@ import org.epics.pvdata.pv.Convert;
 import org.epics.pvdata.pv.Field;
 import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVBooleanArray;
-import org.epics.pvdata.pv.PVByteArray;
 import org.epics.pvdata.pv.PVField;
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.pvdata.pv.PVStructureArray;
 import org.epics.pvdata.pv.PVUnion;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Structure;
-import org.epics.pvdata.pv.StructureArrayData;
 
 /** Helper for reading & writing PVStructure
  *
@@ -99,7 +98,7 @@ class PVStructureHelper
         if (type.equals("NTScalarArray:1.0"))
             return decodeNTArray(actual_struct);
         if (type.equals("NTNDArray:1.0"))
-            return decodeNTNDArray(actual_struct);
+            return new VImageForNTNDArray(actual_struct);
         if (type.equals("NTTable:1.0"))
             return decodeNTTable(actual_struct);
 
@@ -118,8 +117,8 @@ class PVStructureHelper
             }
             catch (Exception ex)
             {
+                logger.log(Level.WARNING, "Cannot decode struct, returning string", ex);
                 // fall through
-                ex.printStackTrace();
             }
         }
 
@@ -334,38 +333,6 @@ class PVStructureHelper
                     ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Unknown scalar type"),
                     ValueFactory.timeNow());
         }
-    }
-
-    /** Decode image from NTNDArray
-     *  @param struct
-     *  @return
-     *  @throws Exception
-     */
-    private static VImage decodeNTNDArray(final PVStructure struct) throws Exception
-    {
-        final PVStructureArray dim_field = struct.getSubField(PVStructureArray.class, "dimension");
-        if (dim_field == null  ||  dim_field.getLength() < 2)
-            throw new Exception("Need at least 2 dimensions, got " + dim_field);
-        final StructureArrayData dim = new StructureArrayData();
-        dim_field.get(0, 2, dim);
-        // Could use dim.data[0].getSubField(PVInt.class, 1).get(),
-        // but fetching by field name in case structure changes
-        final int width = dim.data[0].getIntField("size").get();
-        final int height = dim.data[1].getIntField("size").get();
-        final int size = width * height;
-
-        final PVUnion value_field = struct.getUnionField("value");
-        final PVField value = value_field.get();
-        if (! (value instanceof PVScalarArray))
-            throw new Exception("Expected array for NTNDArray 'value', got " + value);
-
-        final byte[] data = new byte[size];
-        if (value instanceof PVByteArray)
-            PVStructureHelper.convert.toByteArray((PVByteArray)value, 0, size, data, 0);
-        else
-            throw new Exception("Cannot extract byte[] from " + value);
-
-        return ValueFactory.newVImage(height, width, data);
     }
 
     /**
