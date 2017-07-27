@@ -270,7 +270,7 @@ public class InfluxDBArchiveReader implements ArchiveReader
         //return new AveragedValueIterator(raw_data, seconds);
         return getOptimizedValues(name, start, end, count);
     }
-    
+
     /** Fetch optimized (downsampled) samples.
      *  @param channel_name Channel name in influxdb
      *  @param start Start time

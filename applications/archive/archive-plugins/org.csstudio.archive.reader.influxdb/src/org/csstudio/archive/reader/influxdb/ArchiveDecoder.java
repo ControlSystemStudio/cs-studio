@@ -229,7 +229,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
             return null;
         return new ArchiveVNumber(time, severity, status, display, fieldToLong(val));
     }
-    
+
     private Object getSingleValue(final String colname, final String prefix) throws Exception
     {    // First, try to get value from "plain" field key
         Object val;
@@ -251,7 +251,7 @@ public class ArchiveDecoder extends AbstractInfluxDBValueDecoder
             ignore_prefix_samples = true;
         return val;
     }
-    
+
     protected VType decodeDoubleSamples(final Instant time, final AlarmSeverity severity, final String status, Display display, String prefix) throws Exception
     {    // First, try to get value from "plain" field key
         String part_name = "double."; //partial column name

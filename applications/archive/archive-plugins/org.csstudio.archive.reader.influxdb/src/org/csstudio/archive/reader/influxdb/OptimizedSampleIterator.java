@@ -84,19 +84,19 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
 
         final Consumer<QueryResult> sample_consumer = (result) -> sample_queue.add(result);
         final Consumer<QueryResult> meta_consumer = (result) -> metadata_queue.add(result);
-        
+
         reader.getQueries().chunk_get_channel_metadata(metadata_chunk_size, channel_name, metadata_starttime,
                 end, null, meta_consumer);
-        
+
         if (isEnoughValues)
         {
             final boolean stdDev = Preferences.getUseStdDev();
-    
+
             sample_endtime = InfluxDBResults.getTimestamp(interval_results);
-            
+
             reader.getQueries().chunk_get_channel_sample_stats(sample_chunk_size, channel_name, sample_starttime,
                     end, count, stdDev, sample_consumer);
-    
+
             samples = new AggregatedChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
                     reader.getTimeout(), new ArchiveStatisticsDecoder.Factory(stdDev));
         }
@@ -104,10 +104,10 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         {
             sample_endtime = InfluxDBResults.getTimestamp(
                     reader.getQueries().get_newest_channel_samples(channel_name, sample_starttime, end, 1L));
-            
+
             reader.getQueries().chunk_get_channel_samples(sample_chunk_size, channel_name, sample_starttime,
                     end, null, sample_consumer);
-    
+
             samples = new ChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
                     reader.getTimeout(), new ArchiveDecoder.Factory());
         }

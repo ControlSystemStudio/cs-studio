@@ -28,15 +28,15 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
      * Sample for statistics with a null or 0 count (number of values)
      */
     public static final VType NULL_SAMPLE = new ArchiveVType(null, AlarmSeverity.INVALID, "NULL");
-    
+
     private final boolean useStdDev;
-    
+
     public ArchiveStatisticsDecoder(AbstractInfluxDBValueLookup vals, final boolean stdDev)
     {
         super(vals);
         useStdDev = stdDev;
     }
-    
+
     public static class Factory extends AbstractInfluxDBValueDecoder.Factory
     {
         private final boolean useStdDev;
@@ -53,12 +53,12 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
             return new ArchiveStatisticsDecoder(vals, useStdDev);
         }
     }
-    
+
     private static class StatisticsImpl implements Statistics
     {
         private final Double mean, max, min, stddev;
         private final Integer count;
-        
+
         public StatisticsImpl(Double mean_max_min_stddev [], Integer count)
         {
             mean = valOrNaN(mean_max_min_stddev[0]);
@@ -67,12 +67,12 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
             stddev = valOrNaN(mean_max_min_stddev[3]);
             this.count = count;
         }
-        
+
         private Double valOrNaN(Double val)
         {
             return val != null ? val : Double.NaN;
         }
-        
+
         @Override
         public Double getAverage() {
             return mean;
@@ -111,7 +111,7 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
                 return new ArchiveVStatistics(time, severity, status, display,
                         Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
         }
-        
+
         //Second, get other values
         //mean, max, min, stddev
         Double stats_vals [] = new Double [4];
@@ -131,7 +131,7 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
         }
         else
             stats_vals[3] = Double.NaN;
-        
+
         return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(stats_vals, count));
     }
 
@@ -151,7 +151,7 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
                 return new ArchiveVStatistics(time, severity, status, display,
                         Double.NaN, Double.NaN, Double.NaN, Double.NaN, 0);
         }
-        
+
         //Second, get other values
         //mean, max, min, stddev
         Double stats_vals [] = new Double [4];
@@ -171,10 +171,10 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
         }
         else
             stats_vals[3] = Double.NaN;
-        
+
         return new ArchiveVStatistics(time, severity, status, display, new StatisticsImpl(stats_vals, count));
     }
-    
+
     @Override
     protected VType decodeEnumSample(final Instant time, final AlarmSeverity severity, final String status, List<String> labels, String prefix) throws Exception
     {
@@ -192,12 +192,12 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
             else
                 count = fieldToInt(count_val);
         }
-        
+
         //Second, get other values
         final Display display = ValueFactory.displayNone();
         return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
     }
-    
+
     @Override
     protected VType decodeStringSample(Instant time, AlarmSeverity severity, String status, String prefix) throws Exception
     {
@@ -228,17 +228,17 @@ public class ArchiveStatisticsDecoder extends ArchiveDecoder
             else
                 count = fieldToInt(count_val);
         }
-        
+
         if (count == 0)
         {
             Activator.getLogger().log(Level.FINE, "Expected string value, but no strings in\n" + vals.toString());
         }
-        
+
         //Second, get other values
         final Display display = ValueFactory.displayNone();
         return new ArchiveVStatistics(time, severity, status, display, Double.NaN, Double.NaN, Double.NaN, Double.NaN, count);
     }
-    
+
     private static Integer fieldToInt(Object val) throws Exception
     {
         Integer integer;

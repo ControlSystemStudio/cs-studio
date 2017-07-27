@@ -55,7 +55,7 @@ public class ChunkReader extends RawChunkReader
         this.cur_meta = null;
         this.next_meta = null;
     }
-    
+
     @Override
     public VType decodeSampleValue() throws Exception
     {
