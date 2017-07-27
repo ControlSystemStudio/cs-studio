@@ -53,8 +53,8 @@ public class XMLImport extends DefaultHandler
     final private static String TAG_ENABLE = "enable";
 
     /** XML tag */
-	final private static String TAG_RETAIN = "retain";
-	
+    final private static String TAG_RETAIN = "retain";
+    
     /** Replace existing engine configuration? */
     final private boolean replace;
 
@@ -106,10 +106,10 @@ public class XMLImport extends DefaultHandler
 
     /** Current archive group */
     private GroupConfig group;
-    
+
     /** Most recent 'retain' tag (contents) */
-	private String retain = null;
-	
+    private String retain = null;
+    
     /**
      * Initialize
      *
@@ -199,16 +199,16 @@ public class XMLImport extends DefaultHandler
             is_enabling = false;
         }
         else if (element.equals(TAG_RETAIN))
-		{
-        	//TODO: support group retain tags (overridden by channel retain tags)
-			//if (state != State.CHANNEL)
-				//retain_parent_tag = TAG_CHANNEL;
-			//else if (state == State.GROUP)
-				//retain_parent_tag = TAG_GROUP;
-        	//else
-			if (state != State.CHANNEL)
+        {
+            //TODO: support group retain tags (overridden by channel retain tags)
+            //if (state != State.CHANNEL)
+                //retain_parent_tag = TAG_CHANNEL;
+            //else if (state == State.GROUP)
+                //retain_parent_tag = TAG_GROUP;
+            //else
+            if (state != State.CHANNEL)
                 throw new XMLImportException("Unexpected retain entry while in state " + state);
-		}
+        }
     }
 
     /** Accumulate characters within (or also between) current element(s) */
@@ -345,8 +345,8 @@ public class XMLImport extends DefaultHandler
                 }
                 if (retain != null && !retain.isEmpty())
                 {
-                	channel.setRetention(retain);
-                	retain = null;
+                    channel.setRetention(retain);
+                    retain = null;
                 }
             }
             catch (Exception ex)
@@ -368,7 +368,7 @@ public class XMLImport extends DefaultHandler
         }
         else if (element.equals(TAG_RETAIN))
         {
-        	retain = accumulator.toString().trim();
+            retain = accumulator.toString().trim();
         }
         // else: Ignore the unknown element
     }

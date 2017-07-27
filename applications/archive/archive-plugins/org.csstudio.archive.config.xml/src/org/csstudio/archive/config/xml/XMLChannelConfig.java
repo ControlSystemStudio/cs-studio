@@ -31,7 +31,7 @@ public class XMLChannelConfig extends ChannelConfig
     public XMLChannelConfig(final int channel_id, final String name, final SampleMode sample_mode,
             final Instant last_sample_time, final int group_id)
     {
-    	this(channel_id, name, null, sample_mode, last_sample_time, group_id);
+        this(channel_id, name, null, sample_mode, last_sample_time, group_id);
     }
 
     /** Initialize
@@ -65,17 +65,17 @@ public class XMLChannelConfig extends ChannelConfig
     {
         return group_id;
     }
-    
+
     @Override
     public String getRetention()
     {
-    	return retention;
+        return retention;
     }
-    
+
     @Override
     public void setRetention(String retention)
     {
-    	this.retention = retention;
+        this.retention = retention;
     }
 
     /** @return Debug representation */

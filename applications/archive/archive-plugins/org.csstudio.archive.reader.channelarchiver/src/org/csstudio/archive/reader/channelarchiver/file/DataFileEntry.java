@@ -15,20 +15,20 @@ import java.io.File;
 class DataFileEntry
 {
     /** Data file */
-	final File file;
+    final File file;
 
-	/** Offset of DataHeader */
-	final long offset;
+    /** Offset of DataHeader */
+    final long offset;
 
-	public DataFileEntry(final File file, final long offset)
-	{
-		this.file = file;
-		this.offset = offset;
-	}
+    public DataFileEntry(final File file, final long offset)
+    {
+        this.file = file;
+        this.offset = offset;
+    }
 
-	@Override
+    @Override
     public String toString()
-	{
-		return String.format("DataFileEntry in '%s' @ 0x%08x (%d)", file.getName(), offset, offset);
-	}
+    {
+        return String.format("DataFileEntry in '%s' @ 0x%08x (%d)", file.getName(), offset, offset);
+    }
 }

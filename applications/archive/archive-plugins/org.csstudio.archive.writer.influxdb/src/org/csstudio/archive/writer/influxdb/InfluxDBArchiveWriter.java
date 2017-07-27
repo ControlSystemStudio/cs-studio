@@ -63,7 +63,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
 
         private BatchPoints getMakePoints(final String dbName)
         {
-        	return getMakePoints(dbName, null);
+            return getMakePoints(dbName, null);
         }
 
         private BatchPoints getMakePoints(final String dbName, final String rpName)
@@ -72,20 +72,20 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             BatchPoints points;
             if (rp_points == null)
             {
-            	rp_points = new HashMap<String, BatchPoints>();
-            	dbPoints.put(dbName, rp_points);
-            	points = null;
+                rp_points = new HashMap<String, BatchPoints>();
+                dbPoints.put(dbName, rp_points);
+                points = null;
             }
             else
-            	points = rp_points.get(rpName);
+                points = rp_points.get(rpName);
             if (points == null)
             {
                 //TODO: set consistency policy
-            	points = BatchPoints
-            			.database(dbName)
-            			.consistency(ConsistencyLevel.ALL)
-            			.retentionPolicy(rpName != null ? rpName : "autogen")
-            			.build();
+                points = BatchPoints
+                        .database(dbName)
+                        .consistency(ConsistencyLevel.ALL)
+                        .retentionPolicy(rpName != null ? rpName : "autogen")
+                        .build();
                 rp_points.put(rpName, points);
             }
             return points;
@@ -100,7 +100,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
         {
             return getMakePoints(dbnames.getDataDBName(channel_name), rpname);
         }
-        
+
         public BatchPoints getChannelMetaPoints(final String channel_name) throws Exception
         {
             return getMakePoints(dbnames.getMetaDBName(channel_name));
@@ -116,32 +116,32 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
             dbPoints.clear();
         }
 
-		@Override
-		public Iterator<BatchPoints> iterator()
-		{
-			return new Iterator<BatchPoints>()
-			{
-				private final Iterator<Map<String,BatchPoints>> dbs = dbPoints.values().iterator();
-				private Iterator<BatchPoints> points = Collections.emptyIterator();
-				@Override
-				public boolean hasNext()
-				{
-					while (!points.hasNext())
-					{
-						if (!dbs.hasNext()) return false;
-						points = dbs.next().values().iterator();
-					}
-					return true;
-				}
+        @Override
+        public Iterator<BatchPoints> iterator()
+        {
+            return new Iterator<BatchPoints>()
+            {
+                private final Iterator<Map<String,BatchPoints>> dbs = dbPoints.values().iterator();
+                private Iterator<BatchPoints> points = Collections.emptyIterator();
+                @Override
+                public boolean hasNext()
+                {
+                    while (!points.hasNext())
+                    {
+                        if (!dbs.hasNext()) return false;
+                        points = dbs.next().values().iterator();
+                    }
+                    return true;
+                }
 
-				@Override
-				public BatchPoints next()
-				{
-					hasNext();
-					return points.next();
-				}
-			};
-		}
+                @Override
+                public BatchPoints next()
+                {
+                    hasNext();
+                    return points.next();
+                }
+            };
+        }
     };
 
     final batchPointSets batchSets = new batchPointSets();
@@ -190,7 +190,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
     @Override
     public WriteChannel getChannel(final String name) throws Exception
     {
-    	return getChannel(name, null);
+        return getChannel(name, null);
     }
 
     @Override
@@ -220,9 +220,9 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
 
     public WriteChannel makeNewChannel(final String name) throws Exception
     {
-    	return makeNewChannel(name, null);
+        return makeNewChannel(name, null);
     }
-    
+
     public WriteChannel makeNewChannel(final String name, final String rp) throws Exception
     {
         // Check cache
@@ -252,7 +252,7 @@ public class InfluxDBArchiveWriter implements ArchiveWriter
 
         writeMetaData(influxdb_channel, stamp, sample, storeas);
         batchSets.getChannelSamplePoints(channel.getName(), influxdb_channel.getRP())
-        	.point(InfluxDBSampleEncoder.encodeSample(influxdb_channel, stamp, sample, storeas));
+            .point(InfluxDBSampleEncoder.encodeSample(influxdb_channel, stamp, sample, storeas));
     }
 
     /** Write meta data if it was never written or has changed

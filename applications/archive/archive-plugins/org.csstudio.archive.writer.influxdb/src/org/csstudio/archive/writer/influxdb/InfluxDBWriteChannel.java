@@ -23,14 +23,14 @@ public class InfluxDBWriteChannel implements WriteChannel
     final private String rp; //retention policy used for initial writes
 
     /** Initialize
-	 *  @param name Channel name
-	 */
-	public InfluxDBWriteChannel(final String name)
-	{
-		this(name, null);
-	}
+     *  @param name Channel name
+     */
+    public InfluxDBWriteChannel(final String name)
+    {
+        this(name, null);
+    }
 
-	/** Initialize
+    /** Initialize
      *  @param name Channel name
      * @param rp Retention policy name for incoming samples
      */
@@ -64,10 +64,10 @@ public class InfluxDBWriteChannel implements WriteChannel
     {
         return storeas;
     }
-    
+
     public String getRP()
     {
-    	return rp;
+        return rp;
     }
 
     /** @param meta Current meta data of channel */

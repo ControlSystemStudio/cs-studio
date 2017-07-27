@@ -211,26 +211,26 @@ public class EngineModel
     }
 
     /** Add a channel to the engine under given group.
-	 *  @param name Channel name
-	 *  @param group Name of the group to which to add
-	 *  @param enablement How channel acts on the group
-	 *  @param sample_mode Sample mode
-	 *  @param last_sample_time Time stamp of last archived sample or <code>null</code>
-	 *  @return {@link ArchiveChannel}
-	 *  @throws Exception on error from channel creation
-	 * @deprecated Use {@link #addChannel(String,String,ArchiveGroup,Enablement,SampleMode,Instant)} instead
-	 */
-	@SuppressWarnings("nls")
-	public ArchiveChannel addChannel(final String name,
-	                     final ArchiveGroup group,
-	                     final Enablement enablement,
-	                     final SampleMode sample_mode,
-	                     final Instant last_sample_time) throws Exception
-	{
-		return addChannel(name, null, group, enablement, sample_mode, last_sample_time);
-	}
+     *  @param name Channel name
+     *  @param group Name of the group to which to add
+     *  @param enablement How channel acts on the group
+     *  @param sample_mode Sample mode
+     *  @param last_sample_time Time stamp of last archived sample or <code>null</code>
+     *  @return {@link ArchiveChannel}
+     *  @throws Exception on error from channel creation
+     * @deprecated Use {@link #addChannel(String,String,ArchiveGroup,Enablement,SampleMode,Instant)} instead
+     */
+    @SuppressWarnings("nls")
+    public ArchiveChannel addChannel(final String name,
+                         final ArchiveGroup group,
+                         final Enablement enablement,
+                         final SampleMode sample_mode,
+                         final Instant last_sample_time) throws Exception
+    {
+        return addChannel(name, null, group, enablement, sample_mode, last_sample_time);
+    }
 
-	/** Add a channel to the engine under given group.
+    /** Add a channel to the engine under given group.
      *  @param name Channel name
      * @param retention String representing a data retention policy
      * @param group Name of the group to which to add
@@ -281,7 +281,7 @@ public class EngineModel
         {
             if (sample_mode.getDelta() > 0)
                 channel = new DeltaArchiveChannel(name, retention, enablement,
-                		buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
+                        buffer_capacity, last_sample, sample_mode.getPeriod(), sample_mode.getDelta());
             else
                 channel = new MonitoredArchiveChannel(name, retention,
                                              enablement, buffer_capacity,

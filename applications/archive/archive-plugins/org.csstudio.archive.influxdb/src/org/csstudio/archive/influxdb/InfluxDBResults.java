@@ -65,20 +65,20 @@ public class InfluxDBResults
         }
         return series.getValues().size();
     }
-    
+
     public static int getValueSum(QueryResult results)
     {
-    	int count = 0;
-    	for (Result result : results.getResults())
-    		if (result != null)
-    			for (Series series : result.getSeries())
-    				if (series != null)
-						for (List<Object> row : series.getValues())
-							if (row != null)
-								for (Object obj : row)
-									if (obj instanceof Number)
-										count += ((Number)obj).intValue();
-		return count;
+        int count = 0;
+        for (Result result : results.getResults())
+            if (result != null)
+                for (Series series : result.getSeries())
+                    if (series != null)
+                        for (List<Object> row : series.getValues())
+                            if (row != null)
+                                for (Object obj : row)
+                                    if (obj instanceof Number)
+                                        count += ((Number)obj).intValue();
+        return count;
     }
 
     public static List<Series> getSeries(QueryResult results)

@@ -23,72 +23,72 @@ import org.diirt.vtype.ValueFactory;
  */
 public class CtrlInfoReader
 {
-	private final long offset;
-	private Display display; //display, for number/display types
-	private List<String> labels; //labels, for enum types
+    private final long offset;
+    private Display display; //display, for number/display types
+    private List<String> labels; //labels, for enum types
 
-	public CtrlInfoReader(long offset)
-	{
-		this.offset = offset;
-		display = null;
-		labels = null;
-	}
+    public CtrlInfoReader(long offset)
+    {
+        this.offset = offset;
+        display = null;
+        labels = null;
+    }
 
-	public void read(ArchiveFileBuffer buffer) throws IOException
-	{
-		long oldOffset = buffer.offset();
-		buffer.offset(offset);
-		short size = buffer.getShort();
-		short type = buffer.getShort();
-		switch(type)
-		{
-			case 0: //invalid
-				break;
-			case 1: //Numeric
-			    double upperDisplayLimit = buffer.getFloat();
-			    double lowerDisplayLimit = buffer.getFloat();
-			    double lowerWarningLimit = buffer.getFloat();
-			    double lowerAlarmLimit = buffer.getFloat();
-			    double upperWarningLimit = buffer.getFloat();
-			    double upperAlarmLimit = buffer.getFloat();
-			    int precision = buffer.getInt();
-				size -= 32; //two shorts, 6 floats, and a 32-bit int
-				byte unitsBytes [] = new byte [size];
-				buffer.get(unitsBytes);
-				String units = new String(unitsBytes).split("\0", 2)[0];
-				display = ValueFactory.newDisplay(lowerDisplayLimit, lowerAlarmLimit, lowerWarningLimit, units,
-						NumberFormats.format(precision), upperWarningLimit, upperAlarmLimit, upperDisplayLimit,
-						Double.NaN, Double.NaN);
-				break;
-			case 2: //Enum
-			    short num_states = buffer.getShort();
-			    buffer.skip(2); //skip pad
-			    size -= 4;
-			    byte stateNamesBytes [] = new byte [size];
-			    buffer.get(stateNamesBytes);
-			    String stateNames [] = new String(stateNamesBytes).split("\0", num_states + 1);
-			    labels = Arrays.asList(stateNames).subList(0, num_states);
-				break;
-		}
-		buffer.offset(oldOffset);
-	}
+    public void read(ArchiveFileBuffer buffer) throws IOException
+    {
+        long oldOffset = buffer.offset();
+        buffer.offset(offset);
+        short size = buffer.getShort();
+        short type = buffer.getShort();
+        switch(type)
+        {
+            case 0: //invalid
+                break;
+            case 1: //Numeric
+                double upperDisplayLimit = buffer.getFloat();
+                double lowerDisplayLimit = buffer.getFloat();
+                double lowerWarningLimit = buffer.getFloat();
+                double lowerAlarmLimit = buffer.getFloat();
+                double upperWarningLimit = buffer.getFloat();
+                double upperAlarmLimit = buffer.getFloat();
+                int precision = buffer.getInt();
+                size -= 32; //two shorts, 6 floats, and a 32-bit int
+                byte unitsBytes [] = new byte [size];
+                buffer.get(unitsBytes);
+                String units = new String(unitsBytes).split("\0", 2)[0];
+                display = ValueFactory.newDisplay(lowerDisplayLimit, lowerAlarmLimit, lowerWarningLimit, units,
+                        NumberFormats.format(precision), upperWarningLimit, upperAlarmLimit, upperDisplayLimit,
+                        Double.NaN, Double.NaN);
+                break;
+            case 2: //Enum
+                short num_states = buffer.getShort();
+                buffer.skip(2); //skip pad
+                size -= 4;
+                byte stateNamesBytes [] = new byte [size];
+                buffer.get(stateNamesBytes);
+                String stateNames [] = new String(stateNamesBytes).split("\0", num_states + 1);
+                labels = Arrays.asList(stateNames).subList(0, num_states);
+                break;
+        }
+        buffer.offset(oldOffset);
+    }
 
-	public Display getDisplay(ArchiveFileBuffer buffer) throws IOException
-	{
-		if (display == null)
-			read(buffer);
-		return display;
-	}
+    public Display getDisplay(ArchiveFileBuffer buffer) throws IOException
+    {
+        if (display == null)
+            read(buffer);
+        return display;
+    }
 
-	public List<String> getLabels(ArchiveFileBuffer buffer) throws IOException
-	{
-		if (labels == null)
-			read(buffer);
-		return labels;
-	}
+    public List<String> getLabels(ArchiveFileBuffer buffer) throws IOException
+    {
+        if (labels == null)
+            read(buffer);
+        return labels;
+    }
 
-	public boolean isOffset(long offset)
-	{
-		return offset == this.offset;
-	}
+    public boolean isOffset(long offset)
+    {
+        return offset == this.offset;
+    }
 }

@@ -77,88 +77,88 @@ public class InfluxDBQueries
      * @param duration
      */
     public void createRetentionPolicy(final String rpname, final String dbname, final String duration)
-    {	// Influxdb-java versions > 2.7 have retention policy APIs.
-    	
-    	//TODO: validate duration ?
-    	
-    	String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION 1",
-    			rpname, dbname, duration);
-    	QueryResult result = influxdb.query(new Query(command, dbname));
-    	
-    	//TODO: test success?
-    		//seems like there would be an error in the QueryResult
-    		//if it fails (result.getError() != null), not sure
+    {    // Influxdb-java versions > 2.7 have retention policy APIs.
+        
+        //TODO: validate duration ?
+        
+        String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION 1",
+                rpname, dbname, duration);
+        QueryResult result = influxdb.query(new Query(command, dbname));
+        
+        //TODO: test success?
+            //seems like there would be an error in the QueryResult
+            //if it fails (result.getError() != null), not sure
     }
-    
+
     //this doesn't have a place to be used
     private void createDownsampleContinuousQuery(final String channelName, final String retentionPolicy, final String decimateTime)
     {
-    	try
-    	{
-    		final String dbname = dbnames.getDataDBName(channelName);
-	    	String statement = new StringBuilder("CREATE CONTINUOUS QUERY ")
-	    			.append('"').append(retentionPolicy).append('_').append(decimateTime).append('"')
-	    			.append(" ON \"").append(dbname).append('"')
-	    			//.append("RESAMPLE EVERY ").append(resampleFreq)
-	    			.append(" BEGIN")
-	    			.append(" SELECT ").append("MODE(*) AS average, MEAN(*) AS average")
-	    				//MODE(*) is compatible with non-numeric datatypes, but MEAN(*) overwrites average_<field> for numeric field values
-	    			.append(" INTO \"").append(channelName).append('"')
-	    			//.append("WHERE 'status' != 'NaN'")
-	    			.append(" FROM \"").append(retentionPolicy).append("\".\"").append(channelName).append('"')
-	    			.append(" GROUP BY time(").append(decimateTime).append(")")
-	    			.append(" END")
-	    			.toString();
-	    	QueryResult result = influxdb.query(new Query(statement, dbname));
-	    	//TODO: check result for errors
-    	}
-    	catch (Exception e)
-    	{
-    		//TODO: log something
-    	}
+        try
+        {
+            final String dbname = dbnames.getDataDBName(channelName);
+            String statement = new StringBuilder("CREATE CONTINUOUS QUERY ")
+                    .append('"').append(retentionPolicy).append('_').append(decimateTime).append('"')
+                    .append(" ON \"").append(dbname).append('"')
+                    //.append("RESAMPLE EVERY ").append(resampleFreq)
+                    .append(" BEGIN")
+                    .append(" SELECT ").append("MODE(*) AS average, MEAN(*) AS average")
+                        //MODE(*) is compatible with non-numeric datatypes, but MEAN(*) overwrites average_<field> for numeric field values
+                    .append(" INTO \"").append(channelName).append('"')
+                    //.append("WHERE 'status' != 'NaN'")
+                    .append(" FROM \"").append(retentionPolicy).append("\".\"").append(channelName).append('"')
+                    .append(" GROUP BY time(").append(decimateTime).append(")")
+                    .append(" END")
+                    .toString();
+            QueryResult result = influxdb.query(new Query(statement, dbname));
+            //TODO: check result for errors
+        }
+        catch (Exception e)
+        {
+            //TODO: log something
+        }
     }
-    
+
     private List<String> getRetentionPoliciesForChannel(String channel_name)
     {
-    	//TODO: be more specific?
-    	try
-    	{
-    		//TODO: call once, then store in some variable?
-    		return getRetentionPoliciesForDB(dbnames.getDataDBName(channel_name));
-    	}
-    	catch (Exception e)
-    	{
-    		return Collections.emptyList();
-    	}
+        //TODO: be more specific?
+        try
+        {
+            //TODO: call once, then store in some variable?
+            return getRetentionPoliciesForDB(dbnames.getDataDBName(channel_name));
+        }
+        catch (Exception e)
+        {
+            return Collections.emptyList();
+        }
     }
-    
+
     private List<String> getRetentionPoliciesForDB(String dbname)
     {
-    	final String stmt = "SHOW RETENTION POLICIES ON \"" + dbname + '"';
-    	final QueryResult results = makeQuery(influxdb, stmt, dbname);
-    	final List<String> rps = new ArrayList<String>();
-    	for (QueryResult.Series series : InfluxDBResults.getNonEmptySeries(results))
-		{
-    		final int iend = InfluxDBResults.getValueCount(series);
-    		for (int i = 0; i < iend; ++i)
-    			if (InfluxDBResults.getValue(series, "default", i).equals(false))
-    				rps.add((String) InfluxDBResults.getValue(series, "name", i));
-		}
-    	return rps;
+        final String stmt = "SHOW RETENTION POLICIES ON \"" + dbname + '"';
+        final QueryResult results = makeQuery(influxdb, stmt, dbname);
+        final List<String> rps = new ArrayList<String>();
+        for (QueryResult.Series series : InfluxDBResults.getNonEmptySeries(results))
+        {
+            final int iend = InfluxDBResults.getValueCount(series);
+            for (int i = 0; i < iend; ++i)
+                if (InfluxDBResults.getValue(series, "default", i).equals(false))
+                    rps.add((String) InfluxDBResults.getValue(series, "name", i));
+        }
+        return rps;
     }
-    
+
     private String getFromClause(String channel_name, boolean isData)
     {
-    	StringBuilder sb = new StringBuilder("\"").append(channel_name).append('"');
-    	if (isData)
-    	{
-	    	for (String rp : getRetentionPoliciesForChannel(channel_name))
-	    	{
-	    		//if (rp != null && !rp.isEmpty())
-	    		sb.append(", \"").append(rp).append("\".\"").append(channel_name).append("\"");
-	    	}
-    	}
-    	return sb.toString();
+        StringBuilder sb = new StringBuilder("\"").append(channel_name).append('"');
+        if (isData)
+        {
+            for (String rp : getRetentionPoliciesForChannel(channel_name))
+            {
+                //if (rp != null && !rp.isEmpty())
+                sb.append(", \"").append(rp).append("\".\"").append(channel_name).append("\"");
+            }
+        }
+        return sb.toString();
     }
 
     public InfluxDBQueries(InfluxDB influxdb, final DBNameMap dbnames)
@@ -207,8 +207,8 @@ public class InfluxDBQueries
         }
         if (group_by_what != null)
         {
-        	sb.append(" GROUP BY ");
-        	sb.append(group_by_what);
+            sb.append(" GROUP BY ");
+            sb.append(group_by_what);
         }
         sb.append(" ORDER BY time ");
         if (limit != null)
@@ -234,29 +234,29 @@ public class InfluxDBQueries
         }
         return where_clauses;
     }
-    
-	private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count)
+
+    private static String getGroupByTimeClause(final Instant starttime, final Instant endtime, final long count)
     {
-    	//TODO: rounding/truncation problem?
+        //TODO: rounding/truncation problem?
         StringBuilder ret = new StringBuilder();
         ret.append("time(");
         ret.append(InfluxDBUtil.toMicro(
-        		Duration.between(starttime, endtime).dividedBy(count)).toString());
-		//Fill options: fill(none) is best, because empty time intervals (a.k.a. buckets) are automatically excluded.
-		//There is no need to try to sample data with metadata, because metadata exists independently of sample data.
+                Duration.between(starttime, endtime).dividedBy(count)).toString());
+        //Fill options: fill(none) is best, because empty time intervals (a.k.a. buckets) are automatically excluded.
+        //There is no need to try to sample data with metadata, because metadata exists independently of sample data.
         ret.append("u) fill(none)");
         return ret.toString();
     }
 
-	public static String get_channel_points(final String select_what, final String from_what,
+    public static String get_channel_points(final String select_what, final String from_what,
             final Instant starttime, final Instant endtime, String where_what, String group_by_what,
             final Long limit)
-	{
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ").append(select_what).append(" FROM ").append(from_what);
         List<String> where_clauses = getTimeClauses(starttime, endtime);
         if (where_what != null)
-        	where_clauses.add(where_what);
+            where_clauses.add(where_what);
         return get_points(sb, where_clauses, group_by_what, limit);
     }
 
@@ -349,37 +349,37 @@ public class InfluxDBQueries
     public QueryResult get_newest_channel_datum_regex(final String pattern) throws Exception {
         return makeQuery(influxdb, get_pattern_points("*", pattern, null, null, -1L), dbnames.getDataDBName(pattern));
     }
-    
+
     public QueryResult get_newest_channel_sample_count_in_intervals(final String channel_name, final Instant starttime,
             final Instant endtime, Long numIntervals, Long numResults) throws Exception
     {
         return makeQuery(
                 influxdb,
                 get_channel_points("COUNT(*)", getFromClause(channel_name, true), starttime, endtime, null,
-                		getGroupByTimeClause(starttime, endtime, numIntervals), -numResults),
+                        getGroupByTimeClause(starttime, endtime, numIntervals), -numResults),
                 dbnames.getDataDBName(channel_name));
     }
 
     public QueryResult get_channel_sample_count_in_intervals(final String channel_name, final Instant starttime,
-    		final Instant endtime, Long numIntervals, Long numResults) throws Exception
+            final Instant endtime, Long numIntervals, Long numResults) throws Exception
     {
-    	return makeQuery(
-    			influxdb,
-    			get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null,
-    					getGroupByTimeClause(starttime, endtime, numIntervals), numResults),
-    			dbnames.getDataDBName(channel_name));
+        return makeQuery(
+                influxdb,
+                get_channel_points("*", getFromClause(channel_name, true), starttime, endtime, null,
+                        getGroupByTimeClause(starttime, endtime, numIntervals), numResults),
+                dbnames.getDataDBName(channel_name));
     }
-    
-	public void chunk_get_channel_sample_stats(final int chunkSize, final String channel_name, final Instant starttime,
-			final Instant endtime, Long limit, boolean stdDev, Consumer<QueryResult> consumer) throws Exception
-	{
-    	StringBuilder select_what = new StringBuilder("MEAN(*),MAX(*),MIN(*),COUNT(*)");
-    	if (stdDev)
-    		select_what.append(",STDDEV(*)");
-		makeChunkQuery(chunkSize, consumer, influxdb,
-				get_channel_points(select_what.toString(), getFromClause(channel_name, true), starttime, endtime, "status != 'NaN'",
-						getGroupByTimeClause(starttime, endtime, limit), null),
-				dbnames.getDataDBName(channel_name));
+
+    public void chunk_get_channel_sample_stats(final int chunkSize, final String channel_name, final Instant starttime,
+            final Instant endtime, Long limit, boolean stdDev, Consumer<QueryResult> consumer) throws Exception
+    {
+        StringBuilder select_what = new StringBuilder("MEAN(*),MAX(*),MIN(*),COUNT(*)");
+        if (stdDev)
+            select_what.append(",STDDEV(*)");
+        makeChunkQuery(chunkSize, consumer, influxdb,
+                get_channel_points(select_what.toString(), getFromClause(channel_name, true), starttime, endtime, "status != 'NaN'",
+                        getGroupByTimeClause(starttime, endtime, limit), null),
+                dbnames.getDataDBName(channel_name));
     }
 
     ///////////////////////////// META DATA ARCHIVE QUERIES

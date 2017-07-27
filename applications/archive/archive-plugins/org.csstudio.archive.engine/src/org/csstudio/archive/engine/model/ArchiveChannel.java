@@ -111,22 +111,22 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     private final SampleBuffer buffer;
 
     /** Construct an archive channel
-	 *  @param name Name of the channel (PV)
-	 *  @param enablement How channel affects its groups
-	 *  @param buffer_capacity Size of sample buffer
-	 *  @param last_archived_value Last value from storage, or <code>null</code>.
-	 *  @throws Exception On error in PV setup
-	 * @deprecated Use {@link #ArchiveChannel(String,String,Enablement,int,VType)} instead
-	 */
-	public ArchiveChannel(final String name,
-	                      final Enablement enablement,
-	                      final int buffer_capacity,
-	                      final VType last_archived_value) throws Exception
-	{
-		this(name, null, enablement, buffer_capacity, last_archived_value);
-	}
+     *  @param name Name of the channel (PV)
+     *  @param enablement How channel affects its groups
+     *  @param buffer_capacity Size of sample buffer
+     *  @param last_archived_value Last value from storage, or <code>null</code>.
+     *  @throws Exception On error in PV setup
+     * @deprecated Use {@link #ArchiveChannel(String,String,Enablement,int,VType)} instead
+     */
+    public ArchiveChannel(final String name,
+                          final Enablement enablement,
+                          final int buffer_capacity,
+                          final VType last_archived_value) throws Exception
+    {
+        this(name, null, enablement, buffer_capacity, last_archived_value);
+    }
 
-	/** Construct an archive channel
+    /** Construct an archive channel
      *  @param name Name of the channel (PV)
      * @param retention Sample retention policy; may be null, if default/not supported
      * @param enablement How channel affects its groups

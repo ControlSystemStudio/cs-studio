@@ -58,7 +58,7 @@ public class Preferences
     // return default_value;
     // return prefs.getString(Activator.ID, key, default_value, null);
     // }
-    
+
     public static boolean getUseStdDev()
     {
         boolean use_std_dev = false;
