@@ -59,12 +59,12 @@ public class ChunkReader extends RawChunkReader
     @Override
     public VType decodeSampleValue() throws Exception
     {
-    	VType result;
-    	do
-    	{
-    		result = super.decodeSampleValue();
-    	} while (result == null && step());
-		return result;
+        VType result;
+        do
+        {
+            result = super.decodeSampleValue();
+        } while (result == null && step());
+        return result;
     }
 
     private void step_next_metadata() throws Exception

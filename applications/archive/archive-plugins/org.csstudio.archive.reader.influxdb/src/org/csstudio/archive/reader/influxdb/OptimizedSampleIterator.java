@@ -73,9 +73,9 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         //Get the sample intervals ("buckets") in the range
         final QueryResult interval_results = reader.getQueries().get_newest_channel_sample_count_in_intervals(channel_name, sample_starttime, end, count, count);
         // Does the data fill 'count' intervals ("buckets"), or is the number of samples
-        //		at least twice the desired number of "buckets"?
+        //        at least twice the desired number of "buckets"?
         final boolean isEnoughValues = InfluxDBResults.getValueCount(interval_results) >= count ||
-        		InfluxDBResults.getValueSum(interval_results) >= count*2;
+                InfluxDBResults.getValueSum(interval_results) >= count*2;
 
         //Find the last timestamp of the metadata before the end time
         metadata_endtime = InfluxDBResults.getTimestamp(reader.getQueries().get_newest_meta_data(channel_name, null, end, 1L));
@@ -86,30 +86,30 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         final Consumer<QueryResult> meta_consumer = (result) -> metadata_queue.add(result);
         
         reader.getQueries().chunk_get_channel_metadata(metadata_chunk_size, channel_name, metadata_starttime,
-        		end, null, meta_consumer);
+                end, null, meta_consumer);
         
         if (isEnoughValues)
         {
-	        final boolean stdDev = Preferences.getUseStdDev();
-	
-	        sample_endtime = InfluxDBResults.getTimestamp(interval_results);
-	        
-	        reader.getQueries().chunk_get_channel_sample_stats(sample_chunk_size, channel_name, sample_starttime,
-	        		end, count, stdDev, sample_consumer);
-	
-	        samples = new AggregatedChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
-	        		reader.getTimeout(), new ArchiveStatisticsDecoder.Factory(stdDev));
+            final boolean stdDev = Preferences.getUseStdDev();
+    
+            sample_endtime = InfluxDBResults.getTimestamp(interval_results);
+            
+            reader.getQueries().chunk_get_channel_sample_stats(sample_chunk_size, channel_name, sample_starttime,
+                    end, count, stdDev, sample_consumer);
+    
+            samples = new AggregatedChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
+                    reader.getTimeout(), new ArchiveStatisticsDecoder.Factory(stdDev));
         }
         else
         {
             sample_endtime = InfluxDBResults.getTimestamp(
-            		reader.getQueries().get_newest_channel_samples(channel_name, sample_starttime, end, 1L));
-        	
-	        reader.getQueries().chunk_get_channel_samples(sample_chunk_size, channel_name, sample_starttime,
-	        		end, null, sample_consumer);
-	
-	        samples = new ChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
-	        		reader.getTimeout(), new ArchiveDecoder.Factory());
+                    reader.getQueries().get_newest_channel_samples(channel_name, sample_starttime, end, 1L));
+            
+            reader.getQueries().chunk_get_channel_samples(sample_chunk_size, channel_name, sample_starttime,
+                    end, null, sample_consumer);
+    
+            samples = new ChunkReader(sample_queue, sample_endtime, metadata_queue, metadata_endtime,
+                    reader.getTimeout(), new ArchiveDecoder.Factory());
         }
 
         if (samples.step())
@@ -143,7 +143,7 @@ public class OptimizedSampleIterator extends AbstractInfluxDBValueIterator
         if (samples.step())
             next_value = samples.decodeSampleValue();
         else
-        	close();
+            close();
 
         return result;
     }
