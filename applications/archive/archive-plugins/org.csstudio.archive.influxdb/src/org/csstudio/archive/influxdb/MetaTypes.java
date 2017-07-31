@@ -240,10 +240,17 @@ public class MetaTypes
 
         //handle arrays (Recommended way is lots of fields)
         final int N = enum_states.size();
-        for (int i = 0; i < N; i++)
+        if (N == 0)
         {
-            String fname = "state." + Integer.toString(i);
-            point.addField(fname, enum_states.get(i));
+        	point.addField("null_metadata", true);
+        }
+        else
+        {
+	        for (int i = 0; i < N; i++)
+	        {
+	            String fname = "state." + Integer.toString(i);
+	            point.addField(fname, enum_states.get(i));
+	        }
         }
 
         return point.build();
