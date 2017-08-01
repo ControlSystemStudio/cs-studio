@@ -9,6 +9,7 @@ package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.Instant;
 
 import org.csstudio.archive.vtype.TimestampHelper;
@@ -97,11 +98,15 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             if (result.next())
             {
                 // System.out.print("Start time corrected from " + start_stamp);
-                start_stamp = result.getTimestamp(1);
-                // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
-                if (reader.getDialect() == Dialect.MySQL || reader.getDialect() == Dialect.PostgreSQL)
-                    start_stamp.setNanos(result.getInt(2));
-                // System.out.println(" to " + start_stamp);
+                final Timestamp actual_start = result.getTimestamp(1);
+                if (actual_start != null)
+                {
+                    start_stamp = actual_start;
+                    // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
+                    if (reader.getDialect() == Dialect.MySQL || reader.getDialect() == Dialect.PostgreSQL)
+                        start_stamp.setNanos(result.getInt(2));
+                    // System.out.println(" to " + start_stamp);
+                }
             }
         }
         finally
