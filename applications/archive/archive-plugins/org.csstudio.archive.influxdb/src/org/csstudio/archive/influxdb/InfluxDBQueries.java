@@ -78,13 +78,13 @@ public class InfluxDBQueries
      */
     public void createRetentionPolicy(final String rpname, final String dbname, final String duration)
     {    // Influxdb-java versions > 2.7 have retention policy APIs.
-        
+
         //TODO: validate duration ?
-        
+
         String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION 1",
                 rpname, dbname, duration);
         QueryResult result = influxdb.query(new Query(command, dbname));
-        
+
         //TODO: test success?
             //seems like there would be an error in the QueryResult
             //if it fails (result.getError() != null), not sure

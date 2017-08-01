@@ -54,7 +54,7 @@ public class XMLImport extends DefaultHandler
 
     /** XML tag */
     final private static String TAG_RETAIN = "retain";
-    
+
     /** Replace existing engine configuration? */
     final private boolean replace;
 
@@ -109,7 +109,7 @@ public class XMLImport extends DefaultHandler
 
     /** Most recent 'retain' tag (contents) */
     private String retain = null;
-    
+
     /**
      * Initialize
      *

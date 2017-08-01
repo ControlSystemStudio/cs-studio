@@ -34,7 +34,7 @@ public class DownsamplingDemo
     private static final boolean PRINT_PROGRESS = false;
     private static final TemporalAmount COPY_AMOUNT = Duration.ofDays(1);
     private static final Instant COPY_START = Instant.now().minus(COPY_AMOUNT);
-    
+
     /**
      * Compare times for getOptimizedValues() implementations for rdb and influx archive readers, or
      * copy data from an rdb archive to an influx archive.
@@ -66,7 +66,7 @@ public class DownsamplingDemo
             //Influx server args:
             //"http://localhost:8086"
             String influx_server_args [] = args[2].split(", ");
-            
+
             //Channel pattern
             //"*LLRF:IOC*:Load"
             String channel_pattern = args[3];
@@ -84,7 +84,7 @@ public class DownsamplingDemo
         }
         throw new IllegalArgumentException("Usage: (copy | time) \"<rdb, args>\" \"<influx, args>\" <channel_glob_pattern>");
     }
-    
+
     private static void extend(String [] src, String [] dst, String def)
     {
         int i = 0;
@@ -93,13 +93,13 @@ public class DownsamplingDemo
         while (i < dst.length)
             dst[i++] = def;
     }
-    
+
     private static void copy(final String rdb_server_args [], final String influx_server_args [], final String channel_pattern) throws Exception
     {
         ArchiveReader reader = getRdbReader(rdb_server_args);
         InfluxDBArchiveWriter writer = getInfluxWriter(influx_server_args);
         writer.getQueries().initDatabases(writer.getConnectionInfo().influxdb);
-        
+
         final String names [] = reader.getNamesByPattern(1, channel_pattern);
         //names = Arrays.copyOf(names, 3);
         final Instant start = COPY_START;
@@ -121,12 +121,12 @@ public class DownsamplingDemo
         writer.close();
         reader.close();
     }
-    
+
     static void time(final String rdb_server_args [], final String influx_server_args [], final String channel_pattern) throws Exception
     {
         final ArchiveReader influx = getInfluxReader(influx_server_args);
         final ArchiveReader rdb = getRdbReader(rdb_server_args);
-        
+
         final Duration first_durations [] = {Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO};
         Duration total_durations [] = {Duration.ZERO, Duration.ZERO, Duration.ZERO, Duration.ZERO};
         int total_num_samples [] = {0, 0, 0, 0};
@@ -163,7 +163,7 @@ public class DownsamplingDemo
             influx.close();
             rdb.close();
         }
-        
+
         Object results [] = new Object [12];
         for (int i = 0; i < 4; ++i)
         {
@@ -181,7 +181,7 @@ public class DownsamplingDemo
                 results);
         System.out.println(msg);
     }
-    
+
     private static void getResults(final ArchiveReader rdb, final ArchiveReader influx, final String name,
             final Instant start, final Instant end, final Duration durations [], final int num_samples [])
                     throws Exception
@@ -210,12 +210,12 @@ public class DownsamplingDemo
             }
         }
     }
-    
+
     private static double getSecondsDouble(Duration duration)
     {
         return duration.getSeconds() + duration.getNano()/1_000_000_000.0;
     }
-    
+
     private static Duration timeValueIterator(ValueIterator it, int total_num_samples [], int index) throws Exception
     {
         Duration result = Duration.ZERO;

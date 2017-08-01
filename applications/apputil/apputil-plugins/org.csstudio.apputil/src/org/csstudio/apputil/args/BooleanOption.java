@@ -17,7 +17,7 @@ public class BooleanOption extends Option
 
     /**
      * Construct String option
-     * 
+     *
      * @param parser
      *            Parser to which to add
      * @param option
