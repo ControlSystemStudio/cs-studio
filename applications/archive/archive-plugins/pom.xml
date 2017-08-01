@@ -29,7 +29,9 @@
     <module>org.csstudio.archive.reader.ea4</module>
     <module>org.csstudio.archive.reader.influxdb</module>
     <module>org.csstudio.archive.reader.influxdb.raw</module>
+<!-- Disable test, need to change into demo
     <module>org.csstudio.archive.reader.influxdb.test</module>
+-->
     <module>org.csstudio.archive.reader.rdb</module>
     <module>org.csstudio.archive.reader.rdb.test</module>
     <module>org.csstudio.archive.reader.test</module>
@@ -37,7 +39,9 @@
     <module>org.csstudio.archive.vtype.test</module>
     <module>org.csstudio.archive.writer</module>
     <module>org.csstudio.archive.writer.influxdb</module>
+<!-- Disable test, need to change into demo
     <module>org.csstudio.archive.writer.influxdb.test</module>
+ -->
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
     <module>org.csstudio.archive.diirt.datasource</module>
