@@ -1,12 +1,8 @@
 package org.csstudio.archive.reader.influxdb;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-import org.csstudio.archive.reader.influxdb.ChunkReader;
-import org.csstudio.archive.influxdb.MetaTypes;
-import org.csstudio.archive.influxdb.MetaTypes.MetaObject;
 import org.csstudio.archive.reader.influxdb.raw.AbstractInfluxDBValueDecoder.Factory;
 import org.influxdb.dto.QueryResult;
 

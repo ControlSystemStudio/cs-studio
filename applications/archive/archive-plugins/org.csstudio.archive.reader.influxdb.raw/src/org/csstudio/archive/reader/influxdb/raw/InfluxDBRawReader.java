@@ -23,7 +23,6 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.csstudio.archive.reader.influxdb.raw.AveragedValueIterator;
 import org.diirt.util.time.TimeDuration;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.QueryResult;

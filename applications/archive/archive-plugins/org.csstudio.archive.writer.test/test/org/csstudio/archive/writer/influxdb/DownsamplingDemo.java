@@ -2,7 +2,6 @@ package org.csstudio.archive.writer.influxdb;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
 import org.csstudio.archive.reader.ArchiveReader;
