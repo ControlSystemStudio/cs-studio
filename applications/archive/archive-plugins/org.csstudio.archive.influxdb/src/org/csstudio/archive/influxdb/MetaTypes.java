@@ -242,15 +242,15 @@ public class MetaTypes
         final int N = enum_states.size();
         if (N == 0)
         {
-        	point.addField("null_metadata", true);
+            point.addField("null_metadata", true);
         }
         else
         {
-	        for (int i = 0; i < N; i++)
-	        {
-	            String fname = "state." + Integer.toString(i);
-	            point.addField(fname, enum_states.get(i));
-	        }
+            for (int i = 0; i < N; i++)
+            {
+                String fname = "state." + Integer.toString(i);
+                point.addField(fname, enum_states.get(i));
+            }
         }
 
         return point.build();
