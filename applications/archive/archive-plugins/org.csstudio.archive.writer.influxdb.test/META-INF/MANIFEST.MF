@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JUnit tests/demos for the Archive Writer
+Bundle-Description: JUnit tests/demos for the Archive Writer
+Bundle-SymbolicName: org.csstudio.archive.writer.influxdb.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.csstudio.apputil;bundle-version="3.0.0",
+ org.csstudio.archive.writer;bundle-version="1.0.0",
+ org.csstudio.archive.writer.influxdb;bundle-version="1.0.0",
+ org.csstudio.archive.reader;bundle-version="3.2.0";resolution:=optional,
+ org.csstudio.archive.reader.influxdb;bundle-version="3.2.0";resolution:=optional,
+ org.csstudio.archive.config;bundle-version="3.2.0";resolution:=optional,
+ org.csstudio.archive.config.xml;bundle-version="3.2.0";resolution:=optional,
+ org.csstudio.archive.vtype;bundle-version="1.0.0",
+ org.diirt.vtype;bundle-version="2.7.1",
+ org.diirt.util;bundle-version="0.3.2",
+ org.csstudio.archive.influxdb;bundle-version="4.0.0",
+ org.influxdb.java;bundle-version="2.6.0"

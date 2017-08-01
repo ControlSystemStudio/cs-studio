@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Example for XML configuration file syntax -->
+<engineconfig>
+  <!-- Engine can have one or more groups
+       Each group has a name and one or more channels
+    -->
+  <group>
+    <name>NorthSectorVacuum</name>
+      <!-- Each channel has a name and
+           a sample period (or expected change period).
+           The period is either in seconds or in HH:MM:SS format.
+           It is either using the 'monitor' or 'scan' sample mode.
+       -->
+      <channel><name>NSV:P1</name><period>1.0</period><monitor/></channel>
+
+      <!-- Example for a monitor with engine-enforced value change threshold of 2.5 -->
+      <channel><name>NSV:P2</name><period>0.1</period><monitor>2.5</monitor></channel>
+
+      <!-- Channel that enables sampling of this group -->
+      <channel><name>NSV:Enable</name><period>10.0</period><monitor/><enable/></channel>
+  </group>
+
+  <!-- Other Group -->
+  <group>
+    <name>SouthSectorVacuum</name>
+      <channel><name>SSV:P1</name><period>1.0</period><monitor/></channel>
+  </group>
+</engineconfig>

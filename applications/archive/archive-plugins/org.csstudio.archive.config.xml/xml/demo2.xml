@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Example for XML configuration file syntax -->
+<engineconfig>
+  <group>
+    <name>EastSectorTemp</name>
+      <channel><name>EST:T1</name><period>1.0</period><monitor/></channel>
+      <channel><name>EST:T2</name><period>0.1</period><monitor>2.5</monitor></channel>
+  </group>
+
+  <group>
+    <name>WestSectorTemp</name>
+      <channel><name>WST:T1</name><period>1.0</period><scan/></channel>
+  </group>
+</engineconfig>

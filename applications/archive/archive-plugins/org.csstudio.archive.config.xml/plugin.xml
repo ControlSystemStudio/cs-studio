@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.archive.config.ArchiveConfig">
+      <ArchiveConfig
+            class="org.csstudio.archive.config.xml.XMLArchiveConfig">
+      </ArchiveConfig>
+   </extension>
+</plugin>

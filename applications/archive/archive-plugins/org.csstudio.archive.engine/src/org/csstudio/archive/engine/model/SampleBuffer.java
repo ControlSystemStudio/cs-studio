@@ -29,6 +29,11 @@ public class SampleBuffer
      */
     final private String channel_name;
 
+    /**
+     * Data retention policy. May be null, if default/not supported.
+     */
+    final private String retention;
+
     /** The actual samples in a thread-save queue. */
     final private RingBuffer<VType> samples;
 
@@ -47,10 +52,19 @@ public class SampleBuffer
      */
     private static volatile boolean error = false;
 
-    /** Create sample buffer of given capacity */
+    /** Create sample buffer of given capacity
+     * @deprecated Use {@link #SampleBuffer(String,String,int)} instead*/
     SampleBuffer(final String channel_name, final int capacity)
     {
+        this(channel_name, null, capacity);
+    }
+
+    /** Create sample buffer of given capacity
+     * @param retention Sample retention policy (for archive); may be null if default/not supported*/
+    SampleBuffer(final String channel_name, String retention, final int capacity)
+    {
         this.channel_name = channel_name;
+        this.retention = retention;
         samples = new RingBuffer<VType>(capacity);
     }
 
@@ -58,6 +72,12 @@ public class SampleBuffer
     String getChannelName()
     {
         return channel_name;
+    }
+
+    /** @return data retention policy (in archive) of this buffer's samples */
+    String getArchiveDataRetention()
+    {
+        return retention;
     }
 
     /** @return Queue capacity, i.e. maximum queue size. */

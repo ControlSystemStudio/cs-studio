@@ -22,14 +22,26 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     /** Estimated period of change in seconds */
     final private double period_estimate;
 
-    /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
+    /** @see ArchiveChannel#ArchiveChannel(String, int, IValue)
+     * @deprecated Use {@link #MonitoredArchiveChannel(String,String,Enablement,int,VType,double)} instead*/
     public MonitoredArchiveChannel(final String name,
                                    final Enablement enablement,
                                    final int buffer_capacity,
                                    final VType last_archived_value,
                                    final double period_estimate) throws Exception
     {
-        super(name, enablement, buffer_capacity, last_archived_value);
+        this(name, null, enablement, buffer_capacity, last_archived_value, period_estimate);
+    }
+
+    /** @see ArchiveChannel#ArchiveChannel(String, String, int, IValue) */
+    public MonitoredArchiveChannel(final String name,
+                                   final String retention,
+                                   final Enablement enablement,
+                                   final int buffer_capacity,
+                                   final VType last_archived_value,
+                                   final double period_estimate) throws Exception
+    {
+        super(name, retention, enablement, buffer_capacity, last_archived_value);
         this.period_estimate = period_estimate;
     }
 

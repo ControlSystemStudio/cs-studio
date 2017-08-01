@@ -13,7 +13,23 @@ package org.csstudio.apputil.args;
 public class BooleanOption extends Option
 {
     /** Current value */
-    private boolean value = false;
+    private boolean value;
+
+    /**
+     * Construct String option
+     *
+     * @param parser
+     *            Parser to which to add
+     * @param option
+     *            Option name: "-something"
+     * @param info
+     *            Help string
+     */
+    public BooleanOption(final ArgParser parser, final String option, final String info, boolean default_val) {
+        super(parser, option, info);
+        value = default_val;
+    }
+
 
     /** Construct String option
      *  @param parser Parser to which to add
@@ -24,7 +40,7 @@ public class BooleanOption extends Option
                          final String option,
                          final String info)
     {
-        super(parser, option, info);
+        this(parser, option, info, false);
     }
 
     /** @return Value */

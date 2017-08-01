@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.config.rdb;
+package org.csstudio.archive.config;
 
 import org.xml.sax.SAXException;
 
@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
  *  SAXException and typically result in a stack dump.
  *  @author Kay Kasemir
  */
-class XMLImportException extends SAXException
+public class XMLImportException extends SAXException
 {
     public XMLImportException(final String message)
     {

@@ -10,10 +10,14 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.archive.config</module>
+    <module>org.csstudio.archive.config.influxdb</module>
     <module>org.csstudio.archive.config.rdb</module>
     <module>org.csstudio.archive.config.test</module>
+    <module>org.csstudio.archive.config.xml</module>
+    <module>org.csstudio.archive.config.xml.test</module>
     <module>org.csstudio.archive.engine</module>
     <module>org.csstudio.archive.engine.test</module>
+    <module>org.csstudio.archive.influxdb</module>
     <module>org.csstudio.archive.rdb</module>
     <module>org.csstudio.archive.reader</module>
 
@@ -23,12 +27,21 @@
     <!-- <module>org.csstudio.archive.reader.archiverecord</module> Was used by DESY, not up to date -->
     <module>org.csstudio.archive.reader.channelarchiver</module>
     <module>org.csstudio.archive.reader.ea4</module>
+    <module>org.csstudio.archive.reader.influxdb</module>
+    <module>org.csstudio.archive.reader.influxdb.raw</module>
+<!-- Disable test, need to change into demo
+    <module>org.csstudio.archive.reader.influxdb.test</module>
+-->
     <module>org.csstudio.archive.reader.rdb</module>
     <module>org.csstudio.archive.reader.rdb.test</module>
     <module>org.csstudio.archive.reader.test</module>
     <module>org.csstudio.archive.vtype</module>
     <module>org.csstudio.archive.vtype.test</module>
     <module>org.csstudio.archive.writer</module>
+    <module>org.csstudio.archive.writer.influxdb</module>
+<!-- Disable test, need to change into demo
+    <module>org.csstudio.archive.writer.influxdb.test</module>
+ -->
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
     <module>org.csstudio.archive.diirt.datasource</module>

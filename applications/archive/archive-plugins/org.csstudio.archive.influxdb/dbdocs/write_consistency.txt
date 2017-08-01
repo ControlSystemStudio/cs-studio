@@ -1,0 +1,52 @@
+When we write points to Influx, we have to specify a write consistency level. It is one of:
+- Any, One, Quorum, All
+
+But what do these mean? Research was required...
+
+In reading about write consistency for Influx, the following (ill-defined) terms come up a lot:
+
+"CP” (consistent but not available under network partitions)
+“AP” (available but not consistent under network partitions)
+
+https://www.influxdata.com/influxdb-clustering-design-neither-strictly-cp-or-ap/
+Influx is neither of these. It is "highly available and eventually consistent".
+
+Despite not knowing exactly what these terms mean, the developers bravely define parts of influx as one or the other.
+
+Metadata Store (CP)
+-------------------
+There appears to be a per-cluster metadata store where each node in the cluster stores a local copy of the meta data.
+According to the above document, the entire per-node metadata store copy is "periodically refreshed"
+If an incoming request "misses" the local copy, the node will update data from the metadata store
+
+So, we have a distributed cache design that is very vaguely described. 
+I am not super confident that anything sane happens when metadata updates in the central store.
+Probably the nodes just use bad metadata until the next periodic update.
+
+Data Store (AP)
+---------------
+The metadata service manages shard groups and shards.
+
+When a data point write comes into a node, the node will query the metadata store for the correct shard group
+Then, the measurement name and tag set are used to hash into the shard group to find which shard the point belongs to.
+The shard may exist on multiple nodes, so this is where write consistency level comes in.
+
+Call the node that received the write request Node_0.
+Call the nodes that own the shards where the data belongs as some set (size n) of Node_i (Node_0 may not be one of Node_i)
+
+We can do a write operation with one of 4 levels:
+* Any
+      Success once any of Node_i accept the write or Node_0 writes the data as a "durable hinted handoff"
+* One
+      Success once any of Node_i accept the write
+* Quorum
+      Success when n/2+1 of Node_i accept the write
+* All
+      Success when all of Node_i accept the write
+      
+In the case of quorum or all, there can be a partial write failure.... 
+So, maybe some nodes accpted the write, but some timed out. The write might actually eventually succeed.
+So, we get a failure, then redo the write... it will write over the old data.
+
+Not sure if this is thrown as failure by the Java Influx library. 
+If it is, then I think we would have to parse out the failure string to figure this out.

@@ -53,6 +53,20 @@ public class ChannelConfig
         return last_sample_time;
     }
 
+    /** @return String representing a data retention policy, or null for default/not supported */
+    public String getRetention()
+    {
+        return null;
+    }
+
+    /** Set data retention policy; may be null if default/not supported.
+     * In the ChannelConfig class, this is a no-op. Sub-classes should
+     * override this method if they support retention policies.*/
+    public void setRetention(String retain)
+    {
+        //TODO: Log a warning? (What logger?)
+    }
+
     /** @return Debug representation */
     @Override
     public String toString()
