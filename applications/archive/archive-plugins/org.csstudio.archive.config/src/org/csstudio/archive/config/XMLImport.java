@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.config.rdb;
+package org.csstudio.archive.config;
 
 import java.io.InputStream;
 
@@ -14,7 +14,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.SecondsParser;
-import org.csstudio.archive.config.EngineConfig;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -30,10 +29,10 @@ public class XMLImport extends DefaultHandler
     final static String TAG_ENGINECONFIG = "engineconfig";
 
     /** XML tag */
-    final private static String TAG_GROUP = "group";
+    final protected static String TAG_GROUP = "group";
 
     /** XML tag */
-    final private static String TAG_CHANNEL = "channel";
+    final protected static String TAG_CHANNEL = "channel";
 
     /** XML tag */
     final private static String TAG_NAME = "name";
@@ -53,6 +52,9 @@ public class XMLImport extends DefaultHandler
     /** XML tag */
     final private static String TAG_ENABLE = "enable";
 
+    /** XML tag */
+    final private static String TAG_RETAIN = "retain";
+
     /** Replace existing engine configuration? */
     final private boolean replace;
 
@@ -60,13 +62,13 @@ public class XMLImport extends DefaultHandler
     final private boolean steal_channels;
 
     /** Connection to RDB archive */
-    final private RDBArchiveConfig config;
+    final private ImportableArchiveConfig config;
 
     /** Accumulator for characters within a tag */
-    final private StringBuffer accumulator = new StringBuffer();
+    final protected StringBuffer accumulator = new StringBuffer();
 
     /** States of the parser */
-    private enum State
+    protected enum State
     {
         /** Looking for the initial element */
         NEED_FIRST_ELEMENT,
@@ -82,7 +84,7 @@ public class XMLImport extends DefaultHandler
     }
 
     /** Current parser state */
-    private State state = State.NEED_FIRST_ELEMENT;
+    protected State state = State.NEED_FIRST_ELEMENT;
 
     /** Most recent 'name' tag */
     private String name;
@@ -103,35 +105,49 @@ public class XMLImport extends DefaultHandler
     private EngineConfig engine;
 
     /** Current archive group */
-    private RDBGroupConfig group;
+    private GroupConfig group;
 
-    /** Initialize
-     *  @param rdb_url
-     *  @param rdb_user
-     *  @param rdb_password
-     *  @param rdb_schema
-     *  @param replace Replace existing engine configuration?
-     *  @param steal_channels Steal channels that currently belong to a different engine?
-     *  @throws Exception
+    /** Most recent 'retain' tag (contents) */
+    private String retain = null;
+
+    /**
+     * Initialize
+     *
+     * @param config
+     *            The config to import into
+     * @param replace
+     *            Replace existing engine configuration?
+     * @param steal_channels
+     *            Steal channels that currently belong to a different engine?
+     * @throws Exception
      */
-    public XMLImport(final String rdb_url, final String rdb_user, final String rdb_password,
-            final String rdb_schema,
+    public XMLImport(final ImportableArchiveConfig config,
             final boolean replace, final boolean steal_channels) throws Exception
     {
+        this.config = config;
         this.replace = replace;
         this.steal_channels = steal_channels;
-        config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
     }
 
-    /** Parse an XML configuration into the RDB
-     *  @param stream
-     *  @param engine_name
-     *  @param description
-     *  @param engine_url
-     *  @throws Exception
+    public void import_engine(final InputStream stream, final String engine_name, final String description,
+            final String engine_url) throws Exception, XMLImportException {
+        engine = config.createEngine(engine_name, description, engine_url);
+
+        final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+        parser.parse(stream, this);
+    }
+
+    /**
+     * Parse an XML configuration into the config
+     *
+     * @param stream
+     * @param engine_name
+     * @param description
+     * @param engine_url
+     * @throws Exception
      */
     public void parse(final InputStream stream, final String engine_name, final String description,
-            final String engine_url) throws Exception, XMLImportException
+            final String engine_url) throws Exception
     {
         engine = config.findEngine(engine_name);
         if (engine != null)
@@ -145,10 +161,8 @@ public class XMLImport extends DefaultHandler
                 throw new XMLImportException("Error: Engine config '" + engine_name +
                 "' already exists");
         }
-        engine = config.createEngine(engine_name, description, engine_url);
 
-        final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-        parser.parse(stream, this);
+        import_engine(stream, engine_name, description, engine_url);
     }
 
     /** Reset the accumulator at the start of each element */
@@ -184,6 +198,17 @@ public class XMLImport extends DefaultHandler
             monitor = false;
             is_enabling = false;
         }
+        else if (element.equals(TAG_RETAIN))
+        {
+            //TODO: support group retain tags (overridden by channel retain tags)
+            //if (state != State.CHANNEL)
+                //retain_parent_tag = TAG_CHANNEL;
+            //else if (state == State.GROUP)
+                //retain_parent_tag = TAG_GROUP;
+            //else
+            if (state != State.CHANNEL)
+                throw new XMLImportException("Unexpected retain entry while in state " + state);
+        }
     }
 
     /** Accumulate characters within (or also between) current element(s) */
@@ -212,8 +237,8 @@ public class XMLImport extends DefaultHandler
                 try
                 {
                     group = config.addGroup(engine, name);
-                    System.out.println("Import '" + engine.getName()
-                            + "', Group '" + name + "'");
+                    // System.out.println("Import '" + engine.getName()
+                    // + "', Group '" + name + "'");
                 }
                 catch (Exception ex)
                 {
@@ -290,7 +315,7 @@ public class XMLImport extends DefaultHandler
             {
                 // System.out.println(group.getName() + " - " + name);
                 // Check if channel is already in another group
-                final RDBGroupConfig other_group = config.getChannelGroup(name);
+                final GroupConfig other_group = config.getChannelGroup(name);
                 if (other_group != null)
                 {
                     final EngineConfig other_engine = config.getEngine(other_group);
@@ -311,12 +336,17 @@ public class XMLImport extends DefaultHandler
                     }
                 }
 
-                final RDBSampleMode mode = config.getSampleMode(monitor, sample_value, period);
-                final RDBChannelConfig channel = config.addChannel(group, name, mode);
+                final SampleMode mode = config.getSampleMode(monitor, sample_value, period);
+                final ChannelConfig channel = config.addChannel(group, name, mode);
                 if (is_enabling)
                 {
                     config.setEnablingChannel(group, channel);
                     group.setEnablingChannel(channel);
+                }
+                if (retain != null && !retain.isEmpty())
+                {
+                    channel.setRetention(retain);
+                    retain = null;
                 }
             }
             catch (Exception ex)
@@ -335,6 +365,10 @@ public class XMLImport extends DefaultHandler
         {
             group = null;
             state = State.PREAMBLE;
+        }
+        else if (element.equals(TAG_RETAIN))
+        {
+            retain = accumulator.toString().trim();
         }
         // else: Ignore the unknown element
     }

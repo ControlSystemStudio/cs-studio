@@ -34,6 +34,7 @@ public class DeltaArchiveChannel extends ArchiveChannel
      *  @param period_estimate Estimated change period [seconds]
      *  @param delta Value changes &ge; this value will be stored
      *  @throws Exception On error in PV setup
+     * @deprecated Use {@link #DeltaArchiveChannel(String,String,Enablement,int,VType,double,double)} instead
      */
     public DeltaArchiveChannel(final String name,
                                final Enablement enablement,
@@ -42,7 +43,27 @@ public class DeltaArchiveChannel extends ArchiveChannel
                                final double period_estimate,
                                final double delta) throws Exception
     {
-        super(name, enablement, buffer_capacity, last_archived_value);
+        this(name, null, enablement, buffer_capacity, last_archived_value, period_estimate, delta);
+    }
+
+    /** @param name Name of the channel (PV)
+     * @param retention Retention policy; may be null for default/not supported
+     * @param enablement How channel affects its groups
+     * @param buffer_capacity Size of sample buffer
+     * @param last_archived_value Last value from storage, or <code>null</code>.
+     * @param period_estimate Estimated change period [seconds]
+     * @param delta Value changes &ge; this value will be stored
+     *  @throws Exception On error in PV setup
+     */
+    public DeltaArchiveChannel(final String name,
+                               final String retention,
+                               final Enablement enablement,
+                               final int buffer_capacity,
+                               final VType last_archived_value,
+                               final double period_estimate,
+                               final double delta) throws Exception
+    {
+        super(name, retention, enablement, buffer_capacity, last_archived_value);
         this.delta = delta;
         this.period_estimate = period_estimate;
     }

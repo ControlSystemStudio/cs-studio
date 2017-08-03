@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Example for XML configuration file syntax -->
+<engineconfig>
+  <group>
+    <name>Foo</name>
+      <channel><name>FOO:V1</name><period>1.0</period><monitor/></channel>
+      <channel><name>FOO:V2</name><period>10.0</period><monitor>2.5</monitor></channel>
+  </group>
+
+  <group>
+    <name>Bar</name>
+      <channel><name>BAR:V1</name><period>0.1</period><scan/></channel>
+      <channel><name>BAR:V2</name><period>0.1</period><monitor>5.5</monitor></channel>
+      <channel><name>BAR:V3</name><period>1.0</period><monitor>3.5</monitor></channel>
+  </group>
+</engineconfig>

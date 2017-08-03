@@ -8,6 +8,10 @@
             name="org.csstudio.archive.reader.channelarchiver.archivereader"
             prefix="xnds">
       </ArchiveReader>
+      <ArchiveReader
+            class="org.csstudio.archive.reader.channelarchiver.file.ArchiveFileReaderFactory"
+            name="org.csstudio.archive.reader.channelarchiver.file.reader"
+            prefix="cadf">
+      </ArchiveReader>
    </extension>
-
 </plugin>

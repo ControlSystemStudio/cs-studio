@@ -24,6 +24,11 @@ public interface ArchiveWriter
      */
     public WriteChannel getChannel(String name) throws Exception;
 
+    public default WriteChannel getChannel(String name, String retention) throws Exception
+    {
+        return getChannel(name);
+    }
+
     /** Add a sample to the archive.
      *
      *  <p>The underlying implementation might optimize

@@ -30,21 +30,6 @@
             open the same pv multiple times at the same time with a different type or initial value.
         </p>
         <p>
-            The initialValue will be trigger an update only the first time is used, and only
-            if the pv wasn't previously written to. That is: the initialValue will
-            never overwrite an already open pv that was written to. If no initial
-            value is ever given, the value of the pv is simply left to its default
-            null value, and no value notification is sent.
-            The possible initial values are:
-        </p>
-        <table border=1>
-            <tr><th>Syntax</th><th>Description</th></tr>
-            <tr><td><code>loc://pvname(number)</code></td><td>Creates a pv with an initial numeric value</td></tr>
-            <tr><td><code>loc://pvname("string")</code></td><td>Creates a pv with an initial text value</td></tr>
-            <tr><td><code>loc://pvname(number, number, number, ...)</code></td><td>Creates a pv with an initial numeric array value</td></tr>
-            <tr><td><code>loc://pvname("string", "string", "string", ...)</code></td><td>Creates a pv with an initial string array value</td></tr>
-        </table>
-        <p>
             Once specified, the type will make sure that any update matches the type.
             If it does not, and error is notified to the writer. The first type
             specified is the one that counts. Subsequent use with a different type
@@ -59,6 +44,23 @@
             <tr><td><code>loc://pvname&lt;VDouble&gt;</code></td><td>Creates a numeric pv</td></tr>
             <tr><td><code>loc://pvname&lt;VDoubleArray&gt;</code></td><td>Creates a numeric array pv</td></tr>
             <tr><td><code>loc://pvname&lt;VTable&gt;</code></td><td>Creates a table pv</td></tr>
+            <tr><td><code>loc://pvname&lt;VEnum&gt;</code></td><td>Creates an enum pv (requires specific initialization)</td></tr>
+        </table>
+        <p>
+            The initialValue will be trigger an update only the first time is used, and only
+            if the pv wasn't previously written to. That is: the initialValue will
+            never overwrite an already open pv that was written to. If no initial
+            value is ever given, the value of the pv is simply left to its default
+            null value, and no value notification is sent.
+            The possible initial values are:
+        </p>
+        <table border=1>
+            <tr><th>Syntax</th><th>Description</th></tr>
+            <tr><td><code>loc://pvname(number)</code></td><td>Creates a pv with an initial numeric value</td></tr>
+            <tr><td><code>loc://pvname("string")</code></td><td>Creates a pv with an initial text value</td></tr>
+            <tr><td><code>loc://pvname(number, number, number, ...)</code></td><td>Creates a pv with an initial numeric array value</td></tr>
+            <tr><td><code>loc://pvname("string", "string", "string", ...)</code></td><td>Creates a pv with an initial string array value</td></tr>
+            <tr><td><code>loc://pvname&lt;VEnum&gt;(number, "string", "string", ...)</code></td><td>Creates an enum pv with an initial value of <i>number</i>, and possible values listed by the strings</td></tr>
         </table>
     </body>
 </html>

@@ -22,7 +22,7 @@ the URL prefix.
          </appinfo>
       </annotation>
       <complexType>
-         <sequence>
+         <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="ArchiveReader"/>
          </sequence>
          <attribute name="point" type="string" use="required">

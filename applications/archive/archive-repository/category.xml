@@ -18,5 +18,11 @@
    <feature id="org.csstudio.archive.diirt.datasource.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.archive.reader.influxdb.feature">
+     <category name="org.csstudio.category.applications"/>
+   </feature>
+   <feature id="org.csstudio.archive.influxdb.tools.feature">
+     <category name="org.csstudio.category.applications"/>
+   </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
 </site>

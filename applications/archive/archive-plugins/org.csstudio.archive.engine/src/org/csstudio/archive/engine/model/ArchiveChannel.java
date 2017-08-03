@@ -116,16 +116,33 @@ abstract public class ArchiveChannel extends PVListenerAdapter
      *  @param buffer_capacity Size of sample buffer
      *  @param last_archived_value Last value from storage, or <code>null</code>.
      *  @throws Exception On error in PV setup
+     * @deprecated Use {@link #ArchiveChannel(String,String,Enablement,int,VType)} instead
      */
     public ArchiveChannel(final String name,
                           final Enablement enablement,
                           final int buffer_capacity,
                           final VType last_archived_value) throws Exception
     {
+        this(name, null, enablement, buffer_capacity, last_archived_value);
+    }
+
+    /** Construct an archive channel
+     *  @param name Name of the channel (PV)
+     * @param retention Sample retention policy; may be null, if default/not supported
+     * @param enablement How channel affects its groups
+     * @param buffer_capacity Size of sample buffer
+     * @param last_archived_value Last value from storage, or <code>null</code>.
+     *  @throws Exception On error in PV setup
+     */
+    public ArchiveChannel(final String name,
+                          final String retention,
+                          final Enablement enablement,
+                          final int buffer_capacity, final VType last_archived_value) throws Exception
+    {
         this.name = name;
         this.enablement = enablement;
         this.last_archived_value = last_archived_value;
-        this.buffer = new SampleBuffer(name, buffer_capacity);
+        this.buffer = new SampleBuffer(name, retention, buffer_capacity);
         if (last_archived_value == null)
             Activator.getLogger().log(Level.INFO, "No known last value for {0}", name);
     }

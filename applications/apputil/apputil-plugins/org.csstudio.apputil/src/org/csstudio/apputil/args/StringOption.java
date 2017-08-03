@@ -7,13 +7,17 @@
  ******************************************************************************/
 package org.csstudio.apputil.args;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Option that reads one string argument.
  *  @author Kay Kasemir
  */
 public class StringOption extends Option
 {
     /** Current value */
-    private String value;
+    private List<String> values = new ArrayList<String>();
+    private final String default_value;
 
     /** Construct String option
      *  @param parser Parser to which to add
@@ -43,13 +47,19 @@ public class StringOption extends Option
                         final String default_value)
     {
         super(parser, option, arg_info, info);
-        value = default_value;
+        this.default_value = default_value;
     }
 
     /** @return Value */
     public String get()
     {
-        return value;
+        if (values.size() < 1)
+            return default_value;
+        return values.get(values.size() - 1);
+    }
+
+    public List<String> getMany() {
+        return values;
     }
 
     /** {@inheritDoc} */
@@ -58,7 +68,7 @@ public class StringOption extends Option
     {
         if (haveParameter(args, position))
         {
-            value = args[position+1];
+            values.add(args[position + 1]);
             return 2;
         }
         return 0;
@@ -67,6 +77,6 @@ public class StringOption extends Option
     @Override
     public String toString()
     {
-        return getOption() + "=" + value; //$NON-NLS-1$
+        return getOption() + "=" + get(); //$NON-NLS-1$
     }
 }

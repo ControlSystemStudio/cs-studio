@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: InfluxDB archive reader Demo/Test
+Bundle-Description: JUnit test/demo for org.csstudio.archive(.)reader.influxdb
+Bundle-SymbolicName: org.csstudio.archive.reader.influxdb.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Megan Grodowitz <grodowitzml@ornl.gov> - SNS
+Fragment-Host: org.csstudio.archive.reader.influxdb;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.csstudio.apputil;bundle-version="3.0.0"

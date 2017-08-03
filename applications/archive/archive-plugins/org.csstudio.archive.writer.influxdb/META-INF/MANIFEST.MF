@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Archive Writer implementation for Relational Databases
+Bundle-Description: Archive Writer implementation for Relational Databases like Oracle or MySQL.
+Bundle-SymbolicName: org.csstudio.archive.writer.influxdb;singleton:=true
+Bundle-Version: 4.2.1.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.csstudio.archive.writer;bundle-version="3.2.0",
+ org.csstudio.archive.influxdb;bundle-version="3.1.1",
+ org.csstudio.archive.vtype,
+ org.diirt.util,
+ org.diirt.vtype,
+ org.csstudio.platform.libs.jdbc;bundle-version="1.3.0",
+ org.influxdb.java;bundle-version="2.6.0"
+Export-Package: org.csstudio.archive.writer.influxdb
+Bundle-ActivationPolicy: lazy

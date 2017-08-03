@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.archive.reader.influxdb.InfluxDBArchiveReaderFactory"
+            name="org.csstudio.archive.reader.influxdb.archivereader"
+            prefix="influxdb">
+      </ArchiveReader>
+   </extension>
+</plugin>

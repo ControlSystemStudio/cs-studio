@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: InfluxDB Archive library
+Bundle-SymbolicName: org.csstudio.archive.influxdb;singleton:=true
+Bundle-Version: 4.2.1.qualifier
+Bundle-Vendor: Megan Grodowitz <grodowitzml@ornl.gov> - SNS
+Bundle-Description: Archive InfluxDB support library
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.help,
+ org.csstudio.security;bundle-version="1.0.0",
+ org.apache.commons.lang3;bundle-version="3.5.0",
+ org.diirt.util;bundle-version="3.1.6",
+ org.csstudio.archive.vtype;bundle-version="2.0.0",
+ org.diirt.vtype;bundle-version="3.1.6",
+ org.influxdb.java;bundle-version="2.6.0",
+ com.squareup.okhttp3.logging-interceptor,
+ com.squareup.okhttp3.okhttp,
+ com.squareup.retrofit2.converter-moshi,
+ com.squareup.retrofit2.retrofit,
+ com.squareup.moshi,
+ com.squareup.okio,
+ com.google.guava
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Export-Package: org.csstudio.archive.influxdb
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

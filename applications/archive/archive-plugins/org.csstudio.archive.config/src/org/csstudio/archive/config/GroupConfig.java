@@ -44,4 +44,8 @@ public class GroupConfig
     {
         return "Group '" + name + "'";
     }
+
+    public void setEnablingChannel(ChannelConfig channel) {
+        enabling_channel = channel.getName();
+    }
 }
