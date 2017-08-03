@@ -51,7 +51,7 @@ class VImageForNTNDArray extends VTypeTimeAlarmBase implements VImage
 	{
 			VImageType.TYPE_MONO,
 			VImageType.TYPE_BAYER,
-			VImageType.TYPE_RGB1, VImageType.TYPE_RGB2, VImageType.TYPE_RGB2,
+			VImageType.TYPE_RGB1, VImageType.TYPE_RGB2, VImageType.TYPE_RGB3,
 			VImageType.TYPE_YUV444, VImageType.TYPE_YUV422, VImageType.TYPE_YUV411
 	};
 	
@@ -139,6 +139,11 @@ class VImageForNTNDArray extends VTypeTimeAlarmBase implements VImage
         	case TYPE_RGB2:
         		width = dimensions[0];
         		height = dimensions[2];
+        		size = dimensions[0] * dimensions[1] * dimensions[2];
+        		break;
+        	case TYPE_RGB3:
+        		width = dimensions[0];
+        		height = dimensions[1];
         		size = dimensions[0] * dimensions[1] * dimensions[2];
         		break;
         	default:
