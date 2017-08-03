@@ -177,7 +177,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=scan">
          <command
                commandId="org.csstudio.scan.ui.scantree.save_as"
-               icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/saveas_edit.gif"
+               icon="icons/saveas_edit.gif"
                label="%SaveScan"
                style="push">
             <visibleWhen
