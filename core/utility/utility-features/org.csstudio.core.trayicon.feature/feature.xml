@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.core.trayicon.feature"
+      label="Minimize to Tray Feature"
+      version="4.1.0.qualifier">
+
+   <description>
+      Feature containing the 'minimize to tray' functionality.
+   </description>
+
+   <plugin
+         id="org.csstudio.trayicon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
