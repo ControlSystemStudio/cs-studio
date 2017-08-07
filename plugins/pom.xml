@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>product</artifactId>
-    <version>4.5.1</version>
+    <version>4.5.2-SNAPSHOT</version>
   </parent>
   <artifactId>products-csstudio-plugins</artifactId>
   <packaging>pom</packaging>
