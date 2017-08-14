@@ -59,6 +59,8 @@ public class PVTableItem
     /** Tolerance for comparing current and saved (if they're numeric) */
     private double tolerance;
 
+    private volatile boolean use_completion = false;
+
     /** Primary PV */
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
 
@@ -471,6 +473,18 @@ public class PVTableItem
                 && !isMeasure();
     }
 
+    /** @return Await completion when restoring value to PV? */
+    public boolean isUsingCompletion()
+    {
+        return use_completion;
+    }
+
+    /** @param use_completion Await completion when restoring value to PV? */
+    public void setUseCompletion(final boolean use_completion)
+    {
+        this.use_completion = use_completion;
+    }
+
     /**
      * @param new_value
      *            Value to write to the item's PV
@@ -600,6 +614,7 @@ public class PVTableItem
         }
         try
         {
+            // TODO Check isUsingCompletion(), provide timeout
             the_value.restore(the_pv);
         }
         catch (Exception ex)
