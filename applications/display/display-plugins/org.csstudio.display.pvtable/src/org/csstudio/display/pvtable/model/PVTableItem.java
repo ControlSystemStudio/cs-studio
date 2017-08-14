@@ -637,8 +637,7 @@ public class PVTableItem
     }
 
     /**
-     * @param tolerance
-     *            Tolerance for comparing saved and current value
+     * @param tolerance Tolerance for comparing saved and current value
      */
     public void setTolerance(final double tolerance)
     {
@@ -647,18 +646,16 @@ public class PVTableItem
         listener.tableItemChanged(this);
     }
 
-    /**
-     * @return <code>true</code> if this item is a comment instead of a PV with
-     *         name, value etc.
+    /** @return <code>true</code> if this item is a comment instead of a PV with
+     *          name, value etc.
      */
     public boolean isComment()
     {
         return name.startsWith("#");
     }
 
-    /**
-     * @return true if this item is a config header instead of a PV with name,
-     *         value etc
+    /** @return true if this item is a config header instead of a PV with name,
+     *               value etc
      */
     public boolean isConfHeader()
     {
@@ -667,9 +664,8 @@ public class PVTableItem
                 || lowName.startsWith("#configuration#");
     }
 
-    /**
-     * @return true if this item is a measure header instead of a PV with name,
-     *         value etc
+    /** @return true if this item is a measure header instead of a PV with name,
+     *          value etc
      */
     public boolean isMeasureHeader()
     {

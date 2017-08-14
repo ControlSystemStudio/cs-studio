@@ -71,8 +71,13 @@ public class SavedScalarValue extends SavedValue
         else if (pv_type instanceof VNumber)
             pv.write(getSavedNumber(saved_value).longValue());
         else
-             // Write as text
+            // Write as text
             pv.write(saved_value);
+
+
+        // TODO Check for timeout in seconds
+//        final Future<?> fut = pv.asyncWrite(saved_value);
+//        fut.get(timeout, TimeUnit.SECONDS)
     }
 
     /** {@inheritDoc} */
