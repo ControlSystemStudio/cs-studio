@@ -8,6 +8,7 @@
 package org.csstudio.display.pvtable.model;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
@@ -120,7 +121,7 @@ public class SavedArrayValue extends SavedValue
 
     /** {@inheritDoc} */
     @Override
-    public void restore(final PV pv) throws Exception
+    public void restore(final PV pv, long completion_timeout_secs) throws Exception
     {
         // Determine what type to write based on current value of the PV
         final VType pv_type = pv.read();
@@ -130,7 +131,11 @@ public class SavedArrayValue extends SavedValue
             final double[] data = new double[N];
             for (int i = 0; i < N; ++i)
                 data[i] = getSavedNumber(saved_value.get(i)).doubleValue();
-            pv.write(data);
+
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(data).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(data);
         }
         else if (pv_type instanceof VNumberArray || pv_type instanceof VEnumArray)
         {   // Write any non-floating  number as int.
@@ -139,7 +144,10 @@ public class SavedArrayValue extends SavedValue
             final int[] data = new int[N];
             for (int i = 0; i < N; ++i)
                 data[i] = getSavedNumber(saved_value.get(i)).intValue();
-            pv.write(data);
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(data).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(data);
         }
         else
             throw new Exception("Cannot write type " + pv_type.getClass().getName());

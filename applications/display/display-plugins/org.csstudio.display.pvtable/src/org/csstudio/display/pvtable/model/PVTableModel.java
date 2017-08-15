@@ -13,10 +13,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Preferences;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.diirt.vtype.VType;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -53,6 +57,10 @@ public class PVTableModel implements PVTableItemListener
 
     /** The number of time the measure was done */
     private int nbMeasure = 1;
+
+    // TODO Make configurable
+    /** Timeout in seconds used for restoring PVs with completion */
+    private long completion_timeout_seconds = 60;
 
     /** Initialize */
     public PVTableModel()
@@ -389,10 +397,10 @@ public class PVTableModel implements PVTableItemListener
     /** Restore saved values for all checked items */
     public void restore()
     {
-        // TODO Perform in background job
-        for (PVTableItem item : items)
-            if (item.isSelected())
-                item.restore();
+        final List<PVTableItem> selected = items.stream()
+                                                .filter(PVTableItem::isSelected)
+                                                .collect(Collectors.toList());
+        restore(selected);
     }
 
     /** Restore saved values
@@ -400,9 +408,29 @@ public class PVTableModel implements PVTableItemListener
      */
     public void restore(final List<PVTableItem> items)
     {
-        // TODO Perform in background job
-        for (PVTableItem item : items)
-            item.restore();
+        // Perform in background task
+        Job.create("Restore PV Table", monitor ->
+        {
+            final SubMonitor progress = SubMonitor.convert(monitor, items.size()+1);
+            monitor.beginTask("Restore PVs", items.size());
+            for (PVTableItem item : items)
+            {
+                progress.subTask(item.getName());
+                try
+                {
+                    item.restore(completion_timeout_seconds);
+                }
+                catch (Exception ex)
+                {
+                    Display.getDefault().asyncExec(() ->
+                        ExceptionDetailsErrorDialog.openError(null, "Error",
+                                "Error restoring value for PV " + item.getName(), ex)
+                    );
+                    return;
+                }
+                monitor.worked(1);
+            }
+        }).schedule();
     }
 
     /** Must be invoked when 'done' by the creator of the model. */

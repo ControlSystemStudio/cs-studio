@@ -599,29 +599,21 @@ public class PVTableItem
         this.time_saved = time_saved;
     }
 
-    /** Write saved value back to PV */
-    public void restore()
+    /** Write saved value back to PV
+     *  @param completion_timeout_seconds
+     *  @throws Exception on error
+     */
+    public void restore(final long completion_timeout_seconds) throws Exception
     {
-        if (isComment() || isMeasure())
-        {
+        if (isComment() || isMeasure()  ||  !isWritable())
             return;
-        }
+
         final PV the_pv = pv.get();
         final SavedValue the_value = saved.orElse(null);
-        if (the_pv == null || !isWritable() || the_value == null)
-        {
+        if (the_pv == null || the_value == null)
             return;
-        }
-        try
-        {
-            // TODO Check isUsingCompletion(), provide timeout
-            the_value.restore(the_pv);
-        }
-        catch (Exception ex)
-        {
-            Plugin.getLogger().log(Level.WARNING,
-                    "Error restoring " + getName(), ex);
-        }
+
+        the_value.restore(the_pv, isUsingCompletion() ? completion_timeout_seconds : 0);
     }
 
     /** @return Returns the saved_value */

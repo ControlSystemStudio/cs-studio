@@ -108,9 +108,10 @@ abstract public class SavedValue
     /** Restore saved value to PV
      *
      *  @param pv PV to write
-     *  @throws Exception on error
+     *  @param completion_timeout_secs Timeout for completion (put-callback) or 0 to not use completion
+     *  @throws Exception on error, including timeout
      */
-    abstract public void restore(final PV pv) throws Exception;
+    abstract public void restore(PV pv, long completion_timeout_secs) throws Exception;
 
     /** @return String representation for display purpose */
     @Override

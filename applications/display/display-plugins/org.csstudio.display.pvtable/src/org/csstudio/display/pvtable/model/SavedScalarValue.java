@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import java.util.concurrent.TimeUnit;
+
 import org.csstudio.vtype.pv.PV;
 import org.diirt.vtype.VDouble;
 import org.diirt.vtype.VEnum;
@@ -62,22 +64,33 @@ public class SavedScalarValue extends SavedValue
 
     /** {@inheritDoc} */
     @Override
-    public void restore(final PV pv) throws Exception
+    public void restore(final PV pv, long completion_timeout_secs) throws Exception
     {
         // Determine what type to write based on current value of the PV
         final VType pv_type = pv.read();
+
         if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
-            pv.write(Double.parseDouble(saved_value));
+        {
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(Double.parseDouble(saved_value)).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(Double.parseDouble(saved_value));
+        }
         else if (pv_type instanceof VNumber)
-            pv.write(getSavedNumber(saved_value).longValue());
+        {
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(getSavedNumber(saved_value).longValue()).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(getSavedNumber(saved_value).longValue());
+        }
         else
+        {
             // Write as text
-            pv.write(saved_value);
-
-
-        // TODO Check for timeout in seconds
-//        final Future<?> fut = pv.asyncWrite(saved_value);
-//        fut.get(timeout, TimeUnit.SECONDS)
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(saved_value).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(saved_value);
+        }
     }
 
     /** {@inheritDoc} */
