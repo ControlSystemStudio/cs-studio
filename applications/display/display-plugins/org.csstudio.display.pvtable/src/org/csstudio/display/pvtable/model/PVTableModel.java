@@ -58,7 +58,6 @@ public class PVTableModel implements PVTableItemListener
     /** The number of time the measure was done */
     private int nbMeasure = 1;
 
-    // TODO Make configurable
     /** Timeout in seconds used for restoring PVs with completion */
     private long completion_timeout_seconds = 60;
 
@@ -99,6 +98,18 @@ public class PVTableModel implements PVTableItemListener
         if (row >= 0 && row < items.size())
             return items.get(row);
         return null;
+    }
+
+    /** @return Timeout in seconds used for restoring PVs with completion */
+    public long getCompletionTimeout()
+    {
+        return completion_timeout_seconds;
+    }
+
+    /** @param seconds Timeout in seconds used for restoring PVs with completion */
+    public void setCompletionTimeout(final long seconds)
+    {
+        completion_timeout_seconds = seconds;
     }
 
     /**

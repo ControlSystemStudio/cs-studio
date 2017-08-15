@@ -536,12 +536,13 @@ public class PVTable implements PVTableModelListener
         manager.add(new SnapshotCurrentSelectionAction(viewer)); // 6
         manager.add(new RestoreCurrentSelectionAction(viewer)); // 7
         manager.add(new Separator()); // 8
-        manager.add(new ToleranceAction(viewer)); // 9
-        manager.add(new Separator()); // 10
-        manager.add(new InsertAction(viewer)); // 11
-        manager.add(new DeleteAction(viewer)); // 12
-        manager.add(new DeleteMeasureAction(viewer)); // 13
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 14
+        manager.add(new TimeoutAction(viewer)); // 9
+        manager.add(new ToleranceAction(viewer)); // 10
+        manager.add(new Separator()); // 11
+        manager.add(new InsertAction(viewer)); // 12
+        manager.add(new DeleteAction(viewer)); // 13
+        manager.add(new DeleteMeasureAction(viewer)); // 14
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 15
         final Control control = viewer.getControl();
         menu = manager.createContextMenu(control);
         control.setMenu(menu);
@@ -558,17 +559,17 @@ public class PVTable implements PVTableModelListener
         manager.getItems()[6].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
         manager.getItems()[7].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
         manager.getItems()[8].setVisible(!item.isMeasure());
-        manager.getItems()[9].setVisible(!item.isMeasure());
         manager.getItems()[10].setVisible(!item.isMeasure());
+        manager.getItems()[11].setVisible(!item.isMeasure());
 
         if (model.getConfig() != null) {
             if (!model.getConfig().getMeasures().isEmpty()) {
-                manager.getItems()[11].setVisible(!item.isMeasure()
+                manager.getItems()[12].setVisible(!item.isMeasure()
                         || (model.getConfig().getMeasures().get(0) == item.getMeasure() && item.isMeasureHeader()));
             }
         }
-        manager.getItems()[12].setVisible(!item.isMeasure());
-        manager.getItems()[13].setVisible(item.isMeasure());
+        manager.getItems()[13].setVisible(!item.isMeasure());
+        manager.getItems()[14].setVisible(item.isMeasure());
     }
 
     /**
