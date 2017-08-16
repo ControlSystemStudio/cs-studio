@@ -59,6 +59,8 @@ public class PVTableItem
     /** Tolerance for comparing current and saved (if they're numeric) */
     private double tolerance;
 
+    private volatile boolean use_completion = false;
+
     /** Primary PV */
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
 
@@ -471,6 +473,18 @@ public class PVTableItem
                 && !isMeasure();
     }
 
+    /** @return Await completion when restoring value to PV? */
+    public boolean isUsingCompletion()
+    {
+        return use_completion;
+    }
+
+    /** @param use_completion Await completion when restoring value to PV? */
+    public void setUseCompletion(final boolean use_completion)
+    {
+        this.use_completion = use_completion;
+    }
+
     /**
      * @param new_value
      *            Value to write to the item's PV
@@ -585,28 +599,21 @@ public class PVTableItem
         this.time_saved = time_saved;
     }
 
-    /** Write saved value back to PV */
-    public void restore()
+    /** Write saved value back to PV
+     *  @param completion_timeout_seconds
+     *  @throws Exception on error
+     */
+    public void restore(final long completion_timeout_seconds) throws Exception
     {
-        if (isComment() || isMeasure())
-        {
+        if (isComment() || isMeasure()  ||  !isWritable())
             return;
-        }
+
         final PV the_pv = pv.get();
         final SavedValue the_value = saved.orElse(null);
-        if (the_pv == null || !isWritable() || the_value == null)
-        {
+        if (the_pv == null || the_value == null)
             return;
-        }
-        try
-        {
-            the_value.restore(the_pv);
-        }
-        catch (Exception ex)
-        {
-            Plugin.getLogger().log(Level.WARNING,
-                    "Error restoring " + getName(), ex);
-        }
+
+        the_value.restore(the_pv, isUsingCompletion() ? completion_timeout_seconds : 0);
     }
 
     /** @return Returns the saved_value */
@@ -622,8 +629,7 @@ public class PVTableItem
     }
 
     /**
-     * @param tolerance
-     *            Tolerance for comparing saved and current value
+     * @param tolerance Tolerance for comparing saved and current value
      */
     public void setTolerance(final double tolerance)
     {
@@ -632,18 +638,16 @@ public class PVTableItem
         listener.tableItemChanged(this);
     }
 
-    /**
-     * @return <code>true</code> if this item is a comment instead of a PV with
-     *         name, value etc.
+    /** @return <code>true</code> if this item is a comment instead of a PV with
+     *          name, value etc.
      */
     public boolean isComment()
     {
         return name.startsWith("#");
     }
 
-    /**
-     * @return true if this item is a config header instead of a PV with name,
-     *         value etc
+    /** @return true if this item is a config header instead of a PV with name,
+     *               value etc
      */
     public boolean isConfHeader()
     {
@@ -652,9 +656,8 @@ public class PVTableItem
                 || lowName.startsWith("#configuration#");
     }
 
-    /**
-     * @return true if this item is a measure header instead of a PV with name,
-     *         value etc
+    /** @return true if this item is a measure header instead of a PV with name,
+     *          value etc
      */
     public boolean isMeasureHeader()
     {
