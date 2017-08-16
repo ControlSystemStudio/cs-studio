@@ -34,7 +34,7 @@
     configuration "Demo", enter "/Demo/RFQ".</dd></dl></li>
         <li>Sort Ascending (sort_ascending)<dl><dd>Defines if default sorting of the alarms should be in ascending or descending order.</dd></dl></li>
         <li>Sorting Column (sorting_column)<dl><dd>Defines the column used for default sorting criteria.</dd></dl></li>
-        <li>Time Format (time_format)<dl><dd>Specifies the time format used for the TIME column.</dd></dl></li>
+        <li>Time Format (time_format)<dl><dd>Specifies the time format used for the TIME column. Time format must use<a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html" target="_blank">Java DateTimeFormatter</a>rules. Ex.: For ISO time, use: yyyy-MM-dd'T'HH:mm:ssX</dd></dl></li>
         <li>Unacknowledged Blink (unacknowledged_blink)<dl><dd>If true all unacknowledged alarms icons will blink.</dd></dl></li>
         <li>Writable (writable)<dl><dd>Specifies is user is allowed to acknowledge and unacknowledged alarms with this table.</dd></dl></li>
         <li>Columns (columns)<dl><dd>Allows to specify the list and order of the table columns.</dd></dl></li>
