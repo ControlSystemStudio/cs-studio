@@ -95,6 +95,24 @@
             of each table row can be use to de-select rows.
         </p>
 
+        <h2>Completion</h2>
+
+        <p>
+            By default, saved values are restored to PVs by simply writing to them.
+            When checkbox in the "Completion" column is selected for an PV,
+            the saved value will be restored by using the "Put-Callback" method of writing,
+            awaiting the completion of the write.
+            This can be useful with PVs that support put-callback,
+            a typical example being motors.
+        </p>
+
+        <p>
+            The PV Table has one global timeout that is used for each write operation that
+            uses completion. It defaults to 60 seconds and can be changed via the
+            "Completion Timeout" option in the context menu.
+        </p>
+
+
         <h2>Tolerance</h2>
 
         <p>
@@ -127,8 +145,10 @@
         <p>
             Advantages of the original PVTable ".pvs" file format:
             <ul>
-                <li>Contains global as well as per-element 'tolerance'.</li>
                 <li>Tracks which rows were selected.</li>
+                <li>Saves not only the value but also the timestamp of saved values.</li>
+                <li>Contains global as well as per-element 'tolerance'.</li>
+                <li>Allows using 'completion'.</li>
                 <li>Best for standalone operation of the PVTable.</li>
             </ul>
         </p>

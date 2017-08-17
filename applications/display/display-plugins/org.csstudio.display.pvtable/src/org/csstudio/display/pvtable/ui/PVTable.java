@@ -19,6 +19,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.Configuration;
 import org.csstudio.display.pvtable.model.Measure;
@@ -31,12 +32,16 @@ import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.dnd.SerializableItemTransfer;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -53,8 +58,8 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -67,18 +72,16 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
-/**
- * PV Table GUI
+/** PV Table GUI
  *
- * @author Kay Kasemir
- * @author Kunal Shroff - Original PVManager version of PVTable that used
- *         similar editing behavior
+ *  @author Kay Kasemir
+ *  @author Kunal Shroff - Original PVManager version of PVTable that used
+ *                         similar editing behavior
  */
-public class PVTable implements PVTableModelListener {
+public class PVTable implements PVTableModelListener
+{
+    private Image icon_checked, icon_unchecked;
     private PVTableModel model = null;
     private TableViewer viewer;
     private Color changed_background;
@@ -94,17 +97,26 @@ public class PVTable implements PVTableModelListener {
      * @param site
      *            Workbench site or <code>null</code>
      */
-    public PVTable(final Composite parent, final IWorkbenchPartSite site) {
+    public PVTable(final Composite parent, final IWorkbenchPartSite site)
+    {
         initColors(parent.getDisplay());
+
+        icon_checked = Plugin.getImageDescriptor("icons/checked.gif").createImage();
+        icon_unchecked = Plugin.getImageDescriptor("icons/unchecked.gif").createImage();
+
         createComponents(parent);
         createContextMenu(viewer, site);
         hookDragDrop();
         // Disconnect from model when disposed
-        parent.addDisposeListener((DisposeEvent e) -> {
-            if (model != null) {
+        parent.addDisposeListener(e ->
+        {
+            if (model != null)
+            {
                 model.removeListener(PVTable.this);
                 model.dispose();
             }
+            icon_unchecked.dispose();
+            icon_checked.dispose();
         });
     }
 
@@ -114,7 +126,8 @@ public class PVTable implements PVTableModelListener {
      * @param display
      *            Display
      */
-    private void initColors(final Display display) {
+    private void initColors(final Display display)
+    {
         changed_background = display.getSystemColor(SWT.COLOR_CYAN);
         alarm_colors.put(AlarmSeverity.MINOR, display.getSystemColor(SWT.COLOR_DARK_YELLOW));
         alarm_colors.put(AlarmSeverity.MAJOR, display.getSystemColor(SWT.COLOR_RED));
@@ -127,7 +140,8 @@ public class PVTable implements PVTableModelListener {
      *
      * @param parent
      */
-    private void createComponents(final Composite parent) {
+    private void createComponents(final Composite parent)
+    {
         // TableColumnLayout requires table to be only child of parent.
         // To assert that'll always be the case, create box.
         final Composite table_box = new Composite(parent, 0);
@@ -147,79 +161,88 @@ public class PVTable implements PVTableModelListener {
 
         // PV Name column: Has the 'check box' to select, allows editing
         final TableViewerColumn pv_column = createColumn(viewer, layout, Messages.PV, 75, 100,
-                new PVTableCellLabelProvider() {
-                    @Override
-                    public void update(final ViewerCell cell) {
-                        final TableItem tab_item = (TableItem) cell.getItem();
-                        final PVTableItem item = (PVTableItem) cell.getElement();
-                        if (item.isConfHeader()) {
-                            cell.setText(item.getConfHeader());
-                            cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
-                            return;
-                        }
-                        if (item.isMeasureHeader() && model.getConfig() != null) {
-                            cell.setText(item.getMeasureHeader());
-                            cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-                            return;
-                        }
-                        if (item.isComment()) {
-                            cell.setText(item.getComment());
-                            cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-                            return;
-                        }
-                        tab_item.setChecked(item.isSelected());
-                        cell.setText(item.getName());
-                        cell.setForeground(null);
+            new PVTableCellLabelProvider()
+            {
+                @Override
+                public void update(final ViewerCell cell)
+                {
+                    final TableItem tab_item = (TableItem) cell.getItem();
+                    final PVTableItem item = (PVTableItem) cell.getElement();
+                    if (item.isConfHeader())
+                    {
+                        cell.setText(item.getConfHeader());
+                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
+                        return;
                     }
-                });
-        pv_column.setEditingSupport(new EditingSupport(viewer) {
-            @Override
-            protected boolean canEdit(final Object element) {
-                final PVTableItem item = (PVTableItem) element;
-                if (item.isMeasure() && !item.isMeasureHeader()) {
-                    return false;
+                    if (item.isMeasureHeader() && model.getConfig() != null)
+                    {
+                        cell.setText(item.getMeasureHeader());
+                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
+                        return;
+                    }
+                    if (item.isComment())
+                    {
+                        cell.setText(item.getComment());
+                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+                        return;
+                    }
+                    tab_item.setChecked(item.isSelected());
+                    cell.setText(item.getName());
+                    cell.setForeground(null);
                 }
+            });
+        pv_column.setEditingSupport(new EditingSupport(viewer)
+        {
+            @Override
+            protected boolean canEdit(final Object element)
+            {
+                final PVTableItem item = (PVTableItem) element;
+                if (item.isMeasure() && !item.isMeasureHeader())
+                    return false;
                 return true;
             }
 
             @Override
-            protected CellEditor getCellEditor(final Object element) {
+            protected CellEditor getCellEditor(final Object element)
+            {
                 return AutoCompleteUIHelper.createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
             }
 
             @Override
-            protected void setValue(final Object element, final Object value) {
+            protected void setValue(final Object element, final Object value)
+            {
                 final String new_name = value.toString().trim();
                 final PVTableItem item = (PVTableItem) element;
 
-                if (item == PVTableModelContentProvider.NEW_ITEM) {
+                if (item == PVTableModelContentProvider.NEW_ITEM)
+                {
                     // Set name of magic NEW_ITEM: Add new item
-                    if (new_name.isEmpty()) {
+                    if (new_name.isEmpty())
                         return;
-                    }
                     model.addItem(new_name);
                     viewer.setInput(model);
-                } else if (item.isMeasureHeader() && !new_name.startsWith("#mesure#")) {
+                }
+                else if (item.isMeasureHeader() && !new_name.startsWith("#mesure#"))
                     return;
-                } else if (new_name.isEmpty()) {
-
-                    if (item.isConfHeader()) {
+                else if (new_name.isEmpty())
+                {
+                    if (item.isConfHeader())
+                    {
                         boolean isDelete = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                                 Messages.InformationPopup, Messages.InformationPopup_DelConfHeader);
 
-                        if (isDelete == false) {
+                        if (isDelete == false)
                             return;
-                        }
 
                         Configuration conf = model.getConfig();
                         System.out.println("PVTable.createComponents(...).new EditingSupport() {...}.setValue() " + conf
                                 + " " + ((conf != null) ? conf.getMeasures() : ""));
                         List<Measure> allMeasures = conf.getMeasures();
-                        for (Measure measure : allMeasures) {
+                        for (Measure measure : allMeasures)
+                        {
                             List<PVTableItem> itemsMeasure = measure.getItems();
-                            for (PVTableItem itemMes : itemsMeasure) {
+                            for (PVTableItem itemMes : itemsMeasure)
                                 model.removeItem(itemMes);
-                            }
                         }
                     }
                     // Setting name to nothing: Remove item
@@ -228,7 +251,9 @@ public class PVTable implements PVTableModelListener {
 
                     viewer.setItemCount(model.getItemCount() + 1);
                     viewer.refresh();
-                } else {
+                }
+                else
+                {
                     // Change name of existing item
                     item.updateName(new_name);
                     model.isConfHeaderToAdd(item);
@@ -237,24 +262,29 @@ public class PVTable implements PVTableModelListener {
             }
 
             @Override
-            protected Object getValue(final Object element) {
+            protected Object getValue(final Object element)
+            {
                 final PVTableItem item = (PVTableItem) element;
                 return item.getName();
             }
         });
         // Allow check/uncheck to select items for restore
-        viewer.getTable().addListener(SWT.Selection, new Listener() {
+        viewer.getTable().addListener(SWT.Selection, new Listener()
+        {
             @Override
-            public void handleEvent(final Event event) {
+            public void handleEvent(final Event event)
+            {
                 final TableItem tab_item = (TableItem) event.item;
                 final PVTableItem item = (PVTableItem) tab_item.getData();
 
-                if (event.detail != SWT.CHECK) {
+                if (event.detail != SWT.CHECK)
+                {
                     changeContextMenu(item);
                     return;
                 }
 
-                if (item.isComment() || item.isMeasure()) {
+                if (item.isComment() || item.isMeasure())
+                {
                     tab_item.setChecked(false);
                     return;
                 }
@@ -266,20 +296,22 @@ public class PVTable implements PVTableModelListener {
                  * behavior for selected rows: Could not un-check the checkbox
                  * for a selected row...
                  */
-                if (item == PVTableModelContentProvider.NEW_ITEM) {
+                if (item == PVTableModelContentProvider.NEW_ITEM)
                     item.setSelected(false);
-                } else {
+                else
                     item.setSelected(!item.isSelected());
-                }
                 tab_item.setChecked(item.isSelected());
             }
         });
 
         // Optionally, add column to display item.getDescription()
-        if (Preferences.showDescription()) {
-            createColumn(viewer, layout, Messages.Description, 50, 40, new PVTableCellLabelProvider() {
+        if (Preferences.showDescription())
+        {
+            createColumn(viewer, layout, Messages.Description, 50, 40, new PVTableCellLabelProvider()
+            {
                 @Override
-                public void update(final ViewerCell cell) {
+                public void update(final ViewerCell cell)
+                {
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     cell.setText(item.getDescription());
                 }
@@ -287,90 +319,97 @@ public class PVTable implements PVTableModelListener {
         }
 
         // Read-only time stamp
-        createColumn(viewer, layout, Messages.Time, 50, 100, new PVTableCellLabelProvider() {
+        createColumn(viewer, layout, Messages.Time, 50, 100, new PVTableCellLabelProvider()
+        {
             @Override
-            public void update(final ViewerCell cell) {
+            public void update(final ViewerCell cell)
+            {
                 final PVTableItem item = (PVTableItem) cell.getElement();
                 final VType value = item.getValue();
-                if (!item.isMeasureHeader() && (value == null || item.isComment())) {
+                if (!item.isMeasureHeader() && (value == null || item.isComment()))
                     cell.setText(""); //$NON-NLS-1$
-                } else {
+                else
                     cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
-                }
             }
         });
         // Editable value
         final TableViewerColumn value_column = createColumn(viewer, layout, Messages.Value, 100, 50,
-                new PVTableCellLabelProviderWithChangeIndicator(changed_background) {
+                new PVTableCellLabelProviderWithChangeIndicator(changed_background)
+                {
                     @Override
-                    public void update(final ViewerCell cell) {
+                    public void update(final ViewerCell cell)
+                    {
                         final PVTableItem item = (PVTableItem) cell.getElement();
                         final VType value = item.getValue();
-                        if (value == null) {
+                        if (value == null)
                             cell.setText(""); //$NON-NLS-1$
-                        } else {
+                        else
                             cell.setText(VTypeHelper.toString(value));
-                        }
                         super.update(cell);
                     }
                 });
-        value_column.setEditingSupport(new EditingSupport(viewer) {
-            /**
-             * When a combo box editor is created, its value must be the integer
-             * index. Note that this variable is shared for all rows. When
-             * editing, the UI thread calls getCellEditor() for the row, then
-             * get/setValue().
+        value_column.setEditingSupport(new EditingSupport(viewer)
+        {
+            /** When a combo box editor is created, its value must be the integer
+             *  index. Note that this variable is shared for all rows. When
+             *  editing, the UI thread calls getCellEditor() for the row, then
+             *  get/setValue().
              */
             private boolean need_index = false;
 
             @Override
-            protected boolean canEdit(final Object element) {
+            protected boolean canEdit(final Object element)
+            {
                 final PVTableItem item = (PVTableItem) element;
                 return item.isWritable();
             }
 
             @Override
-            protected CellEditor getCellEditor(final Object element) {
+            protected CellEditor getCellEditor(final Object element)
+            {
                 final PVTableItem item = (PVTableItem) element;
                 final String[] options = item.getValueOptions();
                 need_index = options != null;
-                if (need_index) {
+                if (need_index)
                     return new ComboBoxCellEditor(table, options, SWT.READ_ONLY);
-                }
                 return new TextCellEditor(table);
             }
 
             @Override
-            protected void setValue(final Object element, final Object value) {
+            protected void setValue(final Object element, final Object value)
+            {
                 final PVTableItem item = (PVTableItem) element;
                 item.setValue(value.toString());
             }
 
             @Override
-            protected Object getValue(final Object element) {
+            protected Object getValue(final Object element)
+            {
                 final PVTableItem item = (PVTableItem) element;
                 final VType value = item.getValue();
-                if (need_index) {
-                    if (value == null || !(value instanceof VEnum)) {
+                if (need_index)
+                {
+                    if (value == null || !(value instanceof VEnum))
                         return 0;
-                    }
                     return ((VEnum) value).getIndex();
                 }
-                if (value == null) {
+                if (value == null)
                     return ""; //$NON-NLS-1$
-                }
                 return VTypeHelper.toString(value);
             }
         });
         // Remaining columns are read-only
-        createColumn(viewer, layout, Messages.Alarm, 100, 50, new PVTableCellLabelProvider() {
+        createColumn(viewer, layout, Messages.Alarm, 100, 50, new PVTableCellLabelProvider()
+        {
             @Override
-            public void update(final ViewerCell cell) {
+            public void update(final ViewerCell cell)
+            {
                 final PVTableItem item = (PVTableItem) cell.getElement();
                 final VType value = item.getValue();
-                if (value == null) {
+                if (value == null)
                     cell.setText(""); //$NON-NLS-1$
-                } else {
+                else
+                {
                     cell.setText(VTypeHelper.formatAlarm(value));
                     cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
                 }
@@ -378,30 +417,78 @@ public class PVTable implements PVTableModelListener {
         });
         // Column Saved Value
         createColumn(viewer, layout, Messages.Saved, 100, 50,
-                new PVTableCellLabelProviderWithChangeIndicator(changed_background) {
+                new PVTableCellLabelProviderWithChangeIndicator(changed_background)
+        {
                     @Override
-                    public void update(final ViewerCell cell) {
+                    public void update(final ViewerCell cell)
+                    {
                         final PVTableItem item = (PVTableItem) cell.getElement();
                         final SavedValue value = item.getSavedValue().orElse(null);
-                        if (value == null) {
+                        if (value == null)
                             cell.setText(""); //$NON-NLS-1$
-                        } else {
+                        else
                             cell.setText(value.toString());
-                        }
                         super.update(cell);
                     }
                 });
 
         // Optionally, add column to display item.getTime_saved()
-        if (Preferences.showSaveTimestamp()) {
-            createColumn(viewer, layout, Messages.Saved_Value_TimeStamp, 50, 40, new PVTableCellLabelProvider() {
+        if (Preferences.showSaveTimestamp())
+        {
+            createColumn(viewer, layout, Messages.Saved_Value_TimeStamp, 50, 40, new PVTableCellLabelProvider()
+            {
                 @Override
-                public void update(final ViewerCell cell) {
+                public void update(final ViewerCell cell)
+                {
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     cell.setText(item.getTime_saved());
                 }
             });
         }
+
+        final TableViewerColumn completion_column = createColumn(viewer, layout, "Completion", 10, 100, new PVTableCellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                if (item.isWritable())
+                {
+                    if (item.isUsingCompletion())
+                        cell.setImage(icon_checked);
+                    else
+                        cell.setImage(icon_unchecked);
+                }
+            }
+        });
+        completion_column.getColumn().setToolTipText("Await completion (use put-callback) when restoring values?");
+        completion_column.setEditingSupport(new EditingSupport(viewer)
+        {
+            @Override
+            protected boolean canEdit(final Object element)
+            {
+                return ((PVTableItem) element).isWritable();
+            }
+
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(table);
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((PVTableItem) element).isUsingCompletion();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                ((PVTableItem) element).setUseCompletion( (Boolean) value);
+                model.fireModelChange();
+            }
+        });
 
         ColumnViewerToolTipSupport.enableFor(viewer);
         viewer.setContentProvider(new PVTableModelContentProvider());
@@ -419,7 +506,8 @@ public class PVTable implements PVTableModelListener {
      * @return Created viewer column
      */
     private TableViewerColumn createColumn(final TableViewer viewer, final TableColumnLayout layout,
-            final String header, final int weight, final int min_width, final CellLabelProvider label_provider) {
+            final String header, final int weight, final int min_width, final CellLabelProvider label_provider)
+    {
         final TableViewerColumn view_col = new TableViewerColumn(viewer, 0);
         final TableColumn col = view_col.getColumn();
         col.setText(header);
@@ -448,12 +536,13 @@ public class PVTable implements PVTableModelListener {
         manager.add(new SnapshotCurrentSelectionAction(viewer)); // 6
         manager.add(new RestoreCurrentSelectionAction(viewer)); // 7
         manager.add(new Separator()); // 8
-        manager.add(new ToleranceAction(viewer)); // 9
-        manager.add(new Separator()); // 10
-        manager.add(new InsertAction(viewer)); // 11
-        manager.add(new DeleteAction(viewer)); // 12
-        manager.add(new DeleteMeasureAction(viewer)); // 13
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 14
+        manager.add(new TimeoutAction(viewer)); // 9
+        manager.add(new ToleranceAction(viewer)); // 10
+        manager.add(new Separator()); // 11
+        manager.add(new InsertAction(viewer)); // 12
+        manager.add(new DeleteAction(viewer)); // 13
+        manager.add(new DeleteMeasureAction(viewer)); // 14
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 15
         final Control control = viewer.getControl();
         menu = manager.createContextMenu(control);
         control.setMenu(menu);
@@ -470,17 +559,17 @@ public class PVTable implements PVTableModelListener {
         manager.getItems()[6].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
         manager.getItems()[7].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
         manager.getItems()[8].setVisible(!item.isMeasure());
-        manager.getItems()[9].setVisible(!item.isMeasure());
         manager.getItems()[10].setVisible(!item.isMeasure());
+        manager.getItems()[11].setVisible(!item.isMeasure());
 
         if (model.getConfig() != null) {
             if (!model.getConfig().getMeasures().isEmpty()) {
-                manager.getItems()[11].setVisible(!item.isMeasure()
+                manager.getItems()[12].setVisible(!item.isMeasure()
                         || (model.getConfig().getMeasures().get(0) == item.getMeasure() && item.isMeasureHeader()));
             }
         }
-        manager.getItems()[12].setVisible(!item.isMeasure());
-        manager.getItems()[13].setVisible(item.isMeasure());
+        manager.getItems()[13].setVisible(!item.isMeasure());
+        manager.getItems()[14].setVisible(item.isMeasure());
     }
 
     /**

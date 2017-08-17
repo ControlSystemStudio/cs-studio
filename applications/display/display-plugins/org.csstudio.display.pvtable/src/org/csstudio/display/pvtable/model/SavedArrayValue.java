@@ -8,6 +8,7 @@
 package org.csstudio.display.pvtable.model;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
@@ -22,48 +23,51 @@ import org.diirt.vtype.VString;
 import org.diirt.vtype.VStringArray;
 import org.diirt.vtype.VType;
 
-/**
- * Saved value of an array table item
+/** Saved value of an array table item
  *
- * @author Kay Kasemir
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SavedArrayValue extends SavedValue {
+public class SavedArrayValue extends SavedValue
+{
     final private List<String> saved_value;
 
-    /**
-     * Initialize from text
+    /** Initialize from text
      *
      * @param value_text
      */
-    public SavedArrayValue(final List<String> value_texts) {
+    public SavedArrayValue(final List<String> value_texts)
+    {
         saved_value = value_texts;
     }
 
     /** @return Number of array elements */
-    public int size() {
+    public int size()
+    {
         return saved_value.size();
     }
 
-    /**
-     * @param index
-     *            Array index, <code>0 .. size()-1</code>
-     * @return Array element
+    /** @param index Array index, <code>0 .. size()-1</code>
+     *  @return Array element
      */
-    public String get(final int index) {
+    public String get(final int index)
+    {
         return saved_value.get(index);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception {
+    public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
+    {
         if (current_value == null)
             return true;
-        if (current_value instanceof VByteArray && Preferences.treatByteArrayAsString()) {
+        if (current_value instanceof VByteArray && Preferences.treatByteArrayAsString())
+        {
             // Compare as text
             final String text = VTypeHelper.toString(current_value);
             final int N = Math.min(text.length(), saved_value.size());
-            for (int i = 0; i < N; ++i) {
+            for (int i = 0; i < N; ++i)
+            {
                 final int v1 = text.charAt(i);
                 final int v2 = getSavedNumber(saved_value.get(i)).intValue();
                 if (Math.abs(v2 - v1) > tolerance)
@@ -75,12 +79,14 @@ public class SavedArrayValue extends SavedValue {
             }
             return true;
         }
-        if (current_value instanceof VNumberArray) {
+        if (current_value instanceof VNumberArray)
+        {
             final ListNumber values = ((VNumberArray) current_value).getData();
             final int N = values.size();
             if (N != saved_value.size())
                 return false;
-            for (int i = 0; i < N; ++i) {
+            for (int i = 0; i < N; ++i)
+            {
                 final double v1 = values.getDouble(i);
                 final double v2 = getSavedNumber(saved_value.get(i)).doubleValue();
                 if (Math.abs(v2 - v1) > tolerance)
@@ -90,12 +96,14 @@ public class SavedArrayValue extends SavedValue {
         }
         if (current_value instanceof VStringArray)
             return ((VStringArray) current_value).getData().equals(saved_value);
-        if (current_value instanceof VEnumArray) {
+        if (current_value instanceof VEnumArray)
+        {
             final ListInt indices = ((VEnumArray) current_value).getIndexes();
             final int N = indices.size();
             if (N != saved_value.size())
                 return false;
-            for (int i = 0; i < N; ++i) {
+            for (int i = 0; i < N; ++i)
+            {
                 final int v1 = indices.getInt(i);
                 final int v2 = getSavedNumber(saved_value.get(i)).intValue();
                 if (Math.abs(v2 - v1) > tolerance)
@@ -113,51 +121,46 @@ public class SavedArrayValue extends SavedValue {
 
     /** {@inheritDoc} */
     @Override
-    public void restore(final PV pv) throws Exception {
+    public void restore(final PV pv, long completion_timeout_secs) throws Exception
+    {
         // Determine what type to write based on current value of the PV
         final VType pv_type = pv.read();
-        if ((pv_type instanceof VDoubleArray) || (pv_type instanceof VFloatArray)) { // Write
-                                                                                     // any
-                                                                                     // floating
-                                                                                     // point
-                                                                                     // as
-                                                                                     // double
+        if ((pv_type instanceof VDoubleArray) || (pv_type instanceof VFloatArray))
+        {   // Write any floating point as double
             final int N = saved_value.size();
             final double[] data = new double[N];
             for (int i = 0; i < N; ++i)
                 data[i] = getSavedNumber(saved_value.get(i)).doubleValue();
-            pv.write(data);
-        } else if (pv_type instanceof VNumberArray || pv_type instanceof VEnumArray) { // Write
-                                                                                       // any
-                                                                                       // non-floating
-                                                                                       // number
-                                                                                       // as
-                                                                                       // int
-                                                                                       // JCA_PV
-                                                                                       // doesn't
-                                                                                       // handle
-                                                                                       // long[],
-                                                                                       // so
-                                                                                       // int[]
-                                                                                       // is
-                                                                                       // the
-                                                                                       // widest
-                                                                                       // type
+
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(data).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(data);
+        }
+        else if (pv_type instanceof VNumberArray || pv_type instanceof VEnumArray)
+        {   // Write any non-floating  number as int.
+            // JCA_PV doesn't handle long[], so int[] is the widest type
             final int N = saved_value.size();
             final int[] data = new int[N];
             for (int i = 0; i < N; ++i)
                 data[i] = getSavedNumber(saved_value.get(i)).intValue();
-            pv.write(data);
-        } else
+            if (completion_timeout_secs > 0)
+                pv.asyncWrite(data).get(completion_timeout_secs, TimeUnit.SECONDS);
+            else
+                pv.write(data);
+        }
+        else
             throw new Exception("Cannot write type " + pv_type.getClass().getName());
     }
 
     /** {@inheritDoc} */
     @Override
-    public String toString() {
+    public String toString()
+    {
         final StringBuilder buf = new StringBuilder();
         boolean first = true;
-        for (String value : saved_value) {
+        for (String value : saved_value)
+        {
             if (first)
                 first = false;
             else

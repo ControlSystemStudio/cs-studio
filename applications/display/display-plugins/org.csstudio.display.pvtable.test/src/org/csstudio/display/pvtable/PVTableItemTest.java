@@ -133,7 +133,7 @@ public class PVTableItemTest implements PVTableItemListener
 
         // Restore the saved value
         assertThat(item.getSavedValue().get().toString(), equalTo("3.14"));
-        item.restore();
+        item.restore(0);
         System.out.println("Waiting for restore...");
         synchronized (item)
         {
