@@ -179,7 +179,16 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
 
         if (filter != null)
-            filter.start();
+        {
+            try
+            {
+                filter.start();
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
+            }
+        }
     }
 
     /** Disconnect from control system */
@@ -197,7 +206,16 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             connection_timeout_task = null;
         }
         if (filter != null)
-            filter.stop();
+        {
+            try
+            {
+                filter.stop();
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, getPathName() + " cannot stop " + filter, ex);
+            }
+        }
         save_pv.removeListener(this);
         PVPool.releasePV(save_pv);
         is_connected = false;
@@ -214,7 +232,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     public void filterChanged(final double value)
     {
         final boolean new_enable_state = value > 0.0;
-        logger.log(Level.FINE, () -> getPathName() + " filter value " + value);
+        logger.log(Level.FINE, () -> getPathName() + " " + filter + " value " + value);
         logic.setEnabled(new_enable_state);
     }
 
