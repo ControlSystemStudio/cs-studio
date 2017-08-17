@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shared Alarm Components
 Bundle-SymbolicName: org.csstudio.alarm.beast;singleton:=true
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen - SNS
 Bundle-Description: BEAST library: Alarm model, ...
 Require-Bundle: org.junit;bundle-version="4.8.2",
