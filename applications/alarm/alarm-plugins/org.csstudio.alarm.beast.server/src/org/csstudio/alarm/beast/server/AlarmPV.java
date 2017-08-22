@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.csstudio.alarm.beast.server.Activator.logger;
 
 import java.io.PrintStream;
 import java.time.Instant;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
@@ -44,7 +46,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     private volatile String description;
 
     /** Control system PV */
-    private volatile transient PV pv = null;
+    private final AtomicReference<PV> pv = new AtomicReference<>();
 
     /** Track connection state */
     private volatile boolean is_connected = false;
@@ -134,6 +136,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
      */
     void setEnablement(final boolean enabled, final String filter) throws Exception
     {
+        logger.log(Level.INFO, getPathName() + " enablement: " + enabled + " [" + filter + "]");
         synchronized (logic)
         {
             if (filter == null  ||  filter.length() <= 0)
@@ -147,6 +150,13 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     /** Connect to control system */
     public void start() throws Exception
     {
+        if (! logic.isEnabled())
+        {
+            logger.log(Level.INFO, "Skipping disabled {0}", getPathName());
+            return;
+        }
+        logger.log(Level.INFO, "Start {0}", getPathName());
+
         // Seconds to millisecs
         final long delay = Preferences.getConnectionGracePeriod() * 1000;
         connection_timeout_task = new TimerTask()
@@ -160,17 +170,35 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         };
         connection_timer.schedule(connection_timeout_task, delay);
 
-        pv = PVPool.getPV(getName());
-        pv.addListener(this);
+        logic.computeNewState(new AlarmState(SeverityLevel.OK, "Starting", null, Instant.now()));
+
+        final PV safe_pv = PVPool.getPV(getName());
+        safe_pv.addListener(this);
+        final PV old_pv = pv.getAndSet(safe_pv);
+        if (old_pv != null)
+            logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
+
         if (filter != null)
-            filter.start();
+        {
+            try
+            {
+                filter.start();
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
+            }
+        }
     }
 
     /** Disconnect from control system */
     public void stop()
     {
+        logger.log(Level.INFO, "Stop {0}", getPathName());
+        final PV save_pv = pv.getAndSet(null);
+
         //the alarm pv has been stopped already
-        if (pv == null)
+        if (save_pv == null)
             return;
         if (connection_timeout_task != null)
         {
@@ -178,10 +206,18 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
             connection_timeout_task = null;
         }
         if (filter != null)
-            filter.stop();
-        pv.removeListener(this);
-        PVPool.releasePV(pv);
-        pv = null;
+        {
+            try
+            {
+                filter.stop();
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.SEVERE, getPathName() + " cannot stop " + filter, ex);
+            }
+        }
+        save_pv.removeListener(this);
+        PVPool.releasePV(save_pv);
         is_connected = false;
     }
 
@@ -196,8 +232,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     public void filterChanged(final double value)
     {
         final boolean new_enable_state = value > 0.0;
-        Activator.getLogger().log(Level.FINE, "{0} filter changed to {1}",
-                new Object[] { getName(), new_enable_state });
+        logger.log(Level.FINE, () -> getPathName() + " " + filter + " value " + value);
         logic.setEnabled(new_enable_state);
     }
 
@@ -209,6 +244,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         final AlarmState received = new AlarmState(SeverityLevel.UNDEFINED,
             Messages.AlarmMessageNotConnected, "", Instant.now());
         logic.computeNewState(received);
+        logger.log(Level.INFO, () -> getPathName() + " connection timed out -> " + logic);
     }
 
     /** @see PVListener */
@@ -225,6 +261,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         final AlarmState received = new AlarmState(SeverityLevel.UNDEFINED,
                 Messages.AlarmMessageDisconnected, "", Instant.now());
         logic.computeNewState(received);
+        logger.log(Level.INFO, () -> getPathName() + " disconnected -> " + logic);
     }
 
     /** @see PVListener */
@@ -238,6 +275,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 VTypeHelper.toString(value),
                 VTypeHelper.getTimestamp(value));
         logic.computeNewState(received);
+        logger.log(Level.FINE, () -> getPathName() + " received " + value + " -> " + logic);
     }
 
     /** AlarmLogicListener: {@inheritDoc} */
@@ -251,8 +289,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     @Override
     public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
-        Activator.getLogger().log(Level.FINE, "{0} changes to {1}, {2}",
-                new Object[] { getName(), current, alarm });
+        logger.log(Level.FINE, () -> getPathName() + " changes to " + current + ", " + alarm);
         if (server != null)
             server.sendStateUpdate(this,
                     current.getSeverity(), current.getMessage(),
@@ -275,8 +312,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     @Override
     public void globalStateChanged(final AlarmState alarm)
     {
-        Activator.getLogger().log(Level.FINE, "{0} has global state {1}",
-            new Object[] { getName(), alarm });
+        logger.log(Level.FINE, () -> getPathName() + " has global state " + alarm);
         if (server != null)
             server.sendGlobalUpdate(this,
                     alarm.getSeverity(), alarm.getMessage(),
@@ -299,8 +335,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         buf.append("'").append(getPathName()).append("' (ID ").append(getID()).append(")");
         buf.append(" [").append(description).append("] - ");
 
-        final PV safe_pv = pv;
-
+        final PV safe_pv = pv.get();
         if (safe_pv != null)
         {
             if (is_connected)

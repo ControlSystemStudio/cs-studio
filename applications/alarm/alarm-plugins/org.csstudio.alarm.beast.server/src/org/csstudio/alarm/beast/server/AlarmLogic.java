@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.csstudio.alarm.beast.server.Activator.logger;
+
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 
@@ -44,7 +47,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     /** Is logic enabled, or only following the 'current' PV state
      *  without actually alarming?
      */
-    private volatile boolean enabled = true;
+    private final AtomicBoolean enabled = new AtomicBoolean(true);
 
     /** 'Current' state that was received while disabled.
      *  Is cached in case we get re-enabled, whereupon it is used
@@ -59,7 +62,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     private boolean latching;
 
     /** Annunciate alarms? */
-    private boolean annunciating;
+    private volatile boolean annunciating;
 
     /** Does this alarm have priority in maintenance mode, i.e.
      *  INVALID should still be annunciated in maintenance mode,
@@ -69,7 +72,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     private boolean has_priority = false;
 
     /** Require minimum time [seconds] in alarm before indicating alarm */
-    private int delay;
+    private volatile int delay;
 
     /** Pending delayed alarm state update or <code>null</code> */
     final private DelayedAlarmUpdate delayed_check = new DelayedAlarmUpdate(this);
@@ -131,7 +134,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     public static void setMaintenanceMode(final boolean maintenance_mode)
     {
         AlarmLogic.maintenance_mode = maintenance_mode;
-        Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
+        logger.config("Maintenance Mode: " + maintenance_mode);
     }
 
     /** In maintenance mode, 'INVALID' alarms are suppressed by
@@ -150,11 +153,10 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     public void setEnabled(final boolean enable)
     {
         // Ignore if there's no change
-        if (this.enabled == enable)
+        if (enabled.getAndSet(enable) == enable)
             return;
-        this.enabled = enable;
-        listener.alarmEnablementChanged(this.enabled);
-        if (!enabled)
+        listener.alarmEnablementChanged(enable);
+        if (!enable)
         {   // Disabled
             final AlarmState current, alarm;
             synchronized (this)
@@ -181,19 +183,19 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     }
 
     /** @return Are alarms enabled */
-    synchronized public boolean isEnabled()
+    public boolean isEnabled()
     {
-        return enabled;
+        return enabled.get();
     }
 
     /** @param annunciating <code>true</code> to annunciate */
-    synchronized public void setAnnunciate(final boolean annunciating)
+    public void setAnnunciate(final boolean annunciating)
     {
         this.annunciating = annunciating;
     }
 
     /** @return <code>true</code> if configured to annunciate */
-    synchronized public boolean isAnnunciating()
+    public boolean isAnnunciating()
     {
         return annunciating;
     }
@@ -217,13 +219,13 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     }
 
     /** @param seconds Alarm delay in seconds */
-    synchronized public void setDelay(final int seconds)
+    public void setDelay(final int seconds)
     {
         delay = seconds;
     }
 
     /** @return Alarm delay in seconds */
-    synchronized public int getDelay()
+    public int getDelay()
     {
         return delay;
     }
@@ -270,7 +272,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
         synchronized (this)
         {
             // When disabled, ignore...
-            if (!enabled)
+            if (!enabled.get())
             {
                 disabled_state = received_state;
                 return;
