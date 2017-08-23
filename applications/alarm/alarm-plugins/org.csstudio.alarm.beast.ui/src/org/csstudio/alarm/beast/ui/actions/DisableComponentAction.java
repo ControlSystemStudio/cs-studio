@@ -66,7 +66,7 @@ public class DisableComponentAction extends Action
         final List<AlarmTreePV> pvs = new ArrayList<>();
         for (AlarmTreeItem item : items)
             addPVs(pvs, item);
-        if (pvs.size() > 0)
+        if (pvs.size() > 1)
             if (!MessageDialog.openConfirm(shell, getText(),
                 NLS.bind(doEnable()
                     ? Messages.EnableAlarmsFmt
