@@ -5,36 +5,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page for engine restart request.
+/** Provide web page for engine shutdown request.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class RestartResponse extends AbstractResponse
+public class StopResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    RestartResponse(final EngineModel model)
+    public StopResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html =
-            new HTMLWriter(resp, "Archive Engine Restart");
+            new HTMLWriter(resp, "Archive Engine Shutdown");
 
-        html.text("Engine will restart....");
-        model.requestRestart();
+        html.text("Engine will shut down....");
+        model.requestStop();
 
         html.close();
     }

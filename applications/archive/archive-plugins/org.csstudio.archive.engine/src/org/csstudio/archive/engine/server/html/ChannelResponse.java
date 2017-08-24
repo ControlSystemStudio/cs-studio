@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,23 +16,21 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
 /** Provide web page with detail for one channel.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelResponse extends AbstractResponse
+public class ChannelResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    ChannelResponse(final EngineModel model)
+    public ChannelResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {   // Locate the group
         final String channel_name = req.getParameter("name");

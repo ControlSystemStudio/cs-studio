@@ -41,17 +41,17 @@ public class EngineServer
         final HttpContext http_context = http.createDefaultHttpContext();
         http.registerResources("/", "/webroot", http_context);
 
-        http.registerServlet("/main", new MainResponse(model), null, http_context);
-        http.registerServlet("/groups", new GroupsResponse(model), null, http_context);
-        http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
-        http.registerServlet("/group", new GroupResponse(model), null, http_context);
-        http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
-        http.registerServlet("/channels", new ChannelListResponse(model), null, http_context);
-        http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
-        http.registerServlet("/restart", new RestartResponse(model), null, http_context);
-        http.registerServlet("/reset", new ResetResponse(model), null, http_context);
-        http.registerServlet("/stop", new StopResponse(model), null, http_context);
-        http.registerServlet("/debug", new DebugResponse(model), null, http_context);
+        http.registerServlet("/main", new ResponseFactory(model, Page.MAIN), null, http_context);
+        http.registerServlet("/groups", new ResponseFactory(model, Page.GROUPS), null, http_context);
+        http.registerServlet("/disconnected", new ResponseFactory(model, Page.DISCONNECTED), null, http_context);
+        http.registerServlet("/group", new ResponseFactory(model, Page.GROUP), null, http_context);
+        http.registerServlet("/channel", new ResponseFactory(model, Page.CHANNEL), null, http_context);
+        http.registerServlet("/channels", new ResponseFactory(model, Page.CHANNEL_LIST), null, http_context);
+        http.registerServlet("/environment", new ResponseFactory(model, Page.ENVIRONMENT), null, http_context);
+        http.registerServlet("/restart", new ResponseFactory(model, Page.RESTART), null, http_context);
+        http.registerServlet("/reset", new ResponseFactory(model, Page.RESET), null, http_context);
+        http.registerServlet("/stop", new ResponseFactory(model, Page.STOP), null, http_context);
+        http.registerServlet("/debug", new ResponseFactory(model, Page.DEBUG), null, http_context);
 
         // When formatting the port via {0}, that could result in "4,812".
         // So format the URL outside of the logger.

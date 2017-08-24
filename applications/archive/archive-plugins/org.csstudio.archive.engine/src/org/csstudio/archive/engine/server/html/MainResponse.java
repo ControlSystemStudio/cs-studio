@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import java.net.InetAddress;
 import java.time.Duration;
@@ -19,6 +19,7 @@ import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
+import org.csstudio.archive.engine.server.AbstractResponse;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.Platform;
@@ -27,17 +28,14 @@ import org.eclipse.core.runtime.Platform;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class MainResponse extends AbstractResponse
+public class MainResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
     /** Bytes in a MegaByte */
     final static double MB = 1024.0*1024.0;
 
     private static String host = null;
 
-    MainResponse(final EngineModel model)
+    public MainResponse(final EngineModel model)
     {
         super(model);
 
@@ -56,7 +54,7 @@ class MainResponse extends AbstractResponse
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_MainTitle);
