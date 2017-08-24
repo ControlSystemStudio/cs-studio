@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.json;
 
 import java.io.PrintWriter;
 
@@ -76,6 +76,20 @@ public class JSONWriter {
     public void writeObjectKey(final String key) {
         write(key);
         print(":");
+    }
+
+    /** Add an entry to the JSON object, optionally add a list delimiter afterwards*/
+    public void writeObjectEntry(String key, String value, Boolean includeDelim) {
+        writeObjectKey(key);
+        write(value);
+        if (includeDelim) {
+            listSeperator();
+        }
+    }
+
+    /** Add an entry to the JSON object*/
+    public void writeObjectEntry(String key, String value) {
+        writeObjectEntry(key, value, true);
     }
 
     /** Add a list seperator to the JSON object*/

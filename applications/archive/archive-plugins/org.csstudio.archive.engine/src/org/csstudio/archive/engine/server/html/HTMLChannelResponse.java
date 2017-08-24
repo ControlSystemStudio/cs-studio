@@ -11,20 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
-import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
-import org.csstudio.archive.engine.server.AbstractResponse;
+import org.csstudio.archive.engine.server.AbstractChannelResponse;
 
 /** Provide web page with detail for one channel.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ChannelResponse extends AbstractResponse
+public class HTMLChannelResponse extends AbstractChannelResponse
 {
-    public ChannelResponse(final EngineModel model)
+    public HTMLChannelResponse(final EngineModel model)
     {
         super(model);
     }
@@ -32,19 +31,8 @@ public class ChannelResponse extends AbstractResponse
     @Override
     public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
-    {   // Locate the group
-        final String channel_name = req.getParameter("name");
-        if (channel_name == null)
-        {
-            resp.sendError(400, "Missing channel name");
-            return;
-        }
-        final ArchiveChannel channel = model.getChannel(channel_name);
-        if (channel == null)
-        {
-            resp.sendError(400, "Unknown channel " + channel_name);
-            return;
-        }
+    {
+        getParams(req, resp);
 
         // HTML table similar to group's list of channels
         final HTMLWriter html =

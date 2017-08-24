@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Science & Technology Facilities Council.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.engine.server;
 
 import java.io.IOException;
@@ -11,16 +18,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.html.ChannelListResponse;
-import org.csstudio.archive.engine.server.html.ChannelResponse;
 import org.csstudio.archive.engine.server.html.DebugResponse;
 import org.csstudio.archive.engine.server.html.DisconnectedResponse;
 import org.csstudio.archive.engine.server.html.EnvironmentResponse;
 import org.csstudio.archive.engine.server.html.GroupResponse;
 import org.csstudio.archive.engine.server.html.GroupsResponse;
+import org.csstudio.archive.engine.server.html.HTMLChannelResponse;
 import org.csstudio.archive.engine.server.html.MainResponse;
 import org.csstudio.archive.engine.server.html.ResetResponse;
 import org.csstudio.archive.engine.server.html.RestartResponse;
 import org.csstudio.archive.engine.server.html.StopResponse;
+import org.csstudio.archive.engine.server.json.JSONChannelResponse;
 
 public class ResponseFactory extends HttpServlet {
     /** Required by Serializable */
@@ -47,48 +55,57 @@ public class ResponseFactory extends HttpServlet {
     {
         try
         {
-            final String format = req.getParameter("format");
-            AbstractResponse reponseWriter;
-            switch (page) {
-                case MAIN:
-                    reponseWriter = new MainResponse(model);
-                    break;
-                case CHANNEL:
-                    reponseWriter = new ChannelResponse(model);
-                    break;
-                case CHANNEL_LIST:
-                    reponseWriter = new ChannelListResponse(model);
-                    break;
-                case DISCONNECTED:
-                    reponseWriter = new DisconnectedResponse(model);
-                    break;
-                case ENVIRONMENT:
-                    reponseWriter = new EnvironmentResponse(model);
-                    break;
-                case GROUP:
-                    reponseWriter = new GroupResponse(model);
-                    break;
-                case GROUPS:
-                    reponseWriter = new GroupsResponse(model);
-                    break;
-                case DEBUG:
-                    reponseWriter = new DebugResponse(model);
-                    break;
-                case RESET:
-                    reponseWriter = new ResetResponse(model);
-                    break;
-                case RESTART:
-                    reponseWriter = new RestartResponse(model);
-                    break;
-                case STOP:
-                    reponseWriter = new StopResponse(model);
-                    break;
-                default:
-                    reponseWriter = new NoResponse(model);
-
+            Format format;
+            try {
+                format = Format.valueOf(req.getParameter("format"));
+            } catch (Exception e) {
+                format = Format.html;
             }
 
-            reponseWriter.fillResponse(req, resp);
+            AbstractResponse responseWriter = null;
+            switch (page) {
+                case MAIN:
+                    responseWriter = new MainResponse(model);
+                    break;
+                case CHANNEL:
+                    if (format.equals(Format.html)) {
+                        responseWriter = new HTMLChannelResponse(model);
+                    } else if (format.equals(Format.json)) {
+                        responseWriter = new JSONChannelResponse(model);
+                    }
+                    break;
+                case CHANNEL_LIST:
+                    responseWriter = new ChannelListResponse(model);
+                    break;
+                case DISCONNECTED:
+                    responseWriter = new DisconnectedResponse(model);
+                    break;
+                case ENVIRONMENT:
+                    responseWriter = new EnvironmentResponse(model);
+                    break;
+                case GROUP:
+                    responseWriter = new GroupResponse(model);
+                    break;
+                case GROUPS:
+                    responseWriter = new GroupsResponse(model);
+                    break;
+                case DEBUG:
+                    responseWriter = new DebugResponse(model);
+                    break;
+                case RESET:
+                    responseWriter = new ResetResponse(model);
+                    break;
+                case RESTART:
+                    responseWriter = new RestartResponse(model);
+                    break;
+                case STOP:
+                    responseWriter = new StopResponse(model);
+                    break;
+            }
+
+            if (responseWriter != null) {
+                responseWriter.fillResponse(req, resp);
+            }
         }
 
         catch (Exception ex)

@@ -18,6 +18,7 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.csstudio.archive.engine.server.json.JSONWriter;
 import org.junit.Before;
 import org.junit.Test;
 
