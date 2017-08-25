@@ -12,13 +12,15 @@ package org.csstudio.scan.command;
  *  <p>Example:
  *  <pre>
  *  class MyScript(ScanScript):
- *      def __init__(self, args):
+ *      # For script with 3 arguments:
+ *      # def __init__(self, arg1, arg2, arg3):
+ *      def __init__(self):
  *          pass
  *
  *      def getDeviceNames(self):
  *         return [ "result1", "result2" ]
  *
- *      def run(self, context, args):
+ *      def run(self, context):
  *          [x, y] = context.getData("xpos", "signal")
  *          context.write("result1", x[0])
  *          context.write("result2", y[0])
@@ -35,6 +37,12 @@ public class ScanScript
 {
     /** Scan scripts may have arguments,
      *  and their constructor will be called with those arguments.
+     *
+     *  <p>Each argument is a string.
+     *
+     *  <p>Should really be
+     *  <code>ScanScript(String.. args)</code>
+     *  but that is not handled by Jython.
      *
      *  <p>The default implementation has no arguments.
      */
