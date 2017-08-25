@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/KNOBS-1.0.4.jar" sourcepath="lib/KNOBS-1.0.4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/KNOBS-1.0.5.jar" sourcepath="lib/KNOBS-1.0.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Medusa-7.9.4.jar" sourcepath="lib/Medusa-7.9.4-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
