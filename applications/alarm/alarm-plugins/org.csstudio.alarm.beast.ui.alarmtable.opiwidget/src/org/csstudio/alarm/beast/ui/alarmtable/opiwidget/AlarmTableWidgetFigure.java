@@ -73,7 +73,16 @@ public class AlarmTableWidgetFigure extends AbstractSWTWidgetFigure<Composite> {
             gui.setNumberOfAlarmsLimit(model.getMaxNumberOfAlarms());
             gui.setBlinking(model.isUnacknowledgedBlinking());
             gui.setTimeFormat(model.getTimeFormat());
-            gui.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            /*
+             * This fixes issue with collapsed rows bug on GNOME. When grabExcessVerticalSpace is true,
+             * we have some strange indeterministic issues with rows sometime not
+             * rendering properly (collapsed with very small height).
+             * This workaround sets the grabExcessVerticalSpace to false and sets the height hint to the size defined by the model.
+             */
+            GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+            gd.heightHint = model.getBounds().height;
+
+            gui.setLayoutData(gd);
             int ack = model.getAcknowledgeTableWeight();
             int unack = model.getUnacknowledgeTableWeight();
             gui.setSashWeights(ack, unack);
