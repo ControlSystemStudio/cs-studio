@@ -17,20 +17,42 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 
 public abstract class SingleSourceHelper {
 
     private static final SingleSourceHelper IMPL;
+    private static final String TOP_OPI_MINIMIZE_KEY = "MinimizeEditor"; //$NON-NLS-1$
 
     static {
         IMPL = (SingleSourceHelper)ImplementationLoader.newInstance(
                 SingleSourceHelper.class);
     }
 
-    public static void openOPIShell(IPath path, MacrosInput input) {
-        if (IMPL != null)
-            IMPL.iOpenOPIShell(path, input);
-        else {
+    public static void openOPIShell(IPath path, MacrosInput macrosInput) {
+        if (IMPL != null) {
+            IMPL.iOpenOPIShell(path, macrosInput);
+
+            // Hide editor if required
+            if (macrosInput != null)
+            {
+                final String position = macrosInput.getMacrosMap().get(TOP_OPI_MINIMIZE_KEY);
+                if (position != null)
+                {
+                    if (position.toLowerCase().equals("true"))
+                    {
+                        try
+                        {
+                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().setMinimized(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorHandlerUtil.handleError("Failed to minimize editor", ex);
+                        }
+                    }
+                }
+            }
+        } else {
             MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Not Implemented",
                     "Sorry, open OPI shell action is not implemented for WebOPI!");
         }
