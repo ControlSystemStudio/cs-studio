@@ -293,7 +293,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-           		((MenuButtonFigure) refreshableFigure).setText(newValue.toString());
+                ((MenuButtonFigure) refreshableFigure).setText(newValue.toString());
                 return true;
             }
         };
