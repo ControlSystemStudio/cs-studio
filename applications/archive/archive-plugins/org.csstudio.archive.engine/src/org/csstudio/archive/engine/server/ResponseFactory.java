@@ -18,11 +18,12 @@ import org.csstudio.archive.engine.server.html.EnvironmentResponse;
 import org.csstudio.archive.engine.server.html.GroupResponse;
 import org.csstudio.archive.engine.server.html.GroupsResponse;
 import org.csstudio.archive.engine.server.html.HTMLChannelResponse;
-import org.csstudio.archive.engine.server.html.MainResponse;
+import org.csstudio.archive.engine.server.html.HTMLMainResponse;
 import org.csstudio.archive.engine.server.html.ResetResponse;
 import org.csstudio.archive.engine.server.html.RestartResponse;
 import org.csstudio.archive.engine.server.html.StopResponse;
 import org.csstudio.archive.engine.server.json.JSONChannelResponse;
+import org.csstudio.archive.engine.server.json.JSONMainResponse;
 
 public class ResponseFactory {
     /** Model from which to serve info */
@@ -59,7 +60,8 @@ public class ResponseFactory {
         this.model = model;
 
         responses = new HashMap<PageAndFormat, AbstractResponse>();
-        responses.put(new PageAndFormat(Page.MAIN, Format.html), new MainResponse(model));
+        responses.put(new PageAndFormat(Page.MAIN, Format.html), new HTMLMainResponse(model));
+        responses.put(new PageAndFormat(Page.MAIN, Format.json), new JSONMainResponse(model));
         responses.put(new PageAndFormat(Page.CHANNEL, Format.html), new HTMLChannelResponse(model));
         responses.put(new PageAndFormat(Page.CHANNEL, Format.json), new JSONChannelResponse(model));
         responses.put(new PageAndFormat(Page.CHANNEL_LIST, Format.html), new ChannelListResponse(model));

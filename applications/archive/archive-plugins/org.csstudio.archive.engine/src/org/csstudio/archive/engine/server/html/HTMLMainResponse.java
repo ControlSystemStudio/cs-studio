@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.server.html;
 
-import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -16,41 +15,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Messages;
-import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
-import org.csstudio.archive.engine.server.AbstractResponse;
+import org.csstudio.archive.engine.server.AbstractMainResponse;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.util.time.TimeDuration;
 import org.eclipse.core.runtime.Platform;
 
-/** Provide web page with engine overview.
+/** Provide web page with engine overview in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MainResponse extends AbstractResponse
+public class HTMLMainResponse extends AbstractMainResponse
 {
-    /** Bytes in a MegaByte */
-    final static double MB = 1024.0*1024.0;
-
-    private static String host = null;
-
-    public MainResponse(final EngineModel model)
+    public HTMLMainResponse(final EngineModel model)
     {
         super(model);
-
-        if (host == null)
-        {
-            try
-            {
-                final InetAddress localhost = InetAddress.getLocalHost();
-                host = localhost.getHostName();
-            }
-            catch (Exception ex)
-            {
-                host = "localhost";
-            }
-        }
     }
 
     @Override
@@ -91,31 +71,19 @@ public class MainResponse extends AbstractResponse
             Platform.getInstanceLocation().getURL().getFile().toString()
         });
 
-        final int group_count = model.getGroupCount();
-        int total_channel_count = 0;
-        int connect_count = 0;
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                if (group.getChannel(j).isConnected())
-                    ++connect_count;
-            }
-            total_channel_count += channel_count;
-        }
+        updateChannelCount();
+
         html.tableLine(new String[]
-        { Messages.HTTP_GroupCount, Integer.toString(group_count) });
+        { Messages.HTTP_GroupCount, Integer.toString(model.getGroupCount()) });
         html.tableLine(new String[]
-        { Messages.HTTP_ChannelCount, Integer.toString(total_channel_count) });
-        final int disconnect_count = total_channel_count - connect_count;
-        if (disconnect_count > 0)
+        { Messages.HTTP_ChannelCount, Integer.toString(totalChannelCount) });
+
+        if (disconnectCount > 0)
         {
             html.tableLine(new String[]
             {
                 Messages.HTTP_Disconnected,
-                HTMLWriter.makeRedText(Integer.toString(disconnect_count))
+                HTMLWriter.makeRedText(Integer.toString(disconnectCount))
             });
         }
         html.tableLine(new String[]

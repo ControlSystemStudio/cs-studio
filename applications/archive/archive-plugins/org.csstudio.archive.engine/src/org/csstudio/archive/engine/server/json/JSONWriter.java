@@ -66,8 +66,8 @@ public class JSONWriter {
         print(":");
     }
 
-    /** Add an entry to the JSON object, optionally add a list delimiter afterwards*/
-    public void writeObjectEntry(String key, Runnable writeValue) {
+    /** Add an entry to the JSON object*/
+    private void writeObjectEntry(String key, Runnable writeValue) {
         if (!isFirstItem) {
             listSeperator();
         } else {
