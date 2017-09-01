@@ -86,8 +86,9 @@ public class LogEntryBuilderDialog extends Dialog {
     logEntryWidget = new LogEntryWidget(container, SWT.NONE, true, true);
     GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
         true, 1, 1);
-    gd_logEntryWidget.heightHint = 450;
-    gd_logEntryWidget.widthHint = 450;
+    gd_logEntryWidget.heightHint = 800;
+    gd_logEntryWidget.widthHint = 800;
+
     logEntryWidget.setLayoutData(gd_logEntryWidget);
     if (this.logEntryBuilder != null) {
         try {
@@ -157,6 +158,7 @@ public class LogEntryBuilderDialog extends Dialog {
                 }
             };
             job.addJobChangeListener(new JobChangeAdapter() {
+                @Override
                 public void done(IJobChangeEvent event) {
                     if (event.getResult().isOK()) {
                         getShell().getDisplay().asyncExec(new Runnable() {
