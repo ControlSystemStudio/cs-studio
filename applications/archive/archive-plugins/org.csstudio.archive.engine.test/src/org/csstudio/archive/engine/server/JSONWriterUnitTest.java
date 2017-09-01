@@ -48,34 +48,64 @@ public class JSONWriterUnitTest
     }
 
     @Test
-    public void testWhenStringWrittenThenOutputContainsQuotes()
-    {
-        writer.write("STRING");
-
-        assertEquals("{\"STRING\"", output.toString());
-    }
-
-    @Test
-    public void testWhenIntegerWrittenThenOutputContainsNoQuotations()
-    {
-        writer.write(1);
-
-        assertEquals("{1", output.toString());
-    }
-
-    @Test
-    public void testWhenFloatWrittenThenOutputContainsNoQuotations()
-    {
-        writer.write(1e3);
-
-        assertEquals("{1000.0", output.toString());
-    }
-
-    @Test
     public void testWhenObjectKeyWrittenThenOutputAsExpected()
     {
         writer.writeObjectKey("TEST");
 
         assertEquals("{\"TEST\":", output.toString());
+    }
+
+    @Test
+    public void testWhenStringEntryWrittenThenOutputContainsQuotations()
+    {
+        writer.writeObjectEntry("KEY", "VAL");
+
+        assertEquals("{\"KEY\":\"VAL\"", output.toString());
+    }
+
+    @Test
+    public void testWhenIntegerEntryWrittenThenOutputContainsNoQuotations()
+    {
+        writer.writeObjectEntry("KEY", 123);
+
+        assertEquals("{\"KEY\":123", output.toString());
+    }
+
+    @Test
+    public void testWhenFloatEntryWrittenThenOutputContainsNoQuotations()
+    {
+        writer.writeObjectEntry("KEY", 1e3);
+
+        assertEquals("{\"KEY\":1000.0", output.toString());
+    }
+
+    @Test
+    public void testWhenBooleanEntryWrittenThenOutputContainsNoQuotations()
+    {
+        writer.writeObjectEntry("KEY", true);
+
+        assertEquals("{\"KEY\":true", output.toString());
+    }
+
+    @Test
+    public void testWhenTwoEntriesWrittenThenOutputContainsListSeperator()
+    {
+        writer.writeObjectEntry("KEY", true);
+        writer.writeObjectEntry("KEY1", false);
+
+        assertEquals("{\"KEY\":true,\"KEY1\":false", output.toString());
+    }
+
+    @Test
+    public void testWhenSecondObjectWrittenThenOutputContainsCorrectListSeperators()
+    {
+        writer.writeObjectEntry("KEY", true);
+        writer.writeObjectEntry("KEY1", false);
+        writer.closeObject();
+        writer.listSeperator();
+        writer.openObject();
+        writer.writeObjectEntry("KEY", true);
+
+        assertEquals("{\"KEY\":true,\"KEY1\":false},{\"KEY\":true", output.toString());
     }
 }

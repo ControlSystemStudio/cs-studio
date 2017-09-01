@@ -41,9 +41,7 @@ public class JSONChannelResponse extends AbstractChannelResponse
 
         json.writeObjectEntry(Messages.HTTP_Channel, channel_name);
 
-        json.writeObjectKey(Messages.HTTP_Connected);
-        json.write(channel.isConnected());
-        json.listSeperator();
+        json.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
 
         json.writeObjectEntry(Messages.HTTP_InternalState, channel.getInternalState());
         json.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
@@ -51,30 +49,16 @@ public class JSONChannelResponse extends AbstractChannelResponse
         json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue());
         json.writeObjectEntry(Messages.HTTP_Enablement, channel.getEnablement().toString());
 
-        json.writeObjectKey(Messages.HTTP_State);
-        json.write(channel.isEnabled());
-        json.listSeperator();
+        json.writeObjectEntry(Messages.HTTP_State, channel.isEnabled());
 
         SampleBuffer buffer = channel.getSampleBuffer();
-        json.writeObjectKey(Messages.HTTP_QueueLen);
-        json.write(buffer.getQueueSize());
-        json.listSeperator();
+        json.writeObjectEntry(Messages.HTTP_QueueLen, buffer.getQueueSize());
 
         BufferStats stats = buffer.getBufferStats();
-        json.writeObjectKey(Messages.HTTP_QueueAvg);
-        json.write(stats.getAverageSize());
-        json.listSeperator();
-
-        json.writeObjectKey(Messages.HTTP_QueueMax);
-        json.write(stats.getMaxSize());
-        json.listSeperator();
-
-        json.writeObjectKey(Messages.HTTP_QueueCapacity);
-        json.write(buffer.getCapacity());
-        json.listSeperator();
-
-        json.writeObjectKey(Messages.HTTP_QueueOverruns);
-        json.write(stats.getOverruns());
+        json.writeObjectEntry(Messages.HTTP_QueueAvg, stats.getAverageSize());
+        json.writeObjectEntry(Messages.HTTP_QueueMax, stats.getMaxSize());
+        json.writeObjectEntry(Messages.HTTP_QueueCapacity, buffer.getCapacity());
+        json.writeObjectEntry(Messages.HTTP_QueueOverruns, stats.getOverruns());
 
         json.closeObject();
         json.listSeperator();
@@ -85,11 +69,7 @@ public class JSONChannelResponse extends AbstractChannelResponse
         for (int i=0; i<channel.getGroupCount(); ++i)
         {
             final ArchiveGroup group = channel.getGroup(i);
-            json.writeObjectKey(group.getName());
-            json.write(group.isEnabled());
-            if (i != channel.getGroupCount()-1) {
-                json.listSeperator();
-            }
+            json.writeObjectEntry(group.getName(), group.isEnabled());
         }
         json.closeObject();
         json.closeObject();

@@ -19,7 +19,7 @@ public class JSONWriter {
     /** Writer */
     final private PrintWriter json;
 
-    boolean empty = true;
+    boolean isFirstItem = true;
 
     public JSONWriter(final HttpServletResponse resp)
         throws Exception
@@ -33,6 +33,7 @@ public class JSONWriter {
     public void openObject()
     {
         print("{");
+        isFirstItem = true;
     }
 
     /** Closes a JSON object **/
@@ -45,6 +46,7 @@ public class JSONWriter {
     public void openList()
     {
         print("[");
+        isFirstItem = true;
     }
 
     /** Closes a JSON list **/
@@ -54,22 +56,8 @@ public class JSONWriter {
     }
 
     /** Add a string to the JSON object*/
-    public void write(final String str) {
+    private void write(final String str) {
         print("\"" + str + "\"");
-    }
-
-    /** Add a number to the JSON object*/
-    public void write(final Number num) {
-        print(num.toString());
-    }
-
-    /** Add a number to the JSON object*/
-    public void write(final Boolean bool) {
-        if (bool) {
-            print("true");
-        } else {
-            print("false");
-        }
     }
 
     /** Add a key to the JSON object*/
@@ -79,17 +67,29 @@ public class JSONWriter {
     }
 
     /** Add an entry to the JSON object, optionally add a list delimiter afterwards*/
-    public void writeObjectEntry(String key, String value, Boolean includeDelim) {
-        writeObjectKey(key);
-        write(value);
-        if (includeDelim) {
+    public void writeObjectEntry(String key, Runnable writeValue) {
+        if (!isFirstItem) {
             listSeperator();
+        } else {
+            isFirstItem = false;
         }
+        writeObjectKey(key);
+        writeValue.run();
     }
 
-    /** Add an entry to the JSON object*/
+    /** Add a string entry to the JSON object*/
     public void writeObjectEntry(String key, String value) {
-        writeObjectEntry(key, value, true);
+        writeObjectEntry(key, () -> write(value));
+    }
+
+    /** Add a number entry to the JSON object*/
+    public void writeObjectEntry(String key, Number value) {
+        writeObjectEntry(key, () -> print(value.toString()));
+    }
+
+    /** Add a boolean entry to the JSON object*/
+    public void writeObjectEntry(String key, Boolean value) {
+        writeObjectEntry(key, () -> print(value.toString()));
     }
 
     /** Add a list seperator to the JSON object*/
