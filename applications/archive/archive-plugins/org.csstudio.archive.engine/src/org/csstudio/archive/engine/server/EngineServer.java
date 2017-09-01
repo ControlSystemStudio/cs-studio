@@ -39,19 +39,21 @@ public class EngineServer
         final HttpService http = HttpServiceHelper.createHttpService(context, port);
 
         final HttpContext http_context = http.createDefaultHttpContext();
+
+        ResponseFactory respFactory = new ResponseFactory(model);
         http.registerResources("/", "/webroot", http_context);
 
-        http.registerServlet("/main", new ResponseFactory(model, Page.MAIN), null, http_context);
-        http.registerServlet("/groups", new ResponseFactory(model, Page.GROUPS), null, http_context);
-        http.registerServlet("/disconnected", new ResponseFactory(model, Page.DISCONNECTED), null, http_context);
-        http.registerServlet("/group", new ResponseFactory(model, Page.GROUP), null, http_context);
-        http.registerServlet("/channel", new ResponseFactory(model, Page.CHANNEL), null, http_context);
-        http.registerServlet("/channels", new ResponseFactory(model, Page.CHANNEL_LIST), null, http_context);
-        http.registerServlet("/environment", new ResponseFactory(model, Page.ENVIRONMENT), null, http_context);
-        http.registerServlet("/restart", new ResponseFactory(model, Page.RESTART), null, http_context);
-        http.registerServlet("/reset", new ResponseFactory(model, Page.RESET), null, http_context);
-        http.registerServlet("/stop", new ResponseFactory(model, Page.STOP), null, http_context);
-        http.registerServlet("/debug", new ResponseFactory(model, Page.DEBUG), null, http_context);
+        http.registerServlet("/main", new Servlet(Page.MAIN, respFactory), null, http_context);
+        http.registerServlet("/groups", new Servlet(Page.GROUPS, respFactory), null, http_context);
+        http.registerServlet("/disconnected", new Servlet(Page.DISCONNECTED, respFactory), null, http_context);
+        http.registerServlet("/group", new Servlet(Page.GROUP, respFactory), null, http_context);
+        http.registerServlet("/channel", new Servlet(Page.CHANNEL, respFactory), null, http_context);
+        http.registerServlet("/channels", new Servlet(Page.CHANNEL_LIST, respFactory), null, http_context);
+        http.registerServlet("/environment", new Servlet(Page.ENVIRONMENT, respFactory), null, http_context);
+        http.registerServlet("/restart", new Servlet(Page.RESTART, respFactory), null, http_context);
+        http.registerServlet("/reset", new Servlet(Page.RESET, respFactory), null, http_context);
+        http.registerServlet("/stop", new Servlet(Page.STOP, respFactory), null, http_context);
+        http.registerServlet("/debug", new Servlet(Page.DEBUG, respFactory), null, http_context);
 
         // When formatting the port via {0}, that could result in "4,812".
         // So format the URL outside of the logger.

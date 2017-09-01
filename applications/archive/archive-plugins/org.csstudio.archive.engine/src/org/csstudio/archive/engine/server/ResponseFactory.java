@@ -7,15 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.server;
 
-import java.io.IOException;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.html.ChannelListResponse;
 import org.csstudio.archive.engine.server.html.DebugResponse;
@@ -30,90 +24,57 @@ import org.csstudio.archive.engine.server.html.RestartResponse;
 import org.csstudio.archive.engine.server.html.StopResponse;
 import org.csstudio.archive.engine.server.json.JSONChannelResponse;
 
-public class ResponseFactory extends HttpServlet {
-    /** Required by Serializable */
-    private static final long serialVersionUID = 1L;
+public class ResponseFactory {
     /** Model from which to serve info */
     final protected EngineModel model;
 
-    final protected Page page;
+    final private Map<PageAndFormat, AbstractResponse> responses;
 
-    /** Construct <code>HttpServlet</code>
-     *  @param title Page title
-     */
-    protected ResponseFactory(final EngineModel model, Page page)
-    {
-        this.page = page;
-        this.model = model;
+    class PageAndFormat {
+        private final Page page;
+        private final Format format;
+
+        public PageAndFormat(Page p, Format f) {
+            page = p;
+            format = f;
+        }
+
+        @Override
+        public int hashCode() {
+            return (page.hashCode() << 16) + format.hashCode();
+        }
+
+        @Override
+        public boolean equals (final Object O) {
+            if (!(O instanceof PageAndFormat)) return false;
+            if (((PageAndFormat) O).page != page) return false;
+            if (((PageAndFormat) O).format != format) return false;
+            return true;
+          }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected void doGet(final HttpServletRequest req,
-                    final HttpServletResponse resp)
-                    throws ServletException, IOException
+
+    protected ResponseFactory(final EngineModel model)
     {
-        try
-        {
-            Format format;
-            try {
-                format = Format.valueOf(req.getParameter("format"));
-            } catch (Exception e) {
-                format = Format.html;
-            }
+        this.model = model;
 
-            AbstractResponse responseWriter = null;
-            switch (page) {
-                case MAIN:
-                    responseWriter = new MainResponse(model);
-                    break;
-                case CHANNEL:
-                    if (format.equals(Format.html)) {
-                        responseWriter = new HTMLChannelResponse(model);
-                    } else if (format.equals(Format.json)) {
-                        responseWriter = new JSONChannelResponse(model);
-                    }
-                    break;
-                case CHANNEL_LIST:
-                    responseWriter = new ChannelListResponse(model);
-                    break;
-                case DISCONNECTED:
-                    responseWriter = new DisconnectedResponse(model);
-                    break;
-                case ENVIRONMENT:
-                    responseWriter = new EnvironmentResponse(model);
-                    break;
-                case GROUP:
-                    responseWriter = new GroupResponse(model);
-                    break;
-                case GROUPS:
-                    responseWriter = new GroupsResponse(model);
-                    break;
-                case DEBUG:
-                    responseWriter = new DebugResponse(model);
-                    break;
-                case RESET:
-                    responseWriter = new ResetResponse(model);
-                    break;
-                case RESTART:
-                    responseWriter = new RestartResponse(model);
-                    break;
-                case STOP:
-                    responseWriter = new StopResponse(model);
-                    break;
-            }
+        responses = new HashMap<PageAndFormat, AbstractResponse>();
+        responses.put(new PageAndFormat(Page.MAIN, Format.html), new MainResponse(model));
+        responses.put(new PageAndFormat(Page.CHANNEL, Format.html), new HTMLChannelResponse(model));
+        responses.put(new PageAndFormat(Page.CHANNEL, Format.json), new JSONChannelResponse(model));
+        responses.put(new PageAndFormat(Page.CHANNEL_LIST, Format.html), new ChannelListResponse(model));
+        responses.put(new PageAndFormat(Page.DISCONNECTED, Format.html), new DisconnectedResponse(model));
+        responses.put(new PageAndFormat(Page.ENVIRONMENT, Format.html), new EnvironmentResponse(model));
+        responses.put(new PageAndFormat(Page.GROUP, Format.html), new GroupResponse(model));
+        responses.put(new PageAndFormat(Page.GROUPS, Format.html), new GroupsResponse(model));
+        responses.put(new PageAndFormat(Page.DEBUG, Format.html), new DebugResponse(model));
+        responses.put(new PageAndFormat(Page.RESET, Format.html), new ResetResponse(model));
+        responses.put(new PageAndFormat(Page.RESTART, Format.html), new RestartResponse(model));
+        responses.put(new PageAndFormat(Page.STOP, Format.html), new StopResponse(model));
 
-            if (responseWriter != null) {
-                responseWriter.fillResponse(req, resp);
-            }
-        }
+    }
 
-        catch (Exception ex)
-        {
-            Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
-            if (resp.isCommitted())
-                return;
-            resp.sendError(400, "HTTP Server exception" + ex.getMessage());
-        }
+    public AbstractResponse getResponse(Page p, Format f) {
+        return responses.get(new PageAndFormat(p, f));
     }
 }
