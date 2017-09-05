@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gauges
 Bundle-SymbolicName: org.csstudio.platform.libs.gauges
-Bundle-Version: 10.0.5.qualifier
+Bundle-Version: 10.0.6.qualifier
 Bundle-Activator: org.csstudio.platform.libs.gauges.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.swt
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Claudio Rosati <claudio.rosati@esss.se>
-Bundle-ClassPath: lib/KNOBS-1.0.5.jar,
+Bundle-ClassPath: lib/KNOBS-1.0.6.jar,
  lib/Medusa-7.9.4.jar,
  .
 Export-Package: eu.hansolo.medusa,
