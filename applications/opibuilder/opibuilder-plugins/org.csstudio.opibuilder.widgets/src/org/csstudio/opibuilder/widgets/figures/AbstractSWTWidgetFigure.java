@@ -68,10 +68,20 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
         @Override
         public void mouseEnter(MouseEvent e) {
-            control.setToolTipText(editPart.getWidgetModel()
+            control.setToolTipText(getConnectionText() + editPart.getWidgetModel()
                     .getTooltip());
         };
+        private String getConnectionText(){
+            if (editPart == null || editPart.getConnectionHandler() == null || editPart.getConnectionHandler().getToolTipText() == null){
+            return "";
+            }
+            return editPart.getConnectionHandler().getToolTipText();
+        }
+
+
     }
+
+
     protected boolean runmode;
     protected AbstractBaseEditPart editPart;
 
@@ -499,6 +509,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
         Runnable task;
         if (wrapComposite != null) {
             task = new Runnable() {
+                @Override
                 public void run() {
                     if (!wrapComposite.isDisposed()) {
                         getSWTWidget().setMenu(null);
@@ -509,6 +520,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
             };
         } else {
             task = new Runnable() {
+                @Override
                 public void run() {
                     if (!getSWTWidget().isDisposed()) {
                         getSWTWidget().setMenu(null);
