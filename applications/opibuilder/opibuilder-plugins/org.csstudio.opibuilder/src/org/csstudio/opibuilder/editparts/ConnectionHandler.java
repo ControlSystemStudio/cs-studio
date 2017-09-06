@@ -61,15 +61,7 @@ public class ConnectionHandler {
      */
     private boolean connected;
 
-    /**
-     * The origin tooltip property value.
-     */
-    private String originTooltip;
-
-    /**
-     * The previous tool tip when is was connected.
-     */
-    private String preTooltip;
+    private String toolTipText;
 
     private IFigure figure;
 
@@ -89,8 +81,6 @@ public class ConnectionHandler {
         widgetModel = editpart.getWidgetModel();
         this.display = editpart.getViewer().getControl().getDisplay();
         pvMap = new ConcurrentHashMap<String, IPV>();
-        preTooltip = widgetModel.getRawTooltip();
-        originTooltip = preTooltip;
         connected = true;
     }
 
@@ -122,19 +112,15 @@ public class ConnectionHandler {
         }
         if(sb.length()>0){
             sb.append("------------------------------\n");
-            widgetModel.setTooltip(sb.toString() + preTooltip);
+            toolTipText = sb.toString();
         }else
-            widgetModel.setTooltip(originTooltip);
-
+            toolTipText = "";
     }
 
     /**Mark a widget as disconnected.
      * @param pvName the name of the PV that is disconnected.
      */
     protected void markWidgetAsDisconnected(IPV pv){
-        if(connected){
-            preTooltip = widgetModel.getRawTooltip();
-        }
         refreshModelTooltip();
         if(!connected)
             return;
@@ -200,6 +186,10 @@ public class ConnectionHandler {
      */
     public Map<String, IPV> getAllPVs() {
         return pvMap;
+    }
+
+    public String getToolTipText() {
+        return toolTipText;
     }
 
 }
