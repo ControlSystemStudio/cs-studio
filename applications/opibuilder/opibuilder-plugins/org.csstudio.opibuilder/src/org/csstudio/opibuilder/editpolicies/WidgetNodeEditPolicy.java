@@ -37,6 +37,19 @@ import org.eclipse.gef.requests.ReconnectRequest;
  */
 public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
 
+    static {
+        // Loading a schema service for the first time when the first widget connection is 
+        // created throws an exception, because the schema service is loaded in the UI thread.
+        // 
+        // Opening it in the UI thread creates a modal progress dialog, and this interferes 
+        // with connection which is drawn from the first anchor to the mouse pointer.
+        // 
+        // To avoid this situation, we make sure that the schema service is already loaded
+        // when we add the first connector. The schema service is a singleton and will
+        // just be returned whenever requested from now on.
+        SchemaService.getInstance();
+    }
+
     /**
      * the List of handles
      */
