@@ -17,6 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Activator;
 
+/**
+ * The servlet that gets the http request from the user and interprets it.
+ * @author Dominic Oram
+ *
+ */
 public class Servlet extends HttpServlet {
     /** Required by Serializable */
     private static final long serialVersionUID = 1L;

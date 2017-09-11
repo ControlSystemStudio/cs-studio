@@ -25,12 +25,19 @@ import org.csstudio.archive.engine.server.html.StopResponse;
 import org.csstudio.archive.engine.server.json.JSONChannelResponse;
 import org.csstudio.archive.engine.server.json.JSONMainResponse;
 
+/**
+ * Factory for creating server responses based on the page and format requested.
+ * @author Dominic Oram
+ *
+ */
 public class ResponseFactory {
-    /** Model from which to serve info */
-    final protected EngineModel model;
-
     final private Map<PageAndFormat, AbstractResponse> responses;
 
+    /**
+     * A helper class to easily create the hashmap based on a pair of values.
+     * @author Dominic Oram
+     *
+     */
     class PageAndFormat {
         private final Page page;
         private final Format format;
@@ -54,11 +61,12 @@ public class ResponseFactory {
           }
     }
 
-
+    /**
+     * Create the factory and a hash map with all possible responses.
+     * @param model The model to base the responses on.
+     */
     protected ResponseFactory(final EngineModel model)
     {
-        this.model = model;
-
         responses = new HashMap<PageAndFormat, AbstractResponse>();
         responses.put(new PageAndFormat(Page.MAIN, Format.html), new HTMLMainResponse(model));
         responses.put(new PageAndFormat(Page.MAIN, Format.json), new JSONMainResponse(model));
@@ -76,7 +84,13 @@ public class ResponseFactory {
 
     }
 
-    public AbstractResponse getResponse(Page p, Format f) {
-        return responses.get(new PageAndFormat(p, f));
+    /**
+     * Get a response based on the page and the format requested.
+     * @param page The page that has been requested.
+     * @param format The format that the page should be in.
+     * @return The response to send to the user.
+     */
+    public AbstractResponse getResponse(Page page, Format format) {
+        return responses.get(new PageAndFormat(page, format));
     }
 }
