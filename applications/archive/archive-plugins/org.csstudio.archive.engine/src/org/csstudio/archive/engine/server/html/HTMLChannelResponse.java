@@ -17,7 +17,7 @@ import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractChannelResponse;
 
-/** Provide web page with detail for one channel.
+/** Provide web page with detail for one channel in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

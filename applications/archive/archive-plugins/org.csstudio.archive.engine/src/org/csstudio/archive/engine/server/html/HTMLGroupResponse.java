@@ -12,22 +12,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveChannel;
-import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
-import org.csstudio.archive.engine.server.AbstractResponse;
+import org.csstudio.archive.engine.server.AbstractGroupResponse;
 
-/** Provide web page with detail for one group.
+/** Provide web page with detail for one group in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GroupResponse extends AbstractResponse
+public class HTMLGroupResponse extends AbstractGroupResponse
 {
     /** Maximum text length of last value that's displayed */
     private static final int MAX_VALUE_DISPLAY = 60;
 
-    public GroupResponse(final EngineModel model)
+    public HTMLGroupResponse(final EngineModel model)
     {
         super(model);
     }
@@ -36,19 +35,7 @@ public class GroupResponse extends AbstractResponse
     public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
-        // Locate the group
-        final String group_name = req.getParameter("name");
-        if (group_name == null)
-        {
-            resp.sendError(400, "Missing group name");
-            return;
-        }
-        final ArchiveGroup group = model.getGroup(group_name);
-        if (group == null)
-        {
-            resp.sendError(400, "Unknown group " + group_name);
-            return;
-        }
+        getParams(req, resp);
 
         HTMLWriter html = new HTMLWriter(resp,
                         "Archive Engine Group " + group_name);

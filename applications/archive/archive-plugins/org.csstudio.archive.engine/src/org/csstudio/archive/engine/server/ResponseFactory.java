@@ -15,14 +15,15 @@ import org.csstudio.archive.engine.server.html.ChannelListResponse;
 import org.csstudio.archive.engine.server.html.DebugResponse;
 import org.csstudio.archive.engine.server.html.DisconnectedResponse;
 import org.csstudio.archive.engine.server.html.EnvironmentResponse;
-import org.csstudio.archive.engine.server.html.GroupResponse;
 import org.csstudio.archive.engine.server.html.GroupsResponse;
 import org.csstudio.archive.engine.server.html.HTMLChannelResponse;
+import org.csstudio.archive.engine.server.html.HTMLGroupResponse;
 import org.csstudio.archive.engine.server.html.HTMLMainResponse;
 import org.csstudio.archive.engine.server.html.ResetResponse;
 import org.csstudio.archive.engine.server.html.RestartResponse;
 import org.csstudio.archive.engine.server.html.StopResponse;
 import org.csstudio.archive.engine.server.json.JSONChannelResponse;
+import org.csstudio.archive.engine.server.json.JSONGroupResponse;
 import org.csstudio.archive.engine.server.json.JSONMainResponse;
 
 /**
@@ -75,7 +76,8 @@ public class ResponseFactory {
         responses.put(new PageAndFormat(Page.CHANNEL_LIST, Format.html), new ChannelListResponse(model));
         responses.put(new PageAndFormat(Page.DISCONNECTED, Format.html), new DisconnectedResponse(model));
         responses.put(new PageAndFormat(Page.ENVIRONMENT, Format.html), new EnvironmentResponse(model));
-        responses.put(new PageAndFormat(Page.GROUP, Format.html), new GroupResponse(model));
+        responses.put(new PageAndFormat(Page.GROUP, Format.html), new HTMLGroupResponse(model));
+        responses.put(new PageAndFormat(Page.GROUP, Format.json), new JSONGroupResponse(model));
         responses.put(new PageAndFormat(Page.GROUPS, Format.html), new GroupsResponse(model));
         responses.put(new PageAndFormat(Page.DEBUG, Format.html), new DebugResponse(model));
         responses.put(new PageAndFormat(Page.RESET, Format.html), new ResetResponse(model));
