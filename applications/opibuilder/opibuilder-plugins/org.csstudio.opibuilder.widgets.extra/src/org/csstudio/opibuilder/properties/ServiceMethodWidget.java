@@ -15,37 +15,39 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.csstudio.ui.util.composites.BeanComposite;
+import org.diirt.service.Service;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.diirt.service.Service;
-import org.diirt.service.ServiceMethod;
-import org.diirt.service.ServiceRegistry;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.window.Window;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author shroffk
@@ -63,6 +65,7 @@ public class ServiceMethodWidget extends BeanComposite {
     private Table resultPvTable;
     private TableViewer argumentPvTableViewer;
     private TableViewer resultPvTableViewer;
+    private Composite rootComposite;
     private Composite resultPvTableViewerComposite;
     private Composite argumentPvTableViewerComposite;
 
@@ -78,16 +81,29 @@ public class ServiceMethodWidget extends BeanComposite {
 
     public ServiceMethodWidget(Composite parent, int style, ServiceMethodDescription serviceMethodDescription) {
     super(parent, style);
-    setLayout(new FormLayout());
 
-    Label lblMethodName = new Label(this, SWT.NONE);
+    GridLayout gridLayout = new GridLayout(1, false);
+    gridLayout.verticalSpacing = 2;
+    gridLayout.marginWidth = 2;
+    gridLayout.marginHeight = 2;
+    gridLayout.horizontalSpacing = 2;
+    setLayout(gridLayout);
+
+
+    rootComposite = new Composite(this, SWT.NONE | SWT.DOUBLE_BUFFERED);
+    GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+    rootComposite.setLayoutData(gd_composite);
+    rootComposite.setLayout(new FormLayout());
+
+
+    Label lblMethodName = new Label(rootComposite, SWT.NONE);
     FormData fd_lblMethodName = new FormData();
     fd_lblMethodName.top = new FormAttachment(0, 10);
     fd_lblMethodName.left = new FormAttachment(0, 5);
     lblMethodName.setLayoutData(fd_lblMethodName);
     lblMethodName.setText("Method Name:");
 
-    Button btnNewButton = new Button(this, SWT.NONE);
+    Button btnNewButton = new Button(rootComposite, SWT.NONE);
     btnNewButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -105,7 +121,7 @@ public class ServiceMethodWidget extends BeanComposite {
     btnNewButton.setLayoutData(fd_btnNewButton);
     btnNewButton.setText("Search");
 
-    text_method = new Text(this, SWT.BORDER);
+    text_method = new Text(rootComposite, SWT.BORDER);
     initialForegroundColor = text_method.getForeground();
     FormData fd_text_method = new FormData();
     fd_text_method.right = new FormAttachment(btnNewButton, -5);
@@ -123,29 +139,29 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
 
-    lblServiceMethodDescription = new Label(this, SWT.NONE);
+    lblServiceMethodDescription = new Label(rootComposite, SWT.NONE);
     FormData fd_lblServiceMethodDescription = new FormData();
     fd_lblServiceMethodDescription.right = new FormAttachment(100, -5);
-    fd_lblServiceMethodDescription.top = new FormAttachment(0, 40);
+    fd_lblServiceMethodDescription.top = new FormAttachment(text_method, 10);
     fd_lblServiceMethodDescription.left = new FormAttachment(0, 5);
     lblServiceMethodDescription
         .setLayoutData(fd_lblServiceMethodDescription);
 
-    Label lblNewLabel_1 = new Label(this, SWT.NONE);
-    FormData fd_lblNewLabel_1 = new FormData();
-    fd_lblNewLabel_1.top = new FormAttachment(0, 65);
-    fd_lblNewLabel_1.left = new FormAttachment(0, 5);
-    lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
-    lblNewLabel_1.setText("Arguments:");
+    Label lblArguments = new Label(rootComposite, SWT.NONE);
+    FormData fd_lblArguments = new FormData();
+    fd_lblArguments.top = new FormAttachment(lblServiceMethodDescription, 10);
+    fd_lblArguments.left = new FormAttachment(0, 5);
+    lblArguments.setLayoutData(fd_lblArguments);
+    lblArguments.setText("Arguments:");
 
-    Label lblNewLabel_2 = new Label(this, SWT.NONE);
-    FormData fd_lblNewLabel_2 = new FormData();
-    fd_lblNewLabel_2.top = new FormAttachment(0, 93);
-    fd_lblNewLabel_2.left = new FormAttachment(0, 5);
-    lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
-    lblNewLabel_2.setText("Argument Prefix:");
+    Label argPrefLbl = new Label(rootComposite, SWT.NONE);
+    FormData fb_argPrefLbl = new FormData();
+    fb_argPrefLbl.top = new FormAttachment(lblArguments, 10);
+    fb_argPrefLbl.left = new FormAttachment(0, 5);
+    argPrefLbl.setLayoutData(fb_argPrefLbl);
+    argPrefLbl.setText("Argument Prefix:");
 
-    text_arg_prefix = new Text(this, SWT.BORDER);
+    text_arg_prefix = new Text(rootComposite, SWT.BORDER);
     text_arg_prefix.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseUp(MouseEvent e) {
@@ -157,8 +173,8 @@ public class ServiceMethodWidget extends BeanComposite {
     });
     FormData fd_text_arg_prefix = new FormData();
     fd_text_arg_prefix.right = new FormAttachment(100, -5);
-    fd_text_arg_prefix.top = new FormAttachment(0, 90);
-    fd_text_arg_prefix.left = new FormAttachment(0, 120);
+    fd_text_arg_prefix.top = new FormAttachment(lblArguments, 7);
+    fd_text_arg_prefix.left = new FormAttachment(30, 0);
     text_arg_prefix.setLayoutData(fd_text_arg_prefix);
     text_arg_prefix.setEnabled(false);
     text_arg_prefix.addKeyListener(new KeyAdapter() {
@@ -172,11 +188,11 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
 
-    resultPvTableViewerComposite = new Composite(this, SWT.NONE);
+    resultPvTableViewerComposite = new Composite(rootComposite, SWT.NONE);
     FormData fd_composite_1 = new FormData();
-    fd_composite_1.bottom = new FormAttachment(100, -5);
     fd_composite_1.right = new FormAttachment(100, -5);
     fd_composite_1.left = new FormAttachment(0, 5);
+    fd_composite_1.top = new FormAttachment(argPrefLbl, 10);
     resultPvTableViewerComposite.setLayoutData(fd_composite_1);
     TableColumnLayout tcl_composite_1 = new TableColumnLayout();
     resultPvTableViewerComposite.setLayout(tcl_composite_1);
@@ -190,10 +206,12 @@ public class ServiceMethodWidget extends BeanComposite {
     TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
         resultPvTableViewer, SWT.NONE);
     tableViewerColumn_2.setLabelProvider(new ColumnLabelProvider() {
+        @Override
         public Image getImage(Object element) {
         return null;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public String getText(Object element) {
         if (element != null && element instanceof Entry) {
@@ -204,26 +222,30 @@ public class ServiceMethodWidget extends BeanComposite {
     });
     TableColumn tblclmnNewColumn_2 = tableViewerColumn_2.getColumn();
     tcl_composite_1.setColumnData(tblclmnNewColumn_2, new ColumnWeightData(
-        50, 100, true));
+        30, 100, true));
     tblclmnNewColumn_2.setText("result");
 
     TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(
         resultPvTableViewer, SWT.NONE);
     tableViewerColumn_3.setEditingSupport(new EditingSupport(
         resultPvTableViewer) {
+        @Override
         protected boolean canEdit(Object element) {
         return true;
         }
 
+        @Override
         protected CellEditor getCellEditor(Object element) {
         return new TextCellEditor(resultPvTableViewer.getTable());
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         protected Object getValue(Object element) {
         return ((Entry<String, String>) element).getValue();
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object element, Object value) {
         setResultPv(
@@ -233,10 +255,12 @@ public class ServiceMethodWidget extends BeanComposite {
 
     });
     tableViewerColumn_3.setLabelProvider(new ColumnLabelProvider() {
+        @Override
         public Image getImage(Object element) {
         return null;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public String getText(Object element) {
         if (element != null && element instanceof Entry) {
@@ -247,11 +271,27 @@ public class ServiceMethodWidget extends BeanComposite {
     });
     TableColumn tblclmnNewColumn_3 = tableViewerColumn_3.getColumn();
     tcl_composite_1.setColumnData(tblclmnNewColumn_3, new ColumnWeightData(
-        50, 100, true));
+        70, 100, true));
     tblclmnNewColumn_3.setText("pv/formula");
     resultPvTableViewer.setContentProvider(new ArrayContentProvider());
 
-    text_result_prefix = new Text(this, SWT.BORDER);
+
+    Label lblResults = new Label(rootComposite, SWT.NONE);
+    FormData fd_lblResults = new FormData();
+    fd_lblResults.top  = new FormAttachment(resultPvTableViewerComposite, 10);
+    fd_lblResults.left = new FormAttachment(0, 5);
+    lblResults.setLayoutData(fd_lblResults);
+    lblResults.setText("Results:");
+
+    Label lblResultPrefix = new Label(rootComposite, SWT.NONE);
+    FormData fd_lblResultPrefix = new FormData();
+    fd_lblResultPrefix.top = new FormAttachment(lblResults, 10);
+    fd_lblResultPrefix.left = new FormAttachment(0, 5);
+    lblResultPrefix.setLayoutData(fd_lblResultPrefix);
+    lblResultPrefix.setText("Result Prefix:");
+
+
+    text_result_prefix = new Text(rootComposite, SWT.BORDER);
     text_result_prefix.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseUp(MouseEvent e) {
@@ -262,10 +302,9 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
     FormData fd_text_result_prefix = new FormData();
-    fd_text_result_prefix.bottom = new FormAttachment(
-        resultPvTableViewerComposite, -5);
+    fd_text_result_prefix.top = new FormAttachment(lblResults, 7);
     fd_text_result_prefix.right = new FormAttachment(100, -5);
-    fd_text_result_prefix.left = new FormAttachment(0, 120);
+    fd_text_result_prefix.left = new FormAttachment(lblResultPrefix, 10);
     text_result_prefix.setLayoutData(fd_text_result_prefix);
     text_result_prefix.setEnabled(false);
     text_result_prefix.addKeyListener(new KeyAdapter() {
@@ -280,26 +319,13 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
 
-    Label lblResultPrefix = new Label(this, SWT.NONE);
-    FormData fd_lblResultPrefix = new FormData();
-    fd_lblResultPrefix.top = new FormAttachment(text_result_prefix, 3,
-        SWT.CENTER);
-    fd_lblResultPrefix.left = new FormAttachment(0, 5);
-    lblResultPrefix.setLayoutData(fd_lblResultPrefix);
-    lblResultPrefix.setText("Result Prefix:");
 
-    Label lblNewLabel_3 = new Label(this, SWT.NONE);
-    FormData fd_lblNewLabel_3 = new FormData();
-    fd_lblNewLabel_3.bottom = new FormAttachment(text_result_prefix);
-    fd_lblNewLabel_3.left = new FormAttachment(0, 5);
-    lblNewLabel_3.setLayoutData(fd_lblNewLabel_3);
-    lblNewLabel_3.setText("Results:");
 
-    argumentPvTableViewerComposite = new Composite(this, SWT.NONE);
+
+    argumentPvTableViewerComposite = new Composite(rootComposite, SWT.NONE);
     FormData fd_composite = new FormData();
-    fd_composite.bottom = new FormAttachment(lblNewLabel_3, -5);
     fd_composite.right = new FormAttachment(100, -5);
-    fd_composite.top = new FormAttachment(0, 121);
+    fd_composite.top = new FormAttachment(lblResultPrefix, 10);
     fd_composite.left = new FormAttachment(0, 5);
     argumentPvTableViewerComposite.setLayoutData(fd_composite);
     TableColumnLayout tcl_composite = new TableColumnLayout();
@@ -314,10 +340,12 @@ public class ServiceMethodWidget extends BeanComposite {
     TableViewerColumn tableViewerColumn = new TableViewerColumn(
         argumentPvTableViewer, SWT.NONE);
     tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+        @Override
         public Image getImage(Object element) {
         return null;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public String getText(Object element) {
         if (element != null && element instanceof Entry) {
@@ -327,7 +355,7 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
     TableColumn tblclmnNewColumn = tableViewerColumn.getColumn();
-    tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(50,
+    tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(30,
         100, true));
     tblclmnNewColumn.setText("argument name");
     TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
@@ -335,19 +363,23 @@ public class ServiceMethodWidget extends BeanComposite {
     tableViewerColumn_1.setEditingSupport(new EditingSupport(
         argumentPvTableViewer) {
 
+        @Override
         protected boolean canEdit(Object element) {
         return true;
         }
 
+        @Override
         protected CellEditor getCellEditor(Object element) {
         return new TextCellEditor(argumentPvTableViewer.getTable());
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         protected Object getValue(Object element) {
         return ((Entry<String, String>) element).getValue();
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         protected void setValue(Object element, Object value) {
         setArgumentPv(
@@ -357,10 +389,12 @@ public class ServiceMethodWidget extends BeanComposite {
 
     });
     tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+        @Override
         public Image getImage(Object element) {
         return null;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public String getText(Object element) {
         if (element != null && element instanceof Entry) {
@@ -371,7 +405,7 @@ public class ServiceMethodWidget extends BeanComposite {
     });
     TableColumn tblclmnNewColumn_1 = tableViewerColumn_1.getColumn();
     tcl_composite.setColumnData(tblclmnNewColumn_1, new ColumnWeightData(
-        50, 100, true));
+        70, 100, true));
     tblclmnNewColumn_1.setText("pv/formula");
     argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
 
@@ -450,6 +484,7 @@ public class ServiceMethodWidget extends BeanComposite {
     }
 
     private void updateUI() {
+
     if (serviceMethodDescription != null) {
         text_method.setText(serviceMethodDescription.getService() + "/"
             + serviceMethodDescription.getMethod());
@@ -487,7 +522,7 @@ public class ServiceMethodWidget extends BeanComposite {
         text_result_prefix.setText(resultPrefix);
         resultPvTableViewer.setInput(serviceMethodDescription
             .getResultPvs().entrySet());
-        layout();
+        rootComposite.layout();
     } else {
         lblServiceMethodDescription.setText("");
         text_arg_prefix.setEnabled(false);
@@ -496,8 +531,11 @@ public class ServiceMethodWidget extends BeanComposite {
         text_result_prefix.setEnabled(false);
         text_result_prefix.setText("");
         resultPvTableViewer.setInput(null);
-        layout();
+        rootComposite.layout();
     }
+
+
+
     }
 
     private Map<String, String> calculateArgumentPvs(Set<String> argumentNames,

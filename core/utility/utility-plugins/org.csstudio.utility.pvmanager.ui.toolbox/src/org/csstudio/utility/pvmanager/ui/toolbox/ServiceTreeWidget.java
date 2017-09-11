@@ -6,6 +6,8 @@ package org.csstudio.utility.pvmanager.ui.toolbox;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.diirt.service.Service;
+import org.diirt.service.ServiceMethod;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -22,8 +24,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.diirt.service.Service;
-import org.diirt.service.ServiceMethod;
 
 
 /**
@@ -39,7 +39,6 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider {
         setLayout(new FormLayout());
 
         Composite composite = new Composite(this, SWT.NONE);
-        composite.setBounds(0, 0, 64, 64);
         FormData fd_composite = new FormData();
         fd_composite.bottom = new FormAttachment(100);
         fd_composite.right = new FormAttachment(100);
@@ -58,10 +57,12 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider {
         TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
                 SWT.NONE);
         treeViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+            @Override
             public Image getImage(Object element) {
                 return null;
             }
 
+            @Override
             public String getText(Object element) {
                 if (element instanceof Service) {
                     return ((Service) element).getName();
@@ -81,10 +82,12 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider {
         TreeViewerColumn treeViewerColumn_1 = new TreeViewerColumn(treeViewer,
                 SWT.NONE);
         treeViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+            @Override
             public Image getImage(Object element) {
                 return null;
             }
 
+            @Override
             public String getText(Object element) {
                 if (element instanceof Service) {
                     return ((Service) element).getDescription();
@@ -97,7 +100,7 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider {
             }
         });
         TreeColumn trclmnNewColumn_1 = treeViewerColumn_1.getColumn();
-        tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(7,
+        tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(10,
                 ColumnWeightData.MINIMUM_WIDTH, true));
         trclmnNewColumn_1.setText("Description");
         treeViewer.setContentProvider(new ServiceTreeContentProvider());
