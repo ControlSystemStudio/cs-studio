@@ -17,13 +17,13 @@ import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page with basic info for all the groups.
+/** Provide web page with basic info for all the groups in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GroupsResponse extends AbstractResponse
+public class HTMLGroupsResponse extends AbstractResponse
 {
-    public GroupsResponse(final EngineModel model)
+    public HTMLGroupsResponse(final EngineModel model)
     {
         super(model);
     }

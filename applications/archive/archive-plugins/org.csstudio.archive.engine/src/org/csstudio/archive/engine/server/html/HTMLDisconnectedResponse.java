@@ -16,13 +16,13 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page with list of disconnected channels
+/** Provide web page with list of disconnected channels in HTML
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DisconnectedResponse extends AbstractResponse
+public class HTMLDisconnectedResponse extends AbstractResponse
 {
-    public DisconnectedResponse(final EngineModel model)
+    public HTMLDisconnectedResponse(final EngineModel model)
     {
         super(model);
     }

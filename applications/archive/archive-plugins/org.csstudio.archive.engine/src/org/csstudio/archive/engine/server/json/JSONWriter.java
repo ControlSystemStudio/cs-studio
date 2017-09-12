@@ -46,7 +46,6 @@ public class JSONWriter {
     public void openList()
     {
         print("[");
-        isFirstItem = true;
     }
 
     /** Closes a JSON list **/
