@@ -136,10 +136,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
     private boolean hasStartedPVs = false;
 
-    public AbstractBaseEditPart() {
+   public AbstractBaseEditPart() {
         propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
+     }
 
-    }
 
     @Override
     public void activate() {
@@ -409,7 +409,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         return null;
     }
 
-    protected ConnectionHandler getConnectionHandler() {
+    public ConnectionHandler getConnectionHandler() {
         return connectionHandler;
     }
 
@@ -559,7 +559,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
         if (allPropIds.contains(AbstractWidgetModel.PROP_TOOLTIP)) {
             if (!getWidgetModel().getTooltip().equals("")) { //$NON-NLS-1$
-                tooltipLabel = new TooltipLabel(getWidgetModel());
+                tooltipLabel = new TooltipLabel(this);
                 figure.setToolTip(tooltipLabel);
             }
         }
@@ -701,7 +701,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                     figure.setToolTip(null);
                 else {
                     if (tooltipLabel == null)
-                        tooltipLabel = new TooltipLabel(getWidgetModel());
+                        tooltipLabel = new TooltipLabel(AbstractBaseEditPart.this);
                     figure.setToolTip(tooltipLabel);
                 }
                 return false;

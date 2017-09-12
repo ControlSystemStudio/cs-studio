@@ -51,6 +51,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.ImageTransfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -84,8 +86,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.swt.dnd.ImageTransfer;
-import org.eclipse.swt.dnd.TransferData;
 
 
 /**
@@ -195,10 +195,11 @@ public class LogEntryWidget extends Composite {
     label.setLayoutData(fd_label);
     label.addMouseMoveListener(new MouseMoveListener() {
         // TODO add upper and lower bounds
+        @Override
         public void mouseMove(MouseEvent e) {
         FormData fd = (FormData) label.getLayoutData();
-        int calNumerator = (int) (fd.top.numerator + (e.y * 100)
-            / e.display.getActiveShell().getClientArea().height);
+        int calNumerator = fd.top.numerator + (e.y * 100)
+            / e.display.getActiveShell().getClientArea().height;
         fd.top = new FormAttachment(calNumerator <= 100 ? calNumerator
             : 100, fd.top.offset);
         label.setLayoutData(fd);
@@ -286,7 +287,7 @@ public class LogEntryWidget extends Composite {
     btnAddLogbook.setImage(ResourceManager.getPluginImage(
         "org.csstudio.logbook.ui", "icons/logbook-add-16.png"));
     FormData fd_btnAddLogbook = new FormData();
-    fd_btnAddLogbook.bottom = new FormAttachment(label, -46);
+    fd_btnAddLogbook.bottom = new FormAttachment(label, -65);
     fd_btnAddLogbook.left = new FormAttachment(100, -40);
     fd_btnAddLogbook.right = new FormAttachment(100, -5);
     btnAddLogbook.setLayoutData(fd_btnAddLogbook);
@@ -294,6 +295,7 @@ public class LogEntryWidget extends Composite {
     lblTags = new Label(composite, SWT.NONE);
     FormData fd_lblTags = new FormData();
     fd_lblTags.left = new FormAttachment(0, 5);
+    fd_lblTags.top = new FormAttachment(lblLogbooks, 10);
     lblTags.setLayoutData(fd_lblTags);
     lblTags.setText("Tags:");
 
@@ -326,7 +328,7 @@ public class LogEntryWidget extends Composite {
         }
     });
     FormData fd_btnAddTags = new FormData();
-    fd_btnAddTags.bottom = new FormAttachment(label, -6);
+    fd_btnAddTags.bottom = new FormAttachment(label, -15);
     fd_btnAddTags.right = new FormAttachment(100, -5);
     fd_btnAddTags.left = new FormAttachment(100, -40);
     btnAddTags.setLayoutData(fd_btnAddTags);
@@ -336,7 +338,7 @@ public class LogEntryWidget extends Composite {
     fd_lblDate.top = new FormAttachment(level, 4, SWT.TOP);
     fd_textDate.top = new FormAttachment(level, 4, SWT.TOP);
     FormData fd_combo = new FormData();
-    fd_combo.top = new FormAttachment(0, 5);
+    fd_combo.top = new FormAttachment(0, 20);
     fd_combo.right = new FormAttachment(100, -5);
     level.setLayoutData(fd_combo);
     level.addSelectionListener(new SelectionAdapter() {
@@ -442,8 +444,8 @@ public class LogEntryWidget extends Composite {
     FormData fd_btnNewButton = new FormData();
     fd_btnNewButton.left = new FormAttachment(label, 0, SWT.LEFT);
     fd_btnNewButton.right = new FormAttachment(100, -2);
-    fd_btnNewButton.top = new FormAttachment(label, 0);
-    fd_btnNewButton.bottom = new FormAttachment(label, 24, SWT.BOTTOM);
+    fd_btnNewButton.top = new FormAttachment(label, 5);
+    fd_btnNewButton.bottom = new FormAttachment(label, 40, SWT.BOTTOM);
     showDetailsButton.setLayoutData(fd_btnNewButton);
     showDetailsButton.setText("Details");
 
@@ -568,7 +570,7 @@ public class LogEntryWidget extends Composite {
     fd_btnClipboard.bottom = new FormAttachment(100, -2);
     fd_btnClipboard.right = new FormAttachment(99);
     btnClipboard.setLayoutData(fd_btnClipboard);
-    btnClipboard.setText("Clipboard Image");
+    btnClipboard.setText("Clipboard");
     btnClipboard.setToolTipText("Add the image from the current clipboard");
 
     imageStackWidget = new ImageStackWidget(tbtmImgAttachmentsComposite,
@@ -649,7 +651,7 @@ public class LogEntryWidget extends Composite {
         IEditorInput input = PlatformUI.getWorkbench()
             .getActiveWorkbenchWindow().getActivePage()
             .getActiveEditor().getEditorInput();
-        IFile editorFile = (IFile) input.getAdapter(IFile.class);
+        IFile editorFile = input.getAdapter(IFile.class);
         if (editorFile != null) {
             try {
             File file = new File(editorFile.getLocationURI());
@@ -810,7 +812,7 @@ public class LogEntryWidget extends Composite {
             fd.top = new FormAttachment(60, -28);
             showDetailsButton.setText("Hide details");
             } else {
-            fd.top = new FormAttachment(100, -28);
+            fd.top = new FormAttachment(100, -43);
             showDetailsButton.setText("Show Details");
             }
             label.setLayoutData(fd);

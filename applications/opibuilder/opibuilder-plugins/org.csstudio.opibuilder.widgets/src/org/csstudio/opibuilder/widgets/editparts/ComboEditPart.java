@@ -22,14 +22,15 @@ import org.csstudio.opibuilder.widgets.model.ComboModel;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /**The editpart of a combo.
  *
@@ -80,7 +81,23 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                 comboSelectionListener = new SelectionAdapter(){
                         @Override
                         public void widgetSelected(SelectionEvent e) {
-                            setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
+                            // Only react if the selection was accomplished
+                            // by clicking on an item.
+                            if (e.stateMask == SWT.BUTTON1)
+                                setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
+                            else
+                            {   // Ignore selections from mouse wheel (stateMask == 0).
+                                // Unfortunately this also ignores selections via keyboard,
+                                // which has been discussed in
+                                // https://github.com/ControlSystemStudio/cs-studio/issues/2276
+                                // Restore current value to UI.
+                                final String current = VTypeHelper.getString((VType)getPropertyValue(ComboModel.PROP_PVVALUE));
+                                final int sel = Arrays.asList(combo.getItems()).indexOf(current);
+                                if (sel >= 0)
+                                    combo.select(sel);
+                                else
+                                    combo.deselectAll();
+                            }
                         }
                 };
                 combo.addSelectionListener(comboSelectionListener);

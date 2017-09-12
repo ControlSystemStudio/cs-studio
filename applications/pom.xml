@@ -29,6 +29,7 @@
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
     <cs-studio-central.url>${download.root}/applications/${cs-studio.version}</cs-studio-central.url>
+    <diirt.download.root>http://diirt.download.controlsystemstudio.org</diirt.download.root>
     <diirt.version>3.1.6</diirt.version>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
@@ -75,6 +76,21 @@
       </properties>
     </profile>
     <profile>
+        <id>diirt-site</id>
+        <activation>
+            <property>
+                <name>!diirt-disabled</name>
+            </property>
+        </activation>
+        <repositories>
+            <repository>
+                <id>diirt</id>
+                <url>${diirt.download.root}/diirt/${diirt.version}</url>
+                <layout>p2</layout>
+            </repository>
+         </repositories>
+    </profile>
+    <profile>
       <id>csstudio-composite-repo-enable</id>
       <activation>
         <property>
@@ -108,11 +124,6 @@
         </property>
       </activation>
       <repositories>
-        <repository>
-          <id>diirt</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</url>
-          <layout>p2</layout>
-        </repository>
         <repository>
           <id>csstudio-thirdparty</id>
           <url>${download.root}/thirdparty/${cs-studio.version}</url>
