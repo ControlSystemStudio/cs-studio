@@ -364,7 +364,7 @@ public final class OPIShell implements IOPIRuntime {
      */
     private static void sendUpdateCommand() {
         IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-        ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+        ICommandService commandService = serviceLocator.getService(ICommandService.class);
         try {
             Command command = commandService.getCommand(OPI_SHELLS_CHANGED_ID);
             command.executeWithChecks(new ExecutionEvent());
