@@ -16,6 +16,7 @@ import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractGroupResponse;
+import org.csstudio.archive.vtype.StringVTypeFormat;
 
 /** Provide web page with detail for one group in JSON.
  *  @author Dominic Oram
@@ -58,8 +59,8 @@ public class JSONGroupResponse extends AbstractGroupResponse
             json.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
             json.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
             json.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
-            json.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue());
-            json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue());
+            json.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
+            json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
             json.writeObjectEntry(Messages.HTTP_ReceivedValues, channel.getReceivedValues());
 
             final SampleBuffer buffer = channel.getSampleBuffer();

@@ -16,6 +16,7 @@ import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractChannelResponse;
+import org.csstudio.archive.vtype.StringVTypeFormat;
 
 /** Provide JSON with detail for one channel.
  *  @author Dominic Oram
@@ -45,8 +46,8 @@ public class JSONChannelResponse extends AbstractChannelResponse
 
         json.writeObjectEntry(Messages.HTTP_InternalState, channel.getInternalState());
         json.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
-        json.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue());
-        json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue());
+        json.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
+        json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
         json.writeObjectEntry(Messages.HTTP_Enablement, channel.getEnablement().toString());
 
         json.writeObjectEntry(Messages.HTTP_State, channel.isEnabled());
