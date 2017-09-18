@@ -42,6 +42,7 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.diirt.vtype.Scalar;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
@@ -279,7 +280,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                if (newValue != null)
+                if ((newValue != null) && (newValue instanceof Scalar))
                     ((MenuButtonFigure) refreshableFigure).setText(VTypeHelper
                             .getString((VType) newValue));
                 return true;

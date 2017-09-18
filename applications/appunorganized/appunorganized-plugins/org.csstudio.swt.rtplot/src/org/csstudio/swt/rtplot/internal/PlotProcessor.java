@@ -410,6 +410,15 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                     low = Log10.pow10(low);
                     high = Log10.pow10(high);
                 }
+                else
+                {
+                    // Stretch range a little bit
+                    // (but not for log scale, where low just above 0
+                    //  could be stretched to <= 0)
+                    final double headroom = (high - low) * 0.05;
+                    low -= headroom;
+                    high += headroom;
+                }
                 // Autoscale happens 'all the time'.
                 // Do not use undo, but notify listeners.
                 if (low < high)

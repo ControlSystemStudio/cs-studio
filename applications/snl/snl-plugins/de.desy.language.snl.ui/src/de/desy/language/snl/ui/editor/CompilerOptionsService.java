@@ -110,9 +110,6 @@ public class CompilerOptionsService implements ICompilerOptionsService {
         return getFolder(PreferenceConstants.EPICS_SCRATCH_LOCATION_POST_FIX);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private String getFolder(PreferenceConstants constantId) {
         String result = _preferenceStore.getString(SNLUiActivator.PLUGIN_ID
                 + constantId);

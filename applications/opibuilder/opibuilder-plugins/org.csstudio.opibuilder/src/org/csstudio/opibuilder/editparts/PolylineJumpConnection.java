@@ -9,13 +9,11 @@ package org.csstudio.opibuilder.editparts;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.csstudio.opibuilder.model.ConnectionModel.LineJumpAdd;
 import org.csstudio.opibuilder.model.ConnectionModel.LineJumpStyle;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Point;
@@ -27,9 +25,12 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * This class represents a polyline connection which is able to draw a
  * "jump" over some other polyline connection.
  *
- * @author Rohit Sarpotdar <a href="mailto:rohit.n.sarpotdar@gmail.com">
+ * @author <a href="mailto:rohit.n.sarpotdar@gmail.com">Rohit Sarpotdar</a>
+ * @author <a href="mailto:miha.vitorovic@cosylab.com">Miha Vitorovic</a>
  */
 public class PolylineJumpConnection extends PolylineConnection {
+    private final static double RATIO_30_DEGREES = 0.577350269d;
+
     private WidgetConnectionEditPart widgetConnectionEditPart;
     private LineJumpAdd lineJumpAdd;
     private int lineJumpSize;
@@ -44,32 +45,30 @@ public class PolylineJumpConnection extends PolylineConnection {
 
         setClippingStrategy((childFigure) -> {
             Rectangle bounds = childFigure.getBounds();
-            bounds.expand(lineJumpSize*2, lineJumpSize*2);
+            if ((intersectionMap != null) && (lineJumpAdd != LineJumpAdd.NONE))
+                bounds.expand(lineJumpSize*2, lineJumpSize*2);
             return new Rectangle[] { bounds };
         });
     }
 
     @Override
     public void paint(Graphics graphics) {
+        // more in line with the http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.draw2d.doc.isv%2Fguide%2Fpainting.html
+        // First, properties are set on the Graphics that would be inherited by children, including Font, background, and foreground Color.
         graphics.setForegroundColor(getForegroundColor());
         graphics.setLineAttributes(getLineAttributes());
         graphics.setLineWidth(getLineWidth());
         graphics.setLineStyle(getLineStyle());
 
-        // Paint arrows
-        List<IFigure> children = getChildren();
-        Iterator<IFigure> iterator = children.iterator();
-        while(iterator.hasNext()) {
-            IFigure childFigure = iterator.next();
-            childFigure.paint(graphics);
-        }
-
-        // Paint Lines
-        paintLines(graphics);
+        // then original implementation is called to take care of painting figure, client area, children, and border
+        super.paint(graphics);
+        setBounds(getBounds().expand(lineJumpSize*2, lineJumpSize*2));
+        getUpdateManager().performUpdate(getBounds());
     }
 
-    private void paintLines(Graphics graphics) {
-        pointsWithIntersection = this.widgetConnectionEditPart.getIntersectionpoints(this);
+    @Override
+    public void paintFigure(Graphics graphics) {
+        pointsWithIntersection = this.widgetConnectionEditPart.getIntersectionPoints(this);
         intersectionMap = this.widgetConnectionEditPart.getIntersectionMap();
 
         Point previousPoint = getStart();
@@ -90,128 +89,131 @@ public class PolylineJumpConnection extends PolylineConnection {
             previousPoint = point;
         }
 
-        if(intersectionMap != null && !lineJumpAdd.equals(LineJumpAdd.NONE)) {
+        if ((intersectionMap != null) && (lineJumpAdd != LineJumpAdd.NONE)) {
             graphics.setLineWidth(getLineWidth());
             graphics.setLineStyle(getLineStyle());
 
-            if(lineJumpStyle.equals(LineJumpStyle.ARC)) {
-                Iterator<Entry<Point, PointList>> intersectionMapIterator = intersectionMap.entrySet().iterator();
-                while(intersectionMapIterator.hasNext()) {
-                    Entry<Point, PointList> currentEntry = intersectionMapIterator.next();
-                    Point intersectionPoint = currentEntry.getKey();
-                    PointList intersectionEdges = currentEntry.getValue();
-                    int angle = (int) angleOf(intersectionEdges.getFirstPoint(), intersectionEdges.getLastPoint());
-                    angle = angle % 180;
-
-                    // Correct small angle deviations caused by calculating intersecting points rounding to int
-                    if(angle > 175) {
-                        angle = 0;
-                    }
-
-                    Arc arc = new Arc(intersectionPoint.x()-lineJumpSize, intersectionPoint.y()-lineJumpSize,
-                            lineJumpSize*2, lineJumpSize*2, angle, 180);
-                    arc.paint(graphics);
-                    this.setBounds(getBounds().union(arc.getBounds()));
-                }
-            }
-
-            // 2 Slides
-            if(lineJumpStyle.equals(LineJumpStyle.SLIDES2)) {
-                Iterator<Entry<Point, PointList>> intersectionMapIterator = intersectionMap.entrySet().iterator();
-                while(intersectionMapIterator.hasNext()) {
-
-                    Entry<Point, PointList> currentEntry = intersectionMapIterator.next();
-                    PointList intersectionEdges = currentEntry.getValue();
-                    Point tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
-                            intersectionEdges.getLastPoint(), true);
-
-                    // If jump is right hand side, take it to left hand side
-                    if(tipPoint.x > intersectionEdges.getFirstPoint().x) {
-                        tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
-                        intersectionEdges.getLastPoint(), false);
-                    }
-
-                    Polyline triangleLine1 = getPolyLine(intersectionEdges.getFirstPoint(), tipPoint);
-                    triangleLine1.paint(graphics);
-                    this.setBounds(getBounds().union(triangleLine1.getBounds()));
-
-                    Polyline triangleLine2 =  getPolyLine(intersectionEdges.getLastPoint(), tipPoint);
-                    triangleLine2.paint(graphics);
-                    this.setBounds(getBounds().union(triangleLine2.getBounds()));
-                }
-            }
-
-            // Square
-            if(lineJumpStyle.equals(LineJumpStyle.SQUARE)) {
-                Iterator<Entry<Point, PointList>> intersectionMapIterator = intersectionMap.entrySet().iterator();
-                while(intersectionMapIterator.hasNext()) {
-
-                    Entry<Point, PointList> currentEntry = intersectionMapIterator.next();
-                    PointList intersectionEdges = currentEntry.getValue();
-                    Point x1y1 = intersectionEdges.getFirstPoint();
-                    Point x2y2 = intersectionEdges.getLastPoint();
-
-                    int x3 = (int) (x2y2.x + (0.577350269)*(x1y1.y - x2y2.y));
-                    int y3 = (int) (x2y2.y + (0.577350269)*(x1y1.x - x2y2.x));
-                    Point squareCorner1 = new Point(x3, y3);
-
-                    // For Vertical Lines,  If square is on right hand side, bring it to left hand side
-                    // Leave margin for rounding errors
-                    if(Math.abs(x1y1.x - x2y2.x) < 5) {
-                        if(x3 > x2y2.x) {
-                            int length = Math.abs(x2y2.x-x3);
-                            x3 = x2y2.x - length;
-                            squareCorner1 = new Point(x3, y3);
-                        }
-                    }
-
-                    // For Horizontal Lines,  If square is on Bottom side, bring it to upper side
-                    // Leave margin for rounding errors
-                    if(Math.abs(x1y1.y - x2y2.y) < 5) {
-                        if(y3 > x2y2.y) {
-                            int length = Math.abs(x2y2.y-y3);
-                            y3 = x2y2.y - length;
-                            squareCorner1 = new Point(x3, y3);
-                        }
-                    }
-
-                    int x4 = (int) (x1y1.x - (0.577350269)*(x2y2.y - x1y1.y));
-                    int y4 = (int) (x1y1.y - (0.577350269)*(x2y2.x - x1y1.x));
-                    Point squareCorner2 = new Point(x4, y4);
-
-                    // For Vertical Lines,  If square is on right hand side, bring it to left hand side
-                    // Leave margin for rounding errors
-                    if(Math.abs(x1y1.x - x2y2.x) < 5) {
-                        if(x4 > x1y1.x) {
-                            int length = Math.abs(x1y1.x-x4);
-                            x4 = x1y1.x - length;
-                            squareCorner2 = new Point(x4, y4);
-                        }
-                    }
-
-                    // For Horizonal Lines,  If square is on Bottom side, bring it to upper side
-                    // Leave margin for rounding errors
-                    if(Math.abs(x1y1.y - x2y2.y) < 5) {
-                        if(y4 > x1y1.y) {
-                            int length = Math.abs(x1y1.y-y4);
-                            y4 = x1y1.y - length;
-                            squareCorner2 = new Point(x4, y4);
-                        }
-                    }
-
-                    Polyline squareLine2 =  getPolyLine(intersectionEdges.getFirstPoint(), squareCorner2);
-                    squareLine2.paint(graphics);
-                    this.setBounds(getBounds().union(squareLine2.getBounds()));
-
-                    Polyline squareLine3 =  getPolyLine(squareCorner1, squareCorner2);
-                    squareLine3.paint(graphics);
-                    this.setBounds(getBounds().union(squareLine3.getBounds()));
+            for (final Entry<Point, PointList> currentEntry : intersectionMap.entrySet()) {
+                switch (lineJumpStyle) {
+                case ARC:
+                    drawArc(currentEntry, graphics);
+                    break;
+                case SLIDES2:
+                    draw2Slides(currentEntry, graphics);
+                    break;
+                case SQUARE:
+                    drawSquare(currentEntry, graphics);
+                    break;
+                default:
+                    // nothing to do
+                    break;
                 }
             }
         }
+    }
 
-        // Adjust bounds to accommodate arcs and squares. Otherwise they might clip
-        setBounds(getBounds().expand(lineJumpSize*2, lineJumpSize*2));
+    private void drawArc(final Entry<Point, PointList> currentEntry, Graphics graphics) {
+        Point intersectionPoint = currentEntry.getKey();
+        PointList intersectionEdges = currentEntry.getValue();
+        int angle = (int) angleOf(intersectionEdges.getFirstPoint(), intersectionEdges.getLastPoint());
+        angle = angle % 180;
+
+        // Correct small angle deviations caused by calculating intersecting points rounding to int
+        if (angle > 175) {
+            angle = 0;
+        }
+
+        Arc arc = new Arc(intersectionPoint.x()-lineJumpSize, intersectionPoint.y()-lineJumpSize,
+                lineJumpSize*2, lineJumpSize*2, angle, 180);
+        this.setBounds(getBounds().union(arc.getBounds()));
+        arc.paint(graphics);
+    }
+
+    private void draw2Slides(final Entry<Point, PointList> currentEntry, Graphics graphics) {
+        PointList intersectionEdges = currentEntry.getValue();
+        Point tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
+                intersectionEdges.getLastPoint(), true);
+
+        // If jump is right hand side, take it to left hand side
+        if (tipPoint.x > intersectionEdges.getFirstPoint().x()) {
+            tipPoint = computeTipPoint(intersectionEdges.getFirstPoint(),
+            intersectionEdges.getLastPoint(), false);
+        }
+
+        Polyline triangleLine1 = getPolyLine(intersectionEdges.getFirstPoint(), tipPoint);
+        this.setBounds(getBounds().union(triangleLine1.getBounds()));
+
+        Polyline triangleLine2 =  getPolyLine(intersectionEdges.getLastPoint(), tipPoint);
+        this.setBounds(getBounds().union(triangleLine2.getBounds()));
+        triangleLine1.paint(graphics);
+        triangleLine2.paint(graphics);
+    }
+
+    private void drawSquare(final Entry<Point, PointList> currentEntry, Graphics graphics) {
+        PointList intersectionEdges = currentEntry.getValue();
+        Point x1y1 = intersectionEdges.getFirstPoint();
+        Point x2y2 = intersectionEdges.getLastPoint();
+
+        int x3 = (int) (x1y1.x - (RATIO_30_DEGREES) * (x2y2.y - x1y1.y));
+        int y3 = (int) (x1y1.y - (RATIO_30_DEGREES) * (x2y2.x - x1y1.x));
+        Point squareCorner1 = new Point(x3, y3);
+
+        // For Vertical Lines,  If square is on right hand side, bring it to left hand side
+        // Leave margin for rounding errors
+        if (Math.abs(x1y1.x - x2y2.x) < 5) {
+            if (x3 > x1y1.x) {
+                int length = Math.abs(x1y1.x-x3);
+                x3 = x1y1.x - length;
+                squareCorner1 = new Point(x3, y3);
+            }
+        }
+
+        // For Horizonal Lines,  If square is on Bottom side, bring it to upper side
+        // Leave margin for rounding errors
+        if (Math.abs(x1y1.y - x2y2.y) < 5) {
+            if (y3 > x1y1.y) {
+                int length = Math.abs(x1y1.y-y3);
+                y3 = x1y1.y - length;
+                squareCorner1 = new Point(x3, y3);
+            }
+        }
+
+        int x4 = (int) (x2y2.x + (RATIO_30_DEGREES) * (x1y1.y - x2y2.y));
+        int y4 = (int) (x2y2.y + (RATIO_30_DEGREES) * (x1y1.x - x2y2.x));
+        Point squareCorner2 = new Point(x4, y4);
+
+        // For Vertical Lines,  If square is on right hand side, bring it to left hand side
+        // Leave margin for rounding errors
+        if (Math.abs(x1y1.x - x2y2.x) < 5) {
+            if (x4 > x2y2.x) {
+                int length = Math.abs(x2y2.x-x4);
+                x4 = x2y2.x - length;
+                squareCorner2 = new Point(x4, y4);
+            }
+        }
+
+        // For Horizontal Lines,  If square is on Bottom side, bring it to upper side
+        // Leave margin for rounding errors
+        if (Math.abs(x1y1.y - x2y2.y) < 5) {
+            if (y4 > x2y2.y) {
+                int length = Math.abs(x2y2.y-y4);
+                y4 = x2y2.y - length;
+                squareCorner2 = new Point(x4, y4);
+            }
+        }
+
+        final Polyline squareLine1 =  getPolyLine(intersectionEdges.getFirstPoint(), squareCorner1);
+        this.setBounds(getBounds().union(squareLine1.getBounds()));
+
+        final Polyline squareLine2 =  getPolyLine(squareCorner1, squareCorner2);
+        this.setBounds(getBounds().union(squareLine2.getBounds()));
+
+        final Polyline squareLine3 =  getPolyLine(squareCorner2, intersectionEdges.getLastPoint());
+        this.setBounds(getBounds().union(squareLine3.getBounds()));
+
+        squareLine1.paint(graphics);
+        squareLine2.paint(graphics);
+        squareLine3.paint(graphics);
     }
 
     private Polyline getPolyLine(Point firstPoint, Point lastPoint) {
@@ -311,5 +313,9 @@ public class PolylineJumpConnection extends PolylineConnection {
 
     public void setInitialEndPoint(Point endPoint) {
         initialEndPoint = endPoint.getCopy();
+    }
+
+    public WidgetConnectionEditPart getWidgetConnectionEditPart() {
+        return widgetConnectionEditPart;
     }
 }

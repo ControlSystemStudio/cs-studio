@@ -288,7 +288,7 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
         return (result < 0) ? (360d + result) : result;
     }
 
-    PointList getIntersectionpoints(PolylineJumpConnection connection) {
+    PointList getIntersectionPoints(PolylineJumpConnection connection) {
         intersectionMap = new HashMap<Point, PointList>();
         PointList pointsInConnection = getPointListOfConnectionForConnection(connection);
         ConnectionModel widgetModel = getWidgetModel();
