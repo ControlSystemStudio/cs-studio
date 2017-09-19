@@ -34,7 +34,6 @@ import org.diirt.vtype.Scalar;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.Request;
@@ -148,12 +147,13 @@ public class TextInputEditpart extends TextUpdateEditPart {
                                     org.diirt.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
                                     if (meta == null || !meta.equals(new_meta)) {
                                         meta = new_meta;
+                                        // Update min/max from the control range of the PV
                                         model.setPropertyValue(
                                                 TextInputModel.PROP_MAX,
-                                                meta.getUpperDisplayLimit());
+                                                meta.getUpperCtrlLimit());
                                         model.setPropertyValue(
                                                 TextInputModel.PROP_MIN,
-                                                meta.getLowerDisplayLimit());
+                                                meta.getLowerCtrlLimit());
                                     }
                                 }
                             }
@@ -300,7 +300,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     @Override
     protected void performDirectEdit() {
         new TextEditManager(this, new LabelCellEditorLocator(
-                (Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
+                getFigure()), getWidgetModel().isMultilineInput()).show();
     }
 
     /**If the text has spaces in the string and the PV is numeric array type,
