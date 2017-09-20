@@ -64,6 +64,22 @@ public class JSONWriterUnitTest
     }
 
     @Test
+    public void testWhenStringEntryThatContainsQuotationsWrittenThenQuotationsAreEscaped()
+    {
+        writer.writeObjectEntry("KEY", "VAL \" ");
+
+        assertEquals("{\"KEY\":\"VAL \\\" \"", output.toString());
+    }
+
+    @Test
+    public void testWhenStringEntryThatContainsSlashesWrittenThenSlashesAreEscaped()
+    {
+        writer.writeObjectEntry("KEY", "VAL \\ ");
+
+        assertEquals("{\"KEY\":\"VAL \\\\ \"", output.toString());
+    }
+
+    @Test
     public void testWhenIntegerEntryWrittenThenOutputContainsNoQuotations()
     {
         writer.writeObjectEntry("KEY", 123);

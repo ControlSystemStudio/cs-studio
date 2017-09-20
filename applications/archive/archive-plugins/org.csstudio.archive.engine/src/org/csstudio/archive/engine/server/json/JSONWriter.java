@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /** Helper for creating JSON for a servlet response.
  *  @author Dominic Oram
  */
@@ -32,73 +34,67 @@ public class JSONWriter {
     /** Opens a JSON object **/
     public void openObject()
     {
-        print("{");
+        json.print("{");
         isFirstItem = true;
     }
 
     /** Closes a JSON object **/
     public void closeObject()
     {
-        print("}");
+        json.print("}");
     }
 
     /** Opens a JSON list **/
     public void openList()
     {
-        print("[");
+        json.print("[");
     }
 
     /** Closes a JSON list **/
     public void closeList()
     {
-        print("]");
+        json.print("]");
     }
 
     /** Add a string to the JSON object*/
-    private void write(final String str) {
-        print("\"" + str + "\"");
+    private String formatString(final String str) {
+        return "\"" + StringEscapeUtils.escapeJava(str) + "\"";
     }
 
     /** Add a key to the JSON object*/
     public void writeObjectKey(final String key) {
-        write(key);
-        print(":");
+        json.print(formatString(key));
+        json.print(":");
     }
 
     /** Add an entry to the JSON object*/
-    private void writeObjectEntry(String key, Runnable writeValue) {
+    private void writeObjectEntryToJson(String key, String value) {
         if (!isFirstItem) {
             listSeperator();
         } else {
             isFirstItem = false;
         }
         writeObjectKey(key);
-        writeValue.run();
+        json.print(value);
     }
 
-    /** Add a string entry to the JSON object*/
+    /** Add a string entry to the JSON object */
     public void writeObjectEntry(String key, String value) {
-        writeObjectEntry(key, () -> write(value));
+        writeObjectEntryToJson(key, formatString(value));
     }
 
     /** Add a number entry to the JSON object*/
     public void writeObjectEntry(String key, Number value) {
-        writeObjectEntry(key, () -> print(value.toString()));
+        writeObjectEntryToJson(key, value.toString());
     }
 
     /** Add a boolean entry to the JSON object*/
     public void writeObjectEntry(String key, Boolean value) {
-        writeObjectEntry(key, () -> print(value.toString()));
+        writeObjectEntryToJson(key, value.toString());
     }
 
     /** Add a list seperator to the JSON object*/
     public void listSeperator() {
-        print(",");
-    }
-
-    /** Add text to the JSON object*/
-    private void print(final String text)
-    {
-        json.print(text);
+        json.print(",");
     }
 }
