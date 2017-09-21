@@ -39,7 +39,6 @@ public class JSONGroupResponse extends AbstractGroupResponse
 
         // Basic group info
         json.writeObjectEntry(Messages.HTTP_Enabled, group.isEnabled());
-        json.listSeperator();
 
         final ArchiveChannel ena_channel = group.getEnablingChannel();
         if (ena_channel != null)
@@ -48,35 +47,32 @@ public class JSONGroupResponse extends AbstractGroupResponse
         }
 
         // JSON object of all channels in the group
-        json.writeObjectKey(Messages.HTTP_Channels);
-        json.openList();
+        JSONList channels = new JSONList();
 
         final int channel_count = group.getChannelCount();
         for (int j=0; j<channel_count; ++j)
         {
             final ArchiveChannel channel = group.getChannel(j);
-            json.openObject();
-            json.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
-            json.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
-            json.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
-            json.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
-            json.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
-            json.writeObjectEntry(Messages.HTTP_ReceivedValues, channel.getReceivedValues());
+            JSONObject JSONchannel = new JSONObject();
+            JSONchannel.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
+            JSONchannel.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
+            JSONchannel.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
+            JSONchannel.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
+            JSONchannel.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
+            JSONchannel.writeObjectEntry(Messages.HTTP_ReceivedValues, channel.getReceivedValues());
 
             final SampleBuffer buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
-            json.writeObjectEntry(Messages.HTTP_QueueLen, buffer.getQueueSize());
-            json.writeObjectEntry(Messages.HTTP_QueueAvg, stats.getAverageSize());
-            json.writeObjectEntry(Messages.HTTP_QueueMax, stats.getMaxSize());
-            json.writeObjectEntry(Messages.HTTP_QueueCapacity, buffer.getCapacity());
-            json.writeObjectEntry(Messages.HTTP_QueueOverruns, stats.getOverruns());
-            json.closeObject();
-            if (j != channel_count - 1) {
-                json.listSeperator();
-            }
+            JSONchannel.writeObjectEntry(Messages.HTTP_QueueLen, buffer.getQueueSize());
+            JSONchannel.writeObjectEntry(Messages.HTTP_QueueAvg, stats.getAverageSize());
+            JSONchannel.writeObjectEntry(Messages.HTTP_QueueMax, stats.getMaxSize());
+            JSONchannel.writeObjectEntry(Messages.HTTP_QueueCapacity, buffer.getCapacity());
+            JSONchannel.writeObjectEntry(Messages.HTTP_QueueOverruns, stats.getOverruns());
+
+            channels.addObjectToList(JSONchannel);
         }
 
-        json.closeList();
-        json.closeObject();
+        json.writeObjectEntry(Messages.HTTP_Channels, channels);
+        json.close();
     }
 }

@@ -32,10 +32,8 @@ public class JSONDisconnectedResponse extends AbstractResponse
                     final HttpServletResponse resp) throws Exception
     {
         final JSONWriter json = new JSONWriter(resp);
-        json.writeObjectKey(Messages.HTTP_DisconnectedTitle);
-        json.openList();
+        JSONList disconnected = new JSONList();
 
-        boolean isFirst = true;
         final int group_count = model.getGroupCount();
         for (int i=0; i<group_count; ++i)
         {
@@ -47,20 +45,15 @@ public class JSONDisconnectedResponse extends AbstractResponse
                 if (channel.isConnected())
                     continue;
 
-                // Only print the list seperator on later entries
-                if (!isFirst) {
-                    json.listSeperator();
-                } else {
-                    isFirst = false;
-                }
-                json.openObject();
-                json.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
-                json.writeObjectEntry(Messages.HTTP_Group, group.getName());
-                json.closeObject();
+                JSONObject JSONchannel = new JSONObject();
+
+                JSONchannel.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
+                JSONchannel.writeObjectEntry(Messages.HTTP_Group, group.getName());
+                disconnected.addObjectToList(JSONchannel);
 
             }
         }
-        json.closeList();
-        json.closeObject();
+        json.writeObjectEntry(Messages.HTTP_DisconnectedTitle, disconnected);
+        json.close();
     }
 }

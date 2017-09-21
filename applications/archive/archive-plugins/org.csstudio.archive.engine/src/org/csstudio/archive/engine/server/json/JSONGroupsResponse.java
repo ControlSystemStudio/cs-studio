@@ -34,8 +34,7 @@ public class JSONGroupsResponse extends AbstractResponse
     {
         final JSONWriter json = new JSONWriter(resp);
 
-        json.writeObjectKey("Archive Engine Groups");
-        json.openList();
+        JSONList groups = new JSONList();
 
         final int group_count = model.getGroupCount();
         int total_channels = 0;
@@ -68,28 +67,28 @@ public class JSONGroupsResponse extends AbstractResponse
             total_connect += connect_count;
             total_received_values += received_values;
 
-            json.openObject();
-            json.writeObjectEntry(Messages.HTTP_Group, group.getName());
-            json.writeObjectEntry(Messages.HTTP_Enabled, group.isEnabled());
-            json.writeObjectEntry(Messages.HTTP_ChannelCount, channel_count);
-            json.writeObjectEntry(Messages.HTTP_Connected, connect_count);
-            json.writeObjectEntry(Messages.HTTP_ReceivedValues, received_values);
-            json.writeObjectEntry(Messages.HTTP_QueueAvg, queue_avg);
-            json.writeObjectEntry(Messages.HTTP_QueueMax, queue_max);
-            json.closeObject();
+            JSONObject JSONgroup = new JSONObject();
 
-            json.listSeperator();
+            JSONgroup.writeObjectEntry(Messages.HTTP_Group, group.getName());
+            JSONgroup.writeObjectEntry(Messages.HTTP_Enabled, group.isEnabled());
+            JSONgroup.writeObjectEntry(Messages.HTTP_ChannelCount, channel_count);
+            JSONgroup.writeObjectEntry(Messages.HTTP_Connected, connect_count);
+            JSONgroup.writeObjectEntry(Messages.HTTP_ReceivedValues, received_values);
+            JSONgroup.writeObjectEntry(Messages.HTTP_QueueAvg, queue_avg);
+            JSONgroup.writeObjectEntry(Messages.HTTP_QueueMax, queue_max);
+
+            groups.addObjectToList(JSONgroup);
         }
 
         // 'Total' object
-        json.openObject();
-        json.writeObjectEntry(Messages.HTTP_Group, Messages.HTTP_Total);
-        json.writeObjectEntry(Messages.HTTP_ChannelCount, total_channels);
-        json.writeObjectEntry(Messages.HTTP_Connected, total_connect);
-        json.writeObjectEntry(Messages.HTTP_ReceivedValues, total_received_values);
+        JSONObject total = new JSONObject();
+        total.writeObjectEntry(Messages.HTTP_Group, Messages.HTTP_Total);
+        total.writeObjectEntry(Messages.HTTP_ChannelCount, total_channels);
+        total.writeObjectEntry(Messages.HTTP_Connected, total_connect);
+        total.writeObjectEntry(Messages.HTTP_ReceivedValues, total_received_values);
+        groups.addObjectToList(total);
 
-        json.closeObject();
-        json.closeList();
-        json.closeObject();
+        json.writeObjectEntry("Archive Engine Groups", groups);;
+        json.close();
     }
 }

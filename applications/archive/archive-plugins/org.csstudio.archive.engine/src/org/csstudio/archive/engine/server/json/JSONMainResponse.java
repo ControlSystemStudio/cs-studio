@@ -88,6 +88,6 @@ public class JSONMainResponse extends AbstractMainResponse
         json.writeObjectEntry("Max Memory", max_mem);
         json.writeObjectEntry("Percentage Memory", perc_mem);
 
-        json.closeObject();
+        json.close();
     }
 }
