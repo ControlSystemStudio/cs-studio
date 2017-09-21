@@ -59,11 +59,10 @@ public class PolylineJumpConnection extends PolylineConnection {
         graphics.setLineAttributes(getLineAttributes());
         graphics.setLineWidth(getLineWidth());
         graphics.setLineStyle(getLineStyle());
-
+        graphics.setClip(getBounds().expand(lineJumpSize*2, lineJumpSize*2));
         // then original implementation is called to take care of painting figure, client area, children, and border
         super.paint(graphics);
-        setBounds(getBounds().expand(lineJumpSize*2, lineJumpSize*2));
-        getUpdateManager().performUpdate(getBounds());
+
     }
 
     @Override
