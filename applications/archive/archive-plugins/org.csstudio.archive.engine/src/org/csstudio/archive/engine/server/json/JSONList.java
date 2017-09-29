@@ -17,14 +17,7 @@ public class JSONList extends JSONStructure {
     @Override
     protected void open()
     {
-        buf.print("[");
-    }
-
-    /** Closes a JSON list **/
-    @Override
-    public void close()
-    {
-        buf.print("]");
+        print("[");
     }
 
     /** Adds a JSON object to the list.
@@ -34,6 +27,11 @@ public class JSONList extends JSONStructure {
     public void addObjectToList(JSONObject object) {
         object.close();
         listSeperator();
-        buf.print(object.toString());
+        print(object.toString());
+    }
+
+    @Override
+    protected void printCloseChar() {
+        print("]");
     }
 }

@@ -14,8 +14,6 @@ import java.io.PrintWriter;
  */
 
 public class JSONObject extends JSONStructure{
-    private boolean isClosed = false;
-
     /** Creates the object based on a StringWriter.
     **/
     public JSONObject() {
@@ -29,24 +27,14 @@ public class JSONObject extends JSONStructure{
      */
     protected JSONObject(final PrintWriter buf)
     {
-        this.buf = buf;
-        open();
+        super(buf);
     }
 
     /** Opens a JSON object **/
     @Override
     protected void open()
     {
-        buf.print("{");
-    }
-
-    /** Closes a JSON object **/
-    @Override
-    public void close()
-    {
-        if (!isClosed) {
-            buf.print("}");
-        }
+        print("{");
     }
 
     /** Add a generic entry to this JSON object.
@@ -55,10 +43,11 @@ public class JSONObject extends JSONStructure{
      *  @param value The value to add to the object.
      */
     private void writeObjectEntryToJson(String key, String value) {
+        throwIfClosed();
         listSeperator();
-        buf.print(formatString(key));
-        buf.print(":");
-        buf.print(value);
+        print(formatString(key));
+        print(":");
+        print(value);
     }
 
     /** Add a generic JSON structure entry to this JSON object
@@ -96,5 +85,11 @@ public class JSONObject extends JSONStructure{
      */
     public void writeObjectEntry(String key, Boolean value) {
         writeObjectEntryToJson(key, value.toString());
+    }
+
+    @Override
+    protected void printCloseChar() {
+        print("}");
+
     }
 }

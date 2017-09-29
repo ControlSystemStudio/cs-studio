@@ -18,10 +18,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 public abstract class JSONStructure {
     /** Writer */
-    protected PrintWriter buf;
+    private PrintWriter buf;
     final private StringWriter out = new StringWriter();
 
     protected boolean isFirstItem = true;
+    protected boolean isClosed = false;
 
     /**
      * Creates a structure that ouputs the JSON to a StringWriter.
@@ -29,6 +30,17 @@ public abstract class JSONStructure {
     public JSONStructure()
     {
         this.buf = new PrintWriter(out);
+        open();
+    }
+
+    /** Creates an object that writes to a provided PrintWriter.
+     *  This is currently only used for the root object.
+     *
+     * @param buf The PrintWriter to write to.
+     */
+    protected JSONStructure(final PrintWriter buf)
+    {
+        this.buf = buf;
         open();
     }
 
@@ -41,7 +53,9 @@ public abstract class JSONStructure {
         return "\"" + StringEscapeUtils.escapeJava(str) + "\"";
     }
 
-    /** Add a list seperator to the JSON object. */
+    /**
+     * Add a list seperator to the JSON object if this is not the first item.
+     */
     public void listSeperator() {
         if (!isFirstItem) {
             buf.print(",");
@@ -50,8 +64,33 @@ public abstract class JSONStructure {
         }
     }
 
+    protected void throwIfClosed() {
+        if (isClosed) {
+            throw new IllegalStateException("The JSON structure is already closed and cannot be written to");
+        }
+    }
+
     protected abstract void open();
-    public abstract void close();
+
+    /**
+     * Closes the JSON structure
+     */
+    public void close() {
+        throwIfClosed();
+        printCloseChar();
+        isClosed = true;
+    }
+
+    protected abstract void printCloseChar();
+
+    /**
+     * Checks that printing is possible and prints to the buffer.
+     * @param toPrint The text to print.
+     */
+    protected void print(String toPrint) {
+        throwIfClosed();
+        buf.print(toPrint);
+    }
 
     @Override
     public String toString() {

@@ -11,7 +11,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.csstudio.archive.engine.server.json.JSONObject;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /** JUnit test of {@link JSONObject}
  *  @author Dominic Oram
@@ -19,6 +21,9 @@ import org.junit.Test;
 public class JSONObjectUnitTest
 {
     private JSONObject object;
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -86,5 +91,23 @@ public class JSONObjectUnitTest
         object.writeObjectEntry("KEY1", false);
 
         assertEquals("{\"KEY\":true,\"KEY1\":false", object.toString());
+    }
+
+    @Test
+    public void testWhenObjectIsClosedThenWritingAgainThrowsException()
+    {
+        object.close();
+
+        exception.expect(IllegalStateException.class);
+        object.writeObjectEntry("TEST", true);
+    }
+
+    @Test
+    public void testWhenObjectIsClosedThenClosingAgainThrowsException()
+    {
+        object.close();
+
+        exception.expect(IllegalStateException.class);
+        object.close();
     }
 }
