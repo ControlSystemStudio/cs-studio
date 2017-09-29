@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListenerAdapter;
@@ -292,14 +291,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         addInfoToBuffer(ValueButcher.createOff());
     }
 
-    /** @return Most recent value of the channel's PV, formatted as specified */
-    final public synchronized String getCurrentValue(final VTypeFormat format)
+    /** @return Most recent value of the channel's PV*/
+    final public synchronized VType getCurrentValue()
     {
-        return VTypeHelper.toString(most_recent_value, format);
+        return most_recent_value;
     }
 
-    /** @return Most recent value of the channel's PV */
-    final public synchronized String getCurrentValue()
+    /** @return Most recent value of the channel's PV as a string*/
+    final public synchronized String getCurrentValueAsString()
     {
         return VTypeHelper.toString(most_recent_value);
     }
@@ -310,14 +309,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         return received_value_count;
     }
 
-    /** @return Last value written to archive, formatted as specified */
-    final public synchronized String getLastArchivedValue(final VTypeFormat format)
+    /** @return Last value written to archive*/
+    final public synchronized VType getLastArchivedValue()
     {
-        return VTypeHelper.toString(last_archived_value, format);
+        return last_archived_value;
     }
 
-    /** @return Last value written to archive */
-    final public synchronized String getLastArchivedValue()
+    /** @return Last value written to archive as a string*/
+    final public synchronized String getLastArchivedValueAsString()
     {
         return VTypeHelper.toString(last_archived_value);
     }

@@ -31,7 +31,7 @@ public class JSONDisconnectedResponse extends AbstractResponse
     public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
-        final JSONWriter json = new JSONWriter(resp);
+        final JSONRoot json = new JSONRoot(resp);
         JSONList disconnected = new JSONList();
 
         final int group_count = model.getGroupCount();

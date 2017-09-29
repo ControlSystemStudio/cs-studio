@@ -11,11 +11,11 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-/** Helper for creating JSON for a servlet response.
+/** he root object for sending JSON.
  *  @author Dominic Oram
  */
 
-public class JSONWriter extends JSONObject {
+public class JSONRoot extends JSONObject {
     boolean isFirstItem = true;
 
     /**
@@ -23,7 +23,7 @@ public class JSONWriter extends JSONObject {
      * @param resp The response to write to.
      * @throws IOException if an i/o exception occurred from the HttpServletResponse
      */
-    public JSONWriter(final HttpServletResponse resp)
+    public JSONRoot(final HttpServletResponse resp)
         throws IOException
     {
         super(resp.getWriter());

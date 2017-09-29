@@ -92,10 +92,10 @@ public class HTMLGroupResponse extends AbstractGroupResponse
             if (overrun_count > 0)
                 overruns = HTMLWriter.makeRedText(overruns);
 
-            String current_value = channel.getCurrentValue();
+            String current_value = channel.getCurrentValueAsString();
             if (current_value.length() > MAX_VALUE_DISPLAY)
                 current_value = current_value.substring(0, MAX_VALUE_DISPLAY);
-            String last_value = channel.getLastArchivedValue();
+            String last_value = channel.getLastArchivedValueAsString();
             if (last_value.length() > MAX_VALUE_DISPLAY)
                 last_value = last_value.substring(0, MAX_VALUE_DISPLAY);
             html.tableLine(new String[]

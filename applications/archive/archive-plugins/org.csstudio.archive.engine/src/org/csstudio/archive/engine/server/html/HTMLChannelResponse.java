@@ -56,10 +56,10 @@ public class HTMLChannelResponse extends AbstractChannelResponse
         { Messages.HTTP_Mechanism, channel.getMechanism() });
 
         html.tableLine(new String[]
-        { Messages.HTTP_CurrentValue, channel.getCurrentValue() });
+        { Messages.HTTP_CurrentValue, channel.getCurrentValueAsString() });
 
         html.tableLine(new String[]
-        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
+        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValueAsString() });
 
         html.tableLine(new String[]
         { Messages.HTTP_Enablement, channel.getEnablement().toString() });

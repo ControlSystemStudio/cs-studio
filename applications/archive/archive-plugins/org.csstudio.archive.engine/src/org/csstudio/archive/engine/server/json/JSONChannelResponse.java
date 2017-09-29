@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
-import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
-import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractChannelResponse;
-import org.csstudio.archive.vtype.StringVTypeFormat;
 
 /** Provide JSON with detail for one channel.
  *  @author Dominic Oram
@@ -35,32 +32,9 @@ public class JSONChannelResponse extends AbstractChannelResponse
     {
         getParams(req, resp);
 
-        final JSONWriter json = new JSONWriter(resp);
+        final JSONRoot json = new JSONRoot(resp);
 
-        JSONObject channelInfo = new JSONObject();
-
-        channelInfo.writeObjectEntry(Messages.HTTP_Channel, channel_name);
-
-        channelInfo.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
-
-        channelInfo.writeObjectEntry(Messages.HTTP_InternalState, channel.getInternalState());
-        channelInfo.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
-        channelInfo.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
-        channelInfo.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
-        channelInfo.writeObjectEntry(Messages.HTTP_Enablement, channel.getEnablement().toString());
-
-        channelInfo.writeObjectEntry(Messages.HTTP_State, channel.isEnabled());
-
-        SampleBuffer buffer = channel.getSampleBuffer();
-        channelInfo.writeObjectEntry(Messages.HTTP_QueueLen, buffer.getQueueSize());
-
-        BufferStats stats = buffer.getBufferStats();
-        channelInfo.writeObjectEntry(Messages.HTTP_QueueAvg, stats.getAverageSize());
-        channelInfo.writeObjectEntry(Messages.HTTP_QueueMax, stats.getMaxSize());
-        channelInfo.writeObjectEntry(Messages.HTTP_QueueCapacity, buffer.getCapacity());
-        channelInfo.writeObjectEntry(Messages.HTTP_QueueOverruns, stats.getOverruns());
-
-        json.writeObjectEntry(Messages.HTTP_ChannelInfo, channelInfo);
+        json.writeObjectEntry(Messages.HTTP_ChannelInfo, JSONHelper.createChannelObject(channel));
 
         JSONObject groups = new JSONObject();
 

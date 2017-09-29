@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveChannel;
-import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
-import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractGroupResponse;
-import org.csstudio.archive.vtype.StringVTypeFormat;
 
 /** Provide web page with detail for one group in JSON.
  *  @author Dominic Oram
@@ -35,7 +32,7 @@ public class JSONGroupResponse extends AbstractGroupResponse
     {
         getParams(req, resp);
 
-        JSONWriter json = new JSONWriter(resp);
+        JSONRoot json = new JSONRoot(resp);
 
         // Basic group info
         json.writeObjectEntry(Messages.HTTP_Enabled, group.isEnabled());
@@ -53,23 +50,8 @@ public class JSONGroupResponse extends AbstractGroupResponse
         for (int j=0; j<channel_count; ++j)
         {
             final ArchiveChannel channel = group.getChannel(j);
-            JSONObject JSONchannel = new JSONObject();
-            JSONchannel.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
-            JSONchannel.writeObjectEntry(Messages.HTTP_Connected, channel.isConnected());
-            JSONchannel.writeObjectEntry(Messages.HTTP_Mechanism, channel.getMechanism());
-            JSONchannel.writeObjectEntry(Messages.HTTP_CurrentValue, channel.getCurrentValue(new StringVTypeFormat()));
-            JSONchannel.writeObjectEntry(Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue(new StringVTypeFormat()));
-            JSONchannel.writeObjectEntry(Messages.HTTP_ReceivedValues, channel.getReceivedValues());
 
-            final SampleBuffer buffer = channel.getSampleBuffer();
-            final BufferStats stats = buffer.getBufferStats();
-            JSONchannel.writeObjectEntry(Messages.HTTP_QueueLen, buffer.getQueueSize());
-            JSONchannel.writeObjectEntry(Messages.HTTP_QueueAvg, stats.getAverageSize());
-            JSONchannel.writeObjectEntry(Messages.HTTP_QueueMax, stats.getMaxSize());
-            JSONchannel.writeObjectEntry(Messages.HTTP_QueueCapacity, buffer.getCapacity());
-            JSONchannel.writeObjectEntry(Messages.HTTP_QueueOverruns, stats.getOverruns());
-
-            channels.addObjectToList(JSONchannel);
+            channels.addObjectToList(JSONHelper.createChannelObject(channel));
         }
 
         json.writeObjectEntry(Messages.HTTP_Channels, channels);

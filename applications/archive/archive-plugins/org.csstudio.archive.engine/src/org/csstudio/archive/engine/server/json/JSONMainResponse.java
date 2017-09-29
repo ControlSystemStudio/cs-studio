@@ -37,7 +37,7 @@ public class JSONMainResponse extends AbstractMainResponse
     public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
-        final JSONWriter json = new JSONWriter(resp);
+        final JSONRoot json = new JSONRoot(resp);
 
         json.writeObjectEntry(Messages.HTTP_Version, EngineModel.VERSION);
         json.writeObjectEntry(Messages.HTTP_Description, model.getName());

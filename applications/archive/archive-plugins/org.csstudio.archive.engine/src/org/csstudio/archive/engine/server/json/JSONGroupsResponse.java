@@ -32,7 +32,7 @@ public class JSONGroupsResponse extends AbstractResponse
     public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
-        final JSONWriter json = new JSONWriter(resp);
+        final JSONRoot json = new JSONRoot(resp);
 
         JSONList groups = new JSONList();
 

@@ -85,8 +85,8 @@ public class ChannelListResponse extends AbstractResponse
                 channel.isEnabled()
                     ? Messages.HTTP_Enabled
                     : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                channel.getCurrentValue(),
-                channel.getLastArchivedValue(),
+                channel.getCurrentValueAsString(),
+                channel.getLastArchivedValueAsString(),
             });
         }
         html.closeTable();
