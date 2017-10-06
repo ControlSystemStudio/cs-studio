@@ -44,9 +44,18 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * @author Fred Arnaud (Sopra Group)
+ *
+ * For symbol figures, there should be only couple of states. ex 50. Form memory leak fix the states from double are rounded
+ * to long, so we do not create almost infinite number of images for every state from double value.
+ *
+ *  *
+ * TODO: This has to be globally refactored so we use only the images that actually contain staes.No negative states should exist.
+ *
+ * @author Borut Terpinc
  */
 public abstract class CommonMultiSymbolFigure extends Figure implements SymbolImageListener {
 
+    private static final int MAX_NUMBER_OF_STATES = 50;
     private static final String BOOLEAN_VALUE_TRUE = "true";
     protected String baseImagePath;
     protected Map<Integer, String> statesMap;
@@ -69,7 +78,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
     protected int currentStateIndex = -1;
     protected int previousStateIndex = -1;
     protected List<String> statesStr;
-    protected List<Double> statesDbl;
+    protected List<Long> statesLong;
 
     private ExecutionMode executionMode;
 
@@ -88,7 +97,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
     public CommonMultiSymbolFigure(boolean runMode) {
         this.executionMode = runMode ? ExecutionMode.RUN_MODE : ExecutionMode.EDIT_MODE;
         statesStr = new ArrayList<String>();
-        statesDbl = new ArrayList<Double>();
+        statesLong = new ArrayList<Long>();
         images = new HashMap<Integer, SymbolImage>();
         statesMap = new HashMap<Integer, String>();
         label = new Label("STATE") {
@@ -188,60 +197,83 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         }
     }
 
-    public synchronized void setState(Double state) {
-        int index = statesDbl.indexOf(state);
+    public synchronized void setState(Double in_state) {
+
+
+        long state = (Math.round(in_state));
+        int index = statesLong.indexOf(state);
+
         if (index < 0) { // search if image exists
-            statesDbl.add(state);
+            statesLong.add(state);
             String strValue = String.valueOf(state);
-            statesStr.add(strValue);
-            index = statesDbl.indexOf(state);
+                      statesStr.add(strValue);
+            index = statesLong.indexOf(state);
             statesMap.put(index, strValue);
             IPath path = findImage(index);
             if (path == null)
                 path = symbolImagePath;
             remainingImagesToLoad = 1;
+            if (index > MAX_NUMBER_OF_STATES) { // we ignore more than max number of states
+                remainingImagesToLoad =0;
+                loadImageFromFile(path, MAX_NUMBER_OF_STATES-1);
+                return;
+            }
             loadImageFromFile(path, index);
         }
         setState(index);
     }
 
     public synchronized void setState(String state) {
+
         int index = statesStr.indexOf(state);
         if (index < 0) { // search if image exists
             try {
-                statesDbl.add(Double.valueOf(state));
+                statesLong.add(Long.valueOf(state));
             } catch (NumberFormatException e) {
-                statesDbl.add(null);
+                statesLong.add(null);
             }
             statesStr.add(state);
-            index = statesStr.indexOf(state);
             statesMap.put(index, state);
             IPath path = findImage(index);
             if (path == null)
                 path = symbolImagePath;
             remainingImagesToLoad = 1;
+            if (index > MAX_NUMBER_OF_STATES) { // we ignore more than max number of states
+                remainingImagesToLoad =0;
+                loadImageFromFile(path, MAX_NUMBER_OF_STATES-1);
+                return;
+            }
             loadImageFromFile(path, index);
         }
         setState(index);
     }
 
     public synchronized void setState(VBoolean stateBoolean) {
-        String state = ((VBoolean) stateBoolean).getValue().toString().toLowerCase();
+
+        String state = stateBoolean.getValue().toString().toLowerCase();
         int index = statesStr.indexOf(state);
         if (index < 0) { // search if image exists
             try {
-                statesDbl.add(Double.valueOf(state));
+                statesLong.add(Long.valueOf(state));
             } catch (NumberFormatException e) {
-                statesDbl.add(null);
+                statesLong.add(null);
             }
+
             statesStr.add(state);
             index = BOOLEAN_VALUE_TRUE.equals(state)?1:0;
+
             statesMap.put(index, state);
             initRemainingStates(statesMap);
             IPath path = findImage(index);
             if (path == null)
                 path = symbolImagePath;
             remainingImagesToLoad = 1;
+            if (index > MAX_NUMBER_OF_STATES) { // we ignore more than max number of states
+                remainingImagesToLoad =0;
+                loadImageFromFile(path, MAX_NUMBER_OF_STATES-1);
+                return;
+            }
+
             loadImageFromFile(path, index);
         }
         setState(index);
@@ -265,9 +297,9 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         for (String state : states) {
             statesMap.put(stateIndex++, state);
             try {
-                this.statesDbl.add(Double.valueOf(state));
+                this.statesLong.add(Long.valueOf(state));
             } catch (NumberFormatException e) {
-                this.statesDbl.add(null);
+                this.statesLong.add(null);
             }
         }
         loadAllImages();
@@ -368,7 +400,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
                 if (stateIndex != null) {
                     SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
                             this);
-                    if (stateIndex != currentStateIndex)
+                if (stateIndex != currentStateIndex)
                         img.setVisible(false);
                     if (images != null)
                         images.put(stateIndex, img);
