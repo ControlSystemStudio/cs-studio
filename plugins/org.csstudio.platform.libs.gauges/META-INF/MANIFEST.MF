@@ -2,17 +2,33 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gauges
 Bundle-SymbolicName: org.csstudio.platform.libs.gauges
-Bundle-Version: 10.0.8.qualifier
+Bundle-Version: 10.0.9.qualifier
 Bundle-Activator: org.csstudio.platform.libs.gauges.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.swt
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Claudio Rosati <claudio.rosati@esss.se>
-Bundle-ClassPath: lib/KNOBS-1.0.7.jar,
+Bundle-ClassPath: lib/controlsfx-8.40.13.jar,
+ lib/KNOBS-1.0.8.jar,
  lib/Medusa-7.9.5.jar,
  .
-Export-Package: eu.hansolo.medusa,
+Export-Package: org.controlsfx.control,
+ org.controlsfx.control.action,
+ org.controlsfx.control.cell,
+ org.controlsfx.control.decoration,
+ org.controlsfx.control.spreadsheet,
+ org.controlsfx.control.table,
+ org.controlsfx.control.table.model,
+ org.controlsfx.control.textfield,
+ org.controlsfx.dialog,
+ org.controlsfx.glyphfont,
+ org.controlsfx.property,
+ org.controlsfx.property.editor,
+ org.controlsfx.tools,
+ org.controlsfx.validation, 
+ org.controlsfx.validation.decoration,
+ eu.hansolo.medusa,
  eu.hansolo.medusa.events,
  eu.hansolo.medusa.skins,
  eu.hansolo.medusa.tools,
