@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gauges
 Bundle-SymbolicName: org.csstudio.platform.libs.gauges
-Bundle-Version: 10.0.9.qualifier
+Bundle-Version: 10.0.10.qualifier
 Bundle-Activator: org.csstudio.platform.libs.gauges.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.swt
@@ -10,7 +10,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Claudio Rosati <claudio.rosati@esss.se>
 Bundle-ClassPath: lib/controlsfx-8.40.13.jar,
- lib/KNOBS-1.0.8.jar,
+ lib/KNOBS-1.0.9.jar,
  lib/Medusa-7.9.5.jar,
  .
 Export-Package: org.controlsfx.control,
