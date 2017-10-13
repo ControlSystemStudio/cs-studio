@@ -5,48 +5,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
-import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
+import org.csstudio.archive.engine.server.AbstractChannelResponse;
 
-/** Provide web page with detail for one channel.
+/** Provide web page with detail for one channel in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelResponse extends AbstractResponse
+public class HTMLChannelResponse extends AbstractChannelResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    ChannelResponse(final EngineModel model)
+    public HTMLChannelResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
-    {   // Locate the group
-        final String channel_name = req.getParameter("name");
-        if (channel_name == null)
-        {
-            resp.sendError(400, "Missing channel name");
-            return;
-        }
-        final ArchiveChannel channel = model.getChannel(channel_name);
-        if (channel == null)
-        {
-            resp.sendError(400, "Unknown channel " + channel_name);
-            return;
-        }
+    {
+        getParams(req, resp);
 
         // HTML table similar to group's list of channels
         final HTMLWriter html =
@@ -70,10 +56,10 @@ class ChannelResponse extends AbstractResponse
         { Messages.HTTP_Mechanism, channel.getMechanism() });
 
         html.tableLine(new String[]
-        { Messages.HTTP_CurrentValue, channel.getCurrentValue() });
+        { Messages.HTTP_CurrentValue, channel.getCurrentValueAsString() });
 
         html.tableLine(new String[]
-        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
+        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValueAsString() });
 
         html.tableLine(new String[]
         { Messages.HTTP_Enablement, channel.getEnablement().toString() });

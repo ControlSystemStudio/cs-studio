@@ -481,8 +481,8 @@ public class EngineModel
             buf.append(channel.isEnabled() ? ", enabled" : ", DISABLED");
             buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
             buf.append(channel.getInternalState() + ")");
-            buf.append(", value " + channel.getCurrentValue());
-            buf.append(", last stored " + channel.getLastArchivedValue());
+            buf.append(", value " + channel.getCurrentValueAsString());
+            buf.append(", last stored " + channel.getLastArchivedValueAsString());
             System.out.println(buf.toString());
         }
     }

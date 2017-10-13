@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,16 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
 /** Provide web page with environment info.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class EnvironmentResponse extends AbstractResponse
+public class EnvironmentResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
     /** Bytes in a MegaByte */
     final static double MB = 1024.0*1024.0;
 
@@ -78,13 +76,13 @@ class EnvironmentResponse extends AbstractResponse
         }
     }
 
-    EnvironmentResponse(final EngineModel model)
+    public EnvironmentResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_MainTitle);
