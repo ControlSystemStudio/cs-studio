@@ -7,4 +7,5 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.diirt.vtype,
- org.csstudio.archive.vtype
+ org.csstudio.archive.vtype,
+ org.csstudio.platform.libs.jmock;bundle-version="1.1.0"

@@ -5,36 +5,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page to reset engine statistics.
+/** Provide web page for triggering debug output
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ResetResponse extends AbstractResponse
+public class DebugResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    ResetResponse(final EngineModel model)
+    public DebugResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html =
-            new HTMLWriter(resp, "Archive Engine Reset");
+            new HTMLWriter(resp, "Archive Engine Debug");
 
-        html.text("Engine statistics are reset");
-        model.reset();
+        html.text("Engine wrote debug info ....");
+        model.dumpDebugInfo();
 
         html.close();
     }

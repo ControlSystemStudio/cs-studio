@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,23 +15,21 @@ import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page with basic info for all the groups.
+/** Provide web page with basic info for all the groups in HTML.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class GroupsResponse extends AbstractResponse
+public class HTMLGroupsResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    GroupsResponse(final EngineModel model)
+    public HTMLGroupsResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html =

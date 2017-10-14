@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import java.util.regex.Pattern;
 
@@ -16,23 +16,21 @@ import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
 /** Provide web page with list of channels (by pattern).
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelListResponse extends AbstractResponse
+public class ChannelListResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    ChannelListResponse(final EngineModel model)
+    public ChannelListResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {   // Locate the group
         final String name = req.getParameter("name");
@@ -87,8 +85,8 @@ class ChannelListResponse extends AbstractResponse
                 channel.isEnabled()
                     ? Messages.HTTP_Enabled
                     : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                channel.getCurrentValue(),
-                channel.getLastArchivedValue(),
+                channel.getCurrentValueAsString(),
+                channel.getLastArchivedValueAsString(),
             });
         }
         html.closeTable();

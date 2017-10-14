@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.engine.server;
+package org.csstudio.archive.engine.server.html;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,23 +14,21 @@ import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.server.AbstractResponse;
 
-/** Provide web page with list of disconnected channels
+/** Provide web page with list of disconnected channels in HTML
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class DisconnectedResponse extends AbstractResponse
+public class HTMLDisconnectedResponse extends AbstractResponse
 {
-    /** Avoid serialization errors */
-    private static final long serialVersionUID = 1L;
-
-    DisconnectedResponse(final EngineModel model)
+    public HTMLDisconnectedResponse(final EngineModel model)
     {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
+    public void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);

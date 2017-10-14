@@ -118,6 +118,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
      *  @throws Exception On error in PV setup
      * @deprecated Use {@link #ArchiveChannel(String,String,Enablement,int,VType)} instead
      */
+    @Deprecated
     public ArchiveChannel(final String name,
                           final Enablement enablement,
                           final int buffer_capacity,
@@ -290,8 +291,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         addInfoToBuffer(ValueButcher.createOff());
     }
 
-    /** @return Most recent value of the channel's PV */
-    final public synchronized String getCurrentValue()
+    /** @return Most recent value of the channel's PV*/
+    final public synchronized VType getCurrentValue()
+    {
+        return most_recent_value;
+    }
+
+    /** @return Most recent value of the channel's PV as a string*/
+    final public synchronized String getCurrentValueAsString()
     {
         return VTypeHelper.toString(most_recent_value);
     }
@@ -302,8 +309,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         return received_value_count;
     }
 
-    /** @return Last value written to archive */
-    final public synchronized String getLastArchivedValue()
+    /** @return Last value written to archive*/
+    final public synchronized VType getLastArchivedValue()
+    {
+        return last_archived_value;
+    }
+
+    /** @return Last value written to archive as a string*/
+    final public synchronized String getLastArchivedValueAsString()
     {
         return VTypeHelper.toString(last_archived_value);
     }
