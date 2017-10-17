@@ -27,14 +27,14 @@ import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
-import org.diirt.vtype.Display;
-import org.diirt.vtype.VType;
 
 
 /**The editpart for spinner widget.
@@ -120,11 +120,14 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
                                     if(meta == null || !meta.equals(new_meta)){
                                         meta = new_meta;
                                         if(model.isLimitsFromPV()){
-                                            model.setPropertyValue(SpinnerModel.PROP_MAX,    meta.getUpperDisplayLimit());
-                                            model.setPropertyValue(SpinnerModel.PROP_MIN,    meta.getLowerDisplayLimit());
+                                            model.setPropertyValue(SpinnerModel.PROP_MAX,
+                                                    meta.getUpperCtrlLimit());
+                                            model.setPropertyValue(SpinnerModel.PROP_MIN,
+                                                    meta.getLowerCtrlLimit());
                                         }
                                         if(model.isPrecisionFromPV())
-                                            model.setPropertyValue(SpinnerModel.PROP_PRECISION,    meta.getFormat().getMaximumFractionDigits());
+                                            model.setPropertyValue(SpinnerModel.PROP_PRECISION,
+                                                    meta.getFormat().getMaximumFractionDigits());
                                     }
                                 }
                             }
@@ -140,6 +143,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         //text
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 String text = (String)newValue;
                 try {
@@ -313,6 +317,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
         setPropertyChangeHandler(SpinnerModel.PROP_SHOW_TEXT, handler);
     }
 
+    @Override
     public DragTracker getDragTracker(Request request) {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             return new SelectEditPartTracker(this) {
@@ -331,7 +336,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
     @Override
     public void performRequest(Request request){
-        if (getFigure().isEnabled() && ((SpinnerModel)getWidgetModel()).showText()
+        if (getFigure().isEnabled() && getWidgetModel().showText()
                 && ((request.getType() == RequestConstants.REQ_DIRECT_EDIT && getExecutionMode() != ExecutionMode.RUN_MODE) || request.getType() == RequestConstants.REQ_OPEN))
             performDirectEdit();
     }
