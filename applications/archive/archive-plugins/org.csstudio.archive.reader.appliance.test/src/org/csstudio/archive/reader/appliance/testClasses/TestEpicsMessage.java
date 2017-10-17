@@ -1,6 +1,5 @@
 package org.csstudio.archive.reader.appliance.testClasses;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
