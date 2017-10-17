@@ -80,7 +80,7 @@ public class TestEpicsMessage extends EpicsMessage{
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getNumberAt(int)
      */
     @Override
-    public Number getNumberAt(int index) throws IOException {
+    public Number getNumberAt(int index) {
         if (arrayValue != null) {
             return arrayValue[index];
         }
@@ -91,7 +91,7 @@ public class TestEpicsMessage extends EpicsMessage{
      * @see org.epics.archiverappliance.retrieval.client.EpicsMessage#getNumberValue()
      */
     @Override
-    public Number getNumberValue() throws IOException {
+    public Number getNumberValue() {
         if (arrayValue != null && arrayValue.length > 0) {
             return arrayValue[0];
         }
