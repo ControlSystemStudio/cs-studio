@@ -247,7 +247,11 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * @return data retrieval URL
      */
     public String getDataRetrievalURL() {
-        return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
+        if (httpURL.contains("?")){
+            return httpURL ;
+        } else {
+            return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
+        }
     }
 
     /**
