@@ -188,12 +188,152 @@ public class ServiceMethodWidget extends BeanComposite {
         }
     });
 
+
+    argumentPvTableViewerComposite = new Composite(rootComposite, SWT.NONE);
+    FormData fdArgumentViewer = new FormData();
+    fdArgumentViewer.right = new FormAttachment(100, -5);
+    fdArgumentViewer.top = new FormAttachment(argPrefLbl, 10);
+    fdArgumentViewer.left = new FormAttachment(0, 5);
+    fdArgumentViewer.bottom = new FormAttachment(argPrefLbl, 150);
+    argumentPvTableViewerComposite.setLayoutData(fdArgumentViewer);
+    TableColumnLayout tcl_composite = new TableColumnLayout();
+    argumentPvTableViewerComposite.setLayout(tcl_composite);
+
+    argumentPvTableViewer = new TableViewer(argumentPvTableViewerComposite,
+        SWT.BORDER | SWT.FULL_SELECTION);
+    argumentPvTable = argumentPvTableViewer.getTable();
+    argumentPvTable.setHeaderVisible(true);
+    argumentPvTable.setLinesVisible(true);
+
+
+    TableViewerColumn tableViewerColumn = new TableViewerColumn(
+        argumentPvTableViewer, SWT.NONE);
+    tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+        @Override
+        public Image getImage(Object element) {
+        return null;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public String getText(Object element) {
+        if (element != null && element instanceof Entry) {
+            return ((Entry<String, String>) element).getKey();
+        }
+        return "";
+        }
+    });
+    TableColumn tblclmnNewColumn = tableViewerColumn.getColumn();
+    tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(30,
+        100, true));
+    tblclmnNewColumn.setText("argument name");
+    TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
+        argumentPvTableViewer, SWT.NONE);
+    tableViewerColumn_1.setEditingSupport(new EditingSupport(
+        argumentPvTableViewer) {
+
+        @Override
+        protected boolean canEdit(Object element) {
+        return true;
+        }
+
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+        return new TextCellEditor(argumentPvTableViewer.getTable());
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected Object getValue(Object element) {
+        return ((Entry<String, String>) element).getValue();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        protected void setValue(Object element, Object value) {
+        setArgumentPv(
+            ((Entry<String, String>) element).getKey(),
+            (String) value);
+        }
+
+    });
+    tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+        @Override
+        public Image getImage(Object element) {
+        return null;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public String getText(Object element) {
+        if (element != null && element instanceof Entry) {
+            return ((Entry<String, String>) element).getValue();
+        }
+        return "";
+        }
+    });
+    TableColumn tblclmnNewColumn_1 = tableViewerColumn_1.getColumn();
+    tcl_composite.setColumnData(tblclmnNewColumn_1, new ColumnWeightData(
+        70, 100, true));
+    tblclmnNewColumn_1.setText("pv/formula");
+    argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
+
+
+
+    /** Results **/
+
+
+    Label lblResults = new Label(rootComposite, SWT.NONE);
+    FormData fd_lblResults = new FormData();
+    fd_lblResults.top  = new FormAttachment(argumentPvTableViewerComposite, 10);
+    fd_lblResults.left = new FormAttachment(0, 5);
+    lblResults.setLayoutData(fd_lblResults);
+    lblResults.setText("Results:");
+
+    Label lblResultPrefix = new Label(rootComposite, SWT.NONE);
+    FormData fd_lblResultPrefix = new FormData();
+    fd_lblResultPrefix.top = new FormAttachment(lblResults, 10);
+    fd_lblResultPrefix.left = new FormAttachment(0, 5);
+    lblResultPrefix.setLayoutData(fd_lblResultPrefix);
+    lblResultPrefix.setText("Result Prefix:");
+
+
+    text_result_prefix = new Text(rootComposite, SWT.BORDER);
+    text_result_prefix.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseUp(MouseEvent e) {
+            if(!useResultPrefix){
+            useResultPrefix = true;
+            text_result_prefix.setForeground(initialForegroundColor);
+            }
+        }
+    });
+    FormData fd_text_result_prefix = new FormData();
+    fd_text_result_prefix.top = new FormAttachment(lblResults, 7);
+    fd_text_result_prefix.right = new FormAttachment(100, -5);
+    fd_text_result_prefix.left = new FormAttachment(lblResultPrefix, 10);
+    text_result_prefix.setLayoutData(fd_text_result_prefix);
+    text_result_prefix.setEnabled(false);
+    text_result_prefix.addKeyListener(new KeyAdapter() {
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        // result prefix
+        if (e.keyCode == SWT.CR) {
+            resultPrefix = text_result_prefix.getText();
+            setResultPvs(calculateResultPvs(getServiceMethodDescription().getResultPvs().keySet(), resultPrefix));
+        }
+        }
+    });
+
+
     resultPvTableViewerComposite = new Composite(rootComposite, SWT.NONE);
-    FormData fd_composite_1 = new FormData();
-    fd_composite_1.right = new FormAttachment(100, -5);
-    fd_composite_1.left = new FormAttachment(0, 5);
-    fd_composite_1.top = new FormAttachment(argPrefLbl, 10);
-    resultPvTableViewerComposite.setLayoutData(fd_composite_1);
+    FormData fdResultsTv = new FormData();
+    fdResultsTv.right = new FormAttachment(100, -5);
+    fdResultsTv.bottom = new FormAttachment(lblResultPrefix, 150);
+    fdResultsTv.left = new FormAttachment(0, 5);
+    fdResultsTv.top = new FormAttachment(lblResultPrefix, 10);
+    resultPvTableViewerComposite.setLayoutData(fdResultsTv);
     TableColumnLayout tcl_composite_1 = new TableColumnLayout();
     resultPvTableViewerComposite.setLayout(tcl_composite_1);
 
@@ -276,138 +416,7 @@ public class ServiceMethodWidget extends BeanComposite {
     resultPvTableViewer.setContentProvider(new ArrayContentProvider());
 
 
-    Label lblResults = new Label(rootComposite, SWT.NONE);
-    FormData fd_lblResults = new FormData();
-    fd_lblResults.top  = new FormAttachment(resultPvTableViewerComposite, 10);
-    fd_lblResults.left = new FormAttachment(0, 5);
-    lblResults.setLayoutData(fd_lblResults);
-    lblResults.setText("Results:");
 
-    Label lblResultPrefix = new Label(rootComposite, SWT.NONE);
-    FormData fd_lblResultPrefix = new FormData();
-    fd_lblResultPrefix.top = new FormAttachment(lblResults, 10);
-    fd_lblResultPrefix.left = new FormAttachment(0, 5);
-    lblResultPrefix.setLayoutData(fd_lblResultPrefix);
-    lblResultPrefix.setText("Result Prefix:");
-
-
-    text_result_prefix = new Text(rootComposite, SWT.BORDER);
-    text_result_prefix.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseUp(MouseEvent e) {
-            if(!useResultPrefix){
-            useResultPrefix = true;
-            text_result_prefix.setForeground(initialForegroundColor);
-            }
-        }
-    });
-    FormData fd_text_result_prefix = new FormData();
-    fd_text_result_prefix.top = new FormAttachment(lblResults, 7);
-    fd_text_result_prefix.right = new FormAttachment(100, -5);
-    fd_text_result_prefix.left = new FormAttachment(lblResultPrefix, 10);
-    text_result_prefix.setLayoutData(fd_text_result_prefix);
-    text_result_prefix.setEnabled(false);
-    text_result_prefix.addKeyListener(new KeyAdapter() {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        // result prefix
-        if (e.keyCode == SWT.CR) {
-            resultPrefix = text_result_prefix.getText();
-            setResultPvs(calculateResultPvs(getServiceMethodDescription().getResultPvs().keySet(), resultPrefix));
-        }
-        }
-    });
-
-
-
-
-    argumentPvTableViewerComposite = new Composite(rootComposite, SWT.NONE);
-    FormData fd_composite = new FormData();
-    fd_composite.right = new FormAttachment(100, -5);
-    fd_composite.top = new FormAttachment(lblResultPrefix, 10);
-    fd_composite.left = new FormAttachment(0, 5);
-    argumentPvTableViewerComposite.setLayoutData(fd_composite);
-    TableColumnLayout tcl_composite = new TableColumnLayout();
-    argumentPvTableViewerComposite.setLayout(tcl_composite);
-
-    argumentPvTableViewer = new TableViewer(argumentPvTableViewerComposite,
-        SWT.BORDER | SWT.FULL_SELECTION);
-    argumentPvTable = argumentPvTableViewer.getTable();
-    argumentPvTable.setHeaderVisible(true);
-    argumentPvTable.setLinesVisible(true);
-
-    TableViewerColumn tableViewerColumn = new TableViewerColumn(
-        argumentPvTableViewer, SWT.NONE);
-    tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-        @Override
-        public Image getImage(Object element) {
-        return null;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public String getText(Object element) {
-        if (element != null && element instanceof Entry) {
-            return ((Entry<String, String>) element).getKey();
-        }
-        return "";
-        }
-    });
-    TableColumn tblclmnNewColumn = tableViewerColumn.getColumn();
-    tcl_composite.setColumnData(tblclmnNewColumn, new ColumnWeightData(30,
-        100, true));
-    tblclmnNewColumn.setText("argument name");
-    TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
-        argumentPvTableViewer, SWT.NONE);
-    tableViewerColumn_1.setEditingSupport(new EditingSupport(
-        argumentPvTableViewer) {
-
-        @Override
-        protected boolean canEdit(Object element) {
-        return true;
-        }
-
-        @Override
-        protected CellEditor getCellEditor(Object element) {
-        return new TextCellEditor(argumentPvTableViewer.getTable());
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        protected Object getValue(Object element) {
-        return ((Entry<String, String>) element).getValue();
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        protected void setValue(Object element, Object value) {
-        setArgumentPv(
-            ((Entry<String, String>) element).getKey(),
-            (String) value);
-        }
-
-    });
-    tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
-        @Override
-        public Image getImage(Object element) {
-        return null;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public String getText(Object element) {
-        if (element != null && element instanceof Entry) {
-            return ((Entry<String, String>) element).getValue();
-        }
-        return "";
-        }
-    });
-    TableColumn tblclmnNewColumn_1 = tableViewerColumn_1.getColumn();
-    tcl_composite.setColumnData(tblclmnNewColumn_1, new ColumnWeightData(
-        70, 100, true));
-    tblclmnNewColumn_1.setText("pv/formula");
-    argumentPvTableViewer.setContentProvider(new ArrayContentProvider());
 
     addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -434,6 +443,8 @@ public class ServiceMethodWidget extends BeanComposite {
             + "_"
             + serviceMethodDescription.getMethod()
             + "_";
+
+
     updateUI();
     }
 

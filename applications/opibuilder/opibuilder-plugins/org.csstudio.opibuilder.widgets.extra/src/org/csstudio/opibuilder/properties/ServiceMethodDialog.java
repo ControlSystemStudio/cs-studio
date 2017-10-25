@@ -45,8 +45,8 @@ public class ServiceMethodDialog extends Dialog{
       contGl.marginHeight = 2;
 
       GridData contGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-      contGd.heightHint = 500;
-      contGd.widthHint = 900;
+      contGd.heightHint = 900;
+      contGd.widthHint = 1300;
       serviceMethodWidget = new ServiceMethodWidget(container, SWT.NONE, (ServiceMethodDescription) widgetModel.getPropertyValue(ServiceButtonModel.SERVICE_METHOD));
       serviceMethodWidget.setLayoutData(contGd);
 
