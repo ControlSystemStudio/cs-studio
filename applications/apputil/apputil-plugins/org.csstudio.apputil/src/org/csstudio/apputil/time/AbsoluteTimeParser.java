@@ -7,13 +7,27 @@
  ******************************************************************************/
 package org.csstudio.apputil.time;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import org.csstudio.java.time.TimestampFormats;
 
 /** Parse an absolute date/time string.
+ *  The logic of this date/time parser is not speed optimized. This should not be used for consecutive parses. It should be used in
+ *  cases of parsing inputs from user.
  *
  *  @see #parse(Calendar, String)
+ *
+ *  @author Borut Terpinc
+ *          Changed the class to use DateTimeFormatter for parsing the date. Formats with zone are accepted.
+ *          Added parsers for additional time-stamp formats.
  *
  *  @author Sergei Chevtsov developed the original code for the
  *          Java Archive Viewer, from which this code heavily borrows.
@@ -22,21 +36,37 @@ import java.util.Calendar;
 @SuppressWarnings("nls")
 public class AbsoluteTimeParser
 {
+
+    private AbsoluteTimeParser(){}
+
     /** The accepted date formats for absolute times. */
-    private static final DateFormat[] parsers = new SimpleDateFormat[]
+    private static final DateTimeFormatter[] parsers = new DateTimeFormatter[]
     {   // Most complete version first
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"),
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-        new SimpleDateFormat("yyyy-MM-dd HH:mm"),
-        new SimpleDateFormat("yyyy-MM-dd HH"),
-        new SimpleDateFormat("yyyy-MM-dd")
+        TimestampFormats.FULL_FORMAT,
+        TimestampFormats.MILLI_FORMAT,
+        TimestampFormats.SECONDS_FORMAT,
+        TimestampFormats.TIME_FORMAT,
+        TimestampFormats.DATESHORT_FORMAT,
+        TimestampFormats.DATE_FORMAT,
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nnnnnnnnnX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HHX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd")
     };
+
 
     /** Like parse(), using a base calendar of 'now', 'current time zone'.
      *  @see #parse(Calendar, String)
      *  @return Calendar initialized from parsed text.
      */
-    public static Calendar parse(String text) throws Exception
+    public static Calendar parse(String text)
     {
         Calendar cal = Calendar.getInstance();
         return parse(cal, text);
@@ -44,10 +74,8 @@ public class AbsoluteTimeParser
 
     /** Adjust given calendar to the date and time parsed from the text.
      *  <p>
-     *  The date/time text should follow the format
-     *  <pre>
-     *  YYYY/MM/DD hh:mm:ss.sss
-     *  </pre>
+     *  The date/time text should follow the formats defined in {@link org.csstudio.java.time.TimestampFormats}.
+     *
      *  The milliseconds (sss), seconds(ss), minutes(mm), hours(hh)
      *  might be left off, and will then default to zero.
      *  <p>
@@ -55,7 +83,7 @@ public class AbsoluteTimeParser
      *  When omitting the whole date (YYYY/MM/DD), the values from the passed-in
      *  calendar are used.
      *  It is not possible to provide <i>only</i> the month <i>without</i>
-     *  the day or vice vesa.
+     *  the day or vice versa.
      *  <p>
      *  An empty text leaves the provided calendar unchanged.
      *  <p>
@@ -65,54 +93,80 @@ public class AbsoluteTimeParser
      *             the year, in case the text doesn't include a year.
      *  @param text The text to parse.
      *  @return Adjusted Calendar.
-     *  @exception On error.
+     *
      */
-    public static Calendar parse(Calendar cal, String text) throws Exception
+    public static Calendar parse(Calendar cal, String text)
     {
-        String cooked = text.trim().toLowerCase();
+
+        String cooked = text.trim();
         // Empty string? Pass cal as is back, since we didn't change it?
         if (cooked.length() < 1)
             return cal;
-        final Calendar result = Calendar.getInstance();
 
+        //remove the spaces in between
+        cooked = cooked.replaceAll("\\s+"," ");
+        //if the ISO time is with T, we leave remove the empty space after the T
+        cooked = cooked.replaceAll("T\\s","T");
         // Provide missing year from given cal
-        int datesep = cooked.indexOf('-');
-        if (datesep < 0) // No date at all provided? Use the one from cal.
-            cooked = String.format("%04d-%02d-%02d %s",
+
+        cooked = addDateIfNotProvided(cal, cooked);
+
+        for (DateTimeFormatter parser : parsers)
+        {
+            try
+            {
+                ZonedDateTime parsedDateTime =  ZonedDateTime.parse(cooked, parser);
+                return GregorianCalendar.from(parsedDateTime);
+            }
+            catch (DateTimeParseException e){} // Ignore, try the next one
+
+            //if only local datetime is provided as local we pass the system zone
+            try
+            {
+                LocalDateTime localDateTime =  LocalDateTime.parse(cooked, parser);
+                ZonedDateTime parsedDateTime =  ZonedDateTime.of(localDateTime, ZoneId.systemDefault());
+                return GregorianCalendar.from(parsedDateTime);
+            }
+            catch (DateTimeParseException e){}// Ignore, try the next one
+            //if just date is provided we parse the date and add start of day time and the system zone
+
+            try
+            {
+                LocalDate localDate =  LocalDate.parse(cooked, parser);
+                ZonedDateTime zonedDateTime =ZonedDateTime.of(localDate, LocalTime.MIN, ZoneId.systemDefault());
+                return GregorianCalendar.from(zonedDateTime);
+            }
+            catch (DateTimeParseException e){}// Ignore, try the next one
+        }
+        throw new DateTimeParseException("Cannot parse date and time!" , text, 0);
+    }
+
+    /***
+     * If there is no date, we use the one from the param calendar.
+     *
+     * @param cal used for date
+     * @param dateTimeText date-time string to check and change
+     * @return reformatted date-time string.
+     */
+
+    private static String addDateIfNotProvided(Calendar cal, String dateTimeText) {
+        int datesep = dateTimeText.indexOf('-');
+        if (datesep < 0){ // No date at all provided? Use the one from cal.
+            dateTimeText = String.format("%04d-%02d-%02d %s",
                                    cal.get(Calendar.YEAR),
                                    cal.get(Calendar.MONTH) + 1,
                                    cal.get(Calendar.DAY_OF_MONTH),
-                                   cooked);
+                                   dateTimeText);
+        }
         else
         {   // Are there two date separators?
-            datesep = cooked.indexOf('-', datesep + 1);
+            datesep = dateTimeText.indexOf('-', datesep + 1);
             // If not, assume that we have MM-DD, and add the YYYY.
             if (datesep < 0)
-                cooked = String.format("%04d-%s",
-                                       cal.get(Calendar.YEAR), cooked);
+                dateTimeText = String.format("%04d-%s",
+                                       cal.get(Calendar.YEAR), dateTimeText);
         }
-        // In case the text includes the ITimestamp up to nanoseconds:
-        // 2007/06/01 14:00:24.156959772
-        // Sorry, not handled by Calendar.
-        // Chop down to millisecs
-        if (cooked.length() == 29  &&  cooked.charAt(19) == '.')
-            cooked = cooked.substring(0, 23);
-        // Try the parsers
-        for (DateFormat parser : parsers)
-        {
-            try
-            {   // DateFormat returns Date, but pretty much all of Date
-                // is deprecated, which is why we use Calendar.
-                long millis = parser.parse(cooked).getTime();
-                result.setTimeInMillis(millis);
-                return result;
-            }
-            catch (Exception e)
-            {   // Ignore, try the next one
-            }
-        }
-        // No parser parsed the string?
-        throw new Exception("Cannot parse date and time from '" + text + "'");
+        return dateTimeText;
     }
 
     /** Format given calendar value into something that this parser would handle.
@@ -120,6 +174,6 @@ public class AbsoluteTimeParser
      */
     public static String format(Calendar cal)
     {
-        return parsers[0].format(cal.getTime());
+        return TimestampFormats.FULL_FORMAT.format(cal.toInstant());
     }
 }
