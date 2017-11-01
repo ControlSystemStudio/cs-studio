@@ -5,5 +5,7 @@ Bundle-SymbolicName: org.csstudio.apputil.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.apputil;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
-Require-Bundle: org.junit;bundle-version="4.8.2"
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SN
+Require-Bundle: org.junit;bundle-version="4.8.2",
+ org.eclipse.core.runtime;bundle-version="3.12.0"
+

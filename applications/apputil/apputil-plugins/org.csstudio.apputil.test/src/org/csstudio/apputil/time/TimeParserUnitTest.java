@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.apputil.time;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
@@ -25,26 +27,101 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class TimeParserUnitTest extends TestCase
 {
-    private final DateTimeFormatter format = TimestampFormats.SECONDS_FORMAT;
 
     @Test
     public void testAbsoluteTimeParser() throws Exception
     {
-        Calendar cal;
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnnX");
+        ZonedDateTime zdt = ZonedDateTime.parse("2014-09-02 08:05:23.653123544+02", f);
+        ZoneId zone = zdt.getZone();
 
+        Calendar cal;
         // Full time with nanoseconds
-        cal = AbsoluteTimeParser.parse("2007-06-01 14:00:24.156959772");
-        System.out.println(cal.getTime());
-        assertEquals(2007, cal.get(Calendar.YEAR));
-        assertEquals( 6, cal.get(Calendar.MONTH) + 1); // Jan == 0
-        assertEquals( 1, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(14, cal.get(Calendar.HOUR_OF_DAY));
-        assertEquals( 0, cal.get(Calendar.MINUTE));
-        assertEquals(24, cal.get(Calendar.SECOND));
-        assertEquals(156, cal.get(Calendar.MILLISECOND));
+        String forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnnnn").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(653, cal.get(Calendar.MILLISECOND));
+
+        // Full ISO time with nanoseconds
+        forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.nnnnnnnnnX").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(653, cal.get(Calendar.MILLISECOND));
+
+        //Full time with miliseconds
+        forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(653, cal.get(Calendar.MILLISECOND));
+
+        //Full ISO time with miliseconds
+        forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(653, cal.get(Calendar.MILLISECOND));
+
+        //Full time with seconds
+        forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(0, cal.get(Calendar.MILLISECOND));
+
+        //Full ISO time with seconds
+        forrmatedTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX").withZone(zone).format(zdt);
+        System.out.println(forrmatedTime);
+        cal = AbsoluteTimeParser.parse(forrmatedTime);
+        assertEquals(2014, cal.get(Calendar.YEAR));
+        assertEquals( 9, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(8, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 5, cal.get(Calendar.MINUTE));
+        assertEquals(23, cal.get(Calendar.SECOND));
+        assertEquals(0, cal.get(Calendar.MILLISECOND));
+
 
         // Full time, with extra spaces
         cal = AbsoluteTimeParser.parse("   2007-01-18    12:10:13.123     ");
+        System.out.println(cal.getTime());
+        assertEquals(2007, cal.get(Calendar.YEAR));
+        assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals(18, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(12, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(10, cal.get(Calendar.MINUTE));
+        assertEquals(13, cal.get(Calendar.SECOND));
+        assertEquals(123, cal.get(Calendar.MILLISECOND));
+
+        // Full time, with extra spaces and zone
+        cal = AbsoluteTimeParser.parse("   2007-01-18T    12:10:13.123+02    ");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
         assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
@@ -60,7 +137,7 @@ public class TimeParserUnitTest extends TestCase
         Calendar cal3 = AbsoluteTimeParser.parse(cal2, "     ");
         // Copy, or same instance?
         // But in any case should the values match what we had in cal.
-        assertEquals(cal, cal3);
+        assertEquals(cal2, cal3);
 
         // Only date, no time
         cal = AbsoluteTimeParser.parse("2007-01-18");
@@ -72,6 +149,8 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, cal.get(Calendar.MINUTE));
         assertEquals( 0, cal.get(Calendar.SECOND));
         assertEquals( 0, cal.get(Calendar.MILLISECOND));
+
+
 
         // Only time, keep the date
         cal2 = AbsoluteTimeParser.parse(cal, "13:45");
@@ -86,7 +165,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals( 0, cal2.get(Calendar.SECOND));
         assertEquals( 0, cal.get(Calendar.MILLISECOND));
 
-        // Only time, with millisecs
+          // Only time, with millisecs
         cal2 = AbsoluteTimeParser.parse(cal, "14:00:24.156959772");
         // Should return new instance, not change the cal we passed in.
         assertNotSame(cal, cal2);
@@ -98,6 +177,7 @@ public class TimeParserUnitTest extends TestCase
         assertEquals(00, cal2.get(Calendar.MINUTE));
         assertEquals(24, cal2.get(Calendar.SECOND));
         assertEquals(156, cal2.get(Calendar.MILLISECOND));
+
 
         // Only month and day, but no year
         cal = AbsoluteTimeParser.parse(cal, "02-15 13:45");
@@ -168,6 +248,8 @@ public class TimeParserUnitTest extends TestCase
     @Test
     public void testTimeParser() throws Exception
     {
+
+        final DateTimeFormatter format = TimestampFormats.SECONDS_FORMAT;
         // abs, abs
         String start = "2006-01-02 03:04:05";
         String end = "2007-05-06 07:08:09";
