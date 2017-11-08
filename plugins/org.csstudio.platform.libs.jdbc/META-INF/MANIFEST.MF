@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  libs/ojdbc6_g.jar,
- libs/postgresql-9.3-1102.jdbc41.jar,
+ libs/postgresql-42.1.4.jar,
  libs/mysql-connector-java-5.1.36-bin.jar
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
