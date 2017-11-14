@@ -460,6 +460,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                                 timer.start(new Runnable() {
                                     @Override
                                     public void run() {
+                                        // Update the change listeners with the current value after some delay
                                         fireManualValueChange(value);
                                     }
                                 }, 100);
