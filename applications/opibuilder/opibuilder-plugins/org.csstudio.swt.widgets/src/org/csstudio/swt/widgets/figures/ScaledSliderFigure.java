@@ -461,7 +461,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                                     @Override
                                     public void run() {
                                         fireManualValueChange(value);
-                                        System.out.println("Timer called");
                                     }
                                 }, 100);
                             }
