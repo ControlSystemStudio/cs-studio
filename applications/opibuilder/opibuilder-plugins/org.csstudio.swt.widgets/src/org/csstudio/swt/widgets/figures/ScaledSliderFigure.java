@@ -15,6 +15,7 @@ import java.util.List;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figureparts.AlphaLabel;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.swt.widgets.util.OPITimer;
 import org.csstudio.swt.widgets.util.RepeatFiringBehavior;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
@@ -430,6 +431,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 protected boolean armed;
 
+                private OPITimer timer;
+
                 public void mouseDoubleClicked(MouseEvent me) {
 
                 }
@@ -449,8 +452,19 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                         double valuePosition =
                                 ((LinearScale)scale).getValuePosition(getCoercedValue(), false);
 
-                        if(value != oldValue){
-                            fireManualValueChange(value);
+                        if(value != oldValue) {
+                            if(timer == null) {
+                                timer = new OPITimer();
+                            }
+                            if(timer.isDue()) {
+                                timer.start(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fireManualValueChange(value);
+                                        System.out.println("Timer called");
+                                    }
+                                }, 100);
+                            }
                         }
                         start = new Point(
                                     horizontal? valuePosition: 0,
