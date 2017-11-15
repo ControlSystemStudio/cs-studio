@@ -452,6 +452,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                         double valuePosition =
                                 ((LinearScale)scale).getValuePosition(getCoercedValue(), false);
 
+                        // Throttle updates to a maximum of 10 Hz. This avoids a large number of
+                        // updates being queued and continuing to update the PV value (and hence
+                        // the slider position) after the drag has finished.
                         if(value != oldValue) {
                             if(timer == null) {
                                 timer = new OPITimer();
@@ -460,7 +463,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                                 timer.start(new Runnable() {
                                     @Override
                                     public void run() {
-                                        // Update the change listeners with the current value after some delay
+                                        // This call is what finally sets the PV value to the
+                                        // latest cached value.
                                         fireManualValueChange(value);
                                     }
                                 }, 100);
