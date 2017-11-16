@@ -15,6 +15,7 @@ import java.util.List;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figureparts.AlphaLabel;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.swt.widgets.util.OPITimer;
 import org.csstudio.swt.widgets.util.RepeatFiringBehavior;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
@@ -430,6 +431,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 protected boolean armed;
 
+                private OPITimer timer;
+
                 public void mouseDoubleClicked(MouseEvent me) {
 
                 }
@@ -449,8 +452,23 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                         double valuePosition =
                                 ((LinearScale)scale).getValuePosition(getCoercedValue(), false);
 
-                        if(value != oldValue){
-                            fireManualValueChange(value);
+                        // Throttle updates to a maximum of 10 Hz. This avoids a large number of
+                        // updates being queued and continuing to update the PV value (and hence
+                        // the slider position) after the drag has finished.
+                        if(value != oldValue) {
+                            if(timer == null) {
+                                timer = new OPITimer();
+                            }
+                            if(timer.isDue()) {
+                                timer.start(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // This call is what finally sets the PV value to the
+                                        // latest cached value.
+                                        fireManualValueChange(value);
+                                    }
+                                }, 100);
+                            }
                         }
                         start = new Point(
                                     horizontal? valuePosition: 0,
