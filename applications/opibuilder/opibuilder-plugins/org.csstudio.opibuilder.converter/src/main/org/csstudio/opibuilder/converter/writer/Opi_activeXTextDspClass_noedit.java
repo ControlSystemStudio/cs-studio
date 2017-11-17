@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import java.util.logging.Logger;
+
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextDspClass_noedit;
 
 /**
@@ -35,11 +36,18 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
         }
 
-        new OpiBoolean(widgetContext, "precision_from_pv", r.isLimitsFromDb());
+        // If precision is not specified, default to using precision from the PV.
+        // This matches EDM's behaviour.
+        if (r.isLimitsFromDb() || ! r.getAttribute("precision").isExistInEDL()) {
+            new OpiBoolean(widgetContext, "precision_from_pv", true);
+        } else {
+            new OpiBoolean(widgetContext, "precision_from_pv", false);
+            new OpiInt(widgetContext, "precision", r.getPrecision());
+        }
+
         new OpiBoolean(widgetContext, "show_units", r.isShowUnits());
         // Border alarm sensitivity only applies in EDM if already alarm sensitive.
         new OpiBoolean(widgetContext, "border_alarm_sensitive", r.isUseAlarmBorder() && r.isFgAlarm());
-        new OpiInt(widgetContext, "precision", r.getPrecision());
 
         int a=0;
         if(r.getFontAlign()==null)
@@ -49,7 +57,6 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
         else if(r.getFontAlign().equals("center"))
             a=1;
         new OpiInt(widgetContext, "horizontal_alignment", a);
-
 
         int f=0;
         if (r.getFormat() != null) {

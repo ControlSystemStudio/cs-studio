@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import java.util.logging.Logger;
+
 import org.csstudio.opibuilder.converter.model.Edm_activeSliderClass;
 
 /**
@@ -43,18 +44,23 @@ public class Opi_activeSliderClass extends OpiWidget {
             createColorAlarmRule(r, r.getControlPv(), "color_fillbackground",
                     "FillbackgroundColorAlarmRule", false);
         }
-
         new OpiDouble(widgetContext, "page_increment", r.getIncrement());
 
+        // If no min or max are specified, default to getting limits from PV.
+        if (r.getScaleMax() == 0 && r.getScaleMin() == 0) {
+            new OpiBoolean(widgetContext, "limits_from_pv", true);
+        } else {
+            new OpiBoolean(widgetContext, "limits_from_pv", r.isLimitsFromDb());
+        }
         new OpiDouble(widgetContext, "maximum", r.getScaleMax());
         new OpiDouble(widgetContext, "minimum", r.getScaleMin());
 
-        new OpiBoolean(widgetContext, "limits_from_pv", r.isLimitsFromDb());
 
         log.config("Edm_activeSliderClass written.");
 
     }
 
+    @Override
     protected void setDefaultPropertyValue(){
         super.setDefaultPropertyValue();
         new OpiBoolean(widgetContext, "transparent", true);
