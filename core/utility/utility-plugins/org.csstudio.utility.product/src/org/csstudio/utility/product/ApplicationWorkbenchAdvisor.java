@@ -9,7 +9,6 @@ package org.csstudio.utility.product;
 
 import java.net.URL;
 
-import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -17,7 +16,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -43,10 +41,7 @@ import org.osgi.framework.Bundle;
 @SuppressWarnings("restriction")
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-    protected OpenDocumentEventProcessor openDocProcessor;
-
-    public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
-        this.openDocProcessor = openDocProcessor;
+    public ApplicationWorkbenchAdvisor() {
     }
 
     @Override
@@ -72,13 +67,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     @Override
     public String getInitialWindowPerspectiveId() {
         return CSStudioPerspective.ID;
-    }
-
-    @Override
-    public void eventLoopIdle(final Display display) {
-        if (openDocProcessor != null)
-            openDocProcessor.catchUp(display);
-        super.eventLoopIdle(display);
     }
 
     @Override
