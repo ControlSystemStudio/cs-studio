@@ -47,7 +47,7 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         // To avoid this situation, we make sure that the schema service is already loaded
         // when we add the first connector. The schema service is a singleton and will
         // just be returned whenever requested from now on.
-        SchemaService.getInstance();
+        SchemaService.getInstance(false);
     }
 
     /**
@@ -148,7 +148,7 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
         IFigure layer = getLayer(LayerConstants.HANDLE_LAYER);
         handles = createAnchorHandles();
         for (int i = 0; i < handles.size(); i++)
-            layer.add((IFigure) handles.get(i));
+            layer.add(handles.get(i));
     }
 
     /**
@@ -173,7 +173,7 @@ public class WidgetNodeEditPolicy extends GraphicalNodeEditPolicy {
             return;
         IFigure layer = getLayer(LayerConstants.HANDLE_LAYER);
         for (int i = 0; i < handles.size(); i++)
-            layer.remove((IFigure) handles.get(i));
+            layer.remove(handles.get(i));
         handles = null;
     }
 }
