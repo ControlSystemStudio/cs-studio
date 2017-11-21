@@ -83,6 +83,7 @@ public class OPIShellSummary extends FXViewPart {
         HBox.setHgrow(summaryLabel, Priority.ALWAYS);
 
         closeAllButton = new Button("Close all");
+        closeAllButton.setMinWidth(80);
         closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -91,6 +92,7 @@ public class OPIShellSummary extends FXViewPart {
             }
         });
         showAllButton = new Button("Show all");
+        showAllButton.setMinWidth(80);
         showAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -159,6 +161,7 @@ public class OPIShellSummary extends FXViewPart {
                     shell.registerWithView(this);
                 }
                 Button closeButton = new Button("Close");
+                closeButton.setMinWidth(60);
                 Label titleLabel = new Label(shell.getTitle());
                 closeButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -168,6 +171,7 @@ public class OPIShellSummary extends FXViewPart {
                     }
                 });
                 Button showButton = new Button("Show");
+                showButton.setMinWidth(60);
                 showButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
