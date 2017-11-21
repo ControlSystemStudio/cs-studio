@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.security.authentication.LoginJob;
-import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.WorkbenchExtPoint;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
@@ -73,10 +72,7 @@ public class Workbench implements WorkbenchExtPoint
      * @return a new advisor instance
      */
     protected WorkbenchAdvisor createWorkbenchAdvisor(final Map<String, Object> parameters) {
-        final OpenDocumentEventProcessor openDocProcessor =
-                  (OpenDocumentEventProcessor) parameters.get(
-                          OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
-        return new ApplicationWorkbenchAdvisor(openDocProcessor);
+        return new ApplicationWorkbenchAdvisor();
     }
 
     /** {@inheritDoc} */
