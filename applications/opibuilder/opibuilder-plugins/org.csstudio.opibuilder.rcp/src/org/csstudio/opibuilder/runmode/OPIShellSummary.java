@@ -42,7 +42,7 @@ public class OPIShellSummary extends FXViewPart {
 
     private static final int MIN_SHOW_HIDE_BUTTON_SIZE = 60;  //px
     private static final int MIN_SHOW_HIDE_ALL_BUTTON_SIZE = 80;  //px
-    
+
     private ScrollPane scrollpane;
     private GridPane grid;
     private Scene scene;
