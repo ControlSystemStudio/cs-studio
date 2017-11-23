@@ -353,8 +353,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                 track.setCursor(Cursors.NO);
                 thumb.setCursor(Cursors.NO);
             }
-            repaint();
         }
+        repaint();
     }
 
     /**
