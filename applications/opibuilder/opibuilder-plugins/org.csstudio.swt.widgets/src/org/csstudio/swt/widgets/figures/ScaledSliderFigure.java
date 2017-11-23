@@ -459,7 +459,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 @Override
                 public void mouseDragged(MouseEvent me) {
-                    if (!armed || !runMode)
+                    if (!armed)
                         return;
                     Dimension difference = me.getLocation().getDifference(start);
                     double valueChange = calcValueChange(difference, value);
@@ -502,8 +502,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 @Override
                 public void mouseEntered(MouseEvent me) {
-                    if (!runMode)
-                        return;
                     temp = thumbColor;
                     thumbColor = GREEN_COLOR;
                     repaint();
@@ -511,8 +509,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 @Override
                 public void mouseExited(MouseEvent me) {
-                    if (!runMode)
-                        return;
                     thumbColor = temp;
                     label.setVisible(false);
                     repaint();
@@ -520,8 +516,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 @Override
                 public void mousePressed(MouseEvent me) {
-                    if (!runMode)
-                        return;
                     if(me.button != 1)
                         return;
                     armed = true;
@@ -540,8 +534,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 @Override
                 public void mouseReleased(MouseEvent me) {
-                    if (!runMode)
-                        return;
                     if(me.button != 1)
                         return;
                     if (!armed)
@@ -612,6 +604,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 setOutline(false);
                 setForegroundColor(GRAY_COLOR);
+                setCursor(Cursors.HAND);
 
                 behavior.setRunTask(new Runnable() {
 
@@ -635,8 +628,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                 addMouseListener(new MouseListener.Stub(){
                     @Override
                     public void mousePressed(MouseEvent me) {
-                        if (!runMode)
-                            return;
                         if(me.button != 1)
                             return;
                         Point start = me.getLocation();
@@ -657,8 +648,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                     }
                     @Override
                     public void mouseReleased(MouseEvent me) {
-                        if (!runMode)
-                            return;
                         if(me.button != 1)
                             return;
                         behavior.released();
