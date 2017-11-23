@@ -40,6 +40,9 @@ public class OPIShellSummary extends FXViewPart {
 
     public static final String ID = "org.csstudio.opibuilder.opiShellSummary";
 
+    private static final int MIN_SHOW_HIDE_BUTTON_SIZE = 60;  //px
+    private static final int MIN_SHOW_HIDE_ALL_BUTTON_SIZE = 80;  //px
+
     private ScrollPane scrollpane;
     private GridPane grid;
     private Scene scene;
@@ -83,6 +86,7 @@ public class OPIShellSummary extends FXViewPart {
         HBox.setHgrow(summaryLabel, Priority.ALWAYS);
 
         closeAllButton = new Button("Close all");
+        closeAllButton.setMinWidth(MIN_SHOW_HIDE_ALL_BUTTON_SIZE);
         closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -91,6 +95,7 @@ public class OPIShellSummary extends FXViewPart {
             }
         });
         showAllButton = new Button("Show all");
+        showAllButton.setMinWidth(MIN_SHOW_HIDE_ALL_BUTTON_SIZE);
         showAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -159,6 +164,7 @@ public class OPIShellSummary extends FXViewPart {
                     shell.registerWithView(this);
                 }
                 Button closeButton = new Button("Close");
+                closeButton.setMinWidth(MIN_SHOW_HIDE_BUTTON_SIZE);
                 Label titleLabel = new Label(shell.getTitle());
                 closeButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -168,6 +174,7 @@ public class OPIShellSummary extends FXViewPart {
                     }
                 });
                 Button showButton = new Button("Show");
+                showButton.setMinWidth(MIN_SHOW_HIDE_BUTTON_SIZE);
                 showButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
