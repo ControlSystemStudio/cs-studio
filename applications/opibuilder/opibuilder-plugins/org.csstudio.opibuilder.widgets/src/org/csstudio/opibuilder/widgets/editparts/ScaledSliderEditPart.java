@@ -43,8 +43,10 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
         slider.setHorizontal(model.isHorizontal());
         slider.setStepIncrement(model.getStepIncrement());
         slider.setPageIncrement(model.getPageIncrement());
+        slider.setRunMode(getExecutionMode().equals(ExecutionMode.RUN_MODE));
         slider.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE)
                     setPVValue(ScaledSliderModel.PROP_PVNAME, newValue);
@@ -70,6 +72,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 
         //fillColor
         IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {

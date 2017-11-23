@@ -90,6 +90,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
     private double pageIncrement = 10;
 
+    private boolean runMode = false;
+
     /**
      * Listeners that react on slider events.
      */
@@ -128,6 +130,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
         add(label, "label");
 
         addFigureListener(new FigureListener() {
+            @Override
             public void figureMoved(IFigure source) {
                 revalidate();
             }
@@ -135,6 +138,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
         addKeyListener(new KeyListener() {
 
+                @Override
                 public void keyPressed(KeyEvent ke) {
                     if((ke.keycode == SWT.ARROW_DOWN && !horizontal) ||
                             (ke.keycode == SWT.ARROW_LEFT && horizontal) )
@@ -148,16 +152,19 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                         pageDown();
                 }
 
+                @Override
                 public void keyReleased(KeyEvent ke) {
                 }
             });
 
         addFocusListener(new FocusListener() {
 
+                @Override
                 public void focusGained(FocusEvent fe) {
                     repaint();
                 }
 
+                @Override
                 public void focusLost(FocusEvent fe) {
                     repaint();
                 }
@@ -335,12 +342,19 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
         repaint();
     }
 
-
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
-        repaint();
-
+        if (runMode) {
+            if(value){
+                track.setCursor(Cursors.HAND);
+                thumb.setCursor(Cursors.HAND);
+            } else {
+                track.setCursor(Cursors.NO);
+                thumb.setCursor(Cursors.NO);
+            }
+            repaint();
+        }
     }
 
     /**
@@ -422,6 +436,11 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
         fireManualValueChange(getValue());
     }
 
+    public void setRunMode(boolean runMode) {
+        this.runMode = runMode;
+        thumb.setCursor(runMode ? Cursors.HAND: null);
+        track.setCursor(runMode ? Cursors.HAND: null);
+    }
 
     class Thumb extends Polygon {
         class ThumbDragger
@@ -433,12 +452,14 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 private OPITimer timer;
 
+                @Override
                 public void mouseDoubleClicked(MouseEvent me) {
 
                 }
 
+                @Override
                 public void mouseDragged(MouseEvent me) {
-                    if (!armed)
+                    if (!armed || !runMode)
                         return;
                     Dimension difference = me.getLocation().getDifference(start);
                     double valueChange = calcValueChange(difference, value);
@@ -479,19 +500,28 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
 
 
+                @Override
                 public void mouseEntered(MouseEvent me) {
+                    if (!runMode)
+                        return;
                     temp = thumbColor;
                     thumbColor = GREEN_COLOR;
                     repaint();
                 }
 
+                @Override
                 public void mouseExited(MouseEvent me) {
+                    if (!runMode)
+                        return;
                     thumbColor = temp;
                     label.setVisible(false);
                     repaint();
                 }
 
+                @Override
                 public void mousePressed(MouseEvent me) {
+                    if (!runMode)
+                        return;
                     if(me.button != 1)
                         return;
                     armed = true;
@@ -508,7 +538,10 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 }
 
+                @Override
                 public void mouseReleased(MouseEvent me) {
+                    if (!runMode)
+                        return;
                     if(me.button != 1)
                         return;
                     if (!armed)
@@ -579,10 +612,10 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 
                 setOutline(false);
                 setForegroundColor(GRAY_COLOR);
-                setCursor(Cursors.HAND);
 
                 behavior.setRunTask(new Runnable() {
 
+                    @Override
                     public void run() {
                         if(pageUp){
                             if(getValue() >=pressedValue)
@@ -602,6 +635,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                 addMouseListener(new MouseListener.Stub(){
                     @Override
                     public void mousePressed(MouseEvent me) {
+                        if (!runMode)
+                            return;
                         if(me.button != 1)
                             return;
                         Point start = me.getLocation();
@@ -622,6 +657,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                     }
                     @Override
                     public void mouseReleased(MouseEvent me) {
+                        if (!runMode)
+                            return;
                         if(me.button != 1)
                             return;
                         behavior.released();
@@ -802,6 +839,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
                 setLabel();
         }
 
+        @Override
         public void layout(IFigure container) {
             if(horizontal)
                 horizontalLayout(container);
