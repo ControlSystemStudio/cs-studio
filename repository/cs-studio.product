@@ -28,7 +28,7 @@
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.product/icons/css16.png" i32="/org.csstudio.product/icons/css32.png" i48="/org.csstudio.product/icons/css48.png" i64="/org.csstudio.product/icons/css64.png" i128="/org.csstudio.product/icons/css128.png"/>
+   <windowImages i16="/org.csstudio.product/icons/css16.png" i32="/org.csstudio.product/icons/css32.png" i48="/org.csstudio.product/icons/css48.png" i64="/org.csstudio.product/icons/css64.png" i128="/org.csstudio.product/icons/css128.png" i256="/org.csstudio.product/icons/css256.png"/>
 
    <splash
       location="org.csstudio.product"
