@@ -23,10 +23,10 @@ import org.eclipse.equinox.app.IApplicationContext;
  *  <p>To use, start product like this:
  *
  *  <code>
- *  css -application org.csstudio.opibuilder.adl2boy.application
+ *  css -nosplash
+ *      -application org.csstudio.opibuilder.adl2boy.application
  *      /path/to/file1.adl
  *      /path/to/file2.adl
- *
  *  </code>
  *
  *  @author Kay Kasemir
