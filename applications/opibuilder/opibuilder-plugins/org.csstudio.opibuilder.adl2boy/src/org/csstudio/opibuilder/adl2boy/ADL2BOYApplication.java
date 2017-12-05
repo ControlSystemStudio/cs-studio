@@ -37,7 +37,9 @@ public class ADL2BOYApplication implements IApplication
     @Override
     public Object start(final IApplicationContext context)
     {
-        System.out.println("ADL File Converter");
+        System.out.println("************************");
+        System.out.println("** ADL File Converter **");
+        System.out.println("************************");
 
         final String args[] =
                 (String []) context.getArguments().get("application.args");
@@ -85,12 +87,12 @@ public class ADL2BOYApplication implements IApplication
                               : new File(name + ".opi");
             if (! input.canRead())
             {
-                System.out.println("Cannot read " + input);
+                System.out.println("ERROR: Cannot read " + input);
                 return false;
             }
             if (output.exists())
             {
-                System.out.println("Output file already exists: " + output);
+                System.out.println("ERROR: Output file already exists: " + output);
                 return false;
             }
             inputs.add(input);
@@ -104,11 +106,11 @@ public class ADL2BOYApplication implements IApplication
 
     private void convert(final File input, final File output) throws Exception
     {
-        System.out.println("Reading " + input);
+        System.out.println("\n** Reading " + input);
         final DisplayModel model = TranslatorUtils.convertAdlToModel(input.toString());
         final String xml = XMLUtil.widgetToXMLString(model, true);
 
-        System.out.println("Writing " + output);
+        System.out.println("\n** Writing " + output);
         try
         (
             final FileOutputStream out = new FileOutputStream(output);
