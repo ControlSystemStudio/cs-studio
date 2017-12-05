@@ -1,45 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.adl2boy;
+
+import java.util.Arrays;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 
-/**
- * This class controls all aspects of the application's execution
+/** RCP command line application for ADL file converter
+ *
+ *  <p>To use, start product like this:
+ *
+ *  <code>
+ *  css -application org.csstudio.opibuilder.adl2boy.application
+ *      /path/to/file1.adl
+ *      /path/to/file2.adl
+ *
+ *  </code>
+ *
+ *  @author Kay Kasemir
  */
-public class ADL2BOYApplication implements IApplication {
+@SuppressWarnings("nls")
+public class ADL2BOYApplication implements IApplication
+{
+    @Override
+    public Object start(final IApplicationContext context)
+    {
+        System.out.println("ADL File Converter");
 
-    /* (non-Javadoc)
-     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-     */
-    public Object start(IApplicationContext context) {
-        Display display = PlatformUI.createDisplay();
-        try {
-            int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-            if (returnCode == PlatformUI.RETURN_RESTART) {
-                return IApplication.EXIT_RESTART;
-            }
-            return IApplication.EXIT_OK;
-        } finally {
-            display.dispose();
-        }
+        final String args[] =
+                (String []) context.getArguments().get("application.args");
+
+        System.out.println(Arrays.toString(args));
+
+        return IApplication.EXIT_OK;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.equinox.app.IApplication#stop()
-     */
-    public void stop() {
-        final IWorkbench workbench = PlatformUI.getWorkbench();
-        if (workbench == null)
-            return;
-        final Display display = workbench.getDisplay();
-        display.syncExec(new Runnable() {
-            public void run() {
-                if (!display.isDisposed())
-                    workbench.close();
-            }
-        });
+    @Override
+    public void stop()
+    {
     }
 }
