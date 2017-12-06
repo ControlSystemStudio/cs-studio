@@ -16,6 +16,7 @@
     <module>org.csstudio.alarm.beast.configtool</module>
     <module>org.csstudio.alarm.beast.configtool.test</module>
     <module>org.csstudio.alarm.beast.msghist</module>
+    <module>org.csstudio.alarm.beast.msghist.opiwidget</module>
     <module>org.csstudio.alarm.beast.msghist.test</module>
     <module>org.csstudio.alarm.beast.notifier</module>
     <module>org.csstudio.alarm.beast.notifier.intro</module>

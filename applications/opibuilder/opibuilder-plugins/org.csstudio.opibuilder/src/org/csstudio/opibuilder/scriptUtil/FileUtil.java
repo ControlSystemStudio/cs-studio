@@ -55,6 +55,7 @@ public class FileUtil {
     public static Element loadXMLFile(final String filePath, final AbstractBaseEditPart widget) throws Exception{
         final IPath path = buildAbsolutePath(filePath, widget);
         SAXBuilder saxBuilder = new SAXBuilder();
+        saxBuilder.setFeature("http://apache.org/xml/features/xinclude", true);
         saxBuilder.setEntityResolver(new CssEntityResolver());
         File file = ResourceUtil.getFile(path);
         final Document doc;

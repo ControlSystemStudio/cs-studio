@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            description="Displays alarms message history for a selected configuration or item"
+            editpart_class="org.csstudio.alarm.beast.msghist.opiwidget.MessageHistoryWidgetEditPart"
+            icon="icons/msg_hist.gif"
+            model_class="org.csstudio.alarm.beast.msghist.opiwidget.MessageHistoryWidgetModel"
+            name="Message history"
+            typeId="org.csstudio.alarm.beast.msghist">
+      </widget>
+   </extension>
+</plugin>
