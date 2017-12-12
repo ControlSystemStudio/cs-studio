@@ -193,6 +193,12 @@ public class RCPUIHelper extends UIHelper
         final GC gc = new GC(drawable);
         final Image image = new Image(display, bounds);
         gc.copyArea(image, 0, 0);
+        /* This is a workaround for issue 2345 - empty screenshot
+         * https://github.com/ControlSystemStudio/cs-studio/issues/2345
+         *
+         * The workaround is calling gc.copyArea twice.
+         */
+        gc.copyArea(image, 0, 0);
         gc.dispose();
 
         return image;
@@ -212,7 +218,7 @@ public class RCPUIHelper extends UIHelper
         // Issue 2:
         // Part can still be closed via Ctrl-W (Command-W on OS X)
         // or via menu File/close.
-        final MPart part = (MPart) site.getService(MPart.class);
+        final MPart part = site.getService(MPart.class);
         part.setCloseable(false);
 
         // Original RCP code
@@ -233,8 +239,8 @@ public class RCPUIHelper extends UIHelper
         // Pre-E4 code:
         //  ((WorkbenchPage)page).detachView(page.findViewReference(OPIView.ID, secondID));
         // See http://tomsondev.bestsolution.at/2012/07/13/so-you-used-internal-api/
-        final EModelService model = (EModelService) view.getSite().getService(EModelService.class);
-        MPartSashContainerElement p = (MPart) view.getSite().getService(MPart.class);
+        final EModelService model = view.getSite().getService(EModelService.class);
+        MPartSashContainerElement p = view.getSite().getService(MPart.class);
         // Part may be shared by several perspectives, get the shared instance
         if (p.getCurSharedRef() != null)
             p = p.getCurSharedRef();

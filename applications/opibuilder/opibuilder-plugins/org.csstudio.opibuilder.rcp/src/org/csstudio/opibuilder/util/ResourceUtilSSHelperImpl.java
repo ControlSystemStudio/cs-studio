@@ -240,10 +240,17 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         final Image image = new Image(Display.getDefault(), viewer.getControl()
                 .getSize().x, viewer.getControl().getSize().y);
         gc.copyArea(image, 0, 0);
+        /* This is a workaround for issue 2345 - empty screenshot
+         * https://github.com/ControlSystemStudio/cs-studio/issues/2345
+         *
+         * The workaround is calling gc.copyArea twice.
+         */
+        gc.copyArea(image, 0, 0);
         gc.dispose();
         return image;
     }
 
+    @Override
     public IEditorInput editorInputFromPath(IPath path) {
         IEditorInput editorInput = null;
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
