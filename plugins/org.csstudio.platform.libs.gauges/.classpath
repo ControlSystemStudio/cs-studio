@@ -8,7 +8,8 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/controlsfx-8.40.14.jar" sourcepath="lib/controlsfx-8.40.14-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/KNOBS-1.0.9.jar" sourcepath="lib/KNOBS-1.0.9-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/THUMBWHEEL-1.0.0.jar" sourcepath="lib/THUMBWHEEL-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/KNOBS-1.0.10.jar" sourcepath="lib/KNOBS-1.0.10-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Medusa-7.9.7.jar" sourcepath="lib/Medusa-7.9.7-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
