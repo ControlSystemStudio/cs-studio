@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.alarm.beast.msghist.PropertyColumnPreference;
+import org.csstudio.alarm.beast.msghist.model.FilterQuery;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.csstudio.alarm.beast.msghist.model.Model;
 import org.csstudio.alarm.beast.msghist.model.ModelListener;
@@ -88,6 +89,9 @@ public class GUI extends Composite implements ModelListener {
     /** The auto refresh. */
     private Button times, filter, refresh, autoRefresh;
 
+    /** The filter status. */
+    private Label filterStatus;
+
     /** The time unit. */
     private TimeUnit timeUnit = TimeUnit.SECONDS;
 
@@ -108,6 +112,9 @@ public class GUI extends Composite implements ModelListener {
 
     /** The end time. */
     private String endTime = "now";
+
+    /** Filter status msg format. */
+    private String FILTER_STATUS_FORMAT = "Current filter: %s";
 
     /** The log info msg auto refresh started. */
     private String LOG_INFO_MSG_AUTO_REFRESH_STARTED = "auto refresh at ";
@@ -178,9 +185,7 @@ public class GUI extends Composite implements ModelListener {
             /*
              * (non-Javadoc)
              *
-             * @see
-             * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
-             * (org.eclipse.jface.util.PropertyChangeEvent)
+             * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange (org.eclipse.jface.util.PropertyChangeEvent)
              */
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -233,8 +238,8 @@ public class GUI extends Composite implements ModelListener {
     }
 
     /**
-     * Update Model's time range, display exception in dialog box. If all goes
-     * well, GUI should update in response to model's update event.
+     * Update Model's time range, display exception in dialog box. If all goes well, GUI should update in response to model's
+     * update event.
      *
      * @param start_spec
      *            the start_spec
@@ -250,8 +255,8 @@ public class GUI extends Composite implements ModelListener {
     }
 
     /**
-     * Update Model's filter, display exception in dialog box. If all goes well,
-     * GUI should update in response to model's update event.
+     * Update Model's filter, display exception in dialog box. If all goes well, GUI should update in response to model's update
+     * event.
      */
     private void updateFilters() {
         final FilterDialog dlg = new FilterDialog(filter.getShell(), properties, model.getFilters());
@@ -322,6 +327,10 @@ public class GUI extends Composite implements ModelListener {
         autoRefresh.setSelection(true);
         autoRefresh.setToolTipText(autoRefreshEnableMsg);
         autoRefresh.setLayoutData(new GridData());
+
+        filterStatus = new Label(this, SWT.NONE);
+        filterStatus.setText(String.format(FILTER_STATUS_FORMAT, ""));
+        filterStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, layout.numColumns, 1));
 
         // New row: Table of messages
         // TableColumnLayout requires the TableViewer to be in its own Composite
@@ -493,6 +502,7 @@ public class GUI extends Composite implements ModelListener {
                     start.setText(model.getStartSpec());
                 if (!end.isFocusControl())
                     end.setText(model.getEndSpec());
+                filterStatus.setText(String.format(FILTER_STATUS_FORMAT, FilterQuery.fromModel(model)));
 
                 // refresh table and keep selections
                 int[] tableSelectionIndices = table_viewer.getTable().getSelectionIndices();
