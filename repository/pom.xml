@@ -181,7 +181,7 @@
                   <id>org.glassfish:javax.json:1.0.4</id>
                 </artifact>
                 <artifact>
-                  <id>org.jdom:jdom:1.1</id>
+                  <id>org.jdom:jdom:1.1.3</id>
                 </artifact>
                 <artifact>
                   <id>junit:junit-dep:4.10</id>
