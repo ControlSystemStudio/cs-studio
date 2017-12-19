@@ -108,7 +108,8 @@ public class ADL2BOYApplication implements IApplication
     {
         System.out.println("\n** Reading " + input);
         final DisplayModel model = TranslatorUtils.convertAdlToModel(input.toString());
-        final String xml = XMLUtil.widgetToXMLString(model, true);
+        String xml = XMLUtil.widgetToXMLString(model, true);
+        xml = TranslatorUtils.patchXML(xml);
 
         System.out.println("\n** Writing " + output);
         try
