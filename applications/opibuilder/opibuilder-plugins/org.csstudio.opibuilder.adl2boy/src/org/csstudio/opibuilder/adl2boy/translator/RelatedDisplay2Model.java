@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
+import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
@@ -39,7 +40,16 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 
     @Override
     public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
-        widgetModel = new MenuButtonModel();
+        final RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
+        final RelatedDisplayItem[] rdDisplays = rdWidget.getRelatedDisplayItems();
+        // ActionButton allows pressing Ctrl etc. to influence how a display
+        // is opened at runtime, so prefer that.
+        // .. unless there are more than one related display,
+        // in which case the menu button is more practical
+        if (rdDisplays.length > 1)
+            widgetModel = new MenuButtonModel();
+        else
+            widgetModel = new ActionButtonModel();
         parentModel.addChild(widgetModel, true);
     }
 
@@ -57,9 +67,15 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
             if (rdDisplays.length > 0) {
                 ActionsInput ai = widgetModel.getActionsInput();
                 for (int ii = 0; ii < rdDisplays.length; ii++) {
-                    if (!(rdDisplays[ii].getFileName().replaceAll("\"", "")
-                            .equals(""))) {
-                        OpenDisplayAction odAction = createOpenDisplayAction(rdDisplays[ii]);
+                    if (!(rdDisplays[ii].getFileName().replaceAll("\"", "").equals("")))
+                    {
+                        final OpenDisplayAction odAction = createOpenDisplayAction(rdDisplays[ii]);
+                        // For menu, always new tab because menu button doesn't
+                        // allow user to use 'Ctrl' etc at runtime.
+                        // Users can always close the new tab, but have no other way
+                        // to get new tab.
+                        if (widgetModel instanceof MenuButtonModel)
+                            odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB.ordinal());
                         ai.addAction(odAction);
                     }
                 }
@@ -73,7 +89,8 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
                 label = label.substring(1);
             }
         }
-        widgetModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
+        if (widgetModel instanceof ActionButtonModel)
+            widgetModel.setPropertyValue(ActionButtonModel.PROP_TEXT, label);
     }
 
     /**
@@ -101,12 +118,12 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
         if ((rdDisplay.getPolicy() != null)) { // policy is present
             if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) {
                 // replace the display
-                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.REPLACE);
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.REPLACE.ordinal());
             } else { // don't replace the display
-                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB.ordinal());
             }
         } else { // policy not present go to default, i.e. don't replace, open new tab
-            odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
+            odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB.ordinal());
         }
         return odAction;
     }
