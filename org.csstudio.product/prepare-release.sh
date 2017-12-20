@@ -6,9 +6,8 @@ VERSION=$1
 COMPATLINK=$2
 MILESTONE=$3
 NOTES=$4
-PUSH=$5
 BUILD_DIR="build"
-if [ $# != 5 ]
+if [ $# != 4 ]
 then 
   echo You must provide the product version, compat link, milestone, notes \(e.g. \"prepare_release.sh 3.3.0 \"https://github\" \"https://github\" \"Some notes\"\"\)
 exit -1
@@ -55,11 +54,5 @@ sed -i '/<\/p>/ a\ \n'"${HTML}" plugins/org.csstudio.startup.intro/html/changelo
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
-if [ "$PUSH" = "true" ]
-then
-  echo ::: Tagging version $VERSION :::
-  git tag CSS-$VERSION
-  echo ::: Pushing changes :::
-  git push origin
-  git push origin CSS-$VERSION
-fi
+echo ::: Tagging version $VERSION :::
+git tag CSS-$VERSION
