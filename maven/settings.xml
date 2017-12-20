@@ -1,0 +1,111 @@
+<!-- Maven settings.xml -->
+<settings>
+    <profiles>
+        <profile>
+            <id>css-settings</id>
+            <repositories>
+                <repository>
+                    <id>csstudio-issue-1818</id>
+                    <url>http://download.controlsystemstudio.org/issue/1818</url>
+                    <layout>p2</layout>
+                </repository>
+            </repositories>
+            <properties>
+                <!-- Optionally, configure a composite repo.
+                  By default, the Maven build will fetch all
+                  depenencies from remote repositories.
+                  In your composite repository, you can list
+                  local repositories.
+                -->
+                <!-- Path to your composite repo -->
+                <csstudio.composite.repo>./p2repo</csstudio.composite.repo>
+
+                <!-- By default, even if you use a composite repo
+                  that lists local P2 sites,
+                  Maven will still consult the remote CSS repos.
+                  Setting this property DISABLES downloads from
+                  http://download.controlsystemstudio.org,
+                  so you use _only_ sites listed in your composite repo.
+                  If you still want to use selected entries from
+                  http://download.controlsystemstudio.org,
+                  you can list them in your composite repo.
+                -->
+                <cs-studio>false</cs-studio>
+                <!-- <eclipse>true</eclipse> -->
+
+                <!-- Ignore artifacts in ~/.m2/repository/p2,
+                  which some other "mvn install" may have placed
+                  there.
+                -->
+                <tycho.localArtifacts>ignore</tycho.localArtifacts>
+
+                <!-- Issue warnings instead of aborting on error -->
+                <baselineMode>warn</baselineMode>
+                <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+            </properties>
+        </profile>
+        <profile>
+            <id>css-settings-staging</id>
+            <repositories>
+                <repository>
+                    <id>staged-releases</id>
+                    <url>https://oss.sonatype.org/content/repositories/staging</url>
+                </repository>
+                <repository>
+                    <id>csstudio-issue-1818</id>
+                    <url>http://download.controlsystemstudio.org/issue/1818</url>
+                    <layout>p2</layout>
+                </repository>
+            </repositories>
+            <properties>
+                <!-- Optionally, configure a composite repo.
+                  By default, the Maven build will fetch all
+                  depenencies from remote repositories.
+                  In your composite repository, you can list
+                  local repositories.
+                -->
+                <!-- Path to your composite repo -->
+                <csstudio.composite.repo>./p2repo</csstudio.composite.repo>
+
+                <!-- By default, even if you use a composite repo
+                  that lists local P2 sites,
+                  Maven will still consult the remote CSS repos.
+                  Setting this property DISABLES downloads from
+                  http://download.controlsystemstudio.org,
+                  so you use _only_ sites listed in your composite repo.
+                  If you still want to use selected entries from
+                  http://download.controlsystemstudio.org,
+                  you can list them in your composite repo.
+                -->
+                <cs-studio>false</cs-studio>
+                <!-- <eclipse>true</eclipse>  -->
+
+                <!-- Ignore artifacts in ~/.m2/repository/p2,
+                  which some other "mvn install" may have placed
+                  there.
+                -->
+                <tycho.localArtifacts>ignore</tycho.localArtifacts>
+
+                <!-- Issue warnings instead of aborting on error -->
+                <baselineMode>warn</baselineMode>
+                <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+            </properties>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>css-settings</activeProfile>
+    </activeProfiles>
+    <servers>
+        <server>
+            <id>central</id>
+            <configuration>
+                <httpConfiguration>
+                    <all>
+                        <connectionTimeout>240000</connectionTimeout>
+                        <readTimeout>240000</readTimeout>
+                    </all>
+                </httpConfiguration>
+            </configuration>
+        </server>
+    </servers>
+</settings>
