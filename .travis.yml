@@ -21,7 +21,7 @@ before_script:
 
 script:
  - java -version
- - ./travis.sh
+ - ./build/travis.sh
 
 after_failure:
  - cat *.log

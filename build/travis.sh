@@ -2,12 +2,12 @@
 set -e
 
 function doCompile {
-  ./clean-and-build-no-tests.sh
+  ./build/clean-and-build-tests.sh
 }
 
 function doCompileWithDeploy {
   echo "<settings><servers><server><id>s3.site</id><username>\${env.S3USER}</username><password>\${env.S3PASS}</password></server></servers></settings>" > ~/settings.xml
-  ./clean-and-build-no-tests-upload.sh
+  ./build/clean-and-build-tests-upload.sh
 }
 
 function catTests {
