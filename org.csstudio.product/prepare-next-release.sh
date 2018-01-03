@@ -2,7 +2,6 @@
 
 # Check parameters
 VERSION=$1
-PUSH=$2
 BUILD_DIR="build"
 
 VERSIONP=$(echo $VERSION | sed -r 's/(.*)\.(.*)\.(.*)/echo \1\.\2\.$((\3+1))/ge');
@@ -26,8 +25,3 @@ sed -i 's/\(\<product[^>]\+\? version=\"\)[^"]*\("[^>]\+\?>\)/\1'${VERSIONP}'\2/
 
 echo ::: Committing and tagging version $VERSION :::
 git commit -a -m "Updating changelog, splash, manifests to version $VERSION"
-if [ "$PUSH" = "true" ]
-then
-  echo ::: Pushing changes :::
-  git push origin
-fi
