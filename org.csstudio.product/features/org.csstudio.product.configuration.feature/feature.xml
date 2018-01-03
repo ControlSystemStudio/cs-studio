@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.product.configuration.feature"
+      label="CS-Studio Product Configuration"
+      version="4.5.4"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;"
+      plugin="org.csstudio.product">
+
+   <description url="http://controlsystemstudio.github.io/">
+      CS-Studio Product Configuration.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License.
+   </license>
+
+   <plugin
+         id="org.eclipse.draw2d"
+         download-size="0"
+         install-size="0"
+         version="3.9.101.201408150207"
+         unpack="false"/> 
+</feature>
