@@ -107,5 +107,10 @@
                 </httpConfiguration>
             </configuration>
         </server>
+        <server>
+            <id>s3.site</id>
+            <username>${env.S3USER}</username>
+            <password>${env.S3PASS}</password>
+        </server>
     </servers>
 </settings>
