@@ -17,7 +17,7 @@ function catTests {
 REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 REPO_ORG_GIT=${REPO/https:\/\/github.com\//}
-REPO_ORG=${REPO_ORG_GIT/\/cs-studio\.git/}
+REPO_ORG=${REPO_ORG_GIT/\/org\.csstudio\.product\.git/}
 SHA=`git rev-parse --verify HEAD`
 CORE=false
 APPLICATIONS=false
