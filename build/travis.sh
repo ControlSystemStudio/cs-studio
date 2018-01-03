@@ -22,6 +22,7 @@ SHA=`git rev-parse --verify HEAD`
 CORE=false
 APPLICATIONS=false
 
+echo "Tag: $TRAVIS_TAG"
 echo $REPO
 echo $REPO_ORG
 echo $SHA
