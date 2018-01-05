@@ -190,6 +190,7 @@
 			<properties>
 				<!-- Properties relative to the distant host where to upload the repo -->
 				<ftp.url>s3://download.controlsystemstudio.org/${project.parent.artifactId}/${cs-studio.version}</ftp.url>
+				<ftp.url.release>s3://download.controlsystemstudio.org/release/${cs-studio.version}</ftp.url.release>
 			</properties>
 			<build>
 				<plugins>
@@ -209,6 +210,19 @@
 									<fromDir>target/centralrepository</fromDir>
 									<includes>**</includes>
 									<url>${ftp.url}</url>
+									<serverId>s3.site</serverId>
+								</configuration>
+							</execution>
+							<execution>
+								<id>upload-zip-archive</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>target/products</fromDir>
+									<includes>cs-studio-${cs-studio.version}*</includes>
+									<url>${ftp.url.release}</url>
 									<serverId>s3.site</serverId>
 								</configuration>
 							</execution>

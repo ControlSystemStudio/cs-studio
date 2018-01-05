@@ -27,12 +27,16 @@ echo $REPO_ORG
 echo $SHA
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$REPO_ORG" == "ControlSystemStudio" ] && ([[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+\.x ]] || [ "$TRAVIS_BRANCH" == "master" ]); then
-    echo "Deploying"
+if [ -n "$TRAVIS_TAG" ]; then
+    echo "Depolying"
     doCompileWithDeploy
 else
-    echo "Skipping deploy; just doing a build."
-    doCompile
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$REPO_ORG" == "ControlSystemStudio" ] && ([[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+\.x ]] || [ "$TRAVIS_BRANCH" == "master" ]); then
+        echo "Skipping deploying on target branch, deploy runs on tag"
+        doCompile
+    else
+        echo "Skipping deploy; just doing a build."
+        doCompile
+    fi
 fi
-
 exit 0

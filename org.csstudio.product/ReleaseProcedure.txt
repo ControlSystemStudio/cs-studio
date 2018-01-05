@@ -1,8 +1,0 @@
-Product Release Procedure
-------------------------------------------------------------
-
-source prepare-release.sh 3.3.1 "https://github.com/ControlSystemStudio/cs-studio/wiki/Compatibility" "https://github.com/ControlSystemStudio/cs-studio/issues?milestone=10&page=1&state=closed" "First release of single product"
-
-source package.sh 3.3.1
-
-
