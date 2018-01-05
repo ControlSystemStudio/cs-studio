@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Cs-studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.5.5" useFeatures="true" includeLaunchers="true">
+<product name="Cs-studio" uid="cs-studio" id="org.csstudio.product.product" application="org.csstudio.product.application" version="4.5.6" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.product/icons/cs-studio-about.png"/>
