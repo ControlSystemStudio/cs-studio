@@ -7,7 +7,7 @@ BUILD_DIR="build"
 VERSIONP=$(echo $VERSION | sed -r 's/(.*)\.(.*)\.(.*)/echo \1\.\2\.$((\3+1))/ge');
 VERSION="${VERSIONP}-SNAPSHOT"
 
-if [! $# == 1 ]
+if [ $# != 1 ]
 then 
   echo You must provide the product version, compat link, milestone, notes \(e.g. \"prepare_release.sh 3.3.0 \"https://github\" \"https://github\" \"Some notes\"\"\)
 exit -1
