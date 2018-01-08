@@ -196,9 +196,10 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
                 hookGEFToSWTWidget(swtWidget, menuDetectListener);
 
-                // hook the context menu to combo
-                swtWidget.setMenu(editPart.getViewer().getContextMenu()
-                        .createContextMenu(composite));
+                // hook the context menu, unless SWT widget already created its own context menu
+                if (swtWidget.getMenu() == null)
+                    swtWidget.setMenu(editPart.getViewer().getContextMenu()
+                            .createContextMenu(composite));
             }
 
             /**Add menu detect listener recursively to all children widgets inside the SWT Widget.
