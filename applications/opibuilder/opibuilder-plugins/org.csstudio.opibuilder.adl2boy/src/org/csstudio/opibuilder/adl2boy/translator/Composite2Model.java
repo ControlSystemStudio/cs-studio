@@ -22,6 +22,7 @@ public class Composite2Model extends AbstractADL2Model {
         super(adlWidget, colorMap, parentModel);
     }
 
+    @Override
     public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
         Composite compositeWidget = new Composite(adlWidget);
 
@@ -50,13 +51,14 @@ public class Composite2Model extends AbstractADL2Model {
             }
         }
         if (compositeWidget.hasCompositeFile()) {
+            // Expect "path_to_file;macros"
             String[] compositeFile = compositeWidget.get_compositeFile().replaceAll("\"", "").split(";");
-            if (compositeFile.length > 0){
+            if (compositeFile.length > 0)
+            {
                 widgetModel.setPropertyValue(LinkingContainerModel.PROP_OPI_FILE, compositeFile[0].replace(".adl", ".opi"));
 
-                if (compositeFile[1].length() > 0){
+                if (compositeFile.length > 1 && compositeFile[1].length() > 0)
                     widgetModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, makeMacros(compositeFile[1]));
-                }
             }
             else {
                 TranslatorUtils.printNotHandledWarning(className, "composite file");
