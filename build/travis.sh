@@ -60,10 +60,9 @@ done
 echo "CORE=${CORE}"
 echo "APP=${APPLICATIONS}"
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-# Deploy moved to produt repo
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$REPO_ORG" == "ControlSystemStudio" ] && ([[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+\.x ]] || [ "$TRAVIS_BRANCH" == "master" ]); then
     echo "Deploying"
-    doCompile
+    doCompileWithDeploy
     catTests
 else
     echo "Skipping deploy; just doing a build."
