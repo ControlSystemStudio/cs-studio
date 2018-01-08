@@ -21,8 +21,6 @@
  */
 package org.csstudio.platform.libs.epics;
 
-import gov.aps.jca.jni.JNITargetArch;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -153,51 +151,6 @@ public class EpicsPlugin extends Plugin
 				DefaultScope.SCOPE});
         
         installPreferences();
-
-        if (!use_pure_java)
-        {
-            final String jni_target = JNITargetArch.getTargetArch();
-            // this property must be unset, because JCA might mistakenly use it
-            final String path = "gov.aps.jca.jni.epics."
-                                 .concat(jni_target).concat(".library.path");
-            System.setProperty(path, "");
-            // In case we have a dependency to Com and ca,
-            // try to load those.
-            // Stricly speaking, loadLibray() might only apply to
-            // real JNI libs, and not ordinary shared libs.
-            // So the preferred method is to build a JCA JNILIB
-            // without further dependencies, in which case it's
-            // OK for the following two calls to fail:
-            Throwable com_ca_exception = null;
-            try
-            {
-                System.loadLibrary("Com");
-                System.loadLibrary("ca");
-            }
-            catch (Throwable ex)
-            {
-                // Remember the error because it might explain a follow-up
-                // jca load error.
-                // On the other hand, if jca loads OK, we can ignore this one.
-                com_ca_exception = ex;
-            }
-            // Load the JCA library.
-            // This better works out OK.
-            try
-            {
-                System.loadLibrary("jca");
-            }
-            catch (Throwable ex)
-            {
-                if (com_ca_exception != null)
-                    getLogger().log(Level.CONFIG,
-                        "Cannot load Com and ca libraries. "
-                        + "Could be a problem if JCA binary depends on them",
-                        com_ca_exception);
-                // This is an error for sure:
-                getLogger().log(Level.SEVERE, "Cannot load JCA binary", ex);
-            }
-        }
     }
 
     /**
@@ -252,66 +205,43 @@ public class EpicsPlugin extends Plugin
             setSystemProperty("EPICSPlug.property.max_threads", Integer.toString(20));
             setSystemProperty("EPICSPlug.default_pendIO_timeout", Integer.toString(1));
 
-            // Set the 'CAJ' and 'JNI' copies of the settings
+            // Set the 'CAJ' copies of the settings
             setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
             final String addr_list =
                 prefs.getString(ID, PreferenceConstants.ADDR_LIST, null, null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list",
-                              addr_list);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list",
                               addr_list);
 
             final String auto_addr = Boolean.toString(
                 prefs.getBoolean(ID, PreferenceConstants.AUTO_ADDR_LIST, true, null));
             setSystemProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
                               auto_addr);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
-                              auto_addr);
 
             final String timeout =
                 prefs.getString(ID, PreferenceConstants.TIMEOUT, "30.0", null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
                             timeout);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
-                    timeout);
 
             final String beacon_period =
                 prefs.getString(ID, PreferenceConstants.BEACON_PERIOD, "15.0", null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period",
                             beacon_period);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period",
-                    beacon_period);
 
             final String repeater_port =
                 prefs.getString(ID, PreferenceConstants.REPEATER_PORT, "5065", null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
                             repeater_port);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.repeater_port",
-                    repeater_port);
 
             final String server_port =
                 prefs.getString(ID, PreferenceConstants.SERVER_PORT, "5064", null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port",
                             server_port);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.server_port",
-                    server_port);
 
             final String max_array_bytes =
                 prefs.getString(ID, PreferenceConstants.MAX_ARRAY_BYTES, "16384", null);
             setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes",
                             max_array_bytes);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes",
-                            max_array_bytes);
 
-            // Select the QueuedEventDispatcher, because that avoids
-            // deadlocks when calling JCA while receiving JCA callbacks
-            //setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher",
-            //                "gov.aps.jca.event.QueuedEventDispatcher");
-            // Select the DirectEventDispatcher:
-            // As long as the PV library that uses JCA avoids deadlocks,
-            // this is faster than the QueuedEventDispatcher
-            setSystemProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
-                    "gov.aps.jca.event.DirectEventDispatcher");
         }
         catch (Exception ex)
         {

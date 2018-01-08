@@ -19,11 +19,10 @@
     <cs-studio.version>4.5</cs-studio.version>
     <csstudio.version>4.5.0-SNAPSHOT</csstudio.version>
     <epics.util.version>0.3.2</epics.util.version>
-    <epics.caj.version>1.1.15</epics.caj.version>
-    <epics.jca.version>2.3.6</epics.jca.version>
+    <epics.jca.version>2.4.1</epics.jca.version>
     <graphene.version>0.8.0</graphene.version>
-    <pvdata.version>5.0.3</pvdata.version>
-    <pvaccess.version>4.1.3</pvaccess.version>
+    <pvdata.version>6.1.1</pvdata.version>
+    <pvaccess.version>5.1.1</pvaccess.version>
     <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     <cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
@@ -40,15 +39,6 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
-
-  <repositories>
-    <repository>
-      <id>epics</id>
-      <name>EPICS Repository</name>
-      <url>http://epics.sourceforge.net/maven2/</url>
-    </repository>
-  </repositories>
 
   <modules>
     <module>epics</module>
