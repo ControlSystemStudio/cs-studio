@@ -70,6 +70,7 @@ public class FullScreenAction extends Action implements
             if(!menuBarWasInvisible)
                 shell.setMenuBar(menuBar);
             inFullScreen = false;
+            WorkbenchWindowService.setInFullScreenMode(false);
             setText(FULLSCREEN);
             setImageDescriptor(fullScreenImage);
         } else {
@@ -97,6 +98,7 @@ public class FullScreenAction extends Action implements
             }
             shell.setMenuBar(null);
             inFullScreen = true;
+            WorkbenchWindowService.setInFullScreenMode(true);
 
             setText(EXIT_FULL_SCREEN);
             setImageDescriptor(exitFullScreenImage);

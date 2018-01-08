@@ -59,6 +59,7 @@ public class PreferencesHelper {
     public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
     public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
     public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
+    public static final String START_WINDOW_IN_FULL_SCREEN_MODE = "start_window_in_full_screen_mode";//$NON-NLS-1$
     public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
     public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
     public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
@@ -348,6 +349,11 @@ public class PreferencesHelper {
     public static boolean isStartWindowInCompactMode(){
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
+    }
+
+    public static boolean isStartWindowInFullScreenMode(){
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_FULL_SCREEN_MODE, false, null);
     }
 
     private static void putBoolean(String name, boolean value){

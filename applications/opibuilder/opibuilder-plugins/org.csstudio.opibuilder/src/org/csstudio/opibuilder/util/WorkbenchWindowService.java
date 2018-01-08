@@ -27,6 +27,7 @@ public final class WorkbenchWindowService {
     private Map<IWorkbenchWindow, FullScreenAction> fullScreenRegistry;
 
     private static boolean inCompactMode;
+    private static boolean inFullScreenMode;
 
     public WorkbenchWindowService() {
         compactModeRegistry = new HashMap<IWorkbenchWindow, CompactModeAction>();
@@ -68,11 +69,19 @@ public final class WorkbenchWindowService {
         WorkbenchWindowService.inCompactMode = inCompactMode;
     }
 
+    public static void setInFullScreenMode(boolean inFullScreenMode) {
+        WorkbenchWindowService.inFullScreenMode = inFullScreenMode;
+    }
+
     public static boolean isInCompactMode() {
         return inCompactMode | PreferencesHelper.isStartWindowInCompactMode();
     }
 
-    public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
+    public static boolean isInFullScreenMode() {
+        return inFullScreenMode | PreferencesHelper.isStartWindowInFullScreenMode();
+    }
+
+    public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible) {
         window.setCoolBarVisible(visible);
         window.setPerspectiveBarVisible(visible);
 
