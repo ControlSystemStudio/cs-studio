@@ -20,8 +20,6 @@ import org.csstudio.vtype.pv.PVPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import gov.aps.jca.jni.JNITargetArch;
-
 /** Preferences for JCA
  *
  *  <p>Based on code that was in the org.csstudio.platform.libs.epics.EpicsPlugin,
@@ -140,9 +138,34 @@ public class JCA_Preferences
         System.setProperty(prop, value);
     }
 
+    // Get target arch as used to be done in JCA's JNITargetArch
+    private String getTargetArch()
+    {
+        final String osname = System.getProperty("os.name", "");
+        String osarch = System.getProperty("os.arch", "");
+
+        if (osarch.equals("i386") ||
+            osarch.equals("i486") ||
+            osarch.equals("i586"))
+            osarch = "x86";
+
+        if (osname.equals("Mac OS X"))
+            return "darwin-x86";
+        else if (osname.equals("Linux"))
+        {
+            if (osarch.equals("x86"))
+                return "linux-x86";
+            else if (osarch.equals("x86_64") || osarch.equals("amd64"))
+                return "linux-x86_64";
+        }
+        else if (osname.startsWith("Win"))
+            return "win32-x86";
+        return "unknown";
+    }
+
     private void loadJCA()
     {
-        final String jni_target = JNITargetArch.getTargetArch();
+        final String jni_target = getTargetArch();
         // this property must be unset, because JCA might mistakenly use it
         final String path = "gov.aps.jca.jni.epics.".concat(jni_target).concat(".library.path");
         System.setProperty(path, "");
