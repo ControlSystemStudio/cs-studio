@@ -163,7 +163,13 @@ public class LEDEditPart extends AbstractBoolEditPart{
             getWidgetModel().getProperty(String.format(LEDModel.PROP_STATE_COLOR, state)).addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    initializeStateColor(state, ((OPIColor)evt.getOldValue()).getSWTColor(), ((OPIColor)evt.getNewValue()).getSWTColor(), (LEDFigure)getFigure(), getWidgetModel());
+                    // Check old value for null to avoid NPE in editor, #2359
+                    // Turns out old_color isn't actually used in initializeStateColor,
+                    // but minimizing changes
+                    final OPIColor old_value = (OPIColor)evt.getOldValue();
+                    final Color old_color = old_value == null ? null : old_value.getSWTColor();
+                    final OPIColor new_value = (OPIColor)evt.getNewValue();
+                    initializeStateColor(state, old_color, new_value.getSWTColor(), (LEDFigure)getFigure(), getWidgetModel());
                 }
             });
             //stateValueN
