@@ -13,7 +13,7 @@
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"
-            default="true"
+            default="false"
             extensions="js"
             icon="icons/js.gif"
             id="org.csstudio.opibuilder.jseditor"
