@@ -103,10 +103,9 @@
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
-      <plugin id="org.epics.caj"/>
       <plugin id="org.epics.jca"/>
-      <plugin id="org.epics.pvAccessJava"/>
-      <plugin id="org.epics.pvDataJava"/>
+      <plugin id="org.epics.pvaccess"/>
+      <plugin id="org.epics.pvdata"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.w3c.css.sac"/>
