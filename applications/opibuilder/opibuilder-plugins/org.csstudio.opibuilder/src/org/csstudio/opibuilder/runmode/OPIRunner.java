@@ -14,7 +14,6 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WorkbenchWindowService;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -67,6 +66,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                 ((NoResourceEditorInput)input).getOriginEditorInput() : input);
     }
 
+    @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         init(getEditorSite(), input);
     }
@@ -109,7 +109,8 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                                 compactAction.run();
                             trimHeight = 65;
                         }
-
+                        /* Commented out as it  presents problem for the multi
+                         * screen
                         final Rectangle bounds;
                         if (opiRuntimeDelegate.getDisplayModel() != null)
                             bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
@@ -117,7 +118,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                             bounds = new Rectangle(-1, -1, 800, 600);
                         if (bounds.x >= 0 && bounds.y >= 0)
                             parent.getShell().setLocation(bounds.x, bounds.y);
-                        parent.getShell().setSize(bounds.width + trimWidth, bounds.height + trimHeight);
+                        parent.getShell().setSize(bounds.width + trimWidth, bounds.height + trimHeight); */
                     }
 
                 }
