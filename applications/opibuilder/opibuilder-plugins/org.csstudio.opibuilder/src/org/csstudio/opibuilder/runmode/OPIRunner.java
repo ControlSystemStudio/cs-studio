@@ -9,11 +9,11 @@ package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.CompactModeAction;
+import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WorkbenchWindowService;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -66,6 +66,7 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                 ((NoResourceEditorInput)input).getOriginEditorInput() : input);
     }
 
+    @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         init(getEditorSite(), input);
     }
@@ -92,27 +93,34 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 
             @Override
             public void run() {
-                if (getSite().getWorkbenchWindow().getActivePage()
-                        .getEditorReferences().length == 1 &&
-                        getSite().getWorkbenchWindow().getActivePage().getViewReferences().length ==0) {
-                    int trimWidth = 45, trimHeight = 165;
-                    CompactModeAction action = WorkbenchWindowService.getInstance().getCompactModeAction(
-                            getSite().getWorkbenchWindow());
-                    if (WorkbenchWindowService.isInCompactMode()) {
-                        if(!action.isInCompactMode())
-                            action.run();
-                        trimHeight = 65;
+                if (getSite().getWorkbenchWindow().getActivePage().getEditorReferences().length == 1
+                        && getSite().getWorkbenchWindow().getActivePage().getViewReferences().length == 0) {
+                    if (WorkbenchWindowService.isInFullScreenMode()) {
+                        FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance()
+                                .getFullScreenAction(getSite().getWorkbenchWindow());
+                        if (!fullScreenAction.isInFullScreen())
+                            fullScreenAction.run();
+                    } else {
+                        int trimWidth = 45, trimHeight = 165;
+                        if (WorkbenchWindowService.isInCompactMode()) {
+                            CompactModeAction compactAction = WorkbenchWindowService.getInstance()
+                                    .getCompactModeAction(getSite().getWorkbenchWindow());
+                            if (!compactAction.isInCompactMode())
+                                compactAction.run();
+                            trimHeight = 65;
+                        }
+                        /* Commented out as it  presents problem for the multi
+                         * screen
+                        final Rectangle bounds;
+                        if (opiRuntimeDelegate.getDisplayModel() != null)
+                            bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
+                        else
+                            bounds = new Rectangle(-1, -1, 800, 600);
+                        if (bounds.x >= 0 && bounds.y >= 0)
+                            parent.getShell().setLocation(bounds.x, bounds.y);
+                        parent.getShell().setSize(bounds.width + trimWidth, bounds.height + trimHeight); */
                     }
-                    final Rectangle bounds;
-                    if (opiRuntimeDelegate.getDisplayModel() != null)
-                        bounds = opiRuntimeDelegate.getDisplayModel()
-                                .getBounds();
-                    else
-                        bounds = new Rectangle(-1, -1, 800, 600);
-                    if (bounds.x >= 0 && bounds.y >= 0)
-                        parent.getShell().setLocation(bounds.x, bounds.y);
-                    parent.getShell().setSize(bounds.width + trimWidth,
-                            bounds.height + trimHeight);
+
                 }
             }
         });

@@ -27,6 +27,7 @@ public final class WorkbenchWindowService {
     private Map<IWorkbenchWindow, FullScreenAction> fullScreenRegistry;
 
     private static boolean inCompactMode;
+    private static boolean inFullScreenMode;
 
     public WorkbenchWindowService() {
         compactModeRegistry = new HashMap<IWorkbenchWindow, CompactModeAction>();
@@ -68,16 +69,28 @@ public final class WorkbenchWindowService {
         WorkbenchWindowService.inCompactMode = inCompactMode;
     }
 
+    public static void setInFullScreenMode(boolean inFullScreenMode) {
+        WorkbenchWindowService.inFullScreenMode = inFullScreenMode;
+    }
+
     public static boolean isInCompactMode() {
         return inCompactMode | PreferencesHelper.isStartWindowInCompactMode();
+    }
+
+    public static boolean isInFullScreenMode() {
+        return inFullScreenMode | PreferencesHelper.isStartWindowInFullScreenMode();
     }
 
     public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
         window.setCoolBarVisible(visible);
         window.setPerspectiveBarVisible(visible);
+        window.getShell().layout();
 
+    }
+
+    public static void setStatusLineVisibility(final WorkbenchWindow window, final boolean visible){
         //All these don't work
-        // window.setStatusLineVisible(false);
+        window.setStatusLineVisible(visible);
         // window.getActionBars().getStatusLineManager().getItems()[0].setVisible(visible);
         // window.getStatusLineManager().getItems()[0].setVisible(visible);
         // window.getStatusLineManager().getControl().setVisible(visible);
@@ -102,7 +115,5 @@ public final class WorkbenchWindowService {
 
         }
         window.getShell().layout();
-
     }
-
 }
