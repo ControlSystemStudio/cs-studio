@@ -64,6 +64,8 @@ public class FullScreenAction extends Action implements
     public void run() {
         if (inFullScreen) {
             shell.setFullScreen(false);
+            //status line is always visible in normal mode.
+            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window, true);
             if (!toolbarWasInvisible){
                 WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
             }
@@ -73,7 +75,11 @@ public class FullScreenAction extends Action implements
             WorkbenchWindowService.setInFullScreenMode(false);
             setText(FULLSCREEN);
             setImageDescriptor(fullScreenImage);
-        } else {
+        }
+        else {
+
+            //enable or disable status line visibility
+            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window, PreferencesHelper.showStatusLineInFullScreenMode());
 
             if(PreferencesHelper.isShowFullScreenDialog()){
                 TipDialog dialog = new TipDialog(shell, "Tip",

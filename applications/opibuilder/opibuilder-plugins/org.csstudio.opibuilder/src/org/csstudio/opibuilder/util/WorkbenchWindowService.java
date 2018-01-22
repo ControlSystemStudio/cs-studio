@@ -81,12 +81,16 @@ public final class WorkbenchWindowService {
         return inFullScreenMode | PreferencesHelper.isStartWindowInFullScreenMode();
     }
 
-    public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible) {
+    public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
         window.setCoolBarVisible(visible);
         window.setPerspectiveBarVisible(visible);
+        window.getShell().layout();
 
+    }
+
+    public static void setStatusLineVisibility(final WorkbenchWindow window, final boolean visible){
         //All these don't work
-        // window.setStatusLineVisible(false);
+        window.setStatusLineVisible(visible);
         // window.getActionBars().getStatusLineManager().getItems()[0].setVisible(visible);
         // window.getStatusLineManager().getItems()[0].setVisible(visible);
         // window.getStatusLineManager().getControl().setVisible(visible);
@@ -111,7 +115,5 @@ public final class WorkbenchWindowService {
 
         }
         window.getShell().layout();
-
     }
-
 }
