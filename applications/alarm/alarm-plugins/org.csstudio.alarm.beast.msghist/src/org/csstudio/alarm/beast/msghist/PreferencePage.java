@@ -18,46 +18,45 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-/** Preference page.
- *  Connected to GUI in plugin.xml
- *  @author Kay Kasemir
- *  @author Xihui Chen
+/**
+ * Preference page. Connected to GUI in plugin.xml
+ *
+ * @author Kay Kasemir
+ * @author Xihui Chen
+ * @author Borut Terpinc
  */
-public class PreferencePage extends FieldEditorPreferencePage
-    implements IWorkbenchPreferencePage
-{
+public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     /** Constructor */
-    public PreferencePage()
-    {
+    public PreferencePage() {
         // This way, preference changes in the GUI end up in a file under
         // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
         // i.e. they are specific to the workspace instance.
-        final IPreferenceStore store =
-            new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID);
+        final IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID);
         setPreferenceStore(store);
         setMessage(Messages.MessageHistory);
     }
 
     /** {@inheritDoc */
     @Override
-    public void init(IWorkbench workbench)
-    { /* NOP */ }
+    public void init(IWorkbench workbench) {
+        /* NOP */ }
 
     /** {@inheritDoc */
     @Override
-    protected void createFieldEditors()
-    {
+    protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Pref_URL, parent));
         addField(new StringFieldEditor(Preferences.RDB_USER, Messages.Pref_User, parent));
         addField(new PasswordFieldEditor(Activator.ID, Preferences.RDB_PASSWORD, Messages.Pref_Password, parent));
         addField(new StringFieldEditor(Preferences.RDB_SCHEMA, Messages.Pref_Schema, parent));
         addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
+        addField(new StringFieldEditor(Preferences.END, Messages.Pref_Endtime, parent));
         addField(new StringFieldEditor(Preferences.AUTO_REFRESH_PERIOD, Messages.Pref_AutoRefreshPeriod, parent));
-        final IntegerFieldEditor max_properties =
-            new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
-        max_properties.setValidRange(0, Integer.MAX_VALUE);
-        addField(max_properties);
+        addField(new StringFieldEditor(Preferences.TIME_FORMAT, Messages.Pref_TimeFormat, parent));
+        final IntegerFieldEditor max_messages = new IntegerFieldEditor(Preferences.MAX_MESSAGES,
+                Messages.Pref_MaxMessages, parent);
+        max_messages.setValidRange(0, Integer.MAX_VALUE);
+        addField(max_messages);
         addField(new TableColumnsFieldEditor(parent));
     }
 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.model;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import org.csstudio.alarm.beast.msghist.rdb.MessageRDB;
@@ -15,16 +16,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-/** Background job for getting messages from RDB.
- *  <p>
- *  The job actually connects to the RDB each time
- *  and disconnects when done to avoid timeouts with
- *  a long running RDB connection.
- *  @author Kay Kasemir
+/**
+ * Background job for getting messages from RDB.
+ * <p>
+ * The job actually connects to the RDB each time and disconnects when done to avoid timeouts with a long running RDB connection.
+ *
+ * @author Kay Kasemir
+ * @author Borut Terpinc
  */
 @SuppressWarnings("nls")
-abstract public class GetMessagesJob extends Job
-{
+abstract public class GetMessagesJob extends Job {
     final private String url;
     final private String user;
     final private String password;
@@ -32,26 +33,34 @@ abstract public class GetMessagesJob extends Job
     final private Calendar start;
     final private Calendar end;
     final private MessagePropertyFilter[] filters;
-    final private int max_properties;
+    final private int max_messages;
+    final private DateTimeFormatter date_format;
 
-    /** Initialize message job
-     *  @param url RDB URL
-     *  @param user RDB user
-     *  @param password RDB password
-     *  @param schema RDB schema
-     *  @param start Start time
-     *  @param end End time
-     *  @param filters Message filters
-     *  @param max_properties Max. message property count
-     *  @param shell UI shell to display error dialog
+    /**
+     * Initialize message job
+     *
+     * @param url
+     *            RDB URL
+     * @param user
+     *            RDB user
+     * @param password
+     *            RDB password
+     * @param schema
+     *            RDB schema
+     * @param start
+     *            Start time
+     * @param end
+     *            End time
+     * @param filters
+     *            Message filters
+     * @param max_messages
+     *            Max. messages count
+     * @param shell
+     *            UI shell to display error dialog
      */
-    public GetMessagesJob(
-            final String url, final String user,
-            final String password, final String schema,
-            final Calendar start, final Calendar end,
-            final MessagePropertyFilter filters[],
-            final int max_properties)
-    {
+    public GetMessagesJob(final String url, final String user, final String password, final String schema,
+            final Calendar start, final Calendar end, final MessagePropertyFilter filters[], final int max_messages,
+            final DateTimeFormatter date_format) {
         super("Get Messages from RDB");
         this.url = url;
         this.user = user;
@@ -60,23 +69,19 @@ abstract public class GetMessagesJob extends Job
         this.start = start;
         this.end = end;
         this.filters = filters;
-        this.max_properties = max_properties;
+        this.max_messages = max_messages;
+        this.date_format = date_format;
     }
 
     @Override
-    protected IStatus run(final IProgressMonitor monitor)
-    {
+    protected IStatus run(final IProgressMonitor monitor) {
         MessageRDB rdb = null;
-        try
-        {
+        try {
             rdb = new MessageRDB(url, user, password, schema);
-            final Message[] messages =
-                rdb.getMessages(monitor, start, end, filters, max_properties);
-            if (! monitor.isCanceled())
+            final Message[] messages = rdb.getMessages(monitor, start, end, filters, max_messages, date_format);
+            if (!monitor.isCanceled())
                 gotMessages(messages);
-        }
-        catch (final Exception ex)
-        {
+        } catch (final Exception ex) {
             handleError("Message Database Error", ex);
         }
         if (rdb != null)
@@ -87,11 +92,12 @@ abstract public class GetMessagesJob extends Job
     /**
      * Display error.
      *
-     * @param message the message
-     * @param ex the ex
+     * @param message
+     *            the message
+     * @param ex
+     *            the ex
      */
     abstract void handleError(final String message, final Exception ex);
-
 
     /** Derived class must implement to handle received messages */
     abstract void gotMessages(final Message[] messages);

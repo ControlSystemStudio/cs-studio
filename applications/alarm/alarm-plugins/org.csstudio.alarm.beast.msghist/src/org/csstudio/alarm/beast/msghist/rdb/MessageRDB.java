@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +28,7 @@ import org.eclipse.osgi.util.NLS;
 
 /** Helper for accessing the CSS message RDB.
  *  @author Kay Kasemir
+ *  @author Borut Terpinc
  */
 @SuppressWarnings("nls")
 public class MessageRDB
@@ -65,16 +67,14 @@ public class MessageRDB
      *  @param start Start time
      *  @param end End time
      *  @param filters Filters to use (not <code>null</code>).
-     *  @param max_properties Limit on the number of properties(!) retrieved.
-     *                        Unclear how many properties to expect per message,
-     *                        so this is a vague overload throttle.
+     *  @param max_messages Limit on the number of messages retrieved.
      *  @return Array of Messages or <code>null</code>
      */
     public Message[] getMessages(
             final IProgressMonitor monitor,
             final Calendar start, final Calendar end,
             final MessagePropertyFilter filters[],
-            final int max_properties) throws Exception
+            final int max_messages, final DateTimeFormatter date_format) throws Exception
     {
         monitor.beginTask("Reading Messages", IProgressMonitor.UNKNOWN);
         final ArrayList<Message> messages = new ArrayList<Message>();
@@ -93,10 +93,10 @@ public class MessageRDB
             // Set filter parameters
             for (MessagePropertyFilter filter : filters)
                 statement.setString(parm++, filter.getPattern());
-            // Set query limit a bit higher than max_properties.
-            // This still limits the number of properties on the RDB side,
+            // Set query limit a bit higher than max_messages.
+            // This still limits the number of messages on the RDB side,
             // but allows the following code to detect exhausting the limit.
-            statement.setInt(parm++, max_properties+10);
+            statement.setInt(parm++, max_messages+1);
 
             // One benchmark example:
             // Query took <<1 second, but reading all the messages took ~30.
@@ -112,7 +112,7 @@ public class MessageRDB
             Date last_datum = null;
             Message last_message = null;
             Map<String, String> props = null;
-            int prop_count = 0;
+            int msg_count = 0;
             while (!monitor.isCanceled()  &&  result.next())
             {
                 // Fixed ID and DATUM
@@ -134,12 +134,13 @@ public class MessageRDB
                         final int count = messages.size();
                         if (count % 50 == 0)
                             monitor.subTask(count + " messages...");
+                        ++msg_count;
                     }
                     // Construct new message and values
                     props = new HashMap<String, String>();
                     id = next_id;
                     datum = next_datum;
-                    props.put(Message.DATUM, Message.format(datum));
+                    props.put(Message.DATUM, date_format.format(datum.toInstant()));
                 }
                 // Get Prop/Value from MESSAGE table
                 int res_idx = 3;
@@ -149,7 +150,6 @@ public class MessageRDB
                 final String prop = sql.getPropertyNameById(result.getInt(res_idx++));
                 final String value = result.getString(res_idx);
                 props.put(prop, value);
-                ++prop_count;
             }
             // No more results.
             // Was another (partial) message assembled?
@@ -162,14 +162,14 @@ public class MessageRDB
                     last_message.setDelta(last_datum, datum);
             }
 
-            // Was readout stopped because we reached max. number of properties?
-            if (prop_count >= max_properties)
+            // Was readout stopped because we reached max. number of messages?
+            if (msg_count >= max_messages)
             {
                 props = new HashMap<String, String>();
                 props.put(Message.TYPE, "internal");
                 props.put(Message.SEVERITY, "FATAL");
                 props.put("TEXT",
-                        NLS.bind(Messages.ReachedMaxPropertiesFmt, max_properties));
+                        NLS.bind(Messages.ReachedMaxMessagesFmt, max_messages));
                 // Add this message both as the first and last messages,
                 // so user is more likely to see it.
                 // A dialog box is even harder to miss,

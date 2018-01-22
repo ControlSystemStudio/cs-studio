@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Message History OPI Widget
+Bundle-SymbolicName: org.csstudio.alarm.beast.msghist.opiwidget;singleton:=true
+Bundle-Version: 1.0.1.qualifier
+Bundle-Vendor: ITER
+Bundle-Description: BEAST Message History OPI Widget
+Require-Bundle: org.csstudio.opibuilder;bundle-version="4.0.103",
+ org.csstudio.opibuilder.widgets;bundle-version="3.4.2",
+ org.eclipse.ui;resolution:=optional,
+ org.eclipse.core.runtime,
+ org.eclipse.gef;resolution:=optional,
+ org.csstudio.alarm.beast.msghist;bundle-version="4.0.1",
+ org.eclipse.ui.views;bundle-version="3.8.102",
+ org.jdom;bundle-version="1.1.0",
+ org.apache.commons.lang3;bundle-version="3.5.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.csstudio.security.preferences
