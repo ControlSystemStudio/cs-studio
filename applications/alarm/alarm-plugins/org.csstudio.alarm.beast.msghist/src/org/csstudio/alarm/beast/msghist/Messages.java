@@ -9,12 +9,13 @@ package org.csstudio.alarm.beast.msghist;
 
 import org.eclipse.osgi.util.NLS;
 
-/** Externalized Strings
- *  @author Kay Kasemir
- *  @author Eclipse String Externalization Wiard
+/**
+ * Externalized Strings
+ *
+ * @author Kay Kasemir
+ *
  */
-public class Messages extends NLS
-{
+public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.msghist.messages"; //$NON-NLS-1$
 
     public static String CellID_TTFmt;
@@ -32,31 +33,48 @@ public class Messages extends NLS
     public static String Filter_ValueTT;
     public static String MessageDetail;
     public static String MessageHistory;
-    public static String Pref_MaxProperties;
+    public static String Pref_MaxMessages;
     public static String Pref_Password;
     public static String Pref_Schema;
     public static String Pref_Starttime;
+    public static String Pref_Endtime;
     public static String Pref_AutoRefreshPeriod;
     public static String Pref_URL;
     public static String Pref_User;
+    public static String Pref_TimeFormat;
     public static String Property;
     public static String PropertyValue_TTFmt;
-    public static String ReachedMaxPropertiesFmt;
+    public static String ReachedMaxMessagesFmt;
     public static String SeqProvider_TTFmt;
     public static String ShowDetail;
     public static String TableColumnsEditor_Columns;
     public static String TableColumnsEditor_Title;
     public static String TableColumnsEditor_TT;
     public static String Value;
+    public static String NewMessageHistoryView;
+    public static String MessageHistoryOpenErrorTitle;
+    public static String MessageHistoryOpenErrorMessage;
+    public static String SelectFilter;
+    public static String SelectFilterDialogTitle;
+    public static String SelectFilterDialogMessage;
+    public static String FilterInputError;
+    public static String SetMaxMessages;
+    public static String SetMaxMessagesDialogTitle;
+    public static String SetMaxMessagesDialogMessage;
+    public static String SetMaxMessagesInputError;
+    public static String SetMaxMessagesError;
+    public static String ConfigureColumns;
+    public static String ColumnConfigTitle;
+    public static String ColumnConfigDescription;
+    public static String WeightLabel;
+    public static String WidthLabel;
 
-    static
-    {
+    static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    private Messages()
-    {
+    private Messages() {
         // Prevent instantiation
     }
 }
