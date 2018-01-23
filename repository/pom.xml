@@ -256,11 +256,25 @@
                     <Bundle-Version>1.5.8.css1</Bundle-Version>
                   </instructions>
                 </artifact>
+
+
                 <artifact>
-                  <id>org.controlsfx:controlsfx:8.40.12</id>
+                  <id>org.controlsfx:controlsfx:8.40.14</id>
                 </artifact>
                 <artifact>
                   <id>de.codecentric.centerdevice:javafxsvg:1.2.1</id>
+                </artifact>
+                <artifact>
+                  <id>se.europeanspallationsource:javafx.control.controlled-knobs:1.0.4</id>
+                </artifact>
+                <artifact>
+                  <id>se.europeanspallationsource:javafx.control.knobs:1.0.11</id>
+                </artifact>
+                <artifact>
+                  <id>se.europeanspallationsource:javafx.control.medusa:7.9.7</id>
+                </artifact>
+                <artifact>
+                  <id>se.europeanspallationsource:javafx.control.thumbwheel:1.0.3</id>
                 </artifact>
 
                 <!-- pvmanager-plugins from reactor -->
