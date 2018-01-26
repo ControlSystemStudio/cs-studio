@@ -184,9 +184,6 @@ public class MessageHistoryView extends ViewPart {
         if (secondaryId.get() > 1) {
             secondaryId.decrementAndGet();
         }
-        if(gui != null)
-            gui.dispose();
-        super.dispose();
     }
 
     @Override
