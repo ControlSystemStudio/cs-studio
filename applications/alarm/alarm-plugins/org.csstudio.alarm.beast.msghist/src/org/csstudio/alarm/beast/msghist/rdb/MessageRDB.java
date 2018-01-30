@@ -17,7 +17,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Messages;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.csstudio.alarm.beast.msghist.model.MessagePropertyFilter;
@@ -86,17 +88,25 @@ public class MessageRDB
                 connection.prepareStatement(sql_txt);
         try
         {
+            StringBuffer spLog= new StringBuffer();
+
             int parm = 1;
             // Set start/end
             statement.setTimestamp(parm++, new Timestamp(start.getTimeInMillis()));
+            spLog.append(System.lineSeparator()).append(parm).append(" - ").append(new Timestamp(start.getTimeInMillis()));
             statement.setTimestamp(parm++, new Timestamp(end.getTimeInMillis()));
+            spLog.append(System.lineSeparator()).append(parm).append(" - ").append(new Timestamp(end.getTimeInMillis()));
+
             // Set filter parameters
-            for (MessagePropertyFilter filter : filters)
+            for (MessagePropertyFilter filter : filters){
                 statement.setString(parm++, filter.getPattern());
+                spLog.append(System.lineSeparator()).append(parm).append(" - ").append(filter.getPattern());
+            }
             // Set query limit a bit higher than max_messages.
             // This still limits the number of messages on the RDB side,
             // but allows the following code to detect exhausting the limit.
             statement.setInt(parm++, max_messages+1);
+            spLog.append(System.lineSeparator()).append(parm).append(" - ").append(max_messages+1);
 
             // One benchmark example:
             // Query took <<1 second, but reading all the messages took ~30.
@@ -104,6 +114,10 @@ public class MessageRDB
             // i.e. commenting the 'next' loop body.
             // So the local lookup of properties and packing
             // into a HashMap adds almost nothing to the overall time.
+
+            Activator.getLogger().log(Level.FINEST, () -> "Message history sql parameters:" + spLog.toString());
+            Activator.getLogger().log(Level.FINEST, () -> "Message history sql query:" + sql_txt.toString());
+
             final ResultSet result = statement.executeQuery();
             int sequence = 0;
             // Initialize id and datum as "no current message"
