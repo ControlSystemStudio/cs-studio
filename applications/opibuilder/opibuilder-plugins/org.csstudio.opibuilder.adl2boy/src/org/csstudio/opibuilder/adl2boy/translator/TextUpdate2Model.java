@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.adl2boy.translator;
 import org.csstudio.opibuilder.adl2boy.utilities.TextUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -47,8 +48,8 @@ public class TextUpdate2Model extends AbstractADL2Model {
         else if (color_mode.equals("alarm") ){
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
-            // 'OK' severity uses foreground, so make that green
-            widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
+            // 'OK' severity uses foreground
+            widgetModel.setPropertyValue(TextUpdateModel.PROP_COLOR_FOREGROUND, new OPIColor("OK", new RGB(0, 255, 0), true));
         }
         else if (color_mode.equals("discrete") ){
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
