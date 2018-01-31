@@ -45,6 +45,7 @@ public class TextUpdate2Model extends AbstractADL2Model {
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
         }
         else if (color_mode.equals("alarm") ){
+            widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
             // 'OK' severity uses foreground, so make that green
             widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
