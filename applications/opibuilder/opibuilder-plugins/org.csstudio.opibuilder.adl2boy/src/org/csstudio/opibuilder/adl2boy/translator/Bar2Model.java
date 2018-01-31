@@ -64,6 +64,8 @@ public class Bar2Model extends AbstractADL2Model {
         }
         else if (color_mode.equals("alarm") ){
             widgetModel.setPropertyValue(TankModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
+            // 'OK' severity uses foreground, so make that green
+            widgetModel.setPropertyValue(TankModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
         }
         else if (color_mode.equals("discrete") ){
             widgetModel.setPropertyValue(TankModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
