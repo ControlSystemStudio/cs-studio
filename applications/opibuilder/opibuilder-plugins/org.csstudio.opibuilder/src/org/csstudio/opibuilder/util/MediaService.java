@@ -281,7 +281,7 @@ public final class MediaService {
                     continue;
                 int i;
                 if ((i = line.indexOf('=')) != -1) {
-                    boolean isPixels = false;
+                    boolean isPixels = PreferencesHelper.isDefaultFontSizeInPixels();
                     String name = line.substring(0, i).trim();
                     String trimmedName = name;
                     if (name.contains("(")) //$NON-NLS-1$
