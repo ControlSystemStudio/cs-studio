@@ -91,6 +91,8 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
         }
         if (widgetModel instanceof ActionButtonModel)
             widgetModel.setPropertyValue(ActionButtonModel.PROP_TEXT, label);
+        else
+            widgetModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
     }
 
     /**

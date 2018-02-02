@@ -7,7 +7,7 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
+import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.Valuator;
 import org.eclipse.swt.graphics.RGB;
@@ -35,18 +35,19 @@ public class Valuator2Model extends AbstractADL2Model {
         TranslatorUtils.printNotHandledWarning(className, "Limits");
         //TODO Add Label info to Valuator2Model
         TranslatorUtils.printNotHandledWarning(className, "Label");
-        //TODO Add Direction to Valuator2Model
-        TranslatorUtils.printNotHandledWarning(className, "Direction");
         //TODO Add ColorMode to Valuator2Model
         TranslatorUtils.printNotHandledWarning(className, "Color Mode");
-        //TODO Add Increment to Valuator2Model
-        TranslatorUtils.printNotHandledWarning(className, "Increment");
+
+        widgetModel.setPropertyValue(ScrollBarModel.PROP_BAR_LENGTH, 1.0);
+        widgetModel.setPropertyValue(ScrollBarModel.PROP_STEP_INCREMENT, Double.valueOf(valuatorWidget.getIncrement()));
+        widgetModel.setPropertyValue(ScrollBarModel.PROP_PAGE_INCREMENT, Double.valueOf(valuatorWidget.getIncrement()));
+        widgetModel.setPropertyValue(ScrollBarModel.PROP_HORIZONTAL, valuatorWidget.getDirection().equals("right"));
     }
 
     @Override
     public void makeModel(ADLWidget adlWidget,
             AbstractContainerModel parentModel) {
-        widgetModel = new ScaledSliderModel();
+        widgetModel = new ScrollBarModel();
         parentModel.addChild(widgetModel, true);
     }
 }
