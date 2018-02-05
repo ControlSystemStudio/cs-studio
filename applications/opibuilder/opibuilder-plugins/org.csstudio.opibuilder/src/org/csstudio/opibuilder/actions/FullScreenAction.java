@@ -64,8 +64,11 @@ public class FullScreenAction extends Action implements
     public void run() {
         if (inFullScreen) {
             shell.setFullScreen(false);
-            //status line is always visible in normal mode.
-            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window, true);
+            
+            CompactModeAction compactAction = WorkbenchWindowService.getInstance().getCompactModeAction(window);
+            // set status line visibility depending on compact mode status
+            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window,
+                    compactAction.isInCompactMode() ? PreferencesHelper.showStatusLineInCompactMode() : true);
             if (!toolbarWasInvisible){
                 WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
             }
