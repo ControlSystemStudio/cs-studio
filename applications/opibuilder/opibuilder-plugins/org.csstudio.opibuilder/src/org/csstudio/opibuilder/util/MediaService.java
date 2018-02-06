@@ -281,7 +281,7 @@ public final class MediaService {
                     continue;
                 int i;
                 if ((i = line.indexOf('=')) != -1) {
-                    boolean isPixels = false;
+                    boolean isPixels = PreferencesHelper.isDefaultFontSizeInPixels();
                     String name = line.substring(0, i).trim();
                     String trimmedName = name;
                     if (name.contains("(")) //$NON-NLS-1$
@@ -293,6 +293,7 @@ public final class MediaService {
                             isPixels = true;
                             trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
                         } else if (line.endsWith("pt")) { //$NON-NLS-1$
+                            isPixels = false;
                             trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
                         }
 

@@ -943,7 +943,7 @@ public class AlarmLogicUnitTest
         System.out.println("Initial alarm      : " + initial_alarm_time);
         System.out.println("Global notification: " + now);
         // Should use global_delay from the initial alarm...
-        assertEquals(global_delay, TimeDuration.toSecondsDouble(Duration.between(initial_alarm_time, now)), 0.2);
+        assertEquals(global_delay, TimeDuration.toSecondsDouble(Duration.between(initial_alarm_time, now)), global_delay/3);
 
         // .. but reflect the most severe alarm in the notification.
         // Not really checking what was in the notification,
