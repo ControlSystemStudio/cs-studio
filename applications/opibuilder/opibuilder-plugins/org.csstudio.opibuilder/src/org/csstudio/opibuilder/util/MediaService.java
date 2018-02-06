@@ -293,6 +293,7 @@ public final class MediaService {
                             isPixels = true;
                             trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
                         } else if (line.endsWith("pt")) { //$NON-NLS-1$
+                            isPixels = false;
                             trimmedLine = trimmedLine.substring(0, trimmedLine.length()-2);
                         }
 
