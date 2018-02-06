@@ -16,15 +16,15 @@ or
 ```./prepare-release 3.3.1```
 
 then, push to release branch:
-```git commit origin master:release_3.3.1```
+```git push origin master:release_3.3.1```
 
 make pull request from the github webpage to master or frozen branch (ie. 3.3.x).  Don't merge yet.
 
 make sure passes all tests, then push tag (which will start release/upload to s3, even though pull request has not been merged)
-```git commit origin CSS-3.3.1```
+```git push origin CSS-3.3.1```
 
 after release, add snapshot versions, and push to pull request
 ```./prepare-next-release 3.3.1```
-```git commit origin master:release_3.3.1```
+```git push origin master:release_3.3.1```
 
 when all tests pass, merge pull request to target branch
