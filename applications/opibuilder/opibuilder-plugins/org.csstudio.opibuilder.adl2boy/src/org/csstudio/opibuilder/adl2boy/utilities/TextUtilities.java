@@ -25,7 +25,7 @@ public class TextUtilities {
         int borderWidth= textModel.getBorderWidth();
         int fontSize = convertTextHeightToFontSize(textModel
                 .getHeight() - 2*borderWidth);
-        fontSize = fontSize-((int)(fontSize/10))*3;
+        fontSize = fontSize-(fontSize/10)*3;
         FontData fontData = font.getFontData();
         FontData newFontData = new FontData(fontData.getName(),
                 fontData.getHeight(), fontData.getStyle());
@@ -45,20 +45,14 @@ public class TextUtilities {
         if (adlTextWidget.getName().equals("text")
                 || adlTextWidget.getName().equals("text update")) {
             String alignment = ((ITextWidget)adlTextWidget).getAlignment();
-            if (alignment.equals("")||
-                    alignment.equals("horiz. left")){
-                textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 0);
-            }
-            else if (alignment.equals("horiz. centered")){
+            // Just check for the essential part of "horiz. right"
+            if (alignment.contains("center"))
                 textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 1);
-
-            }
-            else if (alignment.equals("horiz.right")){
+            else if (alignment.contains("right"))
                 textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 2);
-
-            }
+            else // default to 'left'
+                textModel.setPropertyValue(LabelModel.PROP_ALIGN_H, 0);
         }
-
     }
 
     /**
