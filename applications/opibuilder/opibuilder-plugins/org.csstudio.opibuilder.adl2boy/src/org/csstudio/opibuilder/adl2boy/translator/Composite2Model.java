@@ -8,12 +8,15 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
+import org.csstudio.opibuilder.widgets.model.LinkingContainerModel.ResizeBehaviour;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.Composite;
 import org.eclipse.swt.graphics.RGB;
 
+@SuppressWarnings("nls")
 public class Composite2Model extends AbstractADL2Model {
 //    AbstractContainerModel containerModel;
     AbstractContainerModel parentModel;
@@ -63,6 +66,9 @@ public class Composite2Model extends AbstractADL2Model {
             else {
                 TranslatorUtils.printNotHandledWarning(className, "composite file");
             }
+            // Don't resize, no border to avoid unexpected growth/shrinkage
+            widgetModel.setPropertyValue(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.CROP_OPI.ordinal());
+            widgetModel.setPropertyValue(LinkingContainerModel.PROP_BORDER_STYLE, BorderStyle.NONE.ordinal());
         }
         else {
             TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), (AbstractContainerModel)widgetModel, colorMap);
