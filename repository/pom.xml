@@ -261,6 +261,14 @@
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.14</id>
                 </artifact>
+<!--
+	Not possible to use JavaFxSVG 1.3.0 with the new instantiaion method
+		SvgImageLoaderFactory.install(new PrimitiveDimensionProvider());
+	because of conflicts loading org.apache.batic... classes
+		Exception ... java.lang.NoClassDefFoundError: org/apache/batik/dom/svg/SVGDocumentFactory
+		Caused by: java.lang.ClassNotFoundException: org.apache.batik.dom.svg.SVGDocumentFactory cannot be found by org.apache.xmlgraphics.batik-anim_1.8.0
+	because of coexistence of ver. 1.7 and 1.8 of org.apache.batik.dom.svg.
+-->
                 <artifact>
                   <id>de.codecentric.centerdevice:javafxsvg:1.2.1</id>
                 </artifact>
