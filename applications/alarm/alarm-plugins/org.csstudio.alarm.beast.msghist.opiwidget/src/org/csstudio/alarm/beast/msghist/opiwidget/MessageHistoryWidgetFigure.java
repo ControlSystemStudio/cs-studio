@@ -45,15 +45,16 @@ public class MessageHistoryWidgetFigure extends AbstractSWTWidgetFigure<Composit
         gui = new GUI(null, parent, widgetEditPart.getMessageHistoryModel(),
                 widgetModel.getColumns(), widgetModel.getSortingColumn(), widgetModel.isSortAscending(),
                 widgetModel.isColumnHeaders());
-        
+
+
         // switch selection listener on focus
         TableViewer tableViewer = gui.getTableViewer();
         tableViewer.getTable().addFocusListener(new FocusListener() {
-            
+
             @Override
-            public void focusLost(FocusEvent e) {                
+            public void focusLost(FocusEvent e) {
             }
-            
+
             @Override
             public void focusGained(FocusEvent e) {
                 IWorkbenchSite site = editPart.getSite();

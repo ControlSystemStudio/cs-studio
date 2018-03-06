@@ -92,7 +92,8 @@ public class MessageHistoryWidgetEditPart extends AbstractWidgetEditPart {
             IWorkbenchSite site = getSite();
             if (site != null && site.getSelectionProvider() == null)
                 site.setSelectionProvider(new SelectionProviderWrapper());
-            
+
+
             try {
                 model.setTimerange(model.getStartSpec(), model.getEndSpec());
             } catch (Exception ex) {
