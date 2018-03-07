@@ -240,6 +240,10 @@ public abstract class AbstractADL2Model {
         opiExpr = replaceChannel("D", "pv3", opiExpr);
         opiExpr = replaceString("=", "==", opiExpr);
         opiExpr = replaceString("#", "!=", opiExpr);
+
+        // The above can result in "pv0====7".
+        // Patch that back into a plain "pv0==7"
+        opiExpr = opiExpr.replaceAll("==+", "==");
         return opiExpr.toString();
     }
 
