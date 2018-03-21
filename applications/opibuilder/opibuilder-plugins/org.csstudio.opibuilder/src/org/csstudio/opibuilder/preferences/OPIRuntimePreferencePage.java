@@ -171,8 +171,16 @@ public class OPIRuntimePreferencePage extends FieldEditorPreferencePage
         BooleanFieldEditor startWindowInFullScreen =
                 new BooleanFieldEditor(PreferencesHelper.START_WINDOW_IN_FULL_SCREEN_MODE,
                         "Start application window in full screen mode.", parent);
-            addField(startWindowInFullScreen);
+        addField(startWindowInFullScreen);
 
+        BooleanFieldEditor showStatusLineInCompactMode = new BooleanFieldEditor(
+                PreferencesHelper.SHOW_STATUS_LINE_IN_FULL_COMPACT_MODE, "Show status line in compact mode.", parent);
+        addField(showStatusLineInCompactMode);
+
+        BooleanFieldEditor showStatusLineInFullScreenMode = new BooleanFieldEditor(
+                PreferencesHelper.SHOW_STATUS_LINE_IN_FULL_SCREEN_MODE, "Show status line in full screen mode.",
+                parent);
+        addField(showStatusLineInFullScreenMode);
     }
 
     @Override

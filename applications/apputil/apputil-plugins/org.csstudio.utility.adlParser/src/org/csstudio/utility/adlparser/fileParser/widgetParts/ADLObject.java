@@ -27,12 +27,12 @@ package org.csstudio.utility.adlparser.fileParser.widgetParts;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.utility.adlparser.internationalization.Messages;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.ParserADL;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
  * @author hrickens
@@ -72,6 +72,8 @@ public class ADLObject extends WidgetPart{
         /* Not to initialization*/
     }
 
+    private static final int HUGE = 4000;
+
     /**
      * {@inheritDoc}
      */
@@ -94,6 +96,11 @@ public class ADLObject extends WidgetPart{
                     _x=0;
                 }else{
                     _x=Integer.parseInt(row[1]);
+                    if (Math.abs(_x) > HUGE)
+                    {
+                        Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Limiting ridiculous x=" + row[1]);
+                        _x = HUGE;
+                    }
                 }
             }else if(FileLine.argEquals(row[0], "y")){ //$NON-NLS-1$
                 if(row[1].startsWith("$")){
@@ -101,11 +108,26 @@ public class ADLObject extends WidgetPart{
                     _y=0;
                 }else {
                     _y=Integer.parseInt(row[1]);
+                    if (Math.abs(_y) > HUGE)
+                    {
+                        Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Limiting ridiculous y=" + row[1]);
+                        _y = HUGE;
+                    }
                 }
             }else if(FileLine.argEquals(row[0], "width")){ //$NON-NLS-1$
                 _width=Integer.parseInt(row[1]);
+                if (Math.abs(_width) > HUGE)
+                {
+                    Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Limiting ridiculous width=" + row[1]);
+                    _width = HUGE;
+                }
             }else if(FileLine.argEquals(row[0], "height")){ //$NON-NLS-1$
                 _height=Integer.parseInt(row[1]);
+                if (Math.abs(_height) > HUGE)
+                {
+                    Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Limiting ridiculous height=" + row[1]);
+                    _height = HUGE;
+                }
             }else if(FileLine.argEquals(row[0], "groupid")){ //$NON-NLS-1$
                 // TODO: ADLObject->groupid
                 Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Unhandled Parameter: " + fileLine);

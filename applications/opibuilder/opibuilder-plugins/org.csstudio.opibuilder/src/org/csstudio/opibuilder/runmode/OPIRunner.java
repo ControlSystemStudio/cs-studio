@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
@@ -86,14 +87,15 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
     public void createPartControl(final Composite parent) {
         opiRuntimeDelegate.createGUI(parent);
         //if this is the first OPI in this window, resize the window to match the OPI size.
-        //Make it in compact mode if it is configured.
+        //Make it in compact or fullscreen mode if either is configured.
         if(OPIBuilderPlugin.isRAP())
             return;
         Display.getCurrent().asyncExec(new Runnable() {
 
             @Override
             public void run() {
-                if (getSite().getWorkbenchWindow().getActivePage().getEditorReferences().length == 1
+                IEditorReference[] editorReferences = getSite().getWorkbenchWindow().getActivePage().getEditorReferences();
+                if (editorReferences.length > 0 && editorReferences[0].getEditor(true) == OPIRunner.this
                         && getSite().getWorkbenchWindow().getActivePage().getViewReferences().length == 0) {
                     if (WorkbenchWindowService.isInFullScreenMode()) {
                         FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance()
@@ -101,24 +103,12 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
                         if (!fullScreenAction.isInFullScreen())
                             fullScreenAction.run();
                     } else {
-                        int trimWidth = 45, trimHeight = 165;
                         if (WorkbenchWindowService.isInCompactMode()) {
                             CompactModeAction compactAction = WorkbenchWindowService.getInstance()
                                     .getCompactModeAction(getSite().getWorkbenchWindow());
                             if (!compactAction.isInCompactMode())
                                 compactAction.run();
-                            trimHeight = 65;
                         }
-                        /* Commented out as it  presents problem for the multi
-                         * screen
-                        final Rectangle bounds;
-                        if (opiRuntimeDelegate.getDisplayModel() != null)
-                            bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
-                        else
-                            bounds = new Rectangle(-1, -1, 800, 600);
-                        if (bounds.x >= 0 && bounds.y >= 0)
-                            parent.getShell().setLocation(bounds.x, bounds.y);
-                        parent.getShell().setSize(bounds.width + trimWidth, bounds.height + trimHeight); */
                     }
 
                 }

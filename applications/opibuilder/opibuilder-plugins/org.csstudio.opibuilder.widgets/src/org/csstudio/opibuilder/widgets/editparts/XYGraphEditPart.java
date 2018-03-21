@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -35,7 +34,6 @@ import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.swt.xygraph.util.IEventManagerListener;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.diirt.vtype.VType;
@@ -122,23 +120,6 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         //all values should be buffered
         getPVWidgetEditpartDelegate().setAllValuesBuffered(true);
 
-        if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-            xyGraph.getEventManager().addListener(new IEventManagerListener() {
-                @Override
-                public void scrollingChanged(boolean isScrollingDisabled_) {
-                    List<Trace> traceList = getTraceList();
-                    for (int i = 0; i < getWidgetModel().getTracesAmount(); i++) {
-                        final Trace trace = traceList.get(i);
-                        final CircularBufferDataProvider dataProvider = (CircularBufferDataProvider) trace.getDataProvider();
-                        if(isScrollingDisabled_) {
-                            dataProvider.setPlotMode(CircularBufferDataProvider.PlotMode.N_STOP);
-                        } else {
-                            dataProvider.setPlotMode(CircularBufferDataProvider.PlotMode.LAST_N);
-                        }
-                    }
-                }
-            });
-        }
         return xyGraphFigure;
     }
 
