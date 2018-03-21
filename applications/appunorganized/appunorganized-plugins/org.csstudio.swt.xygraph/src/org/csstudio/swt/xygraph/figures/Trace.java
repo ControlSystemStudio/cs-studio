@@ -22,6 +22,7 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -883,7 +884,7 @@ public class Trace extends Figure implements IDataProviderListener,
                     // Draw bar lines
                     Set<Integer> xSet = bottomPoints.keySet();
                     for (Iterator<Integer> i = xSet.iterator(); i.hasNext(); ) {
-                        Integer posX = (Integer) i.next();
+                        Integer posX = i.next();
                         Point p1 = new Point(posX.intValue(), bottomPoints.get(posX).intValue());
                         Point p2 = new Point(posX.intValue(), topPoints.get(posX).intValue());
                         drawLine(graphics, p1, p2);
@@ -1319,9 +1320,16 @@ public class Trace extends Figure implements IDataProviderListener,
         return name;
     }
 
+    @Override
     public void dataChanged(IDataProvider dataProvider) {
+
+        if (xyGraph.getZoomType() != ZoomType.NONE){ //we don't do autoscale when in zoom mode
+            repaint();
+            return;
+        }
+
         // if the axis has been repainted, it will cause the trace to be
-        // repainted autoly,
+        // repainted automatically,
         // the trace doesn't have to be repainted again.
         boolean xRepainted = xAxis.performAutoScale(false);
         boolean yRepainted = yAxis.performAutoScale(false);
@@ -1415,10 +1423,12 @@ public class Trace extends Figure implements IDataProviderListener,
         return -(low + 1); // key not found.
     }
 
+    @Override
     public void axisRevalidated(Axis axis) {
         repaint();
     }
 
+    @Override
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
         // do nothing
     }
@@ -1572,23 +1582,27 @@ public class Trace extends Figure implements IDataProviderListener,
         return xyGraph;
     }
 
+    @Override
     public void axisForegroundColorChanged(Axis axis, Color oldColor,
             Color newColor) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
             boolean newAutoScale) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
         // TODO Auto-generated method stub
 
