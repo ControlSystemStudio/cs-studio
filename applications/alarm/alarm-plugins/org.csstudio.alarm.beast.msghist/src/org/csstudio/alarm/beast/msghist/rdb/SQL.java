@@ -27,7 +27,6 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
  *  @author Jan Hatje created the initial SQL in
  *          org.csstudio.alarm.dbaccess.SQLStatements
  *  @author Lana Abadie added Postgresql
- *  @author Borut Terpinc
  */
 @SuppressWarnings("nls")
 public class SQL
@@ -211,40 +210,38 @@ public class SQL
             sel.append(" m." + msg_prop + ",");
         // .. and the properties from MESSAGE_CONTENT
         sel.append(" c.msg_property_type_id p, c.value");
-        sel.append(" FROM (SELECT * FROM " + getSchemaPrefix() + "message msg");
+        sel.append(" FROM " + getSchemaPrefix() + "message m, "
+                + getSchemaPrefix() + "message_content c");
         // Set time range
-        sel.append(" WHERE msg.datum BETWEEN ? AND ?");
+        sel.append(" WHERE m.datum BETWEEN ? AND ?");
+        // Join MESSAGE and ..CONTENT
+        sel.append(" AND m.id=c.message_id");
         // Some filters may be MESSAGE columns, rest is MESSAGE_CONTENT
         for (MessagePropertyFilter filter : filters)
         {
             if (isMessageProperty(filter.getProperty()))
             {   // Filter property is actually column of MESSAGE table
-                sel.append(" AND msg." + filter.getProperty() + " LIKE ?");
+                sel.append(" AND m." + filter.getProperty() + " LIKE ?");
             }
             else
             {   // Create MESSAGE_CONTENT sub-query for this property/value
                 final int id = getPropertyIdByName(filter.getProperty());
-                sel.append(" AND msg.id IN (");
+                sel.append(" AND m.id IN (");
                 sel.append(" SELECT message_id");
                 sel.append(" FROM " + getSchemaPrefix() + "message_content");
                 sel.append(" WHERE msg_property_type_id=" + id
                            + " AND value LIKE ?)");
             }
         }
-
         // Oracle limits result count via ROWNUM check within WHERE clause...
         if (rdb_util.getDialect() == Dialect.Oracle)
             sel.append(" AND ROWNUM < ?");
-        sel.append(" ORDER BY msg.id DESC");
+        sel.append(" ORDER BY m.id DESC");
         // MySQL uses designated LIMIT statement instead.
         if (rdb_util.getDialect() == Dialect.MySQL || rdb_util.getDialect() == Dialect.PostgreSQL)
             sel.append(" LIMIT ?");
-        sel.append(") m, " + getSchemaPrefix() + "message_content c");
 
-        // Join MESSAGE and ..CONTENT
-        sel.append(" WHERE m.id=c.message_id");
-
-       return sel.toString();
+        return sel.toString();
     }
 
     /** Idea: Use the above to ONLY select from MESSAGE table, then

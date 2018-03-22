@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IWorkbenchSite;
 
 /**
  *
@@ -87,6 +88,12 @@ public class MessageHistoryWidgetEditPart extends AbstractWidgetEditPart {
     @Override
     protected void doActivate() {
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+            // set selection provider if one is not already present
+            IWorkbenchSite site = getSite();
+            if (site != null && site.getSelectionProvider() == null)
+                site.setSelectionProvider(new SelectionProviderWrapper());
+
+
             try {
                 model.setTimerange(model.getStartSpec(), model.getEndSpec());
             } catch (Exception ex) {

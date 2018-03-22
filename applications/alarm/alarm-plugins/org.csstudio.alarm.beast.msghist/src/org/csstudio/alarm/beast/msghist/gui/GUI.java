@@ -713,4 +713,8 @@ public class GUI extends Composite implements ModelListener {
                                 // because one of conditions are not validated
     }
 
+    public TableViewer getTableViewer() {
+        return table_viewer;
+    }
+
 }
