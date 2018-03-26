@@ -102,7 +102,7 @@ public class MessageHistoryView extends ViewPart {
         this.memento = memento;
         try {
             columns = Preferences.getPropertyColumns();
-            if (memento != null)
+            if (memento != null && memento.getChild(M_COLUMNS) != null)
                 columns = PropertyColumnPreference.restoreColumns(memento.getChild(M_COLUMNS), columns);
         } catch (Exception e) {
             MessageDialog.openError(site.getShell(), Messages.Error, e.getMessage());
@@ -134,9 +134,8 @@ public class MessageHistoryView extends ViewPart {
             model = new Model(url, user, password, schema, maxMessages, timeFormat, getSite().getShell());
 
             // restore filter from memento
-            String filter;
-            if (memento != null && (filter = memento.getString(M_FILTER)) != null)
-                FilterQuery.apply(filter, model);
+            if (memento != null && memento.getString(M_FILTER) != null)
+                FilterQuery.apply(memento.getString(M_FILTER), model);
 
             createGUI();
             createToolbar();
@@ -184,9 +183,6 @@ public class MessageHistoryView extends ViewPart {
         if (secondaryId.get() > 1) {
             secondaryId.decrementAndGet();
         }
-        if(gui != null)
-            gui.dispose();
-        super.dispose();
     }
 
     @Override

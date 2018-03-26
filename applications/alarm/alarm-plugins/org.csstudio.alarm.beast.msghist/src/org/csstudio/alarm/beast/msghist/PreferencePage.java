@@ -54,7 +54,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         addField(new StringFieldEditor(Preferences.AUTO_REFRESH_PERIOD, Messages.Pref_AutoRefreshPeriod, parent));
         addField(new StringFieldEditor(Preferences.TIME_FORMAT, Messages.Pref_TimeFormat, parent));
         final IntegerFieldEditor max_messages = new IntegerFieldEditor(Preferences.MAX_MESSAGES,
-                Messages.Pref_MaxMessages, parent);
+                Messages.Pref_MaxProperties, parent);
         max_messages.setValidRange(0, Integer.MAX_VALUE);
         addField(max_messages);
         addField(new TableColumnsFieldEditor(parent));

@@ -64,7 +64,6 @@ public class FullScreenAction extends Action implements
     public void run() {
         if (inFullScreen) {
             shell.setFullScreen(false);
-
             CompactModeAction compactAction = WorkbenchWindowService.getInstance().getCompactModeAction(window);
             // set status line visibility depending on compact mode status
             WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window,
