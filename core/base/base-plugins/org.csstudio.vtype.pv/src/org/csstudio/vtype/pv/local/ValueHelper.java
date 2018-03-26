@@ -162,14 +162,20 @@ public class ValueHelper
     {
         final double[] values = new double[items.size()];
         for (int i=0; i<values.length; ++i)
+        {
             try
             {
-                values[i] = Double.parseDouble(Objects.toString(items.get(i)));
+                final String text = Objects.toString(items.get(i));
+                if (text.startsWith("0x"))
+                    values[i] = Integer.parseInt(text.substring(2), 16);
+                else
+                    values[i] = Double.parseDouble(text);
             }
             catch (NumberFormatException ex)
             {
                 throw new Exception("Cannot parse number from " + items.get(i));
             }
+        }
 
         return values;
     }
@@ -295,7 +301,7 @@ public class ValueHelper
                         return ValueFactory.newVString(Objects.toString(new_value), ValueFactory.alarmNone(), ValueFactory.timeNow());
                     // Change to double[]?
                     if (new_value instanceof double[])
-                        return ValueFactory.toVType((double[]) new_value);
+                        return ValueFactory.toVType(new_value);
                     try
                     {
                         if (new_value instanceof List)
@@ -343,7 +349,7 @@ public class ValueHelper
         if (type == VDoubleArray.class)
         {   // Pass double[]
             if (new_value instanceof double[])
-                return ValueFactory.toVType((double[]) new_value);
+                return ValueFactory.toVType(new_value);
             // Pass List
             if (new_value instanceof List)
             {
