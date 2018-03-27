@@ -15,6 +15,7 @@ import javax.jms.Connection;
 import org.csstudio.alarm.beast.annunciator.model.AnnunciationMessage;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
+import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
@@ -60,7 +61,7 @@ public class Application implements IApplication, JMSAnnunciatorListener
         final String topics[] = Preferences.getTopics();
 
         // Display configuration info
-        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String version = context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
 
         // Create parser for arguments and run it.
@@ -88,6 +89,9 @@ public class Application implements IApplication, JMSAnnunciatorListener
         // Put startup info with JMS topic & URL into log
         Logger.getLogger(Activator.PLUGIN_ID).info
             ("JMS2SPEECH " + version + ", topic " + Arrays.toString(topics) + " @ " + url);
+
+        // Initialize order of severities
+        Severity.initialize(Preferences.getJMSSeverities());
 
         final Connection connection = JMSConnectionFactory.connect(url);
 
