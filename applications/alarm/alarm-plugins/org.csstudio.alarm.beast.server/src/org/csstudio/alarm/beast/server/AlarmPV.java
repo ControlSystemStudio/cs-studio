@@ -149,45 +149,47 @@ public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, Filte
     /** Connect to control system */
     public void start() throws Exception
     {
-        if (! logic.isEnabled())
+        if (logic.isEnabled())
         {
+            logger.log(Level.INFO, "Start {0}", getPathName());
+
+            // Seconds to millisecs
+            final long delay = Preferences.getConnectionGracePeriod() * 1000;
+            connection_timeout_task = new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    if (! is_connected)
+                        pvConnectionTimeout();
+                }
+            };
+            connection_timer.schedule(connection_timeout_task, delay);
+
+            logic.computeNewState(new AlarmState(SeverityLevel.OK, "Starting", null, Instant.now()));
+
+            final PV safe_pv = PVPool.getPV(getName());
+            safe_pv.addListener(this);
+            final PV old_pv = pv.getAndSet(safe_pv);
+            if (old_pv != null)
+                logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
+
+            if (filter != null)
+            {
+                try
+                {
+                    filter.start();
+                }
+                catch (Exception ex)
+                {
+                    logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
+                }
+            }
+        }
+        else
             logger.log(Level.INFO, "Skipping disabled {0}", getPathName());
-            return;
-        }
-        logger.log(Level.INFO, "Start {0}", getPathName());
 
-        // Seconds to millisecs
-        final long delay = Preferences.getConnectionGracePeriod() * 1000;
-        connection_timeout_task = new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                if (! is_connected)
-                    pvConnectionTimeout();
-            }
-        };
-        connection_timer.schedule(connection_timeout_task, delay);
-
-        logic.computeNewState(new AlarmState(SeverityLevel.OK, "Starting", null, Instant.now()));
-
-        final PV safe_pv = PVPool.getPV(getName());
-        safe_pv.addListener(this);
-        final PV old_pv = pv.getAndSet(safe_pv);
-        if (old_pv != null)
-            logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
-
-        if (filter != null)
-        {
-            try
-            {
-                filter.start();
-            }
-            catch (Exception ex)
-            {
-                logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
-            }
-        }
+        getParent().maximizeSeverity();
     }
 
     /** Disconnect from control system */
