@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
@@ -29,7 +28,7 @@ import org.diirt.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListener, PVListener
+public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, FilterListener, PVListener
 {
     private static final long serialVersionUID = -1467537752626320944L;
 
@@ -80,7 +79,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
      *  @throws Exception on error
      */
     public AlarmPV(final AlarmServer server,
-            final TreeItem parent,
+            final ServerTreeItem parent,
             final int id, final String name,
             final String description,
             final boolean enabled,
@@ -262,6 +261,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 Messages.AlarmMessageDisconnected, "", Instant.now());
         logic.computeNewState(received);
         logger.log(Level.INFO, () -> getPathName() + " disconnected -> " + logic);
+
+        getParent().maximizeSeverity();
     }
 
     /** @see PVListener */
@@ -274,8 +275,17 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         final AlarmState received = new AlarmState(new_severity, new_message,
                 VTypeHelper.toString(value),
                 VTypeHelper.getTimestamp(value));
+
+        final SeverityLevel old_severity = logic.getAlarmState().getSeverity();
         logic.computeNewState(received);
         logger.log(Level.FINE, () -> getPathName() + " received " + value + " -> " + logic);
+
+        severity = logic.getAlarmState().getSeverity();
+        if (severity.equals(old_severity))
+            return;
+
+        // Whenever logic computes new state, maximize up parent tree
+        getParent().maximizeSeverity();
     }
 
     /** AlarmLogicListener: {@inheritDoc} */

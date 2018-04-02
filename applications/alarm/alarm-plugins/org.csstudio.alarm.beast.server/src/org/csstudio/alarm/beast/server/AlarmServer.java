@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
@@ -143,7 +143,7 @@ public class AlarmServer implements Runnable
     /** Hierarchical alarm configuration
      *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
      */
-    private TreeItem alarm_tree;
+    private ServerTreeItem alarm_tree;
 
     /** All the PVs in the alarm_tree, sorted by name
      *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
@@ -507,7 +507,12 @@ public class AlarmServer implements Runnable
         resetNagTimer();
         final AlarmPV pv = findPV(pv_name);
         if (pv != null)
-            pv.getAlarmLogic().acknowledge(acknowledge);
+        {
+            pv.severity = pv.getAlarmLogic().acknowledge(acknowledge);
+
+            // Likely changed the state, maximize up parent tree
+            pv.getParent().maximizeSeverity();
+        }
     }
 
     /** Locate alarm PV by name

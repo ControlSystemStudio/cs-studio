@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
@@ -474,8 +474,9 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
 
     /** Acknowledge current alarm severity
      *  @param acknowledge Acknowledge or un-acknowledge?
+     *  @return Resulting {@link SeverityLevel}
      */
-    public void acknowledge(boolean acknowledge)
+    public SeverityLevel acknowledge(boolean acknowledge)
     {
         final AlarmState current, alarm;
         // Cancel any scheduled 'global' update
@@ -502,6 +503,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
         if (clear_global_alarm)
             clearGlobalAlarm();
         listener.alarmStateChanged(current, alarm);
+        return alarm.getSeverity();
     }
 
     /** @return String representation for debugging */
