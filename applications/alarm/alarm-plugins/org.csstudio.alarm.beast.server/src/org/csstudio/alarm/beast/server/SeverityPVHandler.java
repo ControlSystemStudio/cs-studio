@@ -11,6 +11,7 @@ import static org.csstudio.alarm.beast.server.Activator.logger;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -30,10 +31,9 @@ import org.csstudio.vtype.pv.PVPool;
 @SuppressWarnings("nls")
 public class SeverityPVHandler
 {
-    // TODO Add an optional 'heartbeat' PV
-
+    private static final String HEARTBEAT_PV = Preferences.getHeartbeatPV();
+    private static final long HEARTBEAT_MS = Preferences.getHeartbeatSecs() * 1000;
     private static final int CONNECTION_SECS = (int) Preferences.getConnectionGracePeriod();
-
 
     /** Pending updates */
     private static final ConcurrentHashMap<String, SeverityLevel> updates = new ConcurrentHashMap<>();
@@ -56,10 +56,25 @@ public class SeverityPVHandler
      */
     private static void run()
     {
+        long next_heartbeat = HEARTBEAT_PV.isEmpty() ? -1 : 0;
+
         while (true)
         {
             try
             {
+                if (next_heartbeat > 0)
+                {
+                    // Trigger optional 'heartbeat' PV
+                    final long now = System.currentTimeMillis();
+                    if (now >= next_heartbeat)
+                    {
+                        getConnectedPV(HEARTBEAT_PV).write(1);
+                        next_heartbeat = now + HEARTBEAT_MS;
+                    }
+                }
+
+                // Sleep if nothing else to do.
+                // This sleep determines the heartbeat accuracy.
                 if (updates.isEmpty())
                     Thread.sleep(500);
                 else
@@ -85,40 +100,43 @@ public class SeverityPVHandler
 
             logger.log(Level.FINE, "Should update PV '" + pv_name + "' to " + severity.name());
 
-            // Get or create PV
-            final PV pv = pvs.computeIfAbsent(pv_name, name ->
-            {
-                try
-                {
-                    return PVPool.getPV(name);
-                }
-                catch (Exception ex)
-                {
-                    logger.log(Level.WARNING, "Cannot create severity PV '" + name + "'", ex);
-                    return null;
-                }
-            });
-            if (pv == null)
-                continue;
-
             try
             {
-                // Assert connection
-                int timeout = CONNECTION_SECS;
-                while (pv.read() == null)
-                {
-                    TimeUnit.SECONDS.sleep(1);
-                    if (--timeout < 0)
-                        throw new Exception("No connection");
-                }
-                // Write severity
+                final PV pv = getConnectedPV(pv_name);
                 pv.write(severity.ordinal());
             }
             catch (Exception ex)
             {
-                logger.log(Level.WARNING, "Cannot set severity PV '" + pv.getName() + "' to " + severity.ordinal(), ex);
+                logger.log(Level.WARNING, "Cannot set severity PV '" + pv_name + "' to " + severity.ordinal(), ex);
             }
         }
+    }
+
+    private static PV getConnectedPV(final String pv_name) throws Exception
+    {
+        // Get or create PV
+        final PV pv = Objects.requireNonNull(pvs.computeIfAbsent(pv_name, name ->
+        {
+            try
+            {
+                return PVPool.getPV(name);
+            }
+            catch (Exception ex)
+            {
+                logger.log(Level.WARNING, "Cannot create severity PV '" + name + "'", ex);
+                return null;
+            }
+        }));
+
+        // Assert connection
+        int timeout = CONNECTION_SECS;
+        while (pv.read() == null)
+        {
+            TimeUnit.SECONDS.sleep(1);
+            if (--timeout < 0)
+                throw new Exception("No connection");
+        }
+        return pv;
     }
 
     /** Request an update
