@@ -169,6 +169,19 @@ public class AlarmRDB
                 final int pv_id = result.getInt(3);
                 if (result.wasNull())
                 {
+                    // TODO Check automated action 'sevrpv:' ...
+                    final PreparedStatement sel_actions = connection.prepareStatement(sql.sel_auto_actions_by_id);
+                    sel_actions.setInt(1, id);
+                    final ResultSet act_res = sel_actions.executeQuery();
+                    while (act_res.next())
+                    {
+                        final String action = act_res.getString(2);
+                        if (action.startsWith("sevrpv:"))
+                        {
+                            System.out.println(name + " should update severity PV " + action.substring("sevrpv:".length()));
+                        }
+                    }
+
                     final ServerTreeItem child = new ServerTreeItem(parent, name, id);
                     recurse_items.add(child);
                 }
