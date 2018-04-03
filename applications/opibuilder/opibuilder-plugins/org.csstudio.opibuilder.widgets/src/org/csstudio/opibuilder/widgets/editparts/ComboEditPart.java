@@ -11,8 +11,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -40,6 +38,8 @@ import org.eclipse.swt.widgets.Combo;
  *
  */
 public final class ComboEditPart extends AbstractPVWidgetEditPart {
+    /** Running on Windows ("win32" or similar) */
+    private static final boolean is_windows = SWT.getPlatform().toLowerCase().contains("win");
 
     private IPVListener loadItemsFromPVListener;
 
@@ -83,12 +83,11 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                 comboSelectionListener = new SelectionAdapter(){
                         @Override
                         public void widgetSelected(SelectionEvent e) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Combo click " + e);
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Button 1 " + (e.stateMask & SWT.BUTTON1));
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, SWT.getPlatform());
                             // Only react if the selection was accomplished
                             // by clicking on an item.
-                            if (e.stateMask == SWT.BUTTON1)
+                            // Skip this test on windows, where the stateMask
+                            // is always empty, so cannot guard against scroll wheel changes.
+                            if (is_windows  ||  e.stateMask == SWT.BUTTON1)
                                 setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
                             else
                             {   // Ignore selections from mouse wheel (stateMask == 0).
