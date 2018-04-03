@@ -56,13 +56,24 @@ public class SeverityPVHandler
      */
     private static void run()
     {
-        long next_heartbeat = HEARTBEAT_PV.isEmpty() ? -1 : 0;
+        long next_heartbeat;
+
+        if (HEARTBEAT_PV.isEmpty())
+        {
+            logger.info("Not using any heartbeat PV");
+            next_heartbeat = -1;
+        }
+        else
+        {
+            logger.info("Setting heartbeat PV '" + HEARTBEAT_PV + "' every " + HEARTBEAT_MS/1000 + " sec");
+            next_heartbeat = 0;
+        }
 
         while (true)
         {
             try
             {
-                if (next_heartbeat > 0)
+                if (next_heartbeat >= 0)
                 {
                     // Trigger optional 'heartbeat' PV
                     final long now = System.currentTimeMillis();
