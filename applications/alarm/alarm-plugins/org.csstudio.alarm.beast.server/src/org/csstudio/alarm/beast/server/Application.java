@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
         // Display configuration info
-        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String version = context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
 
         // Create parser for arguments and run it.
@@ -126,6 +126,8 @@ public class Application implements IApplication
         final WorkQueue work_queue = new WorkQueue();
         try
         {
+            SeverityPVHandler.initialize();
+
             // Create alarm server
             final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
 
