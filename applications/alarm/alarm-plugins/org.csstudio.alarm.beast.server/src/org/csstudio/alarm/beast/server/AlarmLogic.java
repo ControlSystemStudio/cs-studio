@@ -474,9 +474,8 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
 
     /** Acknowledge current alarm severity
      *  @param acknowledge Acknowledge or un-acknowledge?
-     *  @return Resulting {@link SeverityLevel}
      */
-    public SeverityLevel acknowledge(boolean acknowledge)
+    public void acknowledge(boolean acknowledge)
     {
         final AlarmState current, alarm;
         // Cancel any scheduled 'global' update
@@ -503,7 +502,6 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
         if (clear_global_alarm)
             clearGlobalAlarm();
         listener.alarmStateChanged(current, alarm);
-        return alarm.getSeverity();
     }
 
     /** @return String representation for debugging */

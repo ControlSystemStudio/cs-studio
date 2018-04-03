@@ -21,23 +21,12 @@ public class ServerTreeItem extends TreeItem
 
     protected volatile SeverityLevel severity = SeverityLevel.UNDEFINED;
 
-    public ServerTreeItem(ServerTreeItem parent, String name, int id)
+    private final String severity_pv_name;
+
+    public ServerTreeItem(final ServerTreeItem parent, final String name, final int id, final String severity_pv)
     {
         super(parent, name, id);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ServerTreeItem getParent()
-    {
-        return (ServerTreeItem) super.getParent();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ServerTreeItem getChild(final int index)
-    {
-        return (ServerTreeItem) super.getChild(index);
+        this.severity_pv_name = severity_pv;
     }
 
     /** Set severity of this item by maximizing over its child severities.
@@ -55,15 +44,20 @@ public class ServerTreeItem extends TreeItem
             for (int i=0; i<n; ++i)
             {
                 // Maximize severity of all child elements
-                final ServerTreeItem child = getChild(i);
+                final TreeItem child = getChild(i);
+                final SeverityLevel child_severity;
                 if (child instanceof AlarmPV)
                 {
                     final AlarmPV pv = (AlarmPV) child;
                     if (! pv.getAlarmLogic().isEnabled())
                         continue;
+                    child_severity = pv.getAlarmLogic().getAlarmState().getSeverity();
                 }
-                if (child.severity.ordinal() > new_severity.ordinal())
-                    new_severity = child.severity;
+                else
+                    child_severity = ((ServerTreeItem) child).severity;
+
+                if (child_severity.ordinal() > new_severity.ordinal())
+                    new_severity = child_severity;
             }
         }
 
@@ -74,15 +68,15 @@ public class ServerTreeItem extends TreeItem
         }
 
         // Percolate changes towards root
-        final ServerTreeItem parent = getParent();
-        if (parent != null)
-            parent.maximizeSeverity();
+        final TreeItem parent = getParent();
+        if (parent instanceof ServerTreeItem)
+            ((ServerTreeItem)parent).maximizeSeverity();
 
         // TODO If _this_ node changed its severity,
         //      update optional severity PV
-        if (changed)
+        if (changed  &&  severity_pv_name != null)
         {
-            System.out.println("Update severity PV for " + getName() + " to " + new_severity.name());
+            System.out.println("Node '" + getName() + "' should update PV '" + severity_pv_name + "' to " + new_severity.name());
             // TODO Write to queue, handle that in other thread
         }
     }

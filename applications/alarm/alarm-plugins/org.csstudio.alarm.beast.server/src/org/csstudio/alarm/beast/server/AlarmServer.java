@@ -508,7 +508,7 @@ public class AlarmServer implements Runnable
         final AlarmPV pv = findPV(pv_name);
         if (pv != null)
         {
-            pv.severity = pv.getAlarmLogic().acknowledge(acknowledge);
+            pv.getAlarmLogic().acknowledge(acknowledge);
 
             // Likely changed the state, maximize up parent tree
             pv.getParent().maximizeSeverity();

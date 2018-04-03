@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
@@ -28,7 +29,7 @@ import org.diirt.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, FilterListener, PVListener
+public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListener, PVListener
 {
     private static final long serialVersionUID = -1467537752626320944L;
 
@@ -104,6 +105,12 @@ public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, Filte
         this.server = server;
         setDescription(description);
         setEnablement(enabled, filter);
+    }
+
+    @Override
+    public ServerTreeItem getParent()
+    {
+        return (ServerTreeItem) super.getParent();
     }
 
     /** @return AlarmLogic used by this PV */
@@ -282,8 +289,7 @@ public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, Filte
         logic.computeNewState(received);
         logger.log(Level.FINE, () -> getPathName() + " received " + value + " -> " + logic);
 
-        severity = logic.getAlarmState().getSeverity();
-        if (severity.equals(old_severity))
+        if (logic.getAlarmState().getSeverity().equals(old_severity))
             return;
 
         // Whenever logic computes new state, maximize up parent tree
@@ -330,7 +336,6 @@ public class AlarmPV extends ServerTreeItem implements AlarmLogicListener, Filte
                     alarm.getSeverity(), alarm.getMessage(),
                     alarm.getValue(), alarm.getTime());
     }
-
 
     /** {@inheritDoc} */
     @Override

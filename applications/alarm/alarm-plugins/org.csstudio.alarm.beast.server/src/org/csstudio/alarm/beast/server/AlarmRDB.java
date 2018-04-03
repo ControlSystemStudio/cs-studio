@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import static org.csstudio.alarm.beast.server.Activator.logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +33,9 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 @SuppressWarnings("nls")
 public class AlarmRDB
 {
+    /** Automated action prefix for severity PV */
+    private static final String SEVRPV = "sevrpv:";
+
     /** Alarm Server */
     final private AlarmServer server;
 
@@ -103,7 +108,7 @@ public class AlarmRDB
                 throw new Exception("Unknown alarm tree root " + root_name);
             final int id = result.getInt(1);
             result.close();
-            root = new ServerTreeItem(null, root_name, id);
+            root = new ServerTreeItem(null, root_name, id, null);
         }
         finally
         {
@@ -149,6 +154,7 @@ public class AlarmRDB
      */
     private void readChildren(final ServerTreeItem parent, final PreparedStatement sel_items_by_parent) throws Exception
     {
+        final PreparedStatement sel_actions = connection.prepareStatement(sql.sel_auto_actions_by_id);
         final List<ServerTreeItem> recurse_items = new ArrayList<>();
 
         sel_items_by_parent.setInt(1, parent.getID());
@@ -169,20 +175,29 @@ public class AlarmRDB
                 final int pv_id = result.getInt(3);
                 if (result.wasNull())
                 {
-                    // TODO Check automated action 'sevrpv:' ...
-                    final PreparedStatement sel_actions = connection.prepareStatement(sql.sel_auto_actions_by_id);
+                    // Check automated action 'sevrpv:' ...
+                    String severity_pv = null;
                     sel_actions.setInt(1, id);
-                    final ResultSet act_res = sel_actions.executeQuery();
-                    while (act_res.next())
+                    try
+                    (
+                        final ResultSet act_res = sel_actions.executeQuery();
+                    )
                     {
-                        final String action = act_res.getString(2);
-                        if (action.startsWith("sevrpv:"))
+                        while (act_res.next())
                         {
-                            System.out.println(name + " should update severity PV " + action.substring("sevrpv:".length()));
+                            final String action = act_res.getString(2);
+                            if (action.startsWith(SEVRPV))
+                            {
+                                final String pv_name = action.substring(SEVRPV.length());
+                                if (severity_pv != null)
+                                    logger.log(Level.WARNING, "Multiple severity PVs for '" + name + "', '" +
+                                               severity_pv + "' as well as '" + pv_name + "'");
+                                severity_pv = pv_name;
+                            }
                         }
                     }
 
-                    final ServerTreeItem child = new ServerTreeItem(parent, name, id);
+                    final ServerTreeItem child = new ServerTreeItem(parent, name, id, severity_pv);
                     recurse_items.add(child);
                 }
                 else
@@ -250,6 +265,7 @@ public class AlarmRDB
         finally
         {
             result.close();
+            sel_actions.close();
         }
 
         // Recurse to children
