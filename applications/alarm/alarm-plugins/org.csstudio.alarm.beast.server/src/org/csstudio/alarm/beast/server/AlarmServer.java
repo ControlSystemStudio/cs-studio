@@ -399,6 +399,7 @@ public class AlarmServer implements Runnable
         }
         for (AlarmPV pv : pvs)
             pv.stop();
+        SeverityPVHandler.stop();
     }
 
     /** Read the initial alarm configuration
@@ -474,6 +475,7 @@ public class AlarmServer implements Runnable
      */
     void updateConfig(final String path_name) throws Exception
     {
+        // TODO Check for update of node (severity PV)
         resetNagTimer();
         AlarmPV pv = null;
         if (path_name != null)

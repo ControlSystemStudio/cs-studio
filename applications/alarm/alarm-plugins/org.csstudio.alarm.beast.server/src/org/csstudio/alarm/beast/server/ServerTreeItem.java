@@ -72,12 +72,8 @@ public class ServerTreeItem extends TreeItem
         if (parent instanceof ServerTreeItem)
             ((ServerTreeItem)parent).maximizeSeverity();
 
-        // TODO If _this_ node changed its severity,
-        //      update optional severity PV
+        // If _this_ node changed its severity, update optional severity PV
         if (changed  &&  severity_pv_name != null)
-        {
-            System.out.println("Node '" + getName() + "' should update PV '" + severity_pv_name + "' to " + new_severity.name());
-            // TODO Write to queue, handle that in other thread
-        }
+            SeverityPVHandler.update(severity_pv_name, new_severity);
     }
 }
