@@ -29,7 +29,7 @@
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
     <diirt.download.root>http://diirt.download.controlsystemstudio.org</diirt.download.root>
-    <diirt.version>3.1.6</diirt.version>
+    <diirt.version>3.1.7</diirt.version>
     <cs-studio-central.url>${download.root}/core/${cs-studio.version}</cs-studio-central.url>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
