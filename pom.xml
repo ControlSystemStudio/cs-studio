@@ -16,8 +16,8 @@
   <properties>
     <tycho.version>1.0.0</tycho.version>
     <manifest-location>META-INF</manifest-location>
-    <cs-studio.version>4.5</cs-studio.version>
-    <csstudio.version>4.5.0-SNAPSHOT</csstudio.version>
+    <cs-studio.version>4.6</cs-studio.version>
+    <csstudio.version>4.6.0-SNAPSHOT</csstudio.version>
     <epics.util.version>0.3.2</epics.util.version>
     <epics.jca.version>2.4.1</epics.jca.version>
     <graphene.version>0.8.0</graphene.version>
