@@ -333,6 +333,9 @@ public class AlarmServer implements Runnable
     /** Start PVs */
     private void startPVs()
     {
+        // Write all severity PVs once to assert they have the correct value
+        updateSeverityPVs(alarm_tree);
+
         final long delay = Preferences.getPVStartDelay();
         // Must not sync while calling PV, because Channel Access updates
         // might arrive while we're trying to start/stop channels,
@@ -360,6 +363,20 @@ public class AlarmServer implements Runnable
                 Activator.getLogger().log(Level.SEVERE,
                     "Error starting PV " + pv.getName(), ex);
             }
+        }
+    }
+
+    private void updateSeverityPVs(final TreeItem node)
+    {
+        // AlarmPV leaf has no severity PV nor child nodes
+        if (! (node instanceof ServerTreeItem))
+            return;
+
+        synchronized (node)
+        {
+            ((ServerTreeItem) node).updateSeverityPV();
+            for (int i = node.getChildCount()-1; i>=0; --i)
+                updateSeverityPVs(node.getChild(i));
         }
     }
 
