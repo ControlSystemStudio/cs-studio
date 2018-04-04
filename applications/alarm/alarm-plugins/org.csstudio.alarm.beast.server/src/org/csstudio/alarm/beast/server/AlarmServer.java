@@ -475,7 +475,6 @@ public class AlarmServer implements Runnable
      */
     void updateConfig(final String path_name) throws Exception
     {
-        // TODO Check for update of node (severity PV)
         resetNagTimer();
         AlarmPV pv = null;
         if (path_name != null)
@@ -488,7 +487,7 @@ public class AlarmServer implements Runnable
             pv = findPV(path[path.length-1]);
         }
         if (pv == null)
-        {   // Unknown PV, so this must be a new PV. Read whole config again
+        {   // Unknown PV, so this must be a new PV, or an area/system/subsys. Read whole config again
             stopPVs();
             readConfiguration();
             startPVs();

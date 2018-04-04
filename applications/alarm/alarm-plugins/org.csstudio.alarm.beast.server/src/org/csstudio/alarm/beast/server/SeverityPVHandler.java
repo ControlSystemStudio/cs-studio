@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -38,9 +39,11 @@ public class SeverityPVHandler
     /** Pending updates */
     private static final ConcurrentHashMap<String, SeverityLevel> updates = new ConcurrentHashMap<>();
 
-
     /** Map of PVs by name */
     private static final ConcurrentHashMap<String, PV> pvs = new ConcurrentHashMap<>();
+
+    /** Used to 'wait'. Write 'true' to abort ASAP. */
+    private static final SynchronousQueue<Boolean> abort = new SynchronousQueue<>();
 
 
     /** Initialize, start SeverityPVUpdater thread */
@@ -91,7 +94,7 @@ public class SeverityPVHandler
                 else
                     performUpdates();
             }
-            catch (Exception ex)
+            catch (Throwable ex)
             {
                 logger.log(Level.WARNING, "SeverityPVUpdater error", ex);
             }
@@ -114,7 +117,8 @@ public class SeverityPVHandler
             try
             {
                 final PV pv = getConnectedPV(pv_name);
-                pv.write(severity.ordinal());
+                if (pv != null)
+                    pv.write(severity.ordinal());
             }
             catch (Exception ex)
             {
@@ -143,7 +147,9 @@ public class SeverityPVHandler
         int timeout = CONNECTION_SECS;
         while (pv.read() == null)
         {
-            TimeUnit.SECONDS.sleep(1);
+            if (abort.poll(1, TimeUnit.SECONDS) == Boolean.TRUE)
+                // Abort waiting for PV
+                return null;
             if (--timeout < 0)
                 throw new Exception("No connection");
         }
@@ -165,6 +171,11 @@ public class SeverityPVHandler
     /** Release all PVs */
     public static void stop()
     {
+        // Delete all queued updates
+        updates.clear();
+        // Abort potential wait for a PV
+        abort.offer(Boolean.TRUE);
+        // Release all PVs
         final Iterator<PV> pv_iter = pvs.values().iterator();
         while (pv_iter.hasNext())
         {
