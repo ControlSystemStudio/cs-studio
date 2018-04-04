@@ -227,6 +227,9 @@ public class ContextMenuHelper
         {   // avoid duplicates
             if (addedAutoActions.contains(action))
                 continue;
+            // Skip sevrpv: actions
+            if (action.getDetails().startsWith("sevrpv:"))
+                continue;
              manager.add(new AutomatedAction(shell, item, action));
              addedAutoActions.add(action);
              if (addedAutoActions.size() > max_context_entries)
