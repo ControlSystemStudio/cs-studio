@@ -42,6 +42,8 @@ public class Preferences
     final public static String JMS_IDLE_TIMEOUT = "jms_idle_timeout";
     final public static String PV_START_DELAY = "pv_start_delay";
     final public static String CONNECTION_GRACE_PERIOD = "connection_grace_period";
+    final public static String HEARTBEAT_PV = "heartbeat_pv";
+    final public static String HEARTBEAT_SECS = "heartbeat_secs";
     final public static String COMMAND_DIRECTORY = "command_directory";
     final public static String COMMAND_CHECK_TIME = "command_check_time";
     final public static String COLOR_OK = "color_ok";
@@ -200,6 +202,20 @@ public class Preferences
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getLong(Activator.ID, CONNECTION_GRACE_PERIOD, 30, null);
+    }
+
+    /** @return Heartbeat PV */
+    public static String getHeartbeatPV()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getString(Activator.ID, HEARTBEAT_PV, "", null);
+    }
+
+    /** @return Heartbeat period in seconds */
+    public static long getHeartbeatSecs()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getLong(Activator.ID, HEARTBEAT_SECS, 10, null);
     }
 
     /** @return Directory where to run commands */

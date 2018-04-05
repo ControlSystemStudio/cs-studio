@@ -1,0 +1,18 @@
+# Example for "Heartbeat PV"
+#
+# Alarm Server sets it to 1 every ~10 seconds,
+# see heartbeat_pv and heartbeat_secs preferences.
+#
+# softIoc -s -m S=Demo -d heartbeat.db
+
+record(bo, "$(S):AlarmServerHeartbeat")
+{
+    # If Alarm Server doesn't write '1' every 10 seconds,
+    # drop to 0 after 30 secs.
+    field(HIGH, "30")
+    field(ZNAM, "Timeout")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "OK")
+    field(DOL,  "1")
+    field(PINI, "YES")
+}
