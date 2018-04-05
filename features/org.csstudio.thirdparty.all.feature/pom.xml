@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.thirdparty.all.feature</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 
   <build>
