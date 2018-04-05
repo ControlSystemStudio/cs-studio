@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.thirdparty.all.feature"
       label="CS-Studio External Library Dependencies"
-      version="1.0.1.qualifier"
+      version="1.0.2.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://controlsystemstudio.github.io/">
