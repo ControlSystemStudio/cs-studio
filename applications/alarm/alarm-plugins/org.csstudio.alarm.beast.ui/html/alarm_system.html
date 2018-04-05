@@ -1003,7 +1003,7 @@
 
 
     <h3>Automated Actions</h3>
-    
+
     <p>These settings allow the alarm server or a separate tool
        like the "alarm-notifier" to react to alarms.</p>
 
@@ -1017,8 +1017,8 @@
 
     <p>The "Detail' of the automated action needs to be set to
        <code>sevrpv:NameOfPV</code>.
-	   The "Title" and "Delay" of the automated action are ignored.</p>
-    
+       The "Title" and "Delay" of the automated action are ignored.</p>
+
     <p>Whenever the alarm severity of the area or (sub-) system changes,
        the ordinal of the alarm severity will be written to the PV,
        i.e. a number 0 to 8 representing
@@ -1034,7 +1034,7 @@
 
 record(mbbi, "$(N)")
     </pre>
-    
+
     <p>When using "sevrpv:.." to send the alarm severity of nodes in the
        alarm hierarchy to PVs, note that these PVs will not be updated
        in case the alarm server is stopped, either on purpose or because
@@ -1042,7 +1042,7 @@ record(mbbi, "$(N)")
        The <code>org.csstudio.alarm.beast/heartbeat_pv</code> preference of
        the alarm server can be set to the name of a PV which will be set to 1
        every 10 seconds
-       (period can be changed via  
+       (period can be changed via
        The <code>org.csstudio.alarm.beast/heartbeat_secs</code>).
        A record like this can be used to verify a continuous heartbeat:
     </p>
@@ -1066,14 +1066,14 @@ record(bo, "$(S):AlarmServerHeartbeat")
     field(PINI, "YES")
 }
     </pre>
-    
+
 
     <h4>Notifications</h4>
 
     <p>The automated notifications are performed by a designated
        "alarm-notifier" that must be running in parallel to the alarm server.
     </p>
-    
+
     <p>If alarms persist for a certain time without being acknowledged
         or cleared, and automated notification can be generated.</p>
     <p>If you configure a notification for an alarm trigger PV, the
