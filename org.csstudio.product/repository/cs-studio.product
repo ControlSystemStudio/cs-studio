@@ -14,7 +14,8 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xmx1024m
+      <vmArgs>--add-modules=ALL-SYSTEM
+-Xmx1024m
 -Xms128m
 -Dorg.eclipse.update.reconcile=false
 -Dosgi.configuration.cascaded=true

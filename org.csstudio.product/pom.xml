@@ -41,8 +41,7 @@
     <!--sonar.jdbc.username>username</sonar.jdbc.username! -->
     <!--sonar.jdbc.password>password</sonar.jdbc.password -->
 
-    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
-    <efx-site>http://download.eclipse.org/efxclipse/runtime-released/2.1.0/site</efx-site>
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
   </properties>
 
   <!-- PLUGIN REPOSITORIES -->
@@ -69,65 +68,11 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>http://download.eclipse.org/releases/neon</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.6</eclipse-update-site>
+        <eclipse-site>http://download.eclipse.org/releases/oxygen</eclipse-site>
+        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.7</eclipse-update-site>
         <rap-site>http://download.eclipse.org/rt/rap/3.0</rap-site>
         <rap-incubator-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-incubator-site>
-        <platform-version>[4.4,4.6)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-site>
-        <orbit-site>http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository</orbit-site>
-        <efx-site>http://download.eclipse.org/efxclipse/runtime-released/2.4.0/site</efx-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-mars</id>
-      <activation>
-        <property>
-          <name>!platform-version-name</name>
-          <value>mars</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.5</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/3.0</rap-site>
-        <rap-incubator-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538/</rap-incubator-site>
-        <platform-version>[4.4,4.5)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/mars/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-luna</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>luna</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
-        <platform-version>[4.3,4.4)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-kepler</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>kepler</value>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
-        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/2.2/gef</rap-incubator-site>
-        <platform-version>[4.2,4.3)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+        <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
       </properties>
     </profile>
     <profile>
@@ -234,11 +179,6 @@
     <repository>
       <id>orbit</id>
       <url>${orbit-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>efx</id>
-      <url>${efx-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>
