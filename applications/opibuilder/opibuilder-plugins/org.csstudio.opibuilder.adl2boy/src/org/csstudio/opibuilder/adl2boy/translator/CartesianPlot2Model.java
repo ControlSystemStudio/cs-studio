@@ -72,9 +72,12 @@ public class CartesianPlot2Model extends AbstractADL2Model {
                 // This code always sets the BOY buffer_size to 0, which enables auto-sizing based
                 // on x_pv and y_pv being waveform PVs.
 
-                // Auto-size to array PV data
+                // Auto-size to array PV data, do NOT concatenate
                 widgetModel.setPropertyValue(tracePropertyPrefix+"buffer_size",  Integer.valueOf(0));
-//                try {
+                widgetModel.setPropertyValue(tracePropertyPrefix+"concatenate_data",  "false");
+
+
+                //                try {
 //                    widgetModel.setPropertyValue(new String(tracePropertyPrefix+"buffer_size"),  Integer.parseInt(plotWidget.getCount()));
 //                }
 //                catch (NumberFormatException ex){
