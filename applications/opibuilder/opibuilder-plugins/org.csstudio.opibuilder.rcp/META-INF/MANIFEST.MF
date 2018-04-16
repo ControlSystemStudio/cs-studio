@@ -17,12 +17,5 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
  org.csstudio.ui.util,
  org.csstudio.utility.file;bundle-version="1.0.0",
  org.csstudio.utility.product;bundle-version="1.2.2"
-Import-Package: javafx.beans.property;version="2.2.0",
- javafx.collections;version="2.2.0",
- javafx.event;version="2.2.0",
- javafx.geometry;version="2.2.0",
- javafx.scene;version="2.2.0",
- javafx.scene.control;version="2.2.0",
- javafx.scene.layout;version="2.2.0",
- org.eclipse.fx.ui.workbench3,
+Import-Package: org.eclipse.fx.ui.workbench3,
  org.eclipse.gef.ui.actions
