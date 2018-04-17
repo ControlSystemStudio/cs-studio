@@ -68,6 +68,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
         }
     }
 
+    private volatile boolean auto_size = false;
+
     private CircularBuffer<ISample> traceData;
 
     private double currentXData;
@@ -112,6 +114,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
         super(chronological);
         traceData = new CircularBuffer<ISample>(100);
         fireUpdate = new Runnable(){
+            @Override
             public void run() {
                 for(IDataProviderListener listener : listeners){
                     listener.dataChanged(CircularBufferDataProvider.this);
@@ -309,8 +312,16 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
                 for(int i=1; i<currentYDataArray.length+1; i++){
                     newXValueArray[i-1] = traceData.getTail().getXValue() + i;
                 }
-            for(int i=0; i<Math.min(traceData.getBufferSize(),
-                    Math.min(newXValueArray.length, currentYDataArray.length)); i++){
+            final int size;
+            if (auto_size)
+            {
+                size = Math.min(newXValueArray.length, currentYDataArray.length);
+                assertBufferSize(size);
+            }
+            else
+                size = Math.min(traceData.getBufferSize(),
+                    Math.min(newXValueArray.length, currentYDataArray.length));
+            for(int i=0; i<size; i++){
                 traceData.add(new Sample(newXValueArray[i], currentYDataArray[i]));
             }
         }else{
@@ -318,8 +329,16 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 
             // if the data array size is longer than buffer size,
             //just ignore the tail data.
-            for(int i=0; i<Math.min(traceData.getBufferSize(),
-                    Math.min(currentXDataArray.length, currentYDataArray.length)); i++){
+            final int size;
+            if (auto_size)
+            {
+                size = Math.min(currentXDataArray.length, currentYDataArray.length);
+                assertBufferSize(size);
+            }
+            else
+                size = Math.min(traceData.getBufferSize(),
+                    Math.min(currentXDataArray.length, currentYDataArray.length));
+            for(int i=0; i<size; i++){
                 traceData.add(new Sample(currentXDataArray[i], currentYDataArray[i]));
             }
         }
@@ -344,9 +363,18 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
      * @param bufferSize the bufferSize to set
      */
     public synchronized void setBufferSize(int bufferSize) {
-        traceData.setBufferSize(bufferSize, false);
+        auto_size = bufferSize <= 0;
+        if (! auto_size)
+            traceData.setBufferSize(bufferSize, false);
     }
 
+    /**
+     * @param bufferSize the minimum bufferSize to reserve
+     */
+    public synchronized void assertBufferSize(int bufferSize) {
+        if (traceData.getBufferSize() < bufferSize)
+            traceData.setBufferSize(bufferSize, false);
+    }
 
     /**
      * @param updateMode the updateMode to set
