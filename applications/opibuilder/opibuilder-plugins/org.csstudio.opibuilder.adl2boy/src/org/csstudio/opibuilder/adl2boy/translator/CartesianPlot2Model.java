@@ -27,6 +27,7 @@ public class CartesianPlot2Model extends AbstractADL2Model {
      * @param adlWidget
      * @param colorMap
      */
+    @Override
     public void processWidget(ADLWidget adlWidget) {
         CartesianPlot plotWidget = new CartesianPlot(adlWidget);
         if (plotWidget != null) {
@@ -50,17 +51,40 @@ public class CartesianPlot2Model extends AbstractADL2Model {
                 widgetModel.setPropertyValue(new String(tracePropertyPrefix+"x_pv"), trace.getxData());
                 widgetModel.setPropertyValue(new String(tracePropertyPrefix+"y_pv"), trace.getyData());
                 widgetModel.setPropertyValue(new String(tracePropertyPrefix+"trace_color"), colorMap[trace.getDataColor()]);
-                //TODO Add PlotMode to CartesianPlot2Model
-                widgetModel.setPropertyValue(new String(tracePropertyPrefix+"plot_mode"), plotWidget.getPlotMode());
-                //Add Count Num or Channel to CartesianPlot2Model
-                try {
-                    widgetModel.setPropertyValue(new String(tracePropertyPrefix+"buffer_size"),  Integer.parseInt(plotWidget.getCount()));
-                }
-                catch (NumberFormatException ex){
-                    System.out.println("***CartesianPlot2Model - Cannot set buffer size. Count is set to " + plotWidget.getCount() );
-                    System.out.println("***This may be a channel name.  This is not yet supported");
-                    //TODO Add ability to get buffer size to XYGraph
-                }
+
+                // MEDM cartesian plot and BOY XY Graph support different modes:
+                // 1) Plot one 'Y' array PV over array index
+                // 2) Plot 'X' and 'Y' array PVs over each other
+                // 3) Plot scalar 'X' PV over array index, using fixed size buffer
+                // 4) .. more
+                // Some behavior is based on configuration,
+                // other behavior based on type of received PV data,
+                // which can only be determined at runtime.
+
+                // The following right now support 1 and 2,
+                // auto-sizing the "buffer_size" to match the received array PV data
+
+                // Leave plot_mode at default 'LAST_N'
+//                widgetModel.setPropertyValue(new String(tracePropertyPrefix+"plot_mode"), plotWidget.getPlotMode());
+
+                // 'count' isn't fully handled.
+                // MEDM allows both a 'count' (number?) and a 'countpvname' (name of PV that provides count)
+                // This code always sets the BOY buffer_size to 0, which enables auto-sizing based
+                // on x_pv and y_pv being waveform PVs.
+
+                // Auto-size to array PV data, do NOT concatenate
+                widgetModel.setPropertyValue(tracePropertyPrefix+"buffer_size",  Integer.valueOf(0));
+                widgetModel.setPropertyValue(tracePropertyPrefix+"concatenate_data",  "false");
+
+
+                //                try {
+//                    widgetModel.setPropertyValue(new String(tracePropertyPrefix+"buffer_size"),  Integer.parseInt(plotWidget.getCount()));
+//                }
+//                catch (NumberFormatException ex){
+//                    System.out.println("***CartesianPlot2Model - Cannot set buffer size. Count is set to " + plotWidget.getCount() );
+//                    System.out.println("***This may be a channel name.  This is not yet supported");
+//                    //TODO Add ability to get buffer size to XYGraph
+//                }
             }
         }
 
