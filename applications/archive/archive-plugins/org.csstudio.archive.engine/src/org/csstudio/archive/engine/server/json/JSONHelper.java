@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.server.json;
 
+import java.text.NumberFormat;
 import java.time.Instant;
 
 import org.csstudio.archive.engine.Messages;
@@ -18,6 +19,7 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeFormat;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.diirt.vtype.Display;
+import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VType;
 
 /** Helper for creating JSON for a servlet response.
@@ -31,6 +33,7 @@ public class JSONHelper extends JSONObject {
     final public static String Timestamp = "Timestamp";
     final public static String Units = "Units";
     final public static String Alarm = "Alarm";
+    final public static String Prec = "Precision";
 
     static private JSONObject createObjectFromVType(VType value) {
         JSONObject output = new JSONObject();
@@ -42,15 +45,28 @@ public class JSONHelper extends JSONObject {
         Instant timestamp = VTypeHelper.getTimestamp(value);
         output.writeObjectEntry(Timestamp, TimestampHelper.format(timestamp));
 
-        VTypeFormat stringFormatter = new StringVTypeFormat();
-        output.writeObjectEntry(Value, stringFormatter.format(value));
+        if (value instanceof VNumber) {
+            Number number = ((VNumber) value).getValue();
+            output.writeObjectEntry(Value, number);
+        } else {
+            VTypeFormat stringFormatter = new StringVTypeFormat();
+            output.writeObjectEntry(Value, stringFormatter.format(value));
+        }
+
         if (value instanceof Display)
         {
             final Display display = (Display) value;
-            if (display != null  &&  display.getUnits() != null) {
-                output.writeObjectEntry(Units, display.getUnits());
+            if (display != null) {
+                if (display.getUnits() != null) {
+                    output.writeObjectEntry(Units, display.getUnits());
+                }
+                if (display.getFormat() != null) {
+                    NumberFormat fmt = display.getFormat();
+                    output.writeObjectEntry(Prec, fmt.getMaximumFractionDigits());
+                }
             }
         }
+
         StringBuilder alarm = new StringBuilder();
         VTypeHelper.addAlarm(alarm, value);
         output.writeObjectEntry(Alarm, alarm.toString());
