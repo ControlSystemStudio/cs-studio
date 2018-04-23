@@ -10,3 +10,4 @@ Export-Package: org.csstudio.java.string,
  org.csstudio.java.thread,
  org.csstudio.java.time
 Import-Package: org.eclipse.core.runtime.preferences
+Require-Bundle: org.eclipse.equinox.preferences

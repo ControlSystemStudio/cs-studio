@@ -83,10 +83,9 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.paho.client.mqttv3"/>
-      <plugin id="org.epics.caj"/>
       <plugin id="org.epics.jca"/>
-      <plugin id="org.epics.pvAccessJava"/>
-      <plugin id="org.epics.pvDataJava"/>
+      <plugin id="org.epics.pvaccess"/>
+      <plugin id="org.epics.pvdata"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
    </plugins>

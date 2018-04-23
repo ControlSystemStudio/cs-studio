@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
@@ -143,7 +143,7 @@ public class AlarmServer implements Runnable
     /** Hierarchical alarm configuration
      *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
      */
-    private TreeItem alarm_tree;
+    private ServerTreeItem alarm_tree;
 
     /** All the PVs in the alarm_tree, sorted by name
      *  <p><b>NOTE: Access to tree, PV list and map must synchronize on 'this'</b>
@@ -333,6 +333,9 @@ public class AlarmServer implements Runnable
     /** Start PVs */
     private void startPVs()
     {
+        // Write all severity PVs once to assert they have the correct value
+        updateSeverityPVs(alarm_tree);
+
         final long delay = Preferences.getPVStartDelay();
         // Must not sync while calling PV, because Channel Access updates
         // might arrive while we're trying to start/stop channels,
@@ -360,6 +363,20 @@ public class AlarmServer implements Runnable
                 Activator.getLogger().log(Level.SEVERE,
                     "Error starting PV " + pv.getName(), ex);
             }
+        }
+    }
+
+    private void updateSeverityPVs(final TreeItem node)
+    {
+        // AlarmPV leaf has no severity PV nor child nodes
+        if (! (node instanceof ServerTreeItem))
+            return;
+
+        synchronized (node)
+        {
+            ((ServerTreeItem) node).updateSeverityPV();
+            for (int i = node.getChildCount()-1; i>=0; --i)
+                updateSeverityPVs(node.getChild(i));
         }
     }
 
@@ -399,6 +416,7 @@ public class AlarmServer implements Runnable
         }
         for (AlarmPV pv : pvs)
             pv.stop();
+        SeverityPVHandler.stop();
     }
 
     /** Read the initial alarm configuration
@@ -486,7 +504,7 @@ public class AlarmServer implements Runnable
             pv = findPV(path[path.length-1]);
         }
         if (pv == null)
-        {   // Unknown PV, so this must be a new PV. Read whole config again
+        {   // Unknown PV, so this must be a new PV, or an area/system/subsys. Read whole config again
             stopPVs();
             readConfiguration();
             startPVs();
@@ -507,7 +525,12 @@ public class AlarmServer implements Runnable
         resetNagTimer();
         final AlarmPV pv = findPV(pv_name);
         if (pv != null)
+        {
             pv.getAlarmLogic().acknowledge(acknowledge);
+
+            // Likely changed the state, maximize up parent tree
+            pv.getParent().maximizeSeverity();
+        }
     }
 
     /** Locate alarm PV by name

@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.msghist;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CountDownLatch;
 
 import org.csstudio.alarm.beast.msghist.model.Message;
@@ -35,7 +36,7 @@ public class ModelDemo implements ModelListener
     @Test(timeout=10000)
     public void testGetMessages() throws Exception
     {
-        final Model model = new Model(MessageRDBIT.URL, MessageRDBIT.USER, MessageRDBIT.PASSWORD, MessageRDBIT.SCHEMA, 1000, null);
+        final Model model = new Model(MessageRDBIT.URL, MessageRDBIT.USER, MessageRDBIT.PASSWORD, MessageRDBIT.SCHEMA, 1000,  DateTimeFormatter.ISO_LOCAL_DATE_TIME, null);
         model.addListener(this);
 
         System.out.println("Starting query");

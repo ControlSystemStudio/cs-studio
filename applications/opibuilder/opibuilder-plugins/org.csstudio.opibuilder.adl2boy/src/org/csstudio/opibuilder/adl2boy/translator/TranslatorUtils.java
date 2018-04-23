@@ -6,7 +6,10 @@
 
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -238,6 +241,23 @@ public class TranslatorUtils {
         displayModel.setName(adlFile.getName().substring(0, adlFile.getName().indexOf(".")));
         ConvertChildren(root.getObjects(), displayModel, colorMap);
         return displayModel;
+    }
+
+    public static String patchXML(final String xml) throws IOException
+    {
+        final BufferedReader reader = new BufferedReader(new StringReader(xml));
+        final StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+            // Skip the wuid:
+            // Not generally useful, and causes *.opi to look
+            // different each time the same *.adl is converted
+            if (line.trim().startsWith("<wuid"))
+                continue;
+            out.append(line).append("\n");
+        }
+        return out.toString();
     }
 
     /**

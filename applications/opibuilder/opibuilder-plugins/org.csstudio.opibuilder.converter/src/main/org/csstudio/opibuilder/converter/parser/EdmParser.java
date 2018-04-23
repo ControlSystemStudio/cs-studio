@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import java.util.logging.Logger;
-import org.csstudio.java.string.StringSplitter;
+import org.csstudio.opibuilder.converter.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 

@@ -2,7 +2,6 @@ package org.csstudio.trayicon;
 
 import java.util.Map;
 
-import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.WorkbenchExtPoint;
 import org.csstudio.utility.product.Workbench;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -18,10 +17,7 @@ public class TrayWorkbench extends Workbench implements WorkbenchExtPoint {
      */
     @Override
     protected WorkbenchAdvisor createWorkbenchAdvisor(final Map<String, Object> parameters) {
-        final OpenDocumentEventProcessor openDocProcessor =
-                  (OpenDocumentEventProcessor) parameters.get(
-                          OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
-        return new TrayApplicationWorkbenchAdvisor(openDocProcessor);
+        return new TrayApplicationWorkbenchAdvisor();
     }
 
 }

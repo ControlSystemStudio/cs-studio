@@ -3,8 +3,7 @@
      for the EDM converter.
 
      It doesn't build any of the UI components,
-     meaning the only dependencies are org.csstudio.java
-     and org.apache.commons.lang.
+     meaning the only dependency is org.apache.commons.lang.
 
      This will generally be invoked by Maven, meaning
      that Apache Commons Lang jar file will have been
@@ -39,12 +38,6 @@
   </path>
   <!-- Compile Java sources -->
   <target name="compile" depends="prepare">
-    <!-- org.csstudio.java -->
-    <javac srcdir="../../../../core/platform/platform-plugins/org.csstudio.java/src" destdir="${classes}" includeantruntime="true" deprecation="on" debug="on">
-      <classpath>
-        <path refid="build.classpath"/>
-      </classpath>
-    </javac>
     <!-- org.csstudio.opibuilder.converter -->
     <javac srcdir="src" destdir="${classes}" excludes="**/org/csstudio/opibuilder/converter/ui/*.java, **/EDM2OPIConverterPlugin.java" includeantruntime="true" deprecation="on" debug="on">
       <classpath>

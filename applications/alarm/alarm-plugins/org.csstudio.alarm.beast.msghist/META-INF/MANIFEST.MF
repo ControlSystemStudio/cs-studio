@@ -6,24 +6,24 @@ Bundle-Description: Table viewer for CSS Message log
 Bundle-Version: 4.0.1.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen - SNS
 Bundle-Localization: plugin
-Require-Bundle: org.junit;bundle-version="4.8.2",
- org.eclipse.jface;resolution:=optional,
- org.eclipse.rap.jface;resolution:=optional,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.5.0";resolution:=optional,
- org.eclipse.rap.ui.views;resolution:=optional,
  org.csstudio.ui.util;bundle-version="4.0.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.apputil,
  org.csstudio.apputil.ui;bundle-version="1.1.8",
  org.csstudio.platform.utility.rdb,
  org.csstudio.security.ui;bundle-version="1.0.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
- org.csstudio.security
+ org.csstudio.security,
+ org.csstudio.alarm.beast.ui.alarmtable;bundle-version="4.1.2",
+ org.apache.commons.lang3;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.alarm.beast.msghist.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.csstudio.java.time
+Export-Package: org.csstudio.alarm.beast.msghist,
+ org.csstudio.alarm.beast.msghist.gui,
+ org.csstudio.alarm.beast.msghist.model,
+ org.csstudio.alarm.beast.msghist.rdb

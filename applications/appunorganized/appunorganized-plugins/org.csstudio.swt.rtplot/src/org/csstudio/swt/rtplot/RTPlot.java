@@ -200,7 +200,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** @return <code>true</code> if toolbar is visible */
     public boolean isToolbarVisible()
     {
-        return toolbar.getControl().isVisible();
+        return toolbar.getControl().getVisible();
     }
 
     /** @param show <code>true</code> if toolbar should be displayed */

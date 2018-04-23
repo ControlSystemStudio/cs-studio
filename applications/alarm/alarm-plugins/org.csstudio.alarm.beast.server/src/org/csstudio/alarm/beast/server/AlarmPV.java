@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
@@ -80,7 +80,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
      *  @throws Exception on error
      */
     public AlarmPV(final AlarmServer server,
-            final TreeItem parent,
+            final ServerTreeItem parent,
             final int id, final String name,
             final String description,
             final boolean enabled,
@@ -105,6 +105,12 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         this.server = server;
         setDescription(description);
         setEnablement(enabled, filter);
+    }
+
+    @Override
+    public ServerTreeItem getParent()
+    {
+        return (ServerTreeItem) super.getParent();
     }
 
     /** @return AlarmLogic used by this PV */
@@ -150,45 +156,47 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     /** Connect to control system */
     public void start() throws Exception
     {
-        if (! logic.isEnabled())
+        if (logic.isEnabled())
         {
+            logger.log(Level.INFO, "Start {0}", getPathName());
+
+            // Seconds to millisecs
+            final long delay = Preferences.getConnectionGracePeriod() * 1000;
+            connection_timeout_task = new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    if (! is_connected)
+                        pvConnectionTimeout();
+                }
+            };
+            connection_timer.schedule(connection_timeout_task, delay);
+
+            logic.computeNewState(new AlarmState(SeverityLevel.OK, "Starting", null, Instant.now()));
+
+            final PV safe_pv = PVPool.getPV(getName());
+            safe_pv.addListener(this);
+            final PV old_pv = pv.getAndSet(safe_pv);
+            if (old_pv != null)
+                logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
+
+            if (filter != null)
+            {
+                try
+                {
+                    filter.start();
+                }
+                catch (Exception ex)
+                {
+                    logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
+                }
+            }
+        }
+        else
             logger.log(Level.INFO, "Skipping disabled {0}", getPathName());
-            return;
-        }
-        logger.log(Level.INFO, "Start {0}", getPathName());
 
-        // Seconds to millisecs
-        final long delay = Preferences.getConnectionGracePeriod() * 1000;
-        connection_timeout_task = new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                if (! is_connected)
-                    pvConnectionTimeout();
-            }
-        };
-        connection_timer.schedule(connection_timeout_task, delay);
-
-        logic.computeNewState(new AlarmState(SeverityLevel.OK, "Starting", null, Instant.now()));
-
-        final PV safe_pv = PVPool.getPV(getName());
-        safe_pv.addListener(this);
-        final PV old_pv = pv.getAndSet(safe_pv);
-        if (old_pv != null)
-            logger.log(Level.WARNING, "PV for {0} started more than once", getPathName());
-
-        if (filter != null)
-        {
-            try
-            {
-                filter.start();
-            }
-            catch (Exception ex)
-            {
-                logger.log(Level.SEVERE, getPathName() + " cannot start " + filter, ex);
-            }
-        }
+        getParent().maximizeSeverity();
     }
 
     /** Disconnect from control system */
@@ -262,6 +270,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                 Messages.AlarmMessageDisconnected, "", Instant.now());
         logic.computeNewState(received);
         logger.log(Level.INFO, () -> getPathName() + " disconnected -> " + logic);
+
+        getParent().maximizeSeverity();
     }
 
     /** @see PVListener */
@@ -274,8 +284,16 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
         final AlarmState received = new AlarmState(new_severity, new_message,
                 VTypeHelper.toString(value),
                 VTypeHelper.getTimestamp(value));
+
+        final SeverityLevel old_severity = logic.getAlarmState().getSeverity();
         logic.computeNewState(received);
         logger.log(Level.FINE, () -> getPathName() + " received " + value + " -> " + logic);
+
+        if (logic.getAlarmState().getSeverity().equals(old_severity))
+            return;
+
+        // Whenever logic computes new state, maximize up parent tree
+        getParent().maximizeSeverity();
     }
 
     /** AlarmLogicListener: {@inheritDoc} */
@@ -318,7 +336,6 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
                     alarm.getSeverity(), alarm.getMessage(),
                     alarm.getValue(), alarm.getTime());
     }
-
 
     /** {@inheritDoc} */
     @Override

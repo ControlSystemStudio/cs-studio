@@ -1002,7 +1002,78 @@
         actual command to invoke.</p>
 
 
-    <h3>Automated Notifications</h3>
+    <h3>Automated Actions</h3>
+
+    <p>These settings allow the alarm server or a separate tool
+       like the "alarm-notifier" to react to alarms.</p>
+
+    <h4>Severity PVs</h4>
+
+    <p>The alarm server can update PVs with the current alarm severity
+       of an area, system or subsystem in the alarm hierarchy.</p>
+
+    <p>This can be useful for compatibility with ALH, or to trigger
+       further IOC logic based on alarms.</p>
+
+    <p>The "Detail' of the automated action needs to be set to
+       <code>sevrpv:NameOfPV</code>.
+       The "Title" and "Delay" of the automated action are ignored.</p>
+
+    <p>Whenever the alarm severity of the area or (sub-) system changes,
+       the ordinal of the alarm severity will be written to the PV,
+       i.e. a number 0 to 8 representing
+       OK, MINOR_ACK, MAJOR_ACK, INVALID_ACK, UNDEFINED_ACK,
+       MINOR, MAJOR, INVALID, UNDEFINED.
+       A suitable PV would be a numeric EPICS record, or this enumerated record:
+    </p>
+    <pre>
+# Example for "Severity PV"
+# used with automated action set to "sevrpv:NameOfPV"
+#
+# softIoc -s -m N=NameOfPV -d sevrpv.db
+
+record(mbbi, "$(N)")
+    </pre>
+
+    <p>When using "sevrpv:.." to send the alarm severity of nodes in the
+       alarm hierarchy to PVs, note that these PVs will not be updated
+       in case the alarm server is stopped, either on purpose or because
+       of a malfunction.
+       The <code>org.csstudio.alarm.beast/heartbeat_pv</code> preference of
+       the alarm server can be set to the name of a PV which will be set to 1
+       every 10 seconds
+       (period can be changed via
+       The <code>org.csstudio.alarm.beast/heartbeat_secs</code>).
+       A record like this can be used to verify a continuous heartbeat:
+    </p>
+    <pre>
+# Example for "Heartbeat PV"
+#
+# Alarm Server sets it to 1 every ~10 seconds,
+# see heartbeat_pv and heartbeat_secs preferences.
+#
+# softIoc -s -m S=Demo -d heartbeat.db
+
+record(bo, "$(S):AlarmServerHeartbeat")
+{
+    # If Alarm Server doesn't write '1' every 10 seconds,
+    # drop to 0 after 30 secs.
+    field(HIGH, "30")
+    field(ZNAM, "Timeout")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "OK")
+    field(DOL,  "1")
+    field(PINI, "YES")
+}
+    </pre>
+
+
+    <h4>Notifications</h4>
+
+    <p>The automated notifications are performed by a designated
+       "alarm-notifier" that must be running in parallel to the alarm server.
+    </p>
+
     <p>If alarms persist for a certain time without being acknowledged
         or cleared, and automated notification can be generated.</p>
     <p>If you configure a notification for an alarm trigger PV, the
@@ -1010,9 +1081,6 @@
         configure a notification for a system or area, the default message
         will list the PVs in alarm below that section of the alarm tree.</p>
     <p>The configuration of an automated notification has three parts:</p>
-
-
-
 
     <ol>
         <li>Title: The title to be displayed as a context menu item. The
@@ -1025,9 +1093,6 @@
             notification, for example email, as listed below.</li>
     </ol>
 
-    <p>The automated notifications are performed by a designated
-        "alarm-notifier" that must be running in parallel to the alarm server.
-    </p>
 
 
     <h4>Email Notifications</h4>

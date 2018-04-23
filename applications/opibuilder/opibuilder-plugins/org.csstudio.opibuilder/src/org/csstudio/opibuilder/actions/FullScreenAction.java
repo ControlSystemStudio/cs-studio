@@ -64,15 +64,24 @@ public class FullScreenAction extends Action implements
     public void run() {
         if (inFullScreen) {
             shell.setFullScreen(false);
+            CompactModeAction compactAction = WorkbenchWindowService.getInstance().getCompactModeAction(window);
+            // set status line visibility depending on compact mode status
+            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window,
+                    compactAction.isInCompactMode() ? PreferencesHelper.showStatusLineInCompactMode() : true);
             if (!toolbarWasInvisible){
                 WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
             }
             if(!menuBarWasInvisible)
                 shell.setMenuBar(menuBar);
             inFullScreen = false;
+            WorkbenchWindowService.setInFullScreenMode(false);
             setText(FULLSCREEN);
             setImageDescriptor(fullScreenImage);
-        } else {
+        }
+        else {
+
+            //enable or disable status line visibility
+            WorkbenchWindowService.setStatusLineVisibility((WorkbenchWindow) window, PreferencesHelper.showStatusLineInFullScreenMode());
 
             if(PreferencesHelper.isShowFullScreenDialog()){
                 TipDialog dialog = new TipDialog(shell, "Tip",
@@ -97,6 +106,7 @@ public class FullScreenAction extends Action implements
             }
             shell.setMenuBar(null);
             inFullScreen = true;
+            WorkbenchWindowService.setInFullScreenMode(true);
 
             setText(EXIT_FULL_SCREEN);
             setImageDescriptor(exitFullScreenImage);

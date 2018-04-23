@@ -60,7 +60,7 @@ public class ADLPlotTrace extends WidgetPart {
                 }else if(FileLine.argEquals(row[0], "ydata")){ //$NON-NLS-1$
                     setyData(FileLine.getTrimmedValue(row[1]));
                 }else {
-                    throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
+                    System.out.println("Ignoring " + parameter);
                 }
             }
 

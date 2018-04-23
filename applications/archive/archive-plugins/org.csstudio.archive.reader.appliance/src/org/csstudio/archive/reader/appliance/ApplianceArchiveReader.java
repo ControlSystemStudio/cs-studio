@@ -244,10 +244,20 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * http://domain:port/retrieval/data/getData.raw where /data/getData is
      * fixed and .raw identifies the MIME-type of the returned data.
      *
+     * To retrieve data for retired PV(not archived anymore), use
+     * retiredPVTemplate as suggested by Murali Shankar e.g.
+     *   CSS Data Browser URL:http://server:port_number/retrieval/data/getData.raw?retiredPVTemplate=templatePVName
+     * where 'templatePVName' is the name of a currently archived PV of the
+     * same data type as the retired PV you are attempting to plot.
+     *
      * @return data retrieval URL
      */
     public String getDataRetrievalURL() {
-        return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
+        if (httpURL.contains("?")){
+            return httpURL;
+        } else {
+            return httpURL + ApplianceArchiveReaderConstants.RETRIEVAL_PATH;
+        }
     }
 
     /**

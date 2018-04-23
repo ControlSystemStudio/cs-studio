@@ -18,9 +18,9 @@ import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractMarkedWidgetFigure;
-import org.eclipse.draw2d.IFigure;
 import org.diirt.vtype.Display;
 import org.diirt.vtype.VType;
+import org.eclipse.draw2d.IFigure;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.
@@ -92,33 +92,53 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
                                     Display new_meta = VTypeHelper.getDisplayInfo(value);
                                     if(meta == null || !meta.equals(new_meta)){
                                         meta = new_meta;
-                                        if(!Double.isNaN(meta.getUpperDisplayLimit()))
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,    meta.getUpperDisplayLimit());
-                                        if(!Double.isNaN(meta.getLowerDisplayLimit()))
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,    meta.getLowerDisplayLimit());
+
+                                        Double upperLimit;
+                                        Double lowerLimit;
+                                        if (model.isControlWidget()) {
+                                            // DRVH / DRVL
+                                            upperLimit = meta.getUpperCtrlLimit();
+                                            lowerLimit = meta.getLowerCtrlLimit();
+                                        }
+                                        else {
+                                            // HOPR / LOPR
+                                            upperLimit = meta.getUpperDisplayLimit();
+                                            lowerLimit = meta.getLowerDisplayLimit();
+                                        }
+                                        if(!Double.isNaN(upperLimit)) {
+                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX, upperLimit);
+                                        }
+                                        if(!Double.isNaN(lowerLimit)) {
+                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN, lowerLimit);
+                                        }
+
                                         if(Double.isNaN(meta.getUpperWarningLimit()))
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
                                         else{
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, true);
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,    meta.getUpperWarningLimit());
+                                            model.setPropertyValue(
+                                                    AbstractMarkedWidgetModel.PROP_HI_LEVEL, meta.getUpperWarningLimit());
                                         }
                                         if(Double.isNaN(meta.getUpperAlarmLimit()))
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, false);
                                         else{
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, true);
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getUpperAlarmLimit());
+                                            model.setPropertyValue(
+                                                    AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getUpperAlarmLimit());
                                         }
                                         if(Double.isNaN(meta.getLowerWarningLimit()))
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, false);
                                         else{
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, true);
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,    meta.getLowerWarningLimit());
+                                            model.setPropertyValue(
+                                                    AbstractMarkedWidgetModel.PROP_LO_LEVEL, meta.getLowerWarningLimit());
                                         }
                                         if(Double.isNaN(meta.getLowerAlarmLimit()))
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, false);
                                         else{
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, true);
-                                            model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,    meta.getLowerAlarmLimit());
+                                            model.setPropertyValue(
+                                                    AbstractMarkedWidgetModel.PROP_LOLO_LEVEL, meta.getLowerAlarmLimit());
                                         }
                                     }
                                 }

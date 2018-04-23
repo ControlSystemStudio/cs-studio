@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.4.1",
  org.eclipse.core.resources;bundle-version="3.4.1",
  org.csstudio.opibuilder,
  org.eclipse.help,
- org.apache.commons.lang;bundle-version="2.6.0",
- org.csstudio.java;bundle-version="3.2.0"
+ org.apache.commons.lang;bundle-version="2.6.0"
 Bundle-Activator: org.csstudio.opibuilder.converter.EDM2OPIConverterPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS

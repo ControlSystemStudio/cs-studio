@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2010-2018 Oak Ridge National Laboratory.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.security.PasswordInput;
 import org.csstudio.security.preferences.SecurePreferences;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -51,7 +49,7 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
         // Display configuration info
-        final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        final String version = context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
 
         // Create parser for arguments and run it.
@@ -119,13 +117,12 @@ public class Application implements IApplication
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name.get()));
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
-        // Peek into Channel Access settings
-        final IPreferencesService service = Platform.getPreferencesService();
-        System.out.println("EPICS Addr. List:   " + service.getString("org.csstudio.platform.libs.epics", "addr_list", "", null));
 
         final WorkQueue work_queue = new WorkQueue();
         try
         {
+            SeverityPVHandler.initialize();
+
             // Create alarm server
             final AlarmServer alarm_server = new AlarmServer(work_queue, config_name.get());
 

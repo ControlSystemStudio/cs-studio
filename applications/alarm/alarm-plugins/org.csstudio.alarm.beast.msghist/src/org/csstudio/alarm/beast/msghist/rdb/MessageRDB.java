@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,7 +75,8 @@ public class MessageRDB
             final IProgressMonitor monitor,
             final Calendar start, final Calendar end,
             final MessagePropertyFilter filters[],
-            final int max_properties) throws Exception
+            final int max_properties,
+            final DateTimeFormatter date_format)  throws Exception
     {
         monitor.beginTask("Reading Messages", IProgressMonitor.UNKNOWN);
         final ArrayList<Message> messages = new ArrayList<Message>();
@@ -139,7 +141,7 @@ public class MessageRDB
                     props = new HashMap<String, String>();
                     id = next_id;
                     datum = next_datum;
-                    props.put(Message.DATUM, Message.format(datum));
+                    props.put(Message.DATUM, date_format.format(datum.toInstant()));
                 }
                 // Get Prop/Value from MESSAGE table
                 int res_idx = 3;

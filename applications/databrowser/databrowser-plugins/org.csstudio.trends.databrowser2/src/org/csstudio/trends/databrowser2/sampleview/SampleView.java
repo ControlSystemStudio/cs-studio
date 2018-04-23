@@ -25,6 +25,10 @@ import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VStatistics;
+import org.diirt.vtype.VType;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -46,10 +50,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VNumber;
-import org.diirt.vtype.VStatistics;
-import org.diirt.vtype.VType;
 
 /** A View that shows all the current Model Samples in a list.
  *
@@ -78,25 +78,30 @@ public class SampleView extends DataBrowserAwareView
 
     final ModelListener model_listener = new ModelListenerAdapter()
     {
+        private void safeUpdate()
+        {
+            items.getDisplay().asyncExec(() -> update(false));
+        }
+
         /** {@inheritDoc} */
         @Override
         public void itemAdded(ModelItem item)
         {   // Be aware of the addition of a new item to update combo box.
-            update(false);
+            safeUpdate();
         }
 
         /** {@inheritDoc} */
         @Override
         public void itemRemoved(ModelItem item)
         {   // Be aware of the addition of a new item to update combo box.
-            update(false);
+            safeUpdate();
         }
 
         /** {@inheritDoc} */
         @Override
         public void changedItemLook(ModelItem item)
         {   // Be aware of the change of the item name.
-            update(false);
+            safeUpdate();
         }
     };
 

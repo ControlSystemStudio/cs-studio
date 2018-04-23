@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.jdom.Element;
+import org.osgi.framework.Version;
 
 /**Version property.
  * @author Xihui Chen
@@ -23,7 +24,15 @@ public class VersionProperty extends UnchangableStringProperty{
 
     @Override
     public void writeToXML(Element propElement) {
-        setPropertyValue(OPIBuilderPlugin.getDefault().getBundle().getVersion().toString());
+        final Version version = OPIBuilderPlugin.getDefault().getBundle().getVersion();
+        // Omit the qualifier
+        final StringBuilder buf = new StringBuilder();
+        buf.append(version.getMajor())
+           .append('.')
+           .append(version.getMinor())
+           .append('.')
+           .append(version.getMicro());
+        setPropertyValue(buf.toString());
         super.writeToXML(propElement);
     }
 

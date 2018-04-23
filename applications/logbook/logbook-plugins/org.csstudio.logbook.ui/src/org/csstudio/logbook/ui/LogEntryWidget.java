@@ -190,7 +190,7 @@ public class LogEntryWidget extends Composite {
     if (expanded) {
         fd_label.top = new FormAttachment(60, -28);
     } else {
-        fd_label.top = new FormAttachment(100, -28);
+        fd_label.top = new FormAttachment(100, -45);
     }
     label.setLayoutData(fd_label);
     label.addMouseMoveListener(new MouseMoveListener() {

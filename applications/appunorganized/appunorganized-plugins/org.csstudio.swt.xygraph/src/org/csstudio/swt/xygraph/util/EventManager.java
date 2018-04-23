@@ -50,15 +50,4 @@ public class EventManager {
     public boolean isScrollingDisabled() {
         return isScrollingDisabled;
     }
-
-    public void fireScrollingChanged(boolean isScrollingDisabled_) {
-        for(IEventManagerListener listener : listeners)
-            listener.scrollingChanged(isScrollingDisabled_);
-    }
-
-    public void fireSetFixedRange(double t1, double t2) {
-        for(IEventManagerListener listener : listeners)
-            listener.setFixedRange(t1, t2);
-    }
-
 }

@@ -16,4 +16,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Miha Novak <miha.novak@cosylab.com>
 Bundle-ClassPath: .,
  lib/protobuf-java-2.4.1.jar,
- lib/pbrawclient-0.0.4.jar
+ lib/pbrawclient-0.0.8.jar
