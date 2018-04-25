@@ -145,7 +145,7 @@ public class SpreadSheetTable extends Composite {
                         cellEditorData = DEFAULT_BOOLEAN_TEXTS;
                     cellEditor = new CheckboxCellEditor(tableViewer.getTable()){
                         @Override
-						protected Object doGetValue() {
+                        protected Object doGetValue() {
                             return ((Boolean) super.doGetValue())?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
                         };
                         @Override
@@ -251,7 +251,7 @@ public class SpreadSheetTable extends Composite {
             ITableLabelProvider {
 
         @Override
-		public Image getColumnImage(Object element, int columnIndex) {
+        public Image getColumnImage(Object element, int columnIndex) {
             CellEditorType cellEditorType = ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
                     getData(TEXT_EDITING_SUPPORT_KEY))).getCellEditorType();
             switch (cellEditorType) {
@@ -273,7 +273,7 @@ public class SpreadSheetTable extends Composite {
         }
 
         @Override
-		@SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         public String getColumnText(Object element, int columnIndex) {
             return ((List<String>) element).get(columnIndex);
         }
@@ -335,7 +335,7 @@ public class SpreadSheetTable extends Composite {
             tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                 @Override
-				public void selectionChanged(SelectionChangedEvent event) {
+                public void selectionChanged(SelectionChangedEvent event) {
                     String[][] selection = getSelection();
                     for(Object listener : selectionChangedListeners.getListeners()){
                         ((ITableSelectionChangedListener)listener).selectionChanged(selection);
@@ -675,7 +675,7 @@ public class SpreadSheetTable extends Composite {
                 getData(TEXT_EDITING_SUPPORT_KEY))).getCellEditorType();
         // Force refresh, so TextTableLableProvider updates the checkbox image
         if (cellEditorType == CellEditorType.CHECKBOX)
-        	tableViewer.refresh(input.get(row));
+            tableViewer.refresh(input.get(row));
 
         fireTableModified();
     }
