@@ -64,7 +64,7 @@ public class SpreadSheetTable extends Composite {
 
     private static final String TEXT_EDITING_SUPPORT_KEY = "text_editing_support"; //$NON-NLS-1$
 
-    private static final String[] DEFAULT_BOOLEA_TEXTS = new String[]{"No", "Yes"}; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] DEFAULT_BOOLEAN_TEXTS = new String[]{"No", "Yes"}; //$NON-NLS-1$ //$NON-NLS-2$
 
 
     /**
@@ -142,8 +142,9 @@ public class SpreadSheetTable extends Composite {
                 switch (cellEditorType) {
                 case CHECKBOX:
                     if(cellEditorData==null)
-                        cellEditorData = DEFAULT_BOOLEA_TEXTS; //$NON-NLS-1$ //$NON-NLS-2$
+                        cellEditorData = DEFAULT_BOOLEAN_TEXTS;
                     cellEditor = new CheckboxCellEditor(tableViewer.getTable()){
+                        @Override
                         protected Object doGetValue() {
                             return ((Boolean) super.doGetValue())?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
                         };
@@ -249,6 +250,7 @@ public class SpreadSheetTable extends Composite {
     private class TextTableLableProvider extends BaseLabelProvider implements
             ITableLabelProvider {
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             CellEditorType cellEditorType = ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
                     getData(TEXT_EDITING_SUPPORT_KEY))).getCellEditorType();
@@ -259,9 +261,8 @@ public class SpreadSheetTable extends Composite {
                 String[] booleanTexts = (String[]) ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
                         getData(TEXT_EDITING_SUPPORT_KEY))).cellEditorData;
                 if(booleanTexts==null)
-                    booleanTexts = DEFAULT_BOOLEA_TEXTS; //$NON-NLS-1$ //$NON-NLS-2$
-                if(getColumnText(element, columnIndex).trim().toLowerCase().equals(
-                        booleanTexts[1].toLowerCase())) //$NON-NLS-1$
+                    booleanTexts = DEFAULT_BOOLEAN_TEXTS;
+                if(getColumnText(element, columnIndex).trim().equalsIgnoreCase(booleanTexts[1]))
                     return getOnImage();
                 else
                     return getOffImage();
@@ -271,6 +272,7 @@ public class SpreadSheetTable extends Composite {
             return null;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public String getColumnText(Object element, int columnIndex) {
             return ((List<String>) element).get(columnIndex);
@@ -332,6 +334,7 @@ public class SpreadSheetTable extends Composite {
             selectionChangedListeners = new ListenerList();
             tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     String[][] selection = getSelection();
                     for(Object listener : selectionChangedListeners.getListeners()){
@@ -666,6 +669,14 @@ public class SpreadSheetTable extends Composite {
         }
         input.get(row).set(col, text);
         tableViewer.getTable().getItem(row).setText(col, text);
+
+        // Does the column use CheckboxCellEditor?
+        final CellEditorType cellEditorType = ((TextEditingSupport)(tableViewer.getTable().getColumn(col).
+                getData(TEXT_EDITING_SUPPORT_KEY))).getCellEditorType();
+        // Force refresh, so TextTableLableProvider updates the checkbox image
+        if (cellEditorType == CellEditorType.CHECKBOX)
+            tableViewer.refresh(input.get(row));
+
         fireTableModified();
     }
 
