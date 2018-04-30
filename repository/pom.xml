@@ -294,7 +294,7 @@
 
                 <!-- pvmanager-plugins from reactor -->
                 <artifact>
-                  <id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
+                  <id>org.csstudio:org.csstudio.platform.libs.epics:${cs-studio.version.long}</id>
                 </artifact>
                 <artifact>
                   <id>net.sf.cssbox:jstyleparser:1.22</id>
