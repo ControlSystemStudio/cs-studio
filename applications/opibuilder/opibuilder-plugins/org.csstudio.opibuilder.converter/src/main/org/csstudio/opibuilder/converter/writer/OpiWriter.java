@@ -7,11 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.FileOutputStream;
 import java.lang.reflect.Constructor;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -21,6 +18,13 @@ import java.util.stream.IntStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
@@ -29,9 +33,6 @@ import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Singleton class for writing EdmModel data to XML output.
@@ -158,24 +159,19 @@ public class OpiWriter {
 
         log.config("Writing XML file: " + fileName);
 
-        try {
-
-            OutputFormat format = new OutputFormat(doc);
-            format.setLineWidth(65);
-            format.setIndenting(true);
-            format.setIndent(2);
-            format.setPreserveSpace(false);
-            Writer out = new StringWriter();
-            XMLSerializer serializer = new XMLSerializer(out, format);
-            serializer.serialize(doc);
-
-            String xmlString = out.toString();
-
-            File file = new File(fileName);
-            Writer output = new BufferedWriter(new FileWriter(file));
-            output.write(xmlString);
-            output.close();
-
+        try (FileOutputStream fos = new FileOutputStream(new File(fileName))) {
+            // To make the output as similar as possible to the previous version,
+            // manually write the XML declaration.
+            fos.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
+            TransformerFactory transFactory = TransformerFactory.newInstance();
+            Transformer idTransform = transFactory.newTransformer();
+            // Don't write the XML declaration as we have already done so.
+            idTransform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            idTransform.setOutputProperty(OutputKeys.INDENT,"yes");
+            idTransform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            Source input = new DOMSource(doc);
+            Result output = new StreamResult(fos);
+            idTransform.transform(input, output);
             log.config("Completed.");
         } catch (Exception e) {
             throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
