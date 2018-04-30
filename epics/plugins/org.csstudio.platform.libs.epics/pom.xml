@@ -10,7 +10,7 @@
   </parent>
   <artifactId>org.csstudio.platform.libs.epics</artifactId>
   <packaging>bundle</packaging>
-  <version>${csstudio.version}</version>
+  <version>${cs-studio.version.long}</version>
   <dependencies>
     <dependency>
       <groupId>org.epics</groupId>
@@ -150,7 +150,7 @@
               gov.aps.jca.dbr,
               gov.aps.jca.event</Export-Package>
             <Import-Package>!org.csstudio.platform.libs.epics,!com.cosylab.*,!gov.aps.jca.*,*;ui.workbench=!;common=!;registry=!;texteditor=!;text=!</Import-Package>
-            <Bundle-Version>$${replace;${csstudio.version};(.*)-SNAPSHOT;$1}.${cs-studio.timestamp}</Bundle-Version>
+            <Bundle-Version>$${replace;${cs-studio.version.long};(.*)-SNAPSHOT;$1}.${cs-studio.timestamp}</Bundle-Version>
             <_nouses>true</_nouses>
           </instructions>
         </configuration>
