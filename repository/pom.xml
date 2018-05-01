@@ -260,15 +260,31 @@
 
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.14</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.javax.*,</Import-Package>
+                  </instructions>
                 </artifact>
                 <artifact>
                   <id>org.reactfx:reactfx:2.0-M5</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!javax.*,</Import-Package>
+                  </instructions>
                 </artifact>
                 <artifact>
                   <id>org.fxmisc.flowless:flowless:0.6</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!javax.*,</Import-Package>
+                  </instructions>
                 </artifact>
                 <artifact>
                   <id>org.fxmisc.richtext:richtextfx:0.8.2</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!javax.*,</Import-Package>
+                  </instructions>
                 </artifact>
                 <artifact>
                   <id>org.fxmisc.undo:undofx:2.0.0</id>
