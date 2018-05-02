@@ -262,7 +262,7 @@
                   <id>org.controlsfx:controlsfx:8.40.14</id>
                   <override>true</override>
                   <instructions>
-                    <Import-Package>!com.sun.javafx.*,*</Import-Package>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
                   </instructions>
                 </artifact>
                 <artifact>
