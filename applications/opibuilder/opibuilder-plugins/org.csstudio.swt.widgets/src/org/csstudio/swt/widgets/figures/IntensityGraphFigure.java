@@ -98,8 +98,6 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
         }
     }
 
-    private static final int MAX_ARRAY_SIZE = 10000000;
-
     /** Information about one 'Pixel' in the graph */
     public class PixelInfo
     {
@@ -349,8 +347,6 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
             if((left != 0 || right != 0 || top != 0 || bottom != 0) &&
                     (dataWidth - left - right) * (dataHeight - top-bottom) >0){
                 int i=0;
-                if((dataWidth - left - right) * (dataHeight - top - bottom) > MAX_ARRAY_SIZE)
-                    return dataArray;
                 double[] result = null;
                 if (inRGBMode) {
                     result = new double[(dataWidth - left - right)
@@ -1394,7 +1390,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
      * @param dataHeight the dataHeight to set
      */
     public final void setDataHeight(int dataHeight) {
-        if(dataHeight <0|| dataWidth * dataHeight > MAX_ARRAY_SIZE || dataWidth * dataHeight < 0)
+        if(dataHeight <0 || dataWidth * dataHeight < 0)
             throw new IllegalArgumentException();
         if(this.dataHeight == dataHeight)
             return;
@@ -1409,7 +1405,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
      * @param dataWidth the dataWidth to set
      */
     public final void setDataWidth(int dataWidth) {
-        if(dataWidth < 0 || dataWidth * dataHeight > MAX_ARRAY_SIZE || dataWidth * dataHeight < 0)
+        if(dataWidth < 0 || dataWidth * dataHeight < 0)
             throw new IllegalArgumentException();
         if(this.dataWidth == dataWidth)
             return;
