@@ -253,7 +253,7 @@
                label="%Help">
             <command
                   commandId="org.eclipse.ui.help.quickStartAction"
-                  icon="platform:/plugin/org.eclipse.ui.intro.universal/icons/welcome16.gif"
+                  icon="platform:/plugin/org.eclipse.ui.intro.universal/icons/welcome16.png"
                   label="%HelpWelcome"
                   style="push">
             </command>
