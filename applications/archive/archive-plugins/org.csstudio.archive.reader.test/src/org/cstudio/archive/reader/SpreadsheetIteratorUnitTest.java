@@ -41,7 +41,7 @@ public class SpreadsheetIteratorUnitTest
     public void testSpreadsheetIterator2() throws Exception
     {
         final String result = runSheetTest(5);
-        assertThat(result, equalTo("A 1,null,A 2,null,A 3,null,A 4,null,A 5,null,A 6,B 1,A 7,B 2,A 8,B 3,A 9,B 4,A 10,B 5,null,B 6,null,B 7,null,B 8,null,B 9,null,B 10"));
+        assertThat(result, equalTo("A 1,null,A 2,null,A 3,null,A 4,null,A 5,null,A 6,B 1,A 7,B 2,A 8,B 3,A 9,B 4,A 10,B 5,A 10,B 6,A 10,B 7,A 10,B 8,A 10,B 9,A 10,B 10"));
     }
 
     private String runSheetTest(final int time_lag) throws Exception
