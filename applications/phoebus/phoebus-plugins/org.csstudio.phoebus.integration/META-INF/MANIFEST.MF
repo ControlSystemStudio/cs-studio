@@ -6,7 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.phoebus.integration.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.ui.menu
+ org.csstudio.ui.menu,
+ org.csstudio.ui.util,
+ org.csstudio.csdata
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.phoebus.integration

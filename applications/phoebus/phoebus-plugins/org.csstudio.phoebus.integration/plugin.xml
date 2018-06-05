@@ -13,6 +13,20 @@
                tooltip="Launch Phoebus">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+               label="Phoebus Probe"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+               label="Phoebus PVTree"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -20,6 +34,18 @@
             defaultHandler="org.csstudio.phoebus.integration.Launch"
             id="org.csstudio.phoebus.integration.Launch"
             name="Launch Phoebus">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+            icon="icons/probe-16.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+            label="%ProbeLabel">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+            icon="icons/pvtree.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+            label="%PVTreeLabel">
       </command>
    </extension>
 </plugin>
