@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +55,18 @@ public class PhoebusLauncherService {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Launch the phoebus empty application.
+     */
     public static void launch() {
        launchPhoebus(basicArguments());
     }
 
+    /**
+     * Launch the phoebus framework with the listed applications started.
+     * @param appNames list of applicaiton names to be launched.
+     */
     public static void launchApplication(String... appNames) {
         List<String> args = basicArguments();
         for (String appName : appNames) {
@@ -71,6 +77,10 @@ public class PhoebusLauncherService {
         launchPhoebus(args);
     }
 
+    /**
+     * Launch the phoebus framework with for the list of resources provided.
+     * @param resources list of resources to be launched with their associated phoebus applications.
+     */
     public static void launchResource(String... resources) {
         List<String> args = basicArguments();
         for (String resource : resources) {
@@ -80,7 +90,11 @@ public class PhoebusLauncherService {
         
         launchPhoebus(args);
     }
-    
+
+    /**
+     * creates a list of basic arguments needed to lauch the phoebus framework
+     * @return
+     */
     private static List<String> basicArguments(){
         List<String> processArguments = new ArrayList<>();
         processArguments.add(Paths.get(jdk9_home).toString()+File.separator+"bin"+File.separator+"java");
@@ -91,6 +105,11 @@ public class PhoebusLauncherService {
         return processArguments;
     }
 
+    /**
+     * Consumes an input stream and outputs each line to a logger
+     * @author Kunal Shroff
+     *
+     */
     private static class StreamLogger implements Runnable {
         private InputStream inputStream;
         private Logger logger;
