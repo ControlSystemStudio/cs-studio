@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.phoebus.integration.Launch"
+               label="Phoebus"
+               style="push"
+               tooltip="Launch Phoebus">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.Launch"
+            id="org.csstudio.phoebus.integration.Launch"
+            name="Launch Phoebus">
+      </command>
+   </extension>
+</plugin>
