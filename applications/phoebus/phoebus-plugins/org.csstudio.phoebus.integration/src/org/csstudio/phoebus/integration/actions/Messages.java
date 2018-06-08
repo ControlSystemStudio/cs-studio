@@ -22,6 +22,13 @@ public class Messages extends NLS {
     public static String PVTreeErrorOpenPvtree;
     public static String PVTreeLabel;
 
+    // Email messages
+    public static String Email;
+
+    // ChannelTable messages 
+    public static String ChannelTable;
+    public static String ChannelTableErrorOpen;
+
 
     static {
         // initialize resource bundle

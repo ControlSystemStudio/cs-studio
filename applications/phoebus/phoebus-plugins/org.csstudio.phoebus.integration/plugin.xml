@@ -8,9 +8,26 @@
             locationURI="menu:display">
          <command
                commandId="org.csstudio.phoebus.integration.Launch"
+               icon="icons/css16.png"
                label="Phoebus"
                style="push"
                tooltip="Launch Phoebus">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
+               icon="icons/channel-viewer-16.png"
+               label="Phoebus Channel Search"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+               icon="icons/mail-send-16.png"
+               label="Phoebus Email"
+               style="push">
          </command>
       </menuContribution>
       <menuContribution
@@ -18,12 +35,20 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+               icon="icons/probe-16.png"
                label="Phoebus Probe"
                style="push">
          </command>
          <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+               icon="icons/pvtree.png"
                label="Phoebus PVTree"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
+               icon="icons/channel-viewer-16.png"
+               label="Phoebus Channel Search"
                style="push">
          </command>
       </menuContribution>
@@ -39,13 +64,25 @@
             defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
             icon="icons/probe-16.png"
             id="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
-            label="%ProbeLabel">
+            name="ProbeLabel">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
+            icon="icons/probe-16.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
+            name="ChannelTable">
       </command>
       <command
             defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
-            icon="icons/pvtree.png"
-            id="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
-            label="%PVTreeLabel">
+            icon="icons/probe-16.png"
+            name="PVTreeLabel"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+            icon="icons/probe-16.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+            name="EmailLabel">
       </command>
    </extension>
 </plugin>
