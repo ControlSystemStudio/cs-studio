@@ -5,8 +5,7 @@ Control System Studio is an Eclipse-based collections of tools to monitor and op
 * [Webpage](http://controlsystemstudio.github.io/) - general information
 * [Github wiki](https://github.com/ControlSystemStudio/cs-studio/wiki/) - notes for developers
 * [Tech-talk](http://aps.anl.gov/epics/tech-talk/index.php) (the EPICS mailing list) - for user queries and discussion
-* [Download page](http://controlsystemstudio.org/download.html) (temp. target link: http://download.controlsystemstudio.org/p2zip/4.3/)
-* [Cloudbees](https://openepics.ci.cloudbees.com) - Build server
+* [Download page](http://controlsystemstudio.org/download.html)
 
 ### How to contribute
 
