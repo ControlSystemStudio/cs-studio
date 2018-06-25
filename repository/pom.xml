@@ -257,7 +257,89 @@
                   </instructions>
                 </artifact>
 
-                <!-- JavaFX libraries -->
+
+				<!-- DIIRT libraries -->
+                <artifact>
+                  <id>org.diirt:datasource:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-extra:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-file:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-file-json:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-formula:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-graphene:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-integration:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-loc:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-sample:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-sim:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-sys:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-test:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:datasource-vtype:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:graphene:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:graphene-profile:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:service:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:service-exec:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:service-jdbc:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:diirt-util:3.1.7</id>
+                </artifact>
+				<artifact>
+                  <id>org.diirt:vtype:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt:vtype-json:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.javafx:javafx:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.javafx:tools:3.1.7</id>
+                </artifact>
+				<artifact>
+                  <id>org.diirt.support:diirt-ca:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.support:diirt-cf:3.1.7</id>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.support:diirt-pva:3.1.7</id>
+                </artifact>
+
+
+				<!-- JavaFX libraries -->
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.14</id>
                   <override>true</override>
@@ -307,6 +389,7 @@
                 <artifact>
                   <id>se.europeanspallationsource:xaos:0.2.7</id>
                 </artifact>
+
 
                 <!-- pvmanager-plugins from reactor -->
                 <artifact>
