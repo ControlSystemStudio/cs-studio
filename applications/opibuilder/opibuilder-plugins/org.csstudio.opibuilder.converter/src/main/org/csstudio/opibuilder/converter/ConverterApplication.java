@@ -122,12 +122,18 @@ public class ConverterApplication implements IApplication
 
             if (! input.canRead())
             {
-                System.out.println("ERROR: Cannot read " + input);
+                System.out.println("ERROR: Cannot read input file " + input);
                 return false;
             }
             if (output.exists())
             {
                 System.out.println("ERROR: Output file already exists: " + output);
+                return false;
+            }
+            // This can happen if the -o option is selected so all output files
+            // would be put in the same directory.
+            if (outputs.contains(output)) {
+                System.out.println("ERROR: Multiple output files with the path " + output + " would be created.");
                 return false;
             }
             inputs.add(input);
