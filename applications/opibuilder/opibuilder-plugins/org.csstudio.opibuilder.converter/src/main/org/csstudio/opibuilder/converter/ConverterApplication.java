@@ -92,6 +92,11 @@ public class ConverterApplication implements IApplication
             System.out.println("ERROR: Output directory " + outputDirectory.get() + " does not exist.");
             System.exit(-1);
         }
+        if (inputFiles.isEmpty())
+        {
+            System.out.println("ERROR: No input files specified.");
+            System.exit(-1);
+        }
         try
         {
             if (! checkThenConvert())
