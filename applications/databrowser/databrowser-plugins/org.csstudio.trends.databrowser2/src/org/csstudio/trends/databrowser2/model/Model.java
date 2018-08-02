@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,8 @@ import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.time.RelativeTimeParser;
+import org.csstudio.apputil.time.RelativeTimeParserResult;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.swt.rtplot.util.RGBFactory;
@@ -34,6 +37,7 @@ import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.diirt.util.time.TimeDuration;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -111,6 +115,9 @@ public class Model
     /** Show time axis grid line? */
     private volatile boolean show_grid = false;
 
+    /** Show time axis current time line? */
+    private volatile boolean show_now = false;
+    
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
@@ -782,6 +789,22 @@ public class Model
             listener.changeTimeAxisConfig();
     }
 
+    /** @return <code>true</code> if current time line is drawn */
+    public boolean isNowVisible()
+    {
+        return show_now;
+    }
+    
+    /** @param visible Should current time line be visible? */
+    public void setNowVisible(final boolean now)
+    {
+        if (show_now == now)
+            return;
+        show_now = now;
+        for (ModelListener listener : listeners)
+            listener.changeTimeAxisConfig();
+    }
+    
     /** @return Title font */
     public FontData getTitleFont()
     {
