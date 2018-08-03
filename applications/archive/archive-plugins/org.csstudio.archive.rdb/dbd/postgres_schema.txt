@@ -151,6 +151,10 @@ CREATE TABLE  channel
    retent_id BIGINT NULL,
    retent_val DOUBLE precision NULL
 );
+
+-- Need index on channel name
+CREATE INDEX channel_name_idx ON channel ( name );
+
 INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine(0, 10, 50, 0.1)');
 INSERT INTO channel(channel_id, name) VALUES (2, 'sim://noiseWaveform(0,10,100,10)');
 INSERT INTO channel(channel_id, name) VALUES (3, 'freddy');
