@@ -31,11 +31,11 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
+public class SnapshotAction extends Action
 {
-    final private RTPlot<XTYPE> plot;
+    final private RTPlot<?> plot;
 
-    public SnapshotAction(final RTPlot<XTYPE> plot)
+    public SnapshotAction(final RTPlot<?> plot)
     {
         super(Messages.Snapshot, Activator.getIcon("camera"));
         this.plot = plot;
