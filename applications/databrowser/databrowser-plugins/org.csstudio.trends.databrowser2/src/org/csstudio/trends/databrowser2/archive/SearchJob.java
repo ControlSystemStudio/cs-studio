@@ -52,10 +52,10 @@ abstract public class SearchJob extends Job
                 final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archive.getUrl());
             )
             {
-           	    if (monitor.isCanceled()) {
-           	    	monitor.done();
+                if (monitor.isCanceled()) {
+                    monitor.done();
                     return Status.CANCEL_STATUS;
-           	    }
+                }
                 monitor.subTask(archive.getName());
                 final String[] names;
                 if (pattern_is_glob)
