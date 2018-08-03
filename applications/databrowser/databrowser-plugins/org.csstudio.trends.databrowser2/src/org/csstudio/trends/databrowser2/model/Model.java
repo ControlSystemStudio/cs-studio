@@ -302,6 +302,9 @@ public class Model
     }
 
     /** Add value axis with default settings
+     *  Sets name of new axis to Value N
+     *  N is found by searching for all the existing axes with the name Value X; N is set to the highest value of X found + 1
+     *  (this scheme should avoid the creation of axes with duplicate names of the format Value N)
      *  @return Newly added axis configuration
      */
     public AxisConfig addAxis()
