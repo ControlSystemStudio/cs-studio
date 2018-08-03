@@ -83,14 +83,14 @@ public class TimeAxis extends AxisPart<Instant>
 
     /** {@inheritDoc} */
     @Override
-    public boolean isNowVisible()
+    public boolean isIndicatorLineVisible()
     {
         return show_now;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setNowVisible(final boolean now)
+    public void setIndicatorLineVisible(final boolean now)
     {
         if (show_now == now)
             return;

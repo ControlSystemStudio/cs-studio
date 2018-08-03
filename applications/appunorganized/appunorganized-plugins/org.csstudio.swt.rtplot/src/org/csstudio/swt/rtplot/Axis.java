@@ -51,11 +51,11 @@ public interface Axis<T extends Comparable<T>>
     /** @param visible Should grid be visible? */
     public void setGridVisible(final boolean grid);
 
-    /** @return <code>true</code> if current line is drawn */
-    public boolean isNowVisible();
+    /** @return <code>true</code> if indicator line is drawn */
+    public boolean isIndicatorLineVisible();
 
-    /** @param visible Should current line be visible? */
-    public void setNowVisible(final boolean now);
+    /** @param visible Should indicator line be visible? */
+    public void setIndicatorLineVisible(final boolean state);
     
     /** @return <code>true</code> if axis is visible */
     public boolean isVisible();

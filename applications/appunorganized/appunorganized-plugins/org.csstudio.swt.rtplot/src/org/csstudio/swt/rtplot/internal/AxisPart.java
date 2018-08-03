@@ -144,14 +144,14 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     /** {@inheritDoc} */
     @Override
-    public boolean isNowVisible()
+    public boolean isIndicatorLineVisible()
     {
         return false;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setNowVisible(final boolean now)
+    public void setIndicatorLineVisible(final boolean state)
     {
     	return;
     }
