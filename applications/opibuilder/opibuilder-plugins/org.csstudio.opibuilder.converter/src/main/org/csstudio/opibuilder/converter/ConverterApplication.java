@@ -91,28 +91,32 @@ public class ConverterApplication implements IApplication
         System.out.println("** EDL File Converter **");
         System.out.println("************************");
 
+        // Prevent long error message when returning non-zero error code.
+        System.setProperty(IApplicationContext.EXIT_DATA_PROPERTY, "");
+
         final String args[] =
                 (String []) context.getArguments().get("application.args");
         parseArguments(args);
         if (outputDirectory.isPresent() && ! outputDirectory.get().exists())
         {
             System.out.println("ERROR: Output directory " + outputDirectory.get() + " does not exist.");
-            System.exit(-1);
+            return -1;
         }
         if (inputFiles.isEmpty())
         {
             System.out.println("ERROR: No input files specified.");
-            System.exit(-1);
+            return -1;
         }
         try
         {
             if (! checkThenConvert())
-                System.exit(-1);
+                return -1;
         }
         catch (Exception ex)
         {
+            System.out.println("Unexpected error while converting.");
             ex.printStackTrace();
-            System.exit(-1);
+            return -1;
         }
 
         return IApplication.EXIT_OK;
