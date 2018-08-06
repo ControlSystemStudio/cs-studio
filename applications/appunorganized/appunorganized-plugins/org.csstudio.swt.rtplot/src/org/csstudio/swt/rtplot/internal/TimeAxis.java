@@ -98,7 +98,7 @@ public class TimeAxis extends AxisPart<Instant>
         requestLayout();
         requestRefresh();
     }
-    
+
     /** Scale Duration by floating point number
      *  @param start Start of a duration
      *  @param end End of a duration
@@ -205,7 +205,7 @@ public class TimeAxis extends AxisPart<Instant>
             gc.drawLine(now_x, plot_bounds.y, now_x, region.y-1);
             gc.setLineStyle(SWT.LINE_SOLID);
         }
-        
+
         gc.setForeground(old_fg);
     }
 

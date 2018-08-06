@@ -665,11 +665,11 @@ public class DataBrowserPropertySheetPage extends Page
                new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection(), show_now.getSelection());
             }
         });
-        
+
         label = new Label(parent, 0);
         label.setText(Messages.CurrentTimeLbl);
         label.setLayoutData(new GridData());
-        
+
         show_now = new Button(parent, SWT.CHECK);
         show_now.setToolTipText(Messages.CurrentTimeTT);
         show_now.setLayoutData(new GridData(0, 0, false, false, 2, 1));
@@ -681,7 +681,7 @@ public class DataBrowserPropertySheetPage extends Page
                 new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection(), show_now.getSelection());
             }
         });
-        
+
         model_listener.changeTimeAxisConfig();
     }
 

@@ -56,7 +56,7 @@ public interface Axis<T extends Comparable<T>>
 
     /** @param visible Should indicator line be visible? */
     public void setIndicatorLineVisible(final boolean state);
-    
+
     /** @return <code>true</code> if axis is visible */
     public boolean isVisible();
 

@@ -155,7 +155,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     {
     	return;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isAxisNameVisible()

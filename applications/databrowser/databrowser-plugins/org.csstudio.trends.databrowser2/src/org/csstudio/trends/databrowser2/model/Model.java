@@ -113,7 +113,7 @@ public class Model
 
     /** Show time axis current time line? */
     private volatile boolean show_now = false;
-    
+
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
@@ -790,7 +790,7 @@ public class Model
     {
         return show_now;
     }
-    
+
     /** @param visible Should current time line be visible? */
     public void setNowVisible(final boolean now)
     {
@@ -800,7 +800,7 @@ public class Model
         for (ModelListener listener : listeners)
             listener.changeTimeAxisConfig();
     }
-    
+
     /** @return Title font */
     public FontData getTitleFont()
     {
