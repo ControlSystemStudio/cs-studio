@@ -13,11 +13,11 @@ import org.eclipse.jface.action.Action;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ToggleLegendAction<XTYPE extends Comparable<XTYPE>> extends Action
+public class ToggleLegendAction extends Action
 {
-    final private RTPlot<XTYPE> plot;
+    final private RTPlot<?> plot;
 
-    public ToggleLegendAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+    public ToggleLegendAction(final RTPlot<?> plot, final boolean is_visible)
     {
         super(is_visible ? Messages.Legend_Hide : Messages.Legend_Show,
               Activator.getIcon("legend"));
