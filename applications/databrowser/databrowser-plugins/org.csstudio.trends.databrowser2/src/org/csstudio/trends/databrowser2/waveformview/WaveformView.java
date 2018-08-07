@@ -371,24 +371,21 @@ public class WaveformView extends DataBrowserAwareView
     /** Select given PV item (or <code>null</code>). */
     private void selectPV(final List<ModelItem> new_item)
     {
-        //model_item = new_item;
 
         // Delete all existing traces
         for (Trace<Double> trace : plot.getTraces())
             plot.removeTrace(trace);
 
-        // No or unknown PV name?
-        if (new_item == null)
-            return;
-        
         model_items = new_item;
         
-        if (model_items == null)
+        if (model_items == null || model_items.size() == 0)
         {
             sample_index.setEnabled(false);
             removeAnnotation();
             return;
         }
+        
+        removeAnnotation();
 
         // Prepare to show waveforms of model item in plot
 
@@ -504,7 +501,7 @@ public class WaveformView extends DataBrowserAwareView
 
     private void removeAnnotation()
     {
-        if (model != null)
+        if (model != null && waveform_annotations != null)
         {
             final List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
             for (AnnotationInfo waveform_annotation : waveform_annotations) {
