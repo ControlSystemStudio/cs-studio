@@ -62,7 +62,6 @@ public class ConverterApplication implements IApplication
             else if (args[i].equals("-f"))
             {
                 force = true;
-                ++i;
             }
             else if (args[i].equals("-o"))
             {
