@@ -16,11 +16,11 @@ import org.eclipse.jface.action.Action;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ToggleToolbarAction<XTYPE extends Comparable<XTYPE>> extends Action
+public class ToggleToolbarAction extends Action
 {
-    final private RTPlot<XTYPE> plot;
+    final private RTPlot<?> plot;
 
-    public ToggleToolbarAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+    public ToggleToolbarAction(final RTPlot<?> plot, final boolean is_visible)
     {
         super(is_visible ? Messages.Toolbar_Hide : Messages.Toolbar_Show,
               Activator.getIcon("toolbar"));

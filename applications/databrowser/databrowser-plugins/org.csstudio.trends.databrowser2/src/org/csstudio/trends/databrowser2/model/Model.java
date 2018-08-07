@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.csstudio.apputil.macros.IMacroTableProvider;
 import org.csstudio.apputil.macros.InfiniteLoopException;
@@ -300,11 +302,26 @@ public class Model
     }
 
     /** Add value axis with default settings
+     *  Sets name of new axis to Value N
+     *  N is found by searching for all the existing axes with the name Value X; N is set to the highest value of X found + 1
+     *  (this scheme should avoid the creation of axes with duplicate names of the format Value N)
      *  @return Newly added axis configuration
      */
     public AxisConfig addAxis()
     {
-        final String name = NLS.bind(Messages.Plot_ValueAxisNameFMT, axes.size() + 1);
+        final String regex = Messages.Plot_ValueAxisName + " \\d+";
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        int max_default_axis_num = 0;
+        for (AxisConfig axis : axes) {
+            String existing_axis_name = axis.getName();
+            Matcher matcher = pattern.matcher(existing_axis_name);
+            while (matcher.find()) {
+                int default_axis_num = Integer.parseInt(matcher.group(0).replace(Messages.Plot_ValueAxisName+" ",""));
+                if (default_axis_num > max_default_axis_num)
+                    max_default_axis_num = default_axis_num;
+            }
+        }
+        final String name = NLS.bind(Messages.Plot_ValueAxisNameFMT, max_default_axis_num + 1);
         final AxisConfig axis = new AxisConfig(name);
         axis.setColor(new RGB(0, 0, 0));
         addAxis(axis);
