@@ -32,6 +32,7 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
+import org.csstudio.trends.databrowser2.multiselectcombo.MultiSelectCombo;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.diirt.vtype.VNumberArray;
@@ -43,10 +44,17 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -77,7 +85,7 @@ public class WaveformView extends DataBrowserAwareView
     final public static String ANNOTATION_TEXT = "Waveform view";
 
     /** PV Name selector */
-    private Combo pv_name;
+    private MultiSelectCombo pv_select;
 
     /** Plot */
     private RTValuePlot plot;
@@ -186,25 +194,30 @@ public class WaveformView extends DataBrowserAwareView
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
 
-        pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        pv_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
-        pv_name.addSelectionListener(new SelectionListener()
-        {
-            @Override
-            public void widgetSelected(final SelectionEvent e)
-            {
-                widgetDefaultSelected(e);
-            }
+        final List<String> names_list = new ArrayList<>();
+        if (model != null) {
+            for (ModelItem item : model.getItems())
+                names_list.add(item.getName());
+        } 
+        final String[] names = names_list.toArray(new String[names_list.size()]);
 
-            @Override
-            public void widgetDefaultSelected(final SelectionEvent e)
-            {   // First item is "--select PV name--"
-                 if (pv_name.getSelectionIndex() == 0)
-                    selectPV(null);
-                else
-                    selectPV(model.getItem(pv_name.getText()));
-            }
-        });
+        pv_select = new MultiSelectCombo(parent, names, SWT.READ_ONLY);
+        pv_select.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+        ((GridData)pv_select.getLayoutData()).widthHint = 300;
+        pv_select.addSelectionListener (new SelectionAdapter() { 
+            //@Override
+            public void widgetSelected(SelectionEvent event) 
+            {
+                final List<String> curr_names_list = new ArrayList<>();
+                if (model != null) {
+                    for (ModelItem item : model.getItems())
+                        curr_names_list.add(item.getName());
+                } 
+                final String[] curr_names = curr_names_list.toArray(new String[curr_names_list.size()]);
+                List<ModelItem> modelItems = getModelItems(curr_names);
+                selectPV(modelItems);
+            }}
+        );
 
         final Button refresh = new Button(parent, SWT.PUSH);
         refresh.setText(Messages.SampleView_Refresh);
@@ -215,10 +228,8 @@ public class WaveformView extends DataBrowserAwareView
             @Override
             public void widgetSelected(final SelectionEvent e)
             {   // First item is "--select PV name--"
-                if (pv_name.getSelectionIndex() == 0)
-                   selectPV(null);
-               else
-                   selectPV(model.getItem(pv_name.getText()));
+                List<ModelItem> modelItems = getModelItems(names);
+                selectPV(modelItems);
            }
         });
 
@@ -275,12 +286,32 @@ public class WaveformView extends DataBrowserAwareView
         });
 
     }
+    
+    /** Return List of selected ModelItems
+     *  by finding Model Items from checked items in PV list
+     *  @param names list of all PV names available in list
+     *  @returns List of ModelItems
+     */
+    private List<ModelItem> getModelItems(final String [] names) 
+    { 
+        List<ModelItem> modelItems = new ArrayList<ModelItem>();
+        List<Integer> selectedIndices = pv_select.getSelectedIndices();
+        if (selectedIndices.size() == 0)
+            modelItems = null;
+        else {
+            for(int n=0; n<selectedIndices.size(); n++) {
+                int item = selectedIndices.get(n);
+                modelItems.add(model.getItem(names[item]));
+            }
+        }
+        return modelItems;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
-        pv_name.setFocus();
+        pv_select.setFocus();
     }
 
     /** {@inheritDoc} */
@@ -310,68 +341,71 @@ public class WaveformView extends DataBrowserAwareView
     {
         Display.getDefault().asyncExec( () ->
         {
-            if (pv_name.isDisposed())
+            if (pv_select.isDisposed())
             {
                 return;
             }
             if (model == null)
             {   // Clear/disable GUI
-                pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
-                pv_name.select(0);
-                pv_name.setEnabled(false);
+                pv_select.setItems(new String[] {});
+                pv_select.setEnabled(false);
                 selectPV(null);
                 return;
             }
 
             // Show PV names
             final List<String> names_list = new ArrayList<>();
-            names_list.add(Messages.SampleView_SelectItem);
             for (ModelItem item : model.getItems())
                 names_list.add(item.getName());
             final String[] names = names_list.toArray(new String[names_list.size()]);
 
             // Is the previously selected item still valid?
-            final int selected = pv_name.getSelectionIndex();
-            if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
+            final int selected = 1;//pv_name.getSelectionIndex();
+            if (!model_changed  &&  selected > 0  &&  model_item != null) // &&  pv_name.getText().equals(model_item.getName()))
             {
                 // Show same PV name again in combo box
-                pv_name.setItems(names);
-                pv_name.select(selected);
-                pv_name.setEnabled(true);
+                pv_select.setItems(names);
+                //pv_name.select(selected);
+                pv_select.setEnabled(true);
                 return;
             }
             // Previously selected item no longer valid.
             // Show new items, clear rest
-            pv_name.setItems(names);
-            pv_name.select(0);
-            pv_name.setEnabled(true);
+            pv_select.setItems(names);
+            //.select(0);
+            pv_select.setEnabled(true);
             selectPV(null);
         });
     }
 
     /** Select given PV item (or <code>null</code>). */
-    private void selectPV(final ModelItem new_item)
+    private void selectPV(final List<ModelItem> new_item)
     {
-        model_item = new_item;
+        //model_item = new_item;
 
         // Delete all existing traces
         for (Trace<Double> trace : plot.getTraces())
             plot.removeTrace(trace);
 
         // No or unknown PV name?
-        if (model_item == null)
-        {
-            pv_name.setText("");
-            sample_index.setEnabled(false);
-            removeAnnotation();
+        if (new_item == null)
             return;
-        }
+        
+        model_item = new_item.get(0);
+        //if (model_item == null)
+        //{
+            //pv_name.setText("");
+        //    sample_index.setEnabled(false);
+        //    removeAnnotation();
+        //    return;
+        //}
 
         // Prepare to show waveforms of model item in plot
         waveform = new WaveformValueDataProvider();
 
         // Create trace for waveform
-        plot.addTrace(model_item.getResolvedDisplayName(), model_item.getUnits(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
+        for(int n=0; n<new_item.size(); n++)            
+            plot.addTrace(new_item.get(n).getResolvedDisplayName(), new_item.get(n).getUnits(), waveform, new_item.get(n).getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
         // Enable waveform selection and update slider's range
         sample_index.setEnabled(true);
         showSelectedSample();
