@@ -23,6 +23,7 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
     @EdmAttributeAn @EdmOptionalAn private int precision;
     @EdmAttributeAn @EdmOptionalAn private String fontAlign;
+    @EdmAttributeAn @EdmOptionalAn private boolean motifWidget;
 
     public Edm_activeXTextDspClass_noedit(EdmEntity genericEntity) throws EdmException {
         super(genericEntity);
@@ -61,16 +62,13 @@ public class Edm_activeXTextDspClass_noedit extends EdmWidget {
         return "left";
     }
 
+    public boolean isMotifWidget() {
+        return motifWidget;
+    }
 
-
-
-    /**
-     * @return the lineAlarm
-     */
     public final String getControlPv() {
         return controlPv;
     }
-
 
     public String getFormat() {
         return format;
