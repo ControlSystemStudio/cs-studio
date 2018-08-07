@@ -90,10 +90,10 @@ public class WaveformView extends DataBrowserAwareView
     /** Plot */
     private RTValuePlot plot;
 
-    /** Selector for first model_item's current sample */
+    /** Selector for first model_item current sample */
     private Slider sample_index;
 
-    /** Timestamp of current sample. */
+    /** Timestamp of current sample(s). */
     private Text timestamp;
 
     /** Status/severity of current sample. */
@@ -102,7 +102,7 @@ public class WaveformView extends DataBrowserAwareView
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
 
-    /** Annotation in plot that indicates waveform sample */
+    /** Annotation(s) in plot that indicate waveform sample(s) */
     private List<AnnotationInfo> waveform_annotations;
 
     private boolean changing_annotations = false;
@@ -123,9 +123,11 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void itemRemoved(final ModelItem item)
         {
-            //if (item == model_item) {
-            //    model_item = null;
-            //}
+            for (ModelItem model_item : model_items) {
+                if (item == model_item) {
+                    model_items.remove(model_item);
+                }
+            }
             update(false);
         }
 
@@ -278,7 +280,6 @@ public class WaveformView extends DataBrowserAwareView
         getSite().registerContextMenu(mm, null);
 
         mm.addMenuListener(new IMenuListener(){
-
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 mm.add(plot.getToolbarAction());
@@ -364,22 +365,11 @@ public class WaveformView extends DataBrowserAwareView
                 names_list.add(item.getName());
             final String[] names = names_list.toArray(new String[names_list.size()]);
 
-            // Is the previously selected item still valid?
-            final int selected = 1;//pv_name.getSelectionIndex();
-            //if (!model_changed  &&  selected > 0  &&  model_item != null) // &&  pv_name.getText().equals(model_item.getName()))
-           // {
-                // Show same PV name again in combo box
-            //    pv_select.setItems(names);
-                //pv_name.select(selected);
-            //    pv_select.setEnabled(true);
-            //    return;
-            //}
-            // Previously selected item no longer valid.
             // Show new items, clear rest
             pv_select.setItems(names);
-            //.select(0);
             pv_select.setEnabled(true);
             selectPV(null);
+       
         });
     }
 
@@ -429,6 +419,8 @@ public class WaveformView extends DataBrowserAwareView
 
         final int idx = sample_index.getSelection();
 
+        String timestampText = null;
+        
         for(int n=0; n<numItems; n++) {
             ModelItem model_item = model_items.get(n);
             // Get selected sample (= one waveform)
@@ -455,13 +447,18 @@ public class WaveformView extends DataBrowserAwareView
             {
                 updateAnnotation(n, sample.getPosition(), sample.getValue());
                 if (n == 0) {
-                int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
-                plot.getXAxis().setValueRange(0.0, (double)size);
-                timestamp.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
-                status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
+                    timestampText = new String();
+                    int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
+                    plot.getXAxis().setValueRange(0.0, (double)size);
+                    status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
+                    timestampText += TimestampHelper.format(VTypeHelper.getTimestamp(value));
                 }
+                else
+                    timestampText += "; " + TimestampHelper.format(VTypeHelper.getTimestamp(value));
             }
         }
+
+        timestamp.setText(timestampText);
         plot.requestUpdate();
     }
 
