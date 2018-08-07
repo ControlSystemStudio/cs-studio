@@ -671,8 +671,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             final Color orig = gc.getBackground();
             // Use light gray for bright background, otherwise dark gray
             final Color shade = (background.getHSB()[2] >= 0.5)
-                    ? new Color(getDisplay(), 240, 240, 240, 0)
-                    : new Color(getDisplay(), 50, 50, 50, 0);
+                    ? new Color(getDisplay(), 240, 240, 240)
+                    : new Color(getDisplay(), 50, 50, 50);
             gc.setBackground(shade);
             gc.fillRectangle(future_x, 0, area_copy.width - future_x, area_copy.height);
             gc.setBackground(orig);
