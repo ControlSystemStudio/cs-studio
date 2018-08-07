@@ -116,7 +116,7 @@ public class DataBrowserPropertySheetPage extends Page
 
     private ColorBlob background;
 
-    private Button title_font, label_font, scale_font, save_changes, show_grid, rescales[];
+    private Button title_font, label_font, scale_font, save_changes, show_grid, show_now, rescales[];
 
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
@@ -180,6 +180,7 @@ public class DataBrowserPropertySheetPage extends Page
         public void changeTimeAxisConfig()
         {
             show_grid.setSelection(model.isGridVisible());
+            show_now.setSelection(model.isNowVisible());
         }
 
         /** {@inheritDoc} */
@@ -661,9 +662,26 @@ public class DataBrowserPropertySheetPage extends Page
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
-                new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection());
+               new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection(), show_now.getSelection());
             }
         });
+
+        label = new Label(parent, 0);
+        label.setText(Messages.CurrentTimeLbl);
+        label.setLayoutData(new GridData());
+
+        show_now = new Button(parent, SWT.CHECK);
+        show_now.setToolTipText(Messages.CurrentTimeTT);
+        show_now.setLayoutData(new GridData(0, 0, false, false, 2, 1));
+        show_now.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection(), show_now.getSelection());
+            }
+        });
+
         model_listener.changeTimeAxisConfig();
     }
 

@@ -113,6 +113,9 @@ public class Model
     /** Show time axis grid line? */
     private volatile boolean show_grid = false;
 
+    /** Show time axis current time line? */
+    private volatile boolean show_now = false;
+
     /** Background color */
     private volatile RGB background = new RGB(255, 255, 255);
 
@@ -795,6 +798,22 @@ public class Model
         if (show_grid == grid)
             return;
         show_grid = grid;
+        for (ModelListener listener : listeners)
+            listener.changeTimeAxisConfig();
+    }
+
+    /** @return <code>true</code> if current time line is drawn */
+    public boolean isNowVisible()
+    {
+        return show_now;
+    }
+
+    /** @param visible Should current time line be visible? */
+    public void setNowVisible(final boolean now)
+    {
+        if (show_now == now)
+            return;
+        show_now = now;
         for (ModelListener listener : listeners)
             listener.changeTimeAxisConfig();
     }

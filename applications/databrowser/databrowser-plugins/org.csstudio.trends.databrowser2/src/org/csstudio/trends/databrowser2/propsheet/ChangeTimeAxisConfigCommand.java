@@ -19,6 +19,7 @@ public class ChangeTimeAxisConfigCommand extends UndoableAction
 {
     final private Model model;
     final private boolean show_grid;
+    final private boolean show_now;
 
     /** Register the command and perform
      *  @param model
@@ -27,11 +28,13 @@ public class ChangeTimeAxisConfigCommand extends UndoableAction
      */
     public ChangeTimeAxisConfigCommand(final Model model,
             final UndoableActionManager operations_manager,
-            final boolean show_grid)
+            final boolean show_grid,
+            final boolean show_now)
     {
         super(Messages.TimeAxis);
         this.model = model;
         this.show_grid = show_grid;
+        this.show_now = show_now;
         operations_manager.add(this);
         run();
     }
@@ -41,6 +44,7 @@ public class ChangeTimeAxisConfigCommand extends UndoableAction
     public void run()
     {
         model.setGridVisible(show_grid);
+        model.setNowVisible(show_now);
     }
 
     /** {@inheritDoc} */
@@ -48,5 +52,6 @@ public class ChangeTimeAxisConfigCommand extends UndoableAction
     public void undo()
     {
         model.setGridVisible(! show_grid);
+        model.setNowVisible(! show_now);
     }
 }

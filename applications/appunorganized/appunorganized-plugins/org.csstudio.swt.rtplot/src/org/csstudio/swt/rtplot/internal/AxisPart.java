@@ -144,6 +144,20 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     /** {@inheritDoc} */
     @Override
+    public boolean isIndicatorLineVisible()
+    {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIndicatorLineVisible(final boolean state)
+    {
+    	return;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isAxisNameVisible()
     {
         return axisNameVisible.get();

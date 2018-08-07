@@ -467,6 +467,7 @@ public class Controller
             public void changeTimeAxisConfig()
             {
                 plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
+                plot.getPlot().getXAxis().setIndicatorLineVisible(model.isNowVisible());
             }
 
             @Override

@@ -74,6 +74,9 @@ public class Messages extends NLS
     public static String ColorTT;
     public static String ConfigFileErrorFmt;
     public static String Connecting;
+    public static String CurrentTime;
+    public static String CurrentTimeLbl;
+    public static String CurrentTimeTT;
     public static String CursorTimestamp;
     public static String CursorTimestampTT;
     public static String CursorValue;
