@@ -33,7 +33,6 @@ public class MultiSelectCombo extends Composite {
     List<Integer> selectedIndices;
     
     private Button[] itemButtons;
-    private Integer[] itemStates;
     private SelectionAdapter selectionAdapter;
     
     public MultiSelectCombo(Composite parent, String[] items, int style) {
@@ -72,7 +71,6 @@ public class MultiSelectCombo extends Composite {
         selectionShell.setSize(shellRect.width, 30*numItems);
         selectionShell.setLocation(shellRect.x, shellRect.y);
         itemButtons = new Button[numItems];
-        itemStates = new Integer[numItems];
         for (int i = 0; i < numItems; i++) {
             Button button = new Button(selectionShell, SWT.CHECK);
             button.setText(allItems[i]);
@@ -81,10 +79,6 @@ public class MultiSelectCombo extends Composite {
             button.pack();
             itemButtons[i] = button;
             itemButtons[i].addSelectionListener(selectionAdapter);
-            if (button.getSelection())
-                itemStates[i] = 1;
-            else
-                itemStates[i] = 0;
         }
 
         selectionShell.open();
