@@ -31,9 +31,9 @@ import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
-import org.csstudio.trends.databrowser2.multiselectcombo.MultiSelectCombo;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
+import org.csstudio.trends.databrowser2.multiselectcombo.MultiSelectCombo;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
 import org.eclipse.jface.action.Action;
@@ -189,13 +189,15 @@ public class WaveformView extends DataBrowserAwareView
         pv_select = new MultiSelectCombo(parent, names, SWT.READ_ONLY);
         pv_select.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
         ((GridData)pv_select.getLayoutData()).widthHint = 300;
-        pv_select.addSelectionListener (new SelectionAdapter() { 
+        pv_select.addSelectionListener (new SelectionAdapter() {
             //@Override
-            public void widgetSelected(SelectionEvent event) 
+            @Override
+            public void widgetSelected(SelectionEvent event)
             {
                 widgetDefaultSelected(event);
             }
             //@Override
+            @Override
             public void widgetDefaultSelected(final SelectionEvent event) {
                 List<ModelItem> modelItems = getModelItems(getAvailableItems());
                 selectPV(modelItems);
@@ -274,14 +276,14 @@ public class WaveformView extends DataBrowserAwareView
         });
 
     }
-    
+
     /** Return List of selected ModelItems
      *  by finding Model Items from checked items in PV list
      *  @param names list of all PV names available in list
      *  @returns List of ModelItems
      */
-    private List<ModelItem> getModelItems(final String [] names) 
-    { 
+    private List<ModelItem> getModelItems(final String [] names)
+    {
         List<ModelItem> modelItems = new ArrayList<ModelItem>();
         List<Integer> selectedIndices = pv_select.getSelectedIndices();
         if (selectedIndices.size() == 0)
@@ -294,7 +296,7 @@ public class WaveformView extends DataBrowserAwareView
         }
         return modelItems;
     }
-    
+
     /**Returns List of the Names of available ModelItems
      * @returns String List of names
      */
@@ -304,7 +306,7 @@ public class WaveformView extends DataBrowserAwareView
          if (model != null) {
              for (ModelItem item : model.getItems())
                  curr_names_list.add(item.getName());
-         } 
+         }
          return curr_names_list.toArray(new String[curr_names_list.size()]);
      }
 
@@ -365,7 +367,7 @@ public class WaveformView extends DataBrowserAwareView
             pv_select.setEnabled(true);
             List<ModelItem> modelItems = getModelItems(getAvailableItems());
             selectPV(modelItems);
-       
+
         });
     }
 
@@ -378,22 +380,22 @@ public class WaveformView extends DataBrowserAwareView
             plot.removeTrace(trace);
 
         model_items = new_item;
-        
+
         if (model_items == null || model_items.size() == 0)
         {
             sample_index.setEnabled(false);
             removeAnnotation();
             return;
         }
-        
+
         removeAnnotation();
 
         // Prepare to show waveforms of model item in plot
 
         // Create trace for waveform
         waveforms = new ArrayList<WaveformValueDataProvider>();
-        for(int n=0; n<new_item.size(); n++) {   
-            waveforms.add((WaveformValueDataProvider) new WaveformValueDataProvider());
+        for(int n=0; n<new_item.size(); n++) {
+            waveforms.add(new WaveformValueDataProvider());
             plot.addTrace(new_item.get(n).getResolvedDisplayName(), new_item.get(n).getUnits(), waveforms.get(n), new_item.get(n).getColor(), TraceType.SINGLE_LINE, 1, PointType.NONE, 5, 0);
         // Enable waveform selection and update slider's range
         }
@@ -411,7 +413,7 @@ public class WaveformView extends DataBrowserAwareView
 
         String timestampText = null;
         String statusText = null;
-        
+
         for(int n=0; n<numItems; n++) {
             ModelItem model_item = model_items.get(n);
             // Get selected sample (= one waveform)
@@ -523,7 +525,7 @@ public class WaveformView extends DataBrowserAwareView
     {
     if (waveform_annotations == null)
             waveform_annotations = new ArrayList<AnnotationInfo>();
-    
+
         final List<AnnotationInfo> annotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
         // Initial annotation offset
         Point offset = new Point(20, -20);
@@ -535,7 +537,7 @@ public class WaveformView extends DataBrowserAwareView
                 offset = annotation.getOffset();
                 annotations.remove(annotation);
                 break;
-                
+
             }
         }
 
@@ -579,7 +581,7 @@ public class WaveformView extends DataBrowserAwareView
             plot.requestUpdate();
         }
     }
-    
+
     public class ToggleYAxisAutoscaleAction<XTYPE extends Comparable<XTYPE>> extends Action
     {
         final private RTPlot<XTYPE> plot;
