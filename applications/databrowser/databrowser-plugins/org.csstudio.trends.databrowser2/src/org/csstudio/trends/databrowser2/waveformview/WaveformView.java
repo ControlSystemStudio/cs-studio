@@ -22,7 +22,6 @@ import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
-import org.csstudio.swt.rtplot.YAxis;
 import org.csstudio.swt.rtplot.data.TimeDataSearch;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -270,6 +269,7 @@ public class WaveformView extends DataBrowserAwareView
                 mm.add(new ToggleYAxisAction<Double>(plot, true));
                 mm.add(new Separator());
                 mm.add(plot.getSnapshotAction());
+                mm.add(new ToggleYAxisAutoscaleAction<Double>(plot, true));
             }
         });
 
@@ -399,10 +399,7 @@ public class WaveformView extends DataBrowserAwareView
         }
         sample_index.setEnabled(true);
         showSelectedSample();
-        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
-        for (YAxis<Double> yaxis : plot.getYAxes()) {
-            yaxis.setAutoscale(true);
-        }
+
     }
 
     /** Show the current sample of the current model item. */
@@ -579,6 +576,29 @@ public class WaveformView extends DataBrowserAwareView
         public void run()
         {
             plot.getYAxes().get(0).setLogarithmic(!plot.getYAxes().get(0).isLogarithmic());
+            plot.requestUpdate();
+        }
+    }
+    
+    public class ToggleYAxisAutoscaleAction<XTYPE extends Comparable<XTYPE>> extends Action
+    {
+        final private RTPlot<XTYPE> plot;
+
+        public ToggleYAxisAutoscaleAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+        {
+            super(plot.getYAxes().get(0).isAutoscale() ? "Autoscaling" : "Not autoscaling", null);
+            this.plot = plot;
+        }
+
+        public void updateText()
+        {
+            setText(plot.getYAxes().get(0).isAutoscale() ? "Autoscaling" : "Not autoscaling");
+        }
+
+        @Override
+        public void run()
+        {
+            plot.getYAxes().get(0).setAutoscale(!plot.getYAxes().get(0).isAutoscale());
             plot.requestUpdate();
         }
     }
