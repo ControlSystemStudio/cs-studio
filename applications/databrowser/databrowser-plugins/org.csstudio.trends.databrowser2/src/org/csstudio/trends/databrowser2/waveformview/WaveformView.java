@@ -586,13 +586,13 @@ public class WaveformView extends DataBrowserAwareView
 
         public ToggleYAxisAutoscaleAction(final RTPlot<XTYPE> plot, final boolean is_visible)
         {
-            super(plot.getYAxes().get(0).isAutoscale() ? "Autoscaling" : "Not autoscaling", null);
+            super(plot.getYAxes().get(0).isAutoscale() ? "Not autoscaling" : "Autoscaling", null);
             this.plot = plot;
         }
 
         public void updateText()
         {
-            setText(plot.getYAxes().get(0).isAutoscale() ? "Autoscaling" : "Not autoscaling");
+            setText(plot.getYAxes().get(0).isAutoscale() ? "Not autoscaling" : "Autoscaling");
         }
 
         @Override
