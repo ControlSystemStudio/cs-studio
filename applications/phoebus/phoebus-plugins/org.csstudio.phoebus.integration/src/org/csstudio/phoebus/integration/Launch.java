@@ -7,7 +7,7 @@ import org.eclipse.core.commands.IHandler;
 
 /**
  * Simply launch cs-studio phoebus.
- * 
+ *
  * @author Kunal Shroff
  *
  */
