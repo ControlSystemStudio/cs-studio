@@ -12,20 +12,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 
 
-/** An implementation of a Combo box with multi-select capabilities
+/** An implementation of a Combo box for the selection of multiple items
  * 
  */
 
@@ -43,11 +39,8 @@ public class MultiSelectCombo extends Composite {
         super(parent, style);
         
         allItems = items;
-        
-        setLayout(new GridLayout());
-        
         selectedIndices = new ArrayList<Integer>();
-        
+        setLayout(new GridLayout());
         selectionSummary = new Text(this, SWT.READ_ONLY);
         selectionSummary.setText("Select Item(s) for Waveform inspection ...");
         selectionSummary.addMouseListener(new MouseAdapter() {
@@ -62,29 +55,7 @@ public class MultiSelectCombo extends Composite {
     }
     
     public void setItems(String[] names) {
-        
         allItems = names;
-        //showSelectionShell();
-        
-        /*
-        final int numItems = names.length;
-        itemButtons = new Button[numItems];
-        for (int i = 0; i < numItems; i++) {
-            Button button = new Button(selectionShell, SWT.CHECK);
-            button.setText(names[i]);
-            if (selectedIndices.contains(i))
-                button.setSelection(true);
-            button.pack();
-            itemButtons[i] = button;
-            
-        }
-        */
-        //selectionList = new List(selectionShell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        //for (String item : allItems)
-         //   selectionList.add(item);
-        //selectionList.setSelection(selectedIndices);
-       //.setLayoutData(new GridData(GridData.FILL_BOTH))
-
     }
     
     private void showSelectionShell() {
@@ -94,13 +65,11 @@ public class MultiSelectCombo extends Composite {
         Rectangle shellRect = new Rectangle(p.x, p.y + size.y, size.x, 0);
 
         final int numItems = allItems.length;
-
         selectionShell = new Shell(Display.getDefault(), SWT.NO_TRIM);
         selectionShell.setLayout(new GridLayout());
         this.setLayoutData(new GridData());
         selectionShell.setSize(shellRect.width, 30*numItems);
         selectionShell.setLocation(shellRect.x, shellRect.y);
-        
         itemButtons = new Button[numItems];
         for (int i = 0; i < numItems; i++) {
             Button button = new Button(selectionShell, SWT.CHECK);
@@ -109,30 +78,16 @@ public class MultiSelectCombo extends Composite {
                 button.setSelection(true);
             button.pack();
             itemButtons[i] = button;
-            itemButtons[i].addSelectionListener(selectionAdapter);            
+            itemButtons[i].addSelectionListener(selectionAdapter);
         }
-        //selectionList = new List(selectionShell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        //for (String item : allItems)
-         //   selectionList.add(item);
-        //selectionList.setSelection(selectedIndices);
-       //.setLayoutData(new GridData(GridData.FILL_BOTH))
-        
+
         selectionShell.open();
 
-       
-        
         selectionShell.addShellListener(new ShellAdapter() {
             public void shellDeactivated(ShellEvent event) {
-                if (selectionShell != null && !selectionShell.isDisposed()) {
-                   selectedIndices.clear();
-                   for (int i = 0; i < numItems; i++) {
-                       if (itemButtons[i].getSelection())
-                           selectedIndices.add(i);
-                   }
-                   //selectedIndices = selectionList.getSelectionIndices();
+                if (selectionShell != null && !selectionShell.isDisposed())
                    selectionShell.dispose();
-               }
-            }
+                }
             
         });
         
@@ -150,6 +105,5 @@ public class MultiSelectCombo extends Composite {
     public void addSelectionListener(SelectionAdapter selAdapter) {
         selectionAdapter = selAdapter;        
     }
-    
 
 }
