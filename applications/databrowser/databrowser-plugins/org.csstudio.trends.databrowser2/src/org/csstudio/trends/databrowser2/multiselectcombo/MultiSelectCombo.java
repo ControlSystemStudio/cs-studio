@@ -99,7 +99,7 @@ public class MultiSelectCombo extends Composite {
     }
     
     public List<Integer> getSelectedIndices() {
-        if (selectionShell.isDisposed())
+        if (selectionShell == null || selectionShell.isDisposed())
             return selectedIndices;
         selectedIndices.clear();
         for (int i = 0; i < itemButtons.length; i++) {
