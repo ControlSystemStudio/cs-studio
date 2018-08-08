@@ -409,17 +409,30 @@ public class WaveformView extends DataBrowserAwareView
         String timestampText = null;
         String statusText = null;
 
+        Instant firstWaveformSampleTime = null;
+
         for(int n=0; n<numItems; n++) {
             ModelItem model_item = model_items.get(n);
             // Get selected sample (= one waveform)
             final PlotSamples samples = model_item.getSamples();
-            final PlotSample sample;
+            PlotSample sample;
             samples.getLock().lock();
             try
             {
-                if (n == 0)
+                if (n == 0) {
                     sample_index.setMaximum(samples.size());
-                sample = samples.get(idx);
+                    sample = samples.get(idx);
+                }
+                else {
+                    sample = samples.get(0);
+                    for (int s = 1; s < samples.size(); s++) {
+                        if (VTypeHelper.getTimestamp(samples.get(s).getVType()).isAfter(firstWaveformSampleTime)) {
+                            sample = samples.get(s-1);
+                            break;
+                        }
+                    }
+                }
+
             }
             finally
             {
@@ -441,6 +454,7 @@ public class WaveformView extends DataBrowserAwareView
                     plot.getXAxis().setValueRange(0.0, (double)size);
                     statusText += NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
                     timestampText += TimestampHelper.format(VTypeHelper.getTimestamp(value));
+                    firstWaveformSampleTime = VTypeHelper.getTimestamp(value);
                 }
                 else {
                     statusText += "; " + NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
