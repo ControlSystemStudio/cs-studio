@@ -87,13 +87,13 @@ public class WaveformView extends DataBrowserAwareView
     /** Timestamp of current sample(s). */
     private Text timestamp;
 
-    /** Status/severity of current sample. */
+    /** Status/severity of current sample(s). */
     private Text status;
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
 
-    /** Annotation(s) in plot that indicate waveform sample(s) */
+    /** Annotation(s) in data browser plot that indicate waveform sample(s) */
     private List<AnnotationInfo> waveform_annotations;
 
     private boolean changing_annotations = false;
@@ -107,7 +107,6 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void itemAdded(final ModelItem item)
         {
-
             update(false);
         }
 
@@ -187,13 +186,7 @@ public class WaveformView extends DataBrowserAwareView
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
 
-        final List<String> names_list = new ArrayList<>();
-        if (model != null) {
-            for (ModelItem item : model.getItems())
-                names_list.add(item.getName());
-        } 
-        final String[] names = names_list.toArray(new String[names_list.size()]);
-
+        final String[] names = getAvailableItems();
         pv_select = new MultiSelectCombo(parent, names, SWT.READ_ONLY);
         pv_select.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
         ((GridData)pv_select.getLayoutData()).widthHint = 300;
@@ -201,13 +194,11 @@ public class WaveformView extends DataBrowserAwareView
             //@Override
             public void widgetSelected(SelectionEvent event) 
             {
-                final List<String> curr_names_list = new ArrayList<>();
-                if (model != null) {
-                    for (ModelItem item : model.getItems())
-                        curr_names_list.add(item.getName());
-                } 
-                final String[] curr_names = curr_names_list.toArray(new String[curr_names_list.size()]);
-                List<ModelItem> modelItems = getModelItems(curr_names);
+                widgetDefaultSelected(event);
+            }
+            //@Override
+            public void widgetDefaultSelected(final SelectionEvent event) {
+                List<ModelItem> modelItems = getModelItems(getAvailableItems());
                 selectPV(modelItems);
             }}
         );
@@ -221,7 +212,7 @@ public class WaveformView extends DataBrowserAwareView
             @Override
             public void widgetSelected(final SelectionEvent e)
             {   // First item is "--select PV name--"
-                List<ModelItem> modelItems = getModelItems(names);
+                List<ModelItem> modelItems = getModelItems(getAvailableItems());
                 selectPV(modelItems);
            }
         });
@@ -298,6 +289,19 @@ public class WaveformView extends DataBrowserAwareView
         }
         return modelItems;
     }
+    
+    /**Returns List of the Names of available ModelItems
+     * @returns String List of names
+     */
+     private String[] getAvailableItems()
+     {
+         List<String> curr_names_list = new ArrayList<>();
+         if (model != null) {
+             for (ModelItem item : model.getItems())
+                 curr_names_list.add(item.getName());
+         } 
+         return curr_names_list.toArray(new String[curr_names_list.size()]);
+     }
 
     /** {@inheritDoc} */
     @Override
@@ -354,7 +358,8 @@ public class WaveformView extends DataBrowserAwareView
             // Show new items, clear rest
             pv_select.setItems(names);
             pv_select.setEnabled(true);
-            selectPV(null);
+            List<ModelItem> modelItems = getModelItems(getAvailableItems());
+            selectPV(modelItems);
        
         });
     }
@@ -403,6 +408,7 @@ public class WaveformView extends DataBrowserAwareView
         final int idx = sample_index.getSelection();
 
         String timestampText = null;
+        String statusText = null;
         
         for(int n=0; n<numItems; n++) {
             ModelItem model_item = model_items.get(n);
@@ -431,17 +437,21 @@ public class WaveformView extends DataBrowserAwareView
                 updateAnnotation(n, sample.getPosition(), sample.getValue());
                 if (n == 0) {
                     timestampText = new String();
+                    statusText = new String();
                     int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
                     plot.getXAxis().setValueRange(0.0, (double)size);
-                    status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
+                    statusText += NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
                     timestampText += TimestampHelper.format(VTypeHelper.getTimestamp(value));
                 }
-                else
+                else {
+                    statusText += "; " + NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
                     timestampText += "; " + TimestampHelper.format(VTypeHelper.getTimestamp(value));
+                }
             }
         }
 
         timestamp.setText(timestampText);
+        status.setText(statusText);
         plot.requestUpdate();
     }
 
