@@ -3,26 +3,25 @@ package org.csstudio.trends.databrowser2.multiselectcombo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 
 /** An implementation of a Combo box for the selection of multiple items
- * 
+ *
  */
 
 public class MultiSelectCombo extends Composite {
@@ -31,13 +30,13 @@ public class MultiSelectCombo extends Composite {
     Text selectionSummary;
     String[] allItems;
     List<Integer> selectedIndices;
-    
+
     private Button[] itemButtons;
     private SelectionAdapter selectionAdapter;
-    
+
     public MultiSelectCombo(Composite parent, String[] items, int style) {
         super(parent, style);
-        
+
         allItems = items;
         selectedIndices = new ArrayList<Integer>();
         setLayout(new GridLayout());
@@ -49,17 +48,17 @@ public class MultiSelectCombo extends Composite {
                 super.mouseDown(event);
                 showSelectionShell();
             }
-            
+
         });
-        
+
     }
-    
+
     public void setItems(String[] names) {
         allItems = names;
     }
-    
+
     private void showSelectionShell() {
-        
+
         Point p = selectionSummary.getParent().toDisplay(selectionSummary.getLocation());
         Point size = selectionSummary.getSize();
         Rectangle shellRect = new Rectangle(p.x, p.y + size.y, size.x, 0);
@@ -81,9 +80,8 @@ public class MultiSelectCombo extends Composite {
             itemButtons[i].addSelectionListener(selectionAdapter);
         }
 
-        selectionShell.open();
-
         selectionShell.addShellListener(new ShellAdapter() {
+            @Override
             public void shellDeactivated(ShellEvent event) {
                 if (selectionShell != null && !selectionShell.isDisposed())
                     selectedIndices.clear();
@@ -93,11 +91,13 @@ public class MultiSelectCombo extends Composite {
                     }
                    selectionShell.dispose();
                 }
-            
+
         });
-        
+
+        selectionShell.open();
+
     }
-    
+
     public List<Integer> getSelectedIndices() {
         if (selectionShell == null || selectionShell.isDisposed())
             return selectedIndices;
