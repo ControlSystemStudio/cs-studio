@@ -30,6 +30,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -266,6 +267,12 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return plot.getXAxis();
     }
 
+    /** @return Boolean is point on x axis */
+    public Boolean inXAxis(final Point point)
+    {
+        return plot.inXAxis(point);
+    }
+
     /** Add another Y axis
      *  @param name
      *  @return Y Axis that was added
@@ -281,6 +288,13 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         final List<YAxis<XTYPE>> result = new ArrayList<>();
         result.addAll(plot.getYAxes());
         return Collections.unmodifiableList(result);
+    }
+
+    /** @return Integer Index of y axis whose bounds point lies within;
+     * -1 if no such axis exists */
+    public Integer inYAxis(final Point point)
+    {
+        return plot.inYAxis(point);
     }
 
     /** @param index Index of Y axis to remove */
