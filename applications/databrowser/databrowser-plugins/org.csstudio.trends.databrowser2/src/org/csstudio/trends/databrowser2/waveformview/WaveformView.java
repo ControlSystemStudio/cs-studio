@@ -190,13 +190,11 @@ public class WaveformView extends DataBrowserAwareView
         pv_select.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
         ((GridData)pv_select.getLayoutData()).widthHint = 300;
         pv_select.addSelectionListener (new SelectionAdapter() {
-            //@Override
             @Override
             public void widgetSelected(SelectionEvent event)
             {
                 widgetDefaultSelected(event);
             }
-            //@Override
             @Override
             public void widgetDefaultSelected(final SelectionEvent event) {
                 List<ModelItem> modelItems = getModelItems(getAvailableItems());
