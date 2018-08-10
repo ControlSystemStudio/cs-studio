@@ -227,7 +227,10 @@ public class WaveformView extends DataBrowserAwareView
         // =====================
         plot = new RTValuePlot(parent);
         plot.getXAxis().setName(Messages.WaveformIndex);
-        plot.getYAxes().get(0).setName(Messages.WaveformAmplitude);
+        plot.getYAxes().get(0).setAutoscale(true);
+        plot.getYAxes().get(0).useAxisName(false);
+        plot.showLegend(false);
+        plot.requestUpdate();
         plot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // <<<<<< Slider >>>>>>
