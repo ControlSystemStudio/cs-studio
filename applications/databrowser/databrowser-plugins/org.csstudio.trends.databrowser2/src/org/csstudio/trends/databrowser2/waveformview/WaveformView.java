@@ -579,13 +579,9 @@ public class WaveformView extends DataBrowserAwareView
 
         public ToggleYAxisAction(final RTPlot<XTYPE> plot, final boolean is_visible)
         {
-            super(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis", null);
+            super("Logarithmic Axis", Action.AS_CHECK_BOX);
             this.plot = plot;
-        }
-
-        public void updateText()
-        {
-            setText(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis");
+            this.setChecked(plot.getYAxes().get(0).isLogarithmic());
         }
 
         @Override
@@ -593,6 +589,7 @@ public class WaveformView extends DataBrowserAwareView
         {
             plot.getYAxes().get(0).setLogarithmic(!plot.getYAxes().get(0).isLogarithmic());
             plot.requestUpdate();
+            this.setChecked(plot.getYAxes().get(0).isLogarithmic());
         }
     }
 
