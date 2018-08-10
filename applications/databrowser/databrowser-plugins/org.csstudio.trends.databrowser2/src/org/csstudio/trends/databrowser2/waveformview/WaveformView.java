@@ -485,33 +485,36 @@ public class WaveformView extends DataBrowserAwareView
             return;
         for (AnnotationInfo annotation : model.getAnnotations())
         {   // Locate the annotation for this waveform
-            int n = 0;
             for (AnnotationInfo waveform_annotation : waveform_annotations) {
                 if (annotation.isInternal()  &&
                     annotation.getItemIndex() == waveform_annotation.getItemIndex() &&
                     annotation.getText().equals(waveform_annotation.getText()))
                 {   // Locate index of sample for annotation's time stamp
-                    final PlotSamples samples = model_items.get(n).getSamples();
-                    final TimeDataSearch search = new TimeDataSearch();
-                    final int idx;
-                    samples.getLock().lock();
-                    try
-                    {
-                        idx = search.findClosestSample(samples, annotation.getTime());
+                    // By first locating the relevant samples
+                    for(ModelItem model_item : model_items) {
+                        if (annotation.getText().contains(model_item.getDisplayName())) {
+                            final PlotSamples samples = model_item.getSamples();
+                            final TimeDataSearch search = new TimeDataSearch();
+                            final int idx;
+                            samples.getLock().lock();
+                            try
+                            {
+                                idx = search.findClosestSample(samples, annotation.getTime());
+                            }
+                            finally
+                            {
+                                samples.getLock().unlock();
+                            }
+                            // Update waveform view for that sample on UI thread
+                            sample_index.getDisplay().asyncExec(() ->
+                            {
+                                sample_index.setSelection(idx);
+                                showSelectedSample();
+                            });
+                            return;
+                        }
                     }
-                    finally
-                    {
-                        samples.getLock().unlock();
-                    }
-                    // Update waveform view for that sample on UI thread
-                    sample_index.getDisplay().asyncExec(() ->
-                    {
-                        sample_index.setSelection(idx);
-                        showSelectedSample();
-                    });
-                    return;
                 }
-                n++;
             }
         }
     }
