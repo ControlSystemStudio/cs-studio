@@ -270,6 +270,8 @@ public class WaveformView extends DataBrowserAwareView
                 mm.add(new Separator());
                 mm.add(plot.getSnapshotAction());
                 mm.add(new ToggleYAxisAutoscaleAction<Double>(plot, true));
+                mm.add(new Separator());
+                mm.add(plot.getSnapshotAction());
             }
         });
 
