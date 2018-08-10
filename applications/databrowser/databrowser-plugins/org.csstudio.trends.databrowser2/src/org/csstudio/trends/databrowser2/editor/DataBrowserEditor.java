@@ -31,6 +31,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AutoscaleAxisAction;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
+import org.csstudio.trends.databrowser2.propsheet.ScaleTypeAxisAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
 import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
@@ -376,8 +377,10 @@ public class DataBrowserEditor extends EditorPart
         Integer inYAxis = plot.getPlot().inYAxis(location);
         final UndoableActionManager op_manager = plot.getPlot().getUndoableActionManager();
         Boolean axisSelected = inXAxis || inYAxis != -1;
-        if(inYAxis !=-1)
+        if(inYAxis !=-1) {
             manager.add(new AutoscaleAxisAction(model, inYAxis));
+            manager.add(new ScaleTypeAxisAction(model, inYAxis));
+        }
         if (!axisSelected) {
             manager.add(plot.getPlot().getToolbarAction());
             manager.add(plot.getPlot().getLegendAction());
