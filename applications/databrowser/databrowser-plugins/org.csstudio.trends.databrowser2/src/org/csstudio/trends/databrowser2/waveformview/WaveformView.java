@@ -544,7 +544,7 @@ public class WaveformView extends DataBrowserAwareView
         // If already in model, note its offset and remove
         for (AnnotationInfo annotation : annotations)
         {
-            if (annotation.getText().equals(ANNOTATION_TEXT + " " + model_items.get(annotation_index).getDisplayName()))
+            if (annotation.getText().equals(buildAnnotationText(annotation_index)))
             {   // Update offset to where user last placed it
                 offset = annotation.getOffset();
                 annotations.remove(annotation);
@@ -564,11 +564,15 @@ public class WaveformView extends DataBrowserAwareView
             }
             i++;
         }
-        waveform_annotations.add(annotation_index, new AnnotationInfo(true, item_index, time, value, offset, ANNOTATION_TEXT + " " + model_items.get(annotation_index).getDisplayName()));
+        waveform_annotations.add(annotation_index, new AnnotationInfo(true, item_index, time, value, offset, buildAnnotationText(annotation_index)));
         annotations.add(waveform_annotations.get(annotation_index));
         changing_annotations = true;
         model.setAnnotations(annotations);
         changing_annotations = false;
+    }
+
+    private String buildAnnotationText(final Integer annotation_index) {
+        return ANNOTATION_TEXT + " " + model_items.get(annotation_index).getDisplayName();
     }
 
     public class ToggleYAxisAction<XTYPE extends Comparable<XTYPE>> extends Action
