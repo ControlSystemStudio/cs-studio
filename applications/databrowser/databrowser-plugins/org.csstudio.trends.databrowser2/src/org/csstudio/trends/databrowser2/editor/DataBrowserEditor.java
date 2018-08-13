@@ -36,6 +36,7 @@ import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.GridAxisAction;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser2.propsheet.ScaleTypeAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.TimeAxisGridAction;
 import org.csstudio.trends.databrowser2.propsheet.TraceNameAxisAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
 import org.csstudio.trends.databrowser2.search.SearchView;
@@ -392,7 +393,9 @@ public class DataBrowserEditor extends EditorPart
             manager.add(new AxisNameEditAction(model, inYAxis));
             manager.add(new AxisMinMaxEditAction(model, inYAxis));
         }
-        if (!axisSelected) {
+        else if (inXAxis)
+            manager.add(new TimeAxisGridAction(Messages.GridTT, model));
+        else if (!axisSelected) {
             manager.add(plot.getPlot().getToolbarAction());
             manager.add(plot.getPlot().getLegendAction());
             manager.add(new Separator());
