@@ -112,11 +112,7 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void itemRemoved(final ModelItem item)
         {
-            for (ModelItem model_item : model_items) {
-                if (item == model_item) {
-                    model_items.remove(model_item);
-                }
-            }
+            model_items.remove(item);
             update(false);
         }
 
