@@ -29,7 +29,9 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AutoscaleAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.AxisMinMaxEditAction;
 import org.csstudio.trends.databrowser2.propsheet.AxisNameAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.AxisNameEditAction;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser2.propsheet.GridAxisAction;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
@@ -384,8 +386,11 @@ public class DataBrowserEditor extends EditorPart
             manager.add(new AutoscaleAxisAction(model, inYAxis));
             manager.add(new ScaleTypeAxisAction(model, inYAxis));
             manager.add(new GridAxisAction(model, inYAxis));
+            manager.add(new Separator());
             manager.add(new AxisNameAxisAction(model, inYAxis));
             manager.add(new TraceNameAxisAction(model, inYAxis));
+            manager.add(new AxisNameEditAction(model, inYAxis));
+            manager.add(new AxisMinMaxEditAction(model, inYAxis));
         }
         if (!axisSelected) {
             manager.add(plot.getPlot().getToolbarAction());
