@@ -24,6 +24,7 @@ import org.csstudio.swt.rtplot.internal.ToggleLegendAction;
 import org.csstudio.swt.rtplot.internal.ToggleToolbarAction;
 import org.csstudio.swt.rtplot.internal.ToolbarHandler;
 import org.csstudio.swt.rtplot.internal.TraceImpl;
+import org.csstudio.swt.rtplot.internal.YAxisImpl;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -223,6 +224,10 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** Stagger the range of axes */
     public void stagger()
     {
+        for (YAxisImpl<XTYPE> axis : plot.getYAxes()) {
+            axis.setAutoscale(false);
+            plot.fireAutoScaleChange(axis);
+        }
         plot.stagger();
     }
 
