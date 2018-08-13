@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +24,7 @@ import org.csstudio.swt.rtplot.internal.ToggleLegendAction;
 import org.csstudio.swt.rtplot.internal.ToggleToolbarAction;
 import org.csstudio.swt.rtplot.internal.ToolbarHandler;
 import org.csstudio.swt.rtplot.internal.TraceImpl;
+import org.csstudio.swt.rtplot.internal.YAxisImpl;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -48,40 +48,21 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
 {
     final protected Plot<XTYPE> plot;
     final protected ToolbarHandler<XTYPE> toolbar;
-    final private ToggleToolbarAction<XTYPE> toggle_toolbar;
-    final private ToggleLegendAction<XTYPE> toggle_legend;
+    final private ToggleToolbarAction toggle_toolbar;
+    final private ToggleLegendAction toggle_legend;
     final private Action snapshot;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected RTPlot(final Composite parent, final Class<XTYPE> type)
     {
         super(parent, SWT.NULL);
 
         setLayout(new FormLayout());
 
-        // To avoid unchecked casts, factory methods for..() would need
-        // pass already constructed Plot<T> and Toolbar<T>, where T is set,
-        // into constructor.
-        // But they cannot be created outside of this Composite constructor
-        // because they need parent == this.
-        if (type == Double.class)
-        {
-            plot = (Plot) new Plot<Double>(this, Double.class);
-            toolbar = (ToolbarHandler) new ToolbarHandler<Double>((RTPlot)this);
-            toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
-            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
-            snapshot = new SnapshotAction(this);
-        }
-        else if (type == Instant.class)
-        {
-            plot = (Plot) new Plot<Instant>(this, Instant.class);
-            toolbar = (ToolbarHandler) new ToolbarHandler<Instant>((RTPlot)this);
-            toggle_toolbar = (ToggleToolbarAction) new ToggleToolbarAction<Double>((RTPlot)this, true);
-            toggle_legend = (ToggleLegendAction) new ToggleLegendAction<Double>((RTPlot)this, true);
-            snapshot = new SnapshotAction(this);
-        }
-        else
-            throw new IllegalArgumentException("Cannot handle " + type.getName());
+        plot = new Plot<XTYPE>(this, type);
+        toolbar = new ToolbarHandler<XTYPE>(this);
+        toggle_toolbar = new ToggleToolbarAction(this);
+        toggle_legend =  new ToggleLegendAction(this);
+        snapshot = new SnapshotAction(this);
 
         toolbar.addContextMenu(toggle_toolbar);
 
@@ -194,7 +175,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         if (isLegendVisible() == show)
             return;
         plot.showLegend(show);
-        toggle_legend.updateText();
+        toggle_legend.update();
     }
 
     /** @return <code>true</code> if toolbar is visible */
@@ -218,7 +199,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         fd.right = new FormAttachment(100);
         fd.bottom = new FormAttachment(100);
         plot.setLayoutData(fd);
-        toggle_toolbar.updateText();
+        toggle_toolbar.update();
         layout();
         plot.fireToolbarChange(show);
     }
@@ -243,6 +224,10 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** Stagger the range of axes */
     public void stagger()
     {
+        for (YAxisImpl<XTYPE> axis : plot.getYAxes()) {
+            axis.setAutoscale(false);
+            plot.fireAutoScaleChange(axis);
+        }
         plot.stagger();
     }
 

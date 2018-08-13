@@ -404,9 +404,21 @@ public class RelativeTimeWidget extends Composite
         for (int i=0; i<vals.length; ++i)
             if (vals[i] < 0)
                 vals[i] = -vals[i];
-        year.setSelection(vals[0]);
-        month.setSelection(vals[1]);
-        day.setSelection(vals[2]);
+        // Relative times set in months & years with Widget display as days in text edit
+        // Day spinner Min/Max is set to -31; must carry over excess days back into months and years
+        // Does not handle leap years
+        final int years_from_days = vals[2]/365;
+        int remaining_days = vals[2]%365;
+        final int months_from_remaining_days = remaining_days/31;
+        remaining_days = remaining_days%31;
+        // Add carried over months to existing months
+        int months = vals[1]+months_from_remaining_days;
+        // Carry over any excess months into years
+        final int years_from_months = months/12;
+        final int remaining_months = months%12;
+        year.setSelection(vals[0] + years_from_days + years_from_months);
+        month.setSelection(remaining_months);
+        day.setSelection(remaining_days);
         hour.setSelection(vals[3]);
         minute.setSelection(vals[4]);
         second.setSelection(vals[5]);

@@ -16,20 +16,21 @@ import org.eclipse.jface.action.Action;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ToggleToolbarAction<XTYPE extends Comparable<XTYPE>> extends Action
+public class ToggleToolbarAction extends Action
 {
-    final private RTPlot<XTYPE> plot;
+    final private RTPlot<?> plot;
 
-    public ToggleToolbarAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+    public ToggleToolbarAction(final RTPlot<?> plot)
     {
-        super(is_visible ? Messages.Toolbar_Hide : Messages.Toolbar_Show,
-              Activator.getIcon("toolbar"));
+        super(Messages.Toolbar_Show, Action.AS_CHECK_BOX);
+        this.setImageDescriptor(Activator.getIcon("toolbar"));
+        this.setChecked(plot.isToolbarVisible());
         this.plot = plot;
     }
 
-    public void updateText()
+    public void update()
     {
-        setText(plot.isToolbarVisible() ? Messages.Toolbar_Hide : Messages.Toolbar_Show);
+        setChecked(plot.isToolbarVisible());
     }
 
     @Override
@@ -37,4 +38,5 @@ public class ToggleToolbarAction<XTYPE extends Comparable<XTYPE>> extends Action
     {
         plot.showToolbar(! plot.isToolbarVisible());
     }
+
 }
