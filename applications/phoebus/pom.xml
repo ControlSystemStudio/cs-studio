@@ -9,8 +9,8 @@
   <packaging>pom</packaging>
   <name>Phoebus Integration</name>
   <modules>
-  	<module>phoebus-plugins</module>
-  	<module>phoebus-features</module>
-  	<module>phoebus-repository</module>
+    <module>phoebus-plugins</module>
+    <module>phoebus-features</module>
+    <module>phoebus-repository</module>
   </modules>
 </project>
