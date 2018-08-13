@@ -355,8 +355,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         return x_axis;
     }
 
-    /** @return Boolean is point on x axis */
-    public Boolean inXAxis(final Point point)
+    /** @return boolean is point on x axis */
+    public boolean inXAxis(final Point point)
     {
         return x_axis.getBounds().contains(point);
     }
@@ -383,7 +383,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** @return Integer Index of y axis whose bounds point lies within;
      * -1 if no such axis exists */
-    public Integer inYAxis(final Point point)
+    public int inYAxis(final Point point)
     {
         int n = 0;
         for(YAxisImpl<XTYPE> y_axis: y_axes) {

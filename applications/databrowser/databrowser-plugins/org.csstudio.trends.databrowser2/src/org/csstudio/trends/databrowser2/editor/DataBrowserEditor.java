@@ -379,23 +379,23 @@ public class DataBrowserEditor extends EditorPart
         final Shell shell = getSite().getShell();
         Point location = plot.getPlot().getDisplay().getCursorLocation();
         location = plot.getPlot().toControl(location);
-        Boolean inXAxis = plot.getPlot().inXAxis(location);
-        Integer inYAxis = plot.getPlot().inYAxis(location);
+        boolean inXAxis = plot.getPlot().inXAxis(location);
+        int inYAxis = plot.getPlot().inYAxis(location);
         final UndoableActionManager op_manager = plot.getPlot().getUndoableActionManager();
-        Boolean axisSelected = inXAxis || inYAxis != -1;
         if(inYAxis !=-1) {
-            manager.add(new AutoscaleAxisAction(model, inYAxis));
-            manager.add(new ScaleTypeAxisAction(model, inYAxis));
-            manager.add(new GridAxisAction(model, inYAxis));
+            AxisConfig axis_config = model.getAxis(inYAxis);
+            manager.add(new AutoscaleAxisAction(axis_config));
+            manager.add(new ScaleTypeAxisAction(axis_config));
+            manager.add(new GridAxisAction(axis_config));
             manager.add(new Separator());
-            manager.add(new AxisNameAxisAction(model, inYAxis));
-            manager.add(new TraceNameAxisAction(model, inYAxis));
-            manager.add(new AxisNameEditAction(model, inYAxis));
-            manager.add(new AxisMinMaxEditAction(model, inYAxis));
+            manager.add(new AxisNameAxisAction(axis_config));
+            manager.add(new TraceNameAxisAction(axis_config));
+            manager.add(new AxisNameEditAction(axis_config));
+            manager.add(new AxisMinMaxEditAction(axis_config));
         }
         else if (inXAxis)
             manager.add(new TimeAxisGridAction(Messages.GridTT, model));
-        else if (!axisSelected) {
+        else {
             manager.add(plot.getPlot().getToolbarAction());
             manager.add(plot.getPlot().getLegendAction());
             manager.add(new Separator());

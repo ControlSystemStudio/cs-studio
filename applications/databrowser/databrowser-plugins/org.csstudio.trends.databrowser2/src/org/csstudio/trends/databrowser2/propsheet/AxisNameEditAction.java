@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
+import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
-import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -13,11 +13,11 @@ public class AxisNameEditAction extends Action
     protected AxisConfig axis_config;
 
     public AxisNameEditAction(
-            final Model model,
-            final Integer axis_index)
+            final AxisConfig axis_config
+            )
     {
-        super("Edit Axis Name", Action.AS_PUSH_BUTTON);
-        this.axis_config = model.getAxis(axis_index);
+        super(Messages.EditAxisName, Action.AS_PUSH_BUTTON);
+        this.axis_config = axis_config;
     }
 
     @Override

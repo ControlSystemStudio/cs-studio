@@ -62,6 +62,7 @@ public class Messages extends NLS
     public static String AxisLabelFont;
     public static String AxisMax;
     public static String AxisMin;
+    public static String AxisEditMinMax;
     public static String AxisOnRight;
     public static String AxisScaleFont;
     public static String AxisTT;
@@ -84,6 +85,7 @@ public class Messages extends NLS
     public static String DeleteItem;
     public static String DuplicateItemFmt;
     public static String EditItems;
+    public static String EditAxisName;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -254,6 +256,9 @@ public class Messages extends NLS
     public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
+    public static String ShowAxisName;
+    public static String ShowGridLines;
+    public static String ShowTraceNames;
     public static String StartEndDialogBtn;
     public static String StartEndDialogTT;
     public static String StartTimeLbl;

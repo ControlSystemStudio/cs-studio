@@ -268,7 +268,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     }
 
     /** @return Boolean is point on x axis */
-    public Boolean inXAxis(final Point point)
+    public boolean inXAxis(final Point point)
     {
         return plot.inXAxis(point);
     }
@@ -292,7 +292,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
 
     /** @return Integer Index of y axis whose bounds point lies within;
      * -1 if no such axis exists */
-    public Integer inYAxis(final Point point)
+    public int inYAxis(final Point point)
     {
         return plot.inYAxis(point);
     }

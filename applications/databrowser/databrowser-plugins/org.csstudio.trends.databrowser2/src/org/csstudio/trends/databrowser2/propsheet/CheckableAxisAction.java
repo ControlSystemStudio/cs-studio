@@ -1,7 +1,6 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.trends.databrowser2.model.AxisConfig;
-import org.csstudio.trends.databrowser2.model.Model;
 import org.eclipse.jface.action.Action;
 
 public abstract class CheckableAxisAction extends Action
@@ -11,11 +10,10 @@ public abstract class CheckableAxisAction extends Action
 
     public CheckableAxisAction(
             final String text,
-            final Model model,
-            final Integer axis_index)
+            final AxisConfig axis_config)
     {
         super(text, Action.AS_CHECK_BOX);
-        this.axis_config = model.getAxis(axis_index);
+        this.axis_config = axis_config;
         this.setChecked(this.getAxisState());
     }
 
