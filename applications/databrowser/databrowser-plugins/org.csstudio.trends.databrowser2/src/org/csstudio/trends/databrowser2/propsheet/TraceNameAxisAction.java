@@ -1,14 +1,14 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 
 public class TraceNameAxisAction extends CheckableAxisAction
 {
 
-    public TraceNameAxisAction(final Model model,
-            final Integer axis_index)
+    public TraceNameAxisAction(final AxisConfig axis_config)
     {
-        super("Show Trace Names", model,axis_index);
+        super(Messages.ShowTraceNames, axis_config);
     }
 
     @Override

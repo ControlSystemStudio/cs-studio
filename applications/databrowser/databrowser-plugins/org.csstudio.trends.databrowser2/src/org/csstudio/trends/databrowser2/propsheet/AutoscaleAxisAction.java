@@ -1,14 +1,14 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 
 public class AutoscaleAxisAction extends CheckableAxisAction
 {
 
-    public AutoscaleAxisAction(final Model model,
-            final Integer axis_index)
+    public AutoscaleAxisAction(final AxisConfig axis_config)
     {
-        super("Auto-Scale", model,axis_index);
+        super(Messages.AutoScale, axis_config);
     }
 
     @Override

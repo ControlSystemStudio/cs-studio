@@ -1,14 +1,14 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 
 public class GridAxisAction extends CheckableAxisAction
 {
 
-    public GridAxisAction(final Model model,
-            final Integer axis_index)
+    public GridAxisAction(final AxisConfig axis_config)
     {
-        super("Show Grid Lines", model,axis_index);
+        super(Messages.ShowGridLines, axis_config);
     }
 
     @Override
