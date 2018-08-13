@@ -17,16 +17,17 @@ public class ToggleLegendAction extends Action
 {
     final private RTPlot<?> plot;
 
-    public ToggleLegendAction(final RTPlot<?> plot, final boolean is_visible)
+    public ToggleLegendAction(final RTPlot<?> plot)
     {
-        super(is_visible ? Messages.Legend_Hide : Messages.Legend_Show,
-              Activator.getIcon("legend"));
+        super(Messages.Legend_Show, Action.AS_CHECK_BOX);
+        this.setImageDescriptor(Activator.getIcon("legend"));
+        this.setChecked(plot.isLegendVisible());
         this.plot = plot;
     }
 
-    public void updateText()
+    public void update()
     {
-        setText(plot.isLegendVisible() ? Messages.Legend_Hide : Messages.Legend_Show);
+        setChecked(plot.isLegendVisible());
     }
 
     @Override

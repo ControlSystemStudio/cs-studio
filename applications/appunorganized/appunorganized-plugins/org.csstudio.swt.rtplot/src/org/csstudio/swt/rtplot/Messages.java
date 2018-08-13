@@ -28,7 +28,6 @@ public class Messages extends NLS
     public static String EditAnnotation_Text;
     public static String EditAnnotation_Trace;
     public static String EditAnnotation_Info;
-    public static String Legend_Hide;
     public static String Legend_Show;
     public static String NameUnitsFmt;
     public static String Pan;
@@ -48,7 +47,6 @@ public class Messages extends NLS
     public static String Scroll_OnOff;
     public static String Snapshot;
     public static String Toolbar_Close;
-    public static String Toolbar_Hide;
     public static String Toolbar_Show;
     public static String TraceType_Area;
     public static String TraceType_AreaDirect;
