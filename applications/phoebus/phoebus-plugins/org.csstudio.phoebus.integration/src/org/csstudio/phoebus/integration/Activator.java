@@ -9,7 +9,7 @@ public class Activator implements BundleActivator {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.phoebus.integration";
-    
+
     static BundleContext getContext() {
         return context;
     }
