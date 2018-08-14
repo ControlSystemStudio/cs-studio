@@ -17,6 +17,7 @@ import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -151,6 +152,12 @@ public class DataBrowserPropertySheetPage extends Page
                 boolean desired = i == selected;
                 if (rescales[i].getSelection() != desired)
                     rescales[i].setSelection(desired);
+            }
+            if (model.getArchiveRescale() == ArchiveRescale.STAGGER) {
+                for(AxisConfig axis_config : model.getAxes()) {
+                    if (axis_config.isVisible())
+                        axis_config.setAutoScale(false);
+                }
             }
         }
 
