@@ -25,7 +25,7 @@ public class Messages extends NLS {
     // Email messages
     public static String Email;
 
-    // ChannelTable messages 
+    // ChannelTable messages
     public static String ChannelTable;
     public static String ChannelTableErrorOpen;
 

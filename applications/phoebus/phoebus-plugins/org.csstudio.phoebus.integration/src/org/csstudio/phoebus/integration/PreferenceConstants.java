@@ -8,7 +8,7 @@ public class PreferenceConstants {
     // Installation location of phoebus.
     public static final String PhoebusHome = "phoebus_home";
     public static final String PhoebusVersion = "phoebus_version";
-    
+
     // The tcp port associated with the phoebus applications.
     public static final String PhoebusPort = "phoebus_port";
 

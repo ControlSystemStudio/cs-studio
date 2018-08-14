@@ -24,6 +24,7 @@ import org.csstudio.swt.rtplot.internal.ToggleLegendAction;
 import org.csstudio.swt.rtplot.internal.ToggleToolbarAction;
 import org.csstudio.swt.rtplot.internal.ToolbarHandler;
 import org.csstudio.swt.rtplot.internal.TraceImpl;
+import org.csstudio.swt.rtplot.internal.YAxisImpl;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -59,8 +60,8 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
 
         plot = new Plot<XTYPE>(this, type);
         toolbar = new ToolbarHandler<XTYPE>(this);
-        toggle_toolbar = new ToggleToolbarAction(this, true);
-        toggle_legend =  new ToggleLegendAction(this, true);
+        toggle_toolbar = new ToggleToolbarAction(this);
+        toggle_legend =  new ToggleLegendAction(this);
         snapshot = new SnapshotAction(this);
 
         toolbar.addContextMenu(toggle_toolbar);
@@ -174,7 +175,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         if (isLegendVisible() == show)
             return;
         plot.showLegend(show);
-        toggle_legend.updateText();
+        toggle_legend.update();
     }
 
     /** @return <code>true</code> if toolbar is visible */
@@ -198,7 +199,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         fd.right = new FormAttachment(100);
         fd.bottom = new FormAttachment(100);
         plot.setLayoutData(fd);
-        toggle_toolbar.updateText();
+        toggle_toolbar.update();
         layout();
         plot.fireToolbarChange(show);
     }
@@ -223,6 +224,10 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     /** Stagger the range of axes */
     public void stagger()
     {
+        for (YAxisImpl<XTYPE> axis : plot.getYAxes()) {
+            axis.setAutoscale(false);
+            plot.fireAutoScaleChange(axis);
+        }
         plot.stagger();
     }
 
