@@ -114,7 +114,17 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void itemRemoved(final ModelItem item)
         {
-            model_items.remove(item);
+            List<ModelItem> oldSelectedItems = pv_select.getSelection();
+            List<ModelItem> items = new ArrayList<>();
+            List<ModelItem> selectedItems = new ArrayList<>();
+            for(ModelItem modelItem : model.getItems())
+                items.add(modelItem);
+            for(ModelItem modelItem : oldSelectedItems) {
+                if (modelItem != item)
+                    selectedItems.add(modelItem);
+            }
+            pv_select.setItems(items);
+            pv_select.setSelection(selectedItems);
             update(false);
         }
 
