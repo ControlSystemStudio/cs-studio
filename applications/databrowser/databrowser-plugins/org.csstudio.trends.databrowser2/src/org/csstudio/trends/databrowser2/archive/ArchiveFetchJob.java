@@ -100,7 +100,12 @@ public class ArchiveFetchJob extends Job
             Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this);
             final BenchmarkTimer timer = new BenchmarkTimer();
             long samples = 0;
-            final int bins = Preferences.getPlotBins();
+
+            // Number of bins. Negative values are scaling factor for display width
+            int bins = Preferences.getPlotBins();
+            if (bins < 0)
+                bins = Activator.display_pixel_width * (- bins);
+
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
             List<ArchiveDataSource> sourcesWhereChannelDoesntExist = new ArrayList<>();
             for (int i=0; i<archives.length && !cancelled; ++i)
