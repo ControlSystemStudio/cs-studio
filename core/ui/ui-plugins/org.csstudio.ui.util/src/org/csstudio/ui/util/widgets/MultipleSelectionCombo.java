@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -24,9 +22,11 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -76,7 +76,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     private Button drop_down;
 
     private Shell popup;
-    private org.eclipse.swt.widgets.List list;
+    private Button[] itemButtons;
 
     /** Items to show in list */
     private List<T> items = new ArrayList<T>();
@@ -188,8 +188,8 @@ public class MultipleSelectionCombo<T> extends Composite {
         if (!isDropped())
             drop(true);
         }
-    });
-    }
+        });
+    };
 
     /** {@inheritDoc} */
     @Override
@@ -328,7 +328,13 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /** Update <code>selection</code> from <code>list</code> */
     private void updateSelectionFromList() {
-    setSelection(list.getSelection());
+        List<T> selection = new ArrayList<T>();
+        if (itemButtons != null) {
+            for (int n=0; n<itemButtons.length; n++)
+                if (itemButtons[n].getSelection())
+                    selection.add(items.get(n));
+        }
+        setSelection(selection);
     }
 
     /** Update <code>text</code> to reflect <code>selection</code> */
@@ -364,70 +370,64 @@ public class MultipleSelectionCombo<T> extends Composite {
     /** Create shell that simulates drop-down */
     private void createPopup() {
     popup = new Shell(getShell(), SWT.NO_TRIM | SWT.ON_TOP);
-    popup.setLayout(new FillLayout());
-    list = new org.eclipse.swt.widgets.List(popup, SWT.MULTI | SWT.V_SCROLL);
-    list.setToolTipText(tool_tip);
+    popup.setLayout(new GridLayout());
+    popup.setToolTipText(tool_tip);
 
-    // Position popup under the text box
-    Rectangle bounds = text.getBounds();
-    bounds.y += bounds.height;
-    // As high as necessary for items
-    bounds.height = 5 + 2 * list.getBorderWidth() + list.getItemHeight()
-        * items.size();
-    // ..with limitation
-    bounds.height = Math.min(bounds.height, display.getBounds().height / 2);
-    // Map to screen coordinates
-    bounds = display.map(text, null, bounds);
-    popup.setBounds(bounds);
-    popup.open();
-
-    // Update text from changed list selection
-    list.addSelectionListener(new SelectionListener() {
+    SelectionListener selectionListener = new SelectionListener() {
         @Override
         public void widgetSelected(SelectionEvent e) {
         updateSelectionFromList();
         updateText();
         }
-
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
         updateSelectionFromList();
         updateText();
         hidePopup();
-        }
-    });
+        }};
+
+    int itemWidth = 0;
+    int itemHeight = 0;
 
     String[] stringItems = new String[items.size()];
     for (int i = 0; i < items.size(); i++) {
         stringItems[i] = stringRepresention(items.get(i));
     }
-    list.setItems(stringItems);
-    int[] intSelectionIndex = new int[selectionIndex.size()];
-    for (int i = 0; i < intSelectionIndex.length; i++) {
-        intSelectionIndex[i] = selectionIndex.get(i);
+
+    int numItems = stringItems.length;
+    itemButtons = new Button[numItems];
+    for (int n=0; n<numItems; n++) {
+        Button button = new Button(popup, SWT.CHECK);
+        button.setText(stringItems[n]);
+        if (this.selectionIndex.contains(n))
+            button.setSelection(true);
+        button.pack();
+        itemButtons[n] = button;
+        itemButtons[n].addSelectionListener(selectionListener);
+        itemWidth = Math.max(itemWidth, button.getBounds().width);
+        itemHeight = Math.max(itemHeight, button.getBounds().height + button.getBorderWidth()*2);
     }
-    list.setSelection(intSelectionIndex);
 
-    list.addKeyListener(new KeyAdapter() {
-
+    // Position popup under the text box
+    Point p = text.getParent().toDisplay(text.getLocation());
+    Point size = text.getSize();
+    Rectangle shellRect = new Rectangle(p.x, p.y + size.y, size.x, 0);
+    popup.setLocation(shellRect.x, shellRect.y);
+    popup.setSize(popup.computeSize(SWT.DEFAULT,  SWT.DEFAULT, true));
+    popup.addShellListener(new ShellAdapter() {
         @Override
-        public void keyReleased(KeyEvent e) {
-        if (e.keyCode == SWT.CR) {
-            hidePopup();
-        }
+        public void shellDeactivated(ShellEvent event) {
+            if (popup != null && !popup.isDisposed())
+                selectionIndex.clear();
+                for (int i=0; i<itemButtons.length; i++) {
+                    if (itemButtons[i].getSelection())
+                        selectionIndex.add(i);
+                }
+                hidePopup();
         }
     });
-    // Hide popup when loosing focus
-    list.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusLost(final FocusEvent e) {
-            // This field is an unsigned integer and should be AND'ed with
-            // 0xFFFFFFFFL so that it can be treated as a signed long.
-            lost_focus = e.time & 0xFFFFFFFFL;
-            hidePopup();
-        }
-    });
-    list.setFocus();
+    popup.open();
+
     }
 
     /** Hide popup shell */
