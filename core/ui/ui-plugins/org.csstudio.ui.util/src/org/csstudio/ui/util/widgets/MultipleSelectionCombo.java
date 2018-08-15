@@ -142,6 +142,7 @@ public class MultipleSelectionCombo<T> extends Composite {
     text = new Text(this, SWT.BORDER);
     GridData gd = new GridData(SWT.FILL, 0, true, false);
     text.setLayoutData(gd);
+    text.setText("Select Items ...");
     text.addModifyListener(new ModifyListener() {
         @Override
         public void modifyText(ModifyEvent e) {
@@ -346,6 +347,8 @@ public class MultipleSelectionCombo<T> extends Composite {
         buf.append(stringRepresention(items.get(index)));
     }
     text.setText(buf.toString());
+    if (selectionIndex.size() == 0)
+        text.setText("Select Items ...");
     text.setSelection(buf.length());
     }
 
