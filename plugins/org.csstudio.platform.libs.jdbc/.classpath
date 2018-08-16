@@ -3,8 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/"/>
-	<classpathentry exported="true" kind="lib" path="libs/ojdbc6_g.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/ojdbc8-12.2.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/postgresql-42.1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/mysql-connector-java-5.1.36-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mysql-connector-java-8.0.12.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

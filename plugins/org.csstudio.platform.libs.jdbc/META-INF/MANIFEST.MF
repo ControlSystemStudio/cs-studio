@@ -7,9 +7,9 @@ Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- libs/ojdbc6_g.jar,
+ libs/ojdbc8-12.2.0.1.jar,
  libs/postgresql-42.1.4.jar,
- libs/mysql-connector-java-5.1.36-bin.jar
+ libs/mysql-connector-java-8.0.12.jar
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
  com.mysql.jdbc.util,
@@ -41,4 +41,4 @@ Export-Package: com.mysql.jdbc,
  org.postgresql,
  org.postgresql.copy,
  org.postgresql.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
