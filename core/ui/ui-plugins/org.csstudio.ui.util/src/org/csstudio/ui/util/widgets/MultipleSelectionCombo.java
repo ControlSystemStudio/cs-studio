@@ -372,7 +372,7 @@ public class MultipleSelectionCombo<T> extends Composite {
 
     /** Create shell that simulates drop-down */
     private void createPopup() {
-    popup = new Shell(getShell(), SWT.NO_TRIM | SWT.ON_TOP);
+    popup = new Shell(getShell(), SWT.NO_TRIM);
     popup.setLayout(new GridLayout());
     popup.setToolTipText(tool_tip);
 
