@@ -125,7 +125,7 @@
                   <id>com.google.inject:guice:3.0</id>
                 </artifact>
                 <artifact>
-                  <id>mysql:mysql-connector-java:5.1.36</id>
+                  <id>mysql:mysql-connector-java:8.0.12</id>
                 </artifact>
                 <artifact>
                   <id>org.postgresql:postgresql:42.1.4</id>
