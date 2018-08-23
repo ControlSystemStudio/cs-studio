@@ -30,9 +30,9 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
-import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -232,6 +232,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
             addFigureListener(new FigureListener() {
 
+                @Override
                 public void figureMoved(IFigure source) {
                     if(crossDataIndex != null){
                         Point p = graphArea.getGeoLocation(crossDataIndex.x, crossDataIndex.y);
@@ -242,6 +243,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 
             addCroppedDataSizeListener(new ICroppedDataSizeListener() {
 
+                @Override
                 public void croppedDataSizeChanged(int croppedDataWidth,
                         int croppedDataHeight) {
                     crossDataIndex = graphArea.getDataLocation(crossX, crossY);
@@ -481,7 +483,27 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
                 bufferedImage = new Image(Display.getCurrent(), imageData);
 
             }
-            graphics.drawImage(bufferedImage, new Rectangle(bufferedImage.getBounds()), clientArea);
+
+
+            final Rectangle rawArea = new Rectangle(bufferedImage.getBounds());
+            if (rawArea.width <= clientArea.width  ||
+                rawArea.height <= clientArea.height)
+            {
+                // Disable 'interpolation':
+                // Intensity graphs are typically used with detectors,
+                // where pixels have meaning, and user wants to see pixels,
+                // and not a smoothed image.
+                graphics.setInterpolation(SWT.NONE);
+            }
+            else
+            {
+                // Client area is smaller than image,
+                // i.e. cannot see pixels.
+                // Interpolation might help to get basic idea
+                // of raw image by averaging over raw pixels.
+                graphics.setInterpolation(SWT.HIGH);
+            }
+            graphics.drawImage(bufferedImage, rawArea, clientArea);
 
             if(armed && end != null && start != null){
                 graphics.setLineStyle(SWTConstants.LINE_DOT);
@@ -565,6 +587,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
     }
     class GraphAreaZoomer extends MouseMotionListener.Stub implements MouseListener{
 
+        @Override
         public void mouseDoubleClicked(MouseEvent me) {
             if(me.button !=1)
                 return;
@@ -611,6 +634,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
         }
 
 
+        @Override
         public void mousePressed(MouseEvent me) {
             requestFocus();
             // Only react to 'main' mouse button
@@ -629,6 +653,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
             me.consume();
         }
 
+        @Override
         public void mouseReleased(MouseEvent me) {
             if(!armed || end == null || start == null)
                 return;
@@ -1547,6 +1572,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
             yAxis.setRange(t1, t2,true);
     }
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
