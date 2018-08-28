@@ -73,7 +73,13 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
         }
         new OpiInt(widgetContext, "format_type", f);
 
-        new OpiString(widgetContext, "border_style", "None");
+        if (r.isMotifWidget()) {
+            // Lowered border style
+            new OpiInt(widgetContext, "border_style", 3);
+            new OpiInt(widgetContext, "border_width", 1);
+        } else {
+            new OpiInt(widgetContext, "border_style", 0);
+        }
         new OpiBoolean(widgetContext, "transparent", r.isTransparent());
 
 
