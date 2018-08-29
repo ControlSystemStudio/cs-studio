@@ -18,7 +18,6 @@ import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_D
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
-import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
@@ -68,7 +67,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         destination.setDefaultDouble(PREF_BEACON_PERIOD,           source.getDefaultDouble(PREF_BEACON_PERIOD));
         destination.setDefaultDouble(PREF_CONNECTION_TIMEOUT,      source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
         destination.setDefaultInteger(PREF_MAX_ARRAY_SIZE,         source.getDefaultInt(PREF_MAX_ARRAY_SIZE));
-        destination.setDefaultBoolean(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
         destination.setDefaultInteger(PREF_REPEATER_PORT,          source.getDefaultInt(PREF_REPEATER_PORT));
         destination.setDefaultInteger(PREF_SERVER_PORT,            source.getDefaultInt(PREF_SERVER_PORT));
 
@@ -83,7 +81,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         destination.setDouble(PREF_BEACON_PERIOD,           source.getDouble(PREF_BEACON_PERIOD));
         destination.setDouble(PREF_CONNECTION_TIMEOUT,      source.getDouble(PREF_CONNECTION_TIMEOUT));
         destination.setInteger(PREF_MAX_ARRAY_SIZE,         source.getInt(PREF_MAX_ARRAY_SIZE));
-        destination.setBoolean(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
         destination.setInteger(PREF_REPEATER_PORT,          source.getInt(PREF_REPEATER_PORT));
         destination.setInteger(PREF_SERVER_PORT,            source.getInt(PREF_SERVER_PORT));
 
@@ -102,7 +99,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         destination.setDefault(PREF_BEACON_PERIOD,          source.getDefaultDouble(PREF_BEACON_PERIOD));
         destination.setDefault(PREF_CONNECTION_TIMEOUT,     source.getDefaultDouble(PREF_CONNECTION_TIMEOUT));
         destination.setDefault(PREF_MAX_ARRAY_SIZE,         source.getDefaultInteger(PREF_MAX_ARRAY_SIZE));
-        destination.setDefault(PREF_PURE_JAVA,              source.getDefaultBoolean(PREF_PURE_JAVA));
         destination.setDefault(PREF_REPEATER_PORT,          source.getDefaultInteger(PREF_REPEATER_PORT));
         destination.setDefault(PREF_SERVER_PORT,            source.getDefaultInteger(PREF_SERVER_PORT));
 
@@ -117,7 +113,6 @@ public class DIIRTPreferencesPlugin extends AbstractUIPlugin {
         destination.setValue(PREF_BEACON_PERIOD,          source.getDouble(PREF_BEACON_PERIOD));
         destination.setValue(PREF_CONNECTION_TIMEOUT,     source.getDouble(PREF_CONNECTION_TIMEOUT));
         destination.setValue(PREF_MAX_ARRAY_SIZE,         source.getInteger(PREF_MAX_ARRAY_SIZE));
-        destination.setValue(PREF_PURE_JAVA,              source.getBoolean(PREF_PURE_JAVA));
         destination.setValue(PREF_REPEATER_PORT,          source.getInteger(PREF_REPEATER_PORT));
         destination.setValue(PREF_SERVER_PORT,            source.getInteger(PREF_SERVER_PORT));
 

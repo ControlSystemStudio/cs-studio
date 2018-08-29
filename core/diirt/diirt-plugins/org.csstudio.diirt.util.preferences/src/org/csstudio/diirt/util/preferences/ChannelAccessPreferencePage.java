@@ -18,7 +18,6 @@ import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_D
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_HONOR_ZERO_PRECISION;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MAX_ARRAY_SIZE;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_MONITOR_MASK;
-import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_PURE_JAVA;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_REPEATER_PORT;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_SERVER_PORT;
 import static org.csstudio.diirt.util.core.preferences.pojo.ChannelAccess.PREF_VALUE_RTYP_MONITOR;
@@ -47,10 +46,12 @@ import org.eclipse.swt.widgets.Group;
  */
 public class ChannelAccessPreferencePage extends BasePreferencePage {
 
-    public static final String[][] AVAILABLE_MODES              = {
-        { Messages.CAPP_pureJavaRadioButton_text, Boolean.TRUE.toString()  },
-        { Messages.CAPP_jcaRadioButton_text,      Boolean.FALSE.toString() },
-    };
+    //  JCA no more available since DIIRT 3.1.7 ---------------------------
+    //public static final String[][] AVAILABLE_MODES              = {
+    //    { Messages.CAPP_pureJavaRadioButton_text, Boolean.TRUE.toString()  },
+    //    { Messages.CAPP_jcaRadioButton_text,      Boolean.FALSE.toString() },
+    //};
+    //  -------------------------------------------------------------------
     public static final String[][] AVAILABLE_MONITOR_MASKS      = {
         { Messages.CAPP_valueRadioButton_text,   MonitorMask.VALUE.name()   },
         { Messages.CAPP_archiveRadioButton_text, MonitorMask.ARCHIVE.name() },
@@ -71,7 +72,9 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
     private DoubleFieldEditor     connectionTimeoutEditor;
     private IntegerFieldEditor    customMaskEditor;
     private IntegerFieldEditor    maxArraySizeEditor;
-    private RadioGroupFieldEditor pureJavaEditor;
+    //  JCA no more available since DIIRT 3.1.7 ---------------------------
+    //private RadioGroupFieldEditor pureJavaEditor;
+    //  -------------------------------------------------------------------
     private IntegerFieldEditor    repeaterPortEditor;
     private IntegerFieldEditor    serverPortEditor;
     private Composite             optionsInnerGroup;
@@ -114,9 +117,11 @@ public class ChannelAccessPreferencePage extends BasePreferencePage {
         contextInnerGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         contextInnerGroup.setLayout(new GridLayout());
 
-        pureJavaEditor = new RadioGroupFieldEditor(PREF_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, AVAILABLE_MODES, contextInnerGroup, false);
-
-        addField(pureJavaEditor, contextInnerGroup, true, () -> store.getDefaultString(PREF_PURE_JAVA), () -> store.getString(PREF_PURE_JAVA));
+        //  JCA no more available since DIIRT 3.1.7 ---------------------------
+        //pureJavaEditor = new RadioGroupFieldEditor(PREF_PURE_JAVA, Messages.CAPP_modeCaption_text, 2, AVAILABLE_MODES, contextInnerGroup, false);
+        //
+        //addField(pureJavaEditor, contextInnerGroup, true, () -> store.getDefaultString(PREF_PURE_JAVA), () -> store.getString(PREF_PURE_JAVA));
+        //  -------------------------------------------------------------------
 
         addressListEditor = new StringFieldEditor(PREF_ADDR_LIST, Messages.CAPP_addressListCaption_text, contextInnerGroup);
 

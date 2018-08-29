@@ -67,7 +67,9 @@ public class JCA_Preferences
 
             final DIIRTPreferences dp = DIIRTPreferences.get();
 
-            use_pure_java = dp.getBoolean(ChannelAccess.PREF_PURE_JAVA);
+            //  JCA no more available since DIIRT 3.1.7 ---------------------------
+            use_pure_java = true;    //  dp.getBoolean(ChannelAccess.PREF_PURE_JAVA);
+            //  -------------------------------------------------------------------
 
             final DataSourceOptions.MonitorMask mask = DataSourceOptions.MonitorMask.fromString(dp.getString(ChannelAccess.PREF_MONITOR_MASK));
             if (mask == MonitorMask.CUSTOM)

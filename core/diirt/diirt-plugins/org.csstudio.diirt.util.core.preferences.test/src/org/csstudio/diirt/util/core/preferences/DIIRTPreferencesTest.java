@@ -407,7 +407,7 @@ public class DIIRTPreferencesTest {
         DataSources ds1 = new DataSources(new CompositeDataSource(DataSourceProtocol.pva, "zxc"));
         ChannelAccess ca1 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("fuffa foffi faffo", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("fuffa foffi faffo", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         ds1.updateDefaultsAndValues(store1);
@@ -440,7 +440,7 @@ public class DIIRTPreferencesTest {
         DataSources ds1 = new DataSources(new CompositeDataSource(DataSourceProtocol.pva, "zxc"));
         ChannelAccess ca1 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("fuffa foffi faffo", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("fuffa foffi faffo", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         ds1.updateDefaultsAndValues(store1);
