@@ -55,7 +55,9 @@ public class ChannelAccess {
     public static final String PREF_HONOR_ZERO_PRECISION   = "diirt.ca.honor.zero.precision";
     public static final String PREF_MAX_ARRAY_SIZE         = "diirt.ca.max.array.size";
     public static final String PREF_MONITOR_MASK           = "diirt.ca.monitor.mask";
-    public static final String PREF_PURE_JAVA              = "diirt.ca.pure.java";
+    //  JCA no more available since DIIRT 3.1.7 ---------------------------
+    //public static final String PREF_PURE_JAVA              = "diirt.ca.pure.java";
+    //  -------------------------------------------------------------------
     public static final String PREF_REPEATER_PORT          = "diirt.ca.repeater.port";
     public static final String PREF_SERVER_PORT            = "diirt.ca.server.port";
     public static final String PREF_VALUE_RTYP_MONITOR     = "diirt.ca.value.rtyp.monitor";
@@ -135,7 +137,9 @@ public class ChannelAccess {
                 preferencesSet.getDouble(PREF_BEACON_PERIOD),
                 preferencesSet.getDouble(PREF_CONNECTION_TIMEOUT),
                 preferencesSet.getInteger(PREF_MAX_ARRAY_SIZE),
-                preferencesSet.getBoolean(PREF_PURE_JAVA),
+                //  JCA no more available since DIIRT 3.1.7 ---------------------------
+                //preferencesSet.getBoolean(PREF_PURE_JAVA),
+                //  -------------------------------------------------------------------
                 preferencesSet.getInteger(PREF_REPEATER_PORT),
                 preferencesSet.getInteger(PREF_SERVER_PORT)
             )
@@ -248,7 +252,9 @@ public class ChannelAccess {
             preferencesSet.setDefaultDouble(PREF_BEACON_PERIOD,      jcaContext.beaconPeriod);
             preferencesSet.setDefaultDouble(PREF_CONNECTION_TIMEOUT, jcaContext.connectionTimeout);
             preferencesSet.setDefaultInteger(PREF_MAX_ARRAY_SIZE,    jcaContext.maxArrayBytes);
-            preferencesSet.setDefaultBoolean(PREF_PURE_JAVA,         jcaContext.pureJava);
+            //  JCA no more available since DIIRT 3.1.7 ---------------------------
+            //preferencesSet.setDefaultBoolean(PREF_PURE_JAVA,         jcaContext.pureJava);
+            //  -------------------------------------------------------------------
             preferencesSet.setDefaultInteger(PREF_REPEATER_PORT,     jcaContext.repeaterPort);
             preferencesSet.setDefaultInteger(PREF_SERVER_PORT,       jcaContext.serverPort);
 
@@ -286,7 +292,9 @@ public class ChannelAccess {
             preferencesSet.setDouble(PREF_BEACON_PERIOD, jcaContext.beaconPeriod);
             preferencesSet.setDouble(PREF_CONNECTION_TIMEOUT, jcaContext.connectionTimeout);
             preferencesSet.setInteger(PREF_MAX_ARRAY_SIZE, jcaContext.maxArrayBytes);
-            preferencesSet.setBoolean(PREF_PURE_JAVA, jcaContext.pureJava);
+            //  JCA no more available since DIIRT 3.1.7 ---------------------------
+            //preferencesSet.setBoolean(PREF_PURE_JAVA, jcaContext.pureJava);
+            //  -------------------------------------------------------------------
             preferencesSet.setInteger(PREF_REPEATER_PORT, jcaContext.repeaterPort);
             preferencesSet.setInteger(PREF_SERVER_PORT, jcaContext.serverPort);
         }

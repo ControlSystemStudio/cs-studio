@@ -33,7 +33,6 @@ public class JCAContextTest {
         assertEquals(15.0, jcc1.beaconPeriod, 0.0001);
         assertEquals(30.0, jcc1.connectionTimeout, 0.0001);
         assertEquals(16384, jcc1.maxArrayBytes);
-        assertTrue(jcc1.pureJava);
         assertEquals(5065, jcc1.repeaterPort);
         assertEquals(5064, jcc1.serverPort);
 
@@ -42,11 +41,10 @@ public class JCAContextTest {
         jcc1.beaconPeriod = 2.345;
         jcc1.connectionTimeout = 3.456;
         jcc1.maxArrayBytes = 5678;
-        jcc1.pureJava = false;
         jcc1.repeaterPort = 234;
         jcc1.serverPort = 123;
 
-        JCAContext jcc2 = new JCAContext("qwer wert", false, 2.345, 3.456, 5678, false, 234, 123);
+        JCAContext jcc2 = new JCAContext("qwer wert", false, 2.345, 3.456, 5678, 234, 123);
 
         assertEquals(jcc1,  jcc2);
 

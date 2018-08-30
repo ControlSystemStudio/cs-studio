@@ -44,7 +44,7 @@ public class ChannelAccessTest {
         assertNull(ca1.jcaContext);
 
         DataSourceOptions dso1 = new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE);
-        JCAContext jcc1 = new JCAContext("fuffa", false, 23, 43.2, 12345, false, 23414, 23453);
+        JCAContext jcc1 = new JCAContext("fuffa", false, 23, 43.2, 12345, 23414, 23453);
 
         ca1.dataSourceOptions = dso1;
         ca1.jcaContext = jcc1;
@@ -54,7 +54,7 @@ public class ChannelAccessTest {
 
         ChannelAccess ca2 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("fuffa", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("fuffa", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         assertEquals(ca1, ca2);
@@ -73,7 +73,6 @@ public class ChannelAccessTest {
         store.setDouble(ChannelAccess.PREF_BEACON_PERIOD, 23);
         store.setDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT, 43.2);
         store.setInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE, 12345);
-        store.setBoolean(ChannelAccess.PREF_PURE_JAVA, false);
         store.setInteger(ChannelAccess.PREF_REPEATER_PORT, 23414);
         store.setInteger(ChannelAccess.PREF_SERVER_PORT, 23453);
 
@@ -92,7 +91,7 @@ public class ChannelAccessTest {
 
         //  First is the number of instance variables.
         //  Second is the number of static variables.
-        assertEquals(3 + 17, Arrays.asList(ChannelAccess.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
+        assertEquals(3 + 16, Arrays.asList(ChannelAccess.class.getDeclaredFields()).stream().filter(f -> !f.isSynthetic()).count());
 
         assertEquals(DataSourceOptions.class, ChannelAccess.class.getDeclaredField("dataSourceOptions").getType());
         assertEquals(JCAContext.class, ChannelAccess.class.getDeclaredField("jcaContext").getType());
@@ -107,7 +106,6 @@ public class ChannelAccessTest {
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_HONOR_ZERO_PRECISION").getType());
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MAX_ARRAY_SIZE").getType());
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_MONITOR_MASK").getType());
-        assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_PURE_JAVA").getType());
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_REPEATER_PORT").getType());
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_SERVER_PORT").getType());
         assertEquals(String.class, ChannelAccess.class.getDeclaredField("PREF_VALUE_RTYP_MONITOR").getType());
@@ -124,7 +122,7 @@ public class ChannelAccessTest {
         File confDir = Files.createTempDirectory("diirt.test").toFile();
         ChannelAccess ca1 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("fuffa", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("fuffa", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         ca1.toFile(confDir);
@@ -176,7 +174,6 @@ public class ChannelAccessTest {
         store.setDefaultDouble(ChannelAccess.PREF_BEACON_PERIOD, 34.678);
         store.setDefaultDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT, 7.6543);
         store.setDefaultInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE, 65432);
-        store.setDefaultBoolean(ChannelAccess.PREF_PURE_JAVA, false);
         store.setDefaultInteger(ChannelAccess.PREF_REPEATER_PORT, 34567);
         store.setDefaultInteger(ChannelAccess.PREF_SERVER_PORT, 34251);
 
@@ -186,7 +183,6 @@ public class ChannelAccessTest {
 
         store.setString(ChannelAccess.PREF_ADDR_LIST, "farfalla");
         store.setDouble(ChannelAccess.PREF_BEACON_PERIOD, 12.345);
-        store.setBoolean(ChannelAccess.PREF_PURE_JAVA, true);
         store.setInteger(ChannelAccess.PREF_SERVER_PORT, 34526);
 
         store.setDefaultString("fakeKey1", "fakeValue1");
@@ -204,7 +200,6 @@ public class ChannelAccessTest {
         assertEquals(34.678,  store.getDefaultDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(7.6543,  store.getDefaultDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(65432,   store.getDefaultInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(false,   store.getDefaultBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(34567,   store.getDefaultInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(34251,   store.getDefaultInteger(ChannelAccess.PREF_SERVER_PORT));
 
@@ -220,7 +215,6 @@ public class ChannelAccessTest {
         assertEquals(12.345,     store.getDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(7.6543,     store.getDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(65432,      store.getInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(true,       store.getBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(34567,      store.getInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(34526,      store.getInteger(ChannelAccess.PREF_SERVER_PORT));
 
@@ -229,7 +223,7 @@ public class ChannelAccessTest {
 
         ChannelAccess ca1 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("foffi", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("foffi", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         ca1.updateValues(store);
@@ -246,7 +240,6 @@ public class ChannelAccessTest {
         assertEquals(34.678,  store.getDefaultDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(7.6543,  store.getDefaultDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(65432,   store.getDefaultInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(false,   store.getDefaultBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(34567,   store.getDefaultInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(34251,   store.getDefaultInteger(ChannelAccess.PREF_SERVER_PORT));
 
@@ -262,7 +255,6 @@ public class ChannelAccessTest {
         assertEquals(23,      store.getDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(43.2,    store.getDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(12345,   store.getInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(false,   store.getBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(23414,   store.getInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(23453,   store.getInteger(ChannelAccess.PREF_SERVER_PORT));
 
@@ -283,7 +275,6 @@ public class ChannelAccessTest {
         assertEquals(23,      store.getDefaultDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(43.2,    store.getDefaultDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(12345,   store.getDefaultInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(false,   store.getDefaultBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(23414,   store.getDefaultInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(23453,   store.getDefaultInteger(ChannelAccess.PREF_SERVER_PORT));
 
@@ -299,7 +290,6 @@ public class ChannelAccessTest {
         assertEquals(23,      store.getDouble(ChannelAccess.PREF_BEACON_PERIOD),      0.00001);
         assertEquals(43.2,    store.getDouble(ChannelAccess.PREF_CONNECTION_TIMEOUT), 0.00001);
         assertEquals(12345,   store.getInteger(ChannelAccess.PREF_MAX_ARRAY_SIZE));
-        assertEquals(false,   store.getBoolean(ChannelAccess.PREF_PURE_JAVA));
         assertEquals(23414,   store.getInteger(ChannelAccess.PREF_REPEATER_PORT));
         assertEquals(23453,   store.getInteger(ChannelAccess.PREF_SERVER_PORT));
 

@@ -35,7 +35,7 @@ public class DIIRTPreferencesPluginTest {
 
         ChannelAccess ca1 = new ChannelAccess(
             new DataSourceOptions(false, true, MonitorMask.ARCHIVE, 468, false, VariableArraySupport.AUTO),
-            new JCAContext("foffi", true, 67, 234.6, 567, true, 44653, 59485)
+            new JCAContext("foffi", true, 67, 234.6, 567, 44653, 59485)
         );
 
         DIIRTPreferences sourcePpreferences = new DIIRTPreferences(new TestScope());
@@ -54,7 +54,7 @@ public class DIIRTPreferencesPluginTest {
 
         ChannelAccess ca2 = new ChannelAccess(
             new DataSourceOptions(true, false, MonitorMask.ALARM, 234, true, VariableArraySupport.FALSE),
-            new JCAContext("fuffa", false, 23, 43.2, 12345, false, 23414, 23453)
+            new JCAContext("fuffa", false, 23, 43.2, 12345, 23414, 23453)
         );
 
         ca2.updateValues(sourcePpreferences);

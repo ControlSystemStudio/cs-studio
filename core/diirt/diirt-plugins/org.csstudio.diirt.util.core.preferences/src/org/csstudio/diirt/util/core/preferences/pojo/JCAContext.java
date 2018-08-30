@@ -54,14 +54,17 @@ public class JCAContext {
     @XmlAttribute( name = "max_array_bytes" )
     public int maxArrayBytes = 16384;
 
-    @XmlAttribute( name = "pureJava" )
-    public boolean pureJava = true;
-
     @XmlAttribute( name = "repeater_port" )
     public int repeaterPort = 5065;
 
     @XmlAttribute( name = "server_port" )
     public int serverPort = 5064;
+
+    //  JCA no more available since DIIRT 3.1.7 ---------------------------
+    @XmlAttribute( name = "pureJava" )
+    private boolean pureJava = true;
+    //public boolean pureJava = true;
+    //  -------------------------------------------------------------------
 
     public JCAContext () {
     }
@@ -72,7 +75,6 @@ public class JCAContext {
         double beaconPeriod,
         double connectionTimeout,
         int maxArrayBytes,
-        boolean pureJava,
         int repeaterPort,
         int serverPort
     ) {
@@ -84,7 +86,6 @@ public class JCAContext {
         this.beaconPeriod = beaconPeriod;
         this.connectionTimeout = connectionTimeout;
         this.maxArrayBytes = maxArrayBytes;
-        this.pureJava = pureJava;
         this.repeaterPort = repeaterPort;
         this.serverPort = serverPort;
 
