@@ -247,6 +247,7 @@
     <module>appunorganized</module>
     <module>snl</module>
     <module>p2repo</module>
+    <module>phoebus</module>
   </modules>
   <build>
     <extensions>
