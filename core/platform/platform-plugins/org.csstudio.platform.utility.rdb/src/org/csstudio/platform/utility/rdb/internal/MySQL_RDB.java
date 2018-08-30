@@ -59,7 +59,7 @@ public class MySQL_RDB implements RDBImpl
             // but now normal driver can handle replication
         }
         // Class loader locates the plain MySQL driver
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         connection = DriverManager.getConnection(url, props);
 
         // Basic database info
