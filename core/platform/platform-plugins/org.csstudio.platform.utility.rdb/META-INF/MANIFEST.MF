@@ -8,7 +8,7 @@ Export-Package: org.csstudio.platform.utility.rdb
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Helper for connecting to various RDB dialects
-Import-Package: com.mysql.jdbc,
+Import-Package: com.mysql.cj.jdbc,
  org.postgresql,
  oracle.jdbc.driver,
  oracle.jdbc
