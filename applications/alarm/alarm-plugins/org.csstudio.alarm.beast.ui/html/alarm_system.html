@@ -1012,7 +1012,7 @@
     <p>The alarm server can update PVs with the current alarm severity
        of an area, system or subsystem in the alarm hierarchy.
        It is most efficiently used on the "area",
-       so one PV can indicate the alarm summary of a whole area. 
+       so one PV can indicate the alarm summary of a whole area.
     </p>
 
     <p>This can be useful for compatibility with ALH, or to trigger
@@ -1069,7 +1069,6 @@ record(mbbi, "$(N)")
     field(PINI, "YES")
 }
     </pre>
-    
     <p>In your IOC you can now for example add logic that
        reacts when the "sevrpv:.." stays at 5 or higher for some time,
        i.e. when there is an alarm that has not been acknowledged for some time.
