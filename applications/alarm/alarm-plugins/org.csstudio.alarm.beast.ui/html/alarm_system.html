@@ -1010,14 +1010,19 @@
     <h4>Severity PVs</h4>
 
     <p>The alarm server can update PVs with the current alarm severity
-       of an area, system or subsystem in the alarm hierarchy.</p>
+       of an area, system or subsystem in the alarm hierarchy.
+       It is most efficiently used on the "area",
+       so one PV can indicate the alarm summary of a whole area.
+    </p>
 
     <p>This can be useful for compatibility with ALH, or to trigger
-       further IOC logic based on alarms.</p>
+       further IOC logic based on alarms.
+    </p>
 
     <p>The "Detail' of the automated action needs to be set to
        <code>sevrpv:NameOfPV</code>.
-       The "Title" and "Delay" of the automated action are ignored.</p>
+       The "Title" and "Delay" of the automated action are ignored.
+    </p>
 
     <p>Whenever the alarm severity of the area or (sub-) system changes,
        the ordinal of the alarm severity will be written to the PV,
@@ -1033,7 +1038,41 @@
 # softIoc -s -m N=NameOfPV -d sevrpv.db
 
 record(mbbi, "$(N)")
+{
+    field(ZRVL, 0)
+    field(ZRST, "OK")
+    field(ONVL, 1)
+    field(ONST, "MINOR_ACK")
+    field(ONSV, "MINOR")
+    field(TWVL, 2)
+    field(TWST, "MAJOR_ACK")
+    field(TWSV, "MAJOR")
+    field(THVL, 3)
+    field(THST, "INVALID_ACK")
+    field(THSV, "INVALID")
+    field(FRVL, 4)
+    field(FRST, "UNDEFINED_ACK")
+    field(FRSV, "INVALID")
+    field(FVVL, 5)
+    field(FVST, "MINOR")
+    field(FVSV, "MINOR")
+    field(SXVL, 6)
+    field(SXST, "MAJOR")
+    field(SXSV, "MAJOR")
+    field(SVVL, 7)
+    field(SVST, "INVALID")
+    field(SVSV, "INVALID")
+    field(EIVL, 8)
+    field(EIST, "UNDEFINED")
+    field(EISV, "INVALID")
+    field(INP,  "0")
+    field(PINI, "YES")
+}
     </pre>
+    <p>In your IOC you can now for example add logic that
+       reacts when the "sevrpv:.." stays at 5 or higher for some time,
+       i.e. when there is an alarm that has not been acknowledged for some time.
+    </p>
 
     <p>When using "sevrpv:.." to send the alarm severity of nodes in the
        alarm hierarchy to PVs, note that these PVs will not be updated
