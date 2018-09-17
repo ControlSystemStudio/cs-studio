@@ -204,7 +204,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         if (index < 0) { // search if image exists
             statesLong.add(state);
             String strValue = String.valueOf(state);
-                      statesStr.add(strValue);
+            statesStr.add(strValue);
             index = statesLong.indexOf(state);
             statesMap.put(index, strValue);
             IPath path = findImage(index);
