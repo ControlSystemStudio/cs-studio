@@ -226,6 +226,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
                 statesLong.add(null);
             }
             statesStr.add(state);
+            index = statesStr.indexOf(state);
             statesMap.put(index, state);
             IPath path = findImage(index);
             if (path == null)
