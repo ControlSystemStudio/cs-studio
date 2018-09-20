@@ -203,11 +203,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                     if (md.getToggleState())
                         store.setValue(Preferences.ALLOW_HIDE_TRACE, true);
                     if (md.getReturnCode() != MessageDialog.OK)
-                    {
-                        System.out.println("return code " + md.getReturnCode());
-                        System.out.println("not confirmed; returning");
                         return;
-                    }
                 }
                 new ChangeVisibilityCommand(operations_manager, item, visible);
                 editing = false;
