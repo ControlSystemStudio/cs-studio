@@ -36,6 +36,8 @@ public class Messages extends NLS
     public static String AddPV_OnChangeTT;
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
+    public static String AllowHideTrace;
+    public static String AllowRequestRaw;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ApplyChanges;
@@ -83,6 +85,7 @@ public class Messages extends NLS
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
+    public static String DoNotShowAgain;
     public static String DuplicateItemFmt;
     public static String EditItems;
     public static String EditAxisName;

@@ -211,5 +211,11 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         addField(new BooleanFieldEditor(Preferences.AUTOMATIC_HISTORY_REFRESH,
                 Messages.PrefPage_AutomaticHistoryRefresh, parent));
+
+        addField(new BooleanFieldEditor(Preferences.ALLOW_HIDE_TRACE,
+                Messages.AllowHideTrace, parent));
+
+        addField(new BooleanFieldEditor(Preferences.ALLOW_REQUEST_RAW,
+                Messages.AllowRequestRaw, parent));
     }
 }
