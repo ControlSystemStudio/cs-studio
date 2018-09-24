@@ -30,8 +30,11 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.model.RequestType;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
+import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -50,6 +53,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /** Helper for a 'Trace' TableViewer that handles the Model's items.
  *  Each 'row' in the table is a ModelItem.
@@ -57,16 +61,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class TraceTableHandler implements IStructuredContentProvider
 {
-    /** Prompt for the 'raw request' warning? */
-    static private boolean prompt_for_raw_data_request = true;
-
-    /** Prompt for the 'hide trace' warning'? */
-    static private boolean prompt_for_not_visible = true;
 
     private LocalResourceManager color_registry;
     private Model model;
     private TableViewer trace_table;
     private boolean editing = false;
+    private ScopedPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.PLUGIN_ID);
 
     final private ModelListener model_listener = new ModelListenerAdapter()
     {
@@ -189,15 +189,21 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected void setValue(final Object element, final Object value)
             {
-                final ModelItem item = (ModelItem)element;
+                final ModelItem item = (ModelItem) element;
                 final boolean visible = ((Boolean) value).booleanValue();
-                if (!visible  &&  prompt_for_not_visible)
+                if (!visible && ! store.getBoolean(Preferences.ALLOW_HIDE_TRACE))
                 {
-                    if (!MessageDialog.openQuestion(shell,
+                    MessageDialogWithToggle md = MessageDialogWithToggle.openOkCancelConfirm(shell,
                             Messages.HideTraceWarning,
-                            Messages.HideTraceWarningDetail))
-                            return;
-                    prompt_for_not_visible = false;
+                            Messages.HideTraceWarningDetail,
+                            Messages.DoNotShowAgain,
+                            false,
+                            null,
+                            null);
+                    if (md.getToggleState())
+                        store.setValue(Preferences.ALLOW_HIDE_TRACE, true);
+                    if (md.getReturnCode() != MessageDialog.OK)
+                        return;
                 }
                 new ChangeVisibilityCommand(operations_manager, item, visible);
                 editing = false;
@@ -829,13 +835,20 @@ public class TraceTableHandler implements IStructuredContentProvider
             {
                 final PVItem item = (PVItem)element;
                 final RequestType request_type = ((Boolean)value).booleanValue() ? RequestType.OPTIMIZED : RequestType.RAW;
-                if (request_type == RequestType.RAW && prompt_for_raw_data_request)
+                if (request_type == RequestType.RAW && ! store.getBoolean(Preferences.ALLOW_REQUEST_RAW))
                 {
-                    if (!MessageDialog.openQuestion(shell,
+                    MessageDialogWithToggle md = MessageDialogWithToggle.openOkCancelConfirm(
+                            shell,
                             Messages.RequestTypeWarning,
-                            Messages.RequestTypeWarningDetail))
-                            return;
-                    prompt_for_raw_data_request = false;
+                            Messages.RequestTypeWarningDetail,
+                            Messages.DoNotShowAgain,
+                            false,
+                            null,
+                            null);
+                    if (md.getToggleState())
+                        store.setValue(Preferences.ALLOW_REQUEST_RAW, true);
+                    if (md.getReturnCode() == MessageDialog.OK)
+                        return;
                 }
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
                 editing = false;
