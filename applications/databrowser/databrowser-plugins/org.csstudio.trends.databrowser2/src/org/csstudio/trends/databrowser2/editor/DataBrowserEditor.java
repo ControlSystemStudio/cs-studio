@@ -275,7 +275,9 @@ public class DataBrowserEditor extends EditorPart
 
             @Override
             public void changedAnnotations()
-            {   setDirty(true);   }
+            {
+                site.getShell().getDisplay().asyncExec(() -> setDirty(true));
+            }
         };
         model.addListener(model_listener);
     }
