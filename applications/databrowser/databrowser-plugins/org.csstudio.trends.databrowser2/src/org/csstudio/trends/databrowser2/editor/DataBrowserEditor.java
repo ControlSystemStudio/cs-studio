@@ -283,12 +283,11 @@ public class DataBrowserEditor extends EditorPart
     }
 
     /** Provide custom property sheet for this editor */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(final Class adapter)
+    public <T> T getAdapter(final Class<T> adapter)
     {
         if (adapter == IPropertySheetPage.class)
-            return new DataBrowserPropertySheetPage(model, plot.getPlot().getUndoableActionManager());
+            return adapter.cast(new DataBrowserPropertySheetPage(model, plot.getPlot().getUndoableActionManager()));
         return super.getAdapter(adapter);
     }
 
