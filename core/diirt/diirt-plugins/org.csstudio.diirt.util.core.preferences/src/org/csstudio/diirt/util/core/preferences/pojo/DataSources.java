@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -76,7 +77,7 @@ public class DataSources {
 
         File datasourcesDir = new File(confDir, DATASOURCES_DIR);
         File datasourcesFile = new File(datasourcesDir, DATASOURCES_FILE);
-        JAXBContext jc = JAXBContext.newInstance(DataSources.class);
+        JAXBContext jc = JAXBContextFactory.createContext(new Class[]{DataSources.class},null);
         Unmarshaller u = jc.createUnmarshaller();
         DataSources ds = (DataSources) u.unmarshal(datasourcesFile);
 
@@ -168,7 +169,7 @@ public class DataSources {
 
         FileUtils.forceMkdir(dsDir);
 
-        JAXBContext context = JAXBContext.newInstance(DataSources.class);
+        JAXBContext context = JAXBContextFactory.createContext(new Class[]{DataSources.class},null);
         Marshaller marshaller = context.createMarshaller();
 
         try ( Writer writer = new FileWriter(new File(dsDir, DATASOURCES_FILE)) ) {

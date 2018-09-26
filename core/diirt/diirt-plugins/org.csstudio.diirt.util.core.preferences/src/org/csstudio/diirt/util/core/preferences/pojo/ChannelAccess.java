@@ -31,6 +31,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.MonitorMask;
 import org.csstudio.diirt.util.core.preferences.pojo.DataSourceOptions.VariableArraySupport;
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 /**
  * Plain Old Java Object representing a {@code ca.xml} file.
@@ -89,7 +90,7 @@ public class ChannelAccess {
         File datasourcesDir = new File(confDir, DataSources.DATASOURCES_DIR);
         File channelAccessDir = new File(datasourcesDir, CA_DIR);
         File channelAccessFile = new File(channelAccessDir, CA_FILE);
-        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
+        JAXBContext jc = JAXBContextFactory.createContext(new Class[]{ChannelAccess.class},null);
         Unmarshaller u = jc.createUnmarshaller();
         ChannelAccess ca = (ChannelAccess) u.unmarshal(channelAccessFile);
 
@@ -208,7 +209,7 @@ public class ChannelAccess {
 
         FileUtils.forceMkdir(caDir);
 
-        JAXBContext context = JAXBContext.newInstance(ChannelAccess.class);
+        JAXBContext context = JAXBContextFactory.createContext(new Class[]{ChannelAccess.class},null);
         Marshaller marshaller = context.createMarshaller();
 
         try ( Writer writer = new FileWriter(new File(caDir, CA_FILE)) ) {

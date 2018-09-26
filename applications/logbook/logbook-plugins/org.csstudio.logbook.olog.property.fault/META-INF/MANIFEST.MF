@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  edu.msu.nscl.olog.api,
  org.csstudio.email.ui,
  org.diirt.util,
- org.eclipse.swt
+ org.eclipse.swt,
+ jaxb-api
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

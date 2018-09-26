@@ -16,6 +16,7 @@ Require-Bundle: org.csstudio.opibuilder;bundle-version="4.0.0",
  org.eclipse.gef;bundle-version="3.9.100",
  org.csstudio.opibuilder.widgets;bundle-version="3.4.0",
  org.csstudio.opibuilder.editor;bundle-version="3.1.4",
- org.apache.commons.io;bundle-version="2.0.1"
+ org.apache.commons.io;bundle-version="2.0.1",
+ jaxb-api
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.opibuilder.validation.Activator
