@@ -191,12 +191,12 @@
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.python:jython-standalone:2.7.0</id>
+                  <id>org.python:jython-standalone:2.7.1</id>
                   <source>true</source>
                   <instructions>
                     <Bundle-Name>org.python.jython</Bundle-Name>
                     <Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
-                    <Bundle-Version>2.7.0.release</Bundle-Version>
+                    <Bundle-Version>2.7.1.release</Bundle-Version>
                     <Export-Package>org.python.*,</Export-Package>
                     <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
                   </instructions>
