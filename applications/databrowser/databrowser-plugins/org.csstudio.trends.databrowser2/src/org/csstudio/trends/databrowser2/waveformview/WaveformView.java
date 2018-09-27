@@ -161,7 +161,7 @@ public class WaveformView extends DataBrowserAwareView
                 if (selectedIndex < waveform_samples.size())
                     selectedInstant = waveform_samples.get(sample_index.getSelection()).getPosition();
                 updateTimestamps();
-                sample_index.setMaximum(waveform_samples.size());
+                resetSlider();
                 int newSelectedIndex = new TimeDataSearch().findClosestSample(waveform_samples, selectedInstant);
                 // If the timestamp wasn't found, it should be outside of the new timerange.
                 // Put the slider at the start or end as appropriate.
@@ -289,6 +289,7 @@ public class WaveformView extends DataBrowserAwareView
                 showSelectedSample();
             }
         });
+        resetSlider();
 
         // Timestamp: __________ Sevr./Status: __________
         l = new Label(parent, 0);
@@ -323,6 +324,16 @@ public class WaveformView extends DataBrowserAwareView
             }
         });
 
+    }
+
+    /**
+     * Ensure the slider has the correct number of options.
+     */
+    private void resetSlider() {
+        // Setting the maximum to 0 has no effect. Setting the maximum to 1 means
+        // that there is one option in the slider - i.e. you can't move it.
+        // If there are no samples we want to set the maximum to 1.
+        sample_index.setMaximum(waveform_samples.size() == 0 ? 1 : waveform_samples.size());
     }
 
     /** Return List of selected ModelItems
@@ -442,7 +453,7 @@ public class WaveformView extends DataBrowserAwareView
 
         String timestampText = null;
         String statusText = null;
-        sample_index.setMaximum(waveform_samples.size());
+        resetSlider();
 
         if (sample_index.getSelection() >= waveform_samples.size()) {
             // Rapid update where there aren't enough timestamps for the current slider
