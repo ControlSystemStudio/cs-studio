@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.ui.help;bundle-version="3.1.0",
  org.csstudio.scan;bundle-version="4.2.0",
  org.csstudio.scan.client;bundle-version="1.0.0",
- org.python.jython;bundle-version="2.7.0"
+ org.python.jython;bundle-version="2.7.1"
 Export-Package: org.csstudio.scan.ui
 Import-Package: org.csstudio.ui.util.wizards,
  org.eclipse.ui.part
