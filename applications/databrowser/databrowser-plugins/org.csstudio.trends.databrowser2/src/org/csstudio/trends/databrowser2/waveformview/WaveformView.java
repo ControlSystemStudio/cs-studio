@@ -97,11 +97,11 @@ public class WaveformView extends DataBrowserAwareView
     private Model model;
 
     /** Annotation(s) in data browser plot that indicate waveform sample(s) */
-    private List<AnnotationInfo> waveform_annotations = new ArrayList<>();
+    final private List<AnnotationInfo> waveform_annotations = new ArrayList<>();
 
     private boolean changing_annotations = false;
 
-    private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+    final private ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
     private ScheduledFuture<?> pending_move = null;
 
@@ -182,7 +182,7 @@ public class WaveformView extends DataBrowserAwareView
     private List<ModelItem> model_items = new ArrayList<>();
 
     /** Merged ordered list of all timestamps of all PlotSamples in all items. */
-    private PlotSampleArray waveform_samples = new PlotSampleArray();
+    final private PlotSampleArray waveform_samples = new PlotSampleArray();
 
     /**
      * Take all the samples from all model items that are within the plot range,
@@ -209,7 +209,7 @@ public class WaveformView extends DataBrowserAwareView
     }
 
     /** Waveforms for the currently selected samples */
-    private List<WaveformValueDataProvider> waveforms = new ArrayList<>();
+    final private List<WaveformValueDataProvider> waveforms = new ArrayList<>();
 
     /** {@inheritDoc} */
     @Override
