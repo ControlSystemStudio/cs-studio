@@ -458,8 +458,9 @@ public class WaveformView extends DataBrowserAwareView
             samples.getLock().lock();
             try
             {
+                // Choose the sample with either the matching timestamp or the one after.
                 final int idx = new TimeDataSearch().findSampleGreaterOrEqual(samples, sliderTime);
-                sample = samples.get(idx - 1);
+                sample = samples.get(idx);
             }
             finally
             {
