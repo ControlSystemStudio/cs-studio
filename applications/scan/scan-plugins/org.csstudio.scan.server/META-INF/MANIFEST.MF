@@ -7,7 +7,7 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.junit;bundle-version="4.8.0",
- org.python.jython;bundle-version="2.7.0",
+ org.python.jython;bundle-version="2.7.1",
  org.csstudio.java;bundle-version="3.2.0",
  org.csstudio.utility.httpd;bundle-version="1.0.0",
  org.csstudio.logging;bundle-version="3.2.1",
