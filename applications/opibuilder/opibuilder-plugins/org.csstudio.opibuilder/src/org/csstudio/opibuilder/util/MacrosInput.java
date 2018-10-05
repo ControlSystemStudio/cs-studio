@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.properties.MacrosProperty;
 
@@ -144,6 +145,11 @@ public class MacrosInput {
                 macrosInput.setInclude_parent_macros(Boolean.valueOf(items[i]));
             else{
                 String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
+
+                // Patch invalid numeric macro names
+                if (macro[0].charAt(0) >= '0'  &&  macro[0].charAt(0) <= '9')
+                    macro[0] = MacroUtil.NUMERIC_MACRO_NAME_PREFIX + macro[0];
+
                 if(macro.length == 2)
                     macrosInput.getMacrosMap().put(macro[0], macro[1]);
                 else if(macro.length == 1) //if it is an empty value macro
