@@ -21,6 +21,11 @@ import java.util.Stack;
 @SuppressWarnings("nls")
 public class MacroUtil {
 
+    /** Macro names cannot start with a number.
+     *  If they do, as possible when converting ADL files,
+     *  add this prefix.
+     */
+    public static final String NUMERIC_MACRO_NAME_PREFIX = "NMP";
 
     private static final String MACRO_RIGHT_PART = "[)}]";
 
@@ -144,9 +149,15 @@ public class MacroUtil {
                 }
 
                 String macroValue = macroTableProvider.getMacroValue(macroName);
-                if(macroValue == null){
-                    return result;
+                if (macroValue == null)
+                {
+                    // If macro name starts with a number,
+                    // i.e. an invalid macro name, check patched name
+                    if (macroName.charAt(0) >= '0'  &&  macroName.charAt(0) <= '9')
+                        macroValue = macroTableProvider.getMacroValue(NUMERIC_MACRO_NAME_PREFIX + macroName);
                 }
+                if (macroValue == null)
+                    return result;
 
                 result = input.substring(0, innerStart) + macroValue + input.substring(i+1);
                 return replaceMacros(result, macroTableProvider, parsedMacros, true);
