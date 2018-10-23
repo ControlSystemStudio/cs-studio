@@ -381,7 +381,7 @@
                   <id>se.europeanspallationsource:javafx.control.knobs:1.0.13</id>
                 </artifact>
                 <artifact>
-                  <id>se.europeanspallationsource:javafx.control.medusa:8.0.0</id>
+                  <id>se.europeanspallationsource:javafx.control.medusa:8.0.1</id>
                 </artifact>
                 <artifact>
                   <id>se.europeanspallationsource:javafx.control.thumbwheel:1.0.3</id>
