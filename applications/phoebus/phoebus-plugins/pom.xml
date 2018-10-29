@@ -9,5 +9,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.phoebus.integration</module>
+    <module>org.csstudio.phoebus.integration.channel</module>
   </modules>
 </project>
