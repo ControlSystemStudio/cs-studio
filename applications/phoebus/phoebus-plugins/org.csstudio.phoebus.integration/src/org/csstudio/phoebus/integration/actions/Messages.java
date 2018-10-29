@@ -25,11 +25,6 @@ public class Messages extends NLS {
     // Email messages
     public static String Email;
 
-    // ChannelTable messages
-    public static String ChannelTable;
-    public static String ChannelTableErrorOpen;
-
-
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

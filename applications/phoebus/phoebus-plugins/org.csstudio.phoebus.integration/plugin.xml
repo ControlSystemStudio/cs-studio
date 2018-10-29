@@ -13,12 +13,6 @@
                style="push"
                tooltip="Launch Phoebus">
          </command>
-         <command
-               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
-               icon="icons/channel-viewer-16.png"
-               label="Phoebus Channel Search"
-               style="push">
-         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -45,12 +39,6 @@
                label="Phoebus PVTree"
                style="push">
          </command>
-         <command
-               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
-               icon="icons/channel-viewer-16.png"
-               label="Phoebus Channel Search"
-               style="push">
-         </command>
       </menuContribution>
    </extension>
    <extension
@@ -65,12 +53,6 @@
             icon="icons/probe-16.png"
             id="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
             name="ProbeLabel">
-      </command>
-      <command
-            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
-            icon="icons/probe-16.png"
-            id="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
-            name="ChannelTable">
       </command>
       <command
             defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
