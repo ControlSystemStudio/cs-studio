@@ -33,7 +33,7 @@ public class OpenPhoebusAlarmTable extends AbstractHandler implements IHandler {
 
     private static final String schema = "alarm";
     private static final String app = "alarm_table";
-    
+
     private static String serverHost = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.ServerHost, "localhost", null);
     private static int serverPort = prefs.getInt(Activator.PLUGIN_ID, PreferenceConstants.ServerPort, 9092, null);
 
