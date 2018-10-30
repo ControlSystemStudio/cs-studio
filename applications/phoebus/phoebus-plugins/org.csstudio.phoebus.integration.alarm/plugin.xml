@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm">
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+               icon="icons/alarmtable.gif"
+               label="Phoebus Alarm Table"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+               icon="icons/alarmtree.gif"
+               label="Phoebus Alarm Tree"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+               icon="icons/areapanel.png"
+               label="Phoebus Alarm Panel"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.alarm.actions.OpenPhoebusAlarmTable"
+            icon="icons/alarmtable.gif"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+            name="AlarmTable">
+      </command>
+   </extension>
+</plugin>
