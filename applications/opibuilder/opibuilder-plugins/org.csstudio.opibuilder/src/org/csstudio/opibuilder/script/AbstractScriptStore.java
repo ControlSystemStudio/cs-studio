@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -146,11 +147,17 @@ public abstract class AbstractScriptStore implements IScriptStore{
         }else if(scriptData.isEmbedded())
             compileString(scriptData.getScriptText());
         else{
+            // Determine system path to the script
+            final IPath syspath = ResourceUtil.workspacePathToSysPath(absoluteScriptPath);
+            final File file = syspath == null
+                            ? null
+                            : syspath.toFile();
+
             //read file
             InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
 
             //compile
-            compileInputStream(inputStream);
+            compileInputStream(file, inputStream);
             inputStream.close();
         }
 
@@ -225,10 +232,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
     protected abstract void compileString(String string) throws Exception;
 
     /**Compile InputStream with script engine. The stream will be closed by this method.
+     * @param file Script file that engine may use to update its search path, or <code>null</code>
      * @param reader
      * @throws Exception
      */
-    protected abstract void compileInputStream(InputStream s) throws Exception;
+    protected abstract void compileInputStream(File dir, InputStream s) throws Exception;
 
     /**
      * Execute the script with script engine.
