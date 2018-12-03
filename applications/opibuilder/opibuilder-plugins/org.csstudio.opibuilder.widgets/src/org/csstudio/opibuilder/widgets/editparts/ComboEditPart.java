@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Combo;
  *
  */
 public final class ComboEditPart extends AbstractPVWidgetEditPart {
-    /** Running on Windows ("win32" or similar) */
-    private static final boolean is_windows = SWT.getPlatform().toLowerCase().contains("win");
+    /** Running on Linux? "gtk" or similar */
+    private static final boolean is_linux = SWT.getPlatform().toLowerCase().contains("gtk");
 
     private IPVListener loadItemsFromPVListener;
 
@@ -83,11 +83,13 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
                 comboSelectionListener = new SelectionAdapter(){
                         @Override
                         public void widgetSelected(SelectionEvent e) {
-                            // Only react if the selection was accomplished
+
+                            // On Linux, assert the selection was accomplished
                             // by clicking on an item.
-                            // Skip this test on windows, where the stateMask
-                            // is always empty, so cannot guard against scroll wheel changes.
-                            if (is_windows  ||  e.stateMask == SWT.BUTTON1)
+                            // Ignore scroll wheel changes.
+                            // On Mac, scroll wheel does not change combo value,
+                            // and as on Windows the stateMask is always 0
+                            if (!is_linux  ||  e.stateMask == SWT.BUTTON1)
                                 setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
                             else
                             {   // Ignore selections from mouse wheel (stateMask == 0).
