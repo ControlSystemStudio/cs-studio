@@ -67,4 +67,25 @@
             name="EmailLabel">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+        default="true"
+        icon="icons/OPIBuilder.png"
+        extensions="opi" 
+        id="org.csstudio.phoebus.integration.actions.OPIEditor"
+        launcher="org.csstudio.phoebus.integration.actions.OPIEditor"
+        name="Phoebus OPI editor">
+     </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+        extensions="opi"
+        icon="icons/OPIRunner.png"
+        id="org.csstudio.phoebus.integration.actions.OPIRuntime"
+        launcher="org.csstudio.phoebus.integration.actions.OPIRuntime"
+        name="Phoebus OPI Runtime">
+     </editor>
+   </extension>
 </plugin>
