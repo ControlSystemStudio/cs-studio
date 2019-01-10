@@ -15,14 +15,14 @@ START=$(date +%s)
 # or want to assert that you start over fresh,
 # delete the Maven repository:
 # rm -rf $HOME/.m2/repository
-# rm -rf $HOME/.m2/repository/p2/bundle/osgi/org.csstudio.*
-# rm -rf $HOME/.m2/repository/p2/bundle/osgi/org.diirt.*
+rm -rf $HOME/.m2/repository/p2/bundle/osgi/org.csstudio.*
+rm -rf $HOME/.m2/repository/p2/bundle/osgi/org.diirt.*
 rm -f ?_*.log
 
 # To reduce maven verbosity
 # MAVEN_OPTS = $MAVEN_OPTS -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 # MVNOPT="-P !cs-studio-sites,!eclipse-sites -B -DlocalArtifacts=ignore"
-MVNOPT="-B -P css-settings -Dmaven.test.skip=true -DskipTests=true"
+MVNOPT="-B -P css-settings -Djavax.net.ssl.trustStorePassword=changeit -Dmaven.test.skip=true -DskipTests=true"
 
 echo ""
 echo "===="

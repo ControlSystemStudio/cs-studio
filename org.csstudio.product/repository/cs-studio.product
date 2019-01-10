@@ -14,19 +14,17 @@
    </configIni>
 
    <launcherArgs>
-      <programArgsLin>--launcher.GTK_version
-2
-      </programArgsLin>
-      <vmArgs>--add-modules=ALL-SYSTEM
--Xmx1024m
+      <vmArgs>-Xmx1024m
 -Xms128m
+-Djavax.xml.bind.context.factory=com.sun.xml.bind.v2.ContextFactory
 -Dorg.eclipse.update.reconcile=false
 -Dosgi.configuration.cascaded=true
 -Dosgi.sharedConfiguration.area.readOnly=true
 -Dosgi.install.area.readOnly=true
--Dosgi.requiredJavaVersion=1.8
+-Dosgi.requiredJavaVersion=11
 -Dorg.osgi.framework.bundle.parent=ext 
 -Dosgi.framework.extensions=org.eclipse.fx.osgi
+-Defxclipse.osgi.hook.debug=false
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -40,7 +38,6 @@
       startupMessageRect="7,200,466,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="cs-studio">
-      <solaris/>
       <win useIco="true">
          <ico path="/org.csstudio.product/icons/css.ico"/>
          <bmp/>
@@ -83,15 +80,24 @@
       <feature id="org.csstudio.applications.logbook.feature"/>
       <feature id="org.csstudio.applications.pvmanager.diag.feature"/>
       <feature id="org.csstudio.email.feature"/>
+      <feature id="openjfx.standard.feature"/>
    </features>
 
    <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>
