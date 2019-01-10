@@ -7,3 +7,4 @@ Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.nebula.widgets.grid,
  org.eclipse.jface
 Export-Package: org.eclipse.nebula.jface.gridviewer
+Bundle-RequiredExecutionEnvironment: JavaSE-11

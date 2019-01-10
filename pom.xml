@@ -20,7 +20,7 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.1.0</tycho.version>
+    <tycho.version>1.3.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.6</cs-studio.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,7 +32,7 @@
   </properties>
 
   <!-- PLUGIN REPOSITORIES -->
-  <pluginRepositories>
+<!--   <pluginRepositories>
     <pluginRepository>
       <id>tycho</id>
       <url>https://oss.sonatype.org/content/groups/public</url>
@@ -43,18 +43,18 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories>
+  </pluginRepositories> -->
 
   <!-- P2 REPOSITORIES -->
   <repositories>
     <repository>
       <id>eclipse</id>
-      <url>http://download.eclipse.org/releases/oxygen/</url>
+      <url>http://download.eclipse.org/releases/2018-12</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>eclipse-updates</id>
-      <url>http://download.eclipse.org/eclipse/updates/4.7</url>
+      <url>http://download.eclipse.org/eclipse/updates/4.10</url>
       <layout>p2</layout>
     </repository>
   </repositories>
