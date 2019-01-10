@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Open file action
 Bundle-SymbolicName: org.csstudio.openfile;singleton:=true
 Bundle-Version: 4.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen - SNS
 Bundle-Description: Open file action used by startup

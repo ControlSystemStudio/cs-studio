@@ -11,6 +11,6 @@
   <modules>
     <module>org.csstudio.trends.databrowser2.feature</module>
     <module>org.csstudio.trends.databrowser2.opiwidget.feature</module>
-    <module>org.csstudio.trends.databrowser2.rap.feature</module>
+<!--     <module>org.csstudio.trends.databrowser2.rap.feature</module> -->
   </modules>
 </project>

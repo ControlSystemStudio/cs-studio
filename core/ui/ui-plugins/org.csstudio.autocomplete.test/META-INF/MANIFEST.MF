@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.csstudio.autocomplete.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
 Fragment-Host: org.csstudio.autocomplete
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.2"

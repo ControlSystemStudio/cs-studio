@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying
-  materials are made available under the terms of the Eclipse Distribution
-  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
+  materials are made available under the terms of the Eclipse Distribution 
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
   Contributors: Jan Hatje - created the pom to build the plug-ins -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.csstudio</groupId>
   <artifactId>applications</artifactId>
@@ -16,21 +18,17 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.1.0</tycho.version>
+    <tycho.version>1.3.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.6</cs-studio.version>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
-    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
-    <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/3.0/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
     <cs-studio-central.url>${download.root}/applications/${cs-studio.version}</cs-studio-central.url>
-    <diirt.download.root>http://diirt.download.controlsystemstudio.org</diirt.download.root>
-    <diirt.version>3.1.7</diirt.version>
     <skipTests>false</skipTests>
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>
@@ -43,19 +41,6 @@
     <!--sonar.jdbc.username>username</sonar.jdbc.username! -->
     <!--sonar.jdbc.password>password</sonar.jdbc.password -->
   </properties>
-  <!-- PLUGIN REPOSITORIES -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>tycho</id>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
   <!-- Profiles -->
   <profiles>
     <profile>
@@ -66,27 +51,11 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/oxygen</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.7</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/3.1</rap-site>
-        <rap-gef-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
-        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/2.4.0/site</efx-site>
+        <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
+        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.4.3/site</efx-site>
+        <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository/repository/</openjfx-site>
       </properties>
-    </profile>
-    <profile>
-        <id>diirt-site</id>
-        <activation>
-            <property>
-                <name>!diirt-disabled</name>
-            </property>
-        </activation>
-        <repositories>
-            <repository>
-                <id>diirt</id>
-                <url>${diirt.download.root}/diirt/${diirt.version}</url>
-                <layout>p2</layout>
-            </repository>
-         </repositories>
     </profile>
     <profile>
       <id>csstudio-composite-repo-enable</id>
@@ -137,7 +106,8 @@
           <url>${download.root}/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
-        <!-- Adding the applications repositories to allows child modules to depend on each other -->
+        <!-- Adding the applications repositories to allows child modules 
+          to depend on each other -->
         <repository>
           <id>csstudio-applications</id>
           <url>${download.root}/applications/${cs-studio.version}</url>
@@ -191,32 +161,17 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>rap</id>
-      <url>${rap-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>rap-e4</id>
-      <url>${rap-e4-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>rap-gef</id>
-      <url>${rap-gef-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>orbit</id>
-      <url>${orbit-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
       <id>efx</id>
       <url>${efx-site}</url>
       <layout>p2</layout>
     </repository>
+    <repository>
+      <id>openjfx</id>
+      <url>${openjfx-site}</url>
+      <layout>p2</layout>
+    </repository>
   </repositories>
-   <distributionManagement>
+  <distributionManagement>
     <site>
       <id>s3.site</id>
       <url>s3://maven.controlsystemstudio.org/site</url>
@@ -276,34 +231,35 @@
             </baselineRepositories>
           </configuration>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
         <plugin>
-            <groupId>org.eclipse.m2e</groupId>
-            <artifactId>lifecycle-mapping</artifactId>
-            <version>1.0.0</version>
-            <configuration>
-                <lifecycleMappingMetadata>
-                    <pluginExecutions>
-                        <pluginExecution>
-                            <pluginExecutionFilter>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>
-                                    jacoco-maven-plugin
-                                </artifactId>
-                                <versionRange>
-                                    [0.5.3.201107060350,)
-                                </versionRange>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </pluginExecutionFilter>
-                            <action>
-                                <ignore></ignore>
-                            </action>
-                        </pluginExecution>
-                    </pluginExecutions>
-                </lifecycleMappingMetadata>
-            </configuration>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>
+                      jacoco-maven-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.5.3.201107060350,)
+                    </versionRange>
+                    <goals>
+                      <goal>prepare-agent</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -332,15 +288,15 @@
                 <id>com.sun.mail.javax.mail</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import packages javax.servlet and javax.servlet.http
-                required by the plugin org.csstudio.alarm.beast.ui.rap -->
+              <!-- Needed to satisfy the import packages javax.servlet and 
+                javax.servlet.http required by the plugin org.csstudio.alarm.beast.ui.rap -->
               <requirement>
                 <type>eclipse-plugin</type>
                 <id>javax.servlet</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import package org.eclipse.ui.parts required
-                by the plugin org.csstudio.logbook.olog.properties -->
+              <!-- Needed to satisfy the import package org.eclipse.ui.parts 
+                required by the plugin org.csstudio.logbook.olog.properties -->
               <requirement>
                 <type>eclipse-plugin</type>
                 <id>org.eclipse.ui.ide</id>
@@ -374,11 +330,51 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!-- We don't commit the project settings files
-          (.settings/org.eclipse.jdt.core.prefs), so we
-          don't want the Eclipse defaults affecting the build. -->
+          <encoding>UTF-8</encoding>
+          <source>11</source>
+          <target>11</target>
+          <extraClasspathElements>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-base</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-graphics</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-controls</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-fxml</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-media</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-web</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+            <extraClasspathElement>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-swing</artifactId>
+              <version>11</version>
+            </extraClasspathElement>
+          </extraClasspathElements>
+          <!-- We don't commit the project settings files (.settings/org.eclipse.jdt.core.prefs), 
+            so we don't want the Eclipse defaults affecting the build. -->
           <useProjectSettings>false</useProjectSettings>
-          <!-- This is to avoid errors when using restricted API from org.ecpics.vtype, and sun.* -->
+          <!-- This is to avoid errors when using restricted API from org.ecpics.vtype, 
+            and sun.* -->
           <compilerArgument>-err:-forbidden</compilerArgument>
         </configuration>
       </plugin>
@@ -387,8 +383,8 @@
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--Some project include things that no longer exists. This should be
-            fixed, but for now this parameter lets the build continue. -->
+          <!--Some project include things that no longer exists. This should 
+            be fixed, but for now this parameter lets the build continue. -->
           <strictBinIncludes>false</strictBinIncludes>
           <environments>
             <environment>
@@ -420,8 +416,8 @@
               <goal>plugin-source</goal>
             </goals>
             <configuration>
-              <!--Some project include things that no longer exists. This should
-                be fixed, but for now this parameter lets the build continue. -->
+              <!--Some project include things that no longer exists. This 
+                should be fixed, but for now this parameter lets the build continue. -->
               <strictSrcIncludes>false</strictSrcIncludes>
             </configuration>
           </execution>
@@ -444,22 +440,11 @@
         </configuration>
       </plugin>
       <!-- Used for collecting tests results before sending them to Sonar. -->
-   <!--   <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.5.3.201107060350</version>
-        <configuration>
-          <includes>*</includes>
-          <destFile>${project.basedir}/../target/jacoco.exec</destFile>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin> -->
+      <!-- <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+        <version>0.5.3.201107060350</version> <configuration> <includes>*</includes> 
+        <destFile>${project.basedir}/../target/jacoco.exec</destFile> </configuration> 
+        <executions> <execution> <goals> <goal>prepare-agent</goal> </goals> </execution> 
+        </executions> </plugin> -->
     </plugins>
   </build>
 </project>

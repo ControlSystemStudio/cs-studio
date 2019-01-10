@@ -16,7 +16,7 @@
     <module>org.csstudio.examples</module>
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
-    <module>org.csstudio.rap.rtplot</module>
+<!--     <module>org.csstudio.rap.rtplot</module> -->
     <module>org.csstudio.service.channelfinder</module>
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.snl.intro</module>
@@ -24,7 +24,7 @@
     <module>org.csstudio.swt.rtplot</module>
     <module>org.csstudio.swt.rtplot.test</module>
     <module>org.csstudio.swt.xygraph</module>
-    <module>org.csstudio.swt.xygraph.rap</module>
+<!--     <module>org.csstudio.swt.xygraph.rap</module> -->
     <module>org.csstudio.swt.xygraph.rcp</module>
     <module>org.csstudio.swt.xygraph.test</module>
     <module>org.csstudio.pretune</module>

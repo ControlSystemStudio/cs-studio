@@ -15,4 +15,4 @@ Bundle-Vendor: DESY/SNS/Cosylab
 Export-Package: org.csstudio.startup.application,
  org.csstudio.startup.module,
  org.csstudio.startup.module.defaults
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

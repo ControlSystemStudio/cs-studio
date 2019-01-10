@@ -11,12 +11,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.autocomplete.ui,
- org.csstudio.csdata;bundle-version="3.2.0"
+ org.csstudio.csdata;bundle-version="3.2.0",
+ org.diirt.datasource;bundle-version="3.1.7"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.diirt.datasource,
- org.diirt.datasource.expression;version="3.0.1",
- org.diirt.datasource.vtype,
- org.diirt.util.array;version="3.0.1",
- org.diirt.util.time;version="3.0.1",
- org.diirt.vtype;version="3.0.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Import-Package: org.diirt.datasource.expression;version="3.1.7",
+ org.diirt.datasource.vtype;version="3.1.7",
+ org.diirt.util.array;version="3.1.7",
+ org.diirt.util.time;version="3.1.7",
+ org.diirt.vtype;version="3.1.7"

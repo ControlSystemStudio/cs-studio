@@ -4,6 +4,6 @@ Bundle-Name: Olog Fault Tests
 Bundle-SymbolicName: org.csstudio.logbook.olog.property.fault.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.logbook.olog.property.fault
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hamcrest.core;bundle-version="1.1.0"

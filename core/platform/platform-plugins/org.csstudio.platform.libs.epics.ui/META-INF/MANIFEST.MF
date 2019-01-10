@@ -8,3 +8,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.libs.epics
 Bundle-Vendor: DESY/ORNL/SLAC
+Bundle-RequiredExecutionEnvironment: JavaSE-11

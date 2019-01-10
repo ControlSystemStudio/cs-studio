@@ -4,7 +4,7 @@ Bundle-Name: Test fragment for treemodel plugin
 Bundle-SymbolicName: org.csstudio.utility.treemodel.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.utility.treemodel;bundle-version="1.3.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Import-Package: com.google.common.base,
  com.google.common.collect

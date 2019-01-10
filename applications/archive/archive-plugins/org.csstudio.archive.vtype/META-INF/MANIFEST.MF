@@ -4,7 +4,7 @@ Bundle-Name: VType support for archive
 Bundle-SymbolicName: org.csstudio.archive.vtype
 Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.csstudio.java;bundle-version="3.2.0",
  org.diirt.util;bundle-version="3.0.1",
  org.diirt.vtype;bundle-version="3.0.1"

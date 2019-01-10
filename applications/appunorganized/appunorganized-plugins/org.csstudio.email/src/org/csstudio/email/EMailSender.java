@@ -10,16 +10,15 @@ package org.csstudio.email;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.Writer;
 
 import org.csstudio.email.encoder.Base64Encoder;
 
-import sun.net.smtp.SmtpClient;
+import org.apache.commons.net.smtp.SMTPClient;
 
 /** Send EMail with text or image attachments.
  *  <p>
- *  Uses basic SMTP as supported by JVM 1.5.
- *  No 3rd party libraries, no authentication, no tests of the basic message
+ *  No authentication, no tests of the basic message
  *  body for strange characters.
  *
  *  @author Kay Kasemir
@@ -32,10 +31,10 @@ public class EMailSender
     final private static String boundary = "==XOXOX-ThisIsTheMessageBoundary-XOXOX==";
 
     /** SMPT client connection */
-    final private SmtpClient smtp;
+    final private SMTPClient smtp;
 
     /** Stream for the message content */
-    final private PrintStream message;
+    final private Writer message;
 
     /** @return <code>true</code> if EMail seems to be supported (SMTP host configured) */
     public static boolean isEmailSupported()
@@ -53,32 +52,33 @@ public class EMailSender
     public EMailSender(final String host, final String from, final String to,
                        final String subject) throws IOException
     {
-        smtp = new SmtpClient(host);
-        smtp.from(from);
-        smtp.to(to);
-        message = smtp.startMessage();
+        smtp = new SMTPClient(host);
+        smtp.setSender(from);
+        smtp.addRecipient(to);
+        message = smtp.sendMessageData();
 
-        message.println("To: " + to);
-        message.println("From: " + from);
-        message.println("Subject: " + subject);
+        message.write("To: " + to);
+        message.write("From: " + from);
+        message.write("Subject: " + subject);
 
-        message.println("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"");
-        message.println();
-        message.println("This is a multi-part message in MIME format.");
-        message.println();
+        message.write("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"");
+        message.write("\n");
+        message.write("This is a multi-part message in MIME format.");
+        message.write("\n");
     }
 
     /**
      * @param text Message body, added to email
+     * @throws IOException 
      */
-    public void addText(final String text)
+    public void addText(final String text) throws IOException
     {
-        message.println("--" + boundary);
-        message.println("Content-Type: text/plain");
-        message.println("Content-Transfer-Encoding: binary");
-        message.println();
-        message.println(text);
-        message.println();
+        message.write("--" + boundary);
+        message.write("Content-Type: text/plain");
+        message.write("Content-Transfer-Encoding: binary");
+        message.write("\n");
+        message.write(text);
+        message.write("\n");
     }
 
     /** @param filename Name of text file to attach
@@ -87,14 +87,14 @@ public class EMailSender
      */
     public void attachText(final String filename) throws FileNotFoundException, IOException
     {
-        message.println("--" + boundary);
-        message.println("Content-Type: text/plain");
-        message.println("Content-Transfer-Encoding: base64");
-        message.println("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
-        message.println();
+        message.write("--" + boundary);
+        message.write("Content-Type: text/plain");
+        message.write("Content-Transfer-Encoding: base64");
+        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
+        message.write("\n");
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
-        message.println();
+        message.write("\n");
     }
 
     /** @param filename Name of image file to attach. Must contain file ending like ".png" or ".jpg".
@@ -110,14 +110,14 @@ public class EMailSender
             throw new Exception("Missing file ending, required to determine image type");
         }
         final String type = filename.substring(end + 1).toLowerCase();
-        message.println("--" + boundary);
-        message.println("Content-Type: image/" + type);
-        message.println("Content-Transfer-Encoding: base64");
-        message.println("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
-        message.println();
+        message.write("--" + boundary);
+        message.write("Content-Type: image/" + type);
+        message.write("Content-Transfer-Encoding: base64");
+        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
+        message.write("\n");
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
-        message.println();
+        message.write("\n");
     }
 
     /** @param filename File name with full path
@@ -134,7 +134,7 @@ public class EMailSender
      */
     public void close() throws IOException
     {
-        message.println("--" + boundary + "--");
-        smtp.closeServer();
+        message.write("--" + boundary + "--");
+        message.close();
     }
 }

@@ -10,11 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.views;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.gef;bundle-version="3.9.100";resolution:=optional,
  org.eclipse.draw2d;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
- org.csstudio.rap.ui.util;resolution:=optional,
- org.eclipse.rap.ui.views;resolution:=optional,
- org.eclipse.rap.gef;resolution:=optional,
- org.eclipse.rap.draw2d;resolution:=optional,
  org.csstudio.ui.util;resolution:=optional,
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.apputil,
@@ -22,10 +17,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.opibuilder.widgets;bundle-version="1.0.5",
  org.csstudio.trends.databrowser2;bundle-version="4.1.0",
  org.csstudio.swt.rtplot;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.rap.rtplot;bundle-version="1.0.0";resolution:=optional,
  org.diirt.vtype;bundle-version="2.8.0",
  org.diirt.util;bundle-version="0.3.2",
  org.diirt.datasource;bundle-version="3.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Bundle-Description: BOY widget that displays Data Browser plot

@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.display.pvtable.Plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Basic PV snapshot/compare table
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",

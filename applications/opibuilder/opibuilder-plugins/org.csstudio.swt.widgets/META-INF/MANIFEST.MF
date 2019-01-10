@@ -12,20 +12,13 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.swt.xygraph;bundle-version="1.0.5",
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.java;bundle-version="3.0.0",
- org.eclipse.rap.ui;resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.eclipse.gef;bundle-version="3.4.0";resolution:=optional,
- org.eclipse.rap.gef;resolution:=optional,
- org.eclipse.rap.draw2d;resolution:=optional,
- org.eclipse.rap.draw2d.compatibility;resolution:=optional,
  org.apache.commons.lang,
  org.csstudio.ui.util;resolution:=optional,
- org.csstudio.rap.ui.util;resolution:=optional,
- org.apache.batik.dom.svg,
  org.apache.batik.util,
- org.apache.batik.dom,
- com.google.guava
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ com.google.guava,
+ org.apache.xmlgraphics.batik-all;bundle-version="1.10.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.figureparts,

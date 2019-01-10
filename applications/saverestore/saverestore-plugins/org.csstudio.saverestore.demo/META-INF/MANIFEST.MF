@@ -4,7 +4,7 @@ Bundle-Name: Saverestore
 Bundle-SymbolicName: org.csstudio.saverestore.demo;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: FRIB
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.csstudio.saverestore.ui;bundle-version="1.0.0",
  org.csstudio.ui.fx.util;bundle-version="1.0.0",

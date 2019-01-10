@@ -21,8 +21,11 @@ Require-Bundle: org.eclipse.ui,
  edu.msu.nscl.olog.api,
  org.csstudio.email.ui,
  org.diirt.util,
- org.eclipse.swt
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ org.eclipse.swt,
+ jaxb-api;bundle-version="2.3.1",
+ com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Import-Package: org.eclipse.ui.part
+Import-Package: com.sun.xml.bind.v2,
+ org.eclipse.ui.part

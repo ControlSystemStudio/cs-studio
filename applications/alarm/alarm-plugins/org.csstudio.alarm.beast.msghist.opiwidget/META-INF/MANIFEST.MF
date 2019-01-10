@@ -15,5 +15,5 @@ Require-Bundle: org.csstudio.opibuilder;bundle-version="4.0.103",
  org.jdom;bundle-version="1.1.0",
  org.apache.commons.lang3;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.csstudio.security.preferences

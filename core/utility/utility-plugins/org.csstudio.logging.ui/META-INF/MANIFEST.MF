@@ -7,11 +7,12 @@ Bundle-Version: 3.2.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.ui.console;bundle-version="3.5.0",
- org.csstudio.logging;bundle-version="0.0.1",
- org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.help
+ org.eclipse.ui.console;bundle-version="3.8.300",
+ org.csstudio.logging;bundle-version="3.2.1",
+ org.eclipse.core.runtime;bundle-version="3.15.100",
+ org.eclipse.help,
+ org.eclipse.fx.ui.workbench3;bundle-version="3.4.3"
 Export-Package: org.csstudio.logging.ui
-Import-Package: com.google.common.base;version="15.0.0",
- org.eclipse.fx.ui.workbench3
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base;version="15.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ClassPath: .

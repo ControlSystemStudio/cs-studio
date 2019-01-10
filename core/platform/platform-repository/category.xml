@@ -6,11 +6,11 @@
    <feature id="org.csstudio.core.platform.feature.source" version="0.0.1.qualifier">
       <category name="org.csstudio.category.core"/>
    </feature>
-   <feature id="org.csstudio.core.platform.rap.feature" version="0.0.1.qualifier">
+ <!--  <feature id="org.csstudio.core.platform.rap.feature" version="0.0.1.qualifier">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.core.platform.rap.feature.source" version="0.0.1.qualifier">
       <category name="org.csstudio.category.core"/>
-   </feature>
+   </feature> -->
    <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
 </site>

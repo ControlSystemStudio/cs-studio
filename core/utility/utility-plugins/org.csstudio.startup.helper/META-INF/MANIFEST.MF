@@ -7,6 +7,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.workspace
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.startuphelper
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL

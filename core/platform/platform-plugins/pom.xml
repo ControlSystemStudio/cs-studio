@@ -20,6 +20,6 @@
     <module>org.csstudio.platform.utility.rdb.test</module>
     <module>org.csstudio.java</module>
     <module>org.csstudio.java.test</module>
-    <module>org.csstudio.jre6.fragment</module>
+<!--     <module>org.csstudio.jre6.fragment</module> -->
   </modules>
 </project>

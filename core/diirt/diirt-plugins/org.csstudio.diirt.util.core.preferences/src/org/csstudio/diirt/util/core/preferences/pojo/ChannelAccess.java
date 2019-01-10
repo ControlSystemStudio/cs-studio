@@ -201,24 +201,33 @@ public class ChannelAccess {
      * @throws IOException If problems occurred saving data into file or creating the folder structure.
      * @throws JAXBException In case the given instance cannot be marshalled.
      */
-    public void toFile ( File confDir ) throws IOException, JAXBException {
+    public void toFile ( File confDir ) throws IOException {
 
         File dsDir = new File(confDir, DataSources.DATASOURCES_DIR);
         File caDir = new File(dsDir, CA_DIR);
 
         FileUtils.forceMkdir(caDir);
+        final ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(JAXBContext.class.getClassLoader());
+        try {
+            JAXBContext context = JAXBContext.newInstance(ChannelAccess.class.getPackageName(),
+                    this.getClass().getClassLoader());
+            Marshaller marshaller = context.createMarshaller();
 
-        JAXBContext context = JAXBContext.newInstance(ChannelAccess.class);
-        Marshaller marshaller = context.createMarshaller();
+            try (Writer writer = new FileWriter(new File(caDir, CA_FILE))) {
 
-        try ( Writer writer = new FileWriter(new File(caDir, CA_FILE)) ) {
+                writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
 
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+                marshaller.marshal(this, writer);
 
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            marshaller.marshal(this, writer);
+            }
 
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
         }
 
     }

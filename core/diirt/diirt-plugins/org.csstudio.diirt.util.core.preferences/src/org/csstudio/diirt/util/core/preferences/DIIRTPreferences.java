@@ -724,7 +724,7 @@ public final class DIIRTPreferences {
      * @throws JAXBException If there were some marshalling problems.
      * @throws IOException  If an error occurred writing the configuration.
      */
-    public void toFiles ( File diirtHome ) throws IOException, JAXBException {
+    public void toFiles ( File diirtHome ) throws IOException {
 
         if ( diirtHome == null || !diirtHome.exists() || !diirtHome.isDirectory() ) {
             return;
@@ -764,7 +764,7 @@ public final class DIIRTPreferences {
      * @throws JAXBException If there were some marshalling problems.
      * @throws IOException  If an error occurred writing the configuration.
      */
-    public void toFiles ( File diirtHome, boolean deleteOnExit ) throws IOException, JAXBException {
+    public void toFiles ( File diirtHome, boolean deleteOnExit ) throws IOException {
 
         if ( deleteOnExit ) {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> deleteQuietly(diirtHome)));

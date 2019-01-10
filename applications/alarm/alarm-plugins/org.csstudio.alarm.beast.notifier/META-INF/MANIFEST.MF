@@ -15,7 +15,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.security,
  org.diirt.util;bundle-version="3.0.1",
  org.diirt.vtype;bundle-version="3.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.alarm.beast.notifier,
  org.csstudio.alarm.beast.notifier.actions,
  org.csstudio.alarm.beast.notifier.model,

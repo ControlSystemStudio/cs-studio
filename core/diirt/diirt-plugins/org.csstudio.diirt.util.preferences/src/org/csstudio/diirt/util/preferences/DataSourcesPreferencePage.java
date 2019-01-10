@@ -273,7 +273,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             try {
                 DIIRTPreferences.get().toFiles(parentPath.toFile());
                 notifyInformation(NLS.bind(Messages.DSPP_exportSuccessful_message, choice));
-            } catch ( JAXBException | IOException ex ) {
+            } catch ( IOException ex ) {
                 notifyWarning(NLS.bind(Messages.DSPP_exportFailed_message, choice, ex.getMessage()));
             }
 

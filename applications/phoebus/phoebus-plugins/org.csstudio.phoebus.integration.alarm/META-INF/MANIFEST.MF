@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.ui.util,
  org.csstudio.csdata,
  org.csstudio.phoebus.integration
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.phoebus.integration.alarm

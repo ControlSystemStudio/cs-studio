@@ -4,7 +4,7 @@ Bundle-Name: Single Source Helper implementation for RCP
 Bundle-SymbolicName: org.csstudio.utility.singlesource.rcp;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Abstraction to support both RCP and RAP
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.0",
  org.eclipse.ui.ide;bundle-version="3.7.0",
