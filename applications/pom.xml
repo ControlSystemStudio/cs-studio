@@ -69,7 +69,7 @@
         <eclipse-site>${eclipse.mirror.url}/releases/oxygen</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.7</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/3.1</rap-site>
-        <rap-gef-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/3.0/gef/20150327-1849</rap-gef-site>
         <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/2.4.0/site</efx-site>
       </properties>
     </profile>
