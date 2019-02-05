@@ -48,7 +48,7 @@
       <plugin>
         <groupId>lt.velykis.maven</groupId>
         <artifactId>pde-target-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <executions>
           <execution>
             <id>pde-target</id>
@@ -511,11 +511,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>reficio</id>
-      <url>http://repo.reficio.org/maven/</url>
-    </pluginRepository>
-  </pluginRepositories>
 </project>
