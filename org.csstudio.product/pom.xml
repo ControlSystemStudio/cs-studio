@@ -58,8 +58,13 @@
       <properties>
         <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
+<<<<<<< HEAD
         <efx-site>${eclipse.mirror.url}/efxclipse/runtime-nightly/site</efx-site>
         <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository</openjfx-site>
+=======
+        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.4.3/site</efx-site>
+        <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository/</openjfx-site>
+>>>>>>> a5d912ebf21459ab145cbf7e9ea54ea817ff61ad
       </properties>
     </profile>
     <profile>
