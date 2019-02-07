@@ -26,8 +26,11 @@ public class FaultConfigurationFactory {
     }
 
     public static FaultConfiguration getConfiguration() {
+        final ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(JAXBContext.class.getClassLoader());
         try {
-            JAXBContext context = JAXBContext.newInstance(FaultConfiguration.class);
+            JAXBContext context = JAXBContext.newInstance(FaultConfiguration.class.getPackageName(),
+                    this.getClass().getClassLoader());
             Unmarshaller um = context.createUnmarshaller();
             String file = "resources/default_fault_config.xml";
             URI filePath;
@@ -46,6 +49,8 @@ public class FaultConfigurationFactory {
             return fc.getValue();
         } catch (JAXBException e) {
             e.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
         }
         return null;
     }
