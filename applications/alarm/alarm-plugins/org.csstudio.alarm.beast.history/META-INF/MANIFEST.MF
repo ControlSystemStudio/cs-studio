@@ -14,6 +14,6 @@ Require-Bundle: org.eclipse.ui,
  com.sun.jersey,
  org.codehaus.jackson.core,
  org.codehaus.jackson.mapper
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.ws.rs.core
