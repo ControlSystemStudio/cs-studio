@@ -14,8 +14,8 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xmx1024m
--Xms128m
+      <vmArgs>-Xmx2048m
+-Xms160m
 -Djavax.xml.bind.context.factory=com.sun.xml.bind.v2.ContextFactory
 -Dorg.eclipse.update.reconcile=false
 -Dosgi.configuration.cascaded=true
@@ -26,7 +26,13 @@
 -Dosgi.framework.extensions=org.eclipse.fx.osgi
 -Defxclipse.osgi.hook.debug=false
       </vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      <vmArgsLin>-Dorg.eclipse.swt.internal.gtk.cairoGraphics=false
+-Dorg.eclipse.swt.internal.gtk.useCairo=false
+-Dorg.eclipse.swt.browser.DefaultType=mozilla
+-Dorg.eclipse.swt.browser.XULRunnerPath=/opt/xulrunner/
+      </vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread
+-Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
 
@@ -60,12 +66,6 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.equinox.p2.user.ui"/>
-      <feature id="org.eclipse.equinox.p2.core.feature"/>
-      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature"/>
-      <feature id="org.eclipse.fx.target.rcp.feature"/>
       <feature id="org.csstudio.core.base.feature"/>
       <feature id="org.csstudio.core.platform.feature"/>
       <feature id="org.csstudio.core.utility.feature"/>
@@ -81,23 +81,31 @@
       <feature id="org.csstudio.applications.pvmanager.diag.feature"/>
       <feature id="org.csstudio.email.feature"/>
       <feature id="openjfx.standard.feature"/>
+      <feature id="org.eclipse.fx.runtime.min.feature"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.egit"/>
+      <feature id="org.eclipse.egit.mylyn"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.jgit"/>
+      <feature id="org.eclipse.platform"/>
    </features>
 
    <configurations>
       <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
    </configurations>
 
    <preferencesInfo>
       <targetfile overwrite="false"/>
    </preferencesInfo>
-
-   <cssInfo>
-   </cssInfo>
 
 </product>
