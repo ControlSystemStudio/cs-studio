@@ -313,7 +313,7 @@ public final class DIIRTPreferences {
 
         try {
             ca = ChannelAccess.fromFile(diirtHome);
-        } catch ( JAXBException | IOException ex ) {
+        } catch ( IOException ex ) {
             LOGGER.log(Level.WARNING, MessageFormat.format("Problems opening and/or reading ca/ca.xml [{0}].\n{1}", diirtHome, ExceptionUtilities.reducedStackTrace(ex, "org.csstudio")));
         }
 

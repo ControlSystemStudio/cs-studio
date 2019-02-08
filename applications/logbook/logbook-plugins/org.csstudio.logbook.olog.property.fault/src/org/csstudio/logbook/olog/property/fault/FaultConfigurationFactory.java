@@ -30,7 +30,7 @@ public class FaultConfigurationFactory {
         Thread.currentThread().setContextClassLoader(JAXBContext.class.getClassLoader());
         try {
             JAXBContext context = JAXBContext.newInstance(FaultConfiguration.class.getPackageName(),
-                    this.getClass().getClassLoader());
+                    FaultConfigurationFactory.class.getClassLoader());
             Unmarshaller um = context.createUnmarshaller();
             String file = "resources/default_fault_config.xml";
             URI filePath;
