@@ -50,12 +50,12 @@
   <repositories>
     <repository>
       <id>eclipse</id>
-      <url>http://${eclipse.central.url}/releases/2018-12</url>
+      <url>${eclipse.central.url}/releases/2018-12</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>eclipse-updates</id>
-      <url>http://${eclipse.central.url}/eclipse/updates/4.10</url>
+      <url>${eclipse.central.url}/eclipse/updates/4.10</url>
       <layout>p2</layout>
     </repository>
   </repositories>
