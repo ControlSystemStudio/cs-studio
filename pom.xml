@@ -23,6 +23,7 @@
     <tycho.version>1.3.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.6</cs-studio.version>
+    <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
@@ -49,12 +50,12 @@
   <repositories>
     <repository>
       <id>eclipse</id>
-      <url>http://download.eclipse.org/releases/2018-12</url>
+      <url>http://${eclipse.central.url}/releases/2018-12</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>eclipse-updates</id>
-      <url>http://download.eclipse.org/eclipse/updates/4.10</url>
+      <url>http://${eclipse.central.url}/eclipse/updates/4.10</url>
       <layout>p2</layout>
     </repository>
   </repositories>
