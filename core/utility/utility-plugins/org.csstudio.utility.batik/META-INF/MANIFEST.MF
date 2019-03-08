@@ -5,14 +5,14 @@ Bundle-SymbolicName: org.csstudio.utility.batik;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
 Bundle-Activator: org.csstudio.utility.batik.Activator
-Require-Bundle: org.apache.batik.bridge;bundle-version="1.7.0",
- org.apache.batik.dom;bundle-version="1.7.0",
- org.apache.batik.dom.svg;bundle-version="1.7.0",
- org.apache.batik.transcoder;bundle-version="1.7.0",
- org.apache.batik.util;bundle-version="1.7.0",
- org.apache.batik.css;bundle-version="1.7.0",
- org.apache.batik.xml;bundle-version="1.7.0",
- org.apache.batik.ext.awt;bundle-version="1.7.0",
+Require-Bundle: org.apache.batik.bridge;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.dom;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.dom.svg;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.transcoder;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.util;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.css;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.xml;bundle-version="[1.7.0,1.8.0)",
+ org.apache.batik.ext.awt;bundle-version="[1.7.0,1.8.0)",
  org.w3c.dom.svg,
  org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,

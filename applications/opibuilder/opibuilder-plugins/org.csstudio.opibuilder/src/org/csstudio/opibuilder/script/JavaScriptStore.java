@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.script;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -45,7 +46,7 @@ public class JavaScriptStore extends AbstractScriptStore {
     }
 
     @Override
-    protected void compileInputStream(InputStream s) throws Exception {
+    protected void compileInputStream(File dir, InputStream s) throws Exception {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(s))) {
             script = ((Compilable) engine).compile(reader);
         }

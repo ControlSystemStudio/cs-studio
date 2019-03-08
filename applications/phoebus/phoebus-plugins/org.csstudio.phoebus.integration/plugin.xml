@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.phoebus.integration.Launch"
+               icon="icons/css16.png"
+               label="Phoebus"
+               style="push"
+               tooltip="Launch Phoebus">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+               icon="icons/mail-send-16.png"
+               label="Phoebus Email"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+               icon="icons/probe-16.png"
+               label="Phoebus Probe"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+               icon="icons/pvtree.png"
+               label="Phoebus PVTree"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.Launch"
+            id="org.csstudio.phoebus.integration.Launch"
+            name="Launch Phoebus">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+            icon="icons/probe-16.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
+            name="ProbeLabel">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
+            icon="icons/probe-16.png"
+            name="PVTreeLabel"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+            icon="icons/probe-16.png"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusEmail"
+            name="EmailLabel">
+      </command>
+   </extension>
+</plugin>

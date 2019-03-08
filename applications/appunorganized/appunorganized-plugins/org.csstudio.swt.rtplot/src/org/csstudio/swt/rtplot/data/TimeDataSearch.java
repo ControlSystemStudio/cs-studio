@@ -15,7 +15,7 @@ import java.time.Instant;
  */
 public class TimeDataSearch extends PlotDataSearch<Instant>
 {
-    /** Find a sample that's bigger or equal to given value
+    /** Find the sample closest to given value
      *  @param data Data, must already be locked
      *  @param time Time near which to look for sample.
      *  @return Returns index of sample closest to time

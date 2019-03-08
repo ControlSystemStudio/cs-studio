@@ -28,8 +28,16 @@ import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.csstudio.trends.databrowser2.propsheet.AutoscaleAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.AxisMinMaxEditAction;
+import org.csstudio.trends.databrowser2.propsheet.AxisNameAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.AxisNameEditAction;
 import org.csstudio.trends.databrowser2.propsheet.DataBrowserPropertySheetPage;
+import org.csstudio.trends.databrowser2.propsheet.GridAxisAction;
 import org.csstudio.trends.databrowser2.propsheet.RemoveUnusedAxesAction;
+import org.csstudio.trends.databrowser2.propsheet.ScaleTypeAxisAction;
+import org.csstudio.trends.databrowser2.propsheet.TimeAxisGridAction;
+import org.csstudio.trends.databrowser2.propsheet.TraceNameAxisAction;
 import org.csstudio.trends.databrowser2.sampleview.SampleView;
 import org.csstudio.trends.databrowser2.search.SearchView;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
@@ -53,6 +61,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -266,18 +275,19 @@ public class DataBrowserEditor extends EditorPart
 
             @Override
             public void changedAnnotations()
-            {   setDirty(true);   }
+            {
+                site.getShell().getDisplay().asyncExec(() -> setDirty(true));
+            }
         };
         model.addListener(model_listener);
     }
 
     /** Provide custom property sheet for this editor */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(final Class adapter)
+    public <T> T getAdapter(final Class<T> adapter)
     {
         if (adapter == IPropertySheetPage.class)
-            return new DataBrowserPropertySheetPage(model, plot.getPlot().getUndoableActionManager());
+            return adapter.cast(new DataBrowserPropertySheetPage(model, plot.getPlot().getUndoableActionManager()));
         return super.getAdapter(adapter);
     }
 
@@ -368,57 +378,75 @@ public class DataBrowserEditor extends EditorPart
     {
         final Activator activator = Activator.getDefault();
         final Shell shell = getSite().getShell();
+        Point location = plot.getPlot().getDisplay().getCursorLocation();
+        location = plot.getPlot().toControl(location);
+        boolean inXAxis = plot.getPlot().inXAxis(location);
+        int inYAxis = plot.getPlot().inYAxis(location);
         final UndoableActionManager op_manager = plot.getPlot().getUndoableActionManager();
-        manager.add(plot.getPlot().getToolbarAction());
-        manager.add(plot.getPlot().getLegendAction());
-        manager.add(new Separator());
-        manager.add(new AddPVAction(op_manager, shell, model, false));
-        manager.add(new AddPVAction(op_manager, shell, model, true));
-        final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
-        if (is_rcp)
-        {
-            try
-            {
-                for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
-                        manager.add(imp);
-            }
-            catch (Exception ex)
-            {
-                ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
-            }
-        }
-        manager.add(new RemoveUnusedAxesAction(op_manager, model));
-        manager.add(new RefreshAction(controller));
-        manager.add(new Separator());
-
-        manager.add(new OpenPropertiesAction());
-        manager.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-                    activator.getImageDescriptor("icons/search.gif")));
-        if (is_rcp)
-            manager.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
-                    activator.getImageDescriptor("icons/export.png")));
-        manager.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
-                activator.getImageDescriptor("icons/inspect.gif")));
-
-        manager.add(new OpenPerspectiveAction(activator
-                .getImageDescriptor("icons/databrowser.png"),
-                Messages.OpenDataBrowserPerspective, Perspective.ID));
-        manager.add(new OpenViewAction(WaveformView.ID,
-                Messages.OpenWaveformView, activator
-                        .getImageDescriptor("icons/wavesample.gif")));
-
-        manager.add(new Separator());
-        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-
-        if (is_rcp)
-        {
+        if(inYAxis !=-1) {
+            AxisConfig axis_config = model.getAxis(inYAxis);
+            manager.add(new AutoscaleAxisAction(axis_config));
+            manager.add(new ScaleTypeAxisAction(axis_config));
+            manager.add(new GridAxisAction(axis_config));
             manager.add(new Separator());
-            manager.add(plot.getPlot().getSnapshotAction());
-            if (EMailSender.isEmailSupported())
-                manager.add(new SendEMailAction(shell, plot.getPlot()));
-            manager.add(new PrintAction(shell, plot.getPlot()));
-            if (SendToElogAction.isElogAvailable())
-                manager.add(new SendToElogAction(shell, plot.getPlot()));
+            manager.add(new AxisNameAxisAction(axis_config));
+            manager.add(new TraceNameAxisAction(axis_config));
+            manager.add(new AxisNameEditAction(axis_config));
+            manager.add(new AxisMinMaxEditAction(axis_config));
+        }
+        else if (inXAxis)
+            manager.add(new TimeAxisGridAction(Messages.GridTT, model));
+        else {
+            manager.add(plot.getPlot().getToolbarAction());
+            manager.add(plot.getPlot().getLegendAction());
+            manager.add(new Separator());
+            manager.add(new AddPVAction(op_manager, shell, model, false));
+            manager.add(new AddPVAction(op_manager, shell, model, true));
+            final boolean is_rcp = SingleSourcePlugin.getUIHelper().getUI() == UI.RCP;
+            if (is_rcp)
+            {
+                try
+                {
+                    for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
+                            manager.add(imp);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+                }
+            }
+            manager.add(new RemoveUnusedAxesAction(op_manager, model));
+            manager.add(new RefreshAction(controller));
+            manager.add(new Separator());
+
+            manager.add(new OpenPropertiesAction());
+            manager.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+                        activator.getImageDescriptor("icons/search.gif")));
+            if (is_rcp)
+                manager.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
+                        activator.getImageDescriptor("icons/export.png")));
+            manager.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
+                    activator.getImageDescriptor("icons/inspect.gif")));
+
+            manager.add(new OpenPerspectiveAction(activator
+                    .getImageDescriptor("icons/databrowser.png"),
+                    Messages.OpenDataBrowserPerspective, Perspective.ID));
+            manager.add(new OpenViewAction(WaveformView.ID,
+                    Messages.OpenWaveformView, activator
+                            .getImageDescriptor("icons/wavesample.gif")));
+
+            manager.add(new Separator());
+            manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+            if (is_rcp)
+            {
+                manager.add(new Separator());
+                manager.add(plot.getPlot().getSnapshotAction());
+                if (EMailSender.isEmailSupported())
+                    manager.add(new SendEMailAction(shell, plot.getPlot()));
+                manager.add(new PrintAction(shell, plot.getPlot()));
+                if (SendToElogAction.isElogAvailable())
+                    manager.add(new SendToElogAction(shell, plot.getPlot()));
+            }
         }
     }
 

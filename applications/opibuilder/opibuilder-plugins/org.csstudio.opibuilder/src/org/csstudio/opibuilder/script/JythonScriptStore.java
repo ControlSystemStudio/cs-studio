@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.script;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -16,6 +17,7 @@ import org.csstudio.simplepv.IPV;
 import org.eclipse.core.runtime.IPath;
 import org.python.core.Py;
 import org.python.core.PyCode;
+import org.python.core.PyList;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PyStringMap;
@@ -66,7 +68,29 @@ public class JythonScriptStore extends AbstractScriptStore{
     }
 
     @Override
-    protected void compileInputStream(InputStream s) throws Exception {
+    protected void compileInputStream(File file, InputStream s) throws Exception {
+        final PyList paths = interp.getSystemState().path;
+
+        if (file != null)
+        {
+            // Add path to this script to top of python search path,
+            // in case this script includes other scripts from
+            // the same directory
+            final String path = file.getParent();
+            // Prevent concurrent modification
+            synchronized (paths)
+            {
+                final int index = paths.indexOf(path);
+                // Already top entry?
+                if (index == 0)
+                    return;
+                // Remove if further down in the list
+                if (index > 0)
+                    paths.remove(index);
+                // Add to front of list
+                paths.add(0, path);
+            }
+        }
         code = interp.compile(new InputStreamReader(s));
     }
 

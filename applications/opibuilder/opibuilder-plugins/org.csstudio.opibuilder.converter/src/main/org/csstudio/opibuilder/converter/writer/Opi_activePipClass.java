@@ -112,6 +112,9 @@ public class Opi_activePipClass extends OpiWidget {
 
         new OpiString(widgetContext, "resize_behaviour", "2");
 
+        // No border in EDM embedded window.
+        new OpiInt(widgetContext, "border_style", 0);
+
         log.config("Edm_activePipClass written.");
 
     }

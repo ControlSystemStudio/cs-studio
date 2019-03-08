@@ -36,6 +36,8 @@ public class Messages extends NLS
     public static String AddPV_OnChangeTT;
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
+    public static String AllowHideTrace;
+    public static String AllowRequestRaw;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
     public static String ApplyChanges;
@@ -62,6 +64,7 @@ public class Messages extends NLS
     public static String AxisLabelFont;
     public static String AxisMax;
     public static String AxisMin;
+    public static String AxisEditMinMax;
     public static String AxisOnRight;
     public static String AxisScaleFont;
     public static String AxisTT;
@@ -82,8 +85,10 @@ public class Messages extends NLS
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
     public static String DeleteItem;
+    public static String DoNotShowAgain;
     public static String DuplicateItemFmt;
     public static String EditItems;
+    public static String EditAxisName;
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -254,6 +259,9 @@ public class Messages extends NLS
     public static String ServerAlias;
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
+    public static String ShowAxisName;
+    public static String ShowGridLines;
+    public static String ShowTraceNames;
     public static String StartEndDialogBtn;
     public static String StartEndDialogTT;
     public static String StartTimeLbl;
@@ -287,7 +295,6 @@ public class Messages extends NLS
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
-    public static String WaveformAmplitude;
     public static String WaveformIndex;
     public static String WaveformIndexCol;
     public static String WaveformIndexColTT;

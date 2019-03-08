@@ -47,6 +47,7 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -355,6 +356,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         return x_axis;
     }
 
+    /** @return boolean is point on x axis */
+    public boolean inXAxis(final Point point)
+    {
+        return x_axis.getBounds().contains(point);
+    }
+
     /** Add another Y axis
      *  @param name
      *  @return Y Axis that was added
@@ -373,6 +380,19 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         final List<YAxisImpl<XTYPE>> copy = new ArrayList<>();
         copy.addAll(y_axes);
         return copy;
+    }
+
+    /** @return Integer Index of y axis whose bounds point lies within;
+     * -1 if no such axis exists */
+    public int inYAxis(final Point point)
+    {
+        int n = 0;
+        for(YAxisImpl<XTYPE> y_axis: y_axes) {
+            if(y_axis.getBounds().contains(point))
+                return n;
+            n += 1;
+        }
+        return -1;
     }
 
     /** @param index Index of Y axis to remove */
@@ -662,6 +682,21 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
         title_part.paint(gc, media, title_font);
         legend.paint(gc, media, legend_font, traces);
+
+        // Shade the area in the plot that's in the future.
+        if (x_axis instanceof TimeAxis)
+        {
+            final int future_x = ((TimeAxis)x_axis).getScreenCoord(Instant.now());
+            final Color orig = gc.getBackground();
+            // Use light gray for bright background, otherwise dark gray
+            final Color shade = (background.getHSB()[2] >= 0.5)
+                    ? new Color(getDisplay(), 240, 240, 240)
+                    : new Color(getDisplay(), 50, 50, 50);
+            gc.setBackground(shade);
+            gc.fillRectangle(future_x, 0, area_copy.width - future_x, area_copy.height);
+            gc.setBackground(orig);
+            shade.dispose();
+        }
 
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling

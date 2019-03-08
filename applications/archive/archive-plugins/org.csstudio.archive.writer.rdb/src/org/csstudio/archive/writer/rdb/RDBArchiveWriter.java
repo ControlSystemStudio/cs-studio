@@ -276,7 +276,10 @@ public class RDBArchiveWriter implements ArchiveWriter
         else if (sample instanceof VNumberArray)
         {
             final ListNumber data = ((VNumberArray)sample).getData();
-            batchDoubleSamples(channel, stamp, severity, status, data.getDouble(0), data);
+            if (data.size() > 0)
+                batchDoubleSamples(channel, stamp, severity, status, data.getDouble(0), data);
+            else
+                batchDoubleSamples(channel, stamp, severity, status, Double.NaN, data);
         }
         else if (sample instanceof VEnum)
             batchLongSample(channel, stamp, severity, status, ((VEnum)sample).getIndex());
@@ -470,12 +473,21 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         // Set the stuff that's common to each type
         insert_xx.setInt(1, channel.getId());
-        insert_xx.setTimestamp(2, stamp);
         insert_xx.setInt(3, severity);
         insert_xx.setInt(4, status.getId());
-        // MySQL nanosecs
-        if (rdb.getDialect() == Dialect.MySQL  ||  rdb.getDialect() == Dialect.PostgreSQL)
+
+        if (rdb.getDialect() == Dialect.Oracle)
+            insert_xx.setTimestamp(2, stamp);
+        else
+        {
+            // Truncate the time stamp
+            Timestamp truncated = Timestamp.from(stamp.toInstant());
+            truncated.setNanos(0);
+            insert_xx.setTimestamp(2, truncated);
+            // Set the nanos in a separate column
             insert_xx.setInt(6, stamp.getNanos());
+        }
+
         // Batch
         insert_xx.addBatch();
     }

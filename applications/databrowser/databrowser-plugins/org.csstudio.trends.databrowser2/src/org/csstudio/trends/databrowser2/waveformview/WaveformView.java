@@ -7,8 +7,11 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.waveformview;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +25,6 @@ import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.RTValuePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.TraceType;
-import org.csstudio.swt.rtplot.YAxis;
 import org.csstudio.swt.rtplot.data.TimeDataSearch;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -33,7 +35,9 @@ import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.ModelListenerAdapter;
 import org.csstudio.trends.databrowser2.model.PlotSample;
+import org.csstudio.trends.databrowser2.model.PlotSampleArray;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
+import org.csstudio.ui.util.widgets.MultipleSelectionCombo;
 import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VType;
 import org.eclipse.jface.action.Action;
@@ -46,12 +50,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -76,30 +78,30 @@ public class WaveformView extends DataBrowserAwareView
     /** Text used for the annotation that indicates waveform sample */
     final public static String ANNOTATION_TEXT = "Waveform view";
 
-    /** PV Name selector */
-    private Combo pv_name;
+    /** PV Name(s) selector */
+    private MultipleSelectionCombo<ModelItem> pv_select;
 
     /** Plot */
     private RTValuePlot plot;
 
-    /** Selector for model_item's current sample */
+    /** Selector for first model_item current sample */
     private Slider sample_index;
 
-    /** Timestamp of current sample. */
+    /** Timestamp of current sample(s). */
     private Text timestamp;
 
-    /** Status/severity of current sample. */
+    /** Status/severity of current sample(s). */
     private Text status;
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
 
-    /** Annotation in plot that indicates waveform sample */
-    private AnnotationInfo waveform_annotation;
+    /** Annotation(s) in data browser plot that indicate waveform sample(s) */
+    final private List<AnnotationInfo> waveform_annotations = new ArrayList<>();
 
     private boolean changing_annotations = false;
 
-    private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+    final private ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
     private ScheduledFuture<?> pending_move = null;
 
@@ -108,16 +110,23 @@ public class WaveformView extends DataBrowserAwareView
         @Override
         public void itemAdded(final ModelItem item)
         {
-
             update(false);
         }
 
         @Override
         public void itemRemoved(final ModelItem item)
         {
-            if (item == model_item) {
-                model_item = null;
+            List<ModelItem> oldSelectedItems = pv_select.getSelection();
+            List<ModelItem> items = new ArrayList<>();
+            List<ModelItem> selectedItems = new ArrayList<>();
+            for(ModelItem modelItem : model.getItems())
+                items.add(modelItem);
+            for(ModelItem modelItem : oldSelectedItems) {
+                if (modelItem != item)
+                    selectedItems.add(modelItem);
             }
+            pv_select.setItems(items);
+            pv_select.setSelection(selectedItems);
             update(false);
         }
 
@@ -146,16 +155,61 @@ public class WaveformView extends DataBrowserAwareView
         public void changedTimerange()
         {
             // Update selected sample to assert that it's one of the visible ones.
-            if (model_item != null)
+            if (waveforms.size() > 0) {
+                Instant selectedInstant = Instant.MIN;
+                int selectedIndex = sample_index.getSelection();
+                if (selectedIndex < waveform_samples.size())
+                    selectedInstant = waveform_samples.get(sample_index.getSelection()).getPosition();
+                updateTimestamps();
+                resetSlider();
+                int newSelectedIndex = new TimeDataSearch().findClosestSample(waveform_samples, selectedInstant);
+                // If the timestamp wasn't found, it should be outside of the new timerange.
+                // Put the slider at the start or end as appropriate.
+                if (newSelectedIndex == -1) {
+                    if (waveform_samples.size() == 0 || waveform_samples.get(0).getPosition().compareTo(selectedInstant) > 0) {
+                        newSelectedIndex = 0;
+                    } else if (waveform_samples.get(waveform_samples.size() - 1).getPosition().compareTo(selectedInstant) < 0) {
+                        newSelectedIndex = waveform_samples.size() - 1;
+                    }
+                }
+                sample_index.setSelection(newSelectedIndex);
                 showSelectedSample();
+            }
         }
     };
 
-    /** Selected model item in model, or <code>null</code> */
-    private ModelItem model_item = null;
+    /** Selected model items in model. */
+    private List<ModelItem> model_items = new ArrayList<>();
 
-    /** Waveform for the currently selected sample */
-    private WaveformValueDataProvider waveform = null;
+    /** Merged ordered list of all timestamps of all PlotSamples in all items. */
+    final private PlotSampleArray waveform_samples = new PlotSampleArray();
+
+    /**
+     * Take all the samples from all model items that are within the plot range,
+     * and sort them. The timestamps provide the index for the slider.
+     */
+    private void updateTimestamps() {
+        List<PlotSample> samples = new ArrayList<>();
+        Instant plot_start = model.getStartTime();
+        Instant plot_end = model.getEndTime();
+        if (model_items != null) {
+            for (ModelItem item : model_items) {
+                for (int i = 0; i < item.getSamples().size(); i++) {
+                    PlotSample sample = item.getSamples().get(i);
+                    if (sample.getPosition().isAfter(plot_start) && sample.getPosition().isBefore(plot_end)) {
+                        samples.add(sample);
+                    }
+                }
+            }
+        }
+        Collections.sort(samples, (s1, s2) -> {
+            return s1.getPosition().compareTo(s2.getPosition());
+        });
+        waveform_samples.set(samples);
+    }
+
+    /** Waveforms for the currently selected samples */
+    final private List<WaveformValueDataProvider> waveforms = new ArrayList<>();
 
     /** {@inheritDoc} */
     @Override
@@ -167,7 +221,7 @@ public class WaveformView extends DataBrowserAwareView
             if (model != null)
             {
                 model.removeListener(model_listener);
-                removeAnnotation();
+                removeAnnotations();
             }
         });
 
@@ -186,23 +240,13 @@ public class WaveformView extends DataBrowserAwareView
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
 
-        pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        pv_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
-        pv_name.addSelectionListener(new SelectionListener()
-        {
+        pv_select = new MultipleSelectionCombo<>(parent, 0);
+        pv_select.setItems(getModelItems());
+        pv_select.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
+        pv_select.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
-            public void widgetSelected(final SelectionEvent e)
-            {
-                widgetDefaultSelected(e);
-            }
-
-            @Override
-            public void widgetDefaultSelected(final SelectionEvent e)
-            {   // First item is "--select PV name--"
-                 if (pv_name.getSelectionIndex() == 0)
-                    selectPV(null);
-                else
-                    selectPV(model.getItem(pv_name.getText()));
+            public void propertyChange(PropertyChangeEvent evt) {
+                selectPVs(pv_select.getSelection());
             }
         });
 
@@ -214,11 +258,8 @@ public class WaveformView extends DataBrowserAwareView
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
-            {   // First item is "--select PV name--"
-                if (pv_name.getSelectionIndex() == 0)
-                   selectPV(null);
-               else
-                   selectPV(model.getItem(pv_name.getText()));
+            {
+                selectPVs(pv_select.getSelection());
            }
         });
 
@@ -227,21 +268,28 @@ public class WaveformView extends DataBrowserAwareView
         // =====================
         plot = new RTValuePlot(parent);
         plot.getXAxis().setName(Messages.WaveformIndex);
-        plot.getYAxes().get(0).setName(Messages.WaveformAmplitude);
+        plot.getYAxes().get(0).setAutoscale(true);
+        plot.getYAxes().get(0).useAxisName(false);
+        plot.showLegend(false);
+        plot.requestUpdate();
         plot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // <<<<<< Slider >>>>>>
         sample_index = new Slider(parent, SWT.HORIZONTAL);
         sample_index.setToolTipText(Messages.WaveformTimeSelector);
+        // It's important for indexing that the slider 'thumb' takes up only one data point.
+        sample_index.setThumb(1);
         sample_index.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
         sample_index.addSelectionListener(new SelectionAdapter()
         {
+
             @Override
             public void widgetSelected(SelectionEvent e)
             {
                 showSelectedSample();
             }
         });
+        resetSlider();
 
         // Timestamp: __________ Sevr./Status: __________
         l = new Label(parent, 0);
@@ -264,23 +312,50 @@ public class WaveformView extends DataBrowserAwareView
         getSite().registerContextMenu(mm, null);
 
         mm.addMenuListener(new IMenuListener(){
-
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 mm.add(plot.getToolbarAction());
                 mm.add(plot.getLegendAction());
                 mm.add(new Separator());
                 mm.add(new ToggleYAxisAction<Double>(plot, true));
+                mm.add(new ToggleYAxisAutoscaleAction<Double>(plot, true));
+                mm.add(new Separator());
+                mm.add(plot.getSnapshotAction());
             }
         });
 
+    }
+
+    /**
+     * Ensure the slider has the correct number of options.
+     */
+    private void resetSlider() {
+        // Setting the maximum to 0 has no effect. Setting the maximum to 1 means
+        // that there is one option in the slider - i.e. you can't move it.
+        // If there are no samples we want to set the maximum to 1.
+        sample_index.setMaximum(waveform_samples.size() == 0 ? 1 : waveform_samples.size());
+    }
+
+    /** Return List of selected ModelItems
+     *  by finding Model Items from checked items in PV list
+     *  @param names list of all PV names available in list
+     *  @returns List of ModelItems
+     */
+    private List<ModelItem> getModelItems()
+    {
+        List<ModelItem> modelItemList = new ArrayList<>();
+        if (model != null) {
+            for (ModelItem item : model.getItems())
+                modelItemList.add(item);
+        }
+        return modelItemList;
     }
 
     /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
-        pv_name.setFocus();
+        pv_select.setFocus();
     }
 
     /** {@inheritDoc} */
@@ -289,7 +364,7 @@ public class WaveformView extends DataBrowserAwareView
     {
         if (this.model == model)
             return;
-        removeAnnotation();
+        removeAnnotations();
         this.model = model;
         if (old_model != model)
         {
@@ -310,107 +385,124 @@ public class WaveformView extends DataBrowserAwareView
     {
         Display.getDefault().asyncExec( () ->
         {
-            if (pv_name.isDisposed())
-            {
+            if (pv_select.isDisposed())
                 return;
-            }
-            if (model == null)
-            {   // Clear/disable GUI
-                pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
-                pv_name.select(0);
-                pv_name.setEnabled(false);
-                selectPV(null);
+
+            final List<ModelItem> oldSelection = new ArrayList<>(pv_select.getSelection());
+            pv_select.setItems(getModelItems());
+            if (model == null) {
+                pv_select.setEnabled(false);
+                selectPVs(null);
                 return;
             }
 
-            // Show PV names
-            final List<String> names_list = new ArrayList<>();
-            names_list.add(Messages.SampleView_SelectItem);
-            for (ModelItem item : model.getItems())
-                names_list.add(item.getName());
-            final String[] names = names_list.toArray(new String[names_list.size()]);
-
-            // Is the previously selected item still valid?
-            final int selected = pv_name.getSelectionIndex();
-            if (!model_changed  &&  selected > 0  &&  model_item != null  &&  pv_name.getText().equals(model_item.getName()))
-            {
-                // Show same PV name again in combo box
-                pv_name.setItems(names);
-                pv_name.select(selected);
-                pv_name.setEnabled(true);
-                return;
-            }
-            // Previously selected item no longer valid.
             // Show new items, clear rest
-            pv_name.setItems(names);
-            pv_name.select(0);
-            pv_name.setEnabled(true);
-            selectPV(null);
+            pv_select.setEnabled(true);
+            final List<ModelItem> newSelection = new ArrayList<>();
+            for(ModelItem oldItem : oldSelection) {
+                if (getModelItems().contains(oldItem))
+                    newSelection.add(oldItem);
+            }
+            pv_select.setSelection(newSelection);
+            selectPVs(oldSelection);
+
         });
     }
 
-    /** Select given PV item (or <code>null</code>). */
-    private void selectPV(final ModelItem new_item)
+    /** Select given PV items. */
+    private void selectPVs(final List<ModelItem> new_items)
     {
-        model_item = new_item;
 
         // Delete all existing traces
         for (Trace<Double> trace : plot.getTraces())
             plot.removeTrace(trace);
 
-        // No or unknown PV name?
-        if (model_item == null)
+        if (new_items == null) {
+            model_items.clear();
+        } else {
+            model_items = new_items;
+        }
+        updateTimestamps();
+
+        removeAnnotations();
+
+        if (model_items.isEmpty())
         {
-            pv_name.setText("");
             sample_index.setEnabled(false);
-            removeAnnotation();
             return;
         }
 
         // Prepare to show waveforms of model item in plot
-        waveform = new WaveformValueDataProvider();
-
+        waveforms.clear();
         // Create trace for waveform
-        plot.addTrace(model_item.getResolvedDisplayName(), model_item.getUnits(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
+        for(int n=0; n<new_items.size(); n++) {
+            waveforms.add(new WaveformValueDataProvider());
+            plot.addTrace(new_items.get(n).getResolvedDisplayName(), new_items.get(n).getUnits(), waveforms.get(n), new_items.get(n).getColor(), TraceType.SINGLE_LINE, 1, PointType.NONE, 5, 0);
         // Enable waveform selection and update slider's range
-        sample_index.setEnabled(true);
-        showSelectedSample();
-        // Autoscale Y axis by default.  If the user tries to move the axis this will automatically turn off.
-        for (YAxis<Double> yaxis : plot.getYAxes()) {
-            yaxis.setAutoscale(true);
         }
+        sample_index.setEnabled(true);
+        if (waveforms.size() > 0)
+            showSelectedSample();
+
     }
 
     /** Show the current sample of the current model item. */
     private void showSelectedSample()
     {
-        // Get selected sample (= one waveform)
-        final PlotSamples samples = model_item.getSamples();
-        final int idx = sample_index.getSelection();
-        final PlotSample sample;
-        samples.getLock().lock();
-        try
-        {
-            sample_index.setMaximum(samples.size());
-            sample = samples.get(idx);
+        final int numItems = model_items.size();
+
+        String timestampText = null;
+        String statusText = null;
+        resetSlider();
+
+        if (sample_index.getSelection() >= waveform_samples.size()) {
+            // Rapid update where there aren't enough timestamps for the current slider
+            return;
         }
-        finally
-        {
-            samples.getLock().unlock();
+        Instant sliderTime = waveform_samples.get(sample_index.getSelection()).getPosition();
+
+        for(int n=0; n<numItems; n++) {
+            ModelItem model_item = model_items.get(n);
+            // Get selected sample (= one waveform)
+            final PlotSamples samples = model_item.getSamples();
+            PlotSample sample = samples.get(0);
+            samples.getLock().lock();
+            try
+            {
+                // Choose the sample with either the matching timestamp or the one after.
+                final int idx = new TimeDataSearch().findSampleGreaterOrEqual(samples, sliderTime);
+                sample = samples.get(idx);
+            }
+            finally
+            {
+                samples.getLock().unlock();
+            }
+            // Setting the value can be delayed while the plot is being updated
+            final VType value = sample.getVType();
+            final int waveformIndex = n;
+            Activator.getThreadPool().execute(() -> waveforms.get(waveformIndex).setValue(value));
+            if (value == null)
+                clearInfo();
+            else
+            {
+                updateAnnotation(n, sample.getPosition(), sample.getValue());
+                if (n == 0) {
+                    timestampText = new String();
+                    statusText = new String();
+                    int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
+                    plot.getXAxis().setValueRange(0.0, (double)size);
+                    statusText += NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
+                    timestampText += TimestampHelper.format(VTypeHelper.getTimestamp(value));
+                }
+                else {
+                    statusText += "; " + NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value));
+                    timestampText += "; " + TimestampHelper.format(VTypeHelper.getTimestamp(value));
+                }
+            }
         }
-        // Setting the value can be delayed while the plot is being updated
-        final VType value = sample.getVType();
-        Activator.getThreadPool().execute(() -> waveform.setValue(value));
-        if (value == null)
-            clearInfo();
-        else
-        {
-            updateAnnotation(sample.getPosition(), sample.getValue());
-            int size = value instanceof VNumberArray ? ((VNumberArray)value).getData().size() : 1;
-            plot.getXAxis().setValueRange(0.0, (double)size);
-            timestamp.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
-            status.setText(NLS.bind(Messages.SeverityStatusFmt, VTypeHelper.getSeverity(value).toString(), VTypeHelper.getMessage(value)));
-        }
+
+        timestamp.setText(timestampText);
+        status.setText(statusText);
         plot.requestUpdate();
     }
 
@@ -419,71 +511,75 @@ public class WaveformView extends DataBrowserAwareView
     {
         timestamp.setText("");
         status.setText("");
-        removeAnnotation();
+        removeAnnotations();
     }
 
     private void userMovedAnnotation()
     {
-        if (waveform_annotation == null)
+        if (waveform_annotations == null)
             return;
         for (AnnotationInfo annotation : model.getAnnotations())
         {   // Locate the annotation for this waveform
-            if (annotation.isInternal()  &&
-                annotation.getItemIndex() == waveform_annotation.getItemIndex() &&
-                annotation.getText().equals(waveform_annotation.getText()))
-            {   // Locate index of sample for annotation's time stamp
-                final PlotSamples samples = model_item.getSamples();
-                final TimeDataSearch search = new TimeDataSearch();
-                final int idx;
-                samples.getLock().lock();
-                try
-                {
-                    idx = search.findClosestSample(samples, annotation.getTime());
+            for (AnnotationInfo waveform_annotation : waveform_annotations) {
+                if (annotation.isInternal()  &&
+                    annotation.getItemIndex() == waveform_annotation.getItemIndex() &&
+                    annotation.getText().equals(waveform_annotation.getText()))
+                {   // Locate index of sample for annotation's time stamp
+                    // By first locating the relevant samples
+                    if (waveform_annotation.getTime().compareTo(annotation.getTime()) == 0) {
+                        // The annotation hasn't moved position, so we don't need to do anything.
+                        continue;
+                    }
+                    for(ModelItem model_item : model_items) {
+                        if (annotation.getText().contains(model_item.getDisplayName())) {
+                            final int idx = new TimeDataSearch().findClosestSample(waveform_samples, annotation.getTime());
+                            // Update waveform view for that sample on UI thread
+                            sample_index.getDisplay().asyncExec(() ->
+                            {
+                                if (! (idx == sample_index.getSelection())) {
+                                    sample_index.setSelection(idx);
+                                    showSelectedSample();
+                                }
+                            });
+                        }
+                    }
                 }
-                finally
-                {
-                    samples.getLock().unlock();
-                }
-                // Update waveform view for that sample on UI thread
-                sample_index.getDisplay().asyncExec(() ->
-                {
-                    sample_index.setSelection(idx);
-                    showSelectedSample();
-                });
-                return;
             }
         }
     }
 
-    private void removeAnnotation()
+    private void removeAnnotations()
     {
         if (model != null)
         {
             final List<AnnotationInfo> modelAnnotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
-            if (modelAnnotations.remove(waveform_annotation))
-            {
-                changing_annotations = true;
-                model.setAnnotations(modelAnnotations);
-                changing_annotations = false;
+            for (AnnotationInfo waveform_annotation : waveform_annotations) {
+                if (modelAnnotations.remove(waveform_annotation))
+                {
+                    changing_annotations = true;
+                    model.setAnnotations(modelAnnotations);
+                    changing_annotations = false;
+                }
             }
         }
-        waveform_annotation = null;
+        waveform_annotations.clear();
     }
 
-    private void updateAnnotation(final Instant time, final double value)
+    private void updateAnnotation(final int annotation_index, final Instant time, final double value)
     {
+
         final List<AnnotationInfo> annotations = new ArrayList<AnnotationInfo>(model.getAnnotations());
         // Initial annotation offset
         Point offset = new Point(20, -20);
         // If already in model, note its offset and remove
         for (AnnotationInfo annotation : annotations)
         {
-            if (annotation.getText().equals(ANNOTATION_TEXT))
+            if (annotation.getText().equals(buildAnnotationText(annotation_index)))
             {   // Update offset to where user last placed it
                 offset = annotation.getOffset();
-                waveform_annotation = annotation;
-                annotations.remove(waveform_annotation);
+                annotations.remove(annotation);
                 break;
+
             }
         }
 
@@ -491,18 +587,24 @@ public class WaveformView extends DataBrowserAwareView
         int item_index = 0;
         for (ModelItem item : model.getItems())
         {
-            if (item == model_item)
+            if (item == model_items.get(annotation_index))
             {
                 item_index = i;
                 break;
             }
             i++;
         }
-        waveform_annotation = new AnnotationInfo(true, item_index, time, value, offset, ANNOTATION_TEXT);
-        annotations.add(waveform_annotation);
+        if (waveform_annotations.size() > annotation_index)
+            waveform_annotations.remove(annotation_index);
+        waveform_annotations.add(annotation_index, new AnnotationInfo(true, item_index, time, value, offset, buildAnnotationText(annotation_index)));
+        annotations.add(waveform_annotations.get(annotation_index));
         changing_annotations = true;
         model.setAnnotations(annotations);
         changing_annotations = false;
+    }
+
+    private String buildAnnotationText(final Integer annotation_index) {
+        return ANNOTATION_TEXT + " " + model_items.get(annotation_index).getDisplayName();
     }
 
     public class ToggleYAxisAction<XTYPE extends Comparable<XTYPE>> extends Action
@@ -511,13 +613,9 @@ public class WaveformView extends DataBrowserAwareView
 
         public ToggleYAxisAction(final RTPlot<XTYPE> plot, final boolean is_visible)
         {
-            super(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis", null);
+            super("Logarithmic Axis", Action.AS_CHECK_BOX);
             this.plot = plot;
-        }
-
-        public void updateText()
-        {
-            setText(plot.getYAxes().get(0).isLogarithmic() ? "Linear Axis" : "Logarithmic Axis");
+            this.setChecked(plot.getYAxes().get(0).isLogarithmic());
         }
 
         @Override
@@ -525,6 +623,27 @@ public class WaveformView extends DataBrowserAwareView
         {
             plot.getYAxes().get(0).setLogarithmic(!plot.getYAxes().get(0).isLogarithmic());
             plot.requestUpdate();
+            this.setChecked(plot.getYAxes().get(0).isLogarithmic());
+        }
+    }
+
+    public class ToggleYAxisAutoscaleAction<XTYPE extends Comparable<XTYPE>> extends Action
+    {
+        final private RTPlot<XTYPE> plot;
+
+        public ToggleYAxisAutoscaleAction(final RTPlot<XTYPE> plot, final boolean is_visible)
+        {
+            super("Autoscaling", Action.AS_CHECK_BOX);
+            this.plot = plot;
+            this.setChecked(plot.getYAxes().get(0).isAutoscale());
+        }
+
+        @Override
+        public void run()
+        {
+            plot.getYAxes().get(0).setAutoscale(!plot.getYAxes().get(0).isAutoscale());
+            plot.requestUpdate();
+            this.setChecked(plot.getYAxes().get(0).isAutoscale());
         }
     }
 }

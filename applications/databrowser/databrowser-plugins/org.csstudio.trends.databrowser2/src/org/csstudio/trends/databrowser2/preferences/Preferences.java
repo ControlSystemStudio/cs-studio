@@ -66,7 +66,9 @@ public class Preferences
             SECURE_DATA_BROWSER = "secure_data_browser",
             AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
             SCROLL_STEP = "scroll_step",
-            USE_TRACE_NAMES = "use_trace_names";
+            USE_TRACE_NAMES = "use_trace_names",
+            ALLOW_HIDE_TRACE = "allow_hide_trace",
+            ALLOW_REQUEST_RAW = "allow_request_raw";
 
     public static boolean isAutomaticHistoryRefresh()
     {

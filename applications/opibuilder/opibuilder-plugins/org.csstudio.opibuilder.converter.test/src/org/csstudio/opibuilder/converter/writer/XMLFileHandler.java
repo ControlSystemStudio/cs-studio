@@ -15,12 +15,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -34,9 +35,6 @@ import org.csstudio.opibuilder.converter.model.EdmFont;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 /** This is a helper class to for XML related test case classes.
  */
 public class XMLFileHandler {
@@ -68,14 +66,17 @@ public class XMLFileHandler {
 
     public static void writeXML(Document doc) {
         try {
-
-            OutputFormat format = new OutputFormat(doc);
-            format.setLineWidth(65);
-            format.setIndenting(true);
-            format.setIndent(2);
-            Writer out = new StringWriter();
-            XMLSerializer serializer = new XMLSerializer(out, format);
-            serializer.serialize(doc);
+            StringWriter out = new StringWriter();
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            TransformerFactory transFactory = TransformerFactory.newInstance();
+            Transformer idTransform = transFactory.newTransformer();
+            // Don't write the XML declaration as we have already done so.
+            idTransform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            idTransform.setOutputProperty(OutputKeys.INDENT,"yes");
+            idTransform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            Source input = new DOMSource(doc);
+            Result output = new StreamResult(out);
+            idTransform.transform(input, output);
 
             System.out.println(out.toString());
         }

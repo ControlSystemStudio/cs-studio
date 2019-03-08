@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.ArchiveRescale;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelListener;
@@ -146,6 +147,10 @@ public class AxesTableHandler implements IStructuredContentProvider
                 final ChangeAxisConfigCommand command =
                     new ChangeAxisConfigCommand(operations_manager, axis);
                 axis.setVisible(((Boolean)value).booleanValue());
+                if (((Boolean)value).booleanValue()) {
+                    if (axis.isAutoScale())
+                        model.setArchiveRescale(ArchiveRescale.NONE);
+                }
                 command.rememberNewConfig();
             }
         });
@@ -489,6 +494,8 @@ public class AxesTableHandler implements IStructuredContentProvider
                 final ChangeAxisConfigCommand command =
                     new ChangeAxisConfigCommand(operations_manager, axis);
                 axis.setAutoScale(((Boolean)value).booleanValue());
+                if (((Boolean) value).booleanValue() && axis.isVisible())
+                    model.setArchiveRescale(ArchiveRescale.NONE);
                 command.rememberNewConfig();
             }
         });
