@@ -371,7 +371,8 @@ public class SpinnerFigure extends Figure implements Introspectable {
      */
     public boolean manualSetValue(double value){
         double oldValue = getValue();
-        if (!(max == 0 && min == 0)) {
+        // The range only makes sense if max > min.
+        if (max > min) {
             value = value < min ? min : (value > max ? max : value);
         }
         setValue(value);
