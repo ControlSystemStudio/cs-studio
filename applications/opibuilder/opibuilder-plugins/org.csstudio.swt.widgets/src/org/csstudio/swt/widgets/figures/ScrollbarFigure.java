@@ -284,12 +284,19 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
 
-
-
-
-    public double getCoercedValue(){
-        return value < minimum ? minimum : (value > maximum ? maximum : value);
+    public double getCoercedValue(double value){
+        double newValue = value;
+        if (maximum > minimum) {
+            newValue = value < minimum ? minimum : (value > maximum ? maximum : value);
+        }
+        return newValue;
     }
+
+    public double getCoercedValue() {
+        return getCoercedValue(value);
+    }
+
+
     /**
      * @return the extent
      */
@@ -470,7 +477,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      * @param value
      */
     public void manualSetValue(double value){
-        value = Math.max(getMinimum(), Math.min(getMaximum(), value));
+        value = getCoercedValue(value);
         if (this.value == value)
             return;
         if(showValueTip){
