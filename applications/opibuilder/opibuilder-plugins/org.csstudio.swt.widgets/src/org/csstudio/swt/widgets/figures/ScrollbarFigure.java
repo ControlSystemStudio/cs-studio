@@ -80,8 +80,10 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     protected boolean armed;
     public ThumbDragger() { }
 
+    @Override
     public void mouseDoubleClicked(MouseEvent me) { }
 
+    @Override
     public void mouseDragged(MouseEvent me) {
         if (!armed)
             return;
@@ -91,6 +93,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         me.consume();
     }
 
+    @Override
     public void mousePressed(MouseEvent me) {
         armed = true;
         start = me.getLocation();
@@ -107,6 +110,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         me.consume();
     }
 
+    @Override
     public void mouseReleased(MouseEvent me) {
         if (!armed)
             return;
@@ -265,6 +269,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         clickable.setOpaque(true);
         clickable.setBackgroundColor(COLOR_TRACK);
         clickable.addChangeListener(new ChangeListener() {
+            @Override
             public void handleStateChanged(ChangeEvent evt) {
                 if (clickable.getModel().isArmed())
                     clickable.setBackgroundColor(ColorConstants.black);
@@ -280,6 +285,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             listener.manualValueChanged(value);
     }
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
     }
@@ -358,6 +364,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     private void hookFocusListener(Clickable up) {
         up.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent event) {
                 if(!hasFocus())
                     requestFocus();
@@ -372,6 +379,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     private void initializeListeners() {
         addKeyListener(new KeyListener() {
 
+                @Override
                 public void keyPressed(KeyEvent ke) {
                     if((ke.keycode == SWT.ARROW_UP && !isHorizontal()) ||
                             (ke.keycode == SWT.ARROW_LEFT && isHorizontal()))
@@ -387,16 +395,19 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                         pageUp();
                 }
 
+                @Override
                 public void keyReleased(KeyEvent ke) {
                 }
             });
 
         addFocusListener(new FocusListener() {
 
+                @Override
                 public void focusGained(FocusEvent fe) {
                     repaint();
                 }
 
+                @Override
                 public void focusLost(FocusEvent fe) {
                     repaint();
                 }
@@ -431,9 +442,11 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
             labelTimer = new OPITimer();
             timerTask = new Runnable() {
 
+                @Override
                 public void run() {
                     display.asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             label.setVisible(false);
                         }
@@ -523,6 +536,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     /**
      * @see IFigure#revalidate()
      */
+    @Override
     public void revalidate() {
         // Override default revalidate to prevent going up the parent chain. Reason for this
         // is that preferred size never changes unless orientation changes.
@@ -530,6 +544,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         getUpdateManager().addInvalidFigure(this);
     }
 
+    @Override
     public void setDirection(int direction) {
 
     }
@@ -553,6 +568,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                                                         : Orientable.SOUTH);
             buttonDown.setFiringMethod(Clickable.REPEAT_FIRING);
             buttonDown.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     stepDown();
                 }
@@ -565,6 +581,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     /**
      * @see IFigure#setEnabled(boolean)
      */
+    @Override
     public void setEnabled(boolean value) {
         if (isEnabled() == value)
             return;
@@ -629,6 +646,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
     /**
      * @see Orientable#setOrientation(int)
      */
+    @Override
     public void setOrientation(int value) {
         if ((value == HORIZONTAL) == isHorizontal())
             return;
@@ -655,6 +673,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         if (pageDown != null) {
             pageDown.setFiringMethod(Clickable.REPEAT_FIRING);
             pageDown.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent event) {
                     pageDown();
                 }
@@ -683,6 +702,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         if (pageUp != null) {
             pageUp.setFiringMethod(Clickable.REPEAT_FIRING);
             pageUp.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent event) {
                     pageUp();
                 }
@@ -756,6 +776,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
                                                 : Orientable.NORTH);
             buttonUp.setFiringMethod(Clickable.REPEAT_FIRING);
             buttonUp.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     stepUp();
                 }
