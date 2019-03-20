@@ -78,6 +78,12 @@ public class Application implements IApplication
                 "XML config file to import", "");
         final BooleanOption send_jms_config = new BooleanOption(parser, "-send_jms_config",
                 "Send JMS message for clients to read new configuration");
+        final StringOption jms_url = new StringOption(parser, "-jms_url",
+               "Alarm system JMS URL", Preferences.getJMS_URL());
+        final StringOption jms_user = new StringOption(parser, "-jms_user",
+               "Username for JMS authentication", Preferences.getJMS_User());
+        final StringOption jms_password = new StringOption(parser, "-jms_pass",
+               "Password for JMS authentication", Preferences.getJMS_Password());
         parser.addEclipseParameters();
         try
         {
@@ -167,8 +173,8 @@ public class Application implements IApplication
         if (send_jms_config.get()){
             try
             {
-                final JMSSender sender = new JMSSender(this.url, this.user,
-                    this.password, this.root+"_CLIENT");
+                final JMSSender sender = new JMSSender(jms_url.get(), jms_user.get(),
+                    jms_password.get(), this.root+"_CLIENT");
                 sender.send("alarm", "ConfigTool", "CONFIG");
                 sender.disconnect();
             }
