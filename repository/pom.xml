@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>maven-osgi-repository</artifactId>
@@ -11,7 +12,7 @@
     <profile>
       <id>uploadRepo</id>
       <properties>
-        <!-- Properties relative to the distant host where to upload the
+        <!-- Properties relative to the distant host where to upload the 
           repo -->
         <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/</ftp.url>
       </properties>
@@ -85,11 +86,15 @@
                   <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.epics:epics-pvdata:${pvdata.version}</id>
+                  <id>org.epics:epics-pvdata:6.1.2</id>
                   <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.epics:epics-pvaccess:${pvaccess.version}</id>
+                  <id>org.epics:epics-pvaccess:5.1.2</id>
+                  <source>true</source>
+                </artifact>
+                <artifact>
+                  <id>org.epics:vtype:1.0.0</id>
                   <source>true</source>
                 </artifact>
 
@@ -134,7 +139,7 @@
                   <id>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:1.0.8</id>
                 </artifact>
                 <artifact>
-                  <id>org.mockito:mockito-core:1.9.5</id>
+                  <id>org.mockito:mockito-core:2.23.4</id>
                 </artifact>
                 <artifact>
                   <id>net.sf.py4j:py4j:0.10.2.1</id>
@@ -147,7 +152,10 @@
                   <id>commons-beanutils:commons-beanutils:1.9.2</id>
                 </artifact>
                 <artifact>
-                <id>commons-io:commons-io:2.5</id>
+                  <id>commons-io:commons-io:2.5</id>
+                </artifact>
+                <artifact>
+                  <id>commons-net:commons-net:3.6</id>
                 </artifact>
                 <artifact>
                   <id>org.apache.ant:ant:1.9.4</id>
@@ -174,11 +182,26 @@
                 <artifact>
                   <id>org.influxdb:influxdb-java:2.6</id>
                   <instructions>
-                  <Require-Bundle>com.squareup.retrofit2.converter-moshi,com.squareup.okhttp3.logging-interceptor</Require-Bundle>
+                    <Require-Bundle>com.squareup.retrofit2.converter-moshi,com.squareup.okhttp3.logging-interceptor</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.glassfish:javax.json:1.0.4</id>
+                  <id>org.apache.xmlgraphics:batik-all:1.10</id>
+                </artifact>
+                <artifact>
+                  <id>javax.xml.bind:jaxb-api:2.3.1</id>
+                </artifact>
+                <artifact>
+                  <id>com.sun.xml.bind:jaxb-impl:2.3.1</id>
+                </artifact>
+                <artifact>
+                  <id>com.sun.istack:istack-commons-runtime:3.0.7</id>
+                </artifact>
+                <artifact>
+                  <id>javax.activation:activation:1.1.1</id>
+                </artifact>
+                <artifact>
+                  <id>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.7</id>
                 </artifact>
                 <artifact>
                   <id>org.jdom:jdom:1.1.3</id>
@@ -258,88 +281,289 @@
                 </artifact>
 
 
-				<!-- DIIRT libraries -->
+                <!-- DIIRT libraries -->
                 <artifact>
-                  <id>org.diirt:datasource:3.1.7</id>
-                </artifact>
-                <artifact>
-                  <id>org.diirt:datasource-extra:3.1.7</id>
+                  <id>org.diirt:datasource:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-file:3.1.7</id>
+                  <id>org.diirt:datasource-extra:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-file-json:3.1.7</id>
+                  <id>org.diirt:datasource-file:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-formula:3.1.7</id>
+                  <id>org.diirt:datasource-file-json:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-graphene:3.1.7</id>
+                  <id>org.diirt:datasource-formula:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-integration:3.1.7</id>
+                  <id>org.diirt:datasource-graphene:3.1.8-SNAPSHOT</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
+                  </instructions>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-loc:3.1.7</id>
+                  <id>org.diirt:datasource-integration:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-sample:3.1.7</id>
+                  <id>org.diirt:datasource-loc:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-sim:3.1.7</id>
+                  <id>org.diirt:datasource-sample:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-sys:3.1.7</id>
+                  <id>org.diirt:datasource-sim:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-test:3.1.7</id>
+                  <id>org.diirt:datasource-sys:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:datasource-vtype:3.1.7</id>
+                  <id>org.diirt:datasource-test:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:graphene:3.1.7</id>
+                  <id>org.diirt:datasource-vtype:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:graphene-profile:3.1.7</id>
+                  <id>org.diirt:graphene:3.1.8-SNAPSHOT</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
+                  </instructions>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:service:3.1.7</id>
+                  <id>org.diirt:graphene-profile:3.1.8-SNAPSHOT</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
+                  </instructions>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:service-exec:3.1.7</id>
+                  <id>org.diirt:service:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:service-jdbc:3.1.7</id>
+                  <id>org.diirt:service-exec:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:diirt-util:3.1.7</id>
-                </artifact>
-				<artifact>
-                  <id>org.diirt:vtype:3.1.7</id>
+                  <id>org.diirt:service-jdbc:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt:vtype-json:3.1.7</id>
+                  <id>org.diirt:diirt-util:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt.javafx:javafx:3.1.7</id>
+                  <id>org.diirt:vtype:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt.javafx:tools:3.1.7</id>
-                </artifact>
-				<artifact>
-                  <id>org.diirt.support:diirt-ca:3.1.7</id>
+                  <id>org.diirt:vtype-json:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt.support:diirt-cf:3.1.7</id>
+                  <id>org.diirt.javafx:javafx:3.1.8-SNAPSHOT</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
+                  </instructions>
+                  <source>true</source>
                 </artifact>
                 <artifact>
-                  <id>org.diirt.support:diirt-pva:3.1.7</id>
+                  <id>org.diirt.javafx:tools:3.1.8-SNAPSHOT</id>
+                  <override>true</override>
+                  <instructions>
+                    <Import-Package>!com.sun.*,!javafx.*,*</Import-Package>
+                  </instructions>
+                  <source>true</source>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.support:diirt-ca:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.support:diirt-cf:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
+                </artifact>
+                <artifact>
+                  <id>org.diirt.support:diirt-pva:3.1.8-SNAPSHOT</id>
+                  <source>true</source>
                 </artifact>
 
+                <!-- OpenJFX libraries Linux -->
+                <!-- <artifact>
+                  <id>org.openjfx:javafx-controls:jar:linux:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.controls</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=linux)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-graphics:jar:linux:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.graphics</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=linux)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-base:jar:linux:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.base</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=linux)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-fxml:jar:linux:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.fxml</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=linux)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-swing:jar:linux:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=linux)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
 
-				<!-- JavaFX libraries -->
+                OpenJFX libraries Windows
+                <artifact>
+                  <id>org.openjfx:javafx-controls:jar:win:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.controls</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=win32)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-graphics:jar:win:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.graphics</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=win32)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-base:jar:win:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.base</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=win32)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-fxml:jar:win:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.fxml</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=win32)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-swing:jar:win:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=win32)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+
+                OpenJFX libraries Mac
+                <artifact>
+                  <id>org.openjfx:javafx-controls:jar:mac:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.controls</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=macosx)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-graphics:jar:mac:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.graphics</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=macosx)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-base:jar:mac:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.base</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=macosx)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-fxml:jar:mac:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Java-Module>javafx.fxml</Java-Module>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=macosx)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.openjfx:javafx-swing:jar:mac:11.0.1</id>
+                  <override>true</override>
+                  <instructions>
+                    <Eclipse-PlatformFilter>(&amp; (osgi.os=macosx)
+                      (osgi.arch=x86_64) )</Eclipse-PlatformFilter>
+                    <_noee>true</_noee>
+                  </instructions>
+                </artifact>
+                this is from the reactor
+                <artifact>
+                  <id>org.csstudio:openjfx.swt:11.0.1</id>
+                </artifact> -->
+
                 <artifact>
                   <id>org.controlsfx:controlsfx:8.40.14</id>
                   <override>true</override>
@@ -423,13 +647,16 @@
             <configuration>
               <failOnError>true</failOnError>
               <target>
-                <mkdir dir="${project.build.directory}/centralrepository" />
+                <mkdir
+                  dir="${project.build.directory}/centralrepository" />
                 <get src="${cs-studio-central.url}/artifacts.jar"
                   dest="${project.build.directory}/centralrepository"
-                  verbose="false" ignoreerrors="true" usetimestamp="true" />
+                  verbose="false" ignoreerrors="true"
+                  usetimestamp="true" />
                 <get src="${cs-studio-central.url}/content.jar"
                   dest="${project.build.directory}/centralrepository"
-                  verbose="false" ignoreerrors="true" usetimestamp="true" />
+                  verbose="false" ignoreerrors="true"
+                  usetimestamp="true" />
               </target>
             </configuration>
           </execution>
@@ -476,7 +703,7 @@
     </plugins>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
