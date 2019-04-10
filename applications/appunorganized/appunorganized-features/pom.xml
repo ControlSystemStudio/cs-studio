@@ -12,7 +12,7 @@
     <module>org.csstudio.email.feature</module>
     <module>org.csstudio.graphene.feature</module>
     <module>org.csstudio.utilities.feature</module>
-    <module>org.csstudio.utilities.rap.feature</module>
+<!--     <module>org.csstudio.utilities.rap.feature</module> -->
     <module>org.csstudio.utilities.debugging.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
     <module>org.csstudio.pretune.feature</module>

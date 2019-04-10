@@ -12,7 +12,7 @@ import org.apache.batik.css.engine.StyleDeclaration;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.RGBColorValue;
 import org.apache.batik.css.engine.value.Value;
-import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.anim.dom.SVGStylableElement;
 import org.eclipse.swt.graphics.Color;
 
 /**

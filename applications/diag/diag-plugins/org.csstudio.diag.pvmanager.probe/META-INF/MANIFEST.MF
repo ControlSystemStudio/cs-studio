@@ -15,11 +15,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro.universal,
  org.eclipse.help,
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0",
- org.csstudio.java;bundle-version="3.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+ org.csstudio.java;bundle-version="3.2.0",
+ org.diirt.datasource;bundle-version="3.1.7"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
-Import-Package: org.diirt.datasource;version="3.1.2",
- org.diirt.datasource.expression;version="3.1.2",
+Import-Package: org.diirt.datasource.expression;version="3.1.2",
  org.diirt.datasource.formula;version="3.1.2",
  org.diirt.util.time;version="3.1.2",
  org.diirt.vtype;version="3.1.2",

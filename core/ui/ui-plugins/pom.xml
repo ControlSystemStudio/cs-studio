@@ -21,7 +21,7 @@
     <module>org.csstudio.autocomplete</module>
     <module>org.csstudio.autocomplete.test</module>
     <module>org.csstudio.autocomplete.ui</module>
-    <module>org.csstudio.autocomplete.ui.rap</module>
+<!--     <module>org.csstudio.autocomplete.ui.rap</module> -->
     <module>org.csstudio.autocomplete.ui.rcp</module>
     <module>org.csstudio.csdata.clipboard</module>
     <module>org.csstudio.perspectives</module>

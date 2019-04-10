@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.eclipse.core.runtime.IAdapterFactory;

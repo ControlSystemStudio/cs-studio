@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Channel based SWT widgets
 Bundle-SymbolicName: org.csstudio.channel.widgets;singleton:=true
 Bundle-Version: 1.1.3.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Set of SWT widgets implemented on top of ChannelFinder and PVManager
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

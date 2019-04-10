@@ -4,7 +4,7 @@ Bundle-Name: Scan API
 Bundle-SymbolicName: org.csstudio.scan;singleton:=true
 Bundle-Version: 4.4.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.scan,
  org.csstudio.scan.command,
  org.csstudio.scan.data,

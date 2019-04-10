@@ -6,7 +6,7 @@ Bundle-Version: 1.6.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Export-Package: org.csstudio.platform.utility.rdb
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Helper for connecting to various RDB dialects
 Import-Package: com.mysql.cj.jdbc,
  org.postgresql,

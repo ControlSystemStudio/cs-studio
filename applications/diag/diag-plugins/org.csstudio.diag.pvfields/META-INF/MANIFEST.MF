@@ -21,5 +21,5 @@ Require-Bundle: org.junit,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.diag.pvfields
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Dave Purcell <purcelljd@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Display fields of an EPICS record, both live value and original value from 'IRMIS' type database

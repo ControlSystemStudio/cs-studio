@@ -25,6 +25,7 @@ import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.ComboBoxTreeTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
+import javafx.application.Platform;
 
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 
@@ -54,6 +55,9 @@ public class FXLogginConfiguration extends FXViewPart {
     final static TreeItem<NameNode> root = new TreeItem<>(new NameNode(null, null, null, true));
 
 
+    static {
+        Platform.setImplicitExit(false);
+    }
     @SuppressWarnings("unchecked")
     @Override
     protected Scene createFxScene() {

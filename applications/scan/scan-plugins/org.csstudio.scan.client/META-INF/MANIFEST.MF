@@ -4,7 +4,7 @@ Bundle-Name: Scan Client API
 Bundle-SymbolicName: org.csstudio.scan.client
 Bundle-Version: 4.2.5.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.0",
  org.csstudio.scan;bundle-version="4.1.0",
  org.python.jython

@@ -6,12 +6,12 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.ui.toolbox.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.google.guava
+ com.google.guava,
+ org.diirt.datasource;bundle-version="3.1.7"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides a view to check what channels are opened on which DataSource
 Export-Package: org.csstudio.utility.pvmanager.ui.toolbox
-Import-Package: org.diirt.datasource;version="3.0.0",
- org.diirt.datasource.formula;version="3.0.0",
+Import-Package: org.diirt.datasource.formula;version="3.0.0",
  org.diirt.service;version="3.0.0"

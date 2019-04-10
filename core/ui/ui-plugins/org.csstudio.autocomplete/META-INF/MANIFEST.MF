@@ -7,11 +7,10 @@ Bundle-Activator: org.csstudio.autocomplete.AutoCompletePlugin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.csstudio.vtype.pv;resolution:=optional,
  org.csstudio.diirt.util;resolution:=optional
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.autocomplete,
  org.csstudio.autocomplete.parser,
  org.csstudio.autocomplete.parser.engine,

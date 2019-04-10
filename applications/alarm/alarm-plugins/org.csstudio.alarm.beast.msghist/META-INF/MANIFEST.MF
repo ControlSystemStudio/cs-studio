@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.lang3;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.alarm.beast.msghist.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.csstudio.java.time
 Export-Package: org.csstudio.alarm.beast.msghist,
  org.csstudio.alarm.beast.msghist.gui,

@@ -4,7 +4,7 @@ Bundle-Name: Control System Data
 Bundle-SymbolicName: org.csstudio.data
 Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Control System Data Structures (Values with time, status, ...)
 Export-Package: org.csstudio.data.values
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0"

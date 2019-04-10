@@ -4,7 +4,7 @@ Bundle-Name: Archive Datasource
 Bundle-SymbolicName: org.csstudio.archive.diirt.datasource;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: FRIB
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/ds_archive.xml
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.diirt.vtype;bundle-version="3.0.1",

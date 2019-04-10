@@ -18,5 +18,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.widgets.detailpanel
 Import-Package: org.csstudio.csdata,
- org.csstudio.opibuilder.widgets.model,
- org.jdom;version="1.1.1"
+ org.csstudio.opibuilder.widgets.model

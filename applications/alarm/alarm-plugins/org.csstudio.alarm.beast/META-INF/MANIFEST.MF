@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: org.csstudio.alarm.beast
 Bundle-ManifestVersion: 2
 Bundle-Name: Shared Alarm Components
 Bundle-SymbolicName: org.csstudio.alarm.beast;singleton:=true
@@ -19,6 +20,6 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
 Export-Package: org.csstudio.alarm.beast,
  org.csstudio.alarm.beast.client,
  org.csstudio.alarm.beast.ui.clientmodel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: javax.jms,
  org.csstudio.java.time

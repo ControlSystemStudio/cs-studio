@@ -21,4 +21,4 @@ Export-Package: org.csstudio.swt.chart,
  org.csstudio.swt.chart.test
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.swt.chart.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

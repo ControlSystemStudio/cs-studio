@@ -12,11 +12,11 @@
    <feature id="org.csstudio.core.trayicon.feature.source">
       <category name="org.csstudio.category.core"/>
    </feature>
-   <feature id="org.csstudio.core.utility.rap.feature">
+   <!-- <feature id="org.csstudio.core.utility.rap.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.core.utility.rap.feature.source">
       <category name="org.csstudio.category.core"/>
-   </feature>
+   </feature> -->
    <category-def name="org.csstudio.category.core" label="CS-Studio Core"/>
 </site>

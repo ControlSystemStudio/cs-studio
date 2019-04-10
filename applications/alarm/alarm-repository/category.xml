@@ -9,9 +9,6 @@
    <feature id="org.csstudio.alarm.beast.ui.alarmtable.opiwidget.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.alarm.beast.ui.rap.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.alarm.diirt.datasource.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

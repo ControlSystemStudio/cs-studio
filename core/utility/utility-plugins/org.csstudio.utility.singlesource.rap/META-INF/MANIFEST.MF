@@ -4,7 +4,7 @@ Bundle-Name: Rap implementation for utility.singlesource
 Bundle-SymbolicName: org.csstudio.utility.singlesource.rap;singleton:=true
 Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Xihui Chen <SNS-chenx1@ornl.gov>
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.rap.core;bundle-version="1.0.0",
  org.eclipse.rap.rwt

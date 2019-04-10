@@ -30,7 +30,7 @@
     <module>org.csstudio.alarm.beast.ui.alarmtree</module>
     <module>org.csstudio.alarm.beast.ui.areapanel</module>
     <module>org.csstudio.alarm.beast.ui.globaltable</module>
-    <module>org.csstudio.alarm.beast.ui.rap</module>
+<!--     <module>org.csstudio.alarm.beast.ui.rap</module> -->
     <module>org.csstudio.alarm.beast.ui.test</module>
     <module>org.csstudio.alarm.intro</module>
     <module>org.csstudio.logging.jms2rdb</module>

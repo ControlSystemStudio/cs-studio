@@ -11,7 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.Writer;
 
 /** Encode (Buffered)Reader input as Base64 and write to PrintStream.
  *  <p>
@@ -30,7 +30,7 @@ public class Base64Encoder
     private static final String base64code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; //$NON-NLS-1$
 
     /** Where generated base64 output is written */
-    final private PrintStream _out;
+    final private Writer _out;
 
     /** Chars within a line to handle line breaks */
     private int charcount = 0;
@@ -38,7 +38,7 @@ public class Base64Encoder
     /** Initialize
      *  @param out Output stream for generated Bas64 text
      */
-    public Base64Encoder(final PrintStream out)
+    public Base64Encoder(final Writer out)
     {
         this._out = out;
     }
@@ -101,14 +101,15 @@ public class Base64Encoder
         }
     }
 
-    /** @param chr Char to append to output, handling line wraps */
-    private void print(final char chr)
+    /** @param chr Char to append to output, handling line wraps
+     * @throws IOException */
+    private void print(final char chr) throws IOException
     {
-        _out.print(chr);
+        _out.write(chr);
         if (++charcount <= LINE_WIDTH) {
             return;
         }
-        _out.println();
+        _out.write("\n");
         charcount = 0;
     }
 }

@@ -3,10 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Diirt Help
 Bundle-SymbolicName: org.csstudio.diirt.help;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.help.ui;bundle-version="4.0.100",
  org.eclipse.help.webapp;bundle-version="3.7.0",
  org.diirt.datasource-loc;bundle-version="3.0.1"
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
+

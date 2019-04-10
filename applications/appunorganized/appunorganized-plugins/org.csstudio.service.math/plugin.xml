@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.csstudio.utility.pvmanager.service">
-      <service
-            name="math"
-            service="org.csstudio.service.math.MathService">
-      </service>
-   </extension>
 
 </plugin>

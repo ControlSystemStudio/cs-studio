@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.dom.svg.SVGOMAnimateElement;
+import org.apache.batik.anim.dom.SVGOMAnimateElement;
 import org.csstudio.utility.batik.Activator;
 import org.eclipse.swt.graphics.Color;
 import org.w3c.dom.svg.SVGAnimateElement;

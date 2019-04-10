@@ -10,13 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.7.0";resolution:=optional,
  org.eclipse.gef;bundle-version="3.9.100";resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
- org.eclipse.rap.ui.views;resolution:=optional,
- org.eclipse.rap.gef;resolution:=optional,
- org.eclipse.rap.draw2d;resolution:=optional,
- org.eclipse.rap.draw2d.compatibility;resolution:=optional,
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.opibuilder;bundle-version="3.2.16",
  org.csstudio.swt.xygraph;bundle-version="2.0.3",
  org.csstudio.swt.widgets,
@@ -26,7 +20,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.csdata;bundle-version="3.2.0",
  org.jdom,
  org.eclipse.core.expressions
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.widgets,
  org.csstudio.opibuilder.widgets.actions,

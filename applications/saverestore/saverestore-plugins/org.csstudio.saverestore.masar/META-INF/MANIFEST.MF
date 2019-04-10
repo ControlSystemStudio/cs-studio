@@ -4,7 +4,7 @@ Bundle-Name: Save And Restore Git
 Bundle-SymbolicName: org.csstudio.saverestore.masar;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: FRIB
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
  org.csstudio.saverestore;bundle-version="1.1.0",

@@ -5,7 +5,7 @@ Bundle-Description: Support for reading archived data from InfluxDB Database
 Bundle-SymbolicName: org.csstudio.archive.reader.influxdb;singleton:=true
 Bundle-Version: 4.2.1.qualifier
 Bundle-Vendor: Megan Grodowitz <grodowitzml@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;resolution:=optional,
  org.csstudio.archive.reader;bundle-version="3.2.0",

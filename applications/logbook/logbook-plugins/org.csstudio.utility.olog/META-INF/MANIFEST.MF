@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  edu.msu.nscl.olog.api;bundle-version="2.2.8",
  org.csstudio.security;bundle-version="1.0.0",
  org.csstudio.logbook;bundle-version="3.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.utility.olog
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Description: Provides the common Olog client for CSS.
