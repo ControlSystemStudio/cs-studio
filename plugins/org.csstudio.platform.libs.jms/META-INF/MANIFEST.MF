@@ -23,3 +23,4 @@ Export-Package: com.thoughtworks.xstream,
  org.csstudio.platform.libs.jms,
  org.csstudio.platform.libs.jms.preferences
 Bundle-Vendor: Desy <css-developer@desy.de>, Markus Moeller
+Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.platform.libs.hibernate
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.hibernate.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
  libs/antlr-2.7.6.jar,
