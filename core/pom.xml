@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
-  materials are made available under the terms of the Eclipse Distribution 
-  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying
+  materials are made available under the terms of the Eclipse Distribution
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php
   Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -100,7 +100,7 @@
           <url>${download.root}/maven-osgi-bundles/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
-        <!-- Adding the core to enable building the individual child modules 
+        <!-- Adding the core to enable building the individual child modules
           which might depend on each other -->
         <repository>
           <id>csstudio-core</id>
@@ -219,7 +219,7 @@
             </baselineRepositories>
           </configuration>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -285,14 +285,14 @@
                 <id>com.google.guava</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import packages javax.servlet and 
+              <!-- Needed to satisfy the import packages javax.servlet and
                 javax.servlet.http required by the plugin org.csstudio.rap.core -->
               <requirement>
                 <type>eclipse-plugin</type>
                 <id>javax.servlet</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import package org.eclipse.ui.parts 
+              <!-- Needed to satisfy the import package org.eclipse.ui.parts
                 required by the plugin org.csstudio.ui.util -->
               <requirement>
                 <type>eclipse-plugin</type>
@@ -362,10 +362,10 @@
               <version>11</version>
             </extraClasspathElement>
           </extraClasspathElements>
-          <!-- We don't commit the project settings files (.settings/org.eclipse.jdt.core.prefs), 
+          <!-- We don't commit the project settings files (.settings/org.eclipse.jdt.core.prefs),
             so we don't want the Eclipse defaults affecting the build. -->
           <useProjectSettings>false</useProjectSettings>
-          <!-- This is to avoid errors when using restricted API from sun.*: 
+          <!-- This is to avoid errors when using restricted API from sun.*:
             org.csstudio.rap.core, org.csstudio.security -->
           <compilerArgument>-err:-forbidden</compilerArgument>
         </configuration>
@@ -375,7 +375,7 @@
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--Some project include things that no longer exists. This should 
+          <!--Some project include things that no longer exists. This should
             be fixed, but for now this parameter lets the build continue. -->
           <strictBinIncludes>false</strictBinIncludes>
         </configuration>
@@ -391,7 +391,7 @@
               <goal>plugin-source</goal>
             </goals>
             <configuration>
-              <!--Some project include things that no longer exists. This 
+              <!--Some project include things that no longer exists. This
                 should be fixed, but for now this parameter lets the build continue. -->
               <strictSrcIncludes>false</strictSrcIncludes>
             </configuration>
