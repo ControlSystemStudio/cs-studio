@@ -69,7 +69,7 @@ public class EMailSender
 
     /**
      * @param text Message body, added to email
-     * @throws IOException 
+     * @throws IOException
      */
     public void addText(final String text) throws IOException
     {

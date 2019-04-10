@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
-  materials are made available under the terms of the Eclipse Distribution 
-  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying
+  materials are made available under the terms of the Eclipse Distribution
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php
   Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -105,7 +105,7 @@
           <url>${download.root}/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
-        <!-- Adding the applications repositories to allows child modules 
+        <!-- Adding the applications repositories to allows child modules
           to depend on each other -->
         <repository>
           <id>csstudio-applications</id>
@@ -225,7 +225,7 @@
             </baselineRepositories>
           </configuration>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -282,14 +282,14 @@
                 <id>com.sun.mail.javax.mail</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import packages javax.servlet and 
+              <!-- Needed to satisfy the import packages javax.servlet and
                 javax.servlet.http required by the plugin org.csstudio.alarm.beast.ui.rap -->
               <requirement>
                 <type>eclipse-plugin</type>
                 <id>javax.servlet</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
-              <!-- Needed to satisfy the import package org.eclipse.ui.parts 
+              <!-- Needed to satisfy the import package org.eclipse.ui.parts
                 required by the plugin org.csstudio.logbook.olog.properties -->
               <requirement>
                 <type>eclipse-plugin</type>
@@ -364,10 +364,10 @@
               <version>11</version>
             </extraClasspathElement>
           </extraClasspathElements>
-          <!-- We don't commit the project settings files (.settings/org.eclipse.jdt.core.prefs), 
+          <!-- We don't commit the project settings files (.settings/org.eclipse.jdt.core.prefs),
             so we don't want the Eclipse defaults affecting the build. -->
           <useProjectSettings>false</useProjectSettings>
-          <!-- This is to avoid errors when using restricted API from org.ecpics.vtype, 
+          <!-- This is to avoid errors when using restricted API from org.ecpics.vtype,
             and sun.* -->
           <compilerArgument>-err:-forbidden</compilerArgument>
         </configuration>
@@ -377,7 +377,7 @@
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--Some project include things that no longer exists. This should 
+          <!--Some project include things that no longer exists. This should
             be fixed, but for now this parameter lets the build continue. -->
           <strictBinIncludes>false</strictBinIncludes>
           <environments>
@@ -410,7 +410,7 @@
               <goal>plugin-source</goal>
             </goals>
             <configuration>
-              <!--Some project include things that no longer exists. This 
+              <!--Some project include things that no longer exists. This
                 should be fixed, but for now this parameter lets the build continue. -->
               <strictSrcIncludes>false</strictSrcIncludes>
             </configuration>
@@ -434,10 +434,10 @@
         </configuration>
       </plugin>
       <!-- Used for collecting tests results before sending them to Sonar. -->
-      <!-- <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
-        <version>0.5.3.201107060350</version> <configuration> <includes>*</includes> 
-        <destFile>${project.basedir}/../target/jacoco.exec</destFile> </configuration> 
-        <executions> <execution> <goals> <goal>prepare-agent</goal> </goals> </execution> 
+      <!-- <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.5.3.201107060350</version> <configuration> <includes>*</includes>
+        <destFile>${project.basedir}/../target/jacoco.exec</destFile> </configuration>
+        <executions> <execution> <goals> <goal>prepare-agent</goal> </goals> </execution>
         </executions> </plugin> -->
     </plugins>
   </build>

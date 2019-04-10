@@ -101,7 +101,7 @@ public class Base64Encoder
         }
     }
 
-    /** @param chr Char to append to output, handling line wraps 
+    /** @param chr Char to append to output, handling line wraps
      * @throws IOException */
     private void print(final char chr) throws IOException
     {
