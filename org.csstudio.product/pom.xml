@@ -5,7 +5,8 @@
   Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.csstudio</groupId>
   <artifactId>product</artifactId>
@@ -20,10 +21,11 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.0.0</tycho.version>
+    <tycho.version>1.3.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
     <cs-studio.version>4.6</cs-studio.version>
-    <diirt.version>3.1.7</diirt.version>
+    <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
+    <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <cs-studio-central.url>http://download.controlsystemstudio.org/product/${cs-studio.version}</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -44,20 +46,6 @@
     <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
   </properties>
 
-  <!-- PLUGIN REPOSITORIES -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>tycho</id>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <!-- Profiles -->
   <profiles>
     <profile>
@@ -68,12 +56,10 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>http://download.eclipse.org/releases/oxygen</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.7</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/3.0</rap-site>
-        <rap-incubator-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150327-1849</rap-incubator-site>
-        <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
-        <efx-site>http://download.eclipse.org/efxclipse/runtime-released/2.4.0/site</efx-site>
+        <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
+        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-nightly/site</efx-site>
+        <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository</openjfx-site>
       </properties>
     </profile>
     <profile>
@@ -121,21 +107,6 @@
       org.eclipse.draw2d_3.9.101.201408150207 is forced over never versions of 
       plugin -->
     <profile>
-      <id>issue-1818</id>
-      <activation>
-        <property>
-          <name>issue-1818</name>
-        </property>
-      </activation>
-      <repositories>
-        <repository>
-          <id>csstudio-issue-1818</id>
-          <url>http://download.controlsystemstudio.org/issue/1818</url>
-          <layout>p2</layout>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
       <id>cs-studio</id>
       <activation>
         <property>
@@ -146,11 +117,6 @@
         <repository>
           <id>csstudio-updates</id>
           <url>http://download.controlsystemstudio.org/updates/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-        <repository>
-          <id>csstudio-issue-1818</id>
-          <url>http://download.controlsystemstudio.org/issue/1818</url>
           <layout>p2</layout>
         </repository>
       </repositories>
@@ -168,28 +134,13 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>rap</id>
-      <url>${rap-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>rap-incubator</id>
-      <url>${rap-incubator-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>orbit</id>
-      <url>${orbit-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
       <id>efx</id>
       <url>${efx-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>diirt</id>
-      <url>http://diirt.download.controlsystemstudio.org/diirt/${diirt.version}</url>
+      <id>openjfx</id>
+      <url>${openjfx-site}</url>
       <layout>p2</layout>
     </repository>
   </repositories>

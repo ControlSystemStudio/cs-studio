@@ -4,11 +4,11 @@
         <profile>
             <id>css-settings</id>
             <repositories>
-                <repository>
+		    <!--<repository>
                     <id>csstudio-issue-1818</id>
                     <url>http://download.controlsystemstudio.org/issue/1818</url>
                     <layout>p2</layout>
-                </repository>
+		</repository>-->
             </repositories>
             <properties>
                 <!-- Optionally, configure a composite repo.

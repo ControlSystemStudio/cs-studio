@@ -19,9 +19,10 @@
    </license>
 
    <plugin
-         id="org.eclipse.draw2d"
+         id="openjfx.swt"
          download-size="0"
          install-size="0"
-         version="3.9.101.201408150207"
-         unpack="false"/> 
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
