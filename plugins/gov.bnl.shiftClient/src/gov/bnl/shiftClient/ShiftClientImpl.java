@@ -227,14 +227,20 @@ public class ShiftClientImpl implements ShiftClient {
     }
     private ShiftClientImpl(final URI shiftURI, ClientConfig config, final boolean withHTTPBasicAuthFilter,
                             final String username, final String password, final ExecutorService executor) {
-        this.executor = executor;
-        config.getClasses().add(MultiPartWriter.class);
-        final Client client = Client.create(config);
-        if (withHTTPBasicAuthFilter) {
-            client.addFilter(new HTTPBasicAuthFilter(username, password));
-        }
-        client.setFollowRedirects(true);
-        service = client.resource(UriBuilder.fromUri(shiftURI).build());
+            this.executor = executor;
+            config.getClasses().add(MultiPartWriter.class);
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(Client.class.getClassLoader());
+            try {
+                final Client client = Client.create(config);
+                if (withHTTPBasicAuthFilter) {
+                    client.addFilter(new HTTPBasicAuthFilter(username, password));
+                }
+                client.setFollowRedirects(true);
+                service = client.resource(UriBuilder.fromUri(shiftURI).build());
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
+            }
     }
 
     @Override

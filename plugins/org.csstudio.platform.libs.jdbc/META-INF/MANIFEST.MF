@@ -37,7 +37,6 @@ Export-Package: com.mysql.cj.jdbc,
  oracle.sql,
  oracle.sql.converter,
  org.csstudio.platform.libs.jdbc,
- org.gjt.mm.mysql,
  org.postgresql,
  org.postgresql.copy,
  org.postgresql.core

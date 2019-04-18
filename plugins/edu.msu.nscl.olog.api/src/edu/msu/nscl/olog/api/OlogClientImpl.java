@@ -252,16 +252,22 @@ public class OlogClientImpl implements OlogClient {
 	private OlogClientImpl(URI ologURI, ClientConfig config,
 			boolean withHTTPBasicAuthFilter, String username, String password,
 			ExecutorService executor) {
-		this.executor = executor;
-		config.getClasses().add(MultiPartWriter.class);
-		Client client = Client.create(config);
-		if (withHTTPBasicAuthFilter) {
-			client.addFilter(new HTTPBasicAuthFilter(username, password));
-		}
-		client.addFilter(new RawLoggingFilter(Logger
-				.getLogger(OlogClientImpl.class.getName())));
-		client.setFollowRedirects(true);
-		service = client.resource(UriBuilder.fromUri(ologURI).build());
+                this.executor = executor;
+                config.getClasses().add(MultiPartWriter.class);
+                ClassLoader old = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(Client.class.getClassLoader());
+                try {
+                    Client client = Client.create(config);
+                    if (withHTTPBasicAuthFilter) {
+                        client.addFilter(new HTTPBasicAuthFilter(username, password));
+                    }
+                    client.addFilter(new RawLoggingFilter(Logger.getLogger(OlogClientImpl.class.getName())));
+                    client.setFollowRedirects(true);
+                    service = client.resource(UriBuilder.fromUri(ologURI).build());
+                } finally {
+                    Thread.currentThread().setContextClassLoader(old);
+                }
+
 	}
 
 	@Override

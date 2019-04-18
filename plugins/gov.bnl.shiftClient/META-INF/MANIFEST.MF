@@ -7,12 +7,14 @@ Bundle-Activator: org.csstudio.utility.shift.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: gov.bnl.shiftClient
 Require-Bundle: org.eclipse.core.runtime,
- com.sun.jersey.bundle;bundle-version="1.19.0",
  jaxb-api;bundle-version="2.3.1",
  javax.activation;bundle-version="1.1.1",
  javax.activation-api;bundle-version="1.2.0",
- com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1"
+ com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1",
+ com.sun.jersey.bundle;bundle-version="1.19.0"
 Bundle-ClassPath: lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: com.sun.xml.bind.v2
+Import-Package: com.sun.istack,
+ com.sun.xml.bind.v2,
+ javax.ws.rs.core
