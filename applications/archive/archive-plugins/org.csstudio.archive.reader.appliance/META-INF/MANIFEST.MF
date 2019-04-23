@@ -5,12 +5,14 @@ Bundle-SymbolicName: org.csstudio.archive.reader.appliance;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.csstudio.archive.reader.appliance.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.archive.reader;bundle-version="3.2.0",
- org.csstudio.apputil;bundle-version="3.0.2",
  org.eclipse.help,
- org.diirt.util,
+ org.csstudio.archive.reader,
+ org.csstudio.apputil,
  org.csstudio.archive.vtype,
- org.diirt.vtype
+ org.diirt.util,
+ org.diirt.vtype,
+ com.sun.xml.bind.jaxb-impl,
+ jaxb-api
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Miha Novak <miha.novak@cosylab.com>
