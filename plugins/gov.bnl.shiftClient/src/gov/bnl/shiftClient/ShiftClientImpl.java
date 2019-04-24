@@ -410,6 +410,8 @@ public class ShiftClientImpl implements ShiftClient {
 	
 
     private <T> T wrappedSubmit(final Callable<T> callable) {
+        final ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(ShiftClientImpl.class.getClassLoader());
         try {
             return this.executor.submit(callable).get();
         } catch (InterruptedException e) {
@@ -421,6 +423,8 @@ public class ShiftClientImpl implements ShiftClient {
                         (UniformInterfaceException) e.getCause());
             }
             throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
         }
     }
 
