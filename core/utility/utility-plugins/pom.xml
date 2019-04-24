@@ -12,6 +12,7 @@
     <module>org.csstudio.data</module>
     <module>org.csstudio.data.test</module>
     <module>org.csstudio.logging</module>
+    <module>org.csstudio.logging.es</module>
     <module>org.csstudio.logging.test</module>
     <module>org.csstudio.logging.ui</module>
     <module>org.csstudio.openfile</module>
@@ -25,6 +26,7 @@
     <module>org.csstudio.startup.helper</module>
     <module>org.csstudio.trayicon</module>
     <module>org.csstudio.utility.batik</module>
+    <module>org.csstudio.utility.esclient</module>
     <module>org.csstudio.utility.product</module>
     <module>org.csstudio.utility.product.test</module>
     <module>org.csstudio.utility.product.default</module>

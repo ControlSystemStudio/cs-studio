@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="%MsgHist"
+            icon="icons/msg_hist.gif"
+            category="org.csstudio"
+            class="org.csstudio.logging.es.MessageHistoryView"
+            id="org.csstudio.logging.es.MessageHistoryView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.logging.es.PreferencePage"
+            id="org.csstudio.logging.es.PreferencePage"
+            name="%MsgHist">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+   </extension>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Others"
+            editpart_class="org.csstudio.logging.es.widget.LogviewEditPart"
+            icon="icons/logbook.png"
+            model_class="org.csstudio.logging.es.widget.LogviewModel"
+            name="Message Log Display"
+            typeId="org.csstudio.logging.es.widget">
+      </widget>
+   </extension>
+</plugin>

@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Message History
+Bundle-SymbolicName: org.csstudio.logging.es;singleton:=true
+Bundle-Description: Table viewer for CSS Message log (Elasticsearch version)
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Michael Ritzert <michael.ritzert@ziti.uni-heidelberg.de>
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.gef,
+ org.eclipse.ui,
+ org.eclipse.ui.views,
+ com.sun.jersey.bundle,
+ org.csstudio.ui.util,
+ org.csstudio.apputil,
+ org.csstudio.apputil.ui,
+ org.csstudio.opibuilder,
+ org.csstudio.security,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.utility.singlesource
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.logging.es.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.csstudio.logging.es
+Import-Package: javax.ws.rs.core,
+ org.csstudio.logging,
+ org.csstudio.opibuilder.widgets.figures,
+ org.csstudio.platform.utility.jms,
+ org.csstudio.utility.esclient;version="[1.0.0,2.0.0)",
+ org.json
+Export-Package: org.csstudio.logging.es;version="1.0.0",
+ org.csstudio.logging.es.model;version="1.0.0",
+ org.csstudio.logging.es.util;version="1.0.0"
