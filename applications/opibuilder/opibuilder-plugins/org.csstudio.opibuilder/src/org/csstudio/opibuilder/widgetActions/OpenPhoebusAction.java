@@ -8,8 +8,13 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -71,7 +76,13 @@ public class OpenPhoebusAction extends AbstractWidgetAction
         {
             try {
                 File file = ResourceUtil.getFile(absolutePath);
-                PhoebusLauncherService.launchResource(file.getAbsolutePath());
+                URI uri = file.toURI();
+                LinkedHashMap<String, String> macros = getMacrosInput().getMacrosMap();
+                String query = macros.entrySet().stream().map((e) -> {
+                    return e.getKey().strip() + "=" + e.getValue().strip();
+                }).collect(Collectors.joining("&"));
+                URI uri_with_macros = new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), query, uri.getFragment());
+                PhoebusLauncherService.launchResource(uri_with_macros.toString());
             } catch (Exception e) {
                 final String error = NLS.bind("Error {0} opening file {1} does not exist.",
                         e.getLocalizedMessage(),
