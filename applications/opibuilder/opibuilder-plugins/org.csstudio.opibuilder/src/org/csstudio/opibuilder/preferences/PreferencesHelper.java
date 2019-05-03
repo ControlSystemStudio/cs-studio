@@ -95,6 +95,9 @@ public class PreferencesHelper {
     public static final String PIXELS = "pixels";
     public static final String POINTS = "points";
 
+    public static final String USE_PHOEBUS = "use_phoebus";
+    public static final String PHOEBUS_RESOURCES = "phoebus_resources";
+
      /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -500,5 +503,29 @@ public class PreferencesHelper {
     public static boolean isAboutShowLinks(){
           final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, ABOUT_SHOW_LINKS, true, null);
+    }
+
+    /**
+     * @return true if phoebus integration is available
+     */
+    public static boolean isPhoebusIntegrated(){
+          final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, USE_PHOEBUS, false, null);
+    }
+
+    /**
+     * @return String[] list of resource types supported by phoebus
+     */
+    public static String[] supportedResourcesPhoebus(){
+          String resources = getString(PHOEBUS_RESOURCES);
+
+          if(resources == null || resources.trim().isEmpty())
+              resources = "bob";
+          try {
+              return StringSplitter.splitIgnoreInQuotes(resources, ITEM_SEPARATOR, true);
+          } catch (Exception e) {
+              ErrorHandlerUtil.handleError("Failed to parse hidden_widgets preference", e);
+              return null;
+          }
     }
 }
