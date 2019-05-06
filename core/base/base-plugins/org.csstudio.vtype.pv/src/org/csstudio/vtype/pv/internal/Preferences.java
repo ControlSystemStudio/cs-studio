@@ -38,4 +38,12 @@ public class Preferences
         return getString(PVPlugin.ID, "mqtt_broker", MQTT_PVFactory.BROKER_URL);
     }
 
+    public static boolean isPrintPVPoolContentOnRelease()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return false;
+        return service.getBoolean(PVPlugin.ID, "print_pvpool_content_on_release", false, null);
+    }
+
 }
