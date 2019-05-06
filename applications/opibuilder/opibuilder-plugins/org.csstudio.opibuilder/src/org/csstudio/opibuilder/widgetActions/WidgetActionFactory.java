@@ -47,7 +47,7 @@ public class WidgetActionFactory {
             // Map legacy actions
             if ("OPEN_OPI_IN_VIEW".equals(actionString))
                 return OPEN_DISPLAY;
-            
+
             for(ActionType type : values()){
                 if(actionString.equals(type.toString()))
                     return type;

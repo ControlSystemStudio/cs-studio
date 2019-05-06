@@ -9,12 +9,9 @@ package org.csstudio.opibuilder.widgetActions;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -89,7 +86,6 @@ public class OpenPhoebusAction extends AbstractWidgetAction
                         getPath().toString());
                 ConsoleService.getInstance().writeError(error);
                 MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error", error);
-            
             }
         }
         else
