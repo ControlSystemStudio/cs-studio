@@ -184,6 +184,17 @@ public class PVPool
         }
         if (references == 0)
             pv.close();
+
+		System.out.println("PV Pool after release:");
+
+		if ( getPVReferences().isEmpty() ) {
+			System.out.println("  <empty>");
+		} else {
+			for ( ReferencedEntry<PV> ref : getPVReferences() ) {
+				System.out.println("  " + ref);
+			}
+		}
+
     }
 
     /** @return PVs currently in the pool with reference count information */
