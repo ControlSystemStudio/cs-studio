@@ -524,7 +524,7 @@ public class PreferencesHelper {
           try {
               return StringSplitter.splitIgnoreInQuotes(resources, ITEM_SEPARATOR, true);
           } catch (Exception e) {
-              ErrorHandlerUtil.handleError("Failed to parse hidden_widgets preference", e);
+              ErrorHandlerUtil.handleError("Failed to parse phoebus_resources preference", e);
               return null;
           }
     }
