@@ -27,7 +27,8 @@ public class WidgetActionFactory {
         EXECUTE_PYTHONSCRIPT("Execute Python Script", createImage("icons/exePy.gif")),//$NON-NLS-2$
         PLAY_SOUND("Play WAV File", createImage("icons/sound.gif")),//$NON-NLS-2$
         OPEN_FILE("Open File", createImage("icons/openFile.png")),//$NON-NLS-2$
-        OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif"));//$NON-NLS-2$
+        OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif")),//$NON-NLS-2$
+        OPEN_PHOEBUS("Open Phoebus", createImage("icons/css16.png"));//$NON-NLS-2$
 
         private ImageDescriptor iconImage;
         private String description;
@@ -46,6 +47,7 @@ public class WidgetActionFactory {
             // Map legacy actions
             if ("OPEN_OPI_IN_VIEW".equals(actionString))
                 return OPEN_DISPLAY;
+
             for(ActionType type : values()){
                 if(actionString.equals(type.toString()))
                     return type;
@@ -100,6 +102,8 @@ public class WidgetActionFactory {
             return new OpenWebpageAction();
         case PLAY_SOUND:
             return new PlayWavFileAction();
+        case OPEN_PHOEBUS:
+            return new OpenPhoebusAction();
         default:
             break;
         }
