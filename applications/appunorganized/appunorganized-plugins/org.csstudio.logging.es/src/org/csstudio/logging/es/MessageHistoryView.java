@@ -16,7 +16,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Eclipse View for the Message History
- * 
+ *
  * @author Kay Kasemir
  * @author Xihui Chen
  */

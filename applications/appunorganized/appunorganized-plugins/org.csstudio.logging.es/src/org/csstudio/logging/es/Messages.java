@@ -11,7 +11,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Externalized Strings
- * 
+ *
  * @author Kay Kasemir
  * @author Eclipse String Externalization Wiard
  */

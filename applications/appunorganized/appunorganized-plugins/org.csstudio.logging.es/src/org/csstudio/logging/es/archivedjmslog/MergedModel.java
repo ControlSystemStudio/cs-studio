@@ -208,9 +208,9 @@ public class MergedModel<T extends LogMessage>
 
     /**
      * Define the filters to use when receiving messages.
-     * 
+     *
      * The model will be updates from the archive.
-     * 
+     *
      * @param filters
      *            The new filter definitions.
      */
@@ -230,7 +230,7 @@ public class MergedModel<T extends LogMessage>
 
     /**
      * Define the time interval to represent in the model.
-     * 
+     *
      * @param start_spec
      *            The start time.
      * @param end_spec

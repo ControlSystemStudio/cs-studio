@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Settings for a "Severity" table column, how to color-code them.
- * 
+ *
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -29,7 +29,7 @@ public class SeverityColumnPreference implements DisposeListener
 {
     /**
      * Name of the preference setting.
-     * 
+     *
      * @see #DEFAULT_SETTING
      */
     private static final String SEVERITY_COLORS = "severity_colors";
@@ -42,7 +42,7 @@ public class SeverityColumnPreference implements DisposeListener
 
     /**
      * Constructor, reads severity color preferences.
-     * 
+     *
      * @param parent
      *            Used to dispose colors via DisposeListener
      * @throws Exception
@@ -102,7 +102,7 @@ public class SeverityColumnPreference implements DisposeListener
 
     /**
      * Dispose all colors.
-     * 
+     *
      * @see DisposeListener
      */
     @Override

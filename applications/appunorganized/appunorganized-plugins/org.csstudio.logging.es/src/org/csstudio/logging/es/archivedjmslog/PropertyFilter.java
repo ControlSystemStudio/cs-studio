@@ -7,7 +7,7 @@ public abstract class PropertyFilter
 {
     /**
      * Check if a LogMessage matches the defined filter condition.
-     * 
+     *
      * @param msg
      *            The LogMessage to check.
      * @return {@code true}, iff the message matches the filter condition.
@@ -20,7 +20,7 @@ public abstract class PropertyFilter
 
     /**
      * Check if a LogMessage matches the defined filter condition.
-     * 
+     *
      * @param msgInfo
      *            The function to use to access the LogMessage's properties.
      * @return {@code true}, iff the message matches the filter condition.
@@ -29,11 +29,11 @@ public abstract class PropertyFilter
 
     /**
      * Return the inverted property of the filter.
-     * 
+     *
      * The inversion is already considered in the result of
      * {@link PropertyFilter#match(LogMessage)} and
      * {@link PropertyFilter#match(Function).
-     * 
+     *
      * @return The value of the inverted property.
      */
     public boolean isInverted()

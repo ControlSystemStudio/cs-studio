@@ -28,7 +28,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Action for exporting current messages from model to file
- * 
+ *
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -36,7 +36,7 @@ public class ExportAction extends Action
 {
     /**
      * Dump one message
-     * 
+     *
      * @param out
      *            PrintStream
      * @param properties
@@ -73,7 +73,7 @@ public class ExportAction extends Action
      * Individual messages can have arbitrary properties. To support a
      * spreadsheet-type message dump, this routine gathers all the used
      * properties of all messages.
-     * 
+     *
      * @param messages
      *            All the messages
      * @return Array of property names

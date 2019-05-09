@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 /**
  * ViewerComparator (= table sorter) that compares a single property.
- * 
+ *
  * @author Kay Kasemir
  */
 public class MessagePropertyComparator extends ViewerComparator
@@ -27,7 +27,7 @@ public class MessagePropertyComparator extends ViewerComparator
 
     /**
      * Initialize comparator
-     * 
+     *
      * @param property
      *            Name of the Message property to compare
      * @param up

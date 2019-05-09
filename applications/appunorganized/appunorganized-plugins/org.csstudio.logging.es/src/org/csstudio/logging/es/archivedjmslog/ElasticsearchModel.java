@@ -19,10 +19,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * 
+ *
  * Default filtering is by time stamp. It is assumed that the used index
  * includes a field of type date that represents this time stamp.
- * 
+ *
  * @author Michael Ritzert <michael.ritzert@ziti.uni-heidelberg.de>
  */
 public class ElasticsearchModel<T extends LogMessage> extends ArchiveModel<T>
@@ -58,7 +58,7 @@ public class ElasticsearchModel<T extends LogMessage> extends ArchiveModel<T>
 
     /**
      * Build the query to be sent to the Elasticsearch server.
-     * 
+     *
      * As a default, only filtering by the time stamp and limiting the number of
      * results is implemented. Override to change the query.
      */
@@ -198,7 +198,7 @@ public class ElasticsearchModel<T extends LogMessage> extends ArchiveModel<T>
         {
             // Cancel a job that might already be running
             if (null != this.queryJob) this.queryJob.cancel();
-            this.queryJob = new Job("ES query")
+            this.queryJob = new Job("ES query") //$NON-NLS-1$
             {
                 @Override
                 protected IStatus run(IProgressMonitor monitor)

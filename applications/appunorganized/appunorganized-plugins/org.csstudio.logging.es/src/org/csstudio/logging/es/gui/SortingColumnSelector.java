@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.TableColumn;
 /**
  * Abstract base for a Listener to table column selections, sorting the table on
  * a column.
- * 
+ *
  * @author Kay Kasemir
  */
 abstract public class SortingColumnSelector extends SelectionAdapter
@@ -27,7 +27,7 @@ abstract public class SortingColumnSelector extends SelectionAdapter
 
     /**
      * Initialize
-     * 
+     *
      * @param table_viewer
      *            Table viewer
      * @param column
@@ -42,7 +42,7 @@ abstract public class SortingColumnSelector extends SelectionAdapter
 
     /**
      * To be implemented by derived class: Sort the table.
-     * 
+     *
      * @param up
      *            Sort 'up' or 'down'?
      */

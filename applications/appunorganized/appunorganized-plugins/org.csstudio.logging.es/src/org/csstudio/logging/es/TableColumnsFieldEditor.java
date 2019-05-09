@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Preference dialog field editor for property columns
- * 
+ *
  * @author Kay Kasemir
  */
 public class TableColumnsFieldEditor extends FieldEditor
@@ -31,7 +31,7 @@ public class TableColumnsFieldEditor extends FieldEditor
 
     /**
      * Initialize
-     * 
+     *
      * @param parent
      *            Parent Widget
      */
@@ -118,7 +118,7 @@ public class TableColumnsFieldEditor extends FieldEditor
 
     /**
      * Update the column preferences shown in the GUI
-     * 
+     *
      * @param column_prefs
      *            Column prefs to show
      */

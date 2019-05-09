@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * CellLabelProvider that fills cell with a property of a Message.
- * 
+ *
  * @author Kay Kasemir
  */
 public class PropertyLabelProvider extends CellLabelProvider
@@ -28,7 +28,7 @@ public class PropertyLabelProvider extends CellLabelProvider
 
     /**
      * Create label provider for Message
-     * 
+     *
      * @param property
      *            Name of property to display
      */
@@ -53,7 +53,7 @@ public class PropertyLabelProvider extends CellLabelProvider
 
     /**
      * Fill table cell
-     * 
+     *
      * @see CellLabelProvider
      */
     @Override

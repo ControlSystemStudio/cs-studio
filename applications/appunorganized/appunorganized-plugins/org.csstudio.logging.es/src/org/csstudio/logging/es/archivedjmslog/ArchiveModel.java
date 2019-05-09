@@ -24,10 +24,10 @@ public abstract class ArchiveModel<T extends LogMessage> extends Model
 
     /**
      * Retrieve archived data from the given time interval.
-     * 
+     *
      * On completion of the query, the caller will be notified via the
      * {@link ArchiveModelListener#messagesRetrieved(ArchiveModel)} callback.
-     * 
+     *
      * @param from
      *            The start time.
      * @param to

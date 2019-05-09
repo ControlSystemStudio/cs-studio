@@ -14,7 +14,7 @@ public class StringPropertyMultiFilter extends PropertyFilter
 
     /**
      * Constructor
-     * 
+     *
      * @param property
      *            Property name.
      * @param patterns

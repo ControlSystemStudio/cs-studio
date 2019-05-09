@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 /**
  * Listener to table column selections, sorting the table on the selected col.
- * 
+ *
  * @author Kay Kasemir
  */
 public class PropertyColumnSortingSelector extends SortingColumnSelector
@@ -21,7 +21,7 @@ public class PropertyColumnSortingSelector extends SortingColumnSelector
 
     /**
      * Constructor
-     * 
+     *
      * @param table_viewer
      *            Table Viewer
      * @param column

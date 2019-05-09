@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog for configuring property filters.
- * 
+ *
  * @author Kay Kasemir
  */
 public class FilterDialog extends TitleAreaDialog
@@ -51,7 +51,7 @@ public class FilterDialog extends TitleAreaDialog
 
     /**
      * Construct message filter dialog
-     * 
+     *
      * @param shell
      *            Parent shell
      * @param properties

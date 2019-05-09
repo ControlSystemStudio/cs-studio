@@ -25,7 +25,7 @@ public class LiveModel<T extends LogMessage> extends Model
 
     /**
      * Initialize the model.
-     * 
+     *
      * @param receiver
      *            The JMSReceiver connected to the JMS server.
      * @param topic
@@ -125,7 +125,7 @@ public class LiveModel<T extends LogMessage> extends Model
 
     /**
      * Handle a received MapMessage.
-     * 
+     *
      * @param message
      *            The MapMessage
      * @return The parsed LogMessage.
@@ -175,11 +175,11 @@ public class LiveModel<T extends LogMessage> extends Model
 
     /**
      * Handle incoming JMS messages.
-     * 
+     *
      * The default implementation handles MapMessage objects by calling
      * {@link #handleMapMessage(MapMessage)}. Override if your message type is
      * not MapMessage.
-     * 
+     *
      * @param message
      *            The Message received via JMS.
      * @return The LogMessage to pass to the registered Listeners.

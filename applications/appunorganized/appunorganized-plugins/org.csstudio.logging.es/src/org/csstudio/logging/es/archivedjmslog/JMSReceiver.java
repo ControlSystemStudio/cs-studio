@@ -59,7 +59,7 @@ public class JMSReceiver
 
     /**
      * Initialize
-     * 
+     *
      * @param url
      *            JMS server URL
      * @param user
@@ -112,7 +112,7 @@ public class JMSReceiver
 
     /**
      * Connect to JMS; run in background thread
-     * 
+     *
      * @throws Exception
      *             on error
      */

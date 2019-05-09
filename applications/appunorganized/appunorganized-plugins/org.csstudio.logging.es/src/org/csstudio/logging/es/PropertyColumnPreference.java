@@ -18,7 +18,7 @@ public class PropertyColumnPreference
 {
     /**
      * Parse PropertyColumnPreference from preference string
-     * 
+     *
      * @param pref_string
      *            String as stored in preferences
      * @return PropertyColumnPreference
@@ -52,7 +52,7 @@ public class PropertyColumnPreference
 
     /**
      * Initialize
-     * 
+     *
      * @param name
      * @param size
      * @param weight

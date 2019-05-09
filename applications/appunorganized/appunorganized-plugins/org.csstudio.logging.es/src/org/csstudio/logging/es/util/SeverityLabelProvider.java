@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * CellLabelProvider that fills cell with property of a Message and provides
  * coloring assuming that the column displays a severity.
- * 
+ *
  * @author Kay Kasemir
  */
 public class SeverityLabelProvider extends PropertyLabelProvider
@@ -25,7 +25,7 @@ public class SeverityLabelProvider extends PropertyLabelProvider
 
     /**
      * Constructor
-     * 
+     *
      * @param property
      *            Message property to display in column
      * @param parent

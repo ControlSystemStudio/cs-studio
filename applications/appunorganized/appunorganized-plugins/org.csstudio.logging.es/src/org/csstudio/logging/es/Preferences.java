@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Access to preferences
- * 
+ *
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -32,7 +32,7 @@ public class Preferences
     /**
      * Decode the raw preference setting for column preferences into the
      * per-column settings
-     * 
+     *
      * @param pref_text
      *            Raw COLUMNS preference value, may be <code>null</code>
      * @return Array of per-column preference setting
@@ -50,7 +50,7 @@ public class Preferences
 
     /**
      * Encode per-column pref. setting to one for all columns
-     * 
+     *
      * @param col_prefs
      *            Column settings for each column
      * @return One encoded string as stored in preferences
@@ -68,7 +68,7 @@ public class Preferences
 
     /**
      * Get preference settings for column definitions
-     * 
+     *
      * @return Array of raw strings for column preferences
      * @throws Exception
      *             on error
@@ -100,7 +100,7 @@ public class Preferences
 
     /**
      * Get column definitions from preferences
-     * 
+     *
      * @return Array of <code>PropertyColumnPreference</code>
      * @throws Exception
      *             on error
