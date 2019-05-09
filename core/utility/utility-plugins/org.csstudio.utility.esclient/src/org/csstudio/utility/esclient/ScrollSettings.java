@@ -2,7 +2,7 @@ package org.csstudio.utility.esclient;
 
 /**
  * Scroll-related settings for {@link ElasticsearchClient}.
- * 
+ *
  * @author Michael Ritzert
  */
 public class ScrollSettings
@@ -12,7 +12,7 @@ public class ScrollSettings
 
     /**
      * Initialize the settings.
-     * 
+     *
      * @param timeout
      *            Timeout for the scroll context. E.g. "1m". @see <a href=
      *            "https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#time-units">Time

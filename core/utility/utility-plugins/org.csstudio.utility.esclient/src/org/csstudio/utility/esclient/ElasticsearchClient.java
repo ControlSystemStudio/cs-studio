@@ -16,17 +16,17 @@ import com.sun.jersey.api.client.ClientResponse.Status;
 
 /**
  * Synchronous client to post a query to an Elasticsearch server.
- * 
+ *
  * The query is passed in as a {@link JSONObject}. The results are returned one
  * by one to the provided callback function
  * {@link ElasticsearchClient#dataConsumer}.
- * 
+ *
  * Additionally, the entire response is passed to the
  * {@link ElasticsearchClient#responseConsumer} function, so that all metadata
  * is available to the caller.
- * 
+ *
  * Scrolling can be used if an unlimited number of results is requested.
- * 
+ *
  * @author Michael Ritzert
  */
 public class ElasticsearchClient
@@ -66,7 +66,7 @@ public class ElasticsearchClient
 
     /**
      * The {@link Client} to use for HTTP(S) requests.
-     * 
+     *
      * If this is {@code null}, the default
      * {@link com.sun.jersey.api.client.Client#create()} is used.
      */
@@ -86,7 +86,7 @@ public class ElasticsearchClient
 
     /**
      * Initialize with the required settings.
-     * 
+     *
      * @param server
      *            The URL of the Elasticsearch REST API.
      * @param dataConsumer
@@ -109,7 +109,7 @@ public class ElasticsearchClient
 
     /**
      * Expire the scroll context on the server.
-     * 
+     *
      * @param scrollId
      *            The context's scroll id. Passing {@code null} will lead to no
      *            action being performed.
@@ -134,10 +134,10 @@ public class ElasticsearchClient
 
     /**
      * Execute a query against the Elasticsearch server.
-     * 
+     *
      * If scrolling is used, and a {@code size} field is present in the query,
      * the {@code size} field is discarded.
-     * 
+     *
      * @param index
      *            The index (and optionally the mapping, separated with /) to
      *            query.
@@ -206,11 +206,11 @@ public class ElasticsearchClient
 
     /**
      * Handle the response returned by the Elasticsearch server.
-     * 
+     *
      * This method takes care of distributing the returned hits to the callback
      * function, and determines whether another query in scrolling mode needs to
      * be performed.
-     * 
+     *
      * @param result
      *            The response received from the server.
      * @return If != null, use this String to perform the next query.
@@ -286,7 +286,7 @@ public class ElasticsearchClient
 
     /**
      * Perform an HTTP query.
-     * 
+     *
      * @param uri
      *            The URI on the configured server.
      * @param method
@@ -344,13 +344,13 @@ public class ElasticsearchClient
 
     /**
      * Set the {@link Client} to use for HTTP(S) requests to the server.
-     * 
+     *
      * Use this method if the default {@link Client} configuration is not
      * suitable, e.g. because a proxy needs to be used, or an HTTP/2 connection
      * can be shared.
-     * 
+     *
      * This class does not take ownership.
-     * 
+     *
      * @param client
      *            The {@link Client} to use. {@code null} to revert to the
      *            default {@code Client.create()}.
@@ -365,16 +365,16 @@ public class ElasticsearchClient
 
     /**
      * Set the function to call with the entire result.
-     * 
+     *
      * Within this function, all metadata of the response can be accessed. This
      * function is called (once for each chunk of scrolling data) before any
      * calls to the {@link ElasticsearchClient#dataConsumer} function receiving
      * the individual hits of this result set. If {@code false} is returned by
      * the function, further processing of the result set is immediately
      * terminated.
-     * 
+     *
      * Set to {@code null} to disable the functionality.
-     * 
+     *
      * @param responseConsumer
      *            The function to set.
      */
@@ -389,9 +389,9 @@ public class ElasticsearchClient
 
     /**
      * Configure scrolling.
-     * 
+     *
      * The default setting is scrolling disabled.
-     * 
+     *
      * @param scrollSettings
      *            The scroll settings to use. Set {@code null} to deactivate
      *            scrolling.

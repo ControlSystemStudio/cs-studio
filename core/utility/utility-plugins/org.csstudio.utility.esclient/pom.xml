@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.csstudio</groupId>
-		<artifactId>utility-plugins</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
-	</parent>
-	<groupId>org.csstudio.utility</groupId>
-	<artifactId>org.csstudio.utility.esclient</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<name>Elasticsearch Client</name>
-	<description>Simple, synchronous Elasticsearch REST client.</description>
-	<packaging>eclipse-plugin</packaging>
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.csstudio</groupId>
+      <artifactId>utility-plugins</artifactId>
+      <version>4.1.0-SNAPSHOT</version>
+   </parent>
+   <groupId>org.csstudio.utility</groupId>
+   <artifactId>org.csstudio.utility.esclient</artifactId>
+   <version>1.0.0-SNAPSHOT</version>
+   <name>Elasticsearch Client</name>
+   <description>Simple, synchronous Elasticsearch REST client.</description>
+   <packaging>eclipse-plugin</packaging>
 </project>
