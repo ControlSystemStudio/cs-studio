@@ -12,7 +12,6 @@
     <module>org.csstudio.data</module>
     <module>org.csstudio.data.test</module>
     <module>org.csstudio.logging</module>
-    <module>org.csstudio.logging.es</module>
     <module>org.csstudio.logging.test</module>
     <module>org.csstudio.logging.ui</module>
     <module>org.csstudio.openfile</module>

@@ -16,6 +16,7 @@
     <module>org.csstudio.examples</module>
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
+    <module>org.csstudio.logging.es</module>
     <module>org.csstudio.rap.rtplot</module>
     <module>org.csstudio.service.channelfinder</module>
     <module>org.csstudio.service.math</module>
