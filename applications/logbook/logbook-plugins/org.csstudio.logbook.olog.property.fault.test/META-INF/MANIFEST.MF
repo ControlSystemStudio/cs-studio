@@ -6,4 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.logbook.olog.property.fault
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.11.0",
- org.hamcrest.core;bundle-version="1.1.0"
+ org.hamcrest.core;bundle-version="1.1.0",
+ jaxb-api;bundle-version="2.3.1",
+ com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1",
+ javax.activation;bundle-version="1.1.1",
+ javax.activation-api;bundle-version="1.2.0"
+Import-Package: com.sun.xml.bind.v2
