@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 import org.csstudio.swt.rtplot.internal.util.TemporalRounding;
 import org.junit.Test;
@@ -33,6 +34,11 @@ import org.junit.Test;
  */
 public class TemporalRoundingTest
 {
+
+    public TemporalRoundingTest() {
+        Locale.setDefault(Locale.US);
+    }
+
     @Test
     public void testRounding()
     {
