@@ -186,21 +186,21 @@ public class PVPool
         if (references == 0)
             pv.close();
 
-		if ( Preferences.isPrintPVPoolContentOnRelease() ) {
+        if ( Preferences.isPrintPVPoolContentOnRelease() ) {
 
-			StringBuilder builder = new StringBuilder("PV Pool after release:\n");
+            StringBuilder builder = new StringBuilder("PV Pool after release:\n");
 
-			if ( getPVReferences().isEmpty() ) {
-				builder.append("  <empty>\n");
-			} else {
-				for ( ReferencedEntry<PV> ref : getPVReferences() ) {
-					builder.append("  ").append(ref).append("\n");
-				}
-			}
+            if ( getPVReferences().isEmpty() ) {
+                builder.append("  <empty>\n");
+            } else {
+                for ( ReferencedEntry<PV> ref : getPVReferences() ) {
+                    builder.append("  ").append(ref).append("\n");
+                }
+            }
 
-			System.out.println(builder.deleteCharAt(builder.length() - 1).toString());
+            System.out.println(builder.deleteCharAt(builder.length() - 1).toString());
 
-		}
+        }
 
     }
 
