@@ -10,12 +10,26 @@ Require-Bundle: org.w3c.dom.svg,
  org.eclipse.ui;resolution:=optional,
  org.apache.commons.lang,
  org.csstudio.java,
- org.apache.xmlgraphics.batik-all;bundle-version="1.10.0",
- javax.xml
-Export-Package: org.csstudio.utility.batik
+ javax.xml,
+ org.apache.xmlgraphics.batik-bridge;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-dom;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-svg-dom;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-transcoder;bundle-version="[1.10.0,1.11.0)",
+ org.apache.batik.css;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-xml;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-awt-util;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-anim;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-gvt;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-script;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-ext;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-parser;bundle-version="[1.10.0,1.11.0)",
+ org.apache.batik.util;bundle-version="[1.10.0,1.11.0)"
+Export-Package: org.csstudio.utility.batik,
+ org.apache.batik.util;version="1.10.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Extra utils for apache batik
 Bundle-ClassPath: .
 Import-Package: org.w3c.dom,
- org.w3c.dom.events
+ org.w3c.dom.events,
+ org.apache.batik.util;version="1.10.0"
