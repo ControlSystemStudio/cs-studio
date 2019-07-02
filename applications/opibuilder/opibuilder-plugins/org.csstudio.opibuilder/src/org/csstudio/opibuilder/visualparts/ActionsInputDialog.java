@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
@@ -343,7 +344,13 @@ public class ActionsInputDialog extends HelpTrayDialog {
             final boolean withRemoveAction) {
         MenuManager listMenu = new MenuManager();
         for (ActionType type : ActionType.values()) {
-            listMenu.add(new MenuAction(type));
+            if(type.equals(ActionType.OPEN_PHOEBUS)) {
+                if(PreferencesHelper.isPhoebusIntegrated()) {
+                    listMenu.add(new MenuAction(type));
+                }
+            } else {
+                listMenu.add(new MenuAction(type));
+            }
         }
         if (withRemoveAction) {
             listMenu.add(new Separator());
@@ -351,7 +358,6 @@ public class ActionsInputDialog extends HelpTrayDialog {
         }
         return listMenu.createContextMenu(control);
     }
-
 
     /**
      * Creates the actions.
