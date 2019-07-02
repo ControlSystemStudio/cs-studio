@@ -33,7 +33,8 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.5.0";resolution:=optional,
  org.diirt.datasource;bundle-version="3.0.1",
  org.diirt.datasource-extra;bundle-version="3.0.1",
  org.diirt.datasource-loc;bundle-version="3.0.1";resolution:=optional,
- org.diirt.datasource-sim;bundle-version="3.0.1";resolution:=optional
+ org.diirt.datasource-sim;bundle-version="3.0.1";resolution:=optional,
+ javax.xml.jre;bundle-version="1.3.4"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
