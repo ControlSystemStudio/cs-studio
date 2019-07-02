@@ -53,7 +53,7 @@
       <properties>
         <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
-        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.4.3/site</efx-site>
+        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.5.0/site</efx-site>
       </properties>
     </profile>
     <profile>
