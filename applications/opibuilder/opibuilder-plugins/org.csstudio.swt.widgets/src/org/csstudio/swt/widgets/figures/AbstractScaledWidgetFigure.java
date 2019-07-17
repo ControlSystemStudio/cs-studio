@@ -48,6 +48,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 
     protected String valueLabelFormat = ""; //$NON-NLS-1$
 
+    @Override
     public BeanInfo getBeanInfo() throws IntrospectionException {
         return new ScaleWidgetIntrospector().getBeanInfo(this.getClass());
     }
@@ -73,8 +74,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
             else
                 return v > range.getLower()?range.getLower(): range.getUpper();
         }
-
-//        return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
     }
     /**
      * @return the majorTickMarkStepHint
@@ -251,7 +250,6 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
      */
     public void setValue(final double value) {
         this.value = value;
-        //    Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
         repaint();
     }
 
