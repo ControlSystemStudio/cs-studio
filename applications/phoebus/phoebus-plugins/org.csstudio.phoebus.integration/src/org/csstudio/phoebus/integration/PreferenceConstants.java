@@ -14,4 +14,7 @@ public class PreferenceConstants {
 
     // The installation location of jdk9
     public static final String JDKHome = "jdk9_home";
+
+    // Find phoebus in the user path
+    public static final String PhoebusAutoPath = "phoebus_auto_path";
 }
