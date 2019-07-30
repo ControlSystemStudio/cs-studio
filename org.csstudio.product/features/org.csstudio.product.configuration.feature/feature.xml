@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.product.configuration.feature"
       label="CS-Studio Product Configuration"
-      version="4.6.2"
+      version="4.6.3.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;"
       plugin="org.csstudio.product">
 
