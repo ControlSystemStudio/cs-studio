@@ -30,7 +30,7 @@
             defaultHandler="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
             icon="icons/probe-16.png"
             id="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
-            name="ProbeLabel">
+            name="Probe">
       </command>
    </extension>
 </plugin>

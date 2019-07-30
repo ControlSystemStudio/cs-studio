@@ -28,12 +28,6 @@
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
-               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
-               icon="icons/probe-16.png"
-               label="Phoebus Probe"
-               style="push">
-         </command>
-         <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
                icon="icons/pvtree.png"
                label="Phoebus PVTree"
@@ -47,12 +41,6 @@
             defaultHandler="org.csstudio.phoebus.integration.Launch"
             id="org.csstudio.phoebus.integration.Launch"
             name="Launch Phoebus">
-      </command>
-      <command
-            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
-            icon="icons/probe-16.png"
-            id="org.csstudio.phoebus.integration.actions.OpenPhoebusProbe"
-            name="ProbeLabel">
       </command>
       <command
             defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusPVTree"
