@@ -12,5 +12,8 @@
     <module>org.csstudio.phoebus.integration.alarm</module>
     <module>org.csstudio.phoebus.integration.channel</module>
     <module>org.csstudio.phoebus.integration.probe</module>
+    <module>org.csstudio.phoebus.integration.pvtable</module>
+    <module>org.csstudio.phoebus.integration.pvtree</module>
+    <module>org.csstudio.phoebus.integration.opibuilder</module>
   </modules>
 </project>
