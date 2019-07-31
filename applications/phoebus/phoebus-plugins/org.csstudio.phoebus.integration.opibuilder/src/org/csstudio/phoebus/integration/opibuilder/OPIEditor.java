@@ -1,4 +1,4 @@
-package org.csstudio.phoebus.integration.actions;
+package org.csstudio.phoebus.integration.opibuilder;
 
 import java.io.File;
 import java.net.URI;
@@ -14,7 +14,7 @@ public class OPIEditor implements IEditorLauncher {
 
     private static final Logger logger = Logger.getLogger(OPIEditor.class.getName());
 
-    static final String ID = "org.csstudio.phoebus.integration.actions.OPIEditor";
+    static final String ID = "org.csstudio.phoebus.integration.opibuilder.OPIEditor";
     static final String PHOEBUS_APP = "display_editor";
 
     @Override

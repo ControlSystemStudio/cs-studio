@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.opibuilder.OPIEditor"
+            icon="icons/OPIBuilder.png"
+            name="OPI editor"
+            id="org.csstudio.phoebus.integration.opibuilder.OPIEditor">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.opibuilder.OPIRuntime"
+            icon="icons/OPIRunner.png"
+            name="OPI runtime"
+            id="org.csstudio.phoebus.integration.opibuilder.OPIRuntime">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+        default="true"
+        icon="icons/OPIBuilder.png"
+        extensions="opi"
+        id="org.csstudio.phoebus.integration.opibuilder.OPIEditor"
+        launcher="org.csstudio.phoebus.integration.opibuilder.OPIEditor"
+        name="Phoebus OPI editor">
+     </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+        extensions="opi"
+        icon="icons/OPIRunner.png"
+        id="org.csstudio.phoebus.integration.opibuilder.OPIRuntime"
+        launcher="org.csstudio.phoebus.integration.opibuilder.OPIRuntime"
+        name="Phoebus OPI Runtime">
+     </editor>
+   </extension>
+</plugin>
