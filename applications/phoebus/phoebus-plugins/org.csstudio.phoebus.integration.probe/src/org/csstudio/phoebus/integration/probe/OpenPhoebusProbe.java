@@ -1,11 +1,11 @@
-package org.csstudio.phoebus.integration.actions;
+package org.csstudio.phoebus.integration.probe;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.phoebus.integration.PhoebusLauncherService;
+import org.csstudio.phoebus.integration.*;
 import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;

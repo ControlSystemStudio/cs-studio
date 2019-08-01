@@ -3,5 +3,8 @@
    <feature id="org.csstudio.phoebus.integration.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature url="features/org.csstudio.phoebus.integration.all.feature_4.2.0.qualifier.jar" id="org.csstudio.phoebus.integration.all.feature" version="4.2.0.qualifier">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
 </site>

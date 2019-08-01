@@ -1,4 +1,4 @@
-package org.csstudio.phoebus.integration.actions;
+package org.csstudio.phoebus.integration.opibuilder;
 
 import java.io.File;
 import java.net.URI;
@@ -13,7 +13,7 @@ import org.eclipse.ui.IEditorLauncher;
 public class OPIRuntime implements IEditorLauncher {
 
     private static final Logger logger = Logger.getLogger(OPIRuntime.class.getName());
-    static final String ID = "org.csstudio.phoebus.integration.actions.OPIRuntime";
+    static final String ID = "org.csstudio.phoebus.integration.opibuilder.OPIRuntime";
 
     static final String PHOEBUS_APP = "display_runtime";
 
