@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>edu.msu.nscl.olog.api</artifactId>
-  <version>2.2.8-SNAPSHOT</version>
+  <version>2.2.9-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
