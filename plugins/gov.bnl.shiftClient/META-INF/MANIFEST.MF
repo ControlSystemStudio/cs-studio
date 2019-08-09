@@ -15,6 +15,3 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ClassPath: lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: com.sun.istack,
- com.sun.xml.bind.v2,
- javax.ws.rs.core

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Olog Client Library
 Bundle-SymbolicName: edu.msu.nscl.olog.api;singleton:=true
-Bundle-Version: 2.2.8.qualifier
+Bundle-Version: 2.2.9.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  com.google.guava,
  jaxb-api;bundle-version="2.3.1",
@@ -18,6 +18,3 @@ Bundle-ActivationPolicy: lazy
 Bundle-Description: Olog Client Library
 Bundle-ClassPath: .,
  lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar
-Import-Package: com.sun.istack,
- com.sun.xml.bind.v2,
- javax.ws.rs.core

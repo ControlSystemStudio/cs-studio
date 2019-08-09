@@ -1,18 +1,13 @@
-# whitelist 
+sudo: required
 language: java
 
-env:  
-  global:  
-   - DISPLAY=:99.0
+matrix:
+  include:
+    - jdk: openjdk11
 
 sudo: false
 
 dist: cosmic
-
-addons:
-  apt:
-    packages:
-      - openjdk-11-jdk
 
 install: echo 'Skipping mvn install'
 
