@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Elasticsearch Client
+Bundle-SymbolicName: org.csstudio.utility.esclient
+Bundle-Description: Simple Elasticsearch REST client
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Michael Ritzert <michael.ritzert@ziti.uni-heidelberg.de>
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.csstudio.utility.esclient
+Import-Package: com.sun.jersey.api.client,
+ javax.ws.rs.core,
+ org.json
+Export-Package: org.csstudio.utility.esclient;version="1.0.0"

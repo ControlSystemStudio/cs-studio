@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.email.feature</module>
+    <module>org.csstudio.eslog.feature</module>
     <module>org.csstudio.graphene.feature</module>
     <module>org.csstudio.utilities.feature</module>
     <module>org.csstudio.utilities.rap.feature</module>
