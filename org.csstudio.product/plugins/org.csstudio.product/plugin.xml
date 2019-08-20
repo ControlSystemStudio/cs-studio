@@ -35,7 +35,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png,icons/css256.png">
          </property>
          <property
                name="startupForegroundColor"
@@ -48,10 +48,6 @@
          <property
                name="startupProgressRect"
                value="5,222,470,15">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="platform:/config/plugin_customization.ini">
          </property>
          <property
                name="introDescription-firststeps"
@@ -72,6 +68,10 @@
          <property
                name="aboutText"
                value="%aboutText">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
          </property>
       </product>
    </extension>
