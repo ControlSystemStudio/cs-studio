@@ -13,10 +13,8 @@ sudo: false
 
 dist: cosmic
 
-addons:
-  apt:
-    packages:
-      - openjdk-11-jdk
+jdk:
+  - openjdk11
 
 install: echo 'Skipping mvn install'
 
