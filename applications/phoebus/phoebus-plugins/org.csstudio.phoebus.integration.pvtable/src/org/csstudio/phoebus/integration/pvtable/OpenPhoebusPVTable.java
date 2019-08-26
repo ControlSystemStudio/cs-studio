@@ -5,16 +5,14 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.phoebus.integration.*;
+import org.csstudio.phoebus.integration.PhoebusLauncherService;
 import org.csstudio.ui.util.AdapterUtil;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -143,7 +142,7 @@ public class PhoebusLauncherService {
     }
 
     /**
-     * 
+     * Search for a free port
      * @return portNumber
      */
     private static int findFreePort() {
