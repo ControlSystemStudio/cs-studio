@@ -40,10 +40,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-	        id="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowserEditor"
+            id="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowserEditor"
             extensions="plt"
             launcher="OpenPhoebusDatabrowserEditor"
-	        icon="icons/databrowser.png"
+            icon="icons/databrowser.png"
             name="%phoebusOPIEditorActionName">
      </editor>
    </extension>

@@ -15,7 +15,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:utility">
+            locationURI="menu:diag">
          <command
                commandId="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
                icon="icons/probe-16.png"
