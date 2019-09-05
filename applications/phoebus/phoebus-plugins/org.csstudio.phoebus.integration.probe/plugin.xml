@@ -9,7 +9,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
                icon="icons/probe-16.png"
-               label="Phoebus Probe"
+               label="%PhoebusProbeCommandLabel"
                style="push">
          </command>
       </menuContribution>
@@ -19,7 +19,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
                icon="icons/probe-16.png"
-               label="Phoebus Probe"
+               label="%PhoebusProbeCommandLabel"
                style="push">
          </command>
       </menuContribution>
