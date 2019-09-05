@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowser"
+               label="%PhoebusDatabrowserCommandLabel"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:trends">
+         <command
+               commandId="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
+               icon="icons/new_databrowser.png"
+               label="%PhoebusProbeCommandLabel"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowser"
+            id="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowser"
+            name="Open Phoebus Databrowser">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowserEditor"
+            id="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowserEditor"
+            name="Open Phoebus Databrowser Editor">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+	        id="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowserEditor"
+            extensions="plt"
+            launcher="OpenPhoebusDatabrowserEditor"
+	        icon="icons/databrowser.png"
+            name="%phoebusOPIEditorActionName">
+     </editor>
+   </extension>
+</plugin>
