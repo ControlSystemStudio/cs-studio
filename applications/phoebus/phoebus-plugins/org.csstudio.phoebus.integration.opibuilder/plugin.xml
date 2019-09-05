@@ -31,7 +31,7 @@
         extensions="opi"
         id="org.csstudio.phoebus.integration.opibuilder.OPIEditor"
         launcher="org.csstudio.phoebus.integration.opibuilder.OPIEditor"
-        name="Phoebus OPI editor">
+        name="%phoebusOPIEditorActionName">
      </editor>
    </extension>
    <extension
@@ -41,7 +41,7 @@
         icon="icons/OPIRunner.png"
         id="org.csstudio.phoebus.integration.opibuilder.OPIRuntime"
         launcher="org.csstudio.phoebus.integration.opibuilder.OPIRuntime"
-        name="Phoebus OPI Runtime">
+        name="%phoebusOPIRuntimeActionName">
      </editor>
    </extension>
 </plugin>
