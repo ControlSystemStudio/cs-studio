@@ -9,7 +9,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.pvtree.OpenPhoebusPVTree"
                icon="icons/pvtree.png"
-               label="Phoebus PVTree"
+               label="%PhoebusPVTreeLabel"
                style="push">
          </command>
       </menuContribution>
@@ -19,7 +19,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.pvtree.OpenPhoebusPVTree"
                icon="icons/pvtree.png"
-               label="Phoebus PVTree"
+               label="%PhoebusPVTreeLabel"
                style="push">
          </command>
       </menuContribution>
