@@ -15,5 +15,6 @@
     <module>org.csstudio.phoebus.integration.pvtable</module>
     <module>org.csstudio.phoebus.integration.pvtree</module>
     <module>org.csstudio.phoebus.integration.opibuilder</module>
+    <module>org.csstudio.phoebus.integration.databrowser</module>
   </modules>
 </project>

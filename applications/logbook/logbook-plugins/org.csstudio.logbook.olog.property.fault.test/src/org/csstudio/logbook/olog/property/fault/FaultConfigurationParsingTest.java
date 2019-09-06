@@ -14,7 +14,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.csstudio.logbook.olog.property.fault.FaultConfiguration.Group;
-import org.csstudio.logbook.olog.property.fault.FaultConfigurationFactory;
 import org.junit.Test;
 
 public class FaultConfigurationParsingTest {

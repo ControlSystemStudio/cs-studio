@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Phoebus Integration
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.csstudio.phoebus.integration.channel;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.phoebus.integration.channel.Activator
