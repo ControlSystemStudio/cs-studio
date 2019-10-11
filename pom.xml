@@ -13,6 +13,7 @@
     <module>thirdparty</module>
     <module>core</module>
     <module>applications</module>
+    <module>product</module>
   </modules>
 
   <!-- USE MAVEN 3.0 -->
@@ -24,9 +25,9 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.3.0</tycho.version>
+    <tycho.version>1.4.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
-    
+
     <cs-studio.version>4.6</cs-studio.version>
     <cs-studio.version.long>4.6.0-SNAPSHOT</cs-studio.version.long>
 
@@ -35,6 +36,11 @@
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
+    <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
+    <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
+    <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.5.0/site</efx-site>
+    <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository</openjfx-site>
+
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -42,6 +48,8 @@
 
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
+
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
 
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>
@@ -53,16 +61,6 @@
   <!-- P2 REPOSITORIES -->
   <repositories>
     <repository>
-      <id>eclipse</id>
-      <url>${eclipse.central.url}/releases/2018-12</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>eclipse-updates</id>
-      <url>${eclipse.central.url}/eclipse/updates/4.10</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
       <id>snapshots-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
@@ -71,6 +69,26 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <repository>
+      <id>eclipse</id>
+      <url>${eclipse-site}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>eclipse-updates</id>
+      <url>${eclipse-update-site}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>efx</id>
+      <url>${efx-site}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>openjfx</id>
+      <url>${openjfx-site}</url>
+      <layout>p2</layout>
     </repository>
   </repositories>
 
@@ -86,20 +104,6 @@
 
   <!-- Profiles -->
   <profiles>
-    <profile>
-      <id>platform-default</id>
-      <activation>
-        <property>
-          <name>!platform-version-name</name>
-        </property>
-      </activation>
-      <properties>
-        <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
-        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
-        <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.5.0/site</efx-site>
-      </properties>
-    </profile>
-
     <profile>
       <id>checkstyle</id>
       <build>
@@ -134,6 +138,9 @@
       </build>
     </profile>
 
+    <!-- this profile is related to bug 1818 - https://github.com/ControlSystemStudio/cs-studio/issues/1818 
+      org.eclipse.draw2d_3.9.101.201408150207 is forced over never versions of 
+      plugin -->
     <profile>
       <id>cs-studio</id>
       <activation>
@@ -157,11 +164,16 @@
           <url>${download.root}/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
-        <!-- Adding the applications repositories to allows child modules
+        <!-- Adding the applications repositories to allows child modules 
           to depend on each other -->
         <repository>
           <id>csstudio-applications</id>
           <url>${download.root}/applications/${cs-studio.version}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>csstudio-updates</id>
+          <url>${download.root}/updates/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
       </repositories>
@@ -179,6 +191,22 @@
         <repository>
           <id>csstudio-composite-repo</id>
           <url>file:${csstudio.composite.repo}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+
+    <profile>
+      <id>csstudio-local-repo-enable</id>
+      <activation>
+        <property>
+          <name>csstudio.local.repo</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-local-repo</id>
+          <url>file:${csstudio.local.repo}</url>
           <layout>p2</layout>
         </repository>
       </repositories>
