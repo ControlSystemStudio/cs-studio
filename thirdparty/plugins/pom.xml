@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>thirdparty</artifactId>
+    <version>BUILD-VERSION</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>thirdparty-plugins</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>edu.msu.nscl.olog.api</module>
+    
+    <module>gov.bnl.channelfinder.api</module>
+    
+    <module>org.csstudio.platform.libs.easymock</module>
+    <module>org.csstudio.platform.libs.hibernate</module>
+    <module>org.csstudio.platform.libs.jdbc</module>
+    
+    <module>org.csstudio.platform.libs.jmock</module>
+    <module>org.csstudio.platform.libs.jms</module>
+    <module>org.csstudio.platform.libs.tine</module>
+    <module>org.eclipse.nebula.jface.gridviewer</module>
+    <module>org.eclipse.nebula.widgets.grid</module>
+    <module>gov.bnl.shiftClient</module>
+  </modules>
+</project>

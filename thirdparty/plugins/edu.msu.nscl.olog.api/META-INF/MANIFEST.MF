@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Olog Client Library
+Bundle-SymbolicName: edu.msu.nscl.olog.api;singleton:=true
+Bundle-Version: 2.2.9.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ com.google.guava,
+ jaxb-api;bundle-version="2.3.1",
+ com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1",
+ com.sun.jersey.bundle;bundle-version="1.19.0",
+ javax.activation;bundle-version="1.1.1",
+ javax.activation-api;bundle-version="1.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: edu.msu.nscl.olog.api
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Activator: edu.msu.nscl.olog.api.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-Description: Olog Client Library
+Bundle-ClassPath: .,
+ lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar
