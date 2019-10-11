@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>epics-plugins</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>org.csstudio.platform.libs.epics</artifactId>
   <packaging>bundle</packaging>
