@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <groupId>org.csstudio</groupId>
+  <artifactId>maven-osgi-bundles</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>maven-osgi-bundles</name>
+
+  <properties>
+    <tycho.version>1.2.0</tycho.version>
+    <manifest-location>META-INF</manifest-location>
+    <cs-studio.version>4.6</cs-studio.version>
+    <cs-studio.version.long>4.6.0-SNAPSHOT</cs-studio.version.long>
+    <epics.jca.version>2.4.1</epics.jca.version>
+    <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+    <cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
+    <upload.root>s3://download.controlsystemstudio.org</upload.root>
+    <download.root>http://download.controlsystemstudio.org</download.root>
+    <cs-studio-central.url>${download.root}/maven-osgi-bundles/${cs-studio.version}</cs-studio-central.url>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>runtime</artifactId>
+      <version>${eclipse.runtime.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>epics</module>
+    <module>repository</module>
+  </modules>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
+  </build>
+
+</project>
+
