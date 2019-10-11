@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.csstudio.startup.intro" style="css_intro.css" name="CS-Studio strartup intro" path="firststeps/@">
+		<group style-id="content-group" id="org.csstudio.startup.intro-group">
+       		<link label=" Introduction to CS-Studio"
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.startup.intro/html/intro.html&amp;embed=true" 
+       		id="csstudiointro-Link" style-id="content-link">
+          		<text>
+				  CS-Studio is a collection of control system tools, and this version of CS-Studio
+				  was pre-configured for use general use, connecting to the 'EPICS'
+				  accelerator control system, its archive etc.
+                </text>
+       		</link>
+       	</group>
+  	</extensionContent>
+  	
+</introContent>
