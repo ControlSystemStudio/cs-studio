@@ -25,7 +25,7 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.4.0</tycho.version>
+    <tycho.version>1.3.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
 
     <cs-studio.version>4.6</cs-studio.version>
@@ -136,47 +136,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <!-- this profile is related to bug 1818 - https://github.com/ControlSystemStudio/cs-studio/issues/1818 
-      org.eclipse.draw2d_3.9.101.201408150207 is forced over never versions of 
-      plugin -->
-    <profile>
-      <id>cs-studio</id>
-      <activation>
-        <property>
-          <name>!cs-studio</name>
-        </property>
-      </activation>
-      <repositories>
-        <repository>
-          <id>csstudio-thirdparty</id>
-          <url>${download.root}/thirdparty/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-        <repository>
-          <id>csstudio-maven-osgi-bundles</id>
-          <url>${download.root}/maven-osgi-bundles/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-        <repository>
-          <id>csstudio-core</id>
-          <url>${download.root}/core/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-        <!-- Adding the applications repositories to allows child modules 
-          to depend on each other -->
-        <repository>
-          <id>csstudio-applications</id>
-          <url>${download.root}/applications/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-        <repository>
-          <id>csstudio-updates</id>
-          <url>${download.root}/updates/${cs-studio.version}</url>
-          <layout>p2</layout>
-        </repository>
-      </repositories>
     </profile>
 
     <!-- If composite repo is defined, use it. -->
