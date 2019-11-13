@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.diirt.vtype.AlarmSeverity;
@@ -157,7 +160,8 @@ public class PVSamples extends PlotSamples
     public void mergeArchivedData(final String source,
             final List<VType> result)
     {
-        lockForWriting();
+        if (! lockForWriting())
+            return;
         try
         {
             if (emptyHistoryOnAdd)
@@ -188,7 +192,8 @@ public class PVSamples extends PlotSamples
      */
     public void addLiveSample(final PlotSample sample)
     {
-        lockForWriting();
+        if (! lockForWriting())
+            return;
         try
         {
             // Skip the initial UNDEFINED/Disconnected sample sent by PVManager
@@ -211,7 +216,8 @@ public class PVSamples extends PlotSamples
     /** Delete all samples */
     public void clear()
     {
-        lockForWriting();
+        if (! lockForWriting())
+            return;
         try
         {
             history.clear();
@@ -237,7 +243,16 @@ public class PVSamples extends PlotSamples
      */
     boolean isHistoryRefreshNeeded(final Instant startTime, final Instant endTime)
     {
-        getLock().lock();
+        try
+        {
+            if (! getLock().tryLock(10, TimeUnit.SECONDS))
+                throw new TimeoutException();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Cannot lock " + this ". Error was: " + ex.getMessage());
+            return false;
+        }
         try
         {
             //if already waiting for history to be loaded, wait on
@@ -290,7 +305,7 @@ public class PVSamples extends PlotSamples
         buf.append("\nLive Buffer: ");
         buf.append(live.toString());
 
-        getLock().lock();
+        if (getLock().tryLock()) {
         try
         {
             final int count = size();
@@ -304,6 +319,7 @@ public class PVSamples extends PlotSamples
         finally
         {
             getLock().unlock();
+        }
         }
     }
 }

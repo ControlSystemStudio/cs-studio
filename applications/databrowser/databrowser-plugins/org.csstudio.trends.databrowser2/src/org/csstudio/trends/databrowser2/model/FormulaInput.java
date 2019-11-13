@@ -8,6 +8,8 @@
 package org.csstudio.trends.databrowser2.model;
 
 import org.diirt.vtype.VType;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /** One input to the formula: Model item that provides data, Variable name
  *  for use in the formula
@@ -50,10 +52,11 @@ public class FormulaInput
      *  @see #next()
      *  @return First sample or <code>null</code>
      */
-    public VType first()
+    public VType first() throws Exception
     {
         final PlotSamples samples = item.getSamples();
-        samples.getLock().lock();
+        if (! samples.getLock().tryLock(10, TimeUnit.SECONDS))
+            throw new TimeoutException("Cannot lock " + samples);
         try
         {
             if (samples.size() > 0)
@@ -71,13 +74,14 @@ public class FormulaInput
     /** Iterate over the samples of the input's ModelItem
      *  @return Next value or <code>null</code>
      */
-    public VType next()
+    public VType next() throws Exception
     {
         if (index < 0)
             return null;
         final VType result;
         final PlotSamples samples = item.getSamples();
-        samples.getLock().lock();
+        if (! samples.getLock().tryLock(10, TimeUnit.SECONDS))
+            throw new TimeoutException("Cannot lock " + samples);
         try
         {
             if (index < samples.size())

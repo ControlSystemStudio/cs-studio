@@ -8,6 +8,8 @@
 package org.csstudio.trends.databrowser2.export;
 
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
@@ -43,7 +45,8 @@ public class ModelSampleIterator implements ValueIterator
     {
         this.samples = item.getSamples();
         this.end = end;
-        samples.getLock().lock();
+        if (! samples.getLock().tryLock(10, TimeUnit.SECONDS))
+            throw new TimeoutException("Cannot lock " + samples);
         try
         {
             // Anything?
@@ -129,7 +132,8 @@ public class ModelSampleIterator implements ValueIterator
             throw new Exception("End of samples"); //$NON-NLS-1$
         // Remember value, prepare the next value
         final VType result = value;
-        samples.getLock().lock();
+        if (! samples.getLock().tryLock(10, TimeUnit.SECONDS))
+            throw new TimeoutException("Cannot lock " + samples);
         try
         {
             ++index;

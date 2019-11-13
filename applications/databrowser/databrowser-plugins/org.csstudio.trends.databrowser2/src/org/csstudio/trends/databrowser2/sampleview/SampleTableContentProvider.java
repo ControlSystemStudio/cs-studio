@@ -13,6 +13,8 @@ import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /** Provide PlotSample items for table with type SWT.VIRTUAL.
  *  TableViewerInput is a ModelItem
