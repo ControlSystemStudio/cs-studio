@@ -250,7 +250,7 @@ public class PVSamples extends PlotSamples
         }
         catch (Exception ex)
         {
-            System.out.println("Cannot lock " + this ". Error was: " + ex.getMessage());
+            System.out.println("Cannot lock " + this + ". Error was: " + ex.getMessage());
             return false;
         }
         try
@@ -306,20 +306,21 @@ public class PVSamples extends PlotSamples
         buf.append(live.toString());
 
         if (getLock().tryLock()) {
-        try
-        {
-            final int count = size();
-            if (count != getRawSize())
+            try
             {
-                buf.append("\nContinuation to 'now':\n");
-                buf.append("     " + get(count-1));
+                final int count = size();
+                if (count != getRawSize())
+                {
+                    buf.append("\nContinuation to 'now':\n");
+                    buf.append("     " + get(count-1));
+                }
             }
-            return buf.toString();
+            finally
+            {
+                getLock().unlock();
+            }
         }
-        finally
-        {
-            getLock().unlock();
-        }
-        }
+        
+        return buf.toString();
     }
 }

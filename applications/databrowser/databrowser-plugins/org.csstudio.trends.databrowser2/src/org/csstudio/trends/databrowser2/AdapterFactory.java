@@ -85,7 +85,7 @@ public class AdapterFactory implements IAdapterFactory
         }
         catch (Exception ex)
         {
-            e.printStackTrace();
+            ex.printStackTrace();
             return null;
         }
     }

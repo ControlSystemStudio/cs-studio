@@ -41,7 +41,7 @@ public class ModelSampleIterator implements ValueIterator
     /** @param end End time
      */
     public ModelSampleIterator(final ModelItem item, final Instant start,
-            final Instant end)
+            final Instant end) throws Exception
     {
         this.samples = item.getSamples();
         this.end = end;

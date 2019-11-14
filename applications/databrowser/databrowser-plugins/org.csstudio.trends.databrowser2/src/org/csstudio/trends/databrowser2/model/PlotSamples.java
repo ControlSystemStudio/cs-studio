@@ -13,6 +13,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.csstudio.swt.rtplot.data.PlotDataProvider;
 
 /** Base for classes that hold plot samples
@@ -30,9 +33,17 @@ abstract public class PlotSamples implements PlotDataProvider<Instant>
     final protected AtomicBoolean have_new_samples = new AtomicBoolean();
 
     /** Lock for writing */
-    public void lockForWriting()
+    public boolean lockForWriting()
     {
-        lock.writeLock().lock();
+        try {
+            if (lock.writeLock().tryLock(10, TimeUnit.SECONDS)) {
+                return true;
+            }
+            throw new TimeoutException();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     /** Un-lock after writing */

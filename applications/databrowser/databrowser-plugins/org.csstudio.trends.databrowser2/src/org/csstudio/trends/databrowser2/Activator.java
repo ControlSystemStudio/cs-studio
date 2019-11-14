@@ -47,6 +47,7 @@ public class Activator extends AbstractUIPlugin
     private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
     final public static ExecutorService thread_pool = Executors.newCachedThreadPool(new NamedThreadFactory("DataBrowserJobs"));
+    final public static ExecutorService sql_thread_pool = Executors.newSingleThreadExecutor(new NamedThreadFactory("DataBrowserSQL"));
 
     /** Width of the display in pixels. Used to scale negative plot_bins */
     public static int display_pixel_width = 0;
@@ -110,6 +111,12 @@ public class Activator extends AbstractUIPlugin
     public static ExecutorService getThreadPool()
     {
         return thread_pool;
+    }
+
+    /** @return Thread pool */
+    public static ExecutorService getSqlThreadPool()
+    {
+        return sql_thread_pool;
     }
 
     /** Obtain image descriptor from file within plugin.
