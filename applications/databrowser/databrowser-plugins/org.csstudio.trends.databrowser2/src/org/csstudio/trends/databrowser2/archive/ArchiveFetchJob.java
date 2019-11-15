@@ -150,7 +150,7 @@ public class ArchiveFetchJob extends Job
                     }
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
-                    while (value_iter.hasNext())
+                    while (value_iter.hasNext() && !cancelled)
                         result.add(value_iter.next());
                     samples += result.size();
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
@@ -246,7 +246,7 @@ public class ArchiveFetchJob extends Job
 
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
-        final Future<?> done = Activator.getThreadPool().submit(worker);
+        final Future<?> done = Activator.getSqlThreadPool().submit(worker);
         // Poll worker and progress monitor
         long start = System.currentTimeMillis();
         while (!done.isDone())

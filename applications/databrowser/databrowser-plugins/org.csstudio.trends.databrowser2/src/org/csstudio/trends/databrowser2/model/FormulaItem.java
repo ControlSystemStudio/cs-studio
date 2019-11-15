@@ -136,6 +136,7 @@ public class FormulaItem extends ModelItem
     {
         final List<PlotSample> result = new ArrayList<PlotSample>();
         final Display display = ValueFactory.displayNone();
+        try{
         // Prevent changes to formula & inputs
         synchronized (this)
         {
@@ -252,6 +253,10 @@ public class FormulaItem extends ModelItem
                 }
                 result.add(new PlotSample(Messages.Formula, value));
             }
+        }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
         // Update PlotSamples
         samples.set(result);
