@@ -17,5 +17,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.diirt.util.core.preferences;uses:="org.osgi.framework,org.eclipse.osgi.util,org.eclipse.core.runtime.preferences",
  org.csstudio.diirt.util.core.preferences.pojo;uses:="org.csstudio.diirt.util.core.preferences"
 Bundle-ActivationPolicy: lazy
-Import-Package: com.sun.xml.bind.v2
 
