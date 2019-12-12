@@ -259,12 +259,14 @@ public final class OPIShell implements IOPIRuntime {
                                     s.setTitle();
                                     s.shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
                                     try {
+                                        // Regenerate display model to remove temporary children warning widgets.
                                         s.createDisplayModel();
                                         isModalDialogDisplayed = false;
                                     } catch (Exception e) {
                                         log.log(Level.WARNING, "Failed to regenerate display model.", e);
                                     }
                                 }
+                                active.removeDisposeListener(this);
                             }
                         });
                     }
@@ -338,7 +340,8 @@ public final class OPIShell implements IOPIRuntime {
         TextInputModel modalDialogWarningOverlayModel = new TextInputModel();
         int modalWarningWidth = 330;
         int modalWarningHeight = 70;
-        modalDialogWarningOverlayModel.setText("⚠️ Please close the \"" + modalDialogTitle + "\" modal dialog.");
+        modalDialogWarningOverlayModel
+                .setText(String.format("⚠️ Please close the \"%s\" modal dialog.", modalDialogTitle));
         RGB yellowish = new RGB(255, 255, 150);
         modalDialogWarningOverlayModel.setBackgroundColor(yellowish);
         modalDialogWarningOverlayModel.setWidth(modalWarningWidth);
@@ -353,7 +356,7 @@ public final class OPIShell implements IOPIRuntime {
         rectangleOverlayModel.setSize(shellWidth, shellHeight);
         RGB grey = new RGB(128, 128, 128);
         rectangleOverlayModel.setBackgroundColor(grey);
-        rectangleOverlayModel.setPropertyValue("alpha", 180);
+        rectangleOverlayModel.setPropertyValue("alpha", 150);
 
         displayModel.addChild(rectangleOverlayModel);
         displayModel.addChild(modalDialogWarningOverlayModel);
