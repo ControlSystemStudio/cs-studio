@@ -17,6 +17,6 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
  org.csstudio.ui.util,
  org.csstudio.utility.file;bundle-version="1.0.0",
  org.csstudio.utility.product;bundle-version="1.2.2",
- org.eclipse.fx.ui.workbench3;bundle-version="3.4.3"
-Import-Package: org.csstudio.opibuilder.widgets.model,
- org.eclipse.gef.ui.actions
+ org.eclipse.fx.ui.workbench3;bundle-version="3.4.3",
+ org.csstudio.opibuilder.widgets
+Import-Package: org.eclipse.gef.ui.actions

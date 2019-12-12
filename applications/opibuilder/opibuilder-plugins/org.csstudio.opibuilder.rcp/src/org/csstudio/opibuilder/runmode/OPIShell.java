@@ -109,6 +109,10 @@ public final class OPIShell implements IOPIRuntime {
     // Flag indicating that a modal dialog is currently displayed.
     private boolean isModalDialogDisplayed = false;
 
+    // Temporary overlay widgets to be displayed when a modal dialog appears.
+    private TextInputModel modalDialogWarningOverlayModel;
+    private RectangleModel rectangleOverlayModel;
+
     // Variables that change if OPI input is changed.
     private DisplayModel displayModel;
 
@@ -226,7 +230,11 @@ public final class OPIShell implements IOPIRuntime {
          * Display an overlay warning widget over the current OPI displays to inform the
          * user that a modal dialog is open somewhere in the workspace. Once the dialog
          * is closed, then the OPI shells are reverted to their original states.
+         *
+         * A shell is activated once it acquires focus by 1) a user clicking on it 2) on
+         * a workspace switch it moves to the foreground.
          */
+        initialiseModalWarningOverlayModels();
         display.addFilter(SWT.Activate, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -332,31 +340,39 @@ public final class OPIShell implements IOPIRuntime {
         dispose();
     }
 
-    private void addModalWarningOverlayToDisplayModel(String modalDialogTitle) throws Exception {
-        Rectangle shellArea = shell.getClientArea();
-        int shellHeight = shellArea.height;
-        int shellWidth = shellArea.width;
-
-        TextInputModel modalDialogWarningOverlayModel = new TextInputModel();
+    private void initialiseModalWarningOverlayModels() throws Exception {
+        modalDialogWarningOverlayModel = new TextInputModel();
         int modalWarningWidth = 330;
         int modalWarningHeight = 70;
-        modalDialogWarningOverlayModel
-                .setText(String.format("⚠️ Please close the \"%s\" modal dialog.", modalDialogTitle));
+
         RGB yellowish = new RGB(255, 255, 150);
         modalDialogWarningOverlayModel.setBackgroundColor(yellowish);
         modalDialogWarningOverlayModel.setWidth(modalWarningWidth);
         modalDialogWarningOverlayModel.setHeight(modalWarningHeight);
-        modalDialogWarningOverlayModel.setLocation(shellWidth / 2 - modalWarningWidth / 2,
-                shellHeight / 2 - modalWarningHeight / 2);
         modalDialogWarningOverlayModel.setPropertyValue("horizontal_alignment", "1"); // centred
         modalDialogWarningOverlayModel.setPropertyValue("border_style", "3");
 
         // Mimic RHEL7 greying out over the background when a modal dialog appears.
-        RectangleModel rectangleOverlayModel = new RectangleModel();
-        rectangleOverlayModel.setSize(shellWidth, shellHeight);
+        rectangleOverlayModel = new RectangleModel();
         RGB grey = new RGB(128, 128, 128);
         rectangleOverlayModel.setBackgroundColor(grey);
         rectangleOverlayModel.setPropertyValue("alpha", 150);
+    }
+
+    private void addModalWarningOverlayToDisplayModel(String modalDialogTitle) throws Exception {
+        Rectangle shellArea = shell.getClientArea();
+        int shellHeight = shellArea.height;
+        int shellWidth = shellArea.width;
+        int modalWarningWidth = modalDialogWarningOverlayModel.getWidth();
+        int modalWarningHeight = modalDialogWarningOverlayModel.getHeight();
+
+        modalDialogWarningOverlayModel
+                .setText(String.format("⚠️ Please close the \"%s\" modal dialog.", modalDialogTitle));
+        // Centred in the OPI shell.
+        modalDialogWarningOverlayModel.setLocation(shellWidth / 2 - modalWarningWidth / 2,
+                shellHeight / 2 - modalWarningHeight / 2);
+
+        rectangleOverlayModel.setSize(shellWidth, shellHeight);
 
         displayModel.addChild(rectangleOverlayModel);
         displayModel.addChild(modalDialogWarningOverlayModel);
