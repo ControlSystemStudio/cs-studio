@@ -148,7 +148,12 @@ public abstract class AbstractScriptStore implements IScriptStore{
             compileString(scriptData.getScriptText());
         else{
             // Determine system path to the script
-            final IPath syspath = ResourceUtil.workspacePathToSysPath(absoluteScriptPath);
+            IPath syspath = null;
+            try {
+                syspath = ResourceUtil.workspacePathToSysPath(absoluteScriptPath);
+            } catch (Exception e) {
+                // Ignore exception thrown if script path is a URL
+            }
             final File file = syspath == null
                             ? null
                             : syspath.toFile();
