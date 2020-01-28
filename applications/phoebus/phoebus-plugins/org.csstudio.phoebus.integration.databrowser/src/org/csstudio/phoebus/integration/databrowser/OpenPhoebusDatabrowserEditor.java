@@ -10,6 +10,11 @@ import org.csstudio.phoebus.integration.PhoebusLauncherService;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
+/**
+ * Action to open a plt file with the new databrowser editor.
+ * @author kunal
+ *
+ */
 public class OpenPhoebusDatabrowserEditor implements IEditorLauncher {
 
     private static final Logger logger = Logger.getLogger(OpenPhoebusDatabrowserEditor.class.getName());
