@@ -8,7 +8,7 @@
     <property name="p2.timestamp" value="1395756034000"/>
   </properties>
   <children size="5">
-    <child location="../../../diirt/p2/target/repository"/>
+    <child location="../../diirt/p2/target/repository"/>
     <child location="../maven-osgi-bundles/repository/target/repository"/>
     <child location="../thirdparty/repository/target/repository"/> 
     <child location="../core/p2repo"/>
