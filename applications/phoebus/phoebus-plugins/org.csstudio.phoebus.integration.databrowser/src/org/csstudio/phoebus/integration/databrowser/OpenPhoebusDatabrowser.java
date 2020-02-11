@@ -16,6 +16,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+/**
+ * Action to open the databrowser with a list of pv's
+ * @author kunal
+ *
+ */
 @SuppressWarnings("nls")
 public class OpenPhoebusDatabrowser extends AbstractHandler implements IHandler {
 

@@ -35,9 +35,9 @@
             name="AlarmTable">
       </command>
       <command
-            defaultHandler="org.csstudio.phoebus.integration.alarm.actions.OpenPhoebusAlarmTable"
-            icon="icons/alarmtable.gif"
-            id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTree"
+            icon="icons/alarmtree.gif"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTree"
             name="AlarmTree">
       </command>
       <command

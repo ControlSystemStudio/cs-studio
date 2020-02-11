@@ -13,6 +13,8 @@ public class PreferenceConstants {
     public static final String PhoebusUseSystemLauncher = "phoebus_use_system_launcher";
     public static final String PhoebusSystemLauncherName = "phoebus_system_launcher_name";
 
+    // Launch phoebus with a server port
+    public static final String PhoebusWithServer = "phoebus_with_server";
     // The tcp port associated with the phoebus applications.
     public static final String PhoebusPort = "phoebus_port";
 }

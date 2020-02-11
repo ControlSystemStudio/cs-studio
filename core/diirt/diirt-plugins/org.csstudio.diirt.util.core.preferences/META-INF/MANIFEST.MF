@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.15.0",
  jaxb-api;bundle-version="2.3.1",
  com.sun.xml.bind.jaxb-impl;bundle-version="2.3.1",
  javax.activation;bundle-version="1.1.1",
- javax.activation-api;bundle-version="1.2.0"
+ javax.activation-api;bundle-version="1.2.0",
+ com.sun.istack.commons-runtime;bundle-version="3.0.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.diirt.util.core.preferences;uses:="org.osgi.framework,org.eclipse.osgi.util,org.eclipse.core.runtime.preferences",
  org.csstudio.diirt.util.core.preferences.pojo;uses:="org.csstudio.diirt.util.core.preferences"
