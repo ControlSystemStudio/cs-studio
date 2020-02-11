@@ -25,8 +25,13 @@ script:
    # Make sure stdout is in blocking mode.
    # See https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959 for details.
  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+ - echo $PWD
+ - cd maven-osgi-bundles
+ - echo $PWD
  - mvn clean install -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=${REPO} -D skipTests=true -N
- - cd maven-osgi-bundles mvn clean install -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=${REPO} -D skipTests=true
+ - cd maven-osgi-bundles
+ - mvn clean install -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=${REPO} -D skipTests=true
+ - cd ..
  - mvn clean verify -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=${REPO} -D skipTests=true
 
 after_failure:
