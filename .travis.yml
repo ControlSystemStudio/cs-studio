@@ -23,7 +23,7 @@ script:
    # Make sure stdout is in blocking mode.
    # See https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959 for details.
  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
- - mvn clean verify -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=p2repo-4.6 -D skipTests=true
+ - mvn clean verify -D eclipse.p2.mirrors=false -D org.osgi.framework.bundle.parent=ext -D osgi.framework.extensions=org.eclipse.fx.osgi -D baselineMode=warn -D jgit.dirtyWorkingTree=warning -D tycho.localArtifacts=ignore -D csstudio.composite.repo=${PWD}/p2repo -D skipTests=true
 
 after_failure:
  - find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat
