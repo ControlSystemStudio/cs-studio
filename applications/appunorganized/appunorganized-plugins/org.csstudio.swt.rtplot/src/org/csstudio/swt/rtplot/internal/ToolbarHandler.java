@@ -128,8 +128,11 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         new ToolItem(toolbar, SWT.SEPARATOR);
         addUndo();
 
-        // Initially, panning is selected
-        selectMouseMode(pan);
+        // Initially, pointer is selected
+        selectMouseMode(pointer);
+        // SelectionEvent does not fire until GUI toolbar is fully created. Need
+        // to manually set, otherwise pointer is selected, but still pans.
+        plot.setMouseMode(MouseMode.NONE);
     }
 
     private void addOptions()
