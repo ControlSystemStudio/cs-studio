@@ -16,9 +16,9 @@
             allPopups="false"
             locationURI="menu:trends">
          <command
-               commandId="org.csstudio.phoebus.integration.probe.OpenPhoebusProbe"
+               commandId="org.csstudio.phoebus.integration.databrowser.OpenPhoebusDatabrowser"
                icon="icons/new_databrowser.png"
-               label="%PhoebusProbeCommandLabel"
+               label="%PhoebusDatabrowserCommandLabel"
                style="push">
          </command>
       </menuContribution>
@@ -44,7 +44,7 @@
             extensions="plt"
             launcher="OpenPhoebusDatabrowserEditor"
             icon="icons/databrowser.png"
-            name="%phoebusOPIEditorActionName">
+            name="%PhoebusDatabrowserCommandLabel">
      </editor>
    </extension>
 </plugin>

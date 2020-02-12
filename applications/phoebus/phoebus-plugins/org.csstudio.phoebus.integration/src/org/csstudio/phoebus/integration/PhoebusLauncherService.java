@@ -35,6 +35,7 @@ public class PhoebusLauncherService {
     private static String phoebus_location = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusHome, "/phoebus", null);
     private static String phoebus_version = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusVersion, "0.0.1-SNAPSHOT", null);
 
+    private static boolean phoebus_with_server = prefs.getBoolean(Activator.PLUGIN_ID, PreferenceConstants.PhoebusWithServer, true, null);
     private static int phoebus_port = prefs.getInt(Activator.PLUGIN_ID, PreferenceConstants.PhoebusPort, -1, null);
 
     private static final int port;
@@ -102,9 +103,9 @@ public class PhoebusLauncherService {
     }
 
     /**
-     * creates a list of basic arguments needed to lauch the phoebus framework
+     * Creates a list of basic arguments needed to launch the phoebus framework
      *
-     * @return
+     * @return {@link List} of basic phoebus launch arguments
      */
     private static List<String> basicArguments() {
         List<String> processArguments = new ArrayList<>();
@@ -112,15 +113,18 @@ public class PhoebusLauncherService {
             File phoebusFile = findExecutableOnPath(phoebus_system_launcher_name).get();
             phoebus_location = phoebusFile.getParent();
             processArguments.add(phoebusFile.getAbsolutePath());
-            processArguments.add("-server");
-            processArguments.add(String.valueOf(port));
         } else {
             processArguments.add("java");
             processArguments.add("-jar");
             processArguments.add("product-" + phoebus_version + ".jar");
+        }
+        if(phoebus_with_server) {
             if (phoebus_port > 0) {
                 processArguments.add("-server");
                 processArguments.add(String.valueOf(phoebus_port));
+            } else {
+                processArguments.add("-server");
+                processArguments.add(String.valueOf(port));
             }
         }
         return processArguments;
