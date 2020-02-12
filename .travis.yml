@@ -26,11 +26,11 @@ script:
    # See https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959 for details.
  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
  - cd maven-osgi-bundles
- - mvn clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
+ - mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
  - cd ../core/diirt
- - mvn clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
+ - mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
  - cd ../..
- - mvn clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
+ - mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
 
 after_failure:
  - find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat
