@@ -30,7 +30,7 @@ script:
  - cd ../core/diirt
  - mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
  - cd ../..
- - mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
+ - travis_wait 30 mvn -q clean verify -Dcsstudio.composite.repo=${REPO} -D skipTests=true
 
 after_failure:
  - find ./ -type d -name "surefire-reports" -print0 | xargs -0 -I {} find {} -iname "*.txt" -type f | xargs cat
