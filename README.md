@@ -24,4 +24,17 @@ To get started, see the following Wiki pages:
 * [Coding guidelines](https://github.com/ControlSystemStudio/cs-studio/wiki/CodingGuidelines)
 
 
+### Building CS-Studio
+
+This repository contains all the code for building CS-Studio. However, there is a two-step
+build process.
+
+```
+# Build maven-osgi-bundles to ensure all bundles are available for Tycho resolution.
+mvn -f maven-osgi-bundles/pom.xml clean verify
+# Build everything else.
+mvn clean verify -Dcsstudio.composite.repo=$(pwd)/p2repo
+```
+
+You can use `-DskipTests=true` to speed up the build process.
 
