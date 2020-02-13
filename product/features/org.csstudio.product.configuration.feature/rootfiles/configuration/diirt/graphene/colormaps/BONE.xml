@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colormap position = "relative" colorNaN="RED">
+
+	<color position="0.0" value="BLACK"/>
+ 	<color position="0.25" value="rgb(57,57,86)"/>
+ 	<color position="0.5" value="rgb(107,115,140)"/>
+ 	<color position="0.75" value="rgb(165,198,198)"/>
+	<color position="1.0" value="WHITE"/>
+
+</colormap>

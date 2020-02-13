@@ -10,7 +10,6 @@ Require-Bundle: org.w3c.dom.svg,
  org.eclipse.ui;resolution:=optional,
  org.apache.commons.lang,
  org.csstudio.java,
- javax.xml,
  org.apache.xmlgraphics.batik-bridge;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-dom;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-svg-dom;bundle-version="[1.10.0,1.11.0)",
@@ -29,5 +28,3 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Extra utils for apache batik
 Bundle-ClassPath: .
-Import-Package: org.w3c.dom,
- org.w3c.dom.events

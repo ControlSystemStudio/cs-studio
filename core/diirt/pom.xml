@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>core</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>diirt</artifactId>
   <packaging>pom</packaging>
@@ -12,4 +12,5 @@
     <module>diirt-repository</module>
     <module>diirt-plugins</module>
   </modules>
+  <version>4.2.0-SNAPSHOT</version>
 </project>

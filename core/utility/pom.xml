@@ -4,14 +4,14 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>core</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>utility</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>utility-plugins</module>
     <module>utility-features</module>
     <module>utility-repository</module>
   </modules>
+  <version>4.1.0-SNAPSHOT</version>
 </project>
