@@ -9,12 +9,12 @@
 
 
   <modules>
-    <module>maven-osgi-bundles</module>
     <module>thirdparty</module>
     <module>core</module>
     <module>applications</module>
     <module>product</module>
   </modules>
+
 
   <!-- USE MAVEN 3.0 -->
   <prerequisites>
