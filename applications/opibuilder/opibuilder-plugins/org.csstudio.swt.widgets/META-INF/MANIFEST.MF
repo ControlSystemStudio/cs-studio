@@ -20,13 +20,15 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.apache.xmlgraphics.batik-dom;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-svg-dom;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-transcoder;bundle-version="[1.10.0,1.11.0)",
- org.apache.batik.util;bundle-version="[1.10.0,1.11.0)",
  org.apache.batik.css;bundle-version="[1.10.0,1.11.0)",
+ org.apache.xmlgraphics.batik-util;bundle-version="1.10.0",
  org.apache.xmlgraphics.batik-xml;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-awt-util;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-anim;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-gvt;bundle-version="[1.10.0,1.11.0)",
- org.apache.xmlgraphics.batik-script;bundle-version="[1.10.0,1.11.0)"
+ org.apache.xmlgraphics.batik-script;bundle-version="[1.10.0,1.11.0)",
+ org.w3c.dom.svg;bundle-version="1.1.0",
+ org.w3c.dom.events;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,
@@ -37,4 +39,3 @@ Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.symbol,
  org.csstudio.swt.widgets.symbol.util,
  org.csstudio.swt.widgets.util
-Import-Package: org.w3c.dom.svg

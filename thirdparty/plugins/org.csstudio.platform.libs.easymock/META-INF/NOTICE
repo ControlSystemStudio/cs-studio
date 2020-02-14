@@ -1,0 +1,15 @@
+// ------------------------------------------------------------------
+// NOTICE file corresponding to the section 4d of The Apache License,
+// Version 2.0, in this case for EasyMock
+// ------------------------------------------------------------------
+
+EasyMock
+Copyright 2001-2010 OFFIS, Tammo Freese, Henri Tremblay
+
+This product includes/uses software(s) developed by 'an unknown organization'
+  - Code Generation Library (http://cglib.sourceforge.net/)
+
+This product includes/uses software(s) developed by 'Joe Walnes, Henri Tremblay, Leonardo Mesquita'
+  - Objenesis (http://objenesis.googlecode.com/svn/docs/index.html)
+
+

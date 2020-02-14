@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+	** Colormap file .xml **
+
+The preferred format for colormaps is the native xml description. A valid .xml
+colormap should specify whether the colormap uses a "absolute" or a "relative" scale
+(specified in the position atrribute),what the nanColor is(specified in the colorNaN attribute),
+and a list of positions and the corresponding color.
+
+If a relative scale is used, then the value field in value can only contains decimal
+values ranging from 0.0 to 1.0. If an absolute scale is chosen, then the value can be
+any number. However, the position value can only be in increasing order.
+
+In terms of color representation in this .xml file, Graphene recognizes all of the following formats:
+
+1. Any standard HTML color name
+(which can be found at http://www.w3schools.com/html/html_colornames.asp) example:blue,orange,aliceblue,aqua,etc
+
+2. An HTML long or short format hex string with an optional hex alpha channel.
+Hexadecimal values may be preceded by either "0x" or "#" and can either be 2 digits
+ in the range 00 to 0xFF or a single digit in the range 0 to F. example:0xff668840,#f68
+
+3. An rgb(r,g,b) or rgba(r,g,b,a) format string. Each of the r, g, or b values
+can be an integer from 0 to 255 or a floating point percentage value from 0.0 to 100.0
+followed by the percent (%) character. The alpha component, if present, is a
+floating point value from 0.0 to 1.0. example: rgb(255,102,136), rgb(100%,50%,50%)
+
+4. An hsl(h,s,l) or hsla(h,s,l,a) format string. The h value is a floating point
+number from 0.0 to 360.0 representing the hue angle on a color wheel in degrees
+with 0.0 or 360.0 representing red, 120.0 representing green, and 240.0 representing
+blue. The s value is the saturation of the desired color represented as a floating
+point percentage from gray (0.0) to the fully saturated color (100.0) and the l value
+is the desired lightness or brightness of the desired color represented as
+a floating point percentage from black (0.0) to the full brightness of the
+color (100.0). The alpha component, if present, is a floating point value
+from 0.0 to 1.0. Spaces are allowed before or after the numbers and between the
+percentage number and its percent sign (%). example: hsl(240,100%,100%), hsla(120,0%,0%,0.25)
+
+
+ -->
+
+
+<!-- Varies the hue component of the HSV color model.
+     The map is useful for displaying periodic functions. -->
+
+<colormap position = "relative" colorNaN="BLACK">
+    <color position="0.0" value="rgb(0,0,138)"/>
+    <color position="0.2" value="BLUE"/>
+    <color position="0.4" value="CYAN"/>
+    <color position="0.6" value="YELLOW"/>
+    <color position="0.8" value="RED"/>
+    <color position="1.0" value="rgb(138,0,0)"/>
+</colormap>

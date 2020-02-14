@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.phoebus.integration.pvtable.OpenPhoebusPVTable"
+               icon="icons/pvtable.png"
+               label="%PhoebusPVTableLabel"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.phoebus.integration.pvtable.OpenPhoebusPVTable"
+               icon="icons/pvtable.png"
+               label="%PhoebusPVTableLabel"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.pvtable.OpenPhoebusPVTable"
+            icon="icons/pvtable.png"
+            id="org.csstudio.phoebus.integration.pvtable.OpenPhoebusPVTable"
+            name="PV Table">
+      </command>
+   </extension>
+      <extension
+         point="org.eclipse.ui.editors">
+      <editor
+        default="true"
+        icon="icons/pvtable.png"
+        extensions="sav"
+        id="org.csstudio.phoebus.integration.pvtable.PvTableEditor"
+        launcher="org.csstudio.phoebus.integration.pvtable.PvTableEditor"
+        name="%PhoebusPVTableLabel">
+     </editor>
+      <editor
+            default="true"
+            extensions="pvs"
+            icon="icons/pvtable.png"
+            id="org.csstudio.phoebus.integration.pvtable.PvTableEditor"
+            launcher="org.csstudio.phoebus.integration.pvtable.PvTableEditor"
+            name="%PhoebusPVTableLabel">
+      </editor>
+   </extension>
+</plugin>

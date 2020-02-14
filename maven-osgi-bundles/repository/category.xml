@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+	<category-def name="all" label="Maven osgi-bundles"/>
+<!--	<category-def name="org.csstudio.utility.pvmanager" label="PVManager Wrapped Support"/> -->
+    <iu>
+        <category name="all"/>
+        <query>
+            <expression type="match">providedCapabilities.exists(p | p.namespace == 'osgi.bundle')</expression>
+        </query>
+</iu>
+<!-- <bundle id="org.csstudio.utility.pvmanager" version="0.0.0">
+	<category name="org.csstudio.utility.pvmanager"/>
+</bundle> -->
+</site>

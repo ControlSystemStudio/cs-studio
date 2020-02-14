@@ -33,6 +33,5 @@ Export-Package: org.csstudio.opibuilder.actions,
  org.csstudio.opibuilder.visualparts,
  org.csstudio.opibuilder.wizards
 Import-Package: org.apache.batik,
- org.apache.batik.util;version="[1.10.0,1.11.0)",
  org.eclipse.draw2d.geometry,
  org.eclipse.gef.commands

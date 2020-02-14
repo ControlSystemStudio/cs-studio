@@ -5,12 +5,11 @@ Bundle-SymbolicName: org.csstudio.utility.batik;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: CS-Studio <cs-studio-core@lists.sourceforge.net>
 Bundle-Activator: org.csstudio.utility.batik.Activator
-Require-Bundle: org.w3c.dom.svg,
+Require-Bundle: org.w3c.dom.svg, 
  org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
  org.apache.commons.lang,
  org.csstudio.java,
- javax.xml,
  org.apache.xmlgraphics.batik-bridge;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-dom;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-svg-dom;bundle-version="[1.10.0,1.11.0)",
@@ -24,12 +23,8 @@ Require-Bundle: org.w3c.dom.svg,
  org.apache.xmlgraphics.batik-ext;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-parser;bundle-version="[1.10.0,1.11.0)",
  org.apache.batik.util;bundle-version="[1.10.0,1.11.0)"
-Export-Package: org.csstudio.utility.batik,
- org.apache.batik.util;version="1.10.0"
+Export-Package: org.csstudio.utility.batik
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Extra utils for apache batik
 Bundle-ClassPath: .
-Import-Package: org.w3c.dom,
- org.w3c.dom.events,
- org.apache.batik.util;version="1.10.0"

@@ -1,0 +1,147 @@
+@CHARSET "UTF-8";
+
+body
+{
+    padding-left: 0em;
+    padding-right: 0em;
+	font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+	font-variant: normal;
+	font-style: normal;
+	color: black;
+	background: url("../images/blueback.jpg") white;
+}
+
+em
+{
+	font-weight: bold;
+}
+
+H1, H2, H3, H4
+{
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-variant: normal;
+	font-style: normal;
+	color: #202080;
+}
+	
+ul.navbar
+{
+    position: absolute;
+    top: 1em;
+    left: 0em;
+    width: 5em;
+	list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.navbar li
+{
+    margin: 0.5em 0;
+    padding: 0.3em;
+    border-right: 0.1em solid black;
+    border-bottom: 0.1em solid black;
+    background: url("images/dummy.jpg") white;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+}
+
+ul.navbar a
+{
+    text-decoration: none;
+}
+
+table.border
+{
+	border-top-width: 1px;
+	border-top-color: black;
+	border-top-style: solid;
+	border-left-width: 1px;
+	border-left-color: black;
+	border-left-style: solid;
+	border-right-width: 1px;
+	border-right-color: black;
+	border-right-style: solid;
+}
+th.border
+{
+	font-size: 110%;
+	color: #4040A0;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	border-bottom-width: 1px;
+	border-bottom-color: black;
+	border-bottom-style: solid;
+}
+TD.border
+{
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	border-bottom-width: 1px;
+	border-bottom-color: black;
+	border-bottom-style: solid;
+}
+TD.check
+{
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	border-bottom-width: 1px;
+	border-bottom-color: black;
+	border-bottom-style: solid;
+	background-image: url("images/check.jpg");
+	background-repeat: no-repeat;
+	background-position: center;
+	color: white;
+	width: 24;
+	height: 24;
+}
+
+TR.alt_header
+{
+	background-color: #FFCC66
+}
+TR.alt
+{
+	background-color: #DFDFFF
+}
+DIV.ToolInfo
+{
+	font-style: italic;
+	font-size: 80%;
+	color: #101090;
+	margin-left: 2em;
+}
+
+UL
+{
+	list-style-type: square;
+}
+
+OL
+{
+	list-style-type: decimal;
+}
+
+A:LINK, A:VISITED
+{
+	color: blue;
+	text-decoration: none;
+}
+A:HOVER
+{
+	background: #EDB;
+	font-weight: bold;
+}
+
+address
+{
+	background-image: url("../images/squeeze.gif");
+	background-repeat: no-repeat;
+	background-position: top left;
+    margin-top: 1em;
+    padding-top: 21px;
+}

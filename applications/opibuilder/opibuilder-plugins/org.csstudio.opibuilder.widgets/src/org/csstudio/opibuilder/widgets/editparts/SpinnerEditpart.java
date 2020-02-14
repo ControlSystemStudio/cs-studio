@@ -147,12 +147,10 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 String text = (String)newValue;
                 try {
+                    SpinnerFigure spinnerFigure = (SpinnerFigure) figure;
                     text = text.replace("e", "E"); //$NON-NLS-1$ //$NON-NLS-2$
                     double value = new DecimalFormat().parse(text).doubleValue();
-                    //coerce value in range
-                    value = Math.max(((SpinnerFigure)figure).getMin(),
-                            Math.min(((SpinnerFigure)figure).getMax(), value));
-                    ((SpinnerFigure)figure).setValue(value);
+                    spinnerFigure.manualSetValue(value);
                     if(getExecutionMode() == ExecutionMode.RUN_MODE)
                         setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
                     getWidgetModel().setText(
@@ -369,7 +367,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
     @Override
     public void setValue(Object value) {
         if(value instanceof Number)
-            ((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
+            ((SpinnerFigure)getFigure()).manualSetValue(((Number) value).doubleValue());
         else
             super.setValue(value);
     }
