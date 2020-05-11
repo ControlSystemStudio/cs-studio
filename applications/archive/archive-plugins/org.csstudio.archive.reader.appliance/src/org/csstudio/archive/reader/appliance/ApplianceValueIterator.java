@@ -326,7 +326,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     /**
      * Determines alarm status from the given numerical representation.
      *
-     * @param status numerical representation of alarm severity
+     * @param status numerical representation of alarm status
      *
      * @return alarm status
      */
