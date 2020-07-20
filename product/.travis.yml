@@ -1,0 +1,32 @@
+# whitelist 
+language: java
+
+cache:
+  directories:
+   - $HOME/.m2
+
+env:  
+  global:  
+   - DISPLAY=:99.0
+
+sudo: false
+
+dist: xenial
+
+jdk:
+  - openjdk11
+
+install: echo 'Skipping mvn install'
+
+before_script:
+ - echo "MAVEN_OPTS='-Xmx2g -Xms1g'" > ~/.mavenrc
+
+script:
+ - java -version
+   # Make sure stdout is in blocking mode.
+   # See https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959 for details.
+ - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+ - ./build/travis.sh
+
+after_failure:
+ - cat *.log

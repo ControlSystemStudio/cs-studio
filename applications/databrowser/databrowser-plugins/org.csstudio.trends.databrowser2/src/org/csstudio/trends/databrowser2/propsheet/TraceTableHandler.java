@@ -847,7 +847,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                             null);
                     if (md.getToggleState())
                         store.setValue(Preferences.ALLOW_REQUEST_RAW, true);
-                    if (md.getReturnCode() == MessageDialog.OK)
+                    if (md.getReturnCode() != MessageDialog.OK)
                         return;
                 }
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);

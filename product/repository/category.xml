@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <!--<feature url="URL" id="org.csstudio.dmtest" version="X.Y.Z.qualifier">
+      <category name="CATEGORY"/>
+   </feature>-->
+
+   <feature id="org.csstudio.product.feature">
+      <!--<category name="org.csstudio.category.core"/>-->
+   </feature>
+
+   <!--<category-def name="org.csstudio.category.example" label="Example"/>-->
+</site>

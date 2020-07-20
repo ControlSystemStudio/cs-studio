@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Easymock
+Bundle-SymbolicName: org.csstudio.platform.libs.easymock
+Bundle-Version: 3.0.0.qualifier
+Export-Package: org.easymock,
+ org.easymock.internal,
+ org.easymock.internal.matchers
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

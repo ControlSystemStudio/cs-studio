@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src/"/>
+	<classpathentry exported="true" kind="lib" path="libs/antlr-2.7.6.jar" sourcepath="project"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/hibernate-testing.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/hibernate3.jar" sourcepath="project"/>
+	<classpathentry exported="true" kind="lib" path="libs/javassist-3.9.0.GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jta-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

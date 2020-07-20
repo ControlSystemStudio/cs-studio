@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Varies the hue component of the HSV color model. 
+     The map is useful for displaying periodic functions,
+     and expects the value to be in radians. -->
+<colormap position="absolute" colorNaN="BLACK">
+    <color position="0.0" value="RED"/>
+    <color position="1.04719755119659774" value="YELLOW"/>
+    <color position="2.09439510239319549" value="GREEN"/>
+    <color position="3.14159265358979323" value="CYAN"/>
+    <color position="4.18879020478639098" value="BLUE"/>
+    <color position="5.23598775598298873" value="MAGENTA"/>
+    <color position="6.28318530717958647" value="RED"/>
+</colormap>
