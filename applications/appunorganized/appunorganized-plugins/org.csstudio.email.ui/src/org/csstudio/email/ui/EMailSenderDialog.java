@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import java.util.logging.Level;
 
 /** Dialog for entering EMail and sending it.
  *  @author Kay Kasemir
@@ -262,7 +263,13 @@ public class EMailSenderDialog extends TitleAreaDialog
         }
         catch (Exception ex)
         {
-            setErrorMessage(ex.getMessage());
+            String msg = ex.getMessage();
+            if (msg != null) {
+                setErrorMessage(msg);
+            } else {
+                setErrorMessage("Unknown error sending email");
+            }
+            Activator.getLogger().log(Level.WARNING, "Error sending email", ex);
             return;
         }
         super.okPressed();
