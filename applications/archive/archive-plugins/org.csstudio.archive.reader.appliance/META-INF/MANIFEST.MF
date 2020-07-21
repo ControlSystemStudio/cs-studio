@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.vtype,
  org.diirt.util,
  org.diirt.vtype,
+ org.epics.jca;bundle-version="2.4.1",
  com.sun.xml.bind.jaxb-impl,
  jaxb-api
 Bundle-ActivationPolicy: lazy

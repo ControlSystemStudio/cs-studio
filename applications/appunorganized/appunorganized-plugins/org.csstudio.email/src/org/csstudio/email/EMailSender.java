@@ -15,6 +15,7 @@ import java.io.Writer;
 import org.csstudio.email.encoder.Base64Encoder;
 
 import org.apache.commons.net.smtp.SMTPClient;
+import org.apache.commons.net.smtp.SMTPReply;
 
 /** Send EMail with text or image attachments.
  *  <p>
@@ -52,18 +53,26 @@ public class EMailSender
     public EMailSender(final String host, final String from, final String to,
                        final String subject) throws IOException
     {
-        smtp = new SMTPClient(host);
+        smtp = new SMTPClient();
+        smtp.connect(host);
+        if (!SMTPReply.isPositiveCompletion(smtp.getReplyCode()))
+        {
+            smtp.disconnect();
+            throw new IOException("SMTP server refused connection: " + host);
+        }
+
+        smtp.login();
         smtp.setSender(from);
         smtp.addRecipient(to);
         message = smtp.sendMessageData();
 
-        message.write("To: " + to);
-        message.write("From: " + from);
-        message.write("Subject: " + subject);
+        message.write("To: " + to + "\n");
+        message.write("From: " + from + "\n");
+        message.write("Subject: " + subject + "\n");
 
-        message.write("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"");
+        message.write("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"\n");
         message.write("\n");
-        message.write("This is a multi-part message in MIME format.");
+        message.write("This is a multi-part message in MIME format.\n");
         message.write("\n");
     }
 
@@ -73,11 +82,11 @@ public class EMailSender
      */
     public void addText(final String text) throws IOException
     {
-        message.write("--" + boundary);
-        message.write("Content-Type: text/plain");
-        message.write("Content-Transfer-Encoding: binary");
+        message.write("--" + boundary + "\n");
+        message.write("Content-Type: text/plain\n");
+        message.write("Content-Transfer-Encoding: binary\n");
         message.write("\n");
-        message.write(text);
+        message.write(text + "\n");
         message.write("\n");
     }
 
@@ -87,10 +96,10 @@ public class EMailSender
      */
     public void attachText(final String filename) throws FileNotFoundException, IOException
     {
-        message.write("--" + boundary);
-        message.write("Content-Type: text/plain");
-        message.write("Content-Transfer-Encoding: base64");
-        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
+        message.write("--" + boundary + "\n");
+        message.write("Content-Type: text/plain\n");
+        message.write("Content-Transfer-Encoding: base64\n");
+        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"\n");
         message.write("\n");
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
@@ -110,10 +119,10 @@ public class EMailSender
             throw new Exception("Missing file ending, required to determine image type");
         }
         final String type = filename.substring(end + 1).toLowerCase();
-        message.write("--" + boundary);
-        message.write("Content-Type: image/" + type);
-        message.write("Content-Transfer-Encoding: base64");
-        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
+        message.write("--" + boundary + "\n");
+        message.write("Content-Type: image/" + type + "\n");
+        message.write("Content-Transfer-Encoding: base64\n");
+        message.write("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"\n");
         message.write("\n");
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
@@ -134,7 +143,10 @@ public class EMailSender
      */
     public void close() throws IOException
     {
-        message.write("--" + boundary + "--");
+        message.write("--" + boundary + "--\n");
         message.close();
+        smtp.completePendingCommand();
+        smtp.logout();
+        smtp.disconnect();
     }
 }
