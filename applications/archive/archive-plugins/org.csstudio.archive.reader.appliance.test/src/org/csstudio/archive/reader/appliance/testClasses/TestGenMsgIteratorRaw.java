@@ -47,7 +47,10 @@ public class TestGenMsgIteratorRaw implements GenMsgIterator {
         3,2,2,1,0,0,0,1,2,4};
     public static final int[] STATUS = new int[]{
         3,2,2,1,0,0,0,1,2,4};
-
+    // String values of the above statuses according to Status.java in JCA.
+    public static final String[] STATUS_STRING = new String[]{
+        "HIHI_ALARM","WRITE_ALARM","WRITE_ALARM","READ_ALARM","NO_ALARM",
+        "NO_ALARM","NO_ALARM","READ_ALARM","WRITE_ALARM","HIGH_ALARM"};
 
     /**
      * Constructor

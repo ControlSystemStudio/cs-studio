@@ -47,6 +47,10 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
         3,2,2,1,0,0,0,1,2,4};
     public static final int[] STATUS = new int[]{
         3,2,2,1,0,0,0,1,2,4};
+    // String values of the above statuses according to Status.java in JCA.
+    public static final String[] STATUS_STRING = new String[]{
+        "HIHI_ALARM","WRITE_ALARM","WRITE_ALARM","READ_ALARM","NO_ALARM",
+        "NO_ALARM","NO_ALARM","READ_ALARM","WRITE_ALARM","HIGH_ALARM"};
     public static final int[] VALUES_COUNT = new int[]{
         100,200,300,4,500,600,7,8,9,10};
     public static final int VALUES_NCOUNT = 1000;
