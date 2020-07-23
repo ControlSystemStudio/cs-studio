@@ -54,7 +54,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_DOUBLE[i],array,0.000001);
             assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -82,7 +82,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_FLOAT[i],array,0.000001);
             assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -110,7 +110,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_INT[i],array);
             assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -138,7 +138,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_SHORT[i],array);
             assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -166,7 +166,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
             assertArrayEquals("Value comparison", TestGenMsgIteratorWaveform.VALUE_BYTE[i],array);
             assertEquals("Instant comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
