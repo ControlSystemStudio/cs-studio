@@ -823,14 +823,19 @@ public class OlogClientImpl implements OlogClient {
 
 	@Override
 	public Attachment add(File local, Long logId) throws OlogException {
-		FormDataMultiPart form = new FormDataMultiPart();
-		form.bodyPart(new FileDataBodyPart("file", local));
-		XmlAttachment xmlAttachment = service.path("attachments")
-				.path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
-				.accept(MediaType.APPLICATION_XML)
-				.post(XmlAttachment.class, form);
+        return wrappedSubmit(new Callable<Attachment>() {
+            @Override
+            public Attachment call() throws Exception {
+                FormDataMultiPart form = new FormDataMultiPart();
+                form.bodyPart(new FileDataBodyPart("file", local));
+                XmlAttachment xmlAttachment = service.path("attachments")
+                        .path(logId.toString()).type(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaType.APPLICATION_XML)
+                        .post(XmlAttachment.class, form);
 
-		return new Attachment(xmlAttachment);
+                return new Attachment(xmlAttachment);
+            }
+        });
 	}
 
 	@Override
