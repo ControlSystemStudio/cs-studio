@@ -186,6 +186,9 @@
                   </instructions>
                 </artifact>
                 <artifact>
+                  <id>org.apache.xmlgraphics:batik-util:1.10</id>
+                </artifact>
+                <artifact>
                   <id>org.apache.xmlgraphics:batik-bridge:1.10</id>
                   <instructions>
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
@@ -209,13 +212,19 @@
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.xmlgraphics.batik-codec;bundle-version="1.10.0"</Require-Bundle>
                   </instructions>
                 </artifact>
-		<artifact>
+                <artifact>
+                  <id>org.apache.xmlgraphics:batik-css:1.10</id>
+                  <instructions>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                  </instructions>
+                </artifact>
+                <artifact>
                   <id>org.apache.xmlgraphics:batik-codec:1.10</id>
                   <instructions>
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
                   </instructions>
                 </artifact>
-		<artifact>
+                <artifact>
                   <id>org.apache.xmlgraphics:batik-xml:1.10</id>
                   <instructions>
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
