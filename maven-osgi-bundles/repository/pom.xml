@@ -10,15 +10,14 @@
   </parent>
   <properties>
     <!-- Allow updating all Batik bundles with one change.  -->
-    <batik.version>1.10</batik.version>
-    <batik.version.full>1.10.0</batik.version.full>
+    <batik.version>1.13</batik.version>
+    <batik.version.full>1.13.0</batik.version.full>
   </properties>
   <profiles>
     <profile>
       <id>uploadRepo</id>
       <properties>
-        <!-- Properties relative to the distant host where to upload the 
-          repo -->
+        <!-- Properties relative to the distant host where to upload the repo -->
         <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/</ftp.url>
       </properties>
       <build>
