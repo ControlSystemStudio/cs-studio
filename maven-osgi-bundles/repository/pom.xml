@@ -185,6 +185,15 @@
                     <Require-Bundle>com.squareup.retrofit2.converter-moshi,com.squareup.okhttp3.logging-interceptor</Require-Bundle>
                   </instructions>
                 </artifact>
+                <!-- Batik: a few packages are available in the Orbit repository at version 1.10.
+                     We have to fill in the ones that are not available in Orbit and manage their
+                     dependencies.
+                     The orbit packages have different style names:
+                      * org.apache.batik.css
+                      * org.apache.batik.constants
+                      * org.apache.batik.i18n
+                      * org.apache.batik.util
+                -->
                 <artifact>
                   <id>org.apache.xmlgraphics:batik-bridge:1.10</id>
                   <instructions>
@@ -209,13 +218,13 @@
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.xmlgraphics.batik-codec;bundle-version="1.10.0"</Require-Bundle>
                   </instructions>
                 </artifact>
-		<artifact>
+                <artifact>
                   <id>org.apache.xmlgraphics:batik-codec:1.10</id>
                   <instructions>
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
                   </instructions>
                 </artifact>
-		<artifact>
+                <artifact>
                   <id>org.apache.xmlgraphics:batik-xml:1.10</id>
                   <instructions>
                       <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
