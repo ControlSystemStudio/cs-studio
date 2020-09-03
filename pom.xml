@@ -37,8 +37,8 @@
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
-    <eclipse-site>${eclipse.mirror.url}/releases/2018-12</eclipse-site>
-    <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.10</eclipse-update-site>
+    <eclipse-site>${eclipse.mirror.url}/releases/2020-09</eclipse-site>
+    <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.17milestones</eclipse-update-site>
     <efx-site>${eclipse.mirror.url}/efxclipse/runtime-released/3.5.0/site</efx-site>
     <openjfx-site>http://downloads.efxclipse.bestsolution.at/p2-repos/openjfx-11/repository</openjfx-site>
 
@@ -50,7 +50,7 @@
     <upload.root>s3://download.controlsystemstudio.org</upload.root>
     <download.root>http://download.controlsystemstudio.org</download.root>
 
-    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository</orbit-site>
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20200529191137.repository</orbit-site>
 
     <!-- SonarQube configuration -->
     <sonar.language>java</sonar.language>

@@ -8,12 +8,16 @@
     <artifactId>maven-osgi-bundles</artifactId>
     <version>4.6.0-SNAPSHOT</version>
   </parent>
+  <properties>
+    <!-- Allow updating all Batik bundles with one change.  -->
+    <batik.version>1.13</batik.version>
+    <batik.version.full>1.13.0</batik.version.full>
+  </properties>
   <profiles>
     <profile>
       <id>uploadRepo</id>
       <properties>
-        <!-- Properties relative to the distant host where to upload the 
-          repo -->
+        <!-- Properties relative to the distant host where to upload the repo -->
         <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/</ftp.url>
       </properties>
       <build>
@@ -185,76 +189,85 @@
                     <Require-Bundle>com.squareup.retrofit2.converter-moshi,com.squareup.okhttp3.logging-interceptor</Require-Bundle>
                   </instructions>
                 </artifact>
+                <!-- Batik: a few packages are available in the Orbit repository,
+                     currently at version 1.10.  We have to fill in the ones that
+                     are not available in Orbit and manage their dependencies.
+                     The orbit packages have different style names:
+                      * org.apache.batik.css
+                      * org.apache.batik.constants
+                      * org.apache.batik.i18n
+                      * org.apache.batik.util
+                -->
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-bridge:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-bridge:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
-                  </instructions>
-                </artifact>
-                <artifact>
-                  <id>org.apache.xmlgraphics:batik-dom:1.10</id>
-                  <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
-                  </instructions>
-                </artifact>
-                <artifact>
-                  <id>org.apache.xmlgraphics:batik-svg-dom:1.10</id>
-                  <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}",org.apache.batik.constants;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-transcoder:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-dom:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.xmlgraphics.batik-codec;bundle-version="1.10.0"</Require-Bundle>
-                  </instructions>
-                </artifact>
-		<artifact>
-                  <id>org.apache.xmlgraphics:batik-codec:1.10</id>
-                  <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
-                  </instructions>
-                </artifact>
-		<artifact>
-                  <id>org.apache.xmlgraphics:batik-xml:1.10</id>
-                  <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}",org.apache.batik.constants;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-awt-util:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-svg-dom:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-anim:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-transcoder:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0",org.apache.batik.constants;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}",org.apache.xmlgraphics.batik-codec;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-gvt:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-codec:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-script:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-xml:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}",org.apache.batik.constants;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-ext:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-awt-util:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
-                  <id>org.apache.xmlgraphics:batik-parser:1.10</id>
+                  <id>org.apache.xmlgraphics:batik-anim:${batik.version}</id>
                   <instructions>
-                      <Require-Bundle>org.apache.batik.util;bundle-version="1.10.0"</Require-Bundle>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}",org.apache.batik.constants;bundle-version="${batik.version.full}"</Require-Bundle>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.apache.xmlgraphics:batik-gvt:${batik.version}</id>
+                  <instructions>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.apache.xmlgraphics:batik-script:${batik.version}</id>
+                  <instructions>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.apache.xmlgraphics:batik-ext:${batik.version}</id>
+                  <instructions>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
+                  </instructions>
+                </artifact>
+                <artifact>
+                  <id>org.apache.xmlgraphics:batik-parser:${batik.version}</id>
+                  <instructions>
+                      <Require-Bundle>org.apache.batik.util;bundle-version="${batik.version.full}"</Require-Bundle>
                   </instructions>
                 </artifact>
                 <artifact>
