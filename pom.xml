@@ -26,7 +26,7 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>1.6.0</tycho.version>
+    <tycho.version>2.0.0</tycho.version>
     <tycho-extras.version>${tycho.version}</tycho-extras.version>
 
     <cs-studio.version>4.6</cs-studio.version>
