@@ -80,3 +80,8 @@ applications/plugins/org.csstudio.opibuilder.converter/converter.jar
 
 # Checkstyle output
 checkstyle-output.xml
+
+# temporary Maven Tycho pomless build artifacts
+.META-INF_MANIFEST.MF
+.polyglot..META-INF_MANIFEST.MF
+
