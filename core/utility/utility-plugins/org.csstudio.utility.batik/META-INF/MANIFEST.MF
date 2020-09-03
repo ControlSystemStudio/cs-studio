@@ -23,6 +23,7 @@ Require-Bundle: org.w3c.dom.svg,
  org.apache.xmlgraphics.batik-ext;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-parser;bundle-version="[1.10.0,1.11.0)",
  org.apache.batik.util;bundle-version="[1.10.0,1.11.0)",
+ org.apache.batik.constants;bundle-version="[1.10.0,1.11.0)",
  org.apache.xmlgraphics.batik-codec;bundle-version="[1.10.0,1.11.0)"
 Export-Package: org.csstudio.utility.batik
 Bundle-ActivationPolicy: lazy
