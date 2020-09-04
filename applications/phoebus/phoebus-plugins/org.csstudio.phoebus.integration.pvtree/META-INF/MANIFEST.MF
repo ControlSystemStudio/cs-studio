@@ -4,6 +4,7 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.csstudio.phoebus.integration.pvtree;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.phoebus.integration.pvtree.Activator
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.ui.menu,

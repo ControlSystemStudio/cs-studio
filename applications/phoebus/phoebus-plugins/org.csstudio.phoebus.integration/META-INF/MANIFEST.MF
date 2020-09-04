@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Phoebus Integration
 Bundle-SymbolicName: org.csstudio.phoebus.integration;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Activator: org.csstudio.phoebus.integration.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
