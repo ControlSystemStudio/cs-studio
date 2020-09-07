@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Details
 Bundle-SymbolicName: de.desy.language.editor.details; singleton:=true
 Bundle-Version: 1.3.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: de.desy.language.editor.details.DetailsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

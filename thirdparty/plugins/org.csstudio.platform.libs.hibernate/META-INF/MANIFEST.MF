@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hibernate
 Bundle-SymbolicName: org.csstudio.platform.libs.hibernate
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.platform.libs.hibernate.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11

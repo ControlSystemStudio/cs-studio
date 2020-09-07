@@ -4,6 +4,7 @@ Fragment-Host: org.csstudio.display.pace
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 4.2.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime;bundle-version="3.6.0"

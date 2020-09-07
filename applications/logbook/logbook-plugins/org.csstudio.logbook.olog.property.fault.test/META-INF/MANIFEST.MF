@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Olog Fault Tests
 Bundle-SymbolicName: org.csstudio.logbook.olog.property.fault.test
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Fragment-Host: org.csstudio.logbook.olog.property.fault
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.11.0",

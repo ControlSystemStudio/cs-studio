@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: graphene BOY widgets
 Bundle-SymbolicName: org.csstudio.graphene.opiwidgets;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.graphene.opiwidgets.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,

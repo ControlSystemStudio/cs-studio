@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Shift autocomplete
 Bundle-SymbolicName: org.csstudio.autocomplete.shift
 Bundle-Version: 1.0.4.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.autocomplete.shift.Activator
 Require-Bundle: org.eclipse.osgi;bundle-version="3.7.2",
  org.csstudio.autocomplete;bundle-version="1.0.0",

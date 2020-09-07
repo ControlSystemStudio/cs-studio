@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: File
 Bundle-SymbolicName: org.csstudio.utility.file;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.utility.file.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
