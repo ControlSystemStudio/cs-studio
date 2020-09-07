@@ -4,5 +4,6 @@ Bundle-SymbolicName: org.csstudio.platform.utility.jms.test
 Fragment-Host: org.csstudio.platform.utility.jms
 Bundle-ManifestVersion: 2
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit

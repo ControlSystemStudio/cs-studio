@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Math Service
 Bundle-SymbolicName: org.csstudio.service.math;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.service.math.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.diirt.vtype

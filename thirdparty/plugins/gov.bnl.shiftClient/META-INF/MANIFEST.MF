@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: gov.bnl.shiftClient
 Bundle-SymbolicName: gov.bnl.shiftClient;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.utility.shift.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: gov.bnl.shiftClient

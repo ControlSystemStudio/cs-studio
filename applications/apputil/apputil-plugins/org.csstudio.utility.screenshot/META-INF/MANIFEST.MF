@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Screenshot Plug-in
 Bundle-SymbolicName: org.csstudio.utility.screenshot; singleton:=true
 Bundle-Version: 1.3.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.utility.screenshot.ScreenshotPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
