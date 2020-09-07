@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Extra widgets for BOY
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.extra;singleton:=true
 Bundle-Version: 2.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0",

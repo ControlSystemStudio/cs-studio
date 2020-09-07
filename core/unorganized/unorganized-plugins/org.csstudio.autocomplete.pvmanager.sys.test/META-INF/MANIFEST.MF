@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.sys.test
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Fragment-Host: org.csstudio.autocomplete.pvmanager.sys;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit

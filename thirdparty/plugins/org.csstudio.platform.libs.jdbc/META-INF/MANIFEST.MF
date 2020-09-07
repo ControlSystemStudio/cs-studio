@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JDBC Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
 Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy

@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.detailpanel;singleton:=true
 Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.opibuilder.widgets.detailpanel.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

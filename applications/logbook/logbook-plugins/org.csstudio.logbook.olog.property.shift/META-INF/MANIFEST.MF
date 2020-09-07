@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Olog Shift property
 Bundle-SymbolicName: org.csstudio.logbook.olog.property.shift;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.logbook.olog.property.shift.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

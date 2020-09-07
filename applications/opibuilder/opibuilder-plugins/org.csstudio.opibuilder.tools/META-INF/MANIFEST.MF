@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OPI Builder Utils
 Bundle-SymbolicName: org.csstudio.opibuilder.tools;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.opibuilder.tools.Activator
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,

@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SNLDiagram Plug-in
 Bundle-SymbolicName: de.desy.language.snl.diagram
 Bundle-Version: 1.3.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: de.desy.language.snl.diagram.DiagramActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.draw2d,

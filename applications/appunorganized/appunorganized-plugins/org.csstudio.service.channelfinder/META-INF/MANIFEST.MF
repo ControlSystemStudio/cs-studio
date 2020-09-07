@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder PVManager Service
 Bundle-SymbolicName: org.csstudio.service.channelfinder;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.service.channelfinder.Activator
 Require-Bundle: org.eclipse.core.runtime,
  gov.bnl.channelfinder.api,
