@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.csstudio.phoebus.integration.opibuilder;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Activator: org.csstudio.phoebus.integration.opibuilder.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
