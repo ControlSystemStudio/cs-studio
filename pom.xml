@@ -16,13 +16,6 @@
     <module>product</module>
   </modules>
 
-
-  <!-- USE MAVEN 3.0 -->
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
-
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
@@ -101,6 +94,29 @@
         <version>1.2.1</version>
       </extension>
     </extensions>
+    <plugins>
+      <plugin>
+        <!-- Use Maven 3.0 -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.0.0,)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <!-- Profiles -->
