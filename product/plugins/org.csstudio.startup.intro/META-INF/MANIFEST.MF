@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CS-Studio Intro
+Bundle-SymbolicName: org.csstudio.startup.intro; singleton:=true
+Bundle-Version: 4.6.4.qualifier
+Bundle-Activator: org.csstudio.startup.intro.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro,
+ org.eclipse.ui.intro.universal,
+ org.eclipse.help
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-Vendor: CS-Studio Collaboration <cs-studio-core@lists.sourceforge.net>

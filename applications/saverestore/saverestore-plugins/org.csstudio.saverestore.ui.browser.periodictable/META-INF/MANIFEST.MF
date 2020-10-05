@@ -4,7 +4,8 @@ Bundle-Name: Periodictable
 Bundle-SymbolicName: org.csstudio.saverestore.ui.browser.periodictable;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: FRIB
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.csstudio.saverestore;bundle-version="1.0.0",
  org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
- org.csstudio.ui.fx.util;bundle-version="1.0.0"
+ org.csstudio.ui.fx.util;bundle-version="1.0.0",
+ org.eclipse.fx.ui.workbench3;bundle-version="3.4.3"

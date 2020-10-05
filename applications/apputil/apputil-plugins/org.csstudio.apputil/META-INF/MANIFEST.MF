@@ -14,4 +14,4 @@ Export-Package: org.csstudio.apputil.args,
  org.csstudio.apputil.xml
 Require-Bundle: org.csstudio.java;bundle-version="3.0.0"
 Bundle-Description: Application utilities for Arguments, Strings, Formulas, Time stamps, ... 
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

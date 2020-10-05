@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY Editor Plugin
 Bundle-SymbolicName: org.csstudio.opibuilder.editor;singleton:=true
 Bundle-Version: 4.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.2.0",
  org.eclipse.ui.editors,
  org.eclipse.jface.text;bundle-version="3.4.0",
@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.2.0",
  org.jdom,
  org.eclipse.ui.workbench;bundle-version="3.106.0",
  org.eclipse.ui.views;bundle-version="3.7.0",
- org.eclipse.ui
+ org.eclipse.ui,
+ org.apache.batik.util;bundle-version="[1.10.0,1.11.0)"
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.opibuilder.editor.Activator
@@ -32,6 +33,5 @@ Export-Package: org.csstudio.opibuilder.actions,
  org.csstudio.opibuilder.visualparts,
  org.csstudio.opibuilder.wizards
 Import-Package: org.apache.batik,
- org.apache.batik.util,
  org.eclipse.draw2d.geometry,
  org.eclipse.gef.commands

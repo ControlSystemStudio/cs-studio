@@ -9,12 +9,10 @@ Bundle-Description: BEAST Alarm Table
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.workbench;resolution:=optional,
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.4.0";resolution:=optional,
  org.eclipse.help,
  org.csstudio.ui.util;bundle-version="4.0.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.apputil.ui,
  org.csstudio.alarm.beast;bundle-version="3.2.0",
  org.csstudio.alarm.beast.ui;bundle-version="3.2.0",
@@ -25,7 +23,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.diirt.util;bundle-version="3.0.1",
  org.diirt.vtype;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Activator: org.csstudio.alarm.beast.ui.alarmtable.Activator
 Export-Package: org.csstudio.alarm.beast.ui.alarmtable
 Import-Package: org.csstudio.java.time

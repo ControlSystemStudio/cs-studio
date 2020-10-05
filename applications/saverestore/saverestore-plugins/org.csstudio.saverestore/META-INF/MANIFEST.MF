@@ -4,7 +4,7 @@ Bundle-Name: Saverestore
 Bundle-SymbolicName: org.csstudio.saverestore;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: FRIB
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
  org.eclipse.core.runtime;bundle-version="3.11.1",

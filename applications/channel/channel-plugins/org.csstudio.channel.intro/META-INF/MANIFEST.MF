@@ -4,7 +4,7 @@ Bundle-Name: Intro contribution for channel applications
 Bundle-Description: Contribution to the Tutorials and What's new intro pages for applications based on channel
 Bundle-SymbolicName: org.csstudio.channel.intro;singleton:=true
 Bundle-Version: 1.1.2.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.intro,

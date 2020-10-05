@@ -1,0 +1,9 @@
+JarIndex-Version: 1.0
+
+easymock-3.0.jar
+META-INF
+org
+org/easymock
+org/easymock/internal
+org/easymock/internal/matchers
+

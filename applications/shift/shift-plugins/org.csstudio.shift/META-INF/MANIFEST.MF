@@ -6,7 +6,7 @@ Bundle-Version: 1.0.4.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  gov.bnl.shiftClient,
  org.junit-dep;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.shift,
  org.csstudio.shift.util
 Import-Package: org.csstudio.utility.shift

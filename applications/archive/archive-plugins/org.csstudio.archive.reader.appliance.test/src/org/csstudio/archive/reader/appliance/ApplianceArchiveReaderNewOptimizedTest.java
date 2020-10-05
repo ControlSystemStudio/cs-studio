@@ -45,13 +45,13 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
-            val = (ArchiveVNumber) vals[i];
+            val = vals[i];
             assertEquals(
                     "Value comparison",
                     Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i % TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),
                     (Double) val.getValue(), 0.0001);
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i%TestGenMsgIteratorRaw.SEVERITIES.length], val.getAlarmName());
         }
     }
 

@@ -18,6 +18,7 @@
     <child location="display"/>
     <child location="logbook"/>
     <child location="opibuilder"/>
+    <child location="phoebus"/>
     <child location="scan"/>
     <child location="shift"/>
     <child location="save-set-restore"/>

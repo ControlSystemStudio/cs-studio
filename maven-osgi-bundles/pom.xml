@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>maven-osgi-bundles</artifactId>
+  <packaging>pom</packaging>
+  <name>maven-osgi-bundles</name>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>cs-studio</artifactId>
+    <version>4.6.0-SNAPSHOT</version>
+  </parent>
+
+  <!-- PROPERTIES -->
+  <properties>
+    <cs-studio-central.url>${download.root}/maven-osgi-bundles/${cs-studio.version}</cs-studio-central.url>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.core</groupId>
+      <artifactId>runtime</artifactId>
+      <version>${eclipse.runtime.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <modules>
+    <module>epics</module>
+    <module>repository</module>
+  </modules>
+
+</project>
+

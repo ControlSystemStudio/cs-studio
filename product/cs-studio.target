@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="45">
+<locations>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="3.7.2.M20120208-0800"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272"/>
+<unit id="org.eclipse.pde.api.tools.ee.jre11.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.osgiminimum11.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.j2se15.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.osgiminimum10.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.cdcfoundation10.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.cdcfoundation11.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.javase16.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.rcp.feature.group" version="3.7.2.v20120120-1424-9DB5FmnFq5JCf1UA38R-kz0S0272"/>
+<unit id="org.eclipse.platform.sdk" version="3.7.2.M20120208-0800"/>
+<unit id="org.eclipse.pde.api.tools.ee.javase17.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.osgiminimum12.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.platform.ide" version="3.7.2.M20120208-0800"/>
+<unit id="org.eclipse.pde.api.tools.ee.fragments.feature.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.pde.api.tools.ee.j2se13.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<unit id="org.eclipse.releng.tools.feature.group" version="3.4.101.r37x_v20111117-4507s482aw31221929"/>
+<unit id="org.eclipse.pde.api.tools.ee.j2se14.group" version="1.0.200.r37x_v20110803-7D-FHkFAFkNZZO9PfBZStN"/>
+<repository location="http://download.eclipse.org/eclipse/updates/3.7"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.csstudio.eclipse.feature.feature.group" version="3.3.0.201406161733"/>
+<unit id="org.csstudio.pvmanager.autocomplete.feature.feature.group" version="1.0.1.201406161733"/>
+<unit id="org.objenesis" version="1.0.0"/>
+<unit id="org.epics.pvdata" version="3.0.3"/>
+<unit id="org.csstudio.utility.pvmanager.file" version="3.3.0.20140701151513"/>
+<unit id="org.csstudio.pvmanager.pva.feature.feature.group" version="3.3.2.201406280237"/>
+<unit id="org.epics.pvmanager-graphene" version="2.6.0"/>
+<unit id="org.csstudio.pvmanager.exec.feature.feature.group" version="3.3.0.201406280236"/>
+<unit id="org.csstudio.utility.pvmanager" version="3.3.0.20140701151511"/>
+<unit id="org.antlr.runtime" version="3.4.0"/>
+<unit id="org.epics.pvaccess" version="3.0.5"/>
+<unit id="slf4j.api" version="1.7.2"/>
+<unit id="org.epics.graphene.source" version="0.7.0"/>
+<unit id="org.epics.pvmanager-graphene.source" version="2.6.0"/>
+<unit id="org.csstudio.libs.feature.feature.group" version="3.3.0.201406161733"/>
+<unit id="org.csstudio.product.feature.feature.group" version="3.3.2"/>
+<unit id="org.epics.util" version="0.3.1"/>
+<unit id="org.csstudio.utility.pvmanager.exec" version="3.3.0.20140701151513"/>
+<unit id="org.csstudio.thirdparty.feature.source.feature.group" version="0.0.51.201406112012"/>
+<unit id="org.epics.graphene" version="0.7.0"/>
+<unit id="org.python.jython" version="2.5.3"/>
+<unit id="org.csstudio.pvmanager.jdbc.feature.feature.group" version="3.3.0.201406280237"/>
+<unit id="org.junit-dep" version="4.10.0"/>
+<unit id="org.epics.pvmanager-integration" version="2.6.0"/>
+<unit id="org.csstudio.thirdparty.feature.feature.group" version="0.0.51.201406112012"/>
+<unit id="org.csstudio.utility.pvmanager.loc" version="3.3.0.20140701151514"/>
+<unit id="org.csstudio.utility.pvmanager.sys" version="3.3.0.20140701151515"/>
+<unit id="org.csstudio.utility.pvmanager.pva" version="3.3.0.20140701151514"/>
+<unit id="org.hamcrest.core" version="1.3.0"/>
+<unit id="org.hamcrest.library" version="1.3.0"/>
+<unit id="org.csstudio.core.all.feature.source.feature.group" version="1.0.3.201406301937"/>
+<unit id="org.csstudio.utility.pvmanager.graphene" version="3.3.0.20140701151516"/>
+<unit id="org.epics.vtype" version="2.6.0"/>
+<unit id="org.csstudio.utility.pvmanager.sim" version="3.3.0.20140701151514"/>
+<unit id="org.epics.util.source" version="0.3.1"/>
+<unit id="org.csstudio.utility.pvmanager.extra" version="3.3.0.20140701151515"/>
+<unit id="org.epics.pvmanager-integration.source" version="2.6.0"/>
+<unit id="org.csstudio.core.all.feature.feature.group" version="1.0.3.201406301937"/>
+<unit id="org.csstudio.utility.pvmanager.jdbc" version="3.3.0.20140701151513"/>
+<unit id="org.csstudio.pvmanager.feature.feature.group" version="3.3.0.201406301937"/>
+<unit id="org.csstudio.libs.feature.feature.group" version="3.2.0.201406112012"/>
+<unit id="jul.to.slf4j" version="1.7.2"/>
+<unit id="org.jdom" version="1.1.0"/>
+<unit id="org.antlr.runtime.source" version="3.4.0"/>
+<unit id="org.epics.pvdata.source" version="3.0.3"/>
+<unit id="org.csstudio.utility.pvmanager.epics" version="3.3.0.20140701151512"/>
+<unit id="org.mockito.mockito-core" version="1.9.5"/>
+<unit id="org.csstudio.pvmanager.extra.feature.feature.group" version="3.3.0.201406280237"/>
+<unit id="org.epics.pvaccess.source" version="3.0.5"/>
+<unit id="org.csstudio.utility.pvmanager.vtype" version="3.3.0.20140701151513"/>
+<unit id="org.csstudio.platform.libs.epics" version="3.3.0.20140701151516"/>
+<unit id="org.epics.vtype.source" version="2.6.0"/>
+<repository location="http://download.controlsystemstudio.org/updates/3.3"/>
+</location>
+</locations>
+<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
+</target>

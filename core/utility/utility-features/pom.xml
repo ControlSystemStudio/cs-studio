@@ -15,9 +15,9 @@
     <module>
       org.csstudio.core.trayicon.feature
     </module>
-    <module>
+<!--     <module>
       org.csstudio.core.utility.rap.feature
-    </module>
+    </module> -->
   </modules>
   <build>
     <plugins>

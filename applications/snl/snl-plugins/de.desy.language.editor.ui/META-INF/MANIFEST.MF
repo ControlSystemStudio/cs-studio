@@ -19,4 +19,4 @@ Export-Package: de.desy.language.editor.ui.editor,
  de.desy.language.editor.ui.editor.highlighting,
  de.desy.language.editor.ui.editor.highlighting.predefinedRules,
  de.desy.language.editor.ui.eventing
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -10,9 +10,9 @@ package org.csstudio.opibuilder.editparts;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.simplepv.IPV;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
-import org.diirt.vtype.VType;
 
 /**The abstract edit part for all PV armed widgets.
  * Widgets inheritate this class will have the CSS context menu on it.

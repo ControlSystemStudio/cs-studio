@@ -14,6 +14,6 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.channel,
  org.csstudio.utility.channel.actions
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.sun.jersey.api.client,
  javax.ws.rs.core

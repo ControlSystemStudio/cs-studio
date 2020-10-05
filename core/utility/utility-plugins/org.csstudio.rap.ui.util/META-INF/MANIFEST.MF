@@ -10,7 +10,7 @@ Require-Bundle: org.csstudio.autocomplete.ui,
  org.eclipse.rap.gef,
  org.eclipse.rap.ui,
  org.csstudio.rap.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.ui.util,
  org.csstudio.ui.util.dialogs,

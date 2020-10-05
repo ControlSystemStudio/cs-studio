@@ -12,4 +12,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: de.desy.language.editor.core,
  de.desy.language.editor.core.measurement,
  de.desy.language.editor.core.parser
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

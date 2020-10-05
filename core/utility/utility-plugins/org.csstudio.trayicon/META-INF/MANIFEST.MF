@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CS-Studio Tray Icon
 Bundle-SymbolicName: org.csstudio.trayicon;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.swt,
  org.csstudio.startup;bundle-version="3.2.1",
  org.csstudio.utility.product,
@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.e4.ui.workbench,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di;bundle-version="1.6.1",
- org.eclipse.core.runtime;bundle-version="3.12.0"
+ org.eclipse.core.runtime;bundle-version="3.12.0",
+ javax.annotation;bundle-version="1.2.0"
 Export-Package: org.csstudio.trayicon

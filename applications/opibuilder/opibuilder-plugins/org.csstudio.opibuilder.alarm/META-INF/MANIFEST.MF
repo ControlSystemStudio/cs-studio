@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.csstudio.opibuilder.alarm;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Takashi Nakamoto <takashi.nakamoto@cosylab.com>
 Fragment-Host: org.csstudio.opibuilder;bundle-version="3.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.csstudio.alarm.beast.ui;bundle-version="3.2.0"
 Import-Package: org.csstudio.alarm.beast.ui.clientmodel

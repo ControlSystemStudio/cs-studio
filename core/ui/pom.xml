@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>core</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>ui</artifactId>
   <packaging>pom</packaging>
@@ -13,4 +13,5 @@
     <module>ui-repository</module>
     <module>ui-features</module>
   </modules>
+  <version>4.2.0-SNAPSHOT</version>
 </project>

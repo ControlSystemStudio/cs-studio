@@ -9,19 +9,19 @@
          <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
                icon="icons/alarmtable.gif"
-               label="Phoebus Alarm Table"
+               label="%phoebusAlarmTableLabel"
                style="push">
          </command>
          <command
-               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTree"
                icon="icons/alarmtree.gif"
-               label="Phoebus Alarm Tree"
+               label="%phoebusAlarmTreeLabel"
                style="push">
          </command>
          <command
-               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
+               commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmPanel"
                icon="icons/areapanel.png"
-               label="Phoebus Alarm Panel"
+               label="%phoebusAlarmPanelLabel"
                style="push">
          </command>
       </menuContribution>
@@ -33,6 +33,18 @@
             icon="icons/alarmtable.gif"
             id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTable"
             name="AlarmTable">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTree"
+            icon="icons/alarmtree.gif"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmTree"
+            name="AlarmTree">
+      </command>
+      <command
+            defaultHandler="org.csstudio.phoebus.integration.alarm.actions.OpenPhoebusAlarmPanel"
+            icon="icons/alarmpanel.gif"
+            id="org.csstudio.phoebus.integration.actions.OpenPhoebusAlarmPanel"
+            name="Alarm Panel">
       </command>
    </extension>
 </plugin>

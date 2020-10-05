@@ -6,5 +6,5 @@ Bundle-Description: JUnit tests/demos for logging
 Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: Kay Kasemir, <kasemirk@ornl.gov> - SNS
 Fragment-Host: org.csstudio.logging;bundle-version="0.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.1"

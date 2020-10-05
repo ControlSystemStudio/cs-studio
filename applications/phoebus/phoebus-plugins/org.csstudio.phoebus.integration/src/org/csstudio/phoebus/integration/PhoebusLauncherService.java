@@ -5,9 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
@@ -25,13 +26,23 @@ public class PhoebusLauncherService {
     private static final Logger logger = Logger.getLogger(PhoebusLauncherService.class.getName());
 
     static final IPreferencesService prefs = Platform.getPreferencesService();
-    private static String phoebus_location = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusHome,
-            "/phoebus", null);
-    private static String phoebus_version = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusVersion,
-            "0.0.1-SNAPSHOT", null);
-    private static String phoebus_port = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusPort, "4918",
-            null);
-    private static String jdk9_home = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.JDKHome, null, null);
+
+    // Use the pre installed phoebus launcher script
+    private static boolean phoebus_use_system_launcher = prefs.getBoolean(Activator.PLUGIN_ID, PreferenceConstants.PhoebusUseSystemLauncher, true, null);
+    private static String phoebus_system_launcher_name = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusSystemLauncherName, "phoebus", null);
+
+    // Launch phoebus from the produce jar
+    private static String phoebus_location = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusHome, "/phoebus", null);
+    private static String phoebus_version = prefs.getString(Activator.PLUGIN_ID, PreferenceConstants.PhoebusVersion, "0.0.1-SNAPSHOT", null);
+
+    private static boolean phoebus_with_server = prefs.getBoolean(Activator.PLUGIN_ID, PreferenceConstants.PhoebusWithServer, true, null);
+    private static int phoebus_port = prefs.getInt(Activator.PLUGIN_ID, PreferenceConstants.PhoebusPort, -1, null);
+
+    private static final int port;
+
+    static {
+        port = findFreePort();
+    }
 
     private PhoebusLauncherService() {
     }
@@ -41,14 +52,6 @@ public class PhoebusLauncherService {
             ProcessBuilder pb = new ProcessBuilder(processArguments);
             pb.redirectErrorStream(true);
             pb.directory(new File(phoebus_location));
-
-            // Set jdk home
-            pb.environment().put("JAVA_HOME", Paths.get(jdk9_home).toString());
-            String oldPath = pb.environment().get("PATH");
-
-            // Add jdk home to path
-            pb.environment().put("PATH",
-                    Paths.get(jdk9_home).toString() + File.separator + "bin" + File.pathSeparator + oldPath);
 
             Process process = pb.start();
             // And print each line
@@ -100,18 +103,58 @@ public class PhoebusLauncherService {
     }
 
     /**
-     * creates a list of basic arguments needed to lauch the phoebus framework
+     * Creates a list of basic arguments needed to launch the phoebus framework
      *
-     * @return
+     * @return {@link List} of basic phoebus launch arguments
      */
     private static List<String> basicArguments() {
         List<String> processArguments = new ArrayList<>();
-        processArguments.add(Paths.get(jdk9_home).toString() + File.separator + "bin" + File.separator + "java");
-        processArguments.add("-jar");
-        processArguments.add("product-" + phoebus_version + ".jar");
-        processArguments.add("-server");
-        processArguments.add(phoebus_port);
+        if (phoebus_use_system_launcher && findExecutableOnPath(phoebus_system_launcher_name).isPresent()) {
+            File phoebusFile = findExecutableOnPath(phoebus_system_launcher_name).get();
+            phoebus_location = phoebusFile.getParent();
+            processArguments.add(phoebusFile.getAbsolutePath());
+        } else {
+            processArguments.add("java");
+            processArguments.add("-jar");
+            processArguments.add("product-" + phoebus_version + ".jar");
+        }
+        if(phoebus_with_server) {
+            if (phoebus_port > 0) {
+                processArguments.add("-server");
+                processArguments.add(String.valueOf(phoebus_port));
+            } else {
+                processArguments.add("-server");
+                processArguments.add(String.valueOf(port));
+            }
+        }
         return processArguments;
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    private static Optional<File> findExecutableOnPath(String name) {
+        for (String dirname : System.getenv("PATH").split(File.pathSeparator)) {
+            File file = new File(dirname, name);
+            if (file.isFile() && file.canExecute()) {
+                return Optional.ofNullable(file);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Search for a free port
+     * @return portNumber
+     */
+    private static int findFreePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (IOException e) {
+        }
+        return -1;
     }
 
     /**

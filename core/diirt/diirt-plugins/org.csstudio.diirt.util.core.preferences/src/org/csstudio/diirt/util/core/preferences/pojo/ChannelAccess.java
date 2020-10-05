@@ -84,28 +84,37 @@ public class ChannelAccess {
      * @throws IOException In case the given file cannot be read or the version is invalid.
      * @throws JAXBException In case the given file cannot unmashalled.
      */
-    public static ChannelAccess fromFile ( File confDir ) throws IOException, JAXBException {
+    public static ChannelAccess fromFile ( File confDir ) throws IOException {
 
         File datasourcesDir = new File(confDir, DataSources.DATASOURCES_DIR);
         File channelAccessDir = new File(datasourcesDir, CA_DIR);
         File channelAccessFile = new File(channelAccessDir, CA_FILE);
-        JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class);
-        Unmarshaller u = jc.createUnmarshaller();
-        ChannelAccess ca = (ChannelAccess) u.unmarshal(channelAccessFile);
+        final ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(JAXBContext.class.getClassLoader());
+        try {
+            JAXBContext jc = JAXBContext.newInstance(ChannelAccess.class.getPackageName(),
+                    ChannelAccess.class.getClassLoader());
+            Unmarshaller u = jc.createUnmarshaller();
+            ChannelAccess ca = (ChannelAccess) u.unmarshal(channelAccessFile);
 
-        if ( !CA_VERSION.equals(ca.version) ) {
-            throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
+            if ( !CA_VERSION.equals(ca.version) ) {
+                throw new IOException(MessageFormat.format("Version mismatch: expected {0}, found {1}.", CA_VERSION, ca.version));
+            }
+
+            if ( ca.dataSourceOptions == null ) {
+               ca.dataSourceOptions = new DataSourceOptions();
+            }
+
+            if ( ca.jcaContext == null ) {
+                ca.jcaContext = new JCAContext();
+            }
+
+            return ca;
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
         }
-
-        if ( ca.dataSourceOptions == null ) {
-           ca.dataSourceOptions = new DataSourceOptions();
-        }
-
-        if ( ca.jcaContext == null ) {
-            ca.jcaContext = new JCAContext();
-        }
-
-        return ca;
 
     }
 
@@ -201,24 +210,33 @@ public class ChannelAccess {
      * @throws IOException If problems occurred saving data into file or creating the folder structure.
      * @throws JAXBException In case the given instance cannot be marshalled.
      */
-    public void toFile ( File confDir ) throws IOException, JAXBException {
+    public void toFile ( File confDir ) throws IOException {
 
         File dsDir = new File(confDir, DataSources.DATASOURCES_DIR);
         File caDir = new File(dsDir, CA_DIR);
 
         FileUtils.forceMkdir(caDir);
+        final ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(JAXBContext.class.getClassLoader());
+        try {
+            JAXBContext context = JAXBContext.newInstance(ChannelAccess.class.getPackageName(),
+                    this.getClass().getClassLoader());
+            Marshaller marshaller = context.createMarshaller();
 
-        JAXBContext context = JAXBContext.newInstance(ChannelAccess.class);
-        Marshaller marshaller = context.createMarshaller();
+            try (Writer writer = new FileWriter(new File(caDir, CA_FILE))) {
 
-        try ( Writer writer = new FileWriter(new File(caDir, CA_FILE)) ) {
+                writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
 
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+                marshaller.marshal(this, writer);
 
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            marshaller.marshal(this, writer);
+            }
 
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
         }
 
     }

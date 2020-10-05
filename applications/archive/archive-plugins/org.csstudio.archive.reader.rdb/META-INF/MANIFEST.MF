@@ -5,14 +5,12 @@ Bundle-Description: Support for reading archived data from Relational Database (
 Bundle-SymbolicName: org.csstudio.archive.reader.rdb;singleton:=true
 Bundle-Version: 4.2.1.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.csstudio.archive.reader;bundle-version="3.2.0",
  org.csstudio.platform.utility.rdb;bundle-version="1.2.2",
  org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.archive.rdb;bundle-version="3.1.0",
  org.csstudio.security.ui;bundle-version="1.0.0",
  org.csstudio.archive.vtype,

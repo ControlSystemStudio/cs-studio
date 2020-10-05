@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.email.ui;
 
+import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -19,6 +21,8 @@ public class Activator
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.email.ui";
 
+    final private static Logger logger = Logger.getLogger(ID);
+
     /** @return Returns an image descriptor for the image file at the given plug-in
      *  relative path.
      *  @param path The path
@@ -26,5 +30,11 @@ public class Activator
     public static ImageDescriptor getImageDescriptor(final String path)
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    }
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
     }
 }

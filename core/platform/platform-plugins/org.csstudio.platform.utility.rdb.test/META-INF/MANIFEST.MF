@@ -1,9 +1,9 @@
+Manifest-Version: 1.0
 Bundle-Name: Test Fragment
 Bundle-SymbolicName: org.csstudio.platform.utility.rdb.test
 Fragment-Host: org.csstudio.platform.utility.rdb
-Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.csstudio.platform.utility.rdb
 Require-Bundle: org.junit

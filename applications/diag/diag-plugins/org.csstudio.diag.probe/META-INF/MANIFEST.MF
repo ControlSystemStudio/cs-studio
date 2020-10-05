@@ -23,5 +23,5 @@ Require-Bundle: org.eclipse.ui,
  org.diirt.util;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.csstudio.java.time

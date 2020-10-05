@@ -5,5 +5,5 @@ Bundle-SymbolicName: org.csstudio.alarm.beast.notifier.intro;singleton:=true
 Bundle-Version: 3.2.4.qualifier
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-Description: BEAST Alarm Notification Intro pages
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy

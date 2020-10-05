@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.csstudio.swt.widgets.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Fragment-Host: org.csstudio.swt.widgets;bundle-version="1.0.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.2",
- org.eclipse.rap.draw2d;resolution:=optional,
  org.csstudio.ui.util;bundle-version="3.0.0"
 Import-Package: org.eclipse.gef.handles

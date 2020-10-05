@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.libs.feature"
+      label="CS-Studio External Library Dependencies"
+      version="3.2.1.qualifier"
+      provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
+
+   <description url="http://controlsystemstudio.github.io/">
+      External libraries needed by CS-Studio. This feature is temporary until the build uses P2 properly.
+   </description>
+
+   <copyright url="http://controlsystemstudio.github.io/">
+      Use is subject to license.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public license for the feature.
+       Each library uses its own license.
+   </license>
+
+   <requires>
+      <import plugin="org.apache.commons.collections" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+      <import plugin="javax.annotation"/>
+   </requires>
+
+   <plugin
+         id="javax.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.collections"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jdbc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jmock"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.jms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.python.jython"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
