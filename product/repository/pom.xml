@@ -60,6 +60,15 @@
 							<rootFolder>cs-studio</rootFolder>
 							<archiveFileName>cs-studio-${project.version}</archiveFileName>
 						</product>
+						<product>
+							<id>alarm-server</id>
+							<rootFolder>alarm-server-${project.version}</rootFolder>
+							<rootFolders>
+								<macosx>AlarmServer.app</macosx>
+							</rootFolders>
+							<archiveFileName>alarm-server-${project.version}</archiveFileName>
+							<attachId>alarm-server</attachId>
+					  </product>
 					</products>
 				</configuration>
 				<executions>
