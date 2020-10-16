@@ -4,7 +4,6 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.csstudio.phoebus.integration.channel;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.phoebus.integration.channel.Activator
-Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.ui.menu,

@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.csstudio.alarm.diirt.datasource
 Bundle-SymbolicName: org.csstudio.alarm.diirt.datasource;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/ds_beast.xml
 Bundle-ActivationPolicy: lazy
