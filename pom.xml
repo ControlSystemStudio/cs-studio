@@ -167,7 +167,7 @@
       <repositories>
         <repository>
           <id>csstudio-local-repo</id>
-          <url>file:/${csstudio.local.repo}</url>
+          <url>file:${csstudio.local.repo}</url>
           <layout>p2</layout>
         </repository>
       </repositories>

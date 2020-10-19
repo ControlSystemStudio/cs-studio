@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Alarm Server" uid="alarm-server" id="org.csstudio.alarm.beast.server.product" application="org.csstudio.alarm.beast.server.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.suppressErrors -console
+      </programArgs>
+      <vmArgs>-Declipse.exitdata=
+-Djava.awt.headless=true -Xms64m -Xmx256m
+-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="AlarmServer">
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="org.apache.felix.scr"/>
+      <plugin id="com.diffplug.osgi.extension.sun.misc" fragment="true"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.ibm.icu.base"/>
+      <plugin id="javax.xml"/>
+      <!--
+      <plugin id="org.apache.commons.io"/>
+    -->
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.server"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.csdata"/>
+      <plugin id="org.csstudio.diirt.util.core.preferences"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.utility.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.security"/>
+      <plugin id="org.csstudio.vtype.pv"/>
+      <plugin id="org.csstudio.workspace"/>
+      <!--
+      <plugin id="org.diirt.util"/>
+      <plugin id="org.diirt.vtype"/>
+      -->
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.paho.client.mqttv3"/>
+      <plugin id="org.epics.jca"/>
+      <plugin id="org.epics.pvaccess"/>
+      <plugin id="org.epics.pvdata"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+   </configurations>
+
+</product>
