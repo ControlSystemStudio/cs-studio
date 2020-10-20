@@ -9,11 +9,10 @@
 
 
   <modules>
-    <!-- The maven-osgi-bundles section needs to be built before this main Maven project.
+    <!-- The maven-osgi-bundles section needs to be built before this main Maven project. -->
     <module>thirdparty</module>
     <module>core</module>
     <module>applications</module>
-    -->
     <module>product</module>
   </modules>
 
