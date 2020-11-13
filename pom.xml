@@ -52,40 +52,6 @@
     <sonar.junit.reportsPath>../${project.artifactId}.test/target/surefire-reports/</sonar.junit.reportsPath>
   </properties>
 
-  <!-- P2 REPOSITORIES -->
-  <repositories>
-    <repository>
-      <id>snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>eclipse</id>
-      <url>${eclipse-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>eclipse-updates</id>
-      <url>${eclipse-update-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>efx</id>
-      <url>${efx-site}</url>
-      <layout>p2</layout>
-    </repository>
-    <repository>
-      <id>openjfx</id>
-      <url>${openjfx-site}</url>
-      <layout>p2</layout>
-    </repository>
-  </repositories>
-
   <build>
     <extensions>
       <extension>
@@ -121,6 +87,78 @@
 
   <!-- Profiles -->
   <profiles>
+    <profile>
+      <id>eclipse</id>
+      <activation>
+        <property>
+          <name>!eclipse</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>eclipse</id>
+          <url>${eclipse-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>eclipse-updates</id>
+          <url>${eclipse-update-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>efx</id>
+          <url>${efx-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>openjfx</id>
+          <url>${openjfx-site}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>cs-studio</id>
+      <activation>
+        <property>
+          <name>!cs-studio</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-thirdparty</id>
+          <url>${download.root}/thirdparty/${cs-studio.version}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>csstudio-maven-osgi-bundles</id>
+          <url>${download.root}/maven-osgi-bundles/${cs-studio.version}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>csstudio-core</id>
+          <url>${download.root}/core/${cs-studio.version}</url>
+          <layout>p2</layout>
+        </repository>
+        <!-- Adding the applications repositories to allows child modules
+          to depend on each other -->
+        <repository>
+          <id>csstudio-applications</id>
+          <url>${download.root}/applications/${cs-studio.version}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
     <profile>
       <id>checkstyle</id>
       <build>
