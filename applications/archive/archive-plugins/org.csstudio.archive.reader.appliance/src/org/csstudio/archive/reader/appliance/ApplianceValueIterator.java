@@ -2,6 +2,8 @@ package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -96,8 +98,10 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
 
         DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
+        HashMap<String, String> additionalCmds = new HashMap<String, String>();
+        additionalCmds.put("fetchLatestMetadata","true");
         synchronized(lock){
-            mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
+            mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp, false, additionalCmds);
         }
         if (mainStream != null) {
             mainIterator = mainStream.iterator();
@@ -157,7 +161,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                     TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
                     getSeverity(dataMessage.getSeverity()),
                     getStatus(dataMessage.getStatus()),
-                     null, //TODO get the labels from somewhere
+                    getEnumLabels(mainStream.getPayLoadInfo()), 
                     dataMessage.getNumberValue().intValue());
         } else if (type == PayloadType.SCALAR_STRING) {
             if (valDescriptor == null) {
@@ -226,6 +230,33 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         }
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
     }
+    
+    private List<String> getEnumLabels(PayloadInfo payload){
+      HashMap<Integer, String> enumMap = new HashMap<Integer, String>();
+      List<String> enumLabelsOrdered = new ArrayList<String>();
+      for (FieldValue fieldValue : payload.getHeadersList()) {
+          if (fieldValue.getName().contains("ENUM")) {
+            String[] strSplit = fieldValue.getName().split("_");
+            if (strSplit.length > 1) {
+              try {
+                enumMap.put(Integer.valueOf(strSplit[1]), fieldValue.getVal());
+              } catch (NumberFormatException ex) {
+                // Skip 
+              }
+            }
+          }
+      }
+      
+      if (enumMap.isEmpty()) {
+        return null;
+      }
+      Object[] keys = enumMap.keySet().toArray();
+      Arrays.sort(keys);
+      for (Object key : keys) {
+        enumLabelsOrdered.add(enumMap.get(key));
+      }
+      return enumLabelsOrdered;
+    }
 
     /**
      * Extracts the descriptor for the value field so it can be reused on each iteration.
@@ -278,7 +309,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                 headers.put(fieldValue.getName(), fieldValue.getVal());
             }
         }
-
+        
         String lopr = headers.get(ApplianceArchiveReaderConstants.LOPR);
         String low = headers.get(ApplianceArchiveReaderConstants.LOW);
         String lolo = headers.get(ApplianceArchiveReaderConstants.LOLO);
