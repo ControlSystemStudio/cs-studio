@@ -309,7 +309,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                 headers.put(fieldValue.getName(), fieldValue.getVal());
             }
         }
-        
+
         String lopr = headers.get(ApplianceArchiveReaderConstants.LOPR);
         String low = headers.get(ApplianceArchiveReaderConstants.LOW);
         String lolo = headers.get(ApplianceArchiveReaderConstants.LOLO);
