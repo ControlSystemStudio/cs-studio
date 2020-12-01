@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.jre6.fragment
 Fragment-Host: system.bundle
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Jaka Bobnar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: javax.transaction,
  javax.transaction.xa,
  javax.annotation;version="1.0.0",

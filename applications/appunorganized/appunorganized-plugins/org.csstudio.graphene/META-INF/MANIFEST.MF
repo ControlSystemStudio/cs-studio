@@ -3,22 +3,22 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Graphene
 Bundle-SymbolicName: org.csstudio.graphene;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.csdata;bundle-version="3.1.0",
  org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
- org.csstudio.utility.pvmanager.ui;bundle-version="3.2.0"
+ org.csstudio.utility.pvmanager.ui;bundle-version="3.2.0",
+ org.diirt.datasource;bundle-version="3.1.7",
+ org.diirt.datasource-graphene;bundle-version="3.1.7",
+ org.diirt.graphene;bundle-version="3.1.7"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.graphene.Activator
 Export-Package: org.csstudio.graphene
-Import-Package: org.diirt.datasource;version="3.0.0",
- org.diirt.datasource.expression;version="3.0.0",
+Import-Package: org.diirt.datasource.expression;version="3.0.0",
  org.diirt.datasource.formula;version="3.0.0",
- org.diirt.datasource.graphene;version="3.0.0",
- org.diirt.graphene;version="3.0.0",
  org.diirt.util.array;version="3.0.0",
  org.diirt.util.stats;version="3.0.0",
  org.diirt.util.time;version="3.0.0",

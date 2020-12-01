@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test views and classes for PVManager widgets
 Bundle-SymbolicName: org.csstudio.utility.pvmanager.widgets.test;singleton:=true
 Bundle-Version: 3.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Description: Test views and classes for org.csstudio.utility.pvmanager.widgets
 Require-Bundle: org.eclipse.jface;bundle-version="3.6.2",
  org.eclipse.ui;bundle-version="3.6.2",

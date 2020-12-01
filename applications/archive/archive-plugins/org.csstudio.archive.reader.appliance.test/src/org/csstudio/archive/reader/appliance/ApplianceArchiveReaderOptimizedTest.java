@@ -48,11 +48,11 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
 
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
-            val = (ArchiveVNumber)vals[i];
+            val = vals[i];
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
             assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i%TestGenMsgIteratorRaw.SEVERITIES.length], val.getAlarmName());
         }
     }
 
@@ -79,7 +79,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorOptimized.VALUES_DOUBLE[i%TestGenMsgIteratorOptimized.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
             assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -106,7 +106,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Value comparison", Float.valueOf(TestGenMsgIteratorOptimized.VALUES_FLOAT[i%TestGenMsgIteratorOptimized.VALUES_FLOAT.length]),(Float)val.getValue(),0.0001);
             assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -130,10 +130,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
-            assertEquals("Value comparison", Integer.valueOf(TestGenMsgIteratorOptimized.VALUES_INT[i%TestGenMsgIteratorOptimized.VALUES_INT.length]),(Integer)val.getValue());
+            assertEquals("Value comparison", Integer.valueOf(TestGenMsgIteratorOptimized.VALUES_INT[i%TestGenMsgIteratorOptimized.VALUES_INT.length]),val.getValue());
             assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -157,10 +157,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
-            assertEquals("Value comparison", Short.valueOf(TestGenMsgIteratorOptimized.VALUES_SHORT[i%TestGenMsgIteratorOptimized.VALUES_SHORT.length]),(Short)val.getValue());
+            assertEquals("Value comparison", Short.valueOf(TestGenMsgIteratorOptimized.VALUES_SHORT[i%TestGenMsgIteratorOptimized.VALUES_SHORT.length]),val.getValue());
             assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -184,10 +184,10 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
         ArchiveVNumber val = null;
         for (int i = 0; i < vals.length; i++) {
             val = vals[i];
-            assertEquals("Value comparison", Byte.valueOf(TestGenMsgIteratorOptimized.VALUES_BYTE[i%TestGenMsgIteratorOptimized.VALUES_BYTE.length]),(Byte)val.getValue());
+            assertEquals("Value comparison", Byte.valueOf(TestGenMsgIteratorOptimized.VALUES_BYTE[i%TestGenMsgIteratorOptimized.VALUES_BYTE.length]),val.getValue());
             assertEquals("Timestamp comparison", startM + i*step, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -212,7 +212,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Value comparison", "9554.0",val.getValue());
             assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 
@@ -237,7 +237,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             assertEquals("Value comparison", "Enum <" + TestGenMsgIteratorOptimized.VALUES_INT[i%TestGenMsgIteratorOptimized.VALUES_INT.length] + ">",val.getValue());
             assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i%TestGenMsgIteratorOptimized.SEVERITIES.length]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i%TestGenMsgIteratorOptimized.STATUS.length]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i%TestGenMsgIteratorOptimized.STATUS.length], val.getAlarmName());
         }
     }
 }

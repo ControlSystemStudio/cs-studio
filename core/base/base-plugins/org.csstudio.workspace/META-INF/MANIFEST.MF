@@ -8,3 +8,5 @@ Bundle-Activator: org.csstudio.platform.workspace.Activator
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.workspace
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+

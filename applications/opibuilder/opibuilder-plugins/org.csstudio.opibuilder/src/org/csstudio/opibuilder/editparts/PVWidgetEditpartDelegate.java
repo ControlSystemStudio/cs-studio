@@ -33,6 +33,8 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
@@ -44,8 +46,6 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VType;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 //    private interface AlarmSeverity extends ISeverity{
@@ -98,10 +98,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     //when alarm turn back to no_alarm state/
     private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
 
+        @Override
         public Insets getInsets(IFigure figure) {
             return new Insets(2);
         }
 
+        @Override
         public void paint(IFigure figure, Graphics graphics, Insets insets) {
         }
     };

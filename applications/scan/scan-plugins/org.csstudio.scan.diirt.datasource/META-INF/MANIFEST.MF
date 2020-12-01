@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.csstudio.scan.diirt.datasource
 Bundle-SymbolicName: org.csstudio.scan.diirt.datasource;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/ds_scan.xml
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.diirt.datasource;bundle-version="3.1.2",

@@ -9,6 +9,7 @@ package org.csstudio.email.encoder;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.PrintWriter;
 
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class Base64Test
     public void testEncode() throws Exception
     {
         final BufferedInputStream input = new BufferedInputStream(new FileInputStream("./testfile.txt"));
-        final Base64Encoder encoder = new Base64Encoder(System.out);
+        final Base64Encoder encoder = new Base64Encoder(new PrintWriter(System.out));
         encoder.encode(input);
     }
 }

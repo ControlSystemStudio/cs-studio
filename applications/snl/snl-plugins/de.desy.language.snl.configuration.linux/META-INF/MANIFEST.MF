@@ -7,4 +7,4 @@ Bundle-Activator: de.desy.language.snl.configuration.linux.Activator
 Require-Bundle: org.eclipse.core.runtime,
  de.desy.language.snl;bundle-version="1.0.2"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

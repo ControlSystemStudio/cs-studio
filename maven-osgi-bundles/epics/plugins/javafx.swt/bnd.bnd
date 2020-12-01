@@ -1,0 +1,7 @@
+-classpath: lib/javafx-swt.jar
+-output: openjfx.swt-11.0.1.jar
+-noee: true
+Java-Module: javafx.swt
+Export-Package: com.sun.javafx.*,javafx.*;-split-package:merge-last;-noimport:=true
+Import-Package: *
+Bundle-Version: 11.0.1

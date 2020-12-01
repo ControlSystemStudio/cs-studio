@@ -9,7 +9,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
                icon="icons/channel-viewer-16.png"
-               label="Phoebus Channel Search"
+               label="%phoebusChannelSearchLabel"
                style="push">
          </command>
       </menuContribution>
@@ -19,7 +19,7 @@
          <command
                commandId="org.csstudio.phoebus.integration.actions.OpenPhoebusChannelTable"
                icon="icons/channel-viewer-16.png"
-               label="Phoebus Channel Search"
+               label="%phoebusChannelSearchLabel"
                style="push">
          </command>
       </menuContribution>

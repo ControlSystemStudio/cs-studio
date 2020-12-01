@@ -24,14 +24,14 @@
     <module>org.csstudio.opibuilder.editor</module>
     <module>org.csstudio.opibuilder.examples</module>
     <module>org.csstudio.opibuilder.imagelib</module>
-    <module>org.csstudio.opibuilder.rap</module>
+<!--     <module>org.csstudio.opibuilder.rap</module> -->
     <module>org.csstudio.opibuilder.rcp</module>
     <module>org.csstudio.opibuilder.test</module>
     <module>org.csstudio.opibuilder.tools</module>
     <module>org.csstudio.opibuilder.widgets</module>
     <module>org.csstudio.opibuilder.widgets.extra</module>
     <module>org.csstudio.opibuilder.widgets.detailpanel</module>
-    <module>org.csstudio.opibuilder.widgets.rap</module>
+<!--     <module>org.csstudio.opibuilder.widgets.rap</module> -->
     <module>org.csstudio.opibuilder.widgets.rcp</module>
     <module>org.csstudio.opibuilder.widgets.symbol</module>
     <module>org.csstudio.swt.widgets</module>

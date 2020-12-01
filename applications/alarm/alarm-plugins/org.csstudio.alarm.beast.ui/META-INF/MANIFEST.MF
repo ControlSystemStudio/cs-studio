@@ -10,14 +10,11 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.3.0";resolution:=optional,
- org.eclipse.rap.ui.views;resolution:=optional,
  org.eclipse.ui.workbench;resolution:=optional,
  org.eclipse.ui.ide;bundle-version="3.6.0";resolution:=optional,
  org.csstudio.java;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="4.0.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
  org.csstudio.apputil.ui,
  org.csstudio.logbook,
@@ -35,7 +32,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.actions,
  org.csstudio.alarm.beast.ui.globalclientmodel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Activator: org.csstudio.alarm.beast.ui.Activator
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms

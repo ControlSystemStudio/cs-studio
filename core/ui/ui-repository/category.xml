@@ -6,12 +6,12 @@
    <feature id="org.csstudio.core.ui.feature.source">
       <category name="org.csstudio.category.core"/>
    </feature>
-   <feature id="org.csstudio.core.ui.rap.feature">
+  <!-- <feature id="org.csstudio.core.ui.rap.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.core.ui.rap.feature.source">
       <category name="org.csstudio.category.core"/>
-   </feature>
+   </feature> -->
    <feature id="org.csstudio.perspectives.feature">
       <category name="org.csstudio.category.core"/>
    </feature>

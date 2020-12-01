@@ -4,7 +4,7 @@ Bundle-Name: Scan Server
 Bundle-SymbolicName: org.csstudio.scan.server;singleton:=true
 Bundle-Version: 4.4.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.junit;bundle-version="4.8.0",
  org.python.jython;bundle-version="2.7.1",

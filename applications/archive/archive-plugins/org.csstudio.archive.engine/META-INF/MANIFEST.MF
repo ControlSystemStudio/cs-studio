@@ -22,5 +22,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.lang3;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.osgi.service.http

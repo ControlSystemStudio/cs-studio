@@ -5,17 +5,14 @@ Bundle-Description: UI support (abstact action, dialog) for sending EMails
 Bundle-SymbolicName: org.csstudio.email.ui;singleton:=true
 Bundle-Version: 1.0.3.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin
 Require-Bundle: org.junit;bundle-version="4.8.2";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.jface;bundle-version="3.5.0";resolution:=optional,
- org.eclipse.rap.jface;resolution:=optional,
  org.eclipse.help;bundle-version="3.4.1",
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.workbench;bundle-version="3.5.0";resolution:=optional,
- org.eclipse.rap.ui.workbench;resolution:=optional,
  org.csstudio.email;bundle-version="1.0.0",
  org.csstudio.apputil.ui;bundle-version="1.1.7"
 Export-Package: org.csstudio.email.ui

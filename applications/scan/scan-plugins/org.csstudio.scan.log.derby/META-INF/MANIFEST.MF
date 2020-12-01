@@ -4,7 +4,7 @@ Bundle-Name: Derby-based scan log
 Bundle-SymbolicName: org.csstudio.scan.log.derby;singleton:=true
 Bundle-Version: 3.2.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.log;bundle-version="1.0.0"

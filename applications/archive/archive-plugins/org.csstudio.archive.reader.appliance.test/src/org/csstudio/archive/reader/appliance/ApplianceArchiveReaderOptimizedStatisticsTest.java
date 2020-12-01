@@ -53,7 +53,7 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
             assertEquals("Timestamp comparison", start.toEpochMilli() + i,val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorRaw.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -247,7 +247,7 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
             assertEquals("Value comparison", "9554.0",val.getValue());
             assertEquals("Timestamp comparison", start.toEpochMilli() + i,val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i], val.getAlarmName());
         }
     }
 
@@ -272,7 +272,7 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
             assertEquals("Value comparison", "Enum <" + (i+1) + ">",val.getValue());
             assertEquals("Timestamp comparison", start.toEpochMilli() + i, val.getTimestamp().toEpochMilli());
             assertEquals("Severity", getSeverity(TestGenMsgIteratorOptimized.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorOptimized.STATUS[i]), val.getAlarmName());
+            assertEquals("Status", TestGenMsgIteratorOptimized.STATUS_STRING[i], val.getAlarmName());
         }
     }
 }

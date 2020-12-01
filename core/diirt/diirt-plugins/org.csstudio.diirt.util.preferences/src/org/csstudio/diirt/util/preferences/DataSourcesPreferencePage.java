@@ -25,8 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.csstudio.diirt.util.core.preferences.DIIRTPreferences;
 import org.csstudio.diirt.util.core.preferences.pojo.CompositeDataSource.DataSourceProtocol;
@@ -273,7 +271,7 @@ public class DataSourcesPreferencePage extends BasePreferencePage {
             try {
                 DIIRTPreferences.get().toFiles(parentPath.toFile());
                 notifyInformation(NLS.bind(Messages.DSPP_exportSuccessful_message, choice));
-            } catch ( JAXBException | IOException ex ) {
+            } catch ( IOException ex ) {
                 notifyWarning(NLS.bind(Messages.DSPP_exportFailed_message, choice, ex.getMessage()));
             }
 

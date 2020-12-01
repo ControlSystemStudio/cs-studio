@@ -4,7 +4,7 @@ Bundle-Name: Test
 Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.formula.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.autocomplete.pvmanager.formula;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.diirt.util;bundle-version="3.0.1",
  org.diirt.vtype;bundle-version="3.0.1"

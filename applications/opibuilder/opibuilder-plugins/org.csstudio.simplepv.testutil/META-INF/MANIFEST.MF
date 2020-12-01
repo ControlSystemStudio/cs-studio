@@ -4,7 +4,7 @@ Bundle-Name: Test Utility library for simplepv
 Bundle-SymbolicName: org.csstudio.simplepv.testutil
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov>
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.csstudio.simplepv;bundle-version="1.0.0",
  org.eclipse.core.runtime,
  org.junit;bundle-version="4.8.2",

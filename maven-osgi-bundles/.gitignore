@@ -1,0 +1,5 @@
+
+# Ignore Maven build directory
+target/
+MANIFEST.MF
+cs-studio-pde.target

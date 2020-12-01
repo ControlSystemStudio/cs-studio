@@ -4,7 +4,7 @@ Bundle-Name: Scan data display
 Bundle-SymbolicName: org.csstudio.scan.ui.scandata;singleton:=true
 Bundle-Version: 4.0.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.7.101",

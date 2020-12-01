@@ -11,7 +11,7 @@
   <modules>
     <module>org.csstudio.core.ui.feature</module>
     <module>org.csstudio.perspectives.feature</module>
-    <module>org.csstudio.core.ui.rap.feature</module>
+<!--     <module>org.csstudio.core.ui.rap.feature</module> -->
   </modules>
    <build>
     <plugins>

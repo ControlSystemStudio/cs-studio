@@ -11,7 +11,7 @@
   <modules>
     <module>org.csstudio.trends.databrowser2</module>
     <module>org.csstudio.trends.databrowser2.opiwidget</module>
-    <module>org.csstudio.trends.databrowser2.rap</module>
+<!--     <module>org.csstudio.trends.databrowser2.rap</module> -->
     <module>org.csstudio.trends.databrowser2.rcp</module>
     <!-- <module>org.csstudio.trends.databrowser2.test</module> -->
   </modules>

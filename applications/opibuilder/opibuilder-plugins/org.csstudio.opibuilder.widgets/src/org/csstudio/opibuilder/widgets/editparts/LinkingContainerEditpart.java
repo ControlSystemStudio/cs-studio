@@ -161,10 +161,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         configureDisplayModel();
     }
 
-    private static synchronized Integer getLinkingContainerID() {
-        return linkingContainerID.incrementAndGet();
-    }
-
     /**
      * Automatically set the container size according its children's geography size.
      */
@@ -283,7 +279,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
         // Load "LCID" macro whose value is unique to this instance of Linking Container.
         if (widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE) {
-            map.put("LCID", "LCID_" + getLinkingContainerID());
+            map.put("LCID", "LCID_" + linkingContainerID.incrementAndGet());
         }
         //Load system macro
         if(displayModel.getMacrosInput().isInclude_parent_macros()){

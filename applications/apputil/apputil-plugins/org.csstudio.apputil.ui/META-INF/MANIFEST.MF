@@ -7,15 +7,12 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - S
 Bundle-Description: Application User Interface utilities for Dialogs, ... 
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface;resolution:=optional,
- org.eclipse.rap.jface;resolution:=optional,
  org.eclipse.help;bundle-version="3.4.1",
  org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.equinox.security;bundle-version="1.0.0",
  org.csstudio.apputil;bundle-version="3.0.0",
  org.csstudio.logbook,
  org.csstudio.ui.util;bundle-version="3.1.0";resolution:=optional,
- org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.csstudio.utility.singlesource;bundle-version="1.0.0"
 Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.formula,
@@ -23,5 +20,5 @@ Export-Package: org.csstudio.apputil.ui.dialog,
  org.csstudio.apputil.ui.time,
  org.csstudio.apputil.ui.workbench
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.csstudio.java.time

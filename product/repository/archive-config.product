@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="ArchiveConfigTool" uid="archive-config" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="4.0.0" useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>--launcher.suppressErrors
+      </programArgs>
+      <vmArgs>-Declipse.exitdata=
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="ArchiveConfigTool">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.ibm.icu.base"/>
+      <plugin id="javax.xml"/>
+      <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.archive.config"/>
+      <plugin id="org.csstudio.archive.config.rdb"/>
+      <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.vtype"/>
+      <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.java"/>
+      <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.utility.rdb"/>
+      <plugin id="org.csstudio.security"/>
+      <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <!--
+      <plugin id="org.diirt.util"/>
+      <plugin id="org.diirt.vtype"/>
+    -->
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+   </configurations>
+
+</product>

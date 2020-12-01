@@ -28,6 +28,7 @@ public class PolyLine2Model extends AbstractADL2Model {
             setADLDynamicAttributeProps(polylineWidget, widgetModel);
         }
         ((PolyLineModel)widgetModel).setPoints(polylineWidget.getAdlPoints().getPointsList(), true);
+        ((PolyLineModel)widgetModel).setLineWidth(polylineWidget.getAdlBasicAttribute().getWidth());
         widgetModel.setPropertyValue(AbstractShapeModel.PROP_FILL_LEVEL, 100.0);
         if ( polylineWidget.hasADLBasicAttribute() ) {
             setShapesColorFillLine(polylineWidget);

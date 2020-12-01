@@ -11,3 +11,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.utility.jms.ui
 Bundle-Localization: plugin
 Bundle-Vendor: Desy <css-developer@desy.de>, Markus Möller
+Bundle-RequiredExecutionEnvironment: JavaSE-11

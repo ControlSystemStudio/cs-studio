@@ -5,13 +5,16 @@ package org.csstudio.phoebus.integration;
  */
 public class PreferenceConstants {
 
-    // Installation location of phoebus.
+    // Installation location of phoebus product.
     public static final String PhoebusHome = "phoebus_home";
     public static final String PhoebusVersion = "phoebus_version";
 
+    // Find phoebus on the system path and launch the found
+    public static final String PhoebusUseSystemLauncher = "phoebus_use_system_launcher";
+    public static final String PhoebusSystemLauncherName = "phoebus_system_launcher_name";
+
+    // Launch phoebus with a server port
+    public static final String PhoebusWithServer = "phoebus_with_server";
     // The tcp port associated with the phoebus applications.
     public static final String PhoebusPort = "phoebus_port";
-
-    // The installation location of jdk9
-    public static final String JDKHome = "jdk9_home";
 }

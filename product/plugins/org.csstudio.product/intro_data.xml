@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+	<!--
+		This file controls the initial placement of Welcome (intro) page
+		items. File can be generated via the Welcome page preference panel.
+
+		Items that are not listed in here will show in some default place on
+		their page. Items listen in <hidden></hidden> sections will be, well,
+		hidden.
+	-->
+<extensions>
+      <page id="firststeps">
+         <group path="page-content/top-left">
+            <extension id="org.csstudio.startup.intro" importance="high"/>
+         </group>
+         <group path="page-content/bottom-left">
+            <extension id="org.csstudio.diag.epics.pvtree.intro" importance="medium"/>
+         </group>
+      </page>
+      <page id="tutorials">
+         <group path="page-content/top-left">
+            <extension id="org.csstudio.diag.epics.pvtree.intro"/>
+            <extension id="org.csstudio.diag.probe.intro"/>
+         </group>
+      </page>
+</extensions>

@@ -6,23 +6,18 @@ Bundle-SymbolicName: org.csstudio.opibuilder.widgets.symbol;singleton:=true
 Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
- org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.ui.views;resolution:=optional,
- org.eclipse.rap.ui.views;resolution:=optional,
- org.eclipse.rap.draw2d;resolution:=optional,
  org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgets,
  org.csstudio.swt.widgets,
  org.apache.commons.lang,
  org.csstudio.ui.util;resolution:=optional,
- org.csstudio.rap.ui.util;resolution:=optional,
  org.eclipse.gef;resolution:=optional,
- org.eclipse.rap.gef;resolution:=optional,
  org.diirt.vtype;bundle-version="2.7.1",
  org.csstudio.simplepv;bundle-version="1.0.0",
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Eclipse-BuddyPolicy: registered
 Export-Package: org.csstudio.opibuilder.widgets.symbol,
  org.csstudio.opibuilder.widgets.symbol.bool,

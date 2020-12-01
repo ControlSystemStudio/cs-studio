@@ -15,8 +15,8 @@
     <module>org.csstudio.logging.test</module>
     <module>org.csstudio.logging.ui</module>
     <module>org.csstudio.openfile</module>
-    <module>org.csstudio.rap.core</module>
-    <module>org.csstudio.rap.ui.util</module>
+<!--     <module>org.csstudio.rap.core</module>
+    <module>org.csstudio.rap.ui.util</module> -->
     <module>org.csstudio.security</module>
     <module>org.csstudio.security.test</module>
     <module>org.csstudio.security.ui</module>
@@ -32,7 +32,7 @@
     <module>org.csstudio.utility.pvmanager.ui.toolbox</module>
     <module>org.csstudio.utility.pvmanager.widgets</module>
     <module>org.csstudio.utility.singlesource</module>
-    <module>org.csstudio.utility.singlesource.rap</module>
+<!--     <module>org.csstudio.utility.singlesource.rap</module> -->
     <module>org.csstudio.utility.singlesource.rcp</module>
     <module>org.csstudio.utility.singlesource.test</module>
     <!--module>org.csstudio.utility.pvmanager.widgets.test</module-->

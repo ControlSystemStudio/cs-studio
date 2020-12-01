@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.csstudio.product.application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.startup.application.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.product.application"
+            name="Cs-studio">
+         <property
+               name="appName"
+               value="Cs-studio">
+         </property>
+         <property
+               name="introTitle"
+               value="Welcome to Control System Studio&lt;/h1&gt;&lt;p&gt;Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community.&lt;/p&gt;&lt;p&gt;New users: click on First Steps&lt;/p&gt;&lt;h1&gt;">
+         </property>
+         <property
+               name="introBrandingImage"
+               value="product:icons/welcome.png">
+         </property>
+         <property
+               name="introBrandingImageText"
+               value="Control System Studio">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png,icons/css256.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,200,466,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,222,470,15">
+         </property>
+         <property
+               name="introDescription-firststeps"
+               value="Getting started with CS-Studio">
+         </property>
+         <property
+               name="introDescription-tutorials"
+               value="Learn how to use CS-Studio">
+         </property>
+         <property
+               name="introDescription-whatsnew"
+               value="New features in CS-Studio">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/cs-studio-about.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="platform:/config/plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.startup.module">
+      <startupParameters
+            class="org.csstudio.utility.product.StartupParameters">
+      </startupParameters>
+      <workspace
+            class="org.csstudio.utility.product.WorkspacePrompt">
+      </workspace>
+      <workbench
+            class="org.csstudio.utility.product.Workbench">
+      </workbench>
+      <project
+            class="org.csstudio.startup.module.defaults.DefaultProject">
+      </project>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.product.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.internal.intro.universal.WelcomeCustomizationPreferencePage"
+            id="org.csstudio.product.introCustomization"
+            name="%introCustomizationPreference.name">
+      </page>
+   </extension>
+
+</plugin>

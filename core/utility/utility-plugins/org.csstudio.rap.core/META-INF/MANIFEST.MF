@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.security;bundle-version="1.1.1",
  org.csstudio.java;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Export-Package: org.csstudio.rap.core,
  org.csstudio.rap.core.preferences,
