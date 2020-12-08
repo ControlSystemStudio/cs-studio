@@ -101,6 +101,10 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         }
         if (mainStream != null) {
             mainIterator = mainStream.iterator();
+            // Stream is not null but did the stream contain any data?
+            if (!mainIterator.hasNext()) {
+              throw new ArchiverApplianceException("Fetched datastream is empty");
+            }
         } else {
             throw new ArchiverApplianceException("Could not fetch data.");
         }
