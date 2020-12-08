@@ -117,27 +117,23 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
                 gc.setAlpha(alpha);
                 drawMinMaxArea(gc, x_transform, y_axis, data);
                 gc.setAlpha(255);
-                drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 drawValueStaircase(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
             case AREA_DIRECT:
                 gc.setAlpha(alpha);
                 drawMinMaxArea(gc, x_transform, y_axis, data);
                 gc.setAlpha(255);
-                drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 drawValueLines(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
             case LINES:
                 drawMinMaxLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(alpha);
-                drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(255);
                 drawValueStaircase(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
             case LINES_DIRECT:
                 drawMinMaxLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(alpha);
-                drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 gc.setAlpha(255);
                 drawValueLines(gc, x_transform, y_axis, data, trace.getWidth());
                 break;
@@ -325,43 +321,6 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
         }
         flushPolyLine(gc, min, line_width);
         flushPolyLine(gc, max, line_width);
-    }
-
-    /** Draw std. deviation outline
-     *  @param gc GC
-     *  @param x_transform Horizontal axis
-     *  @param y_axis Value axis
-     *  @param data Data
-     *  @param line_width
-     */
-    final private void drawStdDevLines(final GC gc, final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis,
-            final PlotDataProvider<XTYPE> data, final int line_width)
-    {
-        final IntList lower_poly = new IntList(INITIAL_ARRAY_SIZE);
-        final IntList upper_poly = new IntList(INITIAL_ARRAY_SIZE);
-
-        final int N = data.size();
-        for (int i = 0;  i < N;  ++i)
-        {
-            final PlotDataItem<XTYPE> item = data.get(i);
-            double value = item.getValue();
-            double dev = item.getStdDev();
-            if (Double.isNaN(value) ||  ! (dev > 0))
-            {
-                flushPolyLine(gc, lower_poly, line_width);
-                flushPolyLine(gc, upper_poly, line_width);
-            }
-            else
-            {
-                final int x = clipX(x_transform.transform(item.getPosition()));
-                final int low_y = clipY(y_axis.getScreenCoord(value - dev));
-                final int upp_y = clipY(y_axis.getScreenCoord(value + dev));
-                lower_poly.add(x);  lower_poly.add(low_y);
-                upper_poly.add(x);  upper_poly.add(upp_y);
-            }
-        }
-        flushPolyLine(gc, lower_poly, line_width);
-        flushPolyLine(gc, upper_poly, line_width);
     }
 
     /** @param gc GC
