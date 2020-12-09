@@ -84,12 +84,32 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                         {
                             final PlotDataItem<XTYPE> item = data.get(i);
                             final double value = item.getValue();
-                            if (! Double.isFinite(value))
-                                continue;
-                            if (value < low)
-                                low = value;
-                            if (value > high)
-                                high = value;
+                            final double max = item.getMax();
+                            final double min = item.getMin();
+                            
+                            if (!Double.isFinite(max)) 
+                            {
+                                if (!Double.isFinite(value))
+                                    continue;
+                                else if (value > high) 
+                                    high = value;
+                            } 
+                            else if (max > high)
+                            {
+                                high = max;                              
+                            }
+                            
+                            if (!Double.isFinite(min)) 
+                            {
+                                if (!Double.isFinite(value))
+                                    continue;
+                                else if (value < low) 
+                                    low = value;
+                            } 
+                            else if (min < low) 
+                            {
+                                low = min;  
+                            }
                         }
                     }
                 }
