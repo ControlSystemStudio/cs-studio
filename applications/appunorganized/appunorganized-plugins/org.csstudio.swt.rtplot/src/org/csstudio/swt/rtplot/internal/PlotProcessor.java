@@ -87,8 +87,14 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                             final double max = item.getMax();
                             final double min = item.getMin();
                             
+                            // Determine whether the upper range (high) needs to be
+                            // updated based on this PlotDataItem. Use the data max
+                            // as the primary indicator with the data value as
+                            // fallback.
                             if (!Double.isFinite(max)) 
                             {
+                                // If max = NAN then check the data value and use
+                                // that to determine the high (if not NAN)
                                 if (!Double.isFinite(value))
                                     continue;
                                 else if (value > high) 
@@ -96,11 +102,19 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                             } 
                             else if (max > high)
                             {
+                                // Else use the max to check if it is higher than the 
+                                // current high and if so update high. 
                                 high = max;                              
                             }
                             
+                            // Determine whether the lower range (low) needs to be
+                            // updated based on this PlotDataItem. Use the data min
+                            // as the primary indicator with the data value as
+                            // fallback.
                             if (!Double.isFinite(min)) 
                             {
+                                // If min = NAN then check the data value and use
+                                // that to determine the low (if not NAN)
                                 if (!Double.isFinite(value))
                                     continue;
                                 else if (value < low) 
@@ -108,6 +122,8 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                             } 
                             else if (min < low) 
                             {
+                                // Else use the min to check if it is lower than the 
+                                // current low and if so update low. 
                                 low = min;  
                             }
                         }
