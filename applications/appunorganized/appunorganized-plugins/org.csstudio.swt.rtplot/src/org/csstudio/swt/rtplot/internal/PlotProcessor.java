@@ -305,6 +305,8 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                 for (TraceImpl<XTYPE> trace : axis.getTraces())
                 {
                     final PlotDataProvider<XTYPE> data = trace.getData();
+                    
+
                     final PlotDataItem<XTYPE> sample;
                     data.getLock().lock();
                     try
@@ -326,6 +328,18 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                         final String units = trace.getUnits();
                         if (! units.isEmpty())
                             label += " " + units;
+                        
+                        String info = sample.getInfo();
+                        if (info != null) {
+                          if (info.contains("(")) {
+                            // Must be an enum with labels saved in info
+                            String[] splt = info.split("\t");
+                            if (splt.length > 1) {
+                              String enumVal = splt[1];
+                              label += " " + enumVal;
+                            }
+                          }
+                        }
                         markers.add(new CursorMarker(cursor_x, axis.getScreenCoord(value), trace.getColor(), label));
                     }
                 }

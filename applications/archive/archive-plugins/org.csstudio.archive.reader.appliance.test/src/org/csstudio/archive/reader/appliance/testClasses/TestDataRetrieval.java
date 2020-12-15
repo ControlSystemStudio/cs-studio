@@ -51,6 +51,6 @@ public class TestDataRetrieval implements DataRetrieval{
      */
     @Override
     public GenMsgIterator getDataForPV(String name, Timestamp start, Timestamp end, boolean arg3, HashMap<String, String> arg4) {
-        throw new UnsupportedOperationException();
+        return getDataForPV(name, start, end);
     }
 }
