@@ -133,6 +133,7 @@ public class HistoricSamples extends PlotSamples
             return;
         samples = merged;
         computeVisibleSize();
+        have_new_samples.set(true);
     }
 
     /** Delete all samples */
