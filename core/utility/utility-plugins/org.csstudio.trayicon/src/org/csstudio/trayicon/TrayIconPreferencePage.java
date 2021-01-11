@@ -14,12 +14,20 @@ public class TrayIconPreferencePage extends FieldEditorPreferencePage implements
 
     public static final String MINIMIZE_TO_TRAY = "minimize_to_tray";
     public static final String START_MINIMIZED = "start_minimized";
+    public static final String CLOSE_OPTION = "close_option";
     private ScopedPreferenceStore store;
 
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
 
+        RadioGroupFieldEditor closeOptions = new RadioGroupFieldEditor(CLOSE_OPTION,
+            Messages.TrayPreferences_minimize, 3,
+            new String[][] { { Messages.TrayPreferences_askToMinimize, Messages.TrayPreferences_askToMinimize},
+                { Messages.TrayPreferences_warn,Messages.TrayPreferences_warn },
+                { Messages.TrayPreferences_close, Messages.TrayPreferences_close} },
+            parent, true);
+        addField(closeOptions);
         RadioGroupFieldEditor minimizeOnCloseEditor = new RadioGroupFieldEditor(
                 MINIMIZE_TO_TRAY,
                 Messages.TrayPreferences_minimize, 3,
