@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -127,18 +129,14 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
         final int y = Double.isFinite(value) ? yaxis.getScreenCoord(value) : yaxis.getScreenRange().getLow();
         final boolean in_range = xaxis.getScreenRange().contains(x);
 
-        String value_text = yaxis.getTicks().formatDetailed(value);
+        String localText = text;
         final String units = trace.getUnits();
-        if (! units.isEmpty())
-            value_text += " " + units;
-        final String label = NLS.bind(text,
-                new Object[]
-                {
-                    trace.getName(),
-                    xaxis.getTicks().format(position),
-                    value_text
-                });
+        if (!units.isEmpty())
+          localText += " " + units;
 
+        Date date = Date.from((Instant) position);
+        final String label = MessageFormat.format(localText, trace.getName(), date, value);
+            
         // Layout like this when in_range
         //
         //    Text
