@@ -133,6 +133,16 @@ public class RCPResourceHelper extends ResourceHelper
         // Fall back to non-workspace implementation
         if (ws_file == null)
             return super.getOutputStream(input);
+        
+        IPath p = getPath(input);
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        if (p == null)
+          return super.getOutputStream(input);
+        
+        //  back to non-workspace implementation
+        if (root.findMember(p) == null && super.exists(p)) {
+          return super.getOutputStream(input);
+        }
 
         // Have workspace file
         // Check write access.
