@@ -399,6 +399,7 @@ public class DataBrowserEditor extends EditorPart
         else {
             manager.add(plot.getPlot().getToolbarAction());
             manager.add(plot.getPlot().getLegendAction());
+            manager.add(plot.getPlot().getAddAnnotationAction());
             manager.add(new Separator());
             manager.add(new AddPVAction(op_manager, shell, model, false));
             manager.add(new AddPVAction(op_manager, shell, model, true));
