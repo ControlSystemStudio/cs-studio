@@ -122,7 +122,9 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
         final Text info = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.READ_ONLY);
         info.setBackground(composite.getBackground());
         info.setText(Messages.AddAnnotation_Content_Help);
-        info.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
+        gd = new GridData(SWT.FILL, 0, true, false, 2, 1);
+        gd.widthHint = 500;
+        info.setLayoutData(gd);
         return composite;
     }
 

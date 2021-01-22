@@ -17,7 +17,6 @@ import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.RemoveAnnotationAction;
 import org.csstudio.swt.rtplot.undo.UpdateAnnotationTextAction;
-import org.csstudio.swt.rtplot.util.MultiLineInputDialog;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
@@ -108,10 +107,33 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         return composite;
     }
 
+    
     private void editAnnotation(final Annotation<XTYPE> annotation)
     {
-        final InputDialog editor = new MultiLineInputDialog(getShell(), "Edit Annotation", "Modify the annotation text",
-                annotation.getText(), null);
+      final InputDialog editor= new InputDialog(getShell(), "Edit Annotation", "Modify the annotation text", 
+          annotation.getText(), null) {
+          @Override
+          protected int getInputTextStyle()
+          {
+              return SWT.MULTI | SWT.BORDER | SWT.V_SCROLL;
+          }
+
+          /** Increase height */
+          @Override
+          protected Control createDialogArea(Composite parent)
+          {
+              final Control res = super.createDialogArea(parent);
+              ((GridData) this.getText().getLayoutData()).heightHint = 100;
+              
+              final Label info = new Label((Composite) res, SWT.WRAP);
+              info.setText(Messages.AddAnnotation_Content_Help);
+              GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
+              gd.widthHint = 500;
+              info.setLayoutData(gd);
+              return res;
+          }
+        };
+
         if (editor.open() == OK)
         {
             final String new_text = editor.getValue();
