@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.swt.rtplot.Messages;
@@ -137,8 +140,18 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
 
         if (traces.isEmpty())
             MessageDialog.openInformation(getShell(), Messages.AddAnnotation, Messages.AddAnnotation_NoTraces);
-        else
+        else {
+          try {
+            Date date = Date.from((Instant) Instant.now());
+            // Check that the format would work.
+            MessageFormat.format(text.getText(), "temp", date, 2.0);
             plot.addAnnotation(traces.get(selected), text.getText());
+          } catch (IllegalArgumentException ex) {
+            // Keep dialog open to fix 
+            MessageDialog.openInformation(getShell(), Messages.AddAnnotation_Error, "Invalid entry: " + ex.getMessage());
+            return;
+          }
+        }
         super.okPressed();
     }
 }

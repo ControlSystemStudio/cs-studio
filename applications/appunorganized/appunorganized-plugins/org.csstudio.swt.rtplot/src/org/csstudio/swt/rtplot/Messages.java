@@ -16,6 +16,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     public static String AddAnnotation;
+    public static String AddAnnotation_Error;
     public static String AddAnnotation_Content;
     public static String AddAnnotation_Content_Help;
     public static String AddAnnotation_DefaultText;

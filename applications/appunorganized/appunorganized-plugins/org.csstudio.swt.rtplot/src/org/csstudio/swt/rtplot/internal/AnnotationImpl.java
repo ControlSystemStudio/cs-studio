@@ -130,6 +130,10 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
         final boolean in_range = xaxis.getScreenRange().contains(x);
 
         String localText = text;
+        // Set the default format
+        if (text.contains("{2}")) {
+          localText = text.replace("{2}","{2,number,#}");
+        }
         final String units = trace.getUnits();
         if (!units.isEmpty())
           localText += " " + units;

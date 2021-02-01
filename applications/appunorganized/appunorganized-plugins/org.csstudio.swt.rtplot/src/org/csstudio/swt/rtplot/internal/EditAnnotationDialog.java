@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.swt.rtplot.Annotation;
@@ -18,6 +21,7 @@ import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.RemoveAnnotationAction;
 import org.csstudio.swt.rtplot.undo.UpdateAnnotationTextAction;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -107,11 +111,27 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         return composite;
     }
 
+    private IInputValidator createFormatValidator(final Annotation<XTYPE> annotation) {
+      final IInputValidator validator = new IInputValidator() {
+        public String isValid(String new_text) {
+          try {
+            Date date = Date.from((Instant) annotation.getPosition());
+            MessageFormat.format(new_text, annotation.getTrace().getName(), date ,
+                annotation.getValue());
+          } catch (IllegalArgumentException ex) {
+            return "Invalid entry: " + ex.getMessage();
+          }
+          return null;
+        }
+      };
+      return validator;
+    }
     
     private void editAnnotation(final Annotation<XTYPE> annotation)
     {
+      
       final InputDialog editor= new InputDialog(getShell(), "Edit Annotation", "Modify the annotation text", 
-          annotation.getText(), null) {
+          annotation.getText(), createFormatValidator(annotation)) {
           @Override
           protected int getInputTextStyle()
           {
