@@ -130,16 +130,32 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
         final boolean in_range = xaxis.getScreenRange().contains(x);
 
         String localText = text;
-        // Set the default format
-        if (text.contains("{2}")) {
-          localText = text.replace("{2}","{2,number,#}");
-        }
         final String units = trace.getUnits();
         if (!units.isEmpty())
-          localText += " " + units;
+            localText += " " + units;
 
         Date date = Date.from((Instant) position);
-        final String label = MessageFormat.format(localText, trace.getName(), date, value);
+        final String label;
+        if (text.contains("{1}") && text.contains("{2}")) 
+        {   // Set the default format for both value and date
+            label = MessageFormat.format(localText, trace.getName(), 
+              xaxis.getTicks().format(position), 
+              yaxis.getTicks().formatDetailed(value));
+        } 
+        else if (text.contains("{1}")) 
+        {   // Set default format for the date only
+            label = MessageFormat.format(localText, trace.getName(), 
+              xaxis.getTicks().format(position), value);
+        } 
+        else if (text.contains("{2}")) 
+        {   // Set default format for the value only
+            label = MessageFormat.format(localText, trace.getName(), 
+              date, yaxis.getTicks().formatDetailed(value));
+        } 
+        else 
+        {   // Allow user format for date and value
+            label = MessageFormat.format(localText, trace.getName(), date, value);
+        }
             
         // Layout like this when in_range
         //
