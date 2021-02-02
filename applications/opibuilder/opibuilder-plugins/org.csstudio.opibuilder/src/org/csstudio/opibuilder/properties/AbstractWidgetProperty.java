@@ -196,6 +196,19 @@ public abstract class AbstractWidgetProperty {
         firePropertyChange(oldValue, getPropertyValue());
     }
 
+    /**Set property value and fire the listeners on the property. New value will
+     * be fired.
+     * @param value
+     */
+    public void setPropertyValueFireNewValue(Object value) {
+        // do conversion and legally check
+        Object newValue = checkValue(value);
+        if (newValue == null || newValue.equals(propertyValue)) return;
+        Object oldValue = getPropertyValue();
+        propertyValue = newValue;
+        firePropertyChange(oldValue, newValue);
+    }
+
     /**Set property value and fire the listeners on the property.oldValue will
      * be set as null.
      * @param value
@@ -207,6 +220,18 @@ public abstract class AbstractWidgetProperty {
             return;
         propertyValue = newValue;
         firePropertyChange(null, getPropertyValue());
+    }
+
+    /**Set property value and fire the listeners on the property.oldValue will
+     * be set as null. New value will be fired.
+     * @param value
+     */
+    public void setPropertyValue_IgnoreOldValueFireNewValue(Object value) {
+        // do conversion and legally check
+        Object newValue = checkValue(value);
+        if (newValue == null || newValue.equals(propertyValue)) return;
+        propertyValue = newValue;
+        firePropertyChange(null, newValue);
     }
 
     /**Set the property value.

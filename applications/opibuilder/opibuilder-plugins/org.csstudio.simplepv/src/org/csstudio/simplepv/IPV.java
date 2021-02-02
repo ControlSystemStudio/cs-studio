@@ -143,5 +143,12 @@ public interface IPV {
      */
     public void stop();
 
-
+    /**Get the flag to specify if all the buffered values have to be used or not.
+     * @return true - all the buffered values have to be processed or false in other case.
+     */
+    default public boolean isUseAllBufferedValues() {
+        return false;
+    }
+    
+    
 }

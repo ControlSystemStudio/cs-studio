@@ -19,19 +19,7 @@ import org.eclipse.swt.widgets.Display;
  *  @author Xihui Chen
  *  @author Kay Kasemir Reviewed, made immutable
  */
-public class WidgetIgnorableUITask {
-
-    /**
-     * The widget property.
-     */
-    final private Object identifyObject;
-
-    /**
-     * The task to be executed.
-     */
-    final private Runnable runnableTask;
-
-    final private Display display;
+public class WidgetIgnorableUITask extends WidgetUITask {
 
     /**Constructor.
      * @param identifyObject the object that identifies this task. If the task associated
@@ -41,29 +29,9 @@ public class WidgetIgnorableUITask {
      */
     public WidgetIgnorableUITask(final Object identifyObject, final Runnable runnableTask,
             final Display display){
-        this.identifyObject = identifyObject;
-        this.runnableTask = runnableTask;
-        this.display = display;
+        super(identifyObject, runnableTask, display);
     }
 
-
-    public Display getDisplay() {
-        return display;
-    }
-
-        /**
-     * @return the identify object
-     */
-    public Object getIdentifyObject() {
-        return identifyObject;
-    }
-
-    /**
-     * @return the runnableTask
-     */
-    public Runnable getRunnableTask() {
-        return runnableTask;
-    }
 
     /** @param obj Possible other {@link WidgetIgnorableUITask}
      *  @return <code>true</code> if other {@link WidgetIgnorableUITask}
