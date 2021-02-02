@@ -4,7 +4,7 @@ Bundle-Name: A simple pv connection layer.
 Bundle-SymbolicName: org.csstudio.simplepv;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Xihui Chen <chenx1@ornl.gov>, Kay Kasemir <kasemirk@ornl.gov>
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.epics.vtype;bundle-version="2.1.0",
  org.epics.util,
  org.eclipse.core.runtime

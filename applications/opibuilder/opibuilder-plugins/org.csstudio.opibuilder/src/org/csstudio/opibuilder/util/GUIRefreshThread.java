@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
+import org.csstudio.opibuilder.datadefinition.WidgetUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,12 +39,12 @@ public final class GUIRefreshThread implements Runnable {
     private static GUIRefreshThread editingInstance;
 
     /**
-     * A LinkedHashset, which contains {@link WidgetIgnorableUITask}.
+     * A LinkedHashset, which contains {@link WidgetUITask}.
      * It will be processed by this thread periodically. Use hashset
      * can help to improve the performance.
      */
     //private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
-    private LinkedHashSet<WidgetIgnorableUITask> tasksQueue;
+    private LinkedHashSet<WidgetUITask> tasksQueue;
     private Thread thread;
 
     private int guiRefreshCycle = 100;
@@ -67,7 +68,7 @@ public final class GUIRefreshThread implements Runnable {
         if(!OPIBuilderPlugin.isRAP()){
             rcpDisplay = DisplayUtils.getDisplay();
         }
-        tasksQueue = new LinkedHashSet<WidgetIgnorableUITask>();
+        tasksQueue = new LinkedHashSet<WidgetUITask>();
         resetAsyncEmpty = new Runnable() {
 
             public void run() {
@@ -167,7 +168,7 @@ public final class GUIRefreshThread implements Runnable {
             return;
         for (Object o : tasksArray) {
             try {
-                rcpDisplay.asyncExec(((WidgetIgnorableUITask) o)
+                rcpDisplay.asyncExec(((WidgetUITask) o)
                         .getRunnableTask());
             } catch (Exception e) {
                 OPIBuilderPlugin.getLogger().log(Level.WARNING,
@@ -188,13 +189,23 @@ public final class GUIRefreshThread implements Runnable {
             tasksQueue.clear();
         }
         for(Object o : tasksArray){
-            Display display = ((WidgetIgnorableUITask)o).getDisplay();
+            if(o instanceof WidgetIgnorableUITask){
+                Display display = ((WidgetIgnorableUITask)o).getDisplay();
                 if(display!=null && !display.isDisposed())
                     try {
                         display.asyncExec(((WidgetIgnorableUITask) o).getRunnableTask());
                     } catch (Exception e) {
                         OPIBuilderPlugin.getLogger().log(Level.WARNING, "GUI refresh error", e); //$NON-NLS-1$
                     }
+            }else{
+                Display display = ((WidgetUITask) o).getDisplay();
+                if (display!=null && !display.isDisposed())
+                    try{
+                        display.asyncExec(((WidgetUITask)o).getRunnableTask());
+                    }catch (Exception e){
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, "GUI refresh error", e); //$NON-NLS-1$
+                    }
+            }
         }
     }
 
@@ -210,6 +221,12 @@ public final class GUIRefreshThread implements Runnable {
 
     }
 
+    /**Adds the specified runnable to the queue.
+     * @param task the ignorable UI task.
+     */
+    public synchronized void addTask(final WidgetUITask task) {
+        this.tasksQueue.add(task);        
+    }
 
 
 
