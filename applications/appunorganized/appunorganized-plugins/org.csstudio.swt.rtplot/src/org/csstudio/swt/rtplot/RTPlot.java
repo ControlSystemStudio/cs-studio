@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.data.PlotDataProvider;
+import org.csstudio.swt.rtplot.internal.AddAnnotationDialogAction;
 import org.csstudio.swt.rtplot.internal.AnnotationImpl;
 import org.csstudio.swt.rtplot.internal.MouseMode;
 import org.csstudio.swt.rtplot.internal.Plot;
@@ -51,6 +52,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     final protected ToolbarHandler<XTYPE> toolbar;
     final private ToggleToolbarAction toggle_toolbar;
     final private ToggleLegendAction toggle_legend;
+    final private AddAnnotationDialogAction<XTYPE> annotation_action;
     final private Action snapshot;
 
     protected RTPlot(final Composite parent, final Class<XTYPE> type)
@@ -64,6 +66,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         toggle_toolbar = new ToggleToolbarAction(this);
         toggle_legend =  new ToggleLegendAction(this);
         snapshot = new SnapshotAction(this);
+        annotation_action = new AddAnnotationDialogAction<XTYPE>(this,plot.getShell());
 
         toolbar.addContextMenu(toggle_toolbar);
 
@@ -104,6 +107,12 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         return toggle_legend;
     }
 
+    /** @return {@link Action} that can open the Add Annotation dialog*/
+    public Action getAddAnnotationAction()
+    {
+        return annotation_action;
+    }
+    
     /** @return {@link Action} that can show/hide the toolbar */
     public Action getToolbarAction()
     {

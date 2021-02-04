@@ -25,6 +25,7 @@ import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.Messages;
+import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
@@ -131,6 +132,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     final private TracePainter<XTYPE> trace_painter = new TracePainter<XTYPE>();
     final private List<AnnotationImpl<XTYPE>> annotations = new CopyOnWriteArrayList<>();
     final private LegendPart<XTYPE> legend;
+    final private RTPlot<XTYPE> plot;
 
     final private PlotProcessor<XTYPE> plot_processor;
 
@@ -210,6 +212,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         super(parent, SWT.NO_BACKGROUND);
 
+        this.plot = (RTPlot<XTYPE>) parent;
         title_font = parent.getFont();
         label_font = parent.getFont();
         scale_font = parent.getFont();
@@ -1233,7 +1236,10 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     @Override
     public void mouseDoubleClick(final MouseEvent e)
     {
-        // NOP
+        if (selectMouseAnnotation()) 
+        {
+            new EditAnnotationDialog<XTYPE>(getShell(), this.plot).open();
+        }
     }
 
     /** MouseTrackListener: {@inheritDoc} */

@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.swt.rtplot.Annotation;
@@ -17,12 +20,15 @@ import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.RemoveAnnotationAction;
 import org.csstudio.swt.rtplot.undo.UpdateAnnotationTextAction;
-import org.csstudio.swt.rtplot.util.MultiLineInputDialog;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,6 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 /** Dialog for editing or removing annotations
  *  @param <XTYPE> Data type used for the {@link PlotDataItem}
@@ -108,10 +115,84 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         return composite;
     }
 
+    private IInputValidator createFormatValidator(final Annotation<XTYPE> annotation) {
+        final IInputValidator validator = new IInputValidator() {
+            public String isValid(String new_text) {
+                try 
+                {
+                    Date date = Date.from((Instant) annotation.getPosition());
+                    MessageFormat.format(new_text, annotation.getTrace().getName(), date ,
+                        annotation.getValue());
+                } 
+                catch (IllegalArgumentException ex) 
+                {
+                    return "Invalid entry: " + ex.getMessage();
+                }
+                return null;
+            }
+        };
+        return validator;
+    }
+    
     private void editAnnotation(final Annotation<XTYPE> annotation)
     {
-        final InputDialog editor = new MultiLineInputDialog(getShell(), "Edit Annotation", "Modify the annotation text",
-                annotation.getText(), null);
+      
+      final InputDialog editor= new InputDialog(getShell(), "Edit Annotation", "Modify the annotation text", 
+          annotation.getText(), createFormatValidator(annotation)) {
+        
+          private Text errorMessageText;
+          private String errorMessage;
+          
+          @Override
+          protected int getInputTextStyle()
+          {
+              return SWT.MULTI | SWT.BORDER | SWT.V_SCROLL;
+          }
+
+          /** Increase height */
+          @Override
+          protected Control createDialogArea(Composite parent)
+          {
+              final Control res = super.createDialogArea(parent);
+              ((GridData) this.getText().getLayoutData()).heightHint = 100;
+              
+              final Label info = new Label((Composite) res, SWT.WRAP);
+              info.setText(Messages.AddAnnotation_Content_Help);
+              GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
+              gd.widthHint = 500;
+              info.setLayoutData(gd);
+              
+              errorMessageText = new Text((Composite)res, SWT.READ_ONLY | SWT.WRAP);
+              errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                  | GridData.HORIZONTAL_ALIGN_FILL));
+              errorMessageText.setBackground(errorMessageText.getDisplay()
+                  .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+              errorMessageText.setForeground(new Color(res.getDisplay(),255,0,0));
+              setErrorMessage(errorMessage);
+              
+              return res;
+          }
+          
+          @Override
+          public void setErrorMessage(String errorMessage) 
+          {
+              this.errorMessage = "\n"+errorMessage;
+              if (errorMessageText != null && !errorMessageText.isDisposed()) 
+              {
+                  errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
+                  boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
+                  errorMessageText.setEnabled(hasError);
+                  errorMessageText.setVisible(hasError);
+                  errorMessageText.getParent().update();
+                  Control button = getButton(IDialogConstants.OK_ID);
+                  if (button != null) 
+                  {
+                    button.setEnabled(errorMessage == null);
+                  }
+              }
+          }
+        };
+
         if (editor.open() == OK)
         {
             final String new_text = editor.getValue();
