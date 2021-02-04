@@ -97,6 +97,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
             menu.add(new AboutWebOPIAction());
         }
 
+        // Return focus to the OPI view
+        getViewer().getControl().setFocus();
 
 //        MenuManager cssMenu = new MenuManager("CSS", "css");
 //        cssMenu.add(new Separator("additions")); //$NON-NLS-1$
