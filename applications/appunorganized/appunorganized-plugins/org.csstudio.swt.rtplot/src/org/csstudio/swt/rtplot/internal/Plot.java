@@ -246,7 +246,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         () ->
         {
             plot_processor.autoscale();
-            updateImageBuffer();
+            // In Eclipse 2020-12 we cannot seem to run updateImageBuffer() on
+            // a background thread. Schedule it on the UI thread.
+            // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=568859
+            display.asyncExec(() -> { updateImageBuffer(); });
+            // This will place the redraw task on the UI thread, presumably after
+            // the updateImageBuffer() call.
             redrawSafely();
         });
 

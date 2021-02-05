@@ -10,15 +10,14 @@
   </parent>
   <properties>
     <!-- Allow updating all Batik bundles with one change.  -->
-    <batik.version>1.10</batik.version>
-    <batik.version.full>1.10.0</batik.version.full>
+    <batik.version>1.13</batik.version>
+    <batik.version.full>1.13.0</batik.version.full>
   </properties>
   <profiles>
     <profile>
       <id>uploadRepo</id>
       <properties>
-        <!-- Properties relative to the distant host where to upload the 
-          repo -->
+        <!-- Properties relative to the distant host where to upload the repo -->
         <ftp.url>${upload.root}/maven-osgi-bundles/${cs-studio.version}/</ftp.url>
       </properties>
       <build>
@@ -103,28 +102,6 @@
                   <source>true</source>
                 </artifact>
 
-
-                <!-- Thirdparty artifacts -->
-                <artifact>
-                  <id>org.codehaus.cargo:empty-jar:1.4.13</id>
-                  <instructions>
-                    <Bundle-Name>Batik DOM SVG bugfix</Bundle-Name>
-                    <Bundle-SymbolicName>org.csstudio.batik.dom.svg.fragment</Bundle-SymbolicName>
-                    <Bundle-Version>1.0.0</Bundle-Version>
-                    <Fragment-Host>org.apache.batik.dom.svg;bundle-version="1.7.0"</Fragment-Host>
-                    <Require-Bundle>org.apache.batik.ext.awt;bundle-version="1.7.0"</Require-Bundle>
-                  </instructions>
-                </artifact>
-                <artifact>
-                  <id>org.codehaus.cargo:empty-jar:1.4.12</id>
-                  <instructions>
-                    <Bundle-Name>Batik DOM bugfix</Bundle-Name>
-                    <Bundle-SymbolicName>org.csstudio.batik.dom.fragment</Bundle-SymbolicName>
-                    <Bundle-Version>1.0.0</Bundle-Version>
-                    <Fragment-Host>org.apache.batik.dom;bundle-version="1.7.0"</Fragment-Host>
-                    <Require-Bundle>org.w3c.dom.smil;bundle-version="1.0.1"</Require-Bundle>
-                  </instructions>
-                </artifact>
                 <artifact>
                   <id>org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0</id>
                 </artifact>
