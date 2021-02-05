@@ -44,6 +44,8 @@ import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Cursor;
@@ -123,6 +125,9 @@ public final class OPIShell implements IOPIRuntime {
     // Variable to track if parent view has been lost
     private boolean viewLost;
 
+    private boolean isModalDialogOpen;
+    private Shell activeModalDialogShell;
+
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
     private OPIShell(Display display, IPath path, MacrosInput macrosInput) throws Exception {
@@ -136,6 +141,8 @@ public final class OPIShell implements IOPIRuntime {
         displayModel = new DisplayModel(path);
         displayModel.setOpiRuntime(this);
         actionRegistry = new ActionRegistry();
+
+        isModalDialogOpen = false;
 
         viewer = new GraphicalViewerImpl();
         viewLost = false;
@@ -234,6 +241,27 @@ public final class OPIShell implements IOPIRuntime {
          * A shell is activated once it acquires focus by 1) a user clicking on it 2) on
          * a workspace switch it moves to the foreground.
          */
+
+        // Create a focus listener to identify when OPI has focus and to check
+        // if modal dialog is open
+        viewer.getControl().addFocusListener( new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent arg0) {
+                if (isModalDialogOpen && !isModalDialogDisplayed) {
+                    handleModalDialog(display,activeModalDialogShell);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                if (isModalDialogOpen || isModalDialogDisplayed) {
+                    disposeModalDialog(display);
+                }
+            }
+
+        });
+
         initialiseModalWarningOverlayModels();
         display.addFilter(SWT.Activate, new Listener() {
             @Override
@@ -243,34 +271,34 @@ public final class OPIShell implements IOPIRuntime {
                 int modalStyleMask = SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL;
                 boolean isModal = (active.getStyle() & modalStyleMask) > 0;
 
-                if (isModal) {
-                    if (!isModalDialogDisplayed) {
-                        for (OPIShell o : OPIShell.getAllShells()) {
-                            o.shell.setText("Modal dialog detected!");
-                            o.shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
-                            try {
-                                o.addModalWarningOverlayToDisplayModel(active.getText());
-                            } catch (Exception e) {
-                                log.log(Level.WARNING, "Failed to add modal dialog overlay to OPI shell.", e);
-                            }
-                        }
-                        isModalDialogDisplayed = true;
-
-                        // SWT.Close and shellClosed events only trigger when pressing the 'x' button,
-                        // not when the shell is closed via other buttons, therefore need to listen
+                if (isModal && !isModalDialogOpen)
+                {
+                    isModalDialogOpen = true;
+                    if (!isModalDialogDisplayed)
+                    {
+                        activeModalDialogShell = active;
+                        // SWT.Close and shellClosed events only trigger when
+                        // pressing the 'x' button,
+                        // not when the shell is closed via other buttons,
+                        // therefore need to listen
                         // for the dispose event instead.
-                        active.addDisposeListener(new DisposeListener() {
+                        activeModalDialogShell.addDisposeListener(new DisposeListener() {
                             @Override
                             public void widgetDisposed(DisposeEvent event) {
                                 // Revert OPI shells.
-                                for (OPIShell s : OPIShell.getAllShells()) {
+                                for (OPIShell s : OPIShell.getAllShells())
+                                {
                                     s.setTitle();
                                     s.shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
-                                    try {
-                                        // Regenerate display model to remove temporary children warning widgets.
-                                        s.createDisplayModel();
+                                    try
+                                    {
+                                        // Regenerate display model to remove
+                                        // temporary children warning widgets.
+                                        s.removeModalWarningOverlayToDisplayModel();
                                         isModalDialogDisplayed = false;
-                                    } catch (Exception e) {
+                                        isModalDialogOpen = false;
+                                    } catch (Exception e)
+                                    {
                                         log.log(Level.WARNING, "Failed to regenerate display model.", e);
                                     }
                                 }
@@ -281,6 +309,54 @@ public final class OPIShell implements IOPIRuntime {
                 }
             }
         });
+    }
+
+
+    private Shell handleModalDialog(Display display, Shell active) {
+        // Only used when OPI has focus therefore current shell is the OPI
+        OPIShell o = getActiveShell();
+
+        if (!isModalDialogDisplayed && active != null)
+        {
+            isModalDialogDisplayed = true;
+            o.shell.setText("Modal dialog detected!");
+            o.shell.setCursor(new Cursor(display, SWT.CURSOR_NO));
+            o.isModalDialogDisplayed = true;
+            try
+            {
+                o.addModalWarningOverlayToDisplayModel(active.getText());
+            } catch (Exception e)
+            {
+                log.log(Level.WARNING, "Failed to add modal dialog overlay to OPI shell.", e);
+            }
+        }
+        return active;
+    }
+
+    private void disposeModalDialog(Display display) {
+        // Revert OPI shells.
+        if (isModalDialogDisplayed)
+        {
+            for (OPIShell s : OPIShell.getAllShells())
+            {
+                if (!s.isModalDialogDisplayed)
+                    continue;
+                s.isModalDialogDisplayed = false;
+                s.setTitle();
+                s.shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
+                try
+                {
+                    // Regenerate display model to remove temporary children
+                    // warning widgets.
+                    s.removeModalWarningOverlayToDisplayModel();
+                    isModalDialogDisplayed = false;
+
+                } catch (Exception e)
+                {
+                    log.log(Level.WARNING, "Failed to regenerate display model.", e);
+                }
+            }
+        }
     }
 
     /**
@@ -343,7 +419,7 @@ public final class OPIShell implements IOPIRuntime {
     private void initialiseModalWarningOverlayModels() throws Exception {
         modalDialogWarningOverlayModel = new TextInputModel();
         int modalWarningWidth = 330;
-        int modalWarningHeight = 70;
+        int modalWarningHeight = 30;
 
         RGB yellowish = new RGB(255, 255, 150);
         modalDialogWarningOverlayModel.setBackgroundColor(yellowish);
@@ -363,23 +439,29 @@ public final class OPIShell implements IOPIRuntime {
         Rectangle shellArea = shell.getClientArea();
         int shellHeight = shellArea.height;
         int shellWidth = shellArea.width;
-        int modalWarningWidth = modalDialogWarningOverlayModel.getWidth();
-        int modalWarningHeight = modalDialogWarningOverlayModel.getHeight();
 
         modalDialogWarningOverlayModel
                 .setText(String.format("⚠️ Please close the \"%s\" modal dialog.", modalDialogTitle));
         // Centred in the OPI shell.
-        modalDialogWarningOverlayModel.setLocation(shellWidth / 2 - modalWarningWidth / 2,
-                shellHeight / 2 - modalWarningHeight / 2);
+        modalDialogWarningOverlayModel.setLocation(0,0);
 
         rectangleOverlayModel.setSize(shellWidth, shellHeight);
 
         displayModel.addChild(rectangleOverlayModel);
         displayModel.addChild(modalDialogWarningOverlayModel);
 
-        viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
         displayModel.setOpiRuntime(this);
+    }
+
+    private void removeModalWarningOverlayToDisplayModel() {
+      if (rectangleOverlayModel != null)
+          displayModel.removeChild(rectangleOverlayModel);
+      if (modalDialogWarningOverlayModel != null)
+          displayModel.removeChild(modalDialogWarningOverlayModel);
+
+      displayModel.setViewer(viewer);
+      displayModel.setOpiRuntime(this);
     }
 
     private DisplayModel createDisplayModel() throws Exception {
