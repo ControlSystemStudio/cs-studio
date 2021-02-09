@@ -33,6 +33,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public class PreferencesHelper {
 
     public enum ConsolePopupLevel {
+        NO_CONSOLE,
         NO_POP,
         ONLY_INFO,
         ALL;
