@@ -118,16 +118,13 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     @Override
     public void writeError(final String message){
         
-        if (PreferencesHelper.getConsolePopupLevel() == PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
-           // If we are not writing to the console, send it to logger instead.
-           OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
-           return;
-        }
-        
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
+            return;
         default:
             break;
         }
@@ -155,17 +152,14 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     @Override
     public void writeWarning(String message){
         
-        if (PreferencesHelper.getConsolePopupLevel() == PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
-           // If we are not writing to the console, send it to logger instead.
-           OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
-           return;
-        }
-        
         final String output = getTimeString() + " WARNING: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
+            return;
         default:
             break;
         }
@@ -191,18 +185,15 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     @Override
     public void writeInfo(String message){
         
-        if (PreferencesHelper.getConsolePopupLevel() == PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
-           // If we are not writing to the console, send it to logger instead.
-           OPIBuilderPlugin.getLogger().log(Level.INFO, message);
-           return;
-        }
-        
         final String output = getTimeString() + " INFO: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
         case ONLY_INFO:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.INFO, message);
+            return;
         default:
             break;
         }
