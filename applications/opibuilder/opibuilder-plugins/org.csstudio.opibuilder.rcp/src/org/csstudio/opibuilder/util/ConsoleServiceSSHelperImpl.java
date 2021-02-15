@@ -53,18 +53,18 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
     private IOConsoleOutputStream errorStream, warningStream, infoStream, generalStream;
 
     {
-        console = new IOConsole("BOY Console", null);
-
-        generalStream = console.newOutputStream();
-
-        // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
-        console.setWaterMarks(400000, 500000);
-
-        ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
-        consolePlugin.getConsoleManager().addConsoles(
-                new IConsole[] { console });
-
-
+        if (PreferencesHelper.getConsolePopupLevel() != PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
+            console = new IOConsole("BOY Console", null);
+            
+            generalStream = console.newOutputStream();
+            
+            // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
+            console.setWaterMarks(400000, 500000);
+            
+            ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
+            consolePlugin.getConsoleManager().addConsoles(
+                    new IConsole[] { console });
+        }
     }
 
     /**
@@ -117,10 +117,14 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      */
     @Override
     public void writeError(final String message){
+        
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
+            return;
         default:
             break;
         }
@@ -147,14 +151,19 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      */
     @Override
     public void writeWarning(String message){
+        
         final String output = getTimeString() + " WARNING: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
+            return;
         default:
             break;
         }
+        
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
 
             @Override
@@ -175,15 +184,20 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
      */
     @Override
     public void writeInfo(String message){
+        
         final String output = getTimeString() + " INFO: " + message+ ENTER;
         switch (PreferencesHelper.getConsolePopupLevel()) {
         case ALL:
         case ONLY_INFO:
             popConsoleView();
             break;
+        case NO_CONSOLE:
+            OPIBuilderPlugin.getLogger().log(Level.INFO, message);
+            return;
         default:
             break;
         }
+        
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
             @Override
             public void run() {
@@ -200,6 +214,12 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 
     @Override
     public void writeString(final String s){
+        if (PreferencesHelper.getConsolePopupLevel() == PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
+           // If we are not writing to the console, send it to logger instead.
+           OPIBuilderPlugin.getLogger().log(Level.INFO, s);
+           return;
+        }
+        
         UIBundlingThread.getInstance().addRunnable(new Runnable(){
             @Override
             public void run() {
@@ -215,6 +235,13 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 
     @Override
     public void writeString(final String s, final RGB color){
+        
+        if (PreferencesHelper.getConsolePopupLevel() == PreferencesHelper.ConsolePopupLevel.NO_CONSOLE) {
+           // If we are not writing to the console, send it to logger instead.
+           OPIBuilderPlugin.getLogger().log(Level.INFO, s);
+           return;
+        }
+        
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
             @Override
             public void run() {
