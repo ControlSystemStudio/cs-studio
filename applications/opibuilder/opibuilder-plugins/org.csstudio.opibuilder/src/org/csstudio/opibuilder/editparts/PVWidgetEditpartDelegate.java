@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -75,15 +76,32 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 //            if(isControlPV)
 //                updateWritable(widgetModel, pv);
 
-            if (pv.getValue() != null) {
-                if (ignoreOldPVValue) {
-                    widgetModel.getPVMap()
-                            .get(widgetModel.getProperty(pvPropID))
-                            .setPropertyValue_IgnoreOldValue(pv.getValue());
-                } else
-                    widgetModel.getPVMap()
-                            .get(widgetModel.getProperty(pvPropID))
-                            .setPropertyValue(pv.getValue());
+            if (pv.isUseAllBufferedValues()) {
+                List<VType> values = pv.getAllBufferedValues();
+                if (values != null) {
+                    for (VType value : values) {
+                        if (ignoreOldPVValue) {
+                            widgetModel.getPVMap()
+                                    .get(widgetModel.getProperty(pvPropID))
+                                    .setPropertyValue_IgnoreOldValueFireNewValue(value);
+                        } else
+                            widgetModel.getPVMap()
+                                    .get(widgetModel.getProperty(pvPropID))
+                                    .setPropertyValueFireNewValue(value);
+                    }
+                }
+            } else {
+                VType value = pv.getValue();
+                if (value != null) {
+                    if (ignoreOldPVValue) {
+                        widgetModel.getPVMap()
+                                .get(widgetModel.getProperty(pvPropID))
+                                .setPropertyValue_IgnoreOldValue(value);
+                    } else
+                        widgetModel.getPVMap()
+                                .get(widgetModel.getProperty(pvPropID))
+                                .setPropertyValue(value);
+                }
             }
 
         }

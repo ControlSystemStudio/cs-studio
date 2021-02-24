@@ -131,6 +131,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     protected Map<String, ConnectionAnchor> anchorMap;
     
     private boolean hasStartedPVs = false;
+    
+    private boolean ignorableUiTask = true;
 
     public AbstractBaseEditPart() {
         propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
@@ -1047,5 +1049,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                         setValue(value);
                     }
                 });
+    }
+
+    public boolean isIgnorableUiTask(){
+        return ignorableUiTask;
+    }
+
+    public void setIgnorableUiTask(boolean ignorableUiTask){
+        this.ignorableUiTask = ignorableUiTask;
     }
 }
