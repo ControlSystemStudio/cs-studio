@@ -97,6 +97,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
             menu.add(new AboutWebOPIAction());
         }
 
+        // Sets the event dispatcher to route events back to the EditDomain
+        getViewer().setEditDomain(getViewer().getEditDomain());
 
 //        MenuManager cssMenu = new MenuManager("CSS", "css");
 //        cssMenu.add(new Separator("additions")); //$NON-NLS-1$
