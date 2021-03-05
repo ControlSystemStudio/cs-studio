@@ -114,8 +114,7 @@ public class ResourceHelper
      *  @param adapter Desired class, for example IFile
      *  @return Adapted path or <code>null</code>
      */
-    @SuppressWarnings("rawtypes")
-    public Object adapt(final IPath path, final Class adapter)
+    public <T> T adapt(final IPath path, final Class<T> adapter)
     {
         // By default, don't adapt, but log to aid in future extension of this code.
         final Logger logger = Logger.getLogger(getClass().getName());
