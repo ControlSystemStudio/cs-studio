@@ -97,9 +97,8 @@ public class PathEditorInput implements IPathEditorInput, IPersistableElement
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public Object getAdapter(final Class adapter)
+    public <T> T getAdapter(final Class<T> adapter)
     {
         if (adapter == IPathEditorInput.class) 
           return Platform.getAdapterManager().getAdapter(this, adapter);
