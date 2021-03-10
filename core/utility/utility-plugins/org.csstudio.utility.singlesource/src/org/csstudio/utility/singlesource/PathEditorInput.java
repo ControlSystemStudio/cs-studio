@@ -8,6 +8,7 @@
 package org.csstudio.utility.singlesource;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPathEditorInput;
@@ -96,10 +97,12 @@ public class PathEditorInput implements IPathEditorInput, IPersistableElement
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(final Class adapter)
+    public <T> T getAdapter(final Class<T> adapter)
     {
+        if (adapter == IPathEditorInput.class) 
+          return Platform.getAdapterManager().getAdapter(this, adapter);
+      
         return SingleSourcePlugin.getResourceHelper().adapt(path, adapter);
     }
 
