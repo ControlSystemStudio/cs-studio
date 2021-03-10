@@ -3,4 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Datasource Information
 Bundle-SymbolicName: org.csstudio.scan.diirt.datasource.info;singleton:=true
 Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-ActivationPolicy: lazy

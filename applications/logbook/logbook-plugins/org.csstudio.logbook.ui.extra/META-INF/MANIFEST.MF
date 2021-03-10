@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Logbook UI Extra
 Bundle-SymbolicName: org.csstudio.logbook.ui.extra;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.logbook.ui.extra.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
