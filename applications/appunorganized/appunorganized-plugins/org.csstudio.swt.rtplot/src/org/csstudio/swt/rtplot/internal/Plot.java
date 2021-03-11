@@ -580,6 +580,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         fireAnnotationsChanged();
     }
 
+    /** Remove an annotation from the plot but not the underlying model. */
+    public void removeAnnotationFromPlotOnly(final Annotation<XTYPE> annotation)
+    {
+        annotations.remove(annotation);
+        requestUpdate();
+    }
+
     /** Select Annotation at mouse position?
      *  @return Was a mouse annotation set?
      */

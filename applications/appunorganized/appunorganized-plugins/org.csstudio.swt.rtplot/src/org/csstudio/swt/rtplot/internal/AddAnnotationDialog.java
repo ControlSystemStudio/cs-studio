@@ -72,8 +72,10 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
     {
         super(shell);
         this.plot = plot;
-        for (Trace<XTYPE> trace : plot.getTraces())
-            traces.add(trace);
+        for (Trace<XTYPE> trace : plot.getTraces()) {
+            if (trace.isVisible())
+                traces.add(trace);
+        }
     }
 
     @Override

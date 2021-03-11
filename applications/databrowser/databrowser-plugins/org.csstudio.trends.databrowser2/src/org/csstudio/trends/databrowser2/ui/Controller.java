@@ -511,7 +511,7 @@ public class Controller
                 // When made visible, note that item could be in 'middle'
                 // of existing traces, so need to re-create all
                 if (item.isVisible())
-                    createPlotTraces();
+                    createPlotTracesWithAnnotations();
                 else // To hide, simply remove
                     plot.removeTrace(item);
             }
@@ -539,6 +539,11 @@ public class Controller
             {
                 if (changing_annotations)
                     return;
+                // Add all traces and rely on item visibility to define whether they are plotted
+                // or not. Required to keep annotation indices in order.
+                for (ModelItem item : model.getItems()) 
+                    plot.addTrace(item);
+
                 changing_annotations = true;
                 plot.setAnnotations(model.getAnnotations());
                 changing_annotations = false;
@@ -692,6 +697,22 @@ public class Controller
         for (ModelItem item : model.getItems())
             if (item.isVisible())
                 plot.addTrace(item);
+    }
+
+    /** (Re-) create traces in plot for each item in the model including model annotations
+        in the case that the visibility of a trace has changed */
+    public void createPlotTracesWithAnnotations()
+    {
+        plot.removeAllAndAnnotations();
+        int i = 0;
+        for (AxisConfig axis : model.getAxes())
+            plot.updateAxis(i++, axis);
+        // Add all traces and rely on item visibility to define whether they are plotted
+        // or not. Required to keep annotation indices in order.
+        for (ModelItem item : model.getItems()) 
+            plot.addTrace(item);
+    
+        plot.setAnnotations(model.getAnnotations());
     }
 
     /** Initiate archive data retrieval for all model items
