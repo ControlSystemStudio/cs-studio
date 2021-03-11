@@ -263,6 +263,21 @@ public class ModelBasedPlot
         while (N > 1)
             plot.removeYAxis(--N);
     }
+    
+    /** Remove all axes and traces and annotations */
+    public void removeAllAndAnnotations()
+    {
+        items_by_trace.clear();
+        // Remove all traces
+        for (Trace<Instant> trace : plot.getTraces()) {
+            plot.removeTrace(trace);
+            plot.removeAnnotation(trace);
+        }
+        // Now that Y axes are unused, remove all except for primary
+        int N = plot.getYAxes().size();
+        while (N > 1)
+            plot.removeYAxis(--N);
+    }
 
     /** @param index
      *             Index of Y axis. If it doesn't exist, it will be created.
@@ -314,6 +329,7 @@ public class ModelBasedPlot
                 item.getTraceType(), item.getLineWidth(),
                 item.getPointType(), item.getPointSize(),
                 item.getAxisIndex());
+        trace.setVisible(item.isVisible());
         items_by_trace.put(trace, item);
     }
 
@@ -334,6 +350,7 @@ public class ModelBasedPlot
             return;
         }
         plot.removeTrace(trace);
+        plot.removeAnnotation(trace);
         items_by_trace.remove(trace);
     }
 
@@ -417,7 +434,7 @@ public class ModelBasedPlot
         final List<Annotation<Instant>> plot_annotations = new ArrayList<>(plot.getAnnotations());
         for (Annotation<Instant> old : plot_annotations)
             plot.removeAnnotation(old);
-
+        
         // Set new annotations in plot
         for (AnnotationInfo annotation : newAnnotations)
             plot.addAnnotation(new Annotation<Instant>(annotation.isInternal(),

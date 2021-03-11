@@ -76,6 +76,9 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
     final public void paint(final GC gc, final SWTMediaPool media, final Rectangle bounds, final int opacity,
                             final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis, final Trace<XTYPE> trace)
     {
+        if (! trace.isVisible() )
+            return;
+        
         x_min = bounds.x - OUTSIDE;
         x_max = bounds.x + bounds.width + OUTSIDE;
         y_min = bounds.y - OUTSIDE;
