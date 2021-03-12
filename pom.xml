@@ -174,8 +174,8 @@
                 <configuration>
                   <includes>**/*</includes>
                   <excludes>**/target/**</excludes>
-                  <configLocation>../build/cs-studio-jenkins-checkstyle</configLocation>
-                  <suppressionsLocation>../build/cs-studio-jenkins-checkstyle-suppressions</suppressionsLocation>
+                  <configLocation>./build/cs-studio-jenkins-checkstyle</configLocation>
+                  <suppressionsLocation>./build/cs-studio-jenkins-checkstyle-suppressions</suppressionsLocation>
                   <encoding>UTF-8</encoding>
                   <consoleOutput>true</consoleOutput>
                   <outputFile>checkstyle-output.xml</outputFile>
