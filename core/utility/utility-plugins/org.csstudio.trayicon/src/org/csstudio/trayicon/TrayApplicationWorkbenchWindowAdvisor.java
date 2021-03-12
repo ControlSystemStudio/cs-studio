@@ -69,7 +69,7 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
         }
         return response;
     }
-    
+
     /**
      * Display warning that this is the last window.
      *
@@ -132,28 +132,28 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
             Plugin.ID, TrayIconPreferencePage.CLOSE_OPTION, null, null);
         String minPref = prefs.getString(
                 Plugin.ID, TrayIconPreferencePage.MINIMIZE_TO_TRAY, null, null);
-        
+
         // Display warning dialog and get users action to cancel or exit
         if (closePref.equals(Messages.TrayPreferences_warn) && numWindows == 1) {
           userAction2 = warnOfLastWindow();
         }
-        
+
         // Dialog to minimize will only display if preference for close option is to ask to minimize
         if (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.PROMPT) &&
             numWindows == 1) {
           userAction = promptForAction();
         }
 
-        // Case where the application will close. minPref is only application if closePref is ask to minimize 
-        if (numWindows > 1 || trayIcon.isMinimized() || 
+        // Case where the application will close. minPref is only application if closePref is ask to minimize
+        if (numWindows > 1 || trayIcon.isMinimized() ||
             (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.NEVER))
             || closePref.equals(Messages.TrayPreferences_close)
             || userAction == EXIT_BUTTON_ID
             || userAction2 == CLOSE_EXIT_BUTTON_ID) { // user action: exit
           // allow to continue
           closeWindow = super.preWindowShellClose();
-        } 
-        // Case where the application will minimize. minPref is only application if closePref is ask to minimize 
+        }
+        // Case where the application will minimize. minPref is only application if closePref is ask to minimize
         else if ( (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.ALWAYS))
             || userAction == MINIMIZE_BUTTON_ID) {
           // minimise the window and block application exit
@@ -164,7 +164,7 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
           // block application exit
           closeWindow = false;
         }
-        
+
         return closeWindow;
     }
 }

@@ -112,7 +112,7 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         return annotation_action;
     }
-    
+
     /** @return {@link Action} that can show/hide the toolbar */
     public Action getToolbarAction()
     {

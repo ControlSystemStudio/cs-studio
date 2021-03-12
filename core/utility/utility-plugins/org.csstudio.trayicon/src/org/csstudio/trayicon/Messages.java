@@ -21,7 +21,7 @@ public class Messages extends NLS {
     public static String TrayPreferences_always;
     public static String TrayPreferences_never;
     public static String TrayPreferences_prompt;
-    
+
     public static String TrayPreferences_closeOption;
     public static String TrayPreferences_askToMinimize;
     public static String TrayPreferences_warn;

@@ -149,7 +149,7 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
             MessageFormat.format(text.getText(), "temp", date, 2.0);
             plot.addAnnotation(traces.get(selected), text.getText());
           } catch (IllegalArgumentException ex) {
-            // Keep dialog open to fix 
+            // Keep dialog open to fix
             MessageDialog.openInformation(getShell(), Messages.AddAnnotation_Error, "Invalid entry: " + ex.getMessage());
             return;
           }
