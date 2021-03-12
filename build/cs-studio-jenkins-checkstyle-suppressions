@@ -6,4 +6,6 @@
 
 <suppressions>
   <suppress checks=".*" files="checkstyle-output.xml" />
+  <suppress checks=".*" files="[\\/]thirdparty[\\/]" />
+  <suppress checks=".*" files="[\\/]maven-osgi-bundles[\\/]" />
 </suppressions>
