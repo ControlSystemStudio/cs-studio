@@ -100,9 +100,9 @@ public class PathEditorInput implements IPathEditorInput, IPersistableElement
     @Override
     public <T> T getAdapter(final Class<T> adapter)
     {
-        if (adapter == IPathEditorInput.class) 
+        if (adapter == IPathEditorInput.class)
           return Platform.getAdapterManager().getAdapter(this, adapter);
-      
+
         return SingleSourcePlugin.getResourceHelper().adapt(path, adapter);
     }
 

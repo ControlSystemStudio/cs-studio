@@ -20,7 +20,7 @@
     <artifactId>cs-studio</artifactId>
     <version>4.6.0-SNAPSHOT</version>
   </parent>
-  
+
   <!-- PROPERTIES -->
   <properties>
     <cs-studio-central.url>${download.root}/core/${cs-studio.version}</cs-studio-central.url>

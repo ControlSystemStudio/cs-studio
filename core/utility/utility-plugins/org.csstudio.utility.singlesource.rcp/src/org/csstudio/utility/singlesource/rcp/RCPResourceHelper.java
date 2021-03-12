@@ -133,15 +133,15 @@ public class RCPResourceHelper extends ResourceHelper
         // Fall back to non-workspace implementation
         if (ws_file == null)
             return super.getOutputStream(input);
-        
-        // Determine the path to the file. 
+
+        // Determine the path to the file.
         IPath p = getPath(input);
         // back to non-workspace implementation if null
         if (p == null)
           return super.getOutputStream(input);
-        
+
         // If workspace root does not contain the path (i.e. the file is outside
-        // of the workspace) but the file does actually exist then revert to the 
+        // of the workspace) but the file does actually exist then revert to the
         // super non-workspace implementation.
         // Otherwise if the file path is within the workspace (findMember = true)
         // and/or it is a new file (does not exist yet) then continue in this

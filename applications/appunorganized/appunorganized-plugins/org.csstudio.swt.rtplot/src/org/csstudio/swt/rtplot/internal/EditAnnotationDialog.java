@@ -118,13 +118,13 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
     private IInputValidator createFormatValidator(final Annotation<XTYPE> annotation) {
         final IInputValidator validator = new IInputValidator() {
             public String isValid(String new_text) {
-                try 
+                try
                 {
                     Date date = Date.from((Instant) annotation.getPosition());
                     MessageFormat.format(new_text, annotation.getTrace().getName(), date ,
                         annotation.getValue());
-                } 
-                catch (IllegalArgumentException ex) 
+                }
+                catch (IllegalArgumentException ex)
                 {
                     return "Invalid entry: " + ex.getMessage();
                 }
@@ -133,16 +133,16 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         };
         return validator;
     }
-    
+
     private void editAnnotation(final Annotation<XTYPE> annotation)
     {
-      
-      final InputDialog editor= new InputDialog(getShell(), "Edit Annotation", "Modify the annotation text", 
+
+      final InputDialog editor= new InputDialog(getShell(), "Edit Annotation", "Modify the annotation text",
           annotation.getText(), createFormatValidator(annotation)) {
-        
+
           private Text errorMessageText;
           private String errorMessage;
-          
+
           @Override
           protected int getInputTextStyle()
           {
@@ -155,13 +155,13 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
           {
               final Control res = super.createDialogArea(parent);
               ((GridData) this.getText().getLayoutData()).heightHint = 100;
-              
+
               final Label info = new Label((Composite) res, SWT.WRAP);
               info.setText(Messages.AddAnnotation_Content_Help);
               GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
               gd.widthHint = 500;
               info.setLayoutData(gd);
-              
+
               errorMessageText = new Text((Composite)res, SWT.READ_ONLY | SWT.WRAP);
               errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                   | GridData.HORIZONTAL_ALIGN_FILL));
@@ -169,15 +169,15 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
                   .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
               errorMessageText.setForeground(new Color(res.getDisplay(),255,0,0));
               setErrorMessage(errorMessage);
-              
+
               return res;
           }
-          
+
           @Override
-          public void setErrorMessage(String errorMessage) 
+          public void setErrorMessage(String errorMessage)
           {
               this.errorMessage = "\n"+errorMessage;
-              if (errorMessageText != null && !errorMessageText.isDisposed()) 
+              if (errorMessageText != null && !errorMessageText.isDisposed())
               {
                   errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
                   boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
@@ -185,7 +185,7 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
                   errorMessageText.setVisible(hasError);
                   errorMessageText.getParent().update();
                   Control button = getButton(IDialogConstants.OK_ID);
-                  if (button != null) 
+                  if (button != null)
                   {
                     button.setEnabled(errorMessage == null);
                   }
