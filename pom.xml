@@ -112,7 +112,14 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.17</version>
+            <version>3.1.2</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>8.41</version>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <id>validate</id>
@@ -125,7 +132,6 @@
                   <encoding>UTF-8</encoding>
                   <consoleOutput>true</consoleOutput>
                   <outputFile>checkstyle-output.xml</outputFile>
-                  <sourceDirectory>.</sourceDirectory>
                   <failsOnError>true</failsOnError>
                   <linkXRef>false</linkXRef>
                 </configuration>
