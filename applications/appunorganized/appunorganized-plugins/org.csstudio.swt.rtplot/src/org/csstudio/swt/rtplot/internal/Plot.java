@@ -1241,7 +1241,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     @Override
     public void mouseDoubleClick(final MouseEvent e)
     {
-        if (selectMouseAnnotation()) 
+        if (selectMouseAnnotation())
         {
             new EditAnnotationDialog<XTYPE>(getShell(), this.plot).open();
         }

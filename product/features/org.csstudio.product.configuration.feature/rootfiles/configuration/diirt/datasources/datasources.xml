@@ -9,11 +9,11 @@
         It also allows to set a default data source so that names that do not
         match the pattern are forwarded to the datasource. Effectively:
             [umatchedChannelName] -> [defaultDataSource][delimiter][unmatchedChannelName]
-            
+
         By default, the delimiter is ://
         By default, there is no default data source. -->
     <!--<compositeDataSource delimiter="://" />-->
-    
+
     <!-- This changes the default data source to Channel Access, while leaving
         the default delimiter to :// -->
     <!--<compositeDataSource defaultDataSource="ca" />-->

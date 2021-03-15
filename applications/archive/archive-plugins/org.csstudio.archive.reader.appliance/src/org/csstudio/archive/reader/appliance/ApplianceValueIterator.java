@@ -165,7 +165,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                     TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
                     getSeverity(dataMessage.getSeverity()),
                     getStatus(dataMessage.getStatus()),
-                    getEnumLabels(mainStream.getPayLoadInfo()), 
+                    getEnumLabels(mainStream.getPayLoadInfo()),
                     dataMessage.getNumberValue().intValue());
         } else if (type == PayloadType.SCALAR_STRING) {
             if (valDescriptor == null) {
@@ -234,7 +234,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         }
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
     }
-    
+
     private List<String> getEnumLabels(PayloadInfo payload){
       HashMap<Integer, String> enumMap = new HashMap<Integer, String>();
       List<String> enumLabelsOrdered = new ArrayList<String>();
@@ -245,12 +245,12 @@ public abstract class ApplianceValueIterator implements ValueIterator {
               try {
                 enumMap.put(Integer.valueOf(strSplit[1]), fieldValue.getVal());
               } catch (NumberFormatException ex) {
-                // Skip 
+                // Skip
               }
             }
           }
       }
-      
+
       if (enumMap.isEmpty()) {
         return null;
       }

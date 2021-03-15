@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
-  materials are made available under the terms of the Eclipse Distribution 
-  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying
+  materials are made available under the terms of the Eclipse Distribution
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php
   Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
@@ -94,7 +94,7 @@
 
           <filters>
             <!-- This is how features/plugins can be ignored. -->
-            <!--<filter> <type>eclipse-plugin</type> <id>artifactId</id> 
+            <!--<filter> <type>eclipse-plugin</type> <id>artifactId</id>
               <removeAll /> </filter> -->
           </filters>
 
