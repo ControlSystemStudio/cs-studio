@@ -226,7 +226,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public void close() {
-        cancel();
+    	//No-op;
     }
 
     /**
