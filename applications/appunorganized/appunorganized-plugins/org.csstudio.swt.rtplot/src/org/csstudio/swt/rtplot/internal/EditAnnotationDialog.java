@@ -11,12 +11,14 @@ import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.Messages;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.SWTMediaPool;
+import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.RemoveAnnotationAction;
 import org.csstudio.swt.rtplot.undo.UpdateAnnotationTextAction;
@@ -55,9 +57,22 @@ public class EditAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialo
         super(shell);
         this.plot = plot;
         annotations = new ArrayList<>();
-        for (Annotation<XTYPE> annotation : plot.getAnnotations())
-            if (! annotation.isInternal())
-                annotations.add(annotation);
+
+        // Only show annotations for traces that are currently visible
+        Iterator<Trace<XTYPE>> traces = plot.getTraces().iterator();
+        while (traces.hasNext())
+        {
+            Trace<XTYPE> trace = traces.next();
+            for (Annotation<XTYPE> annotation : plot.getAnnotations())
+                if (!annotation.isInternal())
+                {
+                    if (trace.getName().equals(annotation.getTrace().getName()))
+                    {
+                        if (trace.isVisible())
+                            annotations.add(annotation);
+                    }
+                }
+        }
     }
 
     @Override
