@@ -257,19 +257,7 @@ public class ModelBasedPlot
         items_by_trace.clear();
         // Remove all traces
         for (Trace<Instant> trace : plot.getTraces())
-            plot.removeTrace(trace);
-        // Now that Y axes are unused, remove all except for primary
-        int N = plot.getYAxes().size();
-        while (N > 1)
-            plot.removeYAxis(--N);
-    }
-    
-    /** Remove all axes and traces and annotations */
-    public void removeAllAndAnnotations()
-    {
-        items_by_trace.clear();
-        // Remove all traces
-        for (Trace<Instant> trace : plot.getTraces()) {
+        {
             plot.removeTrace(trace);
             plot.removeAnnotation(trace);
         }
@@ -352,6 +340,48 @@ public class ModelBasedPlot
         plot.removeTrace(trace);
         plot.removeAnnotation(trace);
         items_by_trace.remove(trace);
+    }
+    
+    /** Hide a trace by changing the trace visibity
+     *  @param item ModelItem to hide from plot 
+     */
+    public void hideTrace(final ModelItem item)
+    {
+        final Trace<Instant> trace;
+        try
+        {
+            trace = findTrace(item);
+        }
+        catch (IllegalArgumentException ex)
+        {   // Could be called with a trace that was not visible,
+            // so it was never in the plot,
+            // and now gets removed.
+            // --> No error, because trace to be removed is already
+            //     absent from plot
+            return;
+        }
+        trace.setVisible(false);
+    }
+    
+    /** Show a trace by changing the trace visibity
+     *  @param item ModelItem to show in plot 
+     */
+    public void showTrace(final ModelItem item)
+    {
+        final Trace<Instant> trace;
+        try
+        {
+            trace = findTrace(item);
+        }
+        catch (IllegalArgumentException ex)
+        {   // Could be called with a trace that was not visible,
+            // so it was never in the plot,
+            // and now gets removed.
+            // --> No error, because trace to be removed is already
+            //     absent from plot
+            return;
+        }
+        trace.setVisible(true);
     }
 
     /** Update the configuration of a trace from Model Item
