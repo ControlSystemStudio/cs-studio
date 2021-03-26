@@ -227,11 +227,10 @@ public final class OPIShell implements IOPIRuntime {
         getSite().registerContextMenu(contextMenuProvider, viewer);
         viewer.setContextMenu(contextMenuProvider);
     }
-    
+
     /**
-     * Register that the parent view has been disposed so need to
-     * re-register this shell with a new view if available,
-     * otherwise the context menu will fail
+     * Register that the parent view has been disposed so need to re-register this
+     * shell with a new view if available, otherwise the context menu will fail
      */
     public void notifyParentViewClosed() {
         viewLost = true;
