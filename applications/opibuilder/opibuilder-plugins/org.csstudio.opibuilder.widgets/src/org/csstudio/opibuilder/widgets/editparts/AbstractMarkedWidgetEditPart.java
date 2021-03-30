@@ -105,6 +105,10 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
                                             upperLimit = meta.getUpperDisplayLimit();
                                             lowerLimit = meta.getLowerDisplayLimit();
                                         }
+                                        if (!(lowerLimit < upperLimit)) {
+                                            upperLimit = model.getMaximum();
+                                            lowerLimit = model.getMinimum();
+                                        }
                                         if(!Double.isNaN(upperLimit)) {
                                             model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX, upperLimit);
                                         }
