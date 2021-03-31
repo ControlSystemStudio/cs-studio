@@ -341,9 +341,9 @@ public class ModelBasedPlot
         plot.removeAnnotation(trace);
         items_by_trace.remove(trace);
     }
-    
+
     /** Hide a trace by changing the trace visibity
-     *  @param item ModelItem to hide from plot 
+     *  @param item ModelItem to hide from plot
      */
     public void hideTrace(final ModelItem item)
     {
@@ -362,9 +362,9 @@ public class ModelBasedPlot
         }
         trace.setVisible(false);
     }
-    
+
     /** Show a trace by changing the trace visibity
-     *  @param item ModelItem to show in plot 
+     *  @param item ModelItem to show in plot
      */
     public void showTrace(final ModelItem item)
     {
@@ -464,7 +464,7 @@ public class ModelBasedPlot
         final List<Annotation<Instant>> plot_annotations = new ArrayList<>(plot.getAnnotations());
         for (Annotation<Instant> old : plot_annotations)
             plot.removeAnnotation(old);
-        
+
         // Set new annotations in plot
         for (AnnotationInfo annotation : newAnnotations)
             plot.addAnnotation(new Annotation<Instant>(annotation.isInternal(),
