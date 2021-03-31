@@ -104,6 +104,8 @@ public final class OPIShell implements IOPIRuntime {
     // macrosInput should not be null.  If there are no macros it should
     // be an empty MacrosInput object.
     private MacrosInput macrosInput;
+    // Variable to track if parent view has been lost
+    private boolean viewLost;
 
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
@@ -120,6 +122,7 @@ public final class OPIShell implements IOPIRuntime {
         actionRegistry = new ActionRegistry();
 
         viewer = new GraphicalViewerImpl();
+        viewLost = false;
 
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
@@ -165,6 +168,12 @@ public final class OPIShell implements IOPIRuntime {
             }
             @Override
             public void shellActivated(ShellEvent e) {
+                // Shell has been activated so check whether
+                // we lost the parent view and if so re-register
+                if (viewLost) {
+                    sendUpdateCommand();
+                    viewLost = false;
+                }
                 activeShell = OPIShell.this;
             }
         });
@@ -217,6 +226,14 @@ public final class OPIShell implements IOPIRuntime {
         OPIRunnerContextMenuProvider contextMenuProvider = new OPIRunnerContextMenuProvider(viewer, this);
         getSite().registerContextMenu(contextMenuProvider, viewer);
         viewer.setContextMenu(contextMenuProvider);
+    }
+
+    /**
+     * Register that the parent view has been disposed so need to re-register this
+     * shell with a new view if available, otherwise the context menu will fail
+     */
+    public void notifyParentViewClosed() {
+        viewLost = true;
     }
 
     public MacrosInput getMacrosInput() {
