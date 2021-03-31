@@ -541,7 +541,7 @@ public class Controller
                     return;
                 // Add all traces and rely on item visibility to define whether they are plotted
                 // or not. Required to keep annotation indices in order.
-                for (ModelItem item : model.getItems()) 
+                for (ModelItem item : model.getItems())
                     plot.addTrace(item);
 
                 changing_annotations = true;
@@ -698,7 +698,7 @@ public class Controller
             if (item.isVisible())
                 plot.addTrace(item);
     }
-    
+
     /** (Re-) create traces in plot for each item in the model and add
      *   any existing annotations */
     public void createPlotTracesWithAnnotations()

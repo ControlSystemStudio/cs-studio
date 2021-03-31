@@ -78,7 +78,7 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
     {
         if (! trace.isVisible() )
             return;
-        
+
         x_min = bounds.x - OUTSIDE;
         x_max = bounds.x + bounds.width + OUTSIDE;
         y_min = bounds.y - OUTSIDE;
