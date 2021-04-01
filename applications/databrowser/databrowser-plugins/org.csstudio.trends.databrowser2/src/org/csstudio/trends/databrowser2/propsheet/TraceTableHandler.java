@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -141,7 +142,7 @@ public class TraceTableHandler implements IStructuredContentProvider
 
         // Visible Column ----------
         TableViewerColumn view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceVisibility, 45, 1);
-        view_col.setLabelProvider(new CellLabelProvider()
+        view_col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
