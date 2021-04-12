@@ -27,6 +27,8 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
 {
     final private PlotDataProvider<XTYPE> data;
 
+    private volatile boolean visible = true;
+
     private volatile String name;
 
     private volatile String units;
@@ -205,5 +207,15 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
     public String toString()
     {
         return "Trace " + name;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

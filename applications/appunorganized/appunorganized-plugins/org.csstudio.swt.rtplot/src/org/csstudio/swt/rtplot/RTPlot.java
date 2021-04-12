@@ -394,4 +394,13 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     {
         plot.removeAnnotation(annotation);
     }
+
+    /** @param trace Trace to remove annotation from */
+    public void removeAnnotation(final Trace<XTYPE> trace)
+    {
+        for (Annotation<XTYPE> a : getAnnotations())
+            if (a.getTrace().getName().equals(trace.getName()))
+                plot.removeAnnotation(a);
+
+    }
 }

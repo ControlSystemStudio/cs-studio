@@ -487,14 +487,14 @@ public class Controller
                     }
                 }
                 else  // New or removed axis: Recreate the whole plot
-                    createPlotTraces();
+                    createPlotTracesWithAnnotations();
             }
 
             @Override
             public void itemAdded(final ModelItem item)
             {
                 // Item may be added in 'middle' of existing traces
-                createPlotTraces();
+                createPlotTracesWithAnnotations();
                 // Get archived data for new item (NOP for non-PVs)
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
@@ -511,9 +511,9 @@ public class Controller
                 // When made visible, note that item could be in 'middle'
                 // of existing traces, so need to re-create all
                 if (item.isVisible())
-                    createPlotTraces();
-                else // To hide, simply remove
-                    plot.removeTrace(item);
+                    plot.showTrace(item);
+                else // Hide trace by changing visibility
+                    plot.hideTrace(item);
             }
 
             @Override
@@ -539,6 +539,11 @@ public class Controller
             {
                 if (changing_annotations)
                     return;
+                // Add all traces and rely on item visibility to define whether they are plotted
+                // or not. Required to keep annotation indices in order.
+                for (ModelItem item : model.getItems())
+                    plot.addTrace(item);
+
                 changing_annotations = true;
                 plot.setAnnotations(model.getAnnotations());
                 changing_annotations = false;
@@ -692,6 +697,22 @@ public class Controller
         for (ModelItem item : model.getItems())
             if (item.isVisible())
                 plot.addTrace(item);
+    }
+
+    /** (Re-) create traces in plot for each item in the model and add
+     *   any existing annotations */
+    public void createPlotTracesWithAnnotations()
+    {
+        List<AnnotationInfo> oldAnno = model.getAnnotations();
+        plot.removeAll();
+        int i = 0;
+        for (AxisConfig axis : model.getAxes())
+            plot.updateAxis(i++, axis);
+        for (ModelItem item : model.getItems())
+            if (item.isVisible())
+                plot.addTrace(item);
+
+        plot.setAnnotations(oldAnno);
     }
 
     /** Initiate archive data retrieval for all model items

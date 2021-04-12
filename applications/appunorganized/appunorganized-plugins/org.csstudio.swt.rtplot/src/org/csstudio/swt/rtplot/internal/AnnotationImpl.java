@@ -125,6 +125,9 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
     /** Paint the annotation on given gc and axes. */
     void paint(final GC gc, final SWTMediaPool media, final AxisPart<XTYPE> xaxis, final YAxisImpl<XTYPE> yaxis)
     {
+        if ( ! trace.isVisible() )
+            return;
+
         final int x = xaxis.getScreenCoord(position);
         final int y = Double.isFinite(value) ? yaxis.getScreenCoord(value) : yaxis.getScreenRange().getLow();
         final boolean in_range = xaxis.getScreenRange().contains(x);
