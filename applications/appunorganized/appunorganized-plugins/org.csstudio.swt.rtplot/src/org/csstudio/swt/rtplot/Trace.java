@@ -20,6 +20,12 @@ import org.eclipse.swt.graphics.RGB;
  */
 public interface Trace<XTYPE extends Comparable<XTYPE>>
 {
+    /** @return <code>true</code> if trace is visible */
+    public boolean isVisible();
+
+    /** @param visible Should trace be visible? */
+    public void setVisible(final boolean visible);
+
     /** @return Name, i.e. label of this trace */
     public String getName();
 

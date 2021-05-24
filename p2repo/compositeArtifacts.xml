@@ -9,7 +9,7 @@
   </properties>
   <children size="4">
     <child location="../maven-osgi-bundles/repository/target/repository"/>
-    <child location="../thirdparty/repository/target/repository"/> 
+    <child location="../thirdparty/repository/target/repository"/>
     <child location="../core/p2repo"/>
     <child location="../applications/p2repo"/>
   </children>

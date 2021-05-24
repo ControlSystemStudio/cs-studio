@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Diirt Util
 Bundle-SymbolicName: org.csstudio.diirt.util;singleton:=true
 Bundle-Version: 1.0.1.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/ds_consumer.xml,OSGI-INF/ffs_consumer.xml,
  OSGI-INF/s_consumer.xml

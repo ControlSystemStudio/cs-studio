@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot.internal;
 
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -123,21 +125,40 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
     /** Paint the annotation on given gc and axes. */
     void paint(final GC gc, final SWTMediaPool media, final AxisPart<XTYPE> xaxis, final YAxisImpl<XTYPE> yaxis)
     {
+        if ( ! trace.isVisible() )
+            return;
+
         final int x = xaxis.getScreenCoord(position);
         final int y = Double.isFinite(value) ? yaxis.getScreenCoord(value) : yaxis.getScreenRange().getLow();
         final boolean in_range = xaxis.getScreenRange().contains(x);
 
-        String value_text = yaxis.getTicks().formatDetailed(value);
+        String localText = text;
         final String units = trace.getUnits();
-        if (! units.isEmpty())
-            value_text += " " + units;
-        final String label = NLS.bind(text,
-                new Object[]
-                {
-                    trace.getName(),
-                    xaxis.getTicks().format(position),
-                    value_text
-                });
+        if (!units.isEmpty())
+            localText += " " + units;
+
+        Date date = Date.from((Instant) position);
+        final String label;
+        if (text.contains("{1}") && text.contains("{2}"))
+        {   // Set the default format for both value and date
+            label = MessageFormat.format(localText, trace.getName(),
+              xaxis.getTicks().format(position),
+              yaxis.getTicks().formatDetailed(value));
+        }
+        else if (text.contains("{1}"))
+        {   // Set default format for the date only
+            label = MessageFormat.format(localText, trace.getName(),
+              xaxis.getTicks().format(position), value);
+        }
+        else if (text.contains("{2}"))
+        {   // Set default format for the value only
+            label = MessageFormat.format(localText, trace.getName(),
+              date, yaxis.getTicks().formatDetailed(value));
+        }
+        else
+        {   // Allow user format for date and value
+            label = MessageFormat.format(localText, trace.getName(), date, value);
+        }
 
         // Layout like this when in_range
         //

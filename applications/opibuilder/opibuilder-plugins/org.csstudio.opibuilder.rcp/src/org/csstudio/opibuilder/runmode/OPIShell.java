@@ -31,12 +31,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.KeyHandler;
+import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellEvent;
@@ -101,6 +104,8 @@ public final class OPIShell implements IOPIRuntime {
     // macrosInput should not be null.  If there are no macros it should
     // be an empty MacrosInput object.
     private MacrosInput macrosInput;
+    // Variable to track if parent view has been lost
+    private boolean viewLost;
 
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
@@ -117,8 +122,11 @@ public final class OPIShell implements IOPIRuntime {
         actionRegistry = new ActionRegistry();
 
         viewer = new GraphicalViewerImpl();
+        viewLost = false;
+
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
+        viewer.setKeyHandler(new KeyHandler());
 
         viewer.setRootEditPart(new ScalableRootEditPart() {
             @Override
@@ -160,6 +168,12 @@ public final class OPIShell implements IOPIRuntime {
             }
             @Override
             public void shellActivated(ShellEvent e) {
+                // Shell has been activated so check whether
+                // we lost the parent view and if so re-register
+                if (viewLost) {
+                    sendUpdateCommand();
+                    viewLost = false;
+                }
                 activeShell = OPIShell.this;
             }
         });
@@ -204,11 +218,22 @@ public final class OPIShell implements IOPIRuntime {
      */
     public void registerWithView(IViewPart view) {
         this.view = view;
-        actionRegistry.registerAction(new RefreshOPIAction(this));
+        RefreshOPIAction refreshAction = new RefreshOPIAction(this);
+        actionRegistry.registerAction(refreshAction);
+        // Explicitly bind refresh action to the F5 keypress.
+        viewer.getKeyHandler().put(KeyStroke.getPressed(SWT.F5, 0), refreshAction);
         SingleSourceHelper.registerRCPRuntimeActions(actionRegistry, this);
         OPIRunnerContextMenuProvider contextMenuProvider = new OPIRunnerContextMenuProvider(viewer, this);
         getSite().registerContextMenu(contextMenuProvider, viewer);
         viewer.setContextMenu(contextMenuProvider);
+    }
+
+    /**
+     * Register that the parent view has been disposed so need to re-register this
+     * shell with a new view if available, otherwise the context menu will fail
+     */
+    public void notifyParentViewClosed() {
+        viewLost = true;
     }
 
     public MacrosInput getMacrosInput() {
@@ -364,7 +389,7 @@ public final class OPIShell implements IOPIRuntime {
      */
     private static void sendUpdateCommand() {
         IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-        ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+        ICommandService commandService = serviceLocator.getService(ICommandService.class);
         try {
             Command command = commandService.getCommand(OPI_SHELLS_CHANGED_ID);
             command.executeWithChecks(new ExecutionEvent());

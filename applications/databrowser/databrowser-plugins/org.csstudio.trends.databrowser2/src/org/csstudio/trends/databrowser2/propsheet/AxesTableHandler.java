@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -114,7 +115,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Visible? Column ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 45, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -190,7 +191,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Use Axis Name ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.UseAxisName, 95, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -229,7 +230,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Use Trace Names ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.UseTraceNames, 110, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -268,7 +269,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Show Grid? ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.Grid, 50, 5);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -307,7 +308,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Use Right Side? ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisOnRight, 80, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -461,7 +462,7 @@ public class AxesTableHandler implements IStructuredContentProvider
 
         // Auto scale Column ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.AutoScale, 80, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        col.setLabelProvider(new StyledCellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)

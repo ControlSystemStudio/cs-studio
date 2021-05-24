@@ -4,6 +4,7 @@ Fragment-Host: org.csstudio.utility.channel
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.8.2"
 Export-Package: org.csstudio.utility.channel.actions

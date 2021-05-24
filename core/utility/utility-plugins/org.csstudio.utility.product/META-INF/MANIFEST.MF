@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Shared
 Bundle-SymbolicName: org.csstudio.utility.product;singleton:=true
 Bundle-Version: 1.3.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6",
