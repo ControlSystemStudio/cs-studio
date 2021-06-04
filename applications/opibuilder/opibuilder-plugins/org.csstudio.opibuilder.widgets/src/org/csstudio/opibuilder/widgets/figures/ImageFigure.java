@@ -126,15 +126,18 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         if (bounds.width <= 0 || bounds.height <= 0) {
             return;
         }
-        if (image == null || image.isEmpty()) {
-            if (!filePath.isEmpty()) {
-                gfx.setBackgroundColor(getBackgroundColor());
-                gfx.setForegroundColor(getForegroundColor());
-                gfx.fillRectangle(bounds);
-                gfx.translate(bounds.getLocation());
-                TextPainter.drawText(gfx, "ERROR in loading image\n" + filePath, bounds.width / 2, bounds.height / 2,
-                        TextPainter.CENTER);
+        if (image == null || image.isEmpty() || image.getImagePath() == null) {
+            // Case where there has been an error loading the file
+            String errorMsg = "ERROR in loading image\n" + filePath;
+            if (filePath.isEmpty()) {
+                // Case where there is no file specified
+                errorMsg = "No image file specified" + filePath;
             }
+            gfx.setBackgroundColor(getBackgroundColor());
+            gfx.setForegroundColor(getForegroundColor());
+            gfx.fillRectangle(bounds);
+            gfx.translate(bounds.getLocation());
+            TextPainter.drawText(gfx, errorMsg, bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
             return;
         }
         image.setBounds(bounds);

@@ -436,8 +436,12 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                     }
                 }
                 loadingImage = false;
-                // fireSymbolImageLoaded();
-                Activator.getLogger().log(Level.WARNING, "ERROR in loading GIF image " + imagePath, e);
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        fireSymbolImageLoaded();
+                    }
+                });
+                Activator.getLogger().log(Level.WARNING, "ERROR in loading GIF image " + imagePath, e.getMessage());
             }
         });
     }
