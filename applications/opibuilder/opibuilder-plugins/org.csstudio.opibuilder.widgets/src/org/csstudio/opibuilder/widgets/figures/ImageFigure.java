@@ -122,7 +122,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         if (isLoadingImage()) {
             return;
         }
-        ImageUtils.crop(bounds, this.getInsets());
+        ImageUtils.crop(bounds.getCopy(), this.getInsets());
         if (bounds.width <= 0 || bounds.height <= 0) {
             return;
         }
