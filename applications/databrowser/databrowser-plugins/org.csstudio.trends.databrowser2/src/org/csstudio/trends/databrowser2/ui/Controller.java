@@ -539,11 +539,6 @@ public class Controller
             {
                 if (changing_annotations)
                     return;
-                // Add all traces and rely on item visibility to define whether they are plotted
-                // or not. Required to keep annotation indices in order.
-                for (ModelItem item : model.getItems())
-                    plot.addTrace(item);
-
                 changing_annotations = true;
                 plot.setAnnotations(model.getAnnotations());
                 changing_annotations = false;
