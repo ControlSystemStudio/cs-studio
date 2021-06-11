@@ -60,6 +60,45 @@
                             <rootFolder>cs-studio</rootFolder>
                             <archiveFileName>cs-studio-${project.version}</archiveFileName>
                         </product>
+                        <product>
+                            <id>alarm-server</id>
+                            <rootFolder>alarm-server-${project.version}</rootFolder>
+                            <rootFolders>
+                                <macosx>AlarmServer.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>alarm-server-${project.version}</archiveFileName>
+                            <attachId>alarm-server</attachId>
+                        </product>
+                        <product>
+                            <id>alarm-config</id>
+                            <rootFolder>alarm-config-${project.version}</rootFolder>
+                            <rootFolders>
+                            <macosx>AlarmConfig.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>alarm-config-${project.version}</archiveFileName>
+                            <attachId>alarm-config</attachId>
+                        </product>
+                        <product>
+                        <!-- 'uid' in the *.product -->
+                            <id>archive-engine</id>
+                            <!-- Add version number to product top directory and zipped product -->
+                            <rootFolder>archive-engine-${project.version}</rootFolder>
+                            <rootFolders>
+                            <macosx>ArchiveEngine.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>archive-engine-${project.version}</archiveFileName>
+                            <!-- When creating ZIP archive for more than one product, need 'attachId'  -->
+                            <attachId>archive-engine</attachId>
+                        </product>
+                        <product>
+                            <id>archive-config</id>
+                            <rootFolder>archive-config-${project.version}</rootFolder>
+                            <rootFolders>
+                            <macosx>ArchiveConfig.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>archive-config-${project.version}</archiveFileName>
+                            <attachId>archive-config</attachId>
+                        </product>
                     </products>
                 </configuration>
                 <executions>
