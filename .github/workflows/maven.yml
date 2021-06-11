@@ -22,4 +22,4 @@ jobs:
     - name: Build OSGi bundles with Maven
       run: mvn -f maven-osgi-bundles/pom.xml clean verify
     - name: Build the application
-      run: mvn clean verify -Dcsstudio.composite.repo=$(pwd)/p2repo -Pcheckstyle
+      run: mvn clean verify -Dcsstudio.composite.repo=$(pwd)/p2repo
