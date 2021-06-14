@@ -314,7 +314,7 @@ public class DetailPanelEditpart extends AbstractContainerEditpart implements IP
             getFigure().setRowDividerPos(row.getRowNumber(), row.getHeight());
         }
         if (numberOfRows > DetailPanelModel.MAX_ROW_COUNT) {
-            String errorMessage = "Warning: number or rows requested, " + numberOfRows + " is greater "
+            String errorMessage = "Detail panel widget: number of rows requested (" + numberOfRows + ") is greater "
                     + "than the limit of " + DetailPanelModel.MAX_ROW_COUNT;
             ConsoleService.getInstance().writeError(errorMessage);
             OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage);
