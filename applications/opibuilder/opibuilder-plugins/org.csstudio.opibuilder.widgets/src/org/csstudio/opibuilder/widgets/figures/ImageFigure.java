@@ -25,6 +25,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
@@ -133,12 +134,17 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
                 // Case where there is no file specified
                 errorMsg = "No image file specified" + filePath;
             }
-            gfx.setBackgroundColor(getBackgroundColor());
-            gfx.setForegroundColor(getForegroundColor());
-            gfx.fillRectangle(bounds);
-            gfx.translate(bounds.getLocation());
-            TextPainter.drawText(gfx, errorMsg, bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
-            return;
+            if (model.getExecutionMode() == ExecutionMode.RUN_MODE) {
+                image = null;
+                return;
+            } else {
+                gfx.setBackgroundColor(getBackgroundColor());
+                gfx.setForegroundColor(getForegroundColor());
+                gfx.fillRectangle(bounds);
+                gfx.translate(bounds.getLocation());
+                TextPainter.drawText(gfx, errorMsg, bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
+                return;
+            }
         }
         image.setBounds(bounds);
         image.setAbsoluteScale(gfx.getAbsoluteScale());
