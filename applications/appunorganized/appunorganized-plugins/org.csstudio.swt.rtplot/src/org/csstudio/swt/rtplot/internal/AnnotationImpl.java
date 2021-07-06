@@ -137,18 +137,7 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
 
         // Need to reformat to get the units in the correct place
         if (!units.isEmpty()) {
-            String[] splt = localText.split("\\{2");
-            localText = "";
-            for (int i = 0; i < splt.length; i++) {
-                if (i == 0)
-                    localText += splt[i];
-                else {
-                    localText += "{2";
-                    localText += splt[i].substring(0, splt[i].indexOf("}") + 1);
-                    localText += " " + units;
-                    localText += splt[i].substring(splt[i].indexOf("}") + 1);
-                }
-            }
+            localText = localText.replaceAll("\\{2([^}]*)\\}", "\\{2$1\\} " + units);
         }
 
         Date date = Date.from((Instant) position);
