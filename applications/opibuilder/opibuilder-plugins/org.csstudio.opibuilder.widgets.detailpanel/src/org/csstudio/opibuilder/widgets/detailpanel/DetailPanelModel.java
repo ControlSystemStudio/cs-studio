@@ -40,6 +40,11 @@ public class DetailPanelModel extends AbstractContainerModel implements IPVWidge
     /* Constants */
     public static final int MAX_ROW_COUNT = 1000;
 
+    // The PROP_ROW_COUNT must be added with a MAX which is arbitrarily high so
+    // that the widget can register all rows above MAX_ROW_COUNT in order to
+    // track them and not display them in the widget.
+    public static final int ROW_COUNT_PROPERTY_LIM = 200000;
+
     /* The widget properties */
     public static final String PROP_ROW_COUNT = "row_count";
     public static final String PROP_VERT_DIVIDER_POS = "vert_divider_pos";
@@ -72,7 +77,7 @@ public class DetailPanelModel extends AbstractContainerModel implements IPVWidge
         addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
                 ""), new PVValueProperty(PROP_PVVALUE, null));
         addProperty(new IntegerProperty(PROP_ROW_COUNT, "Row Count",
-                WidgetPropertyCategory.Behavior, /*default=*/1, /*min=*/1, /*max=*/200000));
+                WidgetPropertyCategory.Behavior, /*default=*/1, /*min=*/1, /*max=*/ROW_COUNT_PROPERTY_LIM));
         addProperty(new IntegerProperty(PROP_VERT_DIVIDER_POS, "Vertical Divider",
                 WidgetPropertyCategory.Display, /*default=*/20, /*min=*/0, /*max=*/50000));
         addProperty(new ColorProperty(PROP_COLOR_ODD_ROW_BACK, "Odd Row Background Color",
