@@ -157,16 +157,49 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(fetch_delay);
 
         // Plot bins: 10 ... one bin per second for a year
-        final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS,
-                Messages.PrefPage_PlotBins, parent);
-        plotbins.setValidRange(10, 365*24*60*60);
+        final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS, Messages.PrefPage_PlotBins,
+                parent) {
+            // Override method to allow the value of -3 as input (3 times Display pixel width)
+            @Override
+            protected boolean checkState() {
+
+                int minValidValue = 10;
+                int maxValidValue = 365 * 24 * 60 * 60;
+                int allowedVal = -3;
+
+                setValidRange(minValidValue, maxValidValue);
+                setErrorMessage("Value must be an Integer between " + minValidValue + " and " + maxValidValue + " or "
+                        + allowedVal + " for pre-defined");
+
+                Text text = getTextControl();
+
+                if (text == null)
+                    return false;
+
+                String numberString = text.getText();
+                try {
+                    int number = Integer.valueOf(numberString).intValue();
+                    if (number >= minValidValue && number <= maxValidValue || number == allowedVal) {
+                        clearErrorMessage();
+                        return true;
+                    } else {
+                        showErrorMessage();
+                        return false;
+                    }
+                } catch (NumberFormatException e1) {
+                    showErrorMessage();
+                }
+
+                return false;
+            }
+        };
         addField(plotbins);
 
         // Future Buffer: 10 ...
         final IntegerFieldEditor scroll_step = new IntegerFieldEditor(Preferences.SCROLL_STEP,
                 Messages.ScrollStepLbl, parent);
         scroll_step.setValidRange(1, (int)Duration.ofDays(1).getSeconds());
-        ((Text)scroll_step.getTextControl(parent)).setToolTipText(Messages.ScrollStepTT);
+        scroll_step.getTextControl(parent).setToolTipText(Messages.ScrollStepTT);
         addField(scroll_step);
 
         // Archive rescale options
