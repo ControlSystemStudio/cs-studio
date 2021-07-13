@@ -695,15 +695,16 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         if (x_axis instanceof TimeAxis)
         {
             final int future_x = ((TimeAxis)x_axis).getScreenCoord(Instant.now());
-            final Color orig = gc.getBackground();
-            // Use light gray for bright background, otherwise dark gray
-            final Color shade = (background.getHSB()[2] >= 0.5)
-                    ? new Color(getDisplay(), 240, 240, 240)
-                    : new Color(getDisplay(), 50, 50, 50);
-            gc.setBackground(shade);
-            gc.fillRectangle(future_x, 0, area_copy.width - future_x, area_copy.height);
-            gc.setBackground(orig);
-            shade.dispose();
+            if (future_x < area_copy.width) {
+                final Color orig = gc.getBackground();
+                // Use light gray for bright background, otherwise dark gray
+                final Color shade = (background.getHSB()[2] >= 0.5) ? new Color(getDisplay(), 240, 240, 240)
+                        : new Color(getDisplay(), 50, 50, 50);
+                gc.setBackground(shade);
+                gc.fillRectangle(future_x, 0, area_copy.width - future_x, area_copy.height);
+                gc.setBackground(orig);
+                shade.dispose();
+            }
         }
 
         // Fetch x_axis transformation and use that to paint all traces,
