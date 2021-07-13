@@ -372,13 +372,12 @@ public class ModelBasedPlot
         try
         {
             trace = findTrace(item);
+
         }
         catch (IllegalArgumentException ex)
-        {   // Could be called with a trace that was not visible,
-            // so it was never in the plot,
-            // and now gets removed.
-            // --> No error, because trace to be removed is already
-            //     absent from plot
+        {   // If trace was hidden when loaded, it will not have
+            // been added to the plot so it must be added now.
+            addTrace(item);
             return;
         }
         trace.setVisible(true);
