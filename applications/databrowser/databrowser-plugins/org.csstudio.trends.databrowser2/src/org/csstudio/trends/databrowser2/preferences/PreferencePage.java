@@ -156,20 +156,23 @@ public class PreferencePage extends FieldEditorPreferencePage
         fetch_delay.setValidRange(100, 10000);
         addField(fetch_delay);
 
-        // Plot bins: 10 ... one bin per second for a year
+        // Plot bins:
+        // - 10 ... one bin per second for a year or
+        // - small negative number to scale with display pixel width
         final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS, Messages.PrefPage_PlotBins,
                 parent) {
-            // Override method to allow the value of -3 as input (3 times Display pixel width)
+            // Override method to allow small negative number (-x) as input (x times Display pixel width)
             @Override
             protected boolean checkState() {
 
-                int minValidValue = 10;
-                int maxValidValue = 365 * 24 * 60 * 60;
-                int allowedVal = -3;
+                int minValidValue = 10; // Minimum 10 regular bins.
+                int maxValidValue = 365 * 24 * 60 * 60; // Maximum regular bins.
+                // Special case: scale number of bins by number of horizontal pixels on display
+                int minMultValue = -10; // 10* display pixel width
+                int maxMultValue = -1; // display pixel width
 
-                setValidRange(minValidValue, maxValidValue);
-                setErrorMessage("Value must be an Integer between " + minValidValue + " and " + maxValidValue + " or "
-                        + allowedVal + " for pre-defined");
+                setErrorMessage("Value must be an integer between " + minValidValue + " and " + maxValidValue +
+                        " or between " + maxMultValue + " and " + minMultValue + ".");
 
                 Text text = getTextControl();
 
@@ -179,7 +182,8 @@ public class PreferencePage extends FieldEditorPreferencePage
                 String numberString = text.getText();
                 try {
                     int number = Integer.valueOf(numberString).intValue();
-                    if (number >= minValidValue && number <= maxValidValue || number == allowedVal) {
+                    if ((number >= minValidValue && number <= maxValidValue) ||
+                            (number >= minMultValue && number <= maxMultValue)) {
                         clearErrorMessage();
                         return true;
                     } else {
