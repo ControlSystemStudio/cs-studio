@@ -507,12 +507,10 @@ public class Controller
 
             @Override
             public void changedItemVisibility(final ModelItem item)
-            {   // Add/remove from plot, but don't need to get archived data
-                // When made visible, note that item could be in 'middle'
-                // of existing traces, so need to re-create all
+            {   // Show or hide trace by changing visibility.
                 if (item.isVisible())
                     plot.showTrace(item);
-                else // Hide trace by changing visibility
+                else
                     plot.hideTrace(item);
             }
 
@@ -690,8 +688,7 @@ public class Controller
         for (AxisConfig axis : model.getAxes())
             plot.updateAxis(i++, axis);
         for (ModelItem item : model.getItems())
-            if (item.isVisible())
-                plot.addTrace(item);
+            plot.addTrace(item);
     }
 
     /** (Re-) create traces in plot for each item in the model and add
@@ -704,8 +701,7 @@ public class Controller
         for (AxisConfig axis : model.getAxes())
             plot.updateAxis(i++, axis);
         for (ModelItem item : model.getItems())
-            if (item.isVisible())
-                plot.addTrace(item);
+            plot.addTrace(item);
 
         plot.setAnnotations(oldAnno);
     }
