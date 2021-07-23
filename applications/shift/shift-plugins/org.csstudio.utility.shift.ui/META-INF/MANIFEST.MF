@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CSS Shift Ui
 Bundle-SymbolicName: org.csstudio.utility.shift.ui;singleton:=true
 Bundle-Version: 1.0.4.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.utility.shift.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

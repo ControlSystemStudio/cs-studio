@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: AdlParser
 Bundle-SymbolicName: org.csstudio.utility.adlParser; singleton:=true
 Bundle-Version: 1.0.4.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.utility.adlparser.Activator
 Require-Bundle: org.junit;bundle-version="3.8.2",
  org.eclipse.ui,

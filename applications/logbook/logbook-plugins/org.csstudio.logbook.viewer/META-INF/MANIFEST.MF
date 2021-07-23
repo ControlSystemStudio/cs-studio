@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Log Viewer
 Bundle-SymbolicName: org.csstudio.logbook.viewer;singleton:=true
 Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.logbook.viewer.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

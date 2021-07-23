@@ -2,9 +2,7 @@ name: Maven library build with Maven
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -17,6 +15,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3  
     - name: Build OSGi bundles with Maven
       run: mvn -f maven-osgi-bundles/pom.xml clean verify
     - name: Build the application

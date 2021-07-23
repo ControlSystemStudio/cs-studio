@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CSStudio UI Resources
 Bundle-SymbolicName: org.csstudio.ui.resources;singleton:=true
 Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,

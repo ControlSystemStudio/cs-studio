@@ -11,6 +11,9 @@ public class Messages extends NLS {
     public static String TrayDialog_minimize;
     public static String TrayDialog_exit;
     public static String TrayDialog_cancel;
+    public static String TrayDialog_doNotWarnAgain;
+    public static String TrayDialog_closeTitle;
+    public static String TrayDialog_warning;
 
     public static String TrayPreferences_saveFailed;
     public static String TrayPreferences_minimize;
@@ -18,6 +21,11 @@ public class Messages extends NLS {
     public static String TrayPreferences_always;
     public static String TrayPreferences_never;
     public static String TrayPreferences_prompt;
+
+    public static String TrayPreferences_closeOption;
+    public static String TrayPreferences_askToMinimize;
+    public static String TrayPreferences_warn;
+    public static String TrayPreferences_close;
 
     public static String TrayIcon_open;
     public static String TrayIcon_exit;

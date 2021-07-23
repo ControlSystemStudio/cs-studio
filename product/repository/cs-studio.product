@@ -22,7 +22,7 @@
 -Dosgi.sharedConfiguration.area.readOnly=true
 -Dosgi.install.area.readOnly=true
 -Dosgi.requiredJavaVersion=11
--Dorg.osgi.framework.bundle.parent=ext 
+-Dorg.osgi.framework.bundle.parent=ext
 -Dosgi.framework.extensions=org.eclipse.fx.osgi
 -Defxclipse.osgi.hook.debug=false
       </vmArgs>

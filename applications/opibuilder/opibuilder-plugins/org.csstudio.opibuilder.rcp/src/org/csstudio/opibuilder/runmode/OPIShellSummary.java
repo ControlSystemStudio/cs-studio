@@ -58,6 +58,10 @@ public class OPIShellSummary extends FXViewPart {
 
     @Override
     public void dispose() {
+        // Notify shell that this view has been disposed
+        for (OPIShell shell : cachedShells) {
+            shell.notifyParentViewClosed();
+        }
         super.dispose();
         disposed = true;
     }

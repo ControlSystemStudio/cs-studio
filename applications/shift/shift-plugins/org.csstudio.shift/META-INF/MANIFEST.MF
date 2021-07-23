@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Shift Plug-in
 Bundle-SymbolicName: org.csstudio.shift;singleton:=true
 Bundle-Version: 1.0.4.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Require-Bundle: org.eclipse.core.runtime,
  gov.bnl.shiftClient,
  org.junit-dep;resolution:=optional

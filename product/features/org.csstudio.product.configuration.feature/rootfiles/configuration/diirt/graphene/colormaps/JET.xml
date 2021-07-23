@@ -2,7 +2,7 @@
 
 <!--
 
-	** Colormap file .xml **
+    ** Colormap file .xml **
 
 The preferred format for colormaps is the native xml description. A valid .xml
 colormap should specify whether the colormap uses a "absolute" or a "relative" scale

@@ -23,8 +23,12 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
             Messages.TrayDialog_minimize,
             Messages.TrayDialog_exit,
             Messages.TrayDialog_cancel};
+    public static final String[] CLOSE_BUTTON_LABELS = {
+        Messages.TrayDialog_exit,
+        Messages.TrayDialog_cancel};
     private static final int MINIMIZE_BUTTON_ID = 256;
     private static final int EXIT_BUTTON_ID = 257;
+    private static final int CLOSE_EXIT_BUTTON_ID = 256;
     private static final int CANCEL_BUTTON_ID = IDialogConstants.CANCEL_ID;
     private static final int DIALOG_CLOSED = -1;
 
@@ -67,6 +71,35 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
     }
 
     /**
+     * Display warning that this is the last window.
+     *
+     * @return xx_BUTTON_ID of clicked button or DIALOG_CLOSED
+     */
+    private int warnOfLastWindow() {
+        Shell parent = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        ScopedPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, Plugin.ID);
+        MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent, Messages.TrayDialog_closeTitle, null,
+                Messages.TrayDialog_warning, MessageDialog.QUESTION, CLOSE_BUTTON_LABELS, 2,
+                Messages.TrayDialog_doNotWarnAgain, false);
+        dialog.open();
+
+        int response = dialog.getReturnCode();
+
+        // Store the decision if checkbox selected on the form
+        if (dialog.getToggleState()) {
+            if (response == CLOSE_EXIT_BUTTON_ID) {
+                store.setValue(TrayIconPreferencePage.CLOSE_OPTION, Messages.TrayPreferences_close);
+            }
+            try {
+                store.save();
+            } catch (IOException e) {
+                Plugin.getLogger().warning(Messages.TrayPreferences_saveFailed + e.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
      * Manage a close event based on the user preferences, user action
      *
      *  Three possible outcomes:
@@ -74,12 +107,14 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
      *      * user:CANCEL
      *      * user:DIALOG_CLOSED
      *  ii) continue to close this window and possibly the application (return preWindowShellClose())
-     *      * preference:NEVER
+     *      * minimize preference:NEVER
+     *      * close option preference:Just Close
      *      * user:EXIT
      *      * multiple open windows
      *      * application already minimised
      *  iii) create trayIcon, minimise window but do not exit (return False)
-     *      * preference:ALWAYS
+     *      * minimize preference:ALWAYS
+     *      * close option preference:Ask to minimize
      *      * user:MINIMIZE
      *
      * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowShellClose
@@ -88,34 +123,46 @@ public class TrayApplicationWorkbenchWindowAdvisor extends ApplicationWorkbenchW
     public boolean preWindowShellClose() {
 
         boolean closeWindow;
-        int userAction = DIALOG_CLOSED;
+        int userAction = DIALOG_CLOSED; // For the minimize dialog
+        int userAction2 = DIALOG_CLOSED; // For the warning dialog
         int numWindows = PlatformUI.getWorkbench().getWorkbenchWindowCount();
 
         IPreferencesService prefs = Platform.getPreferencesService();
+        String closePref = prefs.getString(
+            Plugin.ID, TrayIconPreferencePage.CLOSE_OPTION, null, null);
         String minPref = prefs.getString(
                 Plugin.ID, TrayIconPreferencePage.MINIMIZE_TO_TRAY, null, null);
 
-        if (minPref.equals(MessageDialogWithToggle.PROMPT) &&
-                numWindows == 1) {  // no prompt if multiple windows
-            userAction = promptForAction();
+        // Display warning dialog and get users action to cancel or exit
+        if (closePref.equals(Messages.TrayPreferences_warn) && numWindows == 1) {
+          userAction2 = warnOfLastWindow();
         }
 
-        if (numWindows > 1 ||
-                trayIcon.isMinimized() ||
-                minPref.equals(MessageDialogWithToggle.NEVER) ||
-                userAction == EXIT_BUTTON_ID) {  // user action: exit
-            // allow to continue
-            closeWindow = super.preWindowShellClose();
+        // Dialog to minimize will only display if preference for close option is to ask to minimize
+        if (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.PROMPT) &&
+            numWindows == 1) {
+          userAction = promptForAction();
         }
-        else if (minPref.equals(MessageDialogWithToggle.ALWAYS) ||
-                userAction == MINIMIZE_BUTTON_ID) {
-            // minimise the window and block application exit
-            trayIcon.minimize();
-            closeWindow = false;
+
+        // Case where the application will close. minPref is only application if closePref is ask to minimize
+        if (numWindows > 1 || trayIcon.isMinimized() ||
+            (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.NEVER))
+            || closePref.equals(Messages.TrayPreferences_close)
+            || userAction == EXIT_BUTTON_ID
+            || userAction2 == CLOSE_EXIT_BUTTON_ID) { // user action: exit
+          // allow to continue
+          closeWindow = super.preWindowShellClose();
+        }
+        // Case where the application will minimize. minPref is only application if closePref is ask to minimize
+        else if ( (closePref.equals(Messages.TrayPreferences_askToMinimize) && minPref.equals(MessageDialogWithToggle.ALWAYS))
+            || userAction == MINIMIZE_BUTTON_ID) {
+          // minimise the window and block application exit
+          trayIcon.minimize();
+          closeWindow = false;
         }
         else {  // user_action is CANCEL_BUTTON_ID or DIALOG_CLOSED
-            // block application exit
-            closeWindow = false;
+          // block application exit
+          closeWindow = false;
         }
 
         return closeWindow;

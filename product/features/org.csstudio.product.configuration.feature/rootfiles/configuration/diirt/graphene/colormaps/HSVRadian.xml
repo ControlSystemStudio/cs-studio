@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Varies the hue component of the HSV color model. 
+<!-- Varies the hue component of the HSV color model.
      The map is useful for displaying periodic functions,
      and expects the value to be in radians. -->
 <colormap position="absolute" colorNaN="BLACK">

@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Pretune
 Bundle-SymbolicName: org.csstudio.pretune;singleton:=true
 Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: The CS-Studio collaboration
 Bundle-Activator: org.csstudio.pretune.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
