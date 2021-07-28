@@ -63,6 +63,11 @@ public class FormulaItem extends ModelItem
      */
     private VariableNode variables[];
 
+    /** Flag to catch when a formula has been added or updated.
+     *  This will cause a compute() to be called when re-evaluated
+     */
+    private boolean formulaChange;
+
     /** Samples of the formula, computed from inputs.
      *  Access must synchronize on samples (done inside PlotSampleArray) */
     private PlotSampleArray samples = new PlotSampleArray();
@@ -77,6 +82,7 @@ public class FormulaItem extends ModelItem
             final FormulaInput inputs[]) throws Exception
     {
         super(name);
+        this.formulaChange = false;
         updateFormula(expression, inputs);
         // Compute initial values
         compute();
@@ -114,9 +120,11 @@ public class FormulaItem extends ModelItem
     public void updateFormula(final String expression,
             final FormulaInput inputs[]) throws Exception
     {
+
         // Prevent compute() from using inconsistent formula & inputs
         synchronized (this)
         {
+            this.formulaChange = true;
             this.inputs = inputs;
             variables = new VariableNode[inputs.length];
             for (int i=0; i<variables.length; ++i)
@@ -264,9 +272,15 @@ public class FormulaItem extends ModelItem
     public boolean reevaluate()
     {
         boolean anything_new = false;
+        boolean formula_change = false;
         // Prevent changes to inputs array
         synchronized (this)
         {
+            formula_change = this.formulaChange;
+            // Set the flag for a formula change back to false if it was positive
+            // as we have now registered it
+            if (this.formulaChange)
+                this.formulaChange = false;
             for (FormulaInput input : inputs)
                 if (input.hasNewSamples())
                 {
@@ -274,7 +288,7 @@ public class FormulaItem extends ModelItem
                     break;
                 }
         }
-        if (!anything_new)
+        if (!anything_new & !formula_change)
             return false;
         // Formula and inputs could actually change right now,
         // but we're about to re-compute anyway, and we'll lock while
