@@ -160,12 +160,7 @@ public class OpenDocumentEventProcessor implements Listener {
                     // However, if this is a standalone window then we *don't* want
                     // the main window to take focus.
                     if (!(ext.equals("opi") && data != null && data.contains("NEW_SHELL"))) {
-                        Shell shell = window.getShell();
-                        if (shell != null) {
-                            if (shell.getMinimized())
-                                shell.setMinimized(false);
-                            shell.forceActive();
-                        }
+                        raiseWindow(window);
                     }
                     return;
                 } catch (Exception e) {
@@ -191,12 +186,7 @@ public class OpenDocumentEventProcessor implements Listener {
 
 
                     IDE.openInternalEditorOnFileStore(page, fileStore);
-                    Shell shell = window.getShell();
-                    if (shell != null) {
-                        if (shell.getMinimized())
-                            shell.setMinimized(false);
-                        shell.forceActive();
-                    }
+                    raiseWindow(window);
                 } catch (PartInitException e) {
                     String msg = NLS.bind("The file ''{0}'' could not be opened. See log for details.",
                                     fileStore.getName());
@@ -213,6 +203,18 @@ public class OpenDocumentEventProcessor implements Listener {
                         msg, SWT.SHEET);
             }
         });
+    }
+
+    /** Raise window and make active.
+     * @param window the window to raise
+     */
+    private static void raiseWindow(IWorkbenchWindow window) {
+        Shell shell = window.getShell();
+        if (shell != null) {
+            if (shell.getMinimized())
+                shell.setMinimized(false);
+            shell.forceActive();
+        }
     }
 
     /**Replace ascii code with its characters in a string. The ascii code in the string must
