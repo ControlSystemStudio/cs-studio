@@ -150,16 +150,22 @@ public class OpenDocumentEventProcessor implements Listener {
                 data = path.substring(de + 1);
                 data = replaceAsciiCode(data);
             }
-            //open file with DisplayUtil if it is a supported Display file
+            // Open file with DisplayUtil if it is a supported Display file
             if(DisplayUtil.getInstance().isExtensionSupported(ext)){
                 try {
-                    DisplayUtil.getInstance().openDisplay(pathPart
-                            , data);
-                    Shell shell = window.getShell();
-                    if (shell != null) {
-                        if (shell.getMinimized())
-                            shell.setMinimized(false);
-                        shell.forceActive();
+                    DisplayUtil.getInstance().openDisplay(pathPart, data);
+                    // Usually we want to take focus to the main Eclipse window when
+                    // opening a file. This copies the behaviour in Eclipse itself -
+                    // see DelayedEventsProcessor in org.eclipse.ui.ide.application.
+                    // However, if this is a standalone window then we *don't* want
+                    // the main window to take focus.
+                    if (!(ext.equals("opi") && data != null && data.contains("NEW_SHELL"))) {
+                        Shell shell = window.getShell();
+                        if (shell != null) {
+                            if (shell.getMinimized())
+                                shell.setMinimized(false);
+                            shell.forceActive();
+                        }
                     }
                     return;
                 } catch (Exception e) {
