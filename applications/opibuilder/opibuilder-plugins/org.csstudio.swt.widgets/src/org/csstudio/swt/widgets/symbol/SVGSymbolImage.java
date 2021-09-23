@@ -265,8 +265,12 @@ public class SVGSymbolImage extends AbstractSymbolImage {
                     }
                 }
                 loadingImage = false;
-                // fireSymbolImageLoaded();
-                Activator.getLogger().log(Level.WARNING, "ERROR in loading SVG image " + imagePath, exception);
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        fireSymbolImageLoaded();
+                    }
+                });
+                Activator.getLogger().log(Level.WARNING, "ERROR in loading SVG image " + imagePath, exception.getMessage());
             }
         });
     }

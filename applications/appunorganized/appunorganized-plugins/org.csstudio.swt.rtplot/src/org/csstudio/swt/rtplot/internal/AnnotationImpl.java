@@ -134,8 +134,11 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
 
         String localText = text;
         final String units = trace.getUnits();
-        if (!units.isEmpty())
-            localText += " " + units;
+
+        // Need to reformat to get the units in the correct place
+        if (!units.isEmpty()) {
+            localText = localText.replaceAll("\\{2([^}]*)\\}", "\\{2$1\\} " + units);
+        }
 
         Date date = Date.from((Instant) position);
         final String label;

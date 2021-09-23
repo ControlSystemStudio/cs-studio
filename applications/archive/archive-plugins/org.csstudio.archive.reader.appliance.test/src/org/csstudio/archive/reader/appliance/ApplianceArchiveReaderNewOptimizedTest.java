@@ -2,7 +2,9 @@ package org.csstudio.archive.reader.appliance;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.appliance.testClasses.TestApplianceArchiveReader;
@@ -68,6 +70,12 @@ public class ApplianceArchiveReaderNewOptimizedTest extends AbstractArchiverRead
         ArchiveVType[] vals = getValuesStatistics("test_pv", 10, start, end);
         assertEquals("Number of values comparison", 10, vals.length);
 
+        // Offset the start time to reflect the difference between
+        // the timestamp provided by the AA and data browser
+        // (i.e. middle/start of bin.
+        Duration duruation = Duration.between(start,end);
+        long intervalSecs = (duruation.toSeconds())/(10);
+        start = start.minus(intervalSecs/2, ChronoUnit.SECONDS);
         long startM = start.toEpochMilli();
 
         ArchiveVStatistics val = null;
