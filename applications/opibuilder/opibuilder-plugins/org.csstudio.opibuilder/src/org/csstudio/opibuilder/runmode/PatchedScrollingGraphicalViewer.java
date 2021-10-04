@@ -21,6 +21,10 @@
  */
 package org.csstudio.opibuilder.runmode;
 
+import org.eclipse.draw2d.ToolTipHelper;
+import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.ui.parts.DomainEventDispatcher;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.action.IMenuListener;
@@ -89,6 +93,33 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
     @Override
     public MenuManager getContextMenu() {
         return contextMenu;
+    }
+
+    @Override
+    public void setEditDomain(EditDomain domain) {
+        super.setEditDomain(domain);
+        DomainEventDispatcher eventDispatcher = new EventDispatcherWithToolTipConfiguration(domain, this);
+        getLightweightSystem().setEventDispatcher(eventDispatcher);
+    }
+
+    /**
+     * Custom EventDispatcher to configure the internal ToolTipHelper to use a longer
+     * tooltip display time.
+     */
+    private class EventDispatcherWithToolTipConfiguration extends DomainEventDispatcher{
+
+        private final int toolTipHideDelay = 30000; // millisecs
+
+        public EventDispatcherWithToolTipConfiguration(EditDomain d, EditPartViewer v) {
+            super(d, v);
+        }
+
+        @Override
+        protected ToolTipHelper getToolTipHelper() {
+            ToolTipHelper tooltipHelper = super.getToolTipHelper();
+            tooltipHelper.setHideDelay(toolTipHideDelay);
+            return tooltipHelper;
+        }
     }
 
 }
