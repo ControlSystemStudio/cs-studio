@@ -40,7 +40,6 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
-import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
