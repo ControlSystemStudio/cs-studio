@@ -144,7 +144,7 @@ public final class OPIShell implements IOPIRuntime {
 
         isModalDialogOpen = false;
 
-        viewer = new GraphicalViewerImpl();
+        viewer = new PatchedScrollingGraphicalViewer();
         viewLost = false;
 
         viewer.createControl(shell);
