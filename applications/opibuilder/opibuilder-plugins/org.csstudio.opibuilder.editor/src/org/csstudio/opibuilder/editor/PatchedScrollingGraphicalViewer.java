@@ -108,7 +108,7 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
      */
     private class EventDispatcherWithToolTipConfiguration extends DomainEventDispatcher{
 
-        private final int toolTipHideDelay = 30000; // millisecs
+        private final int toolTipHideDelay = 10000000; // millisecs
 
         public EventDispatcherWithToolTipConfiguration(EditDomain d, EditPartViewer v) {
             super(d, v);

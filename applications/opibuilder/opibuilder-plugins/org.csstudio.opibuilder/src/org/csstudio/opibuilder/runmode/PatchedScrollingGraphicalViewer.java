@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Patched Scrolling graphical viewer implementation.
+ *
  * @author swende (original author), Xihui Chen (since import from SDS 2009/9)
  *
  */
@@ -108,7 +109,7 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
      */
     private class EventDispatcherWithToolTipConfiguration extends DomainEventDispatcher{
 
-        private final int toolTipHideDelay = 30000; // millisecs
+        private final int toolTipHideDelay = 10000000; // millisecs
 
         public EventDispatcherWithToolTipConfiguration(EditDomain d, EditPartViewer v) {
             super(d, v);
