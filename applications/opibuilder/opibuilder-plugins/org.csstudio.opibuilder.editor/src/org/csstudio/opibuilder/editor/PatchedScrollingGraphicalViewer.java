@@ -21,6 +21,7 @@
  */
 package org.csstudio.opibuilder.editor;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.draw2d.ToolTipHelper;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.EditPartViewer;
@@ -108,16 +109,17 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
      */
     private class EventDispatcherWithToolTipConfiguration extends DomainEventDispatcher{
 
-        private final int toolTipHideDelay = 10000000; // millisecs
+        private int toolTipHideDelayMs; // millisecs
 
         public EventDispatcherWithToolTipConfiguration(EditDomain d, EditPartViewer v) {
             super(d, v);
+            toolTipHideDelayMs = PreferencesHelper.getToolTipDisplayTime()*1000;
         }
 
         @Override
         protected ToolTipHelper getToolTipHelper() {
             ToolTipHelper tooltipHelper = super.getToolTipHelper();
-            tooltipHelper.setHideDelay(toolTipHideDelay);
+            tooltipHelper.setHideDelay(toolTipHideDelayMs);
             return tooltipHelper;
         }
     }
