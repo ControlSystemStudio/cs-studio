@@ -4,7 +4,7 @@ Control System Studio is a collections of tools to monitor and operate large sca
 
 This repository is for the original, Eclipse-based implementation of CS-Studio.
 A newer development provides most of the key CS-Studio components
-without any Eclipse dependencies, see https://github.com/shroffk/phoebus
+without any Eclipse dependencies, see https://github.com/ControlSystemStudio/phoebus
 It generally offers faster startup, and also dramatically simplifies the
 build process.
 
