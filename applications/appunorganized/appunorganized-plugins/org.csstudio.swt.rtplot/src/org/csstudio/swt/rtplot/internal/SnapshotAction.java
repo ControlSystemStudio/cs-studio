@@ -76,6 +76,8 @@ public class SnapshotAction extends Action
                     try
                     {    // Create snapshot, save to file
                         final ImageLoader loader = new ImageLoader();
+                        // In Eclipse 2020-12 we cannot seem to get the Image on
+                        // a background thread so must schedule it on the UI thread.
                         shell.getDisplay().syncExec(() -> {
                             final Image image = plot.getImage();
                             loader.data = new ImageData[] { image.getImageData() };
