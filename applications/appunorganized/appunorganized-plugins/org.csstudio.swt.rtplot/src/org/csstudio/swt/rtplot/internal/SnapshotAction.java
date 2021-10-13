@@ -76,10 +76,13 @@ public class SnapshotAction extends Action
                     try
                     {    // Create snapshot, save to file
                         final ImageLoader loader = new ImageLoader();
-                        final Image image = plot.getImage();
-                        loader.data = new ImageData[] { image.getImageData() };
-                        image.dispose();
+                        shell.getDisplay().syncExec(() -> {
+                            final Image image = plot.getImage();
+                            loader.data = new ImageData[] { image.getImageData() };
+                            image.dispose();
+                        });
                         loader.save(path.get(), SWT.IMAGE_PNG);
+
                         // Done!
                         break;
                     }
