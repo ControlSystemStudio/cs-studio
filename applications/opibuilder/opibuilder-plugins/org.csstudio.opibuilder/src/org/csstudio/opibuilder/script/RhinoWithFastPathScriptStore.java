@@ -45,17 +45,52 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     private String scriptString;
     private final Object initialRulePropertyValue;
     
+    /**
+     * Interface for fast-path handlers.
+     */
+    @FunctionalInterface
     public interface FastPathHandler {
     	public boolean handle(IPV[] pvList);
     }
     
+    /**
+     * Handler for expressions like pv0 == 0
+     */
     public static final FastPathHandler PV0_EQ_0 = pvArr -> PVUtil.getDouble(pvArr[0]) == 0.0;
+    
+    /**
+     * Handler for expressions like pv0 == 1
+     */
     public static final FastPathHandler PV0_EQ_1 = pvArr -> PVUtil.getDouble(pvArr[0]) == 1.0;
+    
+    /**
+     * Handler for expressions like pv0 != 0
+     */
     public static final FastPathHandler PV0_NEQ_0 = pvArr -> PVUtil.getDouble(pvArr[0]) != 0.0;
+    
+    /**
+     * Handler for expressions like pvInt0 == 0
+     */
     public static final FastPathHandler PVINT0_EQ_0 = pvArr -> PVUtil.getLong(pvArr[0]) == 0;
+    
+    /**
+     * Handler for expressions like pvInt0 == 1
+     */
     public static final FastPathHandler PVINT0_EQ_1 = pvArr -> PVUtil.getLong(pvArr[0]) == 1; 
+    
+    /**
+     * Handler for expressions like pvInt0 != 0
+     */
     public static final FastPathHandler PVINT0_NEQ_0 = pvArr -> PVUtil.getLong(pvArr[0]) != 0;
+    
+    /**
+     * Handler for expressions like true, 1, or 1 == 1
+     */
     public static final FastPathHandler ALWAYS_TRUE = pvArr -> true;
+    
+    /**
+     * Handler for expressions like false or 0
+     */
     public static final FastPathHandler ALWAYS_FALSE = pvArr -> false;
 
     private static final Map<String, FastPathHandler> FAST_PATH_EXPRESSIONS = new HashMap<>();
@@ -96,10 +131,25 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     	FAST_PATH_EXPRESSIONS.put("0", ALWAYS_FALSE);
     }
     
+    /**
+     * Adds a fast-path handler for the given string expression. The string must be an exact
+     * match for the expression used in a rule - no parsing is performed (as it is an arbitrary 
+     * JS expression, any parsing would need to be equivalent to writing a JS parser - this is hard).
+     * 
+     * @param expression the expression to match
+     * @param handler a java handler which implements this expression
+     */
     public static void addFastPathHandler(String expression, FastPathHandler handler) {
     	FAST_PATH_EXPRESSIONS.put(expression, handler);
     }
 
+    /**
+     * Initializes this script store.
+     * @param scriptData the script data
+     * @param editpart the part to which this script is connected
+     * @param pvArray the pv array
+     * @throws Exception on error
+     */
     public RhinoWithFastPathScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
             final IPV[] pvArray) throws Exception {
         super(scriptData, editpart, pvArray);
@@ -113,13 +163,20 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
         }
     }
 
+    /**
+     * Don't actually do init here as it is called from superclass constructor before
+     * we're able to figure out if we need to use fast or slow path.
+     * 
+     * Instead we lazily init only when needed.
+     */
     @Override
     protected void initScriptEngine() throws Exception {
-    	// Don't actually do init here as it is called from superclass constructor before
-    	// we're able to figure out if we need to use fast or slow path.
-    	// Instead we lazily init only when needed.
     }
     
+    /**
+     * Lazily init, if needed. If initIfNeeded has already been called, do nothing.
+     * @throws Exception on failure
+     */
     private void initIfNeeded() throws Exception {
     	if (scriptScope != null) {
     		return;
@@ -144,7 +201,7 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     /**
      * Store the provided script, to be compiled lazily later if needed.
      * 
-     * Note: this is called from superclass constructor so usesFastPath not available yet.
+     * Note: this is called from superclass constructor so this.usesFastPath not available yet.
      */
     @Override
     protected void compileString(String string) throws Exception{
@@ -154,7 +211,7 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     /**
      * Store the provided script, to be compiled lazily later if needed.
      * 
-     * Note: this is called from superclass constructor so usesFastPath not available yet.
+     * Note: this is called from superclass constructor so this.usesFastPath not available yet.
      */
     @Override
     protected void compileInputStream(File file, InputStream s) throws Exception {
@@ -190,6 +247,13 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     	}
     }
     
+    /**
+     * Decide whether the provided scriptData can use a fast-path implementation, or
+     * whether it needs to fall back to the JS implementation.
+     * 
+     * @param scriptData the script data
+     * @return true if can use fast path
+     */
     private boolean canUseFastPath(final ScriptData scriptData) {
     	if (scriptData instanceof RuleScriptData) {
     		var ruleData = ((RuleScriptData) scriptData).getRuleData();
@@ -202,10 +266,26 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     	return false;
     }
     
+    /**
+     * Returns true if we have a fast-path handler for the given expression.
+     * @param expression the expression
+     * @return true if can use fast path
+     */
     private boolean expressionCanUseFastPath(final Expression expression) {
     	return FAST_PATH_EXPRESSIONS.containsKey(expression.getBooleanExpression());
     }
     
+    /**
+     * Implementation of execScript for the fast-path case. This evaluates the expressions
+     * using the fast-path handlers set up earlier, and the first one which returns true
+     * gets it's property set on the widget.
+     * 
+     * If no handler matches, the initial property is set on the widget.
+     * 
+     * This should be logically equivalent to the script generated by RuleData.generateScript()
+     * 
+     * @throws Exception on failure
+     */
     private void execFast() throws Exception {
     	final IPV[] pvArray = getPvArray();
     	
@@ -221,6 +301,13 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     	widgetModel.setPropertyValue(ruleData.getPropId(), initialRulePropertyValue);
     }
     
+    /**
+     * Evaluate an expression using it's fast-path handler.
+     * 
+     * @param e the expression
+     * @param pvArray the pv array
+     * @return the result of the evaluation
+     */
     private boolean evaluateExpression(Expression e, IPV[] pvArray) {
     	return FAST_PATH_EXPRESSIONS.get(e.getBooleanExpression()).handle(pvArray);
     }
