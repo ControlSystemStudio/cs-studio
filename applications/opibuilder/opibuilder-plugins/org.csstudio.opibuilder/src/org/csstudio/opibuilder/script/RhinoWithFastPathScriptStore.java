@@ -13,8 +13,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.scriptUtil.PVUtil;
 import org.csstudio.simplepv.IPV;
@@ -94,6 +96,7 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     public static final FastPathHandler ALWAYS_FALSE = pvArr -> false;
 
     private static final Map<String, FastPathHandler> FAST_PATH_EXPRESSIONS = new HashMap<>();
+    private static boolean logScriptsUsingJS = false;
     
     static {
     	FAST_PATH_EXPRESSIONS.put("pv0==0", PV0_EQ_0);
@@ -174,6 +177,14 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     }
     
     /**
+     * Set whether to log scripts using the slow path.
+     * @param log true to log
+     */
+    public static void setLogScriptsUsingJS(boolean log) {
+    	logScriptsUsingJS = log;
+    }
+    
+    /**
      * Lazily init, if needed. If initIfNeeded has already been called, do nothing.
      * @throws Exception on failure
      */
@@ -215,36 +226,50 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
      */
     @Override
     protected void compileInputStream(File file, InputStream s) throws Exception {
-    	var isr = new InputStreamReader(s);
-        var br = new BufferedReader(isr);
-        scriptString = br.lines().collect(Collectors.joining("\n"));
-        isr.close();
-        br.close();
-    	s.close();
+    	try (var isr = new InputStreamReader(s)) {
+    		try (var br = new BufferedReader(isr)) {
+    	        scriptString = br.lines().collect(Collectors.joining("\n"));
+    		}
+    	} finally {
+    	    s.close();
+    	}
     }
 
     /**
      * Execute the script, using the fast path if possible or falling back to JS if not.
-     * 
-     * This will lazily compile the script the first time it is executed, if it cannot use
-     * the fast path.
      */
     @Override
     protected void execScript(final IPV triggerPV) throws Exception {
     	if (usesFastPath) {
     	    execFast();
     	} else {
-    		initIfNeeded();
- 	        if (script == null) {
- 		        if (scriptString == null) {
- 		        	throw new IllegalStateException("script string was never set before execScript()");
- 		        }
-	        	script = scriptContext.compileString(scriptString, "script", 1, null);
-	        }
-	        ScriptableObject.putProperty(scriptScope,
-	                ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
-	        script.exec(scriptContext, scriptScope);
+    		execSlow(triggerPV);
     	}
+    }
+    
+    /**
+     * Execute the script using the JS implementation.
+     * 
+     * This will lazily compile the script the first time it is executed.
+     */
+    private void execSlow(final IPV triggerPV) throws Exception {
+    	initIfNeeded();
+        if (script == null) {
+	        if (scriptString == null) {
+	        	throw new IllegalStateException("script string was never set before execScript()");
+	        }
+	        
+	        if (logScriptsUsingJS) {
+	            OPIBuilderPlugin.getLogger().log(Level.INFO, String.format(
+	            		"OPI script/rule will execute via javascript interpreter; likely to be slow. Content:\n%s\n", 
+	            		scriptString));
+	        }
+            
+    	script = scriptContext.compileString(scriptString, "script", 1, null);
+        }
+        ScriptableObject.putProperty(scriptScope,
+                ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
+        script.exec(scriptContext, scriptScope);
     }
     
     /**
@@ -257,22 +282,24 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     private boolean canUseFastPath(final ScriptData scriptData) {
     	if (scriptData instanceof RuleScriptData) {
     		var ruleData = ((RuleScriptData) scriptData).getRuleData();
+    		var rulesCanBeFast = ruleData.getExpressionList()
+    				.stream()
+    				.map(Expression::getBooleanExpression)
+    				.allMatch(FAST_PATH_EXPRESSIONS::containsKey);
+    		
     		if (ruleData.isOutputExpValue()) {
-    			// Cannot use fast path for output-expression rules.
-    			return false;
+    			// If we are outputting expression, not only do the rules all have to be
+    			// "fast", but the output expressions also all need to be fast.
+    			// Currently this is limited to boolean-type output expressions
+    			return rulesCanBeFast && ruleData.getExpressionList()
+    					.stream()
+    					.map(Expression::getValue)
+    					.allMatch(FAST_PATH_EXPRESSIONS::containsKey);
+    		} else {
+    		    return rulesCanBeFast;
     		}
-    		return ruleData.getExpressionList().stream().allMatch(this::expressionCanUseFastPath);
     	}
     	return false;
-    }
-    
-    /**
-     * Returns true if we have a fast-path handler for the given expression.
-     * @param expression the expression
-     * @return true if can use fast path
-     */
-    private boolean expressionCanUseFastPath(final Expression expression) {
-    	return FAST_PATH_EXPRESSIONS.containsKey(expression.getBooleanExpression());
     }
     
     /**
@@ -292,9 +319,15 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     	final var ruleData = ruleScriptData.getRuleData();
     	final var widgetModel = ruleData.getWidgetModel();
     	
-    	for (Expression e : ruleData.getExpressionList()) {
-    		if (evaluateExpression(e, pvArray)) {
-    			widgetModel.setPropertyValue(ruleData.getPropId(), e.getValue());
+    	for (final Expression e : ruleData.getExpressionList()) {
+    		if (evaluateExpression(e.getBooleanExpression(), pvArray)) {
+    			Object value;
+    			if (ruleData.isOutputExpValue()) {
+    				value = evaluateExpression(e.getValue(), pvArray);
+    			} else {
+    			    value = e.getValue();
+    			}
+    			widgetModel.setPropertyValue(ruleData.getPropId(), value);
     			return;
     		}
     	}
@@ -308,8 +341,8 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
      * @param pvArray the pv array
      * @return the result of the evaluation
      */
-    private boolean evaluateExpression(Expression e, IPV[] pvArray) {
-    	return FAST_PATH_EXPRESSIONS.get(e.getBooleanExpression()).handle(pvArray);
+    private boolean evaluateExpression(Object e, IPV[] pvArray) {
+    	return FAST_PATH_EXPRESSIONS.get(e).handle(pvArray);
     }
 
 }
