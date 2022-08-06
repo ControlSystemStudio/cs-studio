@@ -31,7 +31,6 @@ import org.mozilla.javascript.ScriptableObject;
  * special-case handlers for commonly used rule expressions. If possible, this script engine
  * implementation will avoid calling into javascript for rules where all expressions are on
  * the "fast path". This significantly improves CPU & memory performance for these rules.
- *
  */
 public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
 
@@ -41,7 +40,6 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
 
     private Script script = null;
     
-    // Need to default to true to stop superclass constructor initialising rhino
     private final boolean usesFastPath;
     private final RuleScriptData ruleScriptData;
     private String scriptString;
