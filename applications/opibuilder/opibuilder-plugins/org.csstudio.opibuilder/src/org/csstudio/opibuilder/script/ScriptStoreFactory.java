@@ -43,6 +43,7 @@ public class ScriptStoreFactory {
 
     public static enum JavaScriptEngine {
         RHINO,
+        RHINO_WITH_FAST_PATH,
         JDK;
     }
 
@@ -200,6 +201,12 @@ public class ScriptStoreFactory {
                 initRhinoJSEngine();
             return new RhinoScriptStore(scriptData, editpart, pvArray);
         }
+        else if (defaultJsEngine == JavaScriptEngine.RHINO_WITH_FAST_PATH) {
+        	boolean rhinoJsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
+            if(!rhinoJsEngineInitialized)
+                initRhinoJSEngine();
+            return new RhinoWithFastPathScriptStore(scriptData, editpart, pvArray);
+        }
         else {
             boolean jdkJsEngineInitialized = displayScriptEngineMap.containsKey(Display.getCurrent());
             if (!jdkJsEngineInitialized) {
@@ -214,7 +221,7 @@ public class ScriptStoreFactory {
      * @throws Exception on error, including invocation when not using <code>JavaScriptEngine.RHINO</code>
      */
     public static Context getRhinoContext() throws Exception {
-        if (defaultJsEngine != JavaScriptEngine.RHINO)
+        if (defaultJsEngine != JavaScriptEngine.RHINO && defaultJsEngine != JavaScriptEngine.RHINO_WITH_FAST_PATH)
             throw new RuntimeException("Fetching Rhino context while not using Rhino?");
         Display display = Display.getCurrent();
         boolean jsEngineInitialized = displayContextMap.containsKey(display);

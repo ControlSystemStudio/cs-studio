@@ -146,9 +146,6 @@
                   <id>org.apache.ant:ant-junit:1.9.4</id>
                 </artifact>
                 <artifact>
-                  <id>net.sf.ehcache.internal:ehcache-core:2.8.3</id>
-                </artifact>
-                <artifact>
                   <id>com.sun.mail:javax.mail:1.5.2</id>
                 </artifact>
                 <artifact>
