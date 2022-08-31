@@ -25,6 +25,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
@@ -122,20 +123,28 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         if (isLoadingImage()) {
             return;
         }
-        ImageUtils.crop(bounds, this.getInsets());
+        ImageUtils.crop(bounds.getCopy(), this.getInsets());
         if (bounds.width <= 0 || bounds.height <= 0) {
             return;
         }
-        if (image == null || image.isEmpty()) {
-            if (!filePath.isEmpty()) {
+        if (image == null || image.isEmpty() || image.getImagePath() == null) {
+            // Case where there has been an error loading the file
+            String errorMsg = "ERROR in loading image\n" + filePath;
+            if (filePath.isEmpty()) {
+                // Case where there is no file specified
+                errorMsg = "No image file specified" + filePath;
+            }
+            if (model.getExecutionMode() == ExecutionMode.RUN_MODE) {
+                image = null;
+                return;
+            } else {
                 gfx.setBackgroundColor(getBackgroundColor());
                 gfx.setForegroundColor(getForegroundColor());
                 gfx.fillRectangle(bounds);
                 gfx.translate(bounds.getLocation());
-                TextPainter.drawText(gfx, "ERROR in loading image\n" + filePath, bounds.width / 2, bounds.height / 2,
-                        TextPainter.CENTER);
+                TextPainter.drawText(gfx, errorMsg, bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
+                return;
             }
-            return;
         }
         image.setBounds(bounds);
         image.setAbsoluteScale(gfx.getAbsoluteScale());

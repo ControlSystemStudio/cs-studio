@@ -109,6 +109,9 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
         int x = bounds.x, y = bounds.y;
         for (Trace<XTYPE> trace : traces)
         {
+            if (!trace.isVisible())
+                continue;
+
             gc.setForeground(media.get(trace.getColor()));
             gc.drawText(trace.getLabel(), x, y, true);
             x += grid_x;

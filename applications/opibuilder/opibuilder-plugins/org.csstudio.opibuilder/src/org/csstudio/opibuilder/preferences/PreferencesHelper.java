@@ -72,6 +72,7 @@ public class PreferencesHelper {
     public static final String SHOW_OPI_RUNTIME_STACKS = "show_opi_runtime_stacks"; //$NON-NLS-1$
     public static final String SWITCH_TO_OPI_EDITOR_PERSPECTIVE = "switch_to_opi_editor_perspective"; //$NON-NLS-1$
     public static final String FONT_DEFAULT_PIXELS_OR_POINTS = "font_default_pixels_or_points";
+    public static final String TOOL_TIP_DISPLAY_TIME = "tooltip_display_time";
 
     //The widgets that are hidden from palette.
     public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
@@ -512,6 +513,15 @@ public class PreferencesHelper {
     public static boolean isPhoebusIntegrated(){
           final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, USE_PHOEBUS, false, null);
+    }
+
+    /**
+     * @return tooltip display time
+     */
+    public static int getToolTipDisplayTime() {
+        int defaultDisplayTimeSec = 30;
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getInt(OPIBuilderPlugin.PLUGIN_ID, PreferencesHelper.TOOL_TIP_DISPLAY_TIME, defaultDisplayTimeSec, null);
     }
 
     /**

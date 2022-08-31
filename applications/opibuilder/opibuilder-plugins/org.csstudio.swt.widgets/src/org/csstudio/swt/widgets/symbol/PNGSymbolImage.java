@@ -166,9 +166,12 @@ public class PNGSymbolImage extends AbstractSymbolImage {
                     }
                 }
                 loadingImage = false;
-                // fireSymbolImageLoaded();
-                Activator.getLogger().log(Level.WARNING,
-                        "ERROR in loading PNG image " + imagePath, exception);
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        fireSymbolImageLoaded();
+                    }
+                });
+                Activator.getLogger().log(Level.WARNING, "ERROR in loading PNG image " + imagePath, exception.getMessage());
             }
         });
     }

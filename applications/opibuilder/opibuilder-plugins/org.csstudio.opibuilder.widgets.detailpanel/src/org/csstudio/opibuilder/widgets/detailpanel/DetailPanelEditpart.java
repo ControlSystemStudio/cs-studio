@@ -1,8 +1,10 @@
 package org.csstudio.opibuilder.widgets.detailpanel;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -12,9 +14,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.IPVWidgetEditpart;
 import org.csstudio.opibuilder.editparts.PVWidgetConnectionHandler;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.gef.EditPart;
@@ -23,7 +27,6 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.graphics.RGB;
-import org.diirt.vtype.VType;
 
 public class DetailPanelEditpart extends AbstractContainerEditpart implements IPVWidgetEditpart {
 
@@ -254,10 +257,13 @@ public class DetailPanelEditpart extends AbstractContainerEditpart implements IP
         getFigure().setEvenRowForegroundColor(getWidgetModel().getEvenRowForegroundColor());
         getFigure().setVerticalDividerPos(getWidgetModel().getVerticalDividerPos());
         for(DetailPanelModelRow row: getWidgetModel().getRows()) {
-            getFigure().setRowMode(row.getRowNumber(), row.getMode());
-            getFigure().setRowName(row.getRowNumber(), row.getName());
-            getFigure().setRowDividerPos(row.getRowNumber(), row.getHeight());
-            getFigure().setRowLevel(row.getRowNumber(), row.getLevel());
+            // Following properties only exist for rows less than the max_row_count
+            if (row.getRowNumber() < DetailPanelModel.MAX_ROW_COUNT) {
+                getFigure().setRowMode(row.getRowNumber(), row.getMode());
+                getFigure().setRowName(row.getRowNumber(), row.getName());
+                getFigure().setRowDividerPos(row.getRowNumber(), row.getHeight());
+                getFigure().setRowLevel(row.getRowNumber(), row.getLevel());
+            }
         }
         // Set visibility
         getFigure().setEditMode(getExecutionMode() == ExecutionMode.EDIT_MODE);
@@ -299,7 +305,7 @@ public class DetailPanelEditpart extends AbstractContainerEditpart implements IP
             rows.getLast().dispose();
             rows.removeLast();
         }
-        while(rows.size() < numberOfRows) {
+        while(rows.size() < numberOfRows && rows.size() < DetailPanelModel.MAX_ROW_COUNT) {
             DetailPanelModelRow row = getWidgetModel().getRow(rows.size());
             getFigure().addRow();
             rows.add(new DetailPanelEditpartRow(this, getFigure().getRow(rows.size()), row));
@@ -307,6 +313,13 @@ public class DetailPanelEditpart extends AbstractContainerEditpart implements IP
             getFigure().setRowName(row.getRowNumber(), row.getName());
             getFigure().setRowDividerPos(row.getRowNumber(), row.getHeight());
         }
+        if (numberOfRows > DetailPanelModel.MAX_ROW_COUNT) {
+            String errorMessage = "Detail panel widget: number of rows requested (" + numberOfRows + ") is greater "
+                    + "than the limit of " + DetailPanelModel.MAX_ROW_COUNT;
+            ConsoleService.getInstance().writeError(errorMessage);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, errorMessage);
+        }
+        getWidgetModel().setRows(rows.size());
         setAllGroupCollapse(false);
     }
 
