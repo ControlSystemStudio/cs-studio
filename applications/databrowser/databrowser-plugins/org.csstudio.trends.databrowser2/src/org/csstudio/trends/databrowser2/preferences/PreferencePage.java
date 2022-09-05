@@ -156,17 +156,54 @@ public class PreferencePage extends FieldEditorPreferencePage
         fetch_delay.setValidRange(100, 10000);
         addField(fetch_delay);
 
-        // Plot bins: 10 ... one bin per second for a year
-        final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS,
-                Messages.PrefPage_PlotBins, parent);
-        plotbins.setValidRange(10, 365*24*60*60);
+        // Plot bins:
+        // - 10 ... one bin per second for a year or
+        // - small negative number to scale with display pixel width
+        final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS, Messages.PrefPage_PlotBins,
+                parent) {
+            // Override method to allow small negative number (-x) as input (x times Display pixel width)
+            @Override
+            protected boolean checkState() {
+
+                int minValidValue = 10; // Minimum 10 regular bins.
+                int maxValidValue = 365 * 24 * 60 * 60; // Maximum regular bins.
+                // Special case: scale number of bins by number of horizontal pixels on display
+                int minMultValue = -10; // 10* display pixel width
+                int maxMultValue = -1; // display pixel width
+
+                setErrorMessage("Value must be an integer between " + minValidValue + " and " + maxValidValue +
+                        " or between " + maxMultValue + " and " + minMultValue + ".");
+
+                Text text = getTextControl();
+
+                if (text == null)
+                    return false;
+
+                String numberString = text.getText();
+                try {
+                    int number = Integer.valueOf(numberString).intValue();
+                    if ((number >= minValidValue && number <= maxValidValue) ||
+                            (number >= minMultValue && number <= maxMultValue)) {
+                        clearErrorMessage();
+                        return true;
+                    } else {
+                        showErrorMessage();
+                        return false;
+                    }
+                } catch (NumberFormatException e1) {
+                    showErrorMessage();
+                }
+
+                return false;
+            }
+        };
         addField(plotbins);
 
         // Future Buffer: 10 ...
         final IntegerFieldEditor scroll_step = new IntegerFieldEditor(Preferences.SCROLL_STEP,
                 Messages.ScrollStepLbl, parent);
         scroll_step.setValidRange(1, (int)Duration.ofDays(1).getSeconds());
-        ((Text)scroll_step.getTextControl(parent)).setToolTipText(Messages.ScrollStepTT);
+        scroll_step.getTextControl(parent).setToolTipText(Messages.ScrollStepTT);
         addField(scroll_step);
 
         // Archive rescale options

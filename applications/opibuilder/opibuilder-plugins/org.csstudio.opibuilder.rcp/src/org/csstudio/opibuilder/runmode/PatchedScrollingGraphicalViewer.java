@@ -119,7 +119,6 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
 
         @Override
         protected ToolTipHelper getToolTipHelper() {
-
             ToolTipHelper tooltipHelper = super.getToolTipHelper();
             tooltipHelper.setHideDelay(toolTipHideDelayMs);
             return tooltipHelper;

@@ -1,7 +1,9 @@
 package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
@@ -33,6 +35,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
 
     private final int requestedPoints;
     private final boolean useStatistics;
+    private long intervalSecs;
 
     /**
      * Constructor that fetches data from appliance archive reader.
@@ -57,6 +60,8 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
         this.requestedPoints = points;
         this.useStatistics = useStatistics;
         this.display = determineDisplay(reader, name, end);
+        Duration duruation = Duration.between(start,end);
+        this.intervalSecs = (duruation.toSeconds())/(points);
         fetchData();
     }
 
@@ -152,8 +157,10 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
                         "The optimized post processor returned less than 5 values per sample.");
             }
             if (useStatistics) {
+                Instant t0 = TimestampHelper.fromSQLTimestamp(message.getTimestamp());
+                Instant tshifted = t0.minus(intervalSecs/2, ChronoUnit.SECONDS);
                 return new ArchiveVStatistics(
-                        TimestampHelper.fromSQLTimestamp(message.getTimestamp()),
+                        tshifted,
                         getSeverity(message.getSeverity()),
                         String.valueOf(message.getStatus()),
                         display,

@@ -324,63 +324,27 @@ public class ModelBasedPlot
     /** @param item ModelItem to remove from plot */
     public void removeTrace(final ModelItem item)
     {
-        final Trace<Instant> trace;
-        try
-        {
-            trace = findTrace(item);
-        }
-        catch (IllegalArgumentException ex)
-        {   // Could be called with a trace that was not visible,
-            // so it was never in the plot,
-            // and now gets removed.
-            // --> No error, because trace to be removed is already
-            //     absent from plot
-            return;
-        }
+        final Trace<Instant> trace = findTrace(item);
         plot.removeTrace(trace);
         plot.removeAnnotation(trace);
         items_by_trace.remove(trace);
     }
 
-    /** Hide a trace by changing the trace visibity
+    /** Hide a trace by changing the trace visibility
      *  @param item ModelItem to hide from plot
      */
     public void hideTrace(final ModelItem item)
     {
-        final Trace<Instant> trace;
-        try
-        {
-            trace = findTrace(item);
-        }
-        catch (IllegalArgumentException ex)
-        {   // Could be called with a trace that was not visible,
-            // so it was never in the plot,
-            // and now gets removed.
-            // --> No error, because trace to be removed is already
-            //     absent from plot
-            return;
-        }
+        final Trace<Instant> trace = findTrace(item);
         trace.setVisible(false);
     }
 
-    /** Show a trace by changing the trace visibity
+    /** Show a trace by changing the trace visibility
      *  @param item ModelItem to show in plot
      */
     public void showTrace(final ModelItem item)
     {
-        final Trace<Instant> trace;
-        try
-        {
-            trace = findTrace(item);
-        }
-        catch (IllegalArgumentException ex)
-        {   // Could be called with a trace that was not visible,
-            // so it was never in the plot,
-            // and now gets removed.
-            // --> No error, because trace to be removed is already
-            //     absent from plot
-            return;
-        }
+        final Trace<Instant> trace = findTrace(item);
         trace.setVisible(true);
     }
 
@@ -389,10 +353,6 @@ public class ModelBasedPlot
      */
     public void updateTrace(final ModelItem item)
     {
-        // Invisible items have no trace, nothing to update,
-        // and findTrace() would throw an exception
-        if (! item.isVisible())
-            return;
         final Trace<Instant> trace = findTrace(item);
         // Update Trace with item's configuration
         final String name = item.getResolvedDisplayName();

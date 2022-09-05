@@ -112,11 +112,14 @@ public class DetailPanelModelRow {
         this.model = model;
         this.nameArea = new Rectangle();
         // Make the property page rows visible
-        this.model.setPropertyVisible(makePropertyName(PROP_ROW_MODE, this.rowNumber), true);
-        this.model.setPropertyVisible(makePropertyName(PROP_ROW_NAME, this.rowNumber), true);
-        this.model.setPropertyVisible(makePropertyName(PROP_ROW_HEIGHT, this.rowNumber), true);
-        this.model.setPropertyVisible(makePropertyName(PROP_ROW_TOOLTIP, this.rowNumber), true);
-        this.model.setPropertyVisible(makePropertyName(PROP_ROW_LEVEL, this.rowNumber), true);
+        // Following properties only exist for rows less than the max_row_count
+        if (rowNumber < DetailPanelModel.MAX_ROW_COUNT) {
+            this.model.setPropertyVisible(makePropertyName(PROP_ROW_MODE, this.rowNumber), true);
+            this.model.setPropertyVisible(makePropertyName(PROP_ROW_NAME, this.rowNumber), true);
+            this.model.setPropertyVisible(makePropertyName(PROP_ROW_HEIGHT, this.rowNumber), true);
+            this.model.setPropertyVisible(makePropertyName(PROP_ROW_TOOLTIP, this.rowNumber), true);
+            this.model.setPropertyVisible(makePropertyName(PROP_ROW_LEVEL, this.rowNumber), true);
+        }
         // Does the children container already exist?
         // When the model is created from a stored file, the container is created for us.
         List<AbstractWidgetModel> modelChildren = model.getChildren();
@@ -159,11 +162,14 @@ public class DetailPanelModelRow {
     /* Clean up */
     public void dispose() {
         // Hide the property page rows
-        model.setPropertyVisible(makePropertyName(PROP_ROW_MODE, rowNumber), false);
-        model.setPropertyVisible(makePropertyName(PROP_ROW_NAME, rowNumber), false);
-        model.setPropertyVisible(makePropertyName(PROP_ROW_HEIGHT, rowNumber), false);
-        model.setPropertyVisible(makePropertyName(PROP_ROW_TOOLTIP, rowNumber), false);
-        model.setPropertyVisible(makePropertyName(PROP_ROW_LEVEL, rowNumber), false);
+        // Following properties only exist for rows less than the max_row_count
+        if (rowNumber < DetailPanelModel.MAX_ROW_COUNT) {
+            model.setPropertyVisible(makePropertyName(PROP_ROW_MODE, rowNumber), false);
+            model.setPropertyVisible(makePropertyName(PROP_ROW_NAME, rowNumber), false);
+            model.setPropertyVisible(makePropertyName(PROP_ROW_HEIGHT, rowNumber), false);
+            model.setPropertyVisible(makePropertyName(PROP_ROW_TOOLTIP, rowNumber), false);
+            model.setPropertyVisible(makePropertyName(PROP_ROW_LEVEL, rowNumber), false);
+        }
         // Disconnect the container, needs to happen in the UI thread.
         if(!collapsed) {
             UIBundlingThread.getInstance().addRunnable(new Runnable() {

@@ -150,16 +150,17 @@ public class OpenDocumentEventProcessor implements Listener {
                 data = path.substring(de + 1);
                 data = replaceAsciiCode(data);
             }
-            //open file with DisplayUtil if it is a supported Display file
+            // Open file with DisplayUtil if it is a supported Display file
             if(DisplayUtil.getInstance().isExtensionSupported(ext)){
                 try {
-                    DisplayUtil.getInstance().openDisplay(pathPart
-                            , data);
-                    Shell shell = window.getShell();
-                    if (shell != null) {
-                        if (shell.getMinimized())
-                            shell.setMinimized(false);
-                        shell.forceActive();
+                    DisplayUtil.getInstance().openDisplay(pathPart, data);
+                    // Usually we want to take focus to the main Eclipse window when
+                    // opening a file. This copies the behaviour in Eclipse itself -
+                    // see DelayedEventsProcessor in org.eclipse.ui.ide.application.
+                    // However, if this is a standalone window then we *don't* want
+                    // the main window to take focus.
+                    if (!(ext.equals("opi") && data != null && data.contains("NEW_SHELL"))) {
+                        raiseWindow(window);
                     }
                     return;
                 } catch (Exception e) {
@@ -185,12 +186,7 @@ public class OpenDocumentEventProcessor implements Listener {
 
 
                     IDE.openInternalEditorOnFileStore(page, fileStore);
-                    Shell shell = window.getShell();
-                    if (shell != null) {
-                        if (shell.getMinimized())
-                            shell.setMinimized(false);
-                        shell.forceActive();
-                    }
+                    raiseWindow(window);
                 } catch (PartInitException e) {
                     String msg = NLS.bind("The file ''{0}'' could not be opened. See log for details.",
                                     fileStore.getName());
@@ -207,6 +203,18 @@ public class OpenDocumentEventProcessor implements Listener {
                         msg, SWT.SHEET);
             }
         });
+    }
+
+    /** Raise window and make active.
+     * @param window the window to raise
+     */
+    private static void raiseWindow(IWorkbenchWindow window) {
+        Shell shell = window.getShell();
+        if (shell != null) {
+            if (shell.getMinimized())
+                shell.setMinimized(false);
+            shell.forceActive();
+        }
     }
 
     /**Replace ascii code with its characters in a string. The ascii code in the string must

@@ -20,6 +20,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -284,7 +285,8 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
                 public void run() {
                     try {
                         final IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-                            getActivePage().showView("org.eclipse.ui.console.ConsoleView"); //$NON-NLS-1$
+                            getActivePage().showView("org.eclipse.ui.console.ConsoleView",null,
+                                    IWorkbenchPage.VIEW_VISIBLE); //$NON-NLS-1$
                         if(view != null && view instanceof ConsoleView){
                             UIBundlingThread.getInstance().addRunnable(new Runnable() {
                                 @Override
