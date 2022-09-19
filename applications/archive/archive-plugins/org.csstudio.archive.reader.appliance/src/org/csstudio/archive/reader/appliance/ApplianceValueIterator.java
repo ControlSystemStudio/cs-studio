@@ -60,6 +60,9 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 
     private static Object lock = new Object();
 
+    protected EpicsMessage savedMessage;
+    protected boolean reuseMessage;
+
     /**
      * Constructs a new ApplianceValueIterator.
      *
@@ -67,6 +70,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param name the name of the pv to load the data for
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
+     * @param listener the listener that is notified when the iterator is closed
      */
     protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
             IteratorListener listener) {
@@ -75,6 +79,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         this.start = start;
         this.end = end;
         this.listener = listener;
+        this.reuseMessage = false;
+        this.savedMessage = null;
     }
 
     /**
@@ -135,9 +141,46 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         synchronized (this) {
             if (closed)
                 return null;
-            message = mainIterator.next();
+
+            if (!reuseMessage)
+                message = mainIterator.next();
+            else {
+                message = savedMessage;
+                reuseMessage = false;
+            }
+
+            VType check = checkDisconnect(message);
+            if (check != null)
+                return check;
+            savedMessage = null;
         }
         return extractData(message);
+    }
+
+    /**
+     * Method to check the EpicsMessage for fieldValues containing the
+     * 'cnxlostepsecs' and 'cnxregainedepsecs' signifying a disconnect and reconnect
+     * of the PV. Method extracts the time of the disconnect and returns an
+     * ArchiveVString with the value 'Disconnect'
+     *
+     * @param message Current EpicsMessage to check
+     * @return a VType that can be inserted to indicate a disconnect
+     */
+    VType checkDisconnect(EpicsMessage message) {
+        if (message.getFieldValues().size() > 0 && savedMessage == null) {
+            if (message.getFieldValues().keySet().contains("cnxlostepsecs")
+                    && message.getFieldValues().keySet().contains("cnxregainedepsecs")
+                    && !message.getFieldValues().keySet().contains("startup")) {
+                long lostT = Long.parseLong(message.getFieldValues().get("cnxlostepsecs"));
+                reuseMessage = true;
+                savedMessage = message;
+                return new ArchiveVString(Instant.ofEpochSecond(lostT), getSeverity(message.getSeverity()),
+                        getStatus(message.getStatus()), "Disconnect");
+            } else
+                return null;
+        } else {
+            return null;
+        }
     }
 
     /**
