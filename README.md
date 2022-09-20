@@ -15,7 +15,7 @@ build process.
 
 ### Download
 
-There are comminity and site specific products available from download:
+There are community and site specific products available from download:
 
 * [Download page](http://controlsystemstudio.org/download.html)
 
