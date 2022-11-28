@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.scriptUtil.PVUtil;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.simplepv.IPV;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -289,7 +290,8 @@ public class RhinoWithFastPathScriptStore extends AbstractScriptStore{
     			// If we are outputting expression, not only do the rules all have to be
     			// "fast", but the output expressions also all need to be fast.
     			// Currently this is limited to boolean-type output expressions
-    			return rulesCanBeFast && ruleData.getExpressionList()
+				final boolean isBooleanProperty = ruleData.getProperty() instanceof BooleanProperty;
+    			return rulesCanBeFast && isBooleanProperty && ruleData.getExpressionList()
     					.stream()
     					.map(Expression::getValue)
     					.allMatch(FAST_PATH_EXPRESSIONS::containsKey);
