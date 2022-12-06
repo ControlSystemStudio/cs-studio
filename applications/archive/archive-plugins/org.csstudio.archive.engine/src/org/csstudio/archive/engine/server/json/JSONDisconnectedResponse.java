@@ -16,6 +16,8 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with list of disconnected channels in JSON
  *  @author Dominic Oram
  */
@@ -33,27 +35,28 @@ public class JSONDisconnectedResponse extends AbstractResponse
     {
         final JSONRoot json = new JSONRoot(resp);
         JSONList disconnected = new JSONList();
+		
+		final Iterator<ArchiveGroup> groupsIter = model.getAllGroupsIter();
 
-        final int group_count = model.getGroupCount();
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                final ArchiveChannel channel = group.getChannel(j);
-                if (channel.isConnected())
-                    continue;
+		while (groupsIter.hasNext())
+		{
+			final ArchiveGroup group = groupsIter.next();
+			final Iterator<ArchiveChannel> channelsIter = group.getAllChannelsIter();
+			while (channelsIter.hasNext())
+			{
+				final ArchiveChannel channel = channelsIter.next();
+				if (channel.isConnected())
+					continue;
 
-                JSONObject JSONchannel = new JSONObject();
+				JSONObject JSONchannel = new JSONObject();
 
-                JSONchannel.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
-                JSONchannel.writeObjectEntry(Messages.HTTP_Group, group.getName());
-                disconnected.addObjectToList(JSONchannel);
+				JSONchannel.writeObjectEntry(Messages.HTTP_Channel, channel.getName());
+				JSONchannel.writeObjectEntry(Messages.HTTP_Group, group.getName());
+				disconnected.addObjectToList(JSONchannel);
 
-            }
-        }
-        json.writeObjectEntry(Messages.HTTP_DisconnectedTitle, disconnected);
-        json.close();
+			}
+		}
+		json.writeObjectEntry(Messages.HTTP_DisconnectedTitle, disconnected);
+		json.close();
     }
 }

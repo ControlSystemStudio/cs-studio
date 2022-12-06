@@ -17,6 +17,8 @@ import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractGroupResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with detail for one group in HTML.
  *  @author Kay Kasemir
  */
@@ -79,10 +81,10 @@ public class HTMLGroupResponse extends AbstractGroupResponse
             Messages.HTTP_QueueCapacity,
             Messages.HTTP_QueueOverruns,
         });
-        final int channel_count = group.getChannelCount();
-        for (int j=0; j<channel_count; ++j)
+        final Iterator<ArchiveChannel> channelsIter = group.getAllChannelsIter();
+        while (channelsIter.hasNext())
         {
-            final ArchiveChannel channel = group.getChannel(j);
+            final ArchiveChannel channel = channelsIter.next();
             final String connected = channel.isConnected()
             ? Messages.HTTP_Connected : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
             final SampleBuffer buffer = channel.getSampleBuffer();

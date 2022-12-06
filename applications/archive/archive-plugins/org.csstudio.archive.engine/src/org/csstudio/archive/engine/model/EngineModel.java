@@ -27,6 +27,8 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 
+import java.util.Iterator;
+
 /** Data model of the archive engine.
  *  @author Kay Kasemir
  */
@@ -173,15 +175,19 @@ public class EngineModel
         return groups.size();
     }
 
-    /** Get one archive group.
-     *  @param group_index 0...<code>getGroupCount()-1</code>
-     *  @return group
-     *  @see #getGroupCount()
+    /** Iterator over all groups.
+     *  @return groups iter
      */
-    synchronized public ArchiveGroup getGroup(final int group_index)
+    synchronized public Iterator<ArchiveGroup> getAllGroupsIter()
     {
-        return groups.get(group_index);
+		// Need to copy the list to make sure caller won't get concurrent modifications from another thread
+		// when using the iterator.
+        return new ArrayList<>(groups).iterator();
     }
+	
+	synchronized private ArchiveGroup getGroup(int i) {
+		return groups.get(i);
+	}
 
     /** @return Group by that name or <code>null</code> if not found */
     synchronized public ArchiveGroup getGroup(final String name)
@@ -198,11 +204,17 @@ public class EngineModel
         return channels.size();
     }
 
-    /** @param i Channel index, 0 ... <code>getChannelCount()-1</code> */
-    synchronized public ArchiveChannel getChannel(int i)
+    /** Iterator over all channels */
+    synchronized public Iterator<ArchiveChannel> getAllChannelsIter()
     {
-        return channels.get(i);
+        // Need to copy the list to make sure caller won't get concurrent modifications from another thread
+		// when using the iterator.
+        return new ArrayList<>(channels).iterator();
     }
+	
+	synchronized private ArchiveChannel getChannel(int i) {
+		return channels.get(i);
+	}
 
     /** @return Channel by that name or <code>null</code> if not found */
     synchronized public ArchiveChannel getChannel(final String name)
@@ -253,10 +265,16 @@ public class EngineModel
 
         // Is this an existing channel?
         ArchiveChannel channel = getChannel(name);
-        if (channel != null)
+        if (channel != null) {
+			Iterator<ArchiveGroup> iter = channel.getAllGroupsIter();
+			String groupName = "none";
+			if (iter.hasNext()) {
+				groupName = iter.next().getName();
+			}
             throw new Exception(String.format(
                     "Group '%s': Channel '%s' already in group '%s'",
-                     group.getName(), name, channel.getGroup(0).getName()));
+                     group.getName(), name, groupName));
+		}
 
         // Channel is new to this engine.
         // If there's already a sample in the archive, we won't go back-in-time before that sample,
@@ -464,16 +482,21 @@ public class EngineModel
     public void dumpDebugInfo()
     {
         System.out.println(TimestampHelper.format(Instant.now()) + ": Debug info");
-        for (int c=0; c<getChannelCount(); ++c)
+		Iterator<ArchiveChannel> channelsIter = getAllChannelsIter();
+        while (channelsIter.hasNext())
         {
-            final ArchiveChannel channel = getChannel(c);
+			final ArchiveChannel channel = channelsIter.next();
             StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
-            for (int i=0; i<channel.getGroupCount(); ++i)
+			boolean first = true;
+			Iterator<ArchiveGroup> groupsIter = channel.getAllGroupsIter();
+            while (groupsIter.hasNext())
             {
-                if (i > 0)
+				final ArchiveGroup group = groupsIter.next();
+                if (!first)
                     buf.append(", ");
-                buf.append(channel.getGroup(i).getName());
+                buf.append(group.getName());
+				first = false;
             }
             buf.append("): ");
             buf.append(channel.getMechanism());

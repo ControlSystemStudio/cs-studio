@@ -17,6 +17,8 @@ import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with basic info for all the groups in JSON.
  *  @author Dominic Oram
  */
@@ -36,22 +38,23 @@ public class JSONGroupsResponse extends AbstractResponse
 
         JSONList groups = new JSONList();
 
-        final int group_count = model.getGroupCount();
+        final Iterator<ArchiveGroup> groupsIter = model.getAllGroupsIter();
         int total_channels = 0;
         int total_connect = 0;
         long total_received_values = 0;
         // Per group objects
-        for (int i=0; i<group_count; ++i)
+        while (groupsIter.hasNext())
         {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
+            final ArchiveGroup group = groupsIter.next();
+            final Iterator<ArchiveChannel> channelsIter = group.getAllChannelsIter();
             int connect_count = 0;
             double queue_avg = 0;
             int queue_max = 0;
             long received_values = 0;
-            for (int j=0; j<channel_count; ++j)
+			long channel_count = 0;
+            while (channelsIter.hasNext())
             {
-                final ArchiveChannel channel = group.getChannel(j);
+                final ArchiveChannel channel = channelsIter.next();
                 if (channel.isConnected())
                     ++connect_count;
                 received_values += channel.getReceivedValues();
@@ -60,6 +63,8 @@ public class JSONGroupsResponse extends AbstractResponse
                 queue_avg += stats.getAverageSize();
                 if (queue_max < stats.getMaxSize())
                     queue_max = stats.getMaxSize();
+				
+				channel_count++;
             }
             if (channel_count > 0)
                 queue_avg /= channel_count;

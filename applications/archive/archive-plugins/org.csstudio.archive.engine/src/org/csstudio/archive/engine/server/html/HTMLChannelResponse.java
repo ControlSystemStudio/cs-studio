@@ -12,10 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
+import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.BufferStats;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.engine.server.AbstractChannelResponse;
+
+import java.util.Iterator;
 
 /** Provide web page with detail for one channel in HTML.
  *  @author Kay Kasemir
@@ -107,9 +110,10 @@ public class HTMLChannelResponse extends AbstractChannelResponse
             Messages.HTTP_Group,
             Messages.HTTP_Enabled,
         });
-        for (int i=0; i<channel.getGroupCount(); ++i)
+		Iterator<ArchiveGroup> iter = channel.getAllGroupsIter();
+        while (iter.hasNext())
         {
-            final ArchiveGroup group = channel.getGroup(i);
+            final ArchiveGroup group = iter.next();
             html.tableLine(new String[]
             {
                 HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),

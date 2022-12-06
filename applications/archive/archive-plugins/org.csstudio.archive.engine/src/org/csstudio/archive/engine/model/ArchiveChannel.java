@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Iterator;
 
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
@@ -175,10 +176,10 @@ abstract public class ArchiveChannel extends PVListenerAdapter
         return groups.size();
     }
 
-    /** @return One Group to which this channel belongs */
-    final public ArchiveGroup getGroup(final int index)
+    /** @return Iterator over all groups */
+    final public Iterator<ArchiveGroup> getAllGroupsIter()
     {
-        return groups.get(index);
+        return groups.iterator();
     }
 
     /** Tell channel that it belogs to group */
