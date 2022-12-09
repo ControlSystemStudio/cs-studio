@@ -15,6 +15,8 @@ import org.csstudio.archive.engine.model.ArchiveChannel;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractGroupResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with detail for one group in JSON.
  *  @author Dominic Oram
  */
@@ -46,10 +48,10 @@ public class JSONGroupResponse extends AbstractGroupResponse
         // JSON object of all channels in the group
         JSONList channels = new JSONList();
 
-        final int channel_count = group.getChannelCount();
-        for (int j=0; j<channel_count; ++j)
+        final Iterator<ArchiveChannel> iter = group.getAllChannelsIter();
+        while (iter.hasNext())
         {
-            final ArchiveChannel channel = group.getChannel(j);
+            final ArchiveChannel channel = iter.next();
 
             channels.addObjectToList(JSONHelper.createChannelObject(channel));
         }

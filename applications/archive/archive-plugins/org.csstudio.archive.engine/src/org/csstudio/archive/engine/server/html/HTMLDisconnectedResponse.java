@@ -16,6 +16,8 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with list of disconnected channels in HTML
  *  @author Kay Kasemir
  */
@@ -34,15 +36,15 @@ public class HTMLDisconnectedResponse extends AbstractResponse
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);
         html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_Group });
 
-        final int group_count = model.getGroupCount();
+        final Iterator<ArchiveGroup> groupsIter = model.getAllGroupsIter();
         int disconnected = 0;
-        for (int i=0; i<group_count; ++i)
+        while (groupsIter.hasNext())
         {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
+            final ArchiveGroup group = groupsIter.next();
+            final Iterator<ArchiveChannel> channelsIter = group.getAllChannelsIter();
+            while (channelsIter.hasNext())
             {
-                final ArchiveChannel channel = group.getChannel(j);
+                final ArchiveChannel channel = channelsIter.next();
                 if (channel.isConnected())
                     continue;
                 ++disconnected;

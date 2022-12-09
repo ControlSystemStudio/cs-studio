@@ -18,6 +18,8 @@ import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.AbstractResponse;
 
+import java.util.Iterator;
+
 /** Provide web page with list of channels (by pattern).
  *  @author Kay Kasemir
  */
@@ -57,20 +59,24 @@ public class ChannelListResponse extends AbstractResponse
             Messages.HTTP_LastArchivedValue,
         });
 
-        for (int i=0; i<model.getChannelCount(); ++i)
+		final Iterator<ArchiveChannel> channelsIter = model.getAllChannelsIter();
+        while (channelsIter.hasNext())
         {
-            final ArchiveChannel channel = model.getChannel(i);
+            final ArchiveChannel channel = channelsIter.next();
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches())
                 continue;
             final StringBuilder groups = new StringBuilder();
-            for (int g=0; g<channel.getGroupCount(); ++g)
+			final Iterator<ArchiveGroup> groupsIter = channel.getAllGroupsIter();
+			int g = 0;
+            while (groupsIter.hasNext())
             {
                 if (g > 0)
                     groups.append(", ");
-                final ArchiveGroup group = channel.getGroup(i);
+                final ArchiveGroup group = groupsIter.next();
                 groups.append(HTMLWriter.makeLink(
                             "group?name=" + group.getName(), group.getName()));
+				g++;
             }
             html.tableLine(new String[]
             {

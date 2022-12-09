@@ -8,6 +8,7 @@
 package org.csstudio.archive.engine.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Iterator;
 
 /** A group of archived channels.
  *  Each channel is in exactly one group.
@@ -87,14 +88,14 @@ public class ArchiveGroup
     {
         return channels.size();
     }
-
-    /** @return Channel
+	
+	/** @return An iterator over all available channels.
      *  @param i Channel index
      *  @see #getChannelCount()
      */
-    final public ArchiveChannel getChannel(final int i)
+    final public Iterator<ArchiveChannel> getAllChannelsIter()
     {
-        return channels.get(i);
+        return channels.iterator();
     }
 
     /** Locate a channel by name.

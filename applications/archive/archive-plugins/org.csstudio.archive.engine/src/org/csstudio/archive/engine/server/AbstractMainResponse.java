@@ -11,6 +11,9 @@ import java.net.InetAddress;
 
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.model.ArchiveChannel;
+
+import java.util.Iterator;
 
 /** Provide web page with engine overview.
  *  @author Kay Kasemir
@@ -45,20 +48,23 @@ public abstract class AbstractMainResponse extends AbstractResponse
     }
 
     protected void updateChannelCount() {
-        final int group_count = model.getGroupCount();
-        int connect_count = 0;
-        totalChannelCount = 0;
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                if (group.getChannel(j).isConnected())
-                    ++connect_count;
-            }
-            totalChannelCount += channel_count;
-        }
+		final Iterator<ArchiveGroup> groupsIter = model.getAllGroupsIter();
+		int connect_count = 0;
+		totalChannelCount = 0;
+		while (groupsIter.hasNext())
+		{
+			final ArchiveGroup group = groupsIter.next();
+			final Iterator<ArchiveChannel> iter = group.getAllChannelsIter();
+			long channel_count = 0;
+			while (iter.hasNext())
+			{
+				if (iter.next().isConnected()) {
+					++connect_count;
+				}
+				++channel_count;
+			}
+			totalChannelCount += channel_count;
+		}
 
         disconnectCount = totalChannelCount - connect_count;
     }
