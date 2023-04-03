@@ -12,7 +12,14 @@ build process.
 * [Webpage](http://controlsystemstudio.github.io/) - general information
 * [Github wiki](https://github.com/ControlSystemStudio/cs-studio/wiki/) - notes for developers
 * [Tech-talk](http://aps.anl.gov/epics/tech-talk/index.php) (the EPICS mailing list) - for user queries and discussion
+
+### Download
+
+There are community and site specific products available from download:
+
 * [Download page](http://controlsystemstudio.org/download.html)
+
+Note: The latest versions of CS-Studio ( based on version 4.6.x of the common product ) are only supported on JDK11
 
 ### How to contribute
 
