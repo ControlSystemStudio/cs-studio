@@ -9,9 +9,7 @@ package org.csstudio.perspectives;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -28,9 +26,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
-import org.eclipse.e4.ui.model.application.ui.MSnippetContainer;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
@@ -82,11 +78,9 @@ public class PerspectiveSaverUnitTest {
     public void setUp() {
         try {
             URL workspaceUrl = new URL("file:" + workspaceLocation);
-            when(instanceLocation.getDataArea(anyString())).thenReturn(workspaceUrl);
-            doNothing().when(preferences).put(anyString(), anyString());
-            when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn("dummy");
+            when(prefsService.getString(any(), any(), any(), any())).thenReturn("dummy");
             // Return first argument if cloneElement() is called on mockModelService.
-            when(mockModelService.cloneElement(any(MUIElement.class), any(MSnippetContainer.class))).thenAnswer(new Answer<MUIElement>() {
+            when(mockModelService.cloneElement(any(), any())).thenAnswer(new Answer<MUIElement>() {
                 @Override
                 public MUIElement answer(InvocationOnMock invocation) {
                     Object[] args = invocation.getArguments();
@@ -119,7 +113,6 @@ public class PerspectiveSaverUnitTest {
     @Test
     public void handleEventIgnoresEventsIfNoSaveDirPreferenceIsSet() {
         // Return null from preference query.
-        when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn(null);
         Event testEvent = createTestEvent(UIEvents.EventTags.ELEMENT, new Object());
         saver.handleEvent(testEvent);
         verify(mockModelService, never()).findElements(any(MUIElement.class), any(String.class), any(Class.class), any(List.class));
