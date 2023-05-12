@@ -197,8 +197,6 @@ public class Application implements IApplication
 		
 		JMXServer.startJMXServer();
 		
-		double[] x = new double[2147483646];
-		
         try
         {
             model = new EngineModel();
