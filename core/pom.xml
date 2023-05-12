@@ -93,7 +93,7 @@
                       jacoco-maven-plugin
                     </artifactId>
                     <versionRange>
-                      [0.5.3.201107060350,)
+                      [0.8.3,)
                     </versionRange>
                     <goals>
                       <goal>prepare-agent</goal>
@@ -269,7 +269,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.5.3.201107060350</version>
+        <version>0.8.3</version>
         <configuration>
           <includes>*</includes>
           <destFile>${project.basedir}/../target/jacoco.exec</destFile>
