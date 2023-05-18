@@ -194,6 +194,9 @@ public class Application implements IApplication
         final Logger logger = Activator.getLogger();
         EngineModel.VERSION =  context.getBrandingBundle().getHeaders().get("Bundle-Version");
         logger.info("Archive Engine " + EngineModel.VERSION);
+		
+		JMXServer.startJMXServer();
+		
         try
         {
             model = new EngineModel();

@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>--launcher.suppressErrors
       </programArgs>
-      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m
+      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m -XX:+CrashOnOutOfMemoryError
 -Declipse.exitdata=
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
