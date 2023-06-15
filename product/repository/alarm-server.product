@@ -11,7 +11,7 @@
       <programArgs>--launcher.suppressErrors -console
       </programArgs>
       <vmArgs>-Declipse.exitdata=
--Djava.awt.headless=true -Xms64m -Xmx256m
+-Djava.awt.headless=true -Xms64m -Xmx256m -XX:+CrashOnOutOfMemoryError
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
       </vmArgs>
