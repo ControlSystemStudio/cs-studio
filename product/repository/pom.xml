@@ -79,6 +79,24 @@
                             <attachId>alarm-config</attachId>
                         </product>
                         <product>
+                            <id>alarm-jms2rdb</id>
+                            <rootFolder>alarm-jms2rdb-${project.version}</rootFolder>
+                            <rootFolders>
+                            <macosx>AlarmJMS2RDB.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>alarm-jms2rdb-${project.version}</archiveFileName>
+                            <attachId>alarm-jms2rdb</attachId>
+                        </product>
+                        <product>
+                            <id>alarm-notifier</id>
+                            <rootFolder>alarm-notifier-${project.version}</rootFolder>
+                            <rootFolders>
+                            <macosx>AlarmNotifier.app</macosx>
+                            </rootFolders>
+                            <archiveFileName>alarm-notifier-${project.version}</archiveFileName>
+                            <attachId>alarm-notifier</attachId>
+                        </product>
+                        <product>
                         <!-- 'uid' in the *.product -->
                             <id>archive-engine</id>
                             <!-- Add version number to product top directory and zipped product -->

@@ -9,6 +9,8 @@ classes/
 build/build
 build/ext
 
+/workspace/
+
 dist
 
 # ignore all log files ?
