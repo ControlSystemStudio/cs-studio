@@ -66,14 +66,18 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
         final Font orig_font = gc.getFont();
         gc.setFont(font);
 
+        int items = 0;
         int max_width = 1, max_height = 1; // Start with 1 pixel to avoid later div-by-0
         for (Trace<XTYPE> trace : traces)
         {
+            if (!trace.isVisible())
+                continue;
             final Point size = gc.textExtent(trace.getLabel());
             if (size.x > max_width)
                 max_width = size.x;
             if (size.y > max_height)
                 max_height = size.y;
+            items++;
         }
         // Arrange in grid with some extra space
         grid_x = max_width + max_height / 2;
@@ -81,7 +85,6 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
 
         gc.setFont(orig_font);
 
-        final int items = traces.size();
         final int items_per_row = Math.max(1, bounds_width / grid_x); // Round down, counting full items
         final int rows = (items + items_per_row-1) / items_per_row;   // Round up
         return rows * grid_y;
