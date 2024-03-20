@@ -127,7 +127,11 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      */
     @Override
     public synchronized boolean hasNext() {
-        return !closed && mainIterator != null && mainIterator.hasNext();
+        boolean hasNext = !closed && mainIterator != null && mainIterator.hasNext();
+        if (reuseMessage && !hasNext) {
+            hasNext = true;
+        }
+        return hasNext;
     }
 
     /*
